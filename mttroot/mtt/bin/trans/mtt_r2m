@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.17  2000/05/20 15:23:56  peterg
+## Paramererised version of sm etc etc (using -parameter switch)
+##
 ## Revision 1.16  2000/04/18 11:14:18  peterg
 ## Put in the -parameters option
 ##
@@ -104,11 +107,18 @@ cat <<EOF >mtt_setreduce.r
 % Set up the code generator
 % Load the general translator package
 LOAD GENTRAN;
+LOAD SCOPE;
 GENTRANLANG!* := '$codegenerator;
-ON GENTRANSEG;
+ON GENTRANSEG; % Segmentation
+ON GENTRANOPT; % Code optimise using scope
+OFF GENDECS;  % No declarations
 MAXEXPPRINTLEN!* := 80;
 TEMPVARNUM!* := 1;
-TEMPVARNAME!* := 'mtt_t;
+TEMPVARNAME!* := 'mtt_s;
+
+% Output control
+ON DIV;
+ON EXP;
 
 % Matrix output function
 in"$MTTPATH/trans/lang_matrix.r";
@@ -143,8 +153,8 @@ if [ "$rep" = "ode" ]||[ "$rep" = "cse" ]; then
   #rm -f $1_odea.$ext.1;
 
   #Header
-  lang_header $noglobals $parameters $1 $rep $ext 'mttx,mttu,mttt,mttpar' mttdx > $1_$2.p
-  lang_header $noglobals $parameters $1 $2o $ext 'mttx,mttu,mttt,mttpar' mtty  > $1_$2o.p
+  lang_header $noglobals $parameters $1 $rep $ext 'mttx,mttu,mttt,mttpar' mttdx > $1_$2.pas
+  lang_header $noglobals $parameters $1 $2o $ext 'mttx,mttu,mttt,mttpar' mtty  > $1_$2o.pas
 
   rm -f mtt_ode mtt_odeo
 
@@ -215,17 +225,17 @@ EOF
 #  touch mtt_odee
 #fi
 
-sed 's/mtt_matrix/mttdx/' <mtt_ode  >> $1_$2.p
-#sed 's/mtt_matrix/mtte/'  <mtt_odee >> $1_$2.p
-sed 's/mtt_matrix/mtty/'  <mtt_odeo >> $1_$2o.p
+sed 's/mtt_matrix/mttdx/' <mtt_ode  >> $1_$2.pas
+#sed 's/mtt_matrix/mtte/'  <mtt_odee >> $1_$2.pas
+sed 's/mtt_matrix/mtty/'  <mtt_odeo >> $1_$2o.pas
 
 
-rm -f mtt_odeo mtt_ode #mtt_odee
+#rm -f mtt_odeo mtt_ode #mtt_odee
 
 # Convert from Pascal syntax to Octave syntax 
- mtt_p2m<$1_$2o.p > $1_$2o.m 
+ mtt_p2m<$1_$2o.pas > $1_$2o.m 
 
- rm -f    $1_odeo.p
+ rm -f    $1_odeo.pas
 fi
   
 if [ "$rep" = "sm" ]||[ "$rep" = "ssm" ]||[ "$rep" = "dm" ]||\
@@ -233,13 +243,13 @@ if [ "$rep" = "sm" ]||[ "$rep" = "ssm" ]||[ "$rep" = "dm" ]||\
 
 if  [ "$rep" = "sm" ]||[ "$rep" = "ssm" ]; then
    #Header
-  lang_header $noglobals $parameters $1 $rep $ext "$par" [mtta,mttb,mttc,mttd] > $outfile.p
+  lang_header $noglobals $parameters $1 $rep $ext "$par" [mtta,mttb,mttc,mttd] > $outfile.pas
   Symbols='a b c d'    
 fi
 
 if [ "$rep" = "dm" ]||[ "$rep" = "csm" ]; then
    #Header
-  lang_header $noglobals $parameters $1 $rep $ext "$par" [mtta,mttb,mttc,mttd,mtte] > $outfile.p
+  lang_header $noglobals $parameters $1 $rep $ext "$par" [mtta,mttb,mttc,mttd,mtte] > $outfile.pas
   Symbols='a b c d e'    
 fi
 
@@ -249,9 +259,9 @@ if [ "$rep" = "obs" ]; then
   echo 'affine = ' $affine
    #Header 
 if [ "$affine" = "1" ]; then
-    lang_header $noglobals $parameters $1 obs m mttx [mttobs_o,mttobs_h] >  $outfile.p
+    lang_header $noglobals $parameters $1 obs m mttx [mttobs_o,mttobs_h] >  $outfile.pas
 else
-    lang_header $noglobals $parameters $1 obs m mttx,mttu mttyy > $outfile.p
+    lang_header $noglobals $parameters $1 obs m mttx,mttu mttyy > $outfile.pas
 fi
   Symbols='obs_o obs_h'    
 fi
@@ -331,11 +341,11 @@ fi
 EOF
 
 
-echo "%$Symbol matrix#" >> $outfile.p
-cat mtt_zero.m >> $outfile.p
+echo "%$Symbol matrix#" >> $outfile.pas
+cat mtt_zero.m >> $outfile.pas
 
 sed "s/mtt_matrix/mtt$Symbol/" < $outfile.1 |\
-grep -v '=0\.0;'  >> $outfile.p
+grep -v '=0\.0;'  >> $outfile.pas
 
 done
 
@@ -343,9 +353,9 @@ done
 fi 
 
 # Convert from Pascal syntax to Octave syntax
- mtt_p2m <$outfile.p > $outfile.m
+ mtt_p2m <$outfile.pas > $outfile.m
 
-rm -f $outfile.p  
+rm -f $outfile.pas  
 rm -f mtt_zero.m
 rm -f $outfile.1  
   

@@ -7,7 +7,7 @@
 # Bourne shell script: ode2obs_r
 # Odrinary differential equations to observer function equations
 # P.J.Gawthrop 14 June 1991, 8 Aug 1991, 2 April 1992, 14 April 1994, 28 Dec 94,
-#		12th July 1995, April 1996
+#               12th July 1995, April 1996
 # Copyright (c) P.J.Gawthrop 1991, 1992, 1994, 1995, 1996.
 
 ###############################################################
@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1996/08/25 10:07:05  peter
+## Remove a du state ment causaing touble
+##      - but needs more work.
+##
 ## Revision 1.2  1996/08/25 08:38:14  peter
 ## Error handling added.
 ##
@@ -32,6 +36,9 @@ rm -f ode2obs_r.log
 # Use reduce to accomplish the transformation
 reduce >ode2obs_r.log << EOF
 
+%Read the formatting function
+in "$MTTPATH/trans/reduce_matrix.r";
+
 
 OFF Echo;
 OFF Nat;
@@ -40,33 +47,34 @@ ON NERO;
 in "$1_def.r";
 MTTdxs := MTTdX;  %Save the symbolic form of dX
 
-%Set default values - reset by sympar file.
+%Set default values - reset by obspar file.
 MTTGPCNy := 2;
 MTTGPCNu := 0;
 
-in "$1_sympar.r";
+%%in "$1_sympar.r";
 in "$1_ode.r";
+%%in "$1_simp.r";
 
+in "$1_obspar.r";
 
 %Create the U vector of input derivatives.
 MTTNuu := (MTTGPCNu+1)*MTTNu;
 MTTNuu1 := MTTGPCNu*MTTNu;
-Matrix MTTUU(MTTNuu,1);
 
-FOR i := 1:MTTNu DO
-  MTTUU(i,1) := MTTU(i,1);
-END;
 
-IF MTTGPCNu>0 THEN
-BEGIN
-  FOR i := 1:MTTNu DO
-    MTTUU(i+MTTNu,1) := MTTdU(i,1);
-  END;
-END;
+%FOR i := 1:MTTNu DO
+%  MTTUU(i,1) := MTTU(i,1);
+%END;
+%
+%IF MTTGPCNu>0 THEN
+%BEGIN
+%  FOR i := 1:MTTNu DO
+%    MTTUU(i+MTTNu,1) := MTTdU(i,1);
+%  END;
+%END;
 
 MTTU := MTTU;
-%  MTTdU := MTTdU; ---- removed temporarily, needs def file change? 
-MTTUU := MTTUU;
+MTTdU := MTTdU; % ---- removed temporarily, needs def file change? 
 
 %Create the Y vector of output derivatives.
 MTTNyy := (MTTGPCNy+1)*MTTNy;
@@ -87,81 +95,87 @@ FOR i := 1:MTTGPCNy DO
       xk := MTTX(k,1);
       MTTYY(l,1) := MTTYY(l,1) + df(MTTYY(l-MTTNy,1), xk, 1)*MTTdX(k,1);
     END;
-    IF MTTNuu1>0 THEN
-    FOR k := 1:MTTNuu1 DO %Derivatives wrt u
+    IF MTTGPCNu>0 THEN
+    FOR k := 1:MTTGPCNu DO %Derivatives wrt u
     BEGIN
-      uk := MTTUU(k,1);
-      MTTYY(l,1) := MTTYY(l,1) + df(MTTYY(l-MTTNy,1), uk, 1)*MTTUU(k+MTTNu,1);
+      uk := MTTUU(1,k);
+      MTTYY(l,1) := MTTYY(l,1) + df(MTTYY(l,1), uk, 1)*MTTUU(1,k+1);
     END;
   END;
 END;
 
-%Create O_x - derivative of YY wrt x
-Matrix MTTO_x(MTTNyy,MTTNx);
-FOR j := 1:MTTNx DO
-  BEGIN
-  xj := MTTX(j,1);
-  FOR i := 1:MTTNyy DO
-    BEGIN
-    MTTO_x(i,j) := df(MTTYY(i,1), xj);
-    END;
-  END;
+%%Create O_x - derivative of YY wrt x
+%Matrix MTTO_x(MTTNyy,MTTNx);
+%FOR j := 1:MTTNx DO
+%  BEGIN
+%  xj := MTTX(j,1);
+%  FOR i := 1:MTTNyy DO
+%    BEGIN
+%    MTTO_x(i,j) := df(MTTYY(i,1), xj);
+%    END;
+%  END;
 
-%Create O_u - derivative of YY wrt u (Assumes GPC Nu = 0)
-MTTNNu := (MTTGPCNu+1)*MTTNu;
-Matrix MTTO_u(MTTNyy,MTTNNu);
-FOR j := 1:MTTNNu DO
-  BEGIN
-  uj := MTTu(j,1);	
-  FOR i := 1:MTTNyy DO
-    BEGIN
-    MTTO_u(i,j) := df(MTTYY(i,1), uj);
-    END;
-  END;
-
-
-%Create O_uu - derivative of O_u wrt u (Assumes GPC Nu = 0)
-%This is a multi-dimensional matrix kth elements stacked sideways.
-Matrix MTTO_uu(MTTNyy,MTTNNu*MTTNNu);
-FOR k := 1:MTTNNu DO
-  BEGIN
-  uk := MTTu(k,1);	
-  FOR j := 1:MTTNNu DO
-    BEGIN
-    FOR i := 1:MTTNyy DO
-      BEGIN
-      jk := j+(k-1)*MTTNu;
-      MTTO_uu(i,jk) := df(MTTO_u(i,j), uk);
-      END;
-    END;
-  END;
-
-%Create O_ux - derivative of O_u wrt x 
-%This is a multi-dimensional matrix kth elements stacked sideways.
-Matrix MTTO_ux(MTTNyy,MTTNu*MTTNx);
-FOR k := 1:MTTNx DO
-  BEGIN
-  xk := MTTx(k,1);	
-  FOR j := 1:MTTNu DO
-    BEGIN
-    FOR i := 1:MTTNyy DO
-      BEGIN
-      jk := j+(k-1)*MTTNu;
-      MTTO_ux(i,jk) := df(MTTO_u(i,j), xk);
-      END;
-    END;
-  END;
+%%Create O_u - derivative of YY wrt u (Assumes GPC Nu = 0)
+%MTTNNu := (MTTGPCNu+1)*MTTNu;
+%Matrix MTTO_u(MTTNyy,MTTNNu);
+%FOR j := 1:MTTNNu DO
+%  BEGIN
+%  uj := MTTu(j,1);     
+%  FOR i := 1:MTTNyy DO
+%    BEGIN
+%    MTTO_u(i,j) := df(MTTYY(i,1), uj);
+%    END;
+%  END;
 
 
+%%Create O_uu - derivative of O_u wrt u (Assumes GPC Nu = 0)
+%%This is a multi-dimensional matrix kth elements stacked sideways.
+%Matrix MTTO_uu(MTTNyy,MTTNNu*MTTNNu);
+%FOR k := 1:MTTNNu DO
+%  BEGIN
+%  uk := MTTu(k,1);     
+%  FOR j := 1:MTTNNu DO
+%    BEGIN
+%    FOR i := 1:MTTNyy DO
+%      BEGIN
+%      jk := j+(k-1)*MTTNu;
+%      MTTO_uu(i,jk) := df(MTTO_u(i,j), uk);
+%      END;
+%    END;
+%  END;
+
+%%Create O_ux - derivative of O_u wrt x 
+%%This is a multi-dimensional matrix kth elements stacked sideways.
+%Matrix MTTO_ux(MTTNyy,MTTNu*MTTNx);
+%FOR k := 1:MTTNx DO
+%  BEGIN
+%  xk := MTTx(k,1);     
+%  FOR j := 1:MTTNu DO
+%    BEGIN
+%    FOR i := 1:MTTNyy DO
+%      BEGIN
+%      jk := j+(k-1)*MTTNu;
+%      MTTO_ux(i,jk) := df(MTTO_u(i,j), xk);
+%      END;
+%    END;
+%  END;
+
+
+
+mtt_matrix := MTTYY$
+mtt_matrix_n := MTTNy*MTTGPCNy;
+mtt_matrix_m := 1;
+mtt_matrix_name := "MTTYY"$
 
 %%Create the _obs.r file
 OUT "$1_obs.r";
 
-MTTYY := MTTYY;
-MTTO_x := MTTO_x;
-MTTO_u := MTTO_u;
-MTTO_uu := MTTO_uu;
-MTTO_ux := MTTO_ux;
+reduce_matrix();
+
+%MTTO_x := MTTO_x;
+%MTTO_u := MTTO_u;
+%MTTO_uu := MTTO_uu;
+%MTTO_ux := MTTO_ux;
 
 write ";END;";
 

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.156  1998/06/26 14:19:43  peterg
+## Copy hidden files (eg .octaverc) in tidy mode
+##
 ## Revision 1.155  1998/06/24 07:43:42  peterg
 ## Version 2.91 -- includes implicit integration (octave)
 ##
@@ -947,58 +950,6 @@ if [ "$3" = "vc" ]; then
   esac
 fi
 
-# Tidy mode - operate in the directory MTT-work
-if [ "$tidy" = "tidy" ]; then
-   mkdir -p MTT_work
-   cp -u -p  Makefile *.* .* MTT_work 2>/dev/null
-   cd MTT_work
-   
-   if [ -z "$directory" ]; then
-     Directory=''
-   else
-     Directory=$directory/MTT_work
-   fi
-
-     mtt -u -q  $mtt_switches -S "$Directory"  $1 $2 $3 $4
-
-   if [ "$3" != "view" ]; then
-    if [ "$3" != "hview" ]; then
-    
-
-     # echo Copying " " $1_$2.$3
-	cp -u -p $1_$2.$3 ..
-    fi
-  fi
-
-   # Remove the MTT_work directory if very tidy
-   if [ "$verytidy" = "verytidy" ]; then
-    echo Removing all working files
-    rm -rf ../MTT_work
-  fi
-exit
-fi 
-
-
-
-# Save up the argument list in a file; but only if argument has changed
-ARGS=$4; _ARGS=-$4; __ARGS=`echo $_ARGS | tr ',' '-'`
-
-#DIFF doesn't like empty files - so put a blank if empty
-if [ -z "$ARGS" ]; then
-  ARGS=' ';
-  _ARGS='';
-fi
-
-cat > $1_args.new <<EOF
-$ARGS
-EOF
-
-DIFF=`diff -bq $1_args.m $1_args.new 2>/dev/null`
-
-if [ -n "$DIFF" ]; then
-  mv $1_args.new $1_args.m
-fi
-
 # Classify the representation - needed for conversion route to postscript
 PLOTTYPE='single';
 case $2 in
@@ -1055,6 +1006,62 @@ case $2 in
 	*)
 		REPTYPE='tex' ;;
 esac
+
+# Save up the argument list in a file; but only if argument has changed
+ARGS=$4; _ARGS=-$4; __ARGS=`echo $_ARGS | tr ',' '-'`
+
+#DIFF doesn't like empty files - so put a blank if empty
+if [ -z "$ARGS" ]; then
+  ARGS=' ';
+  _ARGS='';
+fi
+
+cat > $1_args.new <<EOF
+$ARGS
+EOF
+
+DIFF=`diff -bq $1_args.m $1_args.new 2>/dev/null`
+
+if [ -n "$DIFF" ]; then
+  mv $1_args.new $1_args.m
+fi
+
+# Tidy mode - operate in the directory MTT-work
+if [ "$tidy" = "tidy" ]; then
+   mkdir -p MTT_work
+   cp -u -p  Makefile *.* .* MTT_work 2>/dev/null
+   cd MTT_work
+   
+   if [ -z "$directory" ]; then
+     Directory=''
+   else
+     Directory=$directory/MTT_work
+   fi
+
+     mtt -u -q  $mtt_switches -S "$Directory"  $1 $2 $3 $4
+
+   if [ "$3" != "view" ]; then
+    if [ "$3" != "hview" ]; then
+      echo Copying  $1_$2.$3
+      cp -u -p $1_$2.$3 ..
+
+      if [ "$PLOTTYPE" = "multiple" ]; then
+        echo Copying  $1_$2$__ARGS.ps
+        cp  $1_$2$__ARGS.ps ..
+      fi
+
+    fi
+  fi
+
+   # Remove the MTT_work directory if very tidy
+   if [ "$verytidy" = "verytidy" ]; then
+    echo Removing all working files
+    rm -rf ../MTT_work
+  fi
+exit
+fi 
+
+
 
 
 

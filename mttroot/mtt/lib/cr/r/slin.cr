@@ -40,5 +40,32 @@ LET slin(gain_causality, gain, sgain, other_causality, 2,
          = lin(gain_causality, gain, other_causality, 1, 
                sinput, causality, 1);
          
+
+%% This is the version to go with sEMTF
+%% It is the CR passed to the AE3 components
+
+%DESCRIPTION four port component - effort i/o
+FOR ALL gain, input, junk, m_input, dm_input
+LET slin(gain, effort, 2, 
+	input, effort, 1,
+	junk, flow, 2,
+	m_input, effort, 3,
+        dm_input,effort, 4)
+	 = gain*dm_input*input;
+
+%DESCRIPTION four port component - flow i/o
+FOR ALL gain, input, junk, m_input, dm_input
+LET slin(gain, flow, 2, 
+	input, flow, 1,
+	junk, effort, 2,
+	m_input, effort, 3,
+        dm_input,effort, 4)
+	 = gain*dm_input*input;
+
 END;;
+
+
+
+
+
 

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1996/08/08 18:06:55  peter
+## Unified naming scheme.
+##
 ## Revision 1.2  1996/08/05 11:25:00  peter
 ## Removed bonds argument from abg2cbg.
 ## Removed call to $1_abg.
@@ -87,7 +90,7 @@ rm -f mtt_info.txt
 echo Creating $1_cbg.m
 
 # Use matrix manipulation to accomplish the transformation
- $MATRIX  >abg2cbg_m.log  2>>abg2cbg_m.log << EOF
+$MATRIX  >abg2cbg_m.log  2>>abg2cbg_m.log << EOF
 
   infofile= '$infofile';
 

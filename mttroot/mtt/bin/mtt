@@ -15,6 +15,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.291  2000/12/27 14:50:40  peterg
+## This is the first CVS version (4.9).
+## Commented out code now deleted
+##
 ## Revision 1.290  2000/12/05 09:59:37  peterg
 ## Generates $1_cr.h - allows inclusion of c functions for crs
 ##
@@ -333,7 +337,6 @@
 ##
 ## Revision 1.191  1998/09/02 12:05:39  peterg
 ## Added INPUT to simpar
-##
 ## Revision 1.190  1998/09/02 11:48:51  peterg
 ## VERSION 3.2 (Swansea)
 ## abg data structure now uses explicti port and subsystem lists so that
@@ -2019,13 +2022,14 @@ endif
 $1_state.txt : FORCE
 	mtt -q $1 struc txt
 	mtt -q $1 sympar txt
+	mtt -q $1 def r
 ifeq ($target,$1_state.txt)
 	mtt_update $1 state update
 else
 	mtt_update $1 state
 endif
 
-#SUMMARY state	numerical state declaration  -- default (txt)
+#SUMMARY input	numerical state declaration  -- default (txt)
 $1_input.txt : FORCE
 	mtt -q $1 struc txt
 	mtt -q $1 sympar txt

@@ -11,6 +11,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% $Id$
 %% $Log$
+%% Revision 1.2  1998/02/25 22:11:28  peterg
+%% Added big matrix version
+%%
 %% Revision 1.1  1998/01/22 09:59:36  peterg
 %% Initial revision
 %%
@@ -52,7 +55,7 @@ ELSE  %% write out the elements one-by-one.
           IF MTT_element NEQ 0 THEN
           BEGIN
             write "\begin{equation}";
-            write MTT_Matrix_name, "_", Row, ",", Col, " = {", MTT_element, "}\cr";
+            write MTT_Matrix_name, "_", Row, Col, " = {", MTT_element, "}\cr";
             write "\end{equation}";
           END;
         END;

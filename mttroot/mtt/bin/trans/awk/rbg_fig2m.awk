@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.14  1996/12/21 19:47:53  peterg
+## Changed \* to \\*
+##
 ## Revision 1.13  1996/12/21 19:47:23  peterg
 ## Put back under VC
 ##
@@ -59,24 +62,15 @@
 # It interprets the picture as: bonds, arrows and components
 # as follows:
 #
-# Bonds are firm (not dashed etc) polylines with 2 line segments - 
+# Bonds are firm (not dashed etc) polylines with n line segments - 
 #  fig represents this by  a firstline record where
 #    field 1 = 2 (always 2)
 #    field 2 = 1 (polyline)
 #    field 3 = 0 (style is a firm line)
 #    field 14 = 0 (no forward arrow)
 #    field 15 = 0 (backward arrow) 
-#  a data field starting with a tab followed by 3 (x,y) cordinates
-#
-# Arrows are polylines with 1 line segment and an arrow 
-#  fig represents this by  a firstline record where
-#    field 1 = 2 (always 2)
-#    field 2 = 1 (polyline)
-#    field 3 = 0 (style is a firm line)
-#    field 14 = 1 for a forward arrow  
-#    field 15 = 1 for a backward arrow 
-#  an additional data files
-#  a data field starting with a tab followed by 2(x,y) cordinates
+#    field 16 = Number of point in line (points=segments+1)
+#  a data field starting with a tab followed by  points (x,y) cordinates
 #
 #
 # Strokes are polylines with 1 line segment and and no arrow 
@@ -86,6 +80,17 @@
 #    field 3 = 0 (style is a firm line)
 #    field 14 = 0 (no forward arrow)
 #    field 15 = 0 (backward arrow) 
+#    field 16 = Number of point in line =2
+#  a data field starting with a tab followed by 2 (x,y) cordinates
+#
+# Arrows are polylines with 1 line segment and an arrow 
+#  fig represents this by  a firstline record where
+#    field 1 = 2 (always 2)
+#    field 2 = 1 (polyline)
+#    field 3 = 0 (style is a firm line)
+#    field 14 = 1 for a forward arrow  
+#    field 15 = 1 for a backward arrow 
+#  an additional data files
 #  a data field starting with a tab followed by 2(x,y) cordinates
 #
 # Components appear in two files -- the fig file and the lbl file
@@ -259,20 +264,46 @@ function process_text() {
 
 }
 
+#Euclidean length of a line between (first_x,first_y) and (second_x,second_y)
+function line_length(first_x,first_y,second_x,second_y) {
+  x_length = second_x-first_x;
+  y_length = second_y-first_y;
+  return sqrt( x_length*x_length +  y_length*y_length );
+}
+
+# Returns 1 if (bond) arrow at beginning of field or 2 if arrow at end of field
+function arrow_end(first_x,first_y,second_x,second_y,penultimate_x,penultimate_y,last_x,last_y) {
+  if ( line_length(first_x,first_y,second_x,second_y) < line_length(first_x,first_y,second_x,second_y) ) {
+  return 1
+  }
+  else {
+  return 2
+  }
+}
+
 function process_bond() {
 
   arg_count++;
   if ( (arg_count-arrow)==1 ) 
     {
 
-#Save up bond coords
-      if (NF == (2*bond_coords+1) ) {
+#Save up bond coords - no arrow and more segments than a stroke has.
+# Allows for bent bonds - but just write out the relevant coordinates
+      if ( (!arrow)&& (NF>2*stroke_coords+1) ) {
 	i_bond++;
+        a_end = arrow_end($2,$3,$4,$5,$(NF-3),$(NF-2),$(NF-1),$NF);
+        if (a_end==1) {
 	bonds[i_bond] = sprintf("%s %s %s %s %s %s", \
-				$2, $3, $4, $5, $6, $7);
+				$2, $3, $4, $5, $(NF-1), $(NF));
+}
+else {
+	bonds[i_bond] = sprintf("%s %s %s %s %s %s", \
+				$2, $3, $(NF-3),$(NF-2),$(NF-1),$NF);
+}
+
       }
       
-#Save up arrow coords
+#Save up arrow coords 
       if ( (arrow)&&(NF==(2*arrow_coords+1)) ) {
 	i_arrow++;
 	arrows[i_arrow] = sprintf("%s %s %s %s",  $2, $3, $4, $5);

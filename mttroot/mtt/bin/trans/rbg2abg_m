@@ -11,6 +11,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1996/08/24 14:33:07  peter
+## Error handling included.
+##
 ## Revision 1.1  1996/08/05 12:22:16  peter
 ## Initial revision
 ##
@@ -68,7 +71,7 @@ rm -f $1_abg.m
 echo Creating $1_abg.m
 
 # Use matrix manipulation to accomplish the transformation
-$MATRIX > rbg2abg_m.log  2>mtt_err << EOF
+$MATRIX > rbg2abg_m.log  2>mtt_error << EOF
 
   infofile = 'mtt_info.txt';
   %Convert from the fig version of the bonds to a structured version

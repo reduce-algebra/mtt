@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.78  1997/05/19  13:17:50  peterg
+# Explicit inclusion of mtt.sty in .doc files -- latex2html prefers this
+#
 # Revision 1.77  1997/05/19  11:29:37  peterg
 # Added desc.tex and abg.tex descriptions.
 #
@@ -290,8 +293,11 @@ dae_is_ode=0
 # By default, don't look for BG switches
 switches=0
 
+mtt_switches='';
+
 #Look for a command line argument
 while [ -n "`echo $1 | grep '-'`" ]; do
+  mtt_switches="$mtt_switches $1"
   case $1 in
 	-q )
 		quiet=quiet ;;
@@ -308,6 +314,7 @@ while [ -n "`echo $1 | grep '-'`" ]; do
   esac
   shift
 done
+
 
 #Print header if not in quiet (-q) mode.
 if [ "$quiet" != "quiet" ]; then
@@ -387,17 +394,17 @@ fi
 if [ "$1" = "clean" ] && [ "$2" = "" ]; then
   echo 'Removing all generated files for all systems'
   rm -f *.log  mtt_info.txt warning.txt
-  rm -f *_abg.m *_abg.ps *_args.* *_cr.r *_cr.txt
+  rm -f *_abg.m *_abg.ps *_args.* *_cr.r *_cr.txt *_abg.tex
   rm -f *_sabg.fig *_sabg.ps *_head.fig *_bnd.fig 
   rm -f *_sympar.r *_sympar.c *_sympar.h *_sympar.txt
   rm -f *_rbg.* *_cmp.* *_fig.fig *_*cbg.* *_ese.* *_def.* 
-  rm -f *_sub.sh *_type.sh
+  rm -f *_sub.* *_type.sh
   rm -f *_dae*.* *_cse.* *_ode.*
   rm -f *_obs.* *_rfe.* *_ss.*
   rm -f *_dm.* *_csm.* *_sm.* *_tf.* *_sr*.* *_ir*.* *_*fr.*
   rm -f  *_numpar.m *_numpar.c
   rm -f *_sm*.*
-  rm -f *_struc.*
+  rm -f *_struc.* 
   rm -f  *_unique_raw_list *_raw_list
   rm -f mtt_error.txt mtt_info.txt a.out 
   exit
@@ -407,11 +414,11 @@ fi
 if [ "$2" = "clean" ] && [ "$3" = "" ]; then
   echo 'Removing all generated files for system ' $1
   rm -f *.log  mtt_info.txt warning.txt
-  rm -f $1_abg.m $1_abg.ps $1_args.* $1_cr.r $1_cr.txt
+  rm -f $1_abg.m $1_abg.ps $1_args.* $1_cr.r $1_cr.txt $1_abg.tex
   rm -f $1_sabg.fig $1_sabg.ps $1_head.fig $1_bnd.fig 
   rm -f $1_sympar.r $1_sympar.c $1_sympar.h $1_sympar.txt
   rm -f $1_rbg.* $1_cmp.* $1_fig.fig $1*_*cbg.* $1*_ese.* $1_def.* 
-  rm -f $1_sub.sh $1_type.sh
+  rm -f $1_sub.* $1_type.sh
   rm -f $1_dae*.* $1_cse.* $1_ode.*  $1_obs.* $1_rfe.* $1_ss.*
   rm -f $1_dm.* $1_csm.* $1_sm.* $1_tf.* $1_sr*.* $1_ir*.* $1_*fr.*
   rm -f $1_numpar.m $1_numpar.c
@@ -1160,7 +1167,9 @@ $1_$2.doc: $1_$2.tex
 #Generic conversion of LaTeX doc to dvi
 $1_$2.dvi: $1_$2.doc
 	echo Creating $1_$2.dvi
-	latex $1_$2.doc > /dev/null; latex $1_$2.doc > /dev/null
+	latex $1_$2.doc > /dev/null
+	makeindex $1_$2.idx > /dev/null
+	latex $1_$2.doc > /dev/null
 
 
 #Create PostScript version of fig files
@@ -1187,7 +1196,11 @@ ifeq ($REPTYPE,tex)
 #Create html version of dvi file
 $1_$2.html: $1_$2.dvi $1_$2.doc
 	echo Creating $1_$2/$1_$2.html
-	latex2html $1_$2.doc
+	latex2html \
+	-contents_in_navigation \
+	-index_in_navigation \
+	-auto_navigation \
+	$1_$2.doc
 endif
 
 #Default view
@@ -1225,7 +1238,7 @@ $1_$2.tview: $1_$2.dvi
 
 #Report generation
 $1_rep.make: $1_rep.txt $1_args.m
-	rep_txt2make $1
+	rep_txt2make $1 "$mtt_switches"
 
 $1_rep.tex: $1_rep.make 
 	cat $1_rep.make | sh

@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  1998/02/16 16:09:57  peterg
+## And taken it out again!
+##
 ## Revision 1.8  1998/02/16 12:08:38  peterg
 ## Put back the matrix declaration
 ##
@@ -62,6 +65,7 @@ sys_name = ARGV[1];
 comment = "%";
 arg_delimiter = ",";
 not_an_arg = "effort flow state internal external zero 0 1";
+SS_parameter = "internal external zero 0 1";
 numeric = "[0-9-]";
 symbol_count = 0;
 symbols = "";
@@ -69,8 +73,8 @@ symbols = "";
 {
   if ( (match($1,comment)==0) && (NF>=3) ) {
 # The following line is a bad attempt to use parameters in SS fields
-# It assumes that at least one SS field is not_an_arg.
-    if (matches(not_an_arg,$3)) {
+# It assumes that at least one SS field is an SS_parameter
+    if (matches(SS_parameter,$3)) {
       args = $2
 	}
     else {

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.34  1996/11/01 13:34:35  peterg
+## -q (quiet) switch added
+##
 ## Revision 1.33  1996/11/01 12:34:45  peterg
 ## Added browser - mtt_help
 ##
@@ -137,8 +140,6 @@ fi
 
 if [ "$1" = "" ]; then
   echo 'Usage: mtt help'
-  echo '       mtt help reps'
-  echo '       mtt help comps'
   echo '       mtt info'
   echo '       mtt info topic'
   echo '       mtt manual'
@@ -162,9 +163,11 @@ if [ "$1" = "help" ]; then
   if [ "$2" = "" ]; then
     echo 'Usage: mtt help reps'
     echo '       mtt help comps'
-    echo '       mtt help reps string'
-    echo '       mtt help comps string'
-    echo '       mtt help <component name>'
+    echo '       mtt help crs'
+    echo '       mtt help reps <string>'
+    echo '       mtt help comps <string>'
+    echo '       mtt help crs <string>'
+    echo '       mtt help <component or cr name>'
   else
     mtt_help $2 $3
   fi
@@ -210,7 +213,7 @@ fi
 if [ "$1" = "clean" ] && [ "$2" = "" ]; then
   echo 'Removing all generated files for all systems'
   rm -f *.log  mtt_info.txt warning.txt
-  rm -f *_abg.m *_args.*
+  rm -f *_abg.m *_args.* *_cr.r
   rm -f *_rbg.* *_cmp.* *_fig.fig *_*cbg.* *_ese.* *_def.* *_sub.sh
   rm -f *_dae*.* *_cse.* *_ode*.* *_obs.* *_rfe.* *_ss.*
   rm -f *_dm.* *_csm.* *_sm.* *_tf.* *_sr*.* *_ir*.* *_*fr.*
@@ -223,7 +226,7 @@ fi
 if [ "$2" = "clean" ] && [ "$3" = "" ]; then
   echo 'Removing all generated files for system ' $1
   rm -f *.log  mtt_info.txt warning.txt
-  rm -f $1_abg.m $1_args.* 
+  rm -f $1_abg.m $1_args.* $1_cr.r
   rm -f $1_rbg.* $1_cmp.* $1_fig.fig $1*_*cbg.* $1*_ese.* $1_def.* $1_sub.sh
   rm -f $1_dae*.* $1_cse.* $1_ode*.* $1_obs.* $1_rfe.* $1_ss.*
   rm -f $1_dm.* $1_csm.* $1_sm.* $1_tf.* $1_sr*.* $1_ir*.* $1_*fr.*
@@ -302,9 +305,6 @@ if [ "$3" = "vc" ]; then
 	lbl )
 		VC='ok'
 		VCext='txt' ;;
-	 cr)
-		VC='ok'
-		VCext='r' ;;
 	simp )
 		VC='ok'
 		VCext='r' ;;
@@ -352,7 +352,7 @@ $1_lbl.txt:
 
 #REPRESENTATION cr	constitutive relationship description (r)
 $1_cr.r:
-	makecr $1
+	lbl2cr_txt2r $1
 
 #REPRESENTATION simp	simplification information (r)
 $1_simp.r:
@@ -439,7 +439,6 @@ $1_abg.m: $1_rbg.m $1_sub.sh
 	echo Creating subsystem abg files for system $1 ...
 	sh < $1_sub.sh
 	echo Finished creating subsystem abg files for system $1
-	echo
 	rbg2abg_m $1
 
 

@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1996/11/04 14:51:14  peterg
+## Added none to no cr list
+##
 # Revision 1.2  1996/11/02  10:22:22  peterg
 # Now ignores SS lines.
 #
@@ -64,7 +67,7 @@ END {
     split(symbols,symbol);
     printf("cat ");
     for (i = 1; i <= symbol_count; i++) {
-      printf("$MTTPATH/cr/r/%s.cr ", symbol[i]);
+      printf("$MTTPATH/lib/cr/r/%s.cr ", symbol[i]);
     }
   }
 

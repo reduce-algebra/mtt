@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1996/08/15 16:24:43  peter
+## Uses T in place of t to avoid name clash within function.
+##
 ## Revision 1.1  1996/08/15 11:56:38  peter
 ## Initial revision
 ##
@@ -25,7 +28,7 @@ rm -f ode2odesol_m.log
 
 if [ "$2" = "" ]; 
 then
-  PARAMS='T=[0:0.1:10]; x0=zeros(10,1);u=1'
+  PARAMS='T=[0:0.1:10]; x0=zeros(nx,1);'
   echo Using default parameter $PARAMS
 else
   PARAMS=$2;

@@ -7,6 +7,12 @@
 %DESCRIPTION     Name = 0 implies state=0 (open switch)
 %DESCRIPTION     Name = -1 implies state>0 (Diode)
 
+%ALIAS out	in
+%ALIAS $1	lin
+%ALIAS $1	flow,i_s
+
+
+
 %% Label file for system ISW (ISW_lbl.txt)
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -14,6 +20,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/07/26 12:57:00  peterg
+% %% Initial revision
+% %%
 % %% Revision 1.1  1997/06/03 15:26:09  peterg
 % %% Initial revision
 % %%
@@ -27,4 +36,7 @@
 
 
 % Component type I
-	MTT_SWITCH		$1	$1
+	MTT_SWITCH		lin	flow,i_s
+
+% Component type SS
+	[in]			SS	external,external

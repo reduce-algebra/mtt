@@ -17,6 +17,10 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.14  1996/12/31 16:20:42  peterg
+% %% Just write causality information at top level -- it gets a bit
+% %% voluminous if written at deeper levels.
+% %%
 % %% Revision 1.13  1996/12/31 11:49:09  peterg
 % %% Don't copy port bond causality if already set -- allows subsystem
 % %% causality to be preset directely on named SS.
@@ -134,8 +138,8 @@ if at_top_level==0
 
   % Check compatibility - if ok copy port bonds to the internal bonds list.
   if n_port_bonds~=n_ports
-    mtt_info(sprintf('%1.0f port bonds incompatible with %1.0f ports', ...
-	n_port_bonds, n_ports), infofile);
+    mtt_info(sprintf('%s: %1.0f port bonds incompatible with %1.0f ports', ...
+	full_name, n_port_bonds, n_ports), infofile);
   else % Copy the port bonds -- but only if not set already
     for i = 1:n_ports      % The port SSs come first
       j = abs(components(i,1)); % Get the bonds attached to the ports

@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/02/21 02:15:29  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 mtt -o -ss DieselCycle abg tex
@@ -14,13 +17,13 @@ mtt -o -ss DieselCycle ss tex
 
 mtt -o -ss DieselCycle numpar txt
 mtt -o -ss DieselCycle input txt
-mtt -o -ss DieselCycle odes h
-mtt -o -ss DieselCycle odeso ps 'DieselCycle_cycle_V'
-mtt -o -ss DieselCycle odeso ps 'DieselCycle_cycle_P'
-mtt -o -ss DieselCycle odeso ps 'DieselCycle_cycle_S'
-mtt -o -ss DieselCycle odeso ps 'DieselCycle_cycle_T'
-mtt -o -ss DieselCycle odeso ps 'DieselCycle_cycle_V:DieselCycle_cycle_P'
-mtt -o -ss DieselCycle odeso ps 'DieselCycle_cycle_S:DieselCycle_cycle_T'
+
+mtt -o -ss -c DieselCycle odeso ps 'DieselCycle_cycle_V'
+mtt -o -ss -c DieselCycle odeso ps 'DieselCycle_cycle_P'
+mtt -o -ss -c DieselCycle odeso ps 'DieselCycle_cycle_S'
+mtt -o -ss -c DieselCycle odeso ps 'DieselCycle_cycle_T'
+mtt -o -ss -c DieselCycle odeso ps 'DieselCycle_cycle_V:DieselCycle_cycle_P'
+mtt -o -ss -c DieselCycle odeso ps 'DieselCycle_cycle_S:DieselCycle_cycle_T'
 
 
 

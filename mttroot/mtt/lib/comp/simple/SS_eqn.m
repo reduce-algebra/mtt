@@ -27,6 +27,10 @@ global local_y_index
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.12  1997/08/26 07:51:30  peterg
+% %% Now counts the local input and outputs by order of appearence rather
+% %% than by port number - it therfore handles ports with bicausality correctely.
+% %%
 % %% Revision 1.11  1997/05/09 08:21:07  peterg
 % %% Explicit computation of port number -- avoids str2num
 % %%
@@ -186,7 +190,7 @@ else % Named constant
       fprintf(filenum, '%s := MTTUi%d;\n', ...
 	  varname(name, bond_number,1), zero_outputs);
     else
-      mtt_info([effort_attribute, ' not appropriate for an output '], STDerr);
+      mtt_info([flow_attribute, ' not appropriate for an output '], STDerr);
     end;
   end;
 end;

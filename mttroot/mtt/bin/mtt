@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.86  1997/06/29  19:05:51  peterg
+# Seascale changes -- mainly to new rep format.
+#
 ## Revision 1.85  1997/06/27 12:14:49  peterg
 ## Upped version to 2.4++
 ##
@@ -299,6 +302,9 @@
 ##
 ###############################################################
 
+#Check $MTTPATH has bee set
+mtt_check_var "$MTTPATH" "MTTPATH"
+
 # MTT recursion level is zero unless explicitly set
 level=0
 
@@ -377,11 +383,13 @@ fi
 
 if [ "$1" = "hinfo" ] && [$2 = ""]; then
    echo Invoking $HTMLVIEW
+   mtt_check_var "$HTMLVIEW" HTMLVIEW
    (cd $MTTPATH/doc; $HTMLVIEW ./mtt_toc.html)&
    exit
 fi
 
 if [ "$1" = "manual" ] && [$2 = ""]; then
+  mtt_check_var "$DVIVIEW" DVIVIEW
   echo Invoking $DVIVIEW
   $DVIVIEW  $MTTPATH/doc/mtt.dvi &
   exit
@@ -417,7 +425,7 @@ if [ "$1" = "clean" ] && [ "$2" = "" ]; then
   rm -f *.log  mtt_info.txt warning.txt
   rm -f *_abg.m *_abg.ps *_args.* *_cr.r *_cr.txt *_abg.tex
   rm -f *_sabg.fig *_sabg.ps *_head.fig *_bnd.fig 
-  rm -f *_sympar.r *_sympar.c *_sympar.h *_sympar.txt
+  rm -f *_sympar.r *_sympar.c *_sympar.h *_sympar.txt?
   rm -f *_rbg.* *_cmp.* *_fig.fig *_*cbg.* *_ese.* *_def.* 
   rm -f *_sub.* *_type.sh
   rm -f *_dae*.* *_cse.* *_ode.*
@@ -425,13 +433,14 @@ if [ "$1" = "clean" ] && [ "$2" = "" ]; then
   rm -f *_dm.* *_csm.* *_sm.* *_tf.* *_sr*.* *_ir*.* *_*fr.*
   rm -f  *_numpar.m *_numpar.c *_input.m *_input.c *_switch.c *_switch.txt
   rm -f *_sm*.*
-  rm -f *_struc.* 
+  rm -f *_struc.* *_sympar.txt *_sympar.c *_sympar.h *_sympar.m
   rm -f *_odes.c *_odes.dat *_odes.gdat *_odes.m *_odes.ps
   rm -f *_odeso.dat *_odeso.gdat *_odeso.m *_odeso.ps
   rm -f *_*.doc *_*.idx *_*.ind *_*.ilg *_*.dvi *_*.aux *_*.lof *_*.toc
   rm -f *_rep.tex
   rm -f  *_unique_raw_list *_raw_list
   rm -f mtt_error.txt mtt_info.txt a.out 
+  rm -fR *_rep
   exit
 fi
 
@@ -441,20 +450,21 @@ if [ "$2" = "clean" ] && [ "$3" = "" ]; then
   rm -f *.log  mtt_info.txt warning.txt
   rm -f $1_abg.m $1_abg.ps $1_args.* $1_cr.r $1_cr.txt $1_abg.tex
   rm -f $1_sabg.fig $1_sabg.ps $1_head.fig $1_bnd.fig 
-  rm -f $1_sympar.r $1_sympar.c $1_sympar.h $1_sympar.txt
+  rm -f $1_sympar.r $1_sympar.c $1_sympar.h $1_sympar.txt?
   rm -f $1_rbg.* $1_cmp.* $1_fig.fig $1*_*cbg.* $1*_ese.* $1_def.* 
   rm -f $1_sub.* $1_type.sh
   rm -f $1_dae*.* $1_cse.* $1_ode.*  $1_obs.* $1_rfe.* $1_ss.*
   rm -f $1_dm.* $1_csm.* $1_sm.* $1_tf.* $1_sr*.* $1_ir*.* $1_*fr.*
   rm -f  $1_numpar.m $1_numpar.c $1_input.m $1_input.c $1_switch.c $1_switch.txt
   rm -f $1_sm*.*
-  rm -f $1_struc.*
+  rm -f $1_struc.* $1_sympar.txt $1_sympar.c $1_sympar.h $1_sympar.m
   rm -f $1_odes.c $1_odes.dat $1_odes.gdat $1_odes.m $1_odes.ps
   rm -f $1_odeso.dat $1_odeso.gdat $1_odeso.m $1_odeso.ps
   rm -f $1_*.doc $1_*.idx $1_*.ind $1_*.ilg $1_*.dvi $1_*.aux $1_*.lof $1_*.toc
   rm -f $1_rep.tex
   rm -f $1_unique_raw_list $1_raw_list
   rm -f mtt_error.txt mtt_info.txt a.out 
+  rm -fR $1_rep
   exit
 fi
 
@@ -463,6 +473,7 @@ fi
 #SUMMARY abg	acausal bond graph (view)
 # Invoke explicit requests for modification
 if [ "$2" = "abg" ] && [ "$3" = "fig" ]; then
+  mtt_check_var "$FIG" FIG
   echo Editing $1_$2.$3
   ($FIG $1_$2.$3; cp $1_abg.fig $1_$1_abg.fig) &
   exit
@@ -597,9 +608,11 @@ if [ "$3" = "vc" ]; then
   esac
 fi
 
+#Check the principle paths
+mtt_check_vars
 
 # This is the main mtt programme
-gmake -s  -f -  $1_$2.$3 << EOF
+$MAKE -s  -f -  $1_$2.$3 << EOF
 
 # Cancel implicit rules I don't want
 %.dvi: %.tex
@@ -1084,7 +1097,7 @@ endif
 ifeq ($computation,c)
 $1_odes.m: $1_odes.c $1_ode.c $1_numpar.c $1_odes.h\
          $1_sympar.c $1_sympar.h\
-         $1_numpar.c $1_input.c
+         $1_numpar.c $1_input.c sign.c
 	echo Creating $1_odes.m
 	echo Creating $1_odeso.m
 	echo 'Compiling ...'
@@ -1287,5 +1300,6 @@ nrutil.c:
 	echo Copying nrutil.c; cp $MTTPATH/trans/c/nrutil.c .
 nrutil.h: 
 	echo Copying nrutil.h; cp $MTTPATH/trans/c/nrutil.h .
-
+sign.c:
+	echo Copying sign.c; cp $MTTPATH/trans/c/sign.c .
 EOF

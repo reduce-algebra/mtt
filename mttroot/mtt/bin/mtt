@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.285  2000/11/27 11:51:21  peterg
+## Fixed a few pdf /fig bugs
+##
 ## Revision 1.284  2000/11/27 10:33:35  peterg
 ## -pdf option now coerces ps-->pdf
 ##
@@ -1072,7 +1075,9 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 		tidy=tidy;
                 verytidy=verytidy ;;
 	-u )
-		tidy=untidy ;;
+		tidy=untidy ;
+                mtt_switches="$mtt_switches $1";
+                ;;
 	-l )
                 mtt_switches="$mtt_switches $1 $2";
 		level=$2; shift ;;
@@ -1607,8 +1612,6 @@ if [ "$lang" == "ps" ]; then
   lang=$ps
 fi
 
-## Create the make target name
-target=$1_$2.$lang
 
 # Create some strings
 Subsystem=$1$subsystem;
@@ -1622,9 +1625,13 @@ Subsystem_subs=$Subsystem"_subs"
 Subsystem_cr=$Subsystem"_cr"
 Subsystem_cbg=$Subsystem"_cbg"
 
-# Save up the argument list in a file; but only if argument has changed
-#ARGS=$4; _ARGS=-$4; __ARGS=`echo $_ARGS | tr ',' '-'`
+## Create the make target name
+target=${sys}_${rep}.${lang}
 
+## Arguments
+ARGS=$4; _ARGS=-$4; __ARGS=`echo $_ARGS | tr ',' '-'`
+
+# Save up the argument list in a file; but only if argument has changed
 #DIFF doesn't like empty files - so put a blank if empty
 #if [ -z "$ARGS" ]; then
 #  ARGS=' ';
@@ -1682,12 +1689,13 @@ if [ "$tidy" = "tidy" ]; then
 	  echo Moving $1_$2
           mv $1_$2 ..
       else
+        if [ "$PLOTTYPE" = "multiple" ]; then
+          echo Copying  $1_$2$__ARGS.$ps
+          cp  $1_$2$__ARGS.$ps ..
+        else
           echo Copying  $1$subsystem"_"$2.$lang
           cp  -p -u $1$subsystem"_"$2.$lang ..
-      fi
-      if [ "$PLOTTYPE" = "multiple" ]; then
-        echo Copying  $1_$2$__ARGS.$ps
-        cp  $1_$2$__ARGS.$ps ..
+        fi
       fi
     fi
 
@@ -1769,7 +1777,7 @@ fi
 ################################
 
 
-## echo Target is $target, Subsystem is $Subsystem, switches are $mtt_switches
+##echo Target is $target, Subsystem is $Subsystem, options are $mtt_switches
 $MAKE -S $verbose  -f  -  $target << EOF
 
 # Cancel implicit rules I don't want
@@ -1779,7 +1787,7 @@ $MAKE -S $verbose  -f  -  $target << EOF
 ## .oct files
 ifneq ($2,ode2odes)
 %.oct:  %.cc $1_def.h $1_sympar.h
-	echo Creating $1_$2.oct; mkoctfile  $< 
+	echo Creating $1_$2.oct; $MKOCTFILE  $< 
 endif
 
 ## .cc files
@@ -2245,8 +2253,9 @@ $1_cbg.fig: $1_cbg.m  $1_fig.fig $1_type.sh
 #SUMMARY struc	structure - list of inputs, outputs and states (tex)
 #SUMMARY struc*	structure - list of inputs, outputs and states (view)
 #Elementary system equations + definitions
-$Subsystem_ese.r: $1_cbg.m
+${sys}_ese.r: $1_cbg.m 
 	   cbg2ese_m2r $partition $info_switch $Subsystem; #ese_tidy $1
+
 $1_def.r: $1_ese.r
 	touch $1_def.r
 $1_struc.txt: $1_ese.r
@@ -2269,18 +2278,24 @@ $1_def.h: $1_def.m
 #SUMMARY dae*	differential-algebraic equations (view)
 #SUMMARY dae	differential-algebraic equations (ps)
 #Differential-algebraic equations
-$Subsystem_rdae.r: $Subsystem_ese.r $Subsystem_def.r
-	ese2rdae_r $partition $Subsystem; tidy $1_rdae.r
-$1_dae.r: $Subsystem_rdae.r $Subsystem_def.r $Subsystem_subs.r $Subsystem_cr.r
+
+${sys}_rdae.r: ${sys}_ese.r ${sys}_def.r
 ifneq ($partition,)
 	echo Doing subsystems
-	mtt_make_subsystems $1 dae r
+	mtt_make_subsystems  ${sys} rdae r
+endif
+	ese2rdae_r ${Subsystem}; tidy ${Subsystem}_rdae.r
+
+${sys}_dae.r: ${Subsystem}_rdae.r ${Subsystem}_def.r ${Subsystem}_subs.r ${Subsystem}_cr.r
+ifneq ($partition,)
+	echo Doing subsystems
+	mtt_make_subsystems  ${sys} dae r
 endif
 ifeq ($rdae_is_dae,1)
 	echo Copying $1_rdae.r to $1_dae.r
 	cp $1_rdae.r  $1_dae.r
 else
-	rdae2dae_r $partition $Subsystem; tidy $Subsystem_dae.r
+	rdae2dae_r ${Subsystem}; tidy ${Subsystem}_dae.r
 endif
 
 $1_dae.m: $1_def.r $1_dae.r  $1_sympars.txt
@@ -2297,8 +2312,12 @@ $1_dae.tex: $1_dae.r $1_simp.r
 #SUMMARY cse*	constrained-state equations (view)
 #SUMMARY cse	constrained-state equations (ps)
 #Constrained-state equations
-$1_cse.r: $1_dae.r $1_def.r $1_sympar.r $1_subs.r 
-	dae2cse_r $Solve $1; tidy $1_cse.r $1_subs.r
+${sys}_cse.r: ${Subsystem}_dae.r ${Subsystem}_dae.r ${Subsystem}_def.r ${Subsystem}_subs.r 
+ifneq ($partition,)
+	echo Doing subsystems
+	mtt_make_subsystems  ${sys} cse r
+endif
+	dae2cse_r $Solve ${Subsystem}; tidy ${Subsystem}_cse.r #$1_subs.r
 $1_csex.r: $1_cse.r
 	touch $1_csex.r
 $1_cseo.r: $1_cse.r
@@ -2306,8 +2325,13 @@ $1_cseo.r: $1_cse.r
 
 #$1_cse.m: $1_def.r $1_cse.r $1_sympar.r  $1_subs.r 
 #	cse_r2m $1; matlab_tidy $1_cse.m
-$1_cse.m: $1_def.r $1_cse.r $1_sympars.txt
-	mtt_r2m $optimise -parameters  $1 cse;#  matlab_tidy $1_cse.m; matlab_tidy $1_cseo.m; 
+${sys}_cse.m: ${Subsystem}_def.r ${Subsystem}_cse.r ${Subsystem}_sympar.txt
+ifneq ($partition,)
+	echo Doing subsystems
+	## mtt_cp_subrep ${sys} sympar txt
+	mtt_make_subsystems  ${sys} cse m
+endif
+	mtt_r2m  -parameters  ${Subsystem} cse;#  matlab_tidy $1_cse.m; matlab_tidy $1_cseo.m; 
 $1_csex.m: $1_def.r $1_csex.r $1_sympars.txt
 	mtt_r2m $1 csex
 $1_cseo.m: $1_def.r $1_cseo.r $1_sympars.txt
@@ -2894,17 +2918,30 @@ $1_odess.dat: $1_odess.dat2 $1_def.r
 
 #Generic conversion of data files from dat to (gplot) gdat format 
 $1_$2.gdat: $1_$2.dat $1_struc.txt  $1_args.m
-	dat2gdat $1 $2 "$4" "$NyquistStyle"
+	dat2gdat $1 $2 "$ARGS" "$NyquistStyle"
 
-
-ifeq ($REPTYPE,data)
 ## Conversion of gdat to fig files
+ifeq ($REPTYPE,data)
 $1_$2.fig: $1_$2.gdat
-	gdat2fig $1_$2 "$ARGS"
+	gdat2fig $1_$2
+
+ifneq ($ARGS,) ## Multiple plots
+	echo Creating $1_$2$__ARGS.fig
+	mv $1_$2.fig $1_$2$__ARGS.fig
+	rm -f $1_$2.gdat
+endif
+
 ## Conversion of gdat fig files to ps/pdf
+ifeq ($ARGS,) # single plot
 $1_$2.$ps : $1_$2.fig
 	echo Creating $1_$2.$ps
 	fig2dev -L$eps $1_$2.fig > $1_$2.$ps
+else ## Multiple plots
+$1_$2.$ps : $1_$2.fig
+	echo Creating $1_$2$__ARGS.$ps
+	fig2dev -L$eps $1_$2$__ARGS.fig > $1_$2$__ARGS.$ps
+endif
+
 endif
 
 
@@ -2965,8 +3002,13 @@ endif
 
 ifeq ($REPTYPE,data)
 $1_$2.view: $1_$2.$ps
+ifeq ($ARGS,) # single plot
 	echo Creating view of $1_$2 - $ps file
 	$psview $1_$2.$ps&
+else
+	echo Creating view of $1_$2$__ARGS - $ps file
+	$psview $1_$2$__ARGS.$ps&
+endif
 endif
 
 ifeq ($REPTYPE,tex)

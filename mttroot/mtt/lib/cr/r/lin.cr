@@ -16,6 +16,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.1  2000/12/28 09:19:07  peterg
+% % put under RCS
+% %
 % % Revision 1.3  1998/07/04 10:47:04  peterg
 % % back under RCS
 % %
@@ -31,16 +34,16 @@
 % e = Gain*f (if gain_causality = flow) 
 %           f = Gain*e (if gain_causality = effort)
 OPERATOR lin;
-FOR ALL gain_causality, gain, causality, input, other_causality
+FOR ALL comp_type,  gain_causality, gain, causality, input, other_causality
 SUCH THAT causality = gain_causality
-LET lin(gain_causality, gain, other_causality, 1, input, causality, 1)
+LET lin(comp_type,gain_causality, gain, other_causality, 1, input, causality, 1)
          = gain*input;
 
 %Linear CR: e = (1/Gain)*f (if gain_causality = flow) 
 %           f = (1/Gain)*e (if gain_causality = effort)
-FOR ALL gain_causality, gain, causality, input, other_causality
+FOR ALL comp_type,  gain_causality, gain, causality, input, other_causality
 SUCH THAT causality NEQ gain_causality
-LET lin(gain_causality, gain, other_causality, 1, input, causality, 1)
+LET lin(comp_type,gain_causality, gain, other_causality, 1, input, causality, 1)
          = input/gain;
 
 %DESCRIPTION    two port components: AE, AF
@@ -48,16 +51,16 @@ LET lin(gain_causality, gain, other_causality, 1, input, causality, 1)
 % Output = gain * input
 
 % Unicausal form
-FOR ALL gain, input, causality
-LET lin(gain, causality, 2, input, causality, 1) = gain*input;
+FOR ALL comp_type,  gain, input, causality
+LET lin(comp_type,gain, causality, 2, input, causality, 1) = gain*input;
 
 %Bicausal form
-FOR ALL gain, output, causality
-LET lin(gain, causality, 1, output, causality, 2) = output/gain;
+FOR ALL comp_type,  gain, output, causality
+LET lin(comp_type,gain, causality, 1, output, causality, 2) = output/gain;
 
 %DESCRIPTION   two port component: TF
 % Linear Constitutive Relationship for TF
-FOR ALL gain_causality, gain, causality, outport, input, same_causality, inport
+FOR ALL comp_type,  gain_causality, gain, causality, outport, input, same_causality, inport
 
 SUCH THAT 
        ( causality = same_causality ) 
@@ -69,11 +72,11 @@ SUCH THAT
        OR
        ( (causality NEQ gain_causality) AND (outport = 1) )
        )
-LET lin(gain_causality, gain, causality, outport, 
+LET lin(comp_type,gain_causality, gain, causality, outport, 
           input, same_causality, inport)
         = gain*input;
 
-FOR ALL gain_causality, gain, causality, outport, 
+FOR ALL comp_type,  gain_causality, gain, causality, outport, 
         input, same_causality, inport
 SUCH THAT 
        ( causality = same_causality ) 
@@ -85,7 +88,7 @@ SUCH THAT
        OR
        ( (causality = gain_causality) AND (outport = 1) )
        )
-LET lin(gain_causality, gain, causality, outport, 
+LET lin(comp_type,gain_causality, gain, causality, outport, 
          input, same_causality, inport)
         = input/gain;
 
@@ -95,7 +98,7 @@ LET lin(gain_causality, gain, causality, outport,
 %DESCRIPTION    two port component: GY
 % Linear Constitutive Relationship for GY
 
-FOR ALL gain, input, causality, gain_causality, other_causality, 
+FOR ALL comp_type,  gain, input, causality, gain_causality, other_causality, 
         outport, inport
 SUCH THAT 
         (causality NEQ other_causality) 
@@ -107,11 +110,11 @@ SUCH THAT
         OR
         ( (causality NEQ gain_causality) AND (outport = 1) )
         )
-LET lin(gain_causality, gain, other_causality, outport, 
+LET lin(comp_type,gain_causality, gain, other_causality, outport, 
         input, causality, inport)
          = input/gain;
 
-FOR ALL gain, input, causality, gain_causality, other_causality, 
+FOR ALL comp_type,  gain, input, causality, gain_causality, other_causality, 
         outport, inport
 SUCH THAT 
         (causality NEQ other_causality) 
@@ -123,7 +126,7 @@ SUCH THAT
         OR
         ( (causality = gain_causality) AND (outport = 1) )
         )
-LET lin(gain_causality, gain, other_causality, outport, 
+LET lin(comp_type,gain_causality, gain, other_causality, outport, 
         input, causality, inport)
          = gain*input;
 
@@ -133,34 +136,34 @@ LET lin(gain_causality, gain, other_causality, outport,
 % Flow modulation multiplies effort on port 1 (or divides flow)
 
 % The 4 possibilities follow...
-FOR ALL gain_causality, gain, out_causality, input, in_causality,
+FOR ALL comp_type,  gain_causality, gain, out_causality, input, in_causality,
         mod_input
 SUCH THAT (gain_causality=in_causality) AND (out_causality=flow)
-LET lin(gain_causality, gain, out_causality, 1, 
+LET lin(comp_type,gain_causality, gain, out_causality, 1, 
                 input, in_causality, 1,
                 mod_input, flow, 2)
          = input*gain*mod_input;
 
-FOR ALL gain_causality, gain, out_causality, input, in_causality,
+FOR ALL comp_type,  gain_causality, gain, out_causality, input, in_causality,
         mod_input
 SUCH THAT (gain_causality=in_causality) AND (out_causality=effort)
-LET lin(gain_causality, gain, out_causality, 1, 
+LET lin(comp_type,gain_causality, gain, out_causality, 1, 
                 input, in_causality, 1,
                 mod_input, flow, 2)
          = input*gain/mod_input;
 
-FOR ALL gain_causality, gain, out_causality, input, in_causality,
+FOR ALL comp_type,  gain_causality, gain, out_causality, input, in_causality,
         mod_input
 SUCH THAT (gain_causality NEQ in_causality) AND (out_causality=flow)
-LET lin(gain_causality, gain, out_causality, 1, 
+LET lin(comp_type,gain_causality, gain, out_causality, 1, 
                 input, in_causality, 1,
                 mod_input, flow, 2)
          = input*mod_input/gain;
 
-FOR ALL gain_causality, gain, out_causality, input, in_causality,
+FOR ALL comp_type,  gain_causality, gain, out_causality, input, in_causality,
         mod_input
 SUCH THAT (gain_causality NEQ in_causality) AND (out_causality=effort)
-LET lin(gain_causality, gain, out_causality, 1, 
+LET lin(comp_type,gain_causality, gain, out_causality, 1, 
                 input, in_causality, 1,
                 mod_input, flow, 2)
          = input/(gain*mod_input);
@@ -169,55 +172,55 @@ LET lin(gain_causality, gain, out_causality, 1,
 % Deduces the flow on port 2.
 
 % The 2 possibilities follow...
-FOR ALL gain,  e_input, f_input
-LET lin(effort, gain, flow, 2, 
+FOR ALL comp_type,  gain,  e_input, f_input
+LET lin(comp_type,effort, gain, flow, 2, 
                 e_input, effort, 1,
                 f_input, flow, 1)
          = (f_input/e_input)/gain;
 
 %EMTF component - modulation only
 % Linear Constitutive Relationship for EMTF
-FOR ALL gain_causality, gain, causality, outport, input, same_causality, inport
+FOR ALL comp_type,  gain_causality, gain, causality, outport, input, same_causality, inport
 SUCH THAT 
        ( (causality = gain_causality) AND (outport = 2) )
        OR
        ( (causality NEQ gain_causality) AND (outport = 1) )
-LET lin(gain_causality, causality, outport, 
+LET lin(comp_type,gain_causality, causality, outport, 
           input, same_causality, inport,
 	  gain, effort, 3)
         = gain*input;
 
-FOR ALL gain_causality, gain, causality, outport, 
+FOR ALL comp_type,  gain_causality, gain, causality, outport, 
         input, same_causality, inport
 SUCH THAT 
        ( (causality NEQ gain_causality) AND (outport = 2) )
        OR
        ( (causality = gain_causality) AND (outport = 1) )
-LET lin(gain_causality, causality, outport, 
+LET lin(comp_type,gain_causality, causality, outport, 
          input, same_causality, inport,
 	  gain, effort, 3)
         = input/gain;
 
 %EMTF component - modulation and gain
 % Linear Constitutive Relationship for EMTF
-FOR ALL gain_causality, gain, causality, outport, input,
+FOR ALL comp_type,  gain_causality, gain, causality, outport, input,
 same_causality, inport, modulation
 SUCH THAT 
        ( (causality = gain_causality) AND (outport = 2) )
        OR
        ( (causality NEQ gain_causality) AND (outport = 1) )
-LET lin(gain_causality, gain, causality, outport, 
+LET lin(comp_type,gain_causality, gain, causality, outport, 
           input, same_causality, inport,
 	  modulation, effort, 3)
         = gain*modulation*input;
 
-FOR ALL gain_causality, gain, causality, outport, 
+FOR ALL comp_type,  gain_causality, gain, causality, outport, 
         input, same_causality, inport, modulation
 SUCH THAT 
        ( (causality NEQ gain_causality) AND (outport = 2) )
        OR
        ( (causality = gain_causality) AND (outport = 1) )
-LET lin(gain_causality, gain, causality, outport, 
+LET lin(comp_type,gain_causality, gain, causality, outport, 
          input, same_causality, inport,
 	  modulation, effort, 3)
         = input/(gain*modulation);

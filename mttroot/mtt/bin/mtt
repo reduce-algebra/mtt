@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.354  2002/06/10 10:43:19  gawthrop
+## ode2odes now prerequisite for sim.m and ssim.m
+##
 ## Revision 1.353  2002/05/28 18:08:38  geraint
 ## Fixed [ 547294 ] CRs are not sought from MTT_CRS.
 ##
@@ -2358,7 +2361,7 @@ $1_cr.r: $1_cr.txt
 #SUMMARY cr	constitutive relationship header (c)
 $1_cr.h: 
 	echo Creating $1_cr.h
-	echo "// CR headers for system $1" > $1_cr.h
+	echo "/* CR headers for system $1 */" > $1_cr.h
 
 # Cheat a bit and use the top level cr file for the subsystem as well
 ifneq ($sub,)

@@ -38,6 +38,7 @@ all: $(SYS)_standalone.$(LANG)
 
 $(SYS)_standalone.exe: $(SYS)_ode2odes.cc $(SYS)_def.h $(SYS)_sympar.h
 	cp $(MTT_LIB)/cc/*.cc .
+	echo Creating $(SYS)_standalone.exe
 	$(CXX) *.cc -o $@ $(CXXFLAGS) $(INCLUDES) $(LIBOCTAVE) $(LIBKPATHSEA) $(LIBREADLINE) $(LIBBLAS) $(LIBF2C) $(LIBRARIES)
 
 .PHONY: $(SYS)_standalone.clean

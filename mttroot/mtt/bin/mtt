@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.219  1999/12/14 00:36:50  peterg
+## Changed $source to $stdin and added to mtt_m2p arg list
+##
 ## Revision 1.218  1999/12/03 00:04:50  peterg
 ## Version to eric.
 ## -stdin switch added
@@ -2512,10 +2515,10 @@ $1_$2.pdf: $1_$2.ps
 $1_rep.make: $1_rep.txt
 	rep_txt2make $1 "$mtt_switches"
 
-reps_made:
-	rep_txt2sh $1;  touch reps_made
+$1_reps_made:
+	rep_txt2sh $1;  touch $1_reps_made
 
-$1_rep.tex: $1_rep.txt reps_made
+$1_rep.tex: $1_rep.txt $1_reps_made
 	rep_txt2tex $1 "$documenttype" "$directory";
 
 #SUMMARY abg Acausal bond graph report (tex)

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.278  2000/11/07 16:39:21  peterg
+## *** empty log message ***
+##
 ## Revision 1.277  2000/10/17 09:54:07  peterg
 ## logic rep sorted out
 ##
@@ -1573,6 +1576,13 @@ if [ "$tidy" = "tidy" ]; then
      cp $MTT_LIB/octave/.octaverc .
    fi
 
+   if [ -f "useful-functions.hh" ]; then
+     touch useful-functions.hh
+   else
+     echo Copying useful-functions.hh
+     cp $MTT_CC/include/useful-functions.hh .
+   fi
+
    if [ -z "$directory" ]; then
      Directory=''
    else
@@ -1702,18 +1712,20 @@ $MAKE -S $verbose  -f  -  $target << EOF
 
 # MTT implicit rules
 ## .oct files
-%.oct:  %.cc
+%.oct:  %.cc $1_def.h $1_sympar.h
 	echo Creating $1_$2.oct; mkoctfile  $< 
 
 ## .cc files
-%.cc:  %.p
-	mtt_p2cc  $< 
+#%.cc:  %.p
+#	mtt_p2cc  $< 
+%.cc:  %.m
+	mtt_m2cc.sh  $1 $2 cat 
 
 #Suffix rules
 ## .m files
 ##.SUFFIXES : .r .m
 ##.r.m:   $1_$2.r $1.def $1.sympar
-	mtt_r2m  $1 $2 
+##	mtt_r2m  $1 $2 
 
 
 # Generates code to write reduce code
@@ -1853,6 +1865,8 @@ $1_sympar.r: $1_sympar.txt
 	sympar_txt2r $1
 $1_sympar.m: $1_sympar.txt
 	sympar_txt2m $1
+$1_sympar.h: $1_sympar.txt
+	sympar_txt2h.sh $1
 
 #SUMMARY sympar	symbolic parameters (c)
 # txt to c sympar conversion
@@ -1863,8 +1877,6 @@ $1_sympar.c: $1_sympar.txt
 # txt to tex (LaTeX) sympar conversion
 $1_sympar.tex: $1_sympar.txt
 	sympar_txt2tex $1
-
-
 
 #SUMMARY logic	Dynamic switch logic (tex)
 #SUMMARY logic	Dynamic switch logic (view)
@@ -2167,6 +2179,7 @@ $1_cbg.fig: $1_cbg.m  $1_fig.fig $1_type.sh
 #SUMMARY ese	elementary system equations (r)
 #SUMMARY def	definitions - system orders etc. (r)
 #SUMMARY def	definitions - system orders etc. (m)
+#SUMMARY def	definitions - system orders etc. (h)
 #SUMMARY struc*	structure - list of inputs, outputs and states (txt)
 #SUMMARY struc	structure - list of inputs, outputs and states (tex)
 #SUMMARY struc*	structure - list of inputs, outputs and states (view)
@@ -2185,6 +2198,8 @@ $1_struc.m: $1_struc.txt
 	struc_txt2m $1
 $1_def.m: $1_def.r
 	def_r2m $1; matlab_tidy $1_def.m;
+$1_def.h: $1_def.m
+	def_m2h.sh $1
 
 #SUMMARY rdae	raw differential-algebraic equations (r)
 #SUMMARY dae	differential-algebraic equations (r)
@@ -2277,11 +2292,11 @@ $1_ode.m: $1_def.r $1_ode.r
 $1_odeo.m: $1_def.r $1_odeo.r
 	mtt_r2m $1 odeo m
 
-$1_ode.oct: $1_def.r $1_ode.p $1_sympars.txt
-	mtt_p2oct $1 ode
+#$1_ode.oct: $1_def.r $1_ode.p $1_sympars.txt
+#	mtt_p2oct $1 ode
 
-$1_odeo.oct: $1_def.r $1_odeo.p $1_sympars.txt
-	mtt_p2oct $1 odeo
+#$1_odeo.oct: $1_def.r $1_odeo.p $1_sympars.txt
+#	mtt_p2oct $1 odeo
 
 $1_odea.m: $1_ode.m
 	touch $1_odea.m

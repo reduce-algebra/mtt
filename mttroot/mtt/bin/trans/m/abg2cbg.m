@@ -1,6 +1,6 @@
 function [port_bonds, status] = abg2cbg(system_name, ...
     system_type, full_name, ...
-    port_bonds, port_bond_direction, port_status, typefile, infofile)
+    port_bonds, port_bond_direction, port_status, typefile, infofile, errorfile)
 
 % abg2cbg - acausal to causal bg conversion
 %
@@ -17,6 +17,9 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.28  1998/07/08 09:23:42  peterg
+% %% Undid the previous change -- needs more thought.
+% %%
 % %% Revision 1.27  1998/07/03 19:03:31  peterg
 % %% Always override the causality of port bonds!
 % %%
@@ -163,14 +166,14 @@ disp('====================================');
 
 % If no such function - then there is nothing to be done.
 if exist(fun_name)~=2
-  mtt_info(['m-file ', fun_name, ' does not exist'], infofile);
+  mtt_error(['m-file ', fun_name, ' does not exist'], errorfile);
   bonds = [];
   status = [];
   return
 end;
 
 % Evaluate the system function to get the bonds and number of ports
-eval(['[bonds,components,n_ports]=', fun_name, ',']);
+eval(['[bonds,components,n_ports]=', fun_name, ';']);
 
 % Find number of bonds
 [n_bonds,columns] = size(bonds);
@@ -185,16 +188,16 @@ if n_components==0 % there is nothing to be done
   return
 end;
 
-port_bond_direction
+% port_bond_direction
 
 % Coerce the port (SS:[]) component bonds to have the same direction as
 % of the bonds in the encapsulating system -- but not at top level
 if (n_ports>0)&&(~at_top_level)
-  port_bond_index = abs(components(1:n_ports,1)) % relevant bond numbers
+  port_bond_index = abs(components(1:n_ports,1)); % relevant bond numbers
   for i=1:n_ports
     % Is the direction different?
     if (sign(components(i,1))~=port_bond_direction(i))
-      disp(sprintf("Flip port %i",i));
+      mtt_info(sprintf("Flip port %i",i),infofile);
       % Flip direction at port
       components(i,1) = - components(i,1);
       % and at the other end
@@ -223,8 +226,8 @@ if ~at_top_level
 
   % Check compatibility - if ok copy port bonds to the internal bonds list.
   if n_port_bonds~=n_ports
-  mtt_info(sprintf('%s: %1.0f port bonds incompatible with %1.0f ports', ...
-               full_name, n_port_bonds, n_ports), infofile);
+  mtt_error(sprintf('%s: %1.0f port bonds incompatible with %1.0f ports', ...
+               full_name, n_port_bonds, n_ports), errorfile);
 
   else % Copy the port bonds & status
     for j = 1:n_port_bonds
@@ -247,9 +250,10 @@ total = 2*n_bonds;
 done = sum(sum(abs(bonds)))/total*100;
 
 % Outer while loop sets preferred causality
-ci_index=1; 
+ci_index=1;
 
 while( ci_index>0)
+  ci_index
   old_done = inf;
   % Inner loop propagates causality
   while done~=old_done
@@ -260,7 +264,7 @@ while( ci_index>0)
       if status(i) ~= 0 % only do this if causality not yet complete
 
 	% Get the bonds on this component
-	comp = nozeros(components(i,:))
+	comp = nozeros(components(i,:));
 	bond_list = abs(comp);
 	direction = sign(comp)'*[1 1];
         n_bonds = length(bond_list);
@@ -315,7 +319,7 @@ while( ci_index>0)
 
 	[comp_bonds,s] = abg2cbg(name, comp_type, full_name, 
             comp_bonds, port_bond_direction, port_status, ...
-	    typefile, infofile);
+	    typefile, infofile, errorfile);
 	
 	% Create a single status from the status vector s
 	if max(abs(s)) == 0 % Causal
@@ -329,8 +333,8 @@ while( ci_index>0)
 	end;
 
       else % its a simple component -- or explicit causality defined
-	disp(['---', name, ' (', cause_name, ') ---']);
-	comp_bonds_in = comp_bonds
+	% disp(['---', name, ' (', cause_name, ') ---']);
+	% comp_bonds_in = comp_bonds;
 
 	% Convert from arrow orientated to component orientated causality
 	comp_bonds = comp_bonds.*direction;
@@ -341,11 +345,11 @@ while( ci_index>0)
         % and convert from component orientated to arrow orientated causality
         comp_bonds = comp_bonds.*direction; 
        
-       comp_bonds_out = comp_bonds
+       % comp_bonds_out = comp_bonds;
       end;
       
       % Update the full bonds list
-      bonds(bond_list,:) = comp_bonds
+      bonds(bond_list,:) = comp_bonds;
     end;
     end;
     
@@ -357,6 +361,7 @@ while( ci_index>0)
   % Set causality of a C or I which is not already set
   [ci_index,prefered] = getdynamic(status,system_type);
   if ci_index>0
+    disp('Set causality of a C or I which is not already set')
     ci_bond_index = nozeros(components(ci_index,:)); # Get all bonds
     ci_direction = sign(ci_bond_index);
     ci_bond_index = abs(ci_bond_index);
@@ -372,6 +377,10 @@ if at_top_level
   mtt_info(sprintf('Final causality of %s is %3.0f%s complete.', ...
       full_name, final_done, pc), infofile);
 
+  if final_done<=100
+	  mtt_error(sprintf("Unable to complete causality"),errorfile);
+  end;
+ 
   % List overcausal bonds
   [over_causal_bonds,n] = getindex(status,1);
   if n>0
@@ -402,8 +411,8 @@ fclose(cbgfilenum);
 
 % Return the port bonds - arrow orientated causality - and the direction 
 if ~at_top_level % Not at top level
-  j = abs(components(1:n_ports,1)) %relevant bond numbers
-  port_bonds = bonds(j,:)
+  j = abs(components(1:n_ports,1)); %relevant bond numbers
+  port_bonds = bonds(j,:);
 end;
 
 disp('====================================');

@@ -1,0 +1,52 @@
+%SUMMARY TwoLink: two-link manipulator from Section 10.5 of "Metamodelling"
+%DESCRIPTION This is a heirachical version of the 
+%DESCRIPTION example from Section 10.5 of "Metamodelling".
+%DESCRIPTION It uses two compound components: ROD and GRA
+%DESCRIPTION ROD is essentially as described in Figure 10.2
+%DESCRIPTION GRAV represents gravity by a vertical accelleration
+%DESCRIPTION as in Section 10.9 of "Metamodelling"
+
+
+%% Label (TwoLink_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %% Revision 1.2  1996/12/05  12:39:49  peterg
+% %% Documentation
+% %%
+% %% Revision 1.1  1996/12/05 12:17:15  peterg
+% %% Initial revision
+% %%
+% %% Revision 1.1  1996/11/14  10:48:42  peterg
+% %% Initial revision
+% %%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+%Rod parameters - uniform rods
+rod1	none	l_1;l_1;j_1;m_1
+rod2	none	l_2;l_2;j_2;m_2
+
+%Zero velocity sources
+v_x	internal	0
+v_y	internal	0
+
+
+%Zero force/torque sources
+F_x	0	internal
+F_a	0	internal
+F_y	0	internal
+
+
+%Torque/velocity at joints
+f_a1	external external
+f_a2	external external
+
+

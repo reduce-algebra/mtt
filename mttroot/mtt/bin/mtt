@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.176  1998/07/27 20:25:15  peterg
+## Sorted out new mtt_r2m
+##
 ## Revision 1.175  1998/07/27 18:49:09  peterg
 ## Fixed the frequency stuff
 ##
@@ -606,7 +609,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='3.0--'
+version='3.0'
 
 # MTT recursion level is zero unless explicitly set
 level=0
@@ -1413,7 +1416,7 @@ $1_state.txt:
 
 
 #SUMMARY input	numerical input declaration (m) 
-$1_input.m:  $1_input.txt $1_sympars.txt $1_ss.r
+$1_input.m:  $1_input.txt $1_sympars.txt
 	txt2m $1 input
 
 #SUMMARY state	state declaration  -- default (txt)
@@ -1622,7 +1625,7 @@ $1_ode.r: $1_dae.r
 	cp $1_dae.r  $1_ode.r
 endif
 $1_ode.m: $1_def.m $1_ode.r $1_sympar.r 
-	mtt_r2m $1 ode m
+	mtt_r2m $1 ode m; matlab_tidy $1_ode.m
 $1_odea.m: $1_ode.m
 	touch $1_odea.m
 $1_odeo.m: $1_ode.m
@@ -1652,14 +1655,17 @@ $1_ode.p : $1_def.r $1_ode.m
 	mtt_m2p $1_ode.m
 $1_odeo.p : $1_def.r $1_odeo.m
 	mtt_m2p $1_odeo.m
+$1_smx.p : $1_def.r $1_smx.m
+	mtt_m2p $1_smx.m
 $1_switch.p : $1_def.r $1_switch.m
 	mtt_m2p $1_switch.m
-$1_ode2odes.p : $1_def.r $1_simpar.p $1_numpar.p $1_state.p $1_input.p \
-                $1_ode.p $1_odeo.p  $1_switch.p $1_ode2odes.m \
-                mtt_write.p mtt_update.p sign.p
+$1_ode2odes.p : $1_ode2odes.m $1_def.r\
+                $1_simpar.p $1_numpar.p $1_state.p $1_input.p \
+                $1_ode.p $1_odeo.p  $1_switch.p $1_smx.p\
+                mtt_write.p mtt_update.p sign.p zeros.p
 	mtt_m2p $1_ode2odes.m
 
-$1_ode2odes.c: $1_ode2odes.p 
+$1_ode2odes.c: $1_ode2odes.p p2c.h
 	mtt_p2c $info_switch $1 ode2odes
 
 #SUMMARY obs	observer equations for CGPC (r)
@@ -2139,6 +2145,10 @@ mtt_write.p:
 	echo Copying mtt_write.p; cp $MTTPATH/trans/p/mtt_write.p .
 mtt_update.p: 
 	echo Copying mtt_update.p; cp $MTTPATH/trans/p/mtt_update.p .
+zeros.p: 
+	echo Copying zeros.p; cp $MTTPATH/trans/p/zeros.p .
+p2c.h: 
+	echo Copying p2c.h; cp $MTTPATH/trans/c/p2c.h .
 
 # Copy c utilities
 dsvdcmp.c: dpythag.c nrutil.c nrutil.h

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  2000/09/14 07:50:08  peterg
+## *** empty log message ***
+##
 ## Revision 1.4  1999/10/19 00:34:10  peterg
 ## *** empty log message ***
 ##
@@ -29,33 +32,63 @@
 ##
 ###############################################################
 
+#Basic paths
+dotfile="$HOME/.mtt"
+xdotfile="${dotfile}/xmtt"
+
+repfile="${xdotfile}/reps"
+exfile="${xdotfile}/examples"
+menufile=".xmtt_menu"
+
 #Look for a command line argument
 while [ -n "`echo $1 | grep '^-'`" ]; do
   case $1 in
-	--help )    echo xmtt
-	            echo xmtt -update
+	--help|-h ) echo "usage:"
+                    echo "  xmtt"
+	            echo "  xmtt --update"
+	            echo "  xmtt --example example_name"
+	            echo "  xmtt --help"
 		    exit;;
-	-update )    echo Creating representation list for mtt;
-		     mtt2reps_txt> $MTTPATH/REPS;
-		     echo Creating examples list for mtt;
-		     mtt -q help examples> $MTTPATH/EXAMPLES;;
-        -example )    examples='examples';; 
+
+	--update|-u )    echo Creating representation list for mtt;
+		         mtt2reps_txt> ${repfile};
+		         echo Creating examples list for mtt;
+		         mtt -q help examples> ${exfile};
+                         exit;;
+
+        --example|-e )   shift; example=$1;; 
 	*)
 		echo "$1 is an invalid argument - ignoring" ;;
   esac
   shift
 done
 
-if [ -n "$examples" ]; then
-    mtt -q  copy $1; 
-    cd $1; 
+if [ -n "${example}" ]; then
+    mtt -q  copy ${example}; 
+    cd ${example}; 
     xmtt
     exit
 fi
 
+## Make sure files exist
+if [ -e "${xdotfile}" ]; then
+    echo ${xdotfile} exists >/dev/null
+else 
+    echo Creating ${xdotfile}
+    mkdir --parents ${xdotfile}
+fi
+
+if [ -e "${repfile}" ]; then
+    echo ${repfile} exists >/dev/null
+else 
+    echo Creating ${repfile} and ${exfile}
+    xmtt --update
+    echo done.
+fi
+
 ## Create the menu
-mtt_make_menu > .xmtt_menu
+mtt_make_menu > ${menufile}
 
 ## Use tk shell (wish)
 name=`basename $PWD`
-wish .xmtt_menu  -name $name
+wish ${menufile} -name $name

@@ -4,7 +4,7 @@
      ##### Model Transformation Tools #####
      ######################################
 
-# Bourne shell script: cse2smx_r
+# Bourne shell script: cse2smx_lang
 # Constrained-state equation to state matrices with x vector
 # Used for implicit integration
 # Copyright (C) 2000 by Peter J. Gawthrop

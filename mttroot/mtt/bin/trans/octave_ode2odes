@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  2001/03/30 15:13:58  gawthrop
+## Rationalised simulation modes to each return mtt_data
+##
 ## Revision 1.3  2000/05/19 17:47:56  peterg
 ## Agument to state
 ##
@@ -30,7 +33,7 @@ $MATRIX  <<EOF >octave_ode2odes.log 2>mtt_error.txt
   ## Set up the simulation parameters
   par = $1_numpar; 
   x_0  =  $1_state(par);
-  simpar = $1_simpar;
+  simpar = $1_simpar
   mtt_data = $1_ode2odes(x_0,par,simpar); 
   if is_complex(mtt_data)
     mtt_error("octave_ode2odes: Simulated data is complex - something is wrong!");

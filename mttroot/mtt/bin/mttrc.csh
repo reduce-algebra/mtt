@@ -1,5 +1,5 @@
 #!/bin/csh
-## Automatically generated from bashrc on Wed May  9 09:02:08 BST 2001 - DO NOT EDIT
+## Automatically generated from bashrc on Wed Apr 24 10:24:58 BST 2002 - DO NOT EDIT
 #! /bin/sh
 
      ###################################### 
@@ -17,6 +17,17 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.25  2002/04/02 09:16:39  geraint
+## Tidied up library search paths, now assumes that system libraries are set up correctly.
+## For Debian, this means installing the following: blas-dev, fftw-dev, lapack-dev, libncurses5-dev, libkpathsea-dev, libreadline-dev
+## It may also be necessary to run /sbin/ldconfig on the relevant directories (especially Octave's).
+##
+## Revision 1.24  2001/10/15 14:28:35  gawthrop
+## Now has . at start of components library path $MTT_COMPONENTS
+##
+## Revision 1.23  2001/07/24 22:32:49  gawthrop
+## Use gv, not ghostview
+##
 ## Revision 1.22  2001/04/12 03:08:00  geraint
 ## Improved sh->csh conversion, reduces environment namespace pollution.
 ##
@@ -114,7 +125,7 @@ setenv MTT_BASE /home/peterg/Development/mttroot/mtt
   setenv MTT_DOC $MTT_BASE/doc
   setenv MTT_CC $MTT_BASE/cc
   
-  setenv MTT_COMPONENTS $MTT_LIB/comp
+  setenv MTT_COMPONENTS .:$MTT_LIB/comp
   setenv MTT_CRS $MTT_LIB/cr
   setenv MTT_EXAMPLES $MTT_LIB/examples
   setenv MTT_REP $MTT_LIB/rep
@@ -146,7 +157,7 @@ setenv MTT_BASE /home/peterg/Development/mttroot/mtt
   	"
   
   # Setup ps viewer
-  setenv PSVIEW 'ghostview'
+  setenv PSVIEW 'gv'
   
   # Setup pdf viewer
   setenv PDFVIEW 'acroread'
@@ -172,28 +183,18 @@ setenv MTT_BASE /home/peterg/Development/mttroot/mtt
     # local system
 
 set PLAT="i686-pc-linux-gnu"
-#    PREFIX="/usr/local"
 set PREFIX="/usr"
 set GCCVERS="2.95.2"
-set SRCOCTAVE="/cvs/octave"
-
-#    PLAT="mips-sgi-irix6.5"
-#    PREFIX="/usr/people/bevangp/GNU"
-#    GCCVERS="2.95.2"
-#    SRCOCTAVE="${PREFIX}/../build/octave-2.1.33"
 
     # include paths
 
-set IOCTAVE="-I${PREFIX}/include/octave"
+set IOCTAVE="-I${PREFIX}/include/octave/ -I${PREFIX}/include/octave/octave"
 
     # library paths
 
-#    LOCTAVE="-L${PREFIX}/lib/octave -loctave -lcruft -loctinterp"
-set LOCTAVE="-L${PREFIX}/lib/octave -loctave -lcruft -loctinterp"
-set LKPATHSEA="-L${SRCOCTAVE}/kpathsea -lkpathsea"
-set LREADLINE=" -L${SRCOCTAVE}/readline -lreadline"
-set LSYSTEM="-ldl -lm -lncurses"
-set LF2C="-L${PREFIX}/lib/gcc-lib/${PLAT}/${GCCVERS} -lg2c"
+set OCTAVEVERS=`octave --version | awk '{ print $4 }'`
+set LOCTAVE="-L${PREFIX}/lib/octave-${OCTAVEVERS} -loctave -lcruft -loctinterp"
+set LSYSTEM="-ldl -lm -lncurses -lkpathsea -lreadline -lblas -llapack -lfftw -lg2c"
 
     # compiler options
 
@@ -205,6 +206,6 @@ set FLAGS="-fno-rtti -fno-exceptions -fno-implicit-templates"
 
     setenv MTT_CXX "g++"
     setenv MTT_CXXFLAGS "${DEBUG} ${OPTIM} ${FLAGS}"
-    setenv MTT_CXXLIBS "${LOCTAVE} ${LKPATHSEA} ${LREADLINE} ${LF2C} ${LSYSTEM}"
+    setenv MTT_CXXLIBS "${LOCTAVE} ${LSYSTEM}"
     setenv MTT_CXXINCS "-I. ${IOCTAVE}"
     setenv MTT_LDFLAGS " "

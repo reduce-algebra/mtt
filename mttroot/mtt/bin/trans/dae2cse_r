@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  1998/10/05 10:46:15  peterg
+## Commented out redundant MTTY := MTTY + MTTEyx*MTTEdX;
+##
 ## Revision 1.6  1998/07/19 12:44:35  peterg
 ## Set MTTYz := 0 if the array is empty - avoids irritating error
 ## message.
@@ -79,6 +82,10 @@ in "$1_dae.r";
 % linear in dZ
 IF MTTNz>0 THEN 
 BEGIN
+
+IF MTTNx>0 THEN 
+BEGIN
+
 % Find MTTFx;
 write "% Find MTTFx;";
 
@@ -89,6 +96,8 @@ FOR j := 1:MTTNz DO
   FOR i := 1:MTTNx DO
     MTTFx(i,j) := df(MTTdX(i,1), dzj, 1);
   END;
+
+END;
 
 % Find MTTFy;
 write "% Find MTTFy;";
@@ -106,6 +115,8 @@ write "%Create G_x, G_u matrices ";
 
 
 % Find MTTGx;
+IF MTTNx>0 THEN 
+BEGIN
 write "% Find MTTGx;";
 
 matrix MTTGx(MTTNz,MTTNx);
@@ -115,6 +126,7 @@ FOR j := 1:MTTNx DO
   FOR i := 1:MTTNz DO
     MTTGx(i,j) := df(MTTZ(i,1), xj, 1);
   END;
+END;
 
 % Find MTTGu;
 write "% Find MTTGu;";
@@ -130,13 +142,16 @@ FOR j := 1:MTTNu DO
 %Create E matrices
 write "%Create E matrices";
 
+IF MTTNx>0 THEN 
+BEGIN
 matrix MTTExx(MTTNx,MTTNx); MTTExx := MTTFx*MTTGx;
 matrix MTTExu(MTTNx,MTTNu); MTTExu := MTTFx*MTTGu;
 matrix MTTEyx(MTTNy,MTTNx); MTTEyx := MTTFy*MTTGx;
+matrix MTTE(MTTNx,MTTNx);   MTTE := MTTI - MTTExx;
+END;
 matrix MTTEyu(MTTNy,MTTNu); MTTEyu := MTTFy*MTTGu;
 
 
-matrix MTTE(MTTNx,MTTNx);   MTTE := MTTI - MTTExx;
 
 
   %% The following gets rid of the dZs; there must be a better way.
@@ -160,18 +175,23 @@ matrix MTTE(MTTNx,MTTNx);   MTTE := MTTI - MTTExx;
   MTTdZ18 := 0;
   MTTdZ19 := 0;
 
+IF MTTNx>0 THEN 
+BEGIN
 MTTEdX := MTTdX; %Ie MTTEdX is MTTdX with the dz terms deleted ie EdX.
 MTTdX := MTTdXs;  %Restore the symbolic dX
 
 %% Add on input derivative terms
 MTTEdX := MTTEdX + MTTExu*MTTdu;
+END;
 
 
 %%%%%MTTY := MTTY + MTTEyx*MTTEdX;
 %%% This causes the matrix mismatch
 %%% MTTdXs and MTTdu need setting in _def.r file
 MTTY := MTTY +  MTTEyu*MTTdu;
-MTTY := MTTY + MTTEyx*(MTTE^(-1))*MTTEdX;
+
+IF MTTNx>0 THEN 
+  MTTY := MTTY + MTTEyx*(MTTE^(-1))*MTTEdX;
 
 
 END; %%of MTTNz>0

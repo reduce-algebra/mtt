@@ -1,0 +1,31 @@
+%SUMMARY Pump: a hydraulic pump - incompressible flow
+%DESCRIPTION Parameter 1: Density (rho)
+%DESCRIPTION Parameter 2: Specific heat (c_p)
+%DESCRIPTION Parameter 3: R component parameters
+%DESCRIPTION Parameter 4: Pump gain (k_p) Vol. flow = k_p * omega
+%DESCRIPTION CR 1: R component CR
+%DESCRIPTION Typical lable: pump  lin  rho;c_p;flow,r;k_p
+
+%% Label file for system Pump (Pump_lbl.txt)
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%ALIAS	Pipe	IncompressibleFlow/Pipe
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+% Component type Pipe
+	pipe		$1	$1;$2;$3
+
+% Component type TF
+	k_p		lin	$4

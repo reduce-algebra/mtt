@@ -12,6 +12,12 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.52  2002/05/27 14:52:15  geraint
+## Parameters in sfun reps are now declared using sympar.h at the top of the
+## sfun*.c file instead of in individual functions. This causes the optimisation
+## variables (mtt_tmp*) to be declared correctly without causing conflicts in the
+## scope of parameter declarations.
+##
 ## Revision 1.51  2002/05/19 13:01:21  geraint
 ## Numerical solution of algebraic equations implemented for S-function target.
 ##
@@ -498,7 +504,6 @@ case $language in
 	Rc='*/'
 	Lb='['
 	Rb=']'
-	parameters=no
 	constant_declaration="const double "
 	var_declaration="double "
 	minusone="-1"

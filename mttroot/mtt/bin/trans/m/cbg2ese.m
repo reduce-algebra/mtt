@@ -23,6 +23,10 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 # ###############################################################
 # ## $Id$
 # ## $Log$
+# ## Revision 1.29  1998/08/25 09:22:34  peterg
+# ## Correctely recognises port SSs its now easy -- they are in there own
+# ## field
+# ##
 # ## Revision 1.28  1998/08/25 08:31:42  peterg
 # ## Fixed bug - didn't find the ports - use deblank
 # ##
@@ -196,24 +200,25 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   endif;
 
 
-  fields=["ports";"subsystems"];	# Do for both ports and subsystems -
+  fields=["ports";"subsystems"]; # Do for both ports and subsystems -
 				# ports first
+  lists=["portlist";"subsystemlist"];
   for i=1:2
     field=deblank(fields(i,:));
-    if struct_contains(CBG,field);
-      eval(["CBG_field = CBG.",field, ";"]);
-      for [subsystem,comp_name] = CBG_field
-i,comp_name
-				#comp = nozeros(components(i,:));
-    	comp = subsystem.connections;
+    list=deblank(lists(i,:));
+    if struct_contains(CBG,list);
+      eval(["namelist=CBG.",list,";"]); # List of ports/subsystems
+      [N,M]=size(namelist);	# Number of ports/subsystems
+      for j=1:N
+      	comp_name = deblank(namelist(j,:)); # Name of this component
+	eval(["subsystem=CBG.",field,".",comp_name,";"]); # Pluck out the details
+    	comp = subsystem.connections; # Connections
     	bond_list = abs(comp);
     	direction = sign(comp)'*[1 1];
 				# Convert from arrow orientated to component orientated causality
     	comp_bonds = CBG.bonds(bond_list,:).*direction;
 	
     	disp(["---- ", field, " ---"]);    
-				# Get the component details
-				#eval([ "[comp_type,comp_name,cr,args,repetitions] = ", cmp_name, "(i)"]);
     	
 				# Alias the args list -- if not at top level
     	message = sprintf("\tfor component  %s (%s) within %s",\

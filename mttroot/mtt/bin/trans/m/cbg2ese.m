@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 # ###############################################################
 # ## $Id$
 # ## $Log$
+# ## Revision 1.30  1998/09/02 11:14:23  peterg
+# ## Revised to use ordered lists of subsystems and ports
+# ##
 # ## Revision 1.29  1998/08/25 09:22:34  peterg
 # ## Correctely recognises port SSs its now easy -- they are in there own
 # ## field
@@ -192,12 +195,17 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   if (length(system_args)==0)
     mtt_info(sprintf("No arguments given so no argument aliasing done for system %s(%s)",\
 		     system_name,system_type), infofilenum);
+    AliasingArguments=0;
+  else
+    AliasingArguments=1;
   endif;
 
   if (length(system_cr)==0)
     mtt_info(sprintf("No cr given so no cr aliasing done for system %s(%s)",\
 		     system_name,system_type), infofilenum);
-  endif;
+    AliasingCRs=0;
+  else
+    AliasingCRs=1;  endif;
 
 
   fields=["ports";"subsystems"]; # Do for both ports and subsystems -
@@ -220,14 +228,21 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	
     	disp(["---- ", field, " ---"]);    
     	
-				# Alias the args list -- if not at top level
-    	message = sprintf("\tfor component  %s (%s) within %s",\
-			  comp_name,subsystem.type,full_name);    
-    	if struct_contains(CBG,"alias")
-	  subsystem.arg = alias_args(subsystem.arg,CBG.alias,";",message,infofilenum)
-	  subsystem.cr = alias_args(subsystem.cr,CBG.alias,";",message,infofilenum)
-    	endif;
+	if AliasingArguments	# Alias the args list if appropriate
+    	  message = sprintf("\tfor component  %s (%s) within %s",\
+			    comp_name,subsystem.type,full_name);    
+    	  if struct_contains(CBG,"alias")
+	    subsystem.arg = alias_args(subsystem.arg,CBG.alias,";",message,infofilenum)
+    	  endif;
+	endif;
 
+	if AliasingCRs	# Alias the CR list if appropriate
+    	  message = sprintf("\tfor component  %s (%s) within %s",\
+			    comp_name,subsystem.type,full_name);    
+    	  if struct_contains(CBG,"alias")
+	    subsystem.cr = alias_args(subsystem.cr,CBG.alias,";",message,infofilenum)
+    	  endif;
+	endif;
 	
 			# Substitute positional ($1 etc) arguments
     	subsystem.cr = subs_arg(subsystem.cr,system_cr, ...

@@ -1,0 +1,41 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: lbl2sympar_txt2r
+
+# Label file to symbolic parameters conversion
+# P.J.Gawthrop August 1996
+# Copyright (c) P.J.Gawthrop, 1996.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+# Inform user
+echo "Creating $1_sympar.r"
+
+rm -f mtt_error
+
+# This is the main transformation using gawk
+gawk -f $MTTPATH/lbl2sympar.awk $1_lbl.txt > $1_sympar.r 2>mtt_error
+
+err_length=$(wc -c <mtt_error)
+
+# Test for errors and print if any
+if [ $err_length != "0" ]
+then
+  echo lbl2sympar_txt2 $1 failed '...'
+  cat mtt_error
+  exit 1
+else
+  exit 0
+fi
+
+

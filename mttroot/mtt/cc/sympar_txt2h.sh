@@ -1,6 +1,9 @@
 #! /bin/sh
 # $Id$
 # $Log$
+# Revision 1.8  2002/09/16 08:08:01  geraint
+# Merged changes from global-optimisation branch.
+#
 # Revision 1.7.2.1  2002/09/04 10:44:59  geraint
 # Added option to specify number of tmp variables declared (-ntmpvar <N>).
 #
@@ -1115,5 +1118,8 @@ cat <<EOF > ${OUT}
 EOF
 
 declare_sys_param	>> ${OUT}
-declare_temp_vars	>> ${OUT}
+if [ ${NUM_OF_TMP_VAR} -gt 0 ]; then
+    declare_temp_vars	>> ${OUT}
+fi
+
 

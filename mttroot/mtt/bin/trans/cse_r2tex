@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.3  1996/11/12  09:53:59  peterg
+# Reads in the params.r file now.
+#
 # Revision 1.2  1996/11/12  09:11:20  peterg
 # Removed all the hoorrible name changes
 #
@@ -64,8 +67,8 @@ write "%constrained-state equations";
 	IF MTTNx>0 THEN
 	FOR Row := 1:MTTNx DO
 	BEGIN
-		write"\begin{equation} \label{eq_$1_cse_X", Row, "}";
-		write "\dot MTTEX_{", Row, "} = ";
+	        write"\begin{equation}";
+		write "\dot MTTEX", Row, " = ";
 		write "{";
 		write MTTEdX(Row,1);
 		write "}";
@@ -77,8 +80,8 @@ write "%constrained-state equations";
 	IF MTTNy>0 THEN
 	FOR Row := 1:MTTNy DO
 	BEGIN
-		write"\begin{equation} \label{eq_$1_cse_y", Row, "}";
-		write "MTTy_{", Row, "} = ";
+		write"\begin{equation}";
+		write "MTTy", Row, " = ";
 		write "{";
 		write MTTy(Row,1);
 		write "}";
@@ -89,8 +92,8 @@ write "%constrained-state equations";
 IF MTTNx NEQ 0 THEN
 BEGIN
 write "%  - E matrix";
-write "\begin{equation} \label{eq_$1_cse_E}";
-write "MTTE = \left \matrix {";
+write "\begin{equation}";
+write "MTTE = \begin{pmatrix}";
 	FOR Row := 1:MTTNx DO
 	BEGIN
 		FOR Col := 1:MTTNx DO
@@ -101,19 +104,19 @@ write "MTTE = \left \matrix {";
 
 	IF Row<MTTNx THEN Write "\cr";
 	END;
-	Write "} \right";
+	Write "\end{pmatrix}";
 write "\end{equation}";
 END;
 
 
 
 %write "%  - E matrix";
-%write "\begin{eqnarray} \label{eq_$1_cse_Ea}";
+%write "\begin{eqnarray}";
 %	FOR Row := 1:MTTNx DO
 %	BEGIN
 %	  FOR Col := 1:MTTNx DO %IF MTTE(Row,Col) NEQ 0 THEN
 %	  BEGIN
-%	      Write "MTTE_{", Row, Col, "} &=& {", MTTE(Row,Col), "}";
+%	      Write "MTTE", Row, Col, " &=& {", MTTE(Row,Col), "}";
 % 	      IF Row<MTTNx OR Col<MTTNx THEN Write "\cr";
 %	  END;   
 %	END;

@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1998/07/26 10:50:30  peterg
+## Corrected bug.
+##
 ## Revision 1.3  1998/07/26 10:48:18  peterg
 ## Now strips comments
 ##
@@ -54,38 +57,37 @@ EOF
 # Matlab bit
 #Write out the variables in matlab global format
 if [ "$language" = "m" ]; then
-
-strip_comments <$1_sympars.txt  |\
-awk '
-BEGIN{
-  var = "foobar";
-  print "global ..."
-}
-{i++; print tolower($1), "..."; var = $1}
-END{
+ strip_comments <$1_sympars.txt  |\
+  awk '
+  BEGIN{
+    var = "foobar";
+    print "global ..."
+  }
+  {i++; print tolower($1), "..."; var = $1}
+  END{
   print var ";" # Repeat the last variable to avoid the trailing ...
-}'
-
+  }'
+exit
 fi
 
 if [ "$language" = "c" ]; then
-strip_comments <$1_sympars.txt  |\
+  strip_comments <$1_sympars.txt  |\
     awk '{
       i++; print "extern double", tolower($1) ";";
     }'
- fi
+exit
+fi
 
 if [ "$language" = "java" ]; then
 cat <<EOF
-  $1_numpar p;
-  private p = new $1_numpar();
+    $1_numpar p;
+    private p = new $1_numpar();
 EOF 
-strip_comments <$1_sympars.txt  |\
-    awk '{
-      i++; print "  float " tolower($1) " = p." tolower($1) ";";
-    }'
+  strip_comments <$1_sympars.txt  |\
+      awk '{
+        i++; print "  float " tolower($1) " = p." tolower($1) ";";
+      }'
 fi
-
 
 echo
 

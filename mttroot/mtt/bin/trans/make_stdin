@@ -14,14 +14,14 @@ lang=$2
 date=`date`
 outfile=$1_input.$2
 
-Nu=`mtt_getsize $Sys u` # Inputs 
+Nu=`mtt_getsize ${Sys} u` # Inputs 
 echo  "Creating $outfile for standard input"
 
 ## Pascal code
 make_p()
 {
 cat <<EOF > $outfile
-PROCEDURE $Sys_input(VAR mttu : InputVector;
+PROCEDURE ${Sys}_input(VAR mttu : InputVector;
                        mttx : StateVector;
                        mtty : OutputVector;
                        mttt : REAL;
@@ -31,7 +31,7 @@ PROCEDURE $Sys_input(VAR mttu : InputVector;
 
 VAR t : REAL; Start:BOOLEAN;
 
-BEGIN{$Sys_input}
+BEGIN{${Sys}_input}
   {Zap comments}
   IF (input^ = chr("#")) THEN
   BEGIN
@@ -45,12 +45,12 @@ BEGIN{$Sys_input}
   readln; {Next line}
 
 
-END{$Sys_input};
+END{${Sys}_input};
 EOF
 }
 
 make_m() {
-mtt_header $Sys input m stdin > $outfile
+mtt_header ${Sys} input m stdin > $outfile
 cat >> $outfile <<EOF
 ## The "standard input"
 global MTT_input MTT_input_index MTT_input_last

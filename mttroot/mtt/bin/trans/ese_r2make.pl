@@ -116,13 +116,16 @@ sub write_make {
     # separate rules can be created in the makefile
     my @list_of_rates;
     my @list_of_outputs;
+    my @list_of_unknown;
     my @list_of_tmpvars;
 
     for my $lvar (sort (keys %expressions)) {
-	if ($lvar =~ /^MTTdX/) {
+	if ($lvar =~ /^MTTdX\(/) {
 	    @list_of_rates = (@list_of_rates, $lvar) ;
-	} elsif ($lvar =~ /^MTTy/) {
+	} elsif ($lvar =~ /^MTTy\(/) {
 	    @list_of_outputs = (@list_of_outputs, $lvar);
+	} elsif ($lvar =~ /^MTTyz/) {
+	    @list_of_unknown = (@list_of_unknown, $lvar);
 	} elsif ($lvar =~ /^${sys}_/) {
 	    @list_of_tmpvars = (@list_of_tmpvars, $lvar);
 	} else {
@@ -131,6 +134,7 @@ sub write_make {
     }
     my @sorted_rates   = sort (@list_of_rates);
     my @sorted_outputs = sort (@list_of_outputs);
+    my @sorted_unknown = sort (@list_of_unknown);
     my @sorted_tmpvars = sort (@list_of_tmpvars);
 
 
@@ -155,7 +159,8 @@ sub write_make {
     print ESE
         "all: declare_tmpvars MTTdX MTTy\n\n" .
 	"MTTdX: @sorted_rates\n\n" .
-	"MTTy:  @sorted_outputs\n\n";
+	"MTTy:  @sorted_outputs\n\n" .
+	"MTTyz: @sorted_unknown\n\n";
     
     # set the default output format:
     # double tmpvar;

@@ -15,6 +15,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.18  1999/11/14 22:22:17  peterg
+# %% Removed checks for implicit - now done at command-line level.
+# %%
 # %% Revision 1.17  1999/11/04 04:54:24  peterg
 # %% Removed recreation of smx file.
 # %%
@@ -118,7 +121,7 @@ case $representation in
 esac
 
 #Write out the variables in m format.
-cat  $1_$2.txt |\
+cat  $1_$2.txt | grep -v METHOD |\
 awk -F#  'BEGIN{
 quote = "\047";
 doublequote = "\042";
@@ -163,6 +166,17 @@ doublequote = "\042";
      -e 's/mttmtt/mtt/g' \
      -e 's/#/%/g' \
 >> $1_$2.m
+
+
+if [ "$2" = "numpar" ]; then
+    awk '{
+       printf("  MTTpar(%i) \t= %s;\n",++i, tolower($1));
+     }'< $1_sympar.txt  >>$1_numpar.m
+fi
+
+
+
+
 
 
 

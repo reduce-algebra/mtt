@@ -5,6 +5,9 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.12  1997/08/02 19:37:53  peterg
+% %% Now uses named ports.
+% %%
 % %% Revision 1.11  1997/04/29 09:12:37  peterg
 % %% Added error message if port label near to >1 bond.
 % %%
@@ -72,8 +75,8 @@ end;
 % Find number of components
 [n_components,columns] = size(rcomponents);
 
-% Find number of ports
-[n_ports,columns] = size(port_coord);
+% Find the number of ports refered to within the component
+[n_ports,columns] = size(port_coord)
 
 % Determine coordinates of the arrow end of the bond and the other end
 other_end_1 = rbonds(:,1:2);
@@ -90,7 +93,7 @@ arrow_vector = ( which_end.*other_end_2 + (one-which_end).*other_end_1 ) - ...
  
 % Locate the bond end nearest to each port
 % col 1 of port_near_bond contains a signed bond number (+ for arrow end)
-% col 2  of port_near_bond contains the corresponding port number
+% col 2  of port_near_bond contains the corresponding port index
 for i = 1:n_ports
    near_bond = adjbond(port_coord(i,1:2),arrow_end,other_end);
    [rows,cols]=size(near_bond);
@@ -99,10 +102,13 @@ for i = 1:n_ports
 	 ("A port is near to more than one bond at coordinates %g,%g\n", ...
 	 port_coord(i,1)/scale,  port_coord(i,2)/scale));
    end;
-  %The (signed) bond corrsponding to the ith port label
-  signed_bond = near_bond(1)*sign(1.5-near_bond(2));
-  signed_bonds(i) = signed_bond;
+
+  %The (signed) bond corresponding to the ith port label
+  port_bond(i) = near_bond(1)*sign(1.5-near_bond(2));
 end;
+
+%We now have the (signed) bond (port_bond(i)) correponding to the
+% ith port label within the component 
 
 % Locate the components at the ends of each bond
 % col 1 of comp_near_bond contain the component nearest to the arrow end
@@ -111,11 +117,18 @@ for i = 1:n_bonds
   comp_near_bond(i,:) = adjcomp(arrow_end(i,:),other_end(i,:),rcomponents);
 end;
 
-% Produce a list of bonds on each component - sorted if explicit port numbers
+%We now have a list (comp_near_bond) of the component(s) at each end
+%of each bond
+
+
+% Produce a list of bonds on each component (within this component) 
+%  - sorted if explicit port numbers
 for i = 1:n_components    
+
   %Get component type
   eval(['[comp_type, comp_name] = ', name, '_cmp(i)']);
 
+  %Convert junction names
   if comp_type=='0'
     comp_type = 'zero';
   end
@@ -124,17 +137,15 @@ for i = 1:n_components
     comp_type = 'one';
   end
 
-  % and the port list (if its not an elementary component)
+  %Find the port list for this component
     if exist([comp_type, '_cause'])==0
       eval(['[junk1,junk2,junk3,junk4,junk5,port_list]=', comp_type, '_rbg;']);
     else
-      port_list=comp_port(comp_type);
+      port_list=comp_ports(comp_type);
     end;
 
-  port_list
-
-  % There are n bonds on this component with corresponding index
-  [index,n] = getindex(comp_near_bond,i);
+  % There are n_comp_bonds bonds on this component with corresponding index
+  [index,n_comp_ports] = getindex(comp_near_bond,i);
   
   % Error message in case we need it!
   port_error = sprintf(... 
@@ -144,25 +155,31 @@ for i = 1:n_components
   if index(1,1) ~= 0 % Then its a genuine component 
     
     % Create the signed list of bonds on this component
-    one = ones(n,1);
+    one = ones(n_comp_ports,1);
     bond_list = index(:,1); %  bond at component
     bond_end = index(:,2);  % which end of bond at component?
     direction = -sign(bond_end-1.5*one);
     signed_bond_list = bond_list.*direction;
 
-    [n_ports,junk] = size(port_list);
     unsorted_port_list="";
-    if n_ports>0 % then there are some numbered ports 
+    if n_ports>0 % then there are some numbered ports
       % so find those associated with the bonds on this component.
       k=0; 
-      for j = 1:n
+      for j = 1:n_comp_ports
 	b = signed_bond_list(j); 
 	% Find the port label on component end of bond (if any)
-	[port_index,m] = getindex(signed_bonds,b);
+	[port_index,m] = getindex(port_bond,b);
 	if m==1
 	  k=k+1;
 	  unsorted_port_list(k,:) = port_name(port_index,:);
 	  end;
+      end;
+     
+      %Either all or non ports should be labelled - write error
+      %message if this is not so
+      if (k~=0)&(k~=n_comp_ports)
+        mtt_info(['Component ', comp_name, ' (', comp_type, ') has wrong number of labels'], infofile); 
+        mtt_info(sprintf("\tit has %1.0f labels but should have 0 or %1.0f",k,n_comp_ports), infofile); 
       end;
 
       [n_unsorted_ports,m_unsorted_ports] = size(unsorted_port_list);
@@ -172,23 +189,31 @@ for i = 1:n_components
 
       unsorted_port_list
 
+
       % One port defaults:
-      if n_ports==1
+      if n_comp_ports==1
         if n_unsorted_ports==0
           unsorted_port_list(1,:) = port_list(1,:);
         end; 
       end;
       
+      % Junctions (order of ports unimportant)
+      if (comp_type=='zero')|(comp_type=='one')
+        for j = 1:n_comp_ports
+          components(i,j) = signed_bond_list(j);
+        end
+      else %Order of ports is important
       %Write out the signed bond list in the correct order
-        for j = 1:n_ports
+        for j = 1:n_comp_ports
           name_k = unsorted_port_list(j,:);
           k = name_in_list(name_k, port_list)
           if k==0
-            mtt_info(['Component ', comp_name, ' has an unrecognised port: ', name_k], infofile); 
+            mtt_info(['Component ', comp_name, ' (', comp_type, ') has an unrecognised port: ', name_k], infofile); 
           else
           components(i,j) = signed_bond_list(k);     
           end;
         end;
+      end;
     end;
   end;
 end;
@@ -240,5 +265,7 @@ end;
 
 bonds = causality;
 fclose(fnum);
+
+
 
 

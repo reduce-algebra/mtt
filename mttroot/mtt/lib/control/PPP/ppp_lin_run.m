@@ -56,21 +56,38 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   endif
   
   if !struct_contains(p_c,"T")
-    p_c.T = 2.5;			# Last time point.
+    p_c.T = 10;			# Last time point.
   endif
 
   if !struct_contains(p_c,"augment")
-    p_c.augment = 1;		# Augment basis funs with contand
+    p_c.augment = 0;		# Augment basis funs with constant
   endif
   
+  if !struct_contains(p_c,"integrate")
+    p_c.integrate = 0;		# Augment basis funs with constant
+  endif
+  
+  if !struct_contains(p_c,"Tau_u")
+    p_c.Tau_u = [];
+    p_c.Min_u = [];
+    p_c.Max_u = [];
+  endif
+
+  if !struct_contains(p_c,"Tau_y")
+    p_c.Tau_y = [];
+    p_c.Min_y = [];
+    p_c.Max_y = [];
+  endif
+
+
   if !struct_contains(p_c,"Method")
-    p_c.Method = "original";
+    p_c.Method = "lq";
   endif
 
   if struct_contains(p_c,"Method")
-    if strcmp(p_c.Method,"lq") 
+    if strcmp(p_c.Method,"lq")
       p_c.Q = eye(n_y);
-      p_c.R = (0.25^2)*eye(n_u);
+      p_c.R = (0.1^2)*eye(n_u);
       p_c.n_U = n_x;
     elseif strcmp(p_c.Method,"original");
       if !struct_contains(p_c,"A_w")
@@ -119,16 +136,16 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
     K_w(1,1) = 1;
     K_w(2,1) = -1;
     K_x = zeros(p_c.n_U,n_x);
-    U = K_w*w;			# Initial control U
   else
     I = ceil(p_c.T/p_c.delta_ol) # Number of large samples
     if strcmp(p_c.Method, "original")
       tau = [10:0.1:11]*(2/a_u);	# Time horizons
-      [k_x,k_w,K_x,K_w] = ppp_lin(A,B,C,D,p_c.A_u,p_c.A_w,tau); # Design
+      [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww] =\
+	  ppp_lin(A,B,C,D,p_c.A_u,p_c.A_w,tau); # Design
     elseif strcmp(p_c.Method, "lq") # LQ design
-      tau = [0:0.1:2.0]*1; # Time horizons
+      tau = [0:0.1:2]; # Time horizons
       [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,A_u] \
-	  = ppp_lin_quad (A,B,C,D,tau,p_c.Q,p_c.R,p_c.augment);
+	  = ppp_lin_quad (A,B,C,D,tau,p_c.Q,p_c.R);
       p_c.A_u = A_u;
     else
       error(sprintf("Control method %s not recognised", p_c.Method));
@@ -139,12 +156,15 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
     if (p_c.n_U!=M_u)
       error("A_u must be square");
     endif
-    U = K_w*w;			# Initial control U
 
     ## Checks
     [ol_zeros, ol_poles] = sys2zp(sys)
     cl_poles = eig(A - B*k_x)
   endif
+
+  ## Initial control U
+  U = zeros(p_c.n_U,1);	
+
 
   ## Short sample interval
   dt = p_c.delta_ol/p_c.N;
@@ -180,9 +200,15 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
 
   ## Write the include file for the real-time function
   ## Use double length to allow for overuns
-  disp("Writing Ustar.h");
   overrun = 2;
-  ppp_ustar2h(ppp_ustar (p_c.A_u, n_u, [0:dt:overrun*p_c.delta_ol], 0,0)); 
+  Ustar = ppp_ustar (p_c.A_u, n_u, [0:dt:overrun*p_c.delta_ol], 0,0);
+  if p_c.integrate		# Integrate Ustar
+    disp("Integrating Ustar");
+    Ustar = cumsum(Ustar)*dt;
+  endif
+  
+  disp("Writing Ustar.h");
+  ppp_ustar2h(Ustar); 
 
 
   ## Control loop
@@ -194,10 +220,10 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   e_e = [];
   tick = time;
   i=0;
-  for j=1:10
+  for j=1:4
     for k=1:I
       tim=time;			# Timing
-      i++
+      i++;
       if Simulate		# Exact simulation 
 	t_sim = [1:p_c.N]*dt;	# Simulation time points
 	[yi,ui,xsi] = ppp_ystar(A,B,C,D,x,p_c.A_u,U,t_sim); # Simulate
@@ -225,7 +251,25 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
       endif
       
       ##Control
-      U = K_w*w - K_x*x_est;
+      if ( (p_c.Tau_u==[])&&(p_c.Tau_y==[]) )
+	U = K_w*w - K_x*x_est;
+      else
+	## Input constraints 
+	[Gamma_u, gamma_u] = \
+	    ppp_input_constraints(p_c.A_u,p_c.Tau_u,p_c.Min_u,p_c.Max_u);
+	
+	## Output constraints
+	[Gamma_y,gamma_y] = \
+	    ppp_output_constraints(A,B,C,D,x_est,p_c.A_u,\
+				   p_c.Tau_y,p_c.Min_y,p_c.Max_y);
+	
+	## Composite constraints - t=0
+	Gamma = [Gamma_u; Gamma_y];
+	gamma = [gamma_u; gamma_y];
+	
+	[u_qp,U] = ppp_qp (x_est,w,J_uu,J_ux,J_uw,Us0,Gamma,gamma,1e-6,1);
+      endif
+      
 
       ## Save data
       if Simulate
@@ -244,13 +288,14 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
 	e_e = [e_e; e_est'];
 	t_e = [t_e; t_i];
       endif
-
-      delta_comp = time-tim;
-      usleep(floor(1e6*(p_c.delta_ol-delta_comp-0.01)));
+      if !Simulate
+	delta_comp = time-tim;
+	usleep(floor(1e6*(p_c.delta_ol-delta_comp-0.01)));
+      endif
+      
     endfor			# Main loop
     w = -w;
   endfor 			# Outer loop
-
   if !Simulate
     ppp_put_get(0*U); 		# Reset to zero
   endif

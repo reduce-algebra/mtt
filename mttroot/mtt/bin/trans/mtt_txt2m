@@ -15,6 +15,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.8  2000/09/30 13:53:07  peterg
+# %% Default to empty matix in numpar.m -- avoids probs for parameter-free systems
+# %%
 # %% Revision 1.7  2000/05/19 17:46:17  peterg
 # %% Give argument to state
 # %%
@@ -144,6 +147,7 @@ case $representation in
       ;;
 esac
 
+if [ "$representation" = "simpar" ]; then
 #Write out the variables in m format.
 cat  $1_$2.txt | grep -v METHOD |\
 awk -F#  'BEGIN{
@@ -192,9 +196,34 @@ doublequote = "\042";
      -e 's/#/%/g' \
 >> $1_$2.m
 
+exit
+fi
 
-if [ "$2" = "numpar" ]; then
-   echo "## Set up the parameter vector"  >> $1_numpar.m;
-   echo "mttpar = []; # Default to empty matrix (Remove in mtt_m2p)"  >> $1_numpar.m;
-   sympar2par_txt2m $1 set   >> $1_numpar.m;
+
+#if [ "$2" = "numpar" ]; then
+#   echo "## Set up the parameter vector"  >> $1_numpar.m;
+#   echo "mttpar = []; # Default to empty matrix (Remove in mtt_m2p)"  >> $1_numpar.m;
+#   sympar2par_txt2m $1 set   >> $1_numpar.m;
+#fi
+case $2 in
+    numpar)
+         name=mttpar
+	;;
+    state)
+         name=mttx
+	;;
+    input)
+         name=mttu
+	;;
+    *)
+esac
+         
+new_style=`strip_comments < $1_$2.txt| grep "$name(">/dev/null; echo $?`
+
+if [ "$new_style" = "1" ]; then
+  echo "## Set up the $name vector"  >> $1_$2.m;
+  echo "name = []; # Default to empty matrix (Remove in mtt_m2p)"  >> $1_$2.m;
+  mtt_name2array $1 $2 set   >> $1_$2.m
+else
+  echo "Old-style file detected: not creating array translations"  
 fi

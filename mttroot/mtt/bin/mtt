@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.255  2000/08/30 11:43:04  peterg
+## Put in the -opt switch for code optimisation
+##
 ## Revision 1.254  2000/08/29 09:59:47  peterg
 ## Version 4.5 -- includes code optimisation using the "Scope" package in reduce
 ##
@@ -918,6 +921,10 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 mtt_switches="$mtt_switches $1";
                 matrix_smxa="-matrix";
 		computation=c ;;
+	-cc )
+                mtt_switches="$mtt_switches $1";
+                matrix_smxa="-matrix";
+		computation=cc ;;
 	-o )
                 mtt_switches="$mtt_switches $1";
 		dae_is_ode=1 ;;
@@ -980,11 +987,17 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-stdin )
                 mtt_switches="$mtt_switches $1";
                 stdin=stdin;;
+	-sub )  mtt_switches="$mtt_switches $1 $2";
+                sub='-sub'; 
+                subsystem="_"$2;
+                shift ;;
 	-oct )
                 mtt_switches="$mtt_switches $1";
                 m='oct';;
 	-opt )  mtt_switches="$mtt_switches $1";
                 optimise='-optimise';;
+	-partition )  mtt_switches="$mtt_switches $1";
+                partition='-partition';;
         --version)                
                   echo 'MTT version' $version; exit;;
         --versions)                
@@ -1489,8 +1502,8 @@ if [ "$tidy" = "tidy" ]; then
 	  echo Moving $1_$2
           mv $1_$2 ..
       else
-          echo Copying  $1_$2.$3
-          cp  -p -u $1_$2.$3 ..
+          echo Copying  $1$subsystem"_"$2.$3
+          cp  -p -u $1$subsystem"_"$2.$3 ..
       fi
       if [ "$PLOTTYPE" = "multiple" ]; then
         echo Copying  $1_$2$__ARGS.ps
@@ -1530,7 +1543,7 @@ if [ -f "$2_rep.make" ]; then
      if [ -n "$Verbose" ]; then
       echo make -s -f $2_rep.make "SYS=$1" "LANG=$3" "ARG=$4" 
      fi
-      make -s -f $2_rep.make "SYS=$1" "LANG=$3" "ARG=$"
+      make -s -f $2_rep.make "SYS=$1" "LANG=$3" "ARG=$4"
       if [ -n "$4" ]; then
          echo Copying  $1_$2$__ARGS.ps
          cp  $1_$2$__ARGS.ps ..
@@ -1575,7 +1588,20 @@ fi
 # This is the main mtt programme
 ################################
 
-$MAKE -S $verbose  -f  -  $1_$2.$3 << EOF
+target=$1_$2.$3
+
+# Create some strings
+Subsystem=$1$subsystem;
+
+Subsystem_ese=$Subsystem"_ese"
+Subsystem_def=$Subsystem"_def"
+Subsystem_rdae=$Subsystem"_rdae"
+Subsystem_dae=$Subsystem"_dae"
+Subsystem_subs=$Subsystem"_subs"
+Subsystem_cr=$Subsystem"_cr"
+
+echo Target is $target, Subsystem is $Subsystem
+$MAKE -S $verbose  -f  -  $target << EOF
 
 # Cancel implicit rules I don't want
 %.dvi: %.tex
@@ -1653,7 +1679,10 @@ $1_cr.txt: $1_abg.m $1_sub.sh
 #SUMMARY cr	constitutive relationship for each subsystem (r)
 $1_cr.r: $1_cr.txt
 	cr_txt2r $1
-
+# Cheat a bit and use the top level cr file for the subsystem as well
+ifneq ($sub,)
+	cp $1_cr.r $Subsystem_cr.r
+endif
 #SUMMARY cr	constitutive relationship for each subsystem (tex)
 #SUMMARY cr	constitutive relationship for each subsystem (view)
 $1_cr.tex: $1_cr.r
@@ -1762,9 +1791,9 @@ $1_simp.r:
 	)> $1_simp.r
 
 #SUMMARY subs  algebraic substitution (r)
-$1_subs.r: 
+$Subsystem_subs.r: 
 	mtt $mtt_switches -q -u $1 sympar txt; 
-	makesubs $1;
+	makesubs $Subsystem;
 
 #SUMMARY obspar  GPC observability function parameters (r)
 $1_obspar.r:
@@ -1995,8 +2024,8 @@ $1_cbg.fig: $1_cbg.m $1_rbg.m $1_fig.fig $1_type.sh
 #SUMMARY struc	structure - list of inputs, outputs and states (tex)
 #SUMMARY struc*	structure - list of inputs, outputs and states (view)
 #Elementary system equations + definitions
-$1_ese.r: $1_cbg.m
-	   cbg2ese_m2r $info_switch $1; ese_tidy $1
+$Subsystem_ese.r: $1_cbg.m
+	   cbg2ese_m2r $partition $info_switch $Subsystem; #ese_tidy $1
 $1_def.r: $1_ese.r
 	touch $1_def.r
 $1_struc.txt: $1_ese.r
@@ -2015,16 +2044,16 @@ $1_def.m: $1_def.r
 #SUMMARY dae*	differential-algebraic equations (view)
 #SUMMARY dae	differential-algebraic equations (ps)
 #Differential-algebraic equations
-$1_rdae.r: $1_ese.r $1_def.r
-	ese2rdae_r $1; tidy $1_rdae.r
-$1_dae.r: $1_rdae.r $1_def.r $1_subs.r $1_cr.r
-	rdae2dae_r $1; tidy $1_dae.r
+$Subsystem_rdae.r: $Subsystem_ese.r $Subsystem_def.r
+	ese2rdae_r $partition $Subsystem; tidy $1_rdae.r
+$1_dae.r: $Subsystem_rdae.r $Subsystem_def.r $Subsystem_subs.r $1_cr.r
+	rdae2dae_r $partition $Subsystem; tidy $Subsystem_dae.r
 $1_dae.m: $1_def.r $1_dae.r  $1_sympars.txt 
 	dae_r2m $1; matlab_tidy $1_dae.m; matlab_tidy $1_daeo.m
 $1_dae.c: $1_def.r $1_dae.r  $1_sympar.r
 	dae_r2c $1; c_tidy $1_dae.c
 $1_dae.tex:	$1_dae.r $1_simp.r
-	dae_r2tex $1; latex_tidy $1_dae.tex
+	dae_r2tex $partition $1; latex_tidy $1.tex
 
 #SUMMARY cse	constrained-state equations (r)
 #SUMMARY cse*	constrained-state equations (m)
@@ -2469,9 +2498,20 @@ $1_ode2odes.out: $1_ode2odes.c
 	$CC $1_ode2odes.c -lp2c -lm -o $1_ode2odes.out
 
 $1_odes.dat2: $1_ode2odes.out
-	echo Creating $1_odes.dat2
+	echo Creating $1_odes.dat2 using c version
 	    time ./$1_ode2odes.out>$1_odes.dat2
 endif
+
+ifeq ($computation,cc)
+$1_sim.exe: $1_ese.r 
+	mtt $mtt_switches -q $1 sim exe
+
+$1_odes.dat2: $1_sim.exe 
+	echo Creating $1_odes.dat2 using cc version $ARGS
+	    time ./$1_sim.exe $ARGS >$1_odes.dat2
+endif
+
+
 $1_odeso.m: $1_odes.m
 	touch $1_odeso.m
 $1_smso.m: $1_sms.m

@@ -18,6 +18,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.23  2000/10/10 21:00:43  peterg
+## More reps added
+##
 ## Revision 1.22  2000/09/15 08:27:07  peterg
 ## Removed debugging lines
 ##
@@ -122,35 +125,49 @@ rm -f mtt_r2m.log
 #Header
 case $rep in
     cse)
-    mtt_header  $1 $rep $ext 'mttx,mttu,mttt,mttpar' 'mttedx,mtte' > $out
+    mtt_header  $1 $rep $ext 'mttx,mttu,mttt,mttpar' 'mttedx,mtte' > mtt_junk
+       ;;
+    csex)
+    mtt_header  $1 $rep $ext 'mttx,mttu,mttt,mttpar' 'mttedx' > mtt_junk
+    vectorise=yes
        ;;
     cseo)
-    mtt_header  $1 $rep $ext 'mttx,mttu,mttt,mttpar' mtty > $out
+    mtt_header  $1 $rep $ext 'mttx,mttu,mttt,mttpar' mtty > mtt_junk
+    vectorise=yes
        ;;
     ode)
-    mtt_header  $1 $rep $ext 'mttx,mttu,mttt,mttpar' mttdx > $out
+    mtt_header  $1 $rep $ext 'mttx,mttu,mttt,mttpar' mttdx > mtt_junk
+    vectorise=yes
        ;;
     odeo)
-    mtt_header  $1 $rep $ext 'mttx,mttu,mttt,mttpar' mtty > $out
+    vectorise=yes
+    mtt_header  $1 $rep $ext 'mttx,mttu,mttt,mttpar' mtty > mtt_junk
        ;;
     sm)
-    mtt_header  $1 $rep $ext mttpar 'mtta,mttb,mttc,mttd' > $out
+    mtt_header  $1 $rep $ext mttpar 'mtta,mttb,mttc,mttd' > mtt_junk
        ;;
     *)
 esac
 
 #Convert from the (optimised) r file
-echo >> $out
-echo '## Code' >> $out
-grep 'mtt' < $1_$2.r |\
+echo >> mtt_junk
+echo '## Code' >> mtt_junk
+grep 'mtt'  $1_$2.r |\
 sed \
     -e "s/^mtt/  mtt/" \
     -e "s/:=/=/" \
     -e "s/\\$/;/" \
- >> $out
+ >> mtt_junk
 
 
-echo endfunction >> $out
+echo endfunction >> mtt_junk
+
+# Vectorise (n,1) arrays when appropriate
+if [ -n "$vectorise" ]; then
+     mtt_vectorise <mtt_junk >$out
+else
+     mv mtt_junk $out
+fi
 
 # Now invoke the standard error handling.
 #mtt_error_r mtt_r2m.log

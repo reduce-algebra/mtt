@@ -15,6 +15,9 @@ function  structure = R_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/09/12 11:00:56  peter
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -32,7 +35,6 @@ end;
 for outport = 1:ports
   outcause = -bonds(outport,1);
   outnumber = bond_number(outport);
-  fprintf(eqnfile, '%s\t:= ', varname(name,outnumber, outcause));
   incause = bonds(:,1);
   eqn =  equation(name,cr,args,outnumber,outcause,outport, ...
                                bond_number,incause,1:ports);

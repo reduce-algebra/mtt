@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1999/09/07 03:32:21  peterg
+% %% Fixed alias bug
+% %%
 % %% Revision 1.2  1999/09/07 03:21:02  peterg
 % %% Aliased to out as well as in
 % %%
@@ -20,6 +23,7 @@
 %ALIAS	in|out	in
 
 % Argument aliases
+%ALIAS $1 external
 
 %% Each line should be of one of the following forms:
 %	     a comment (ie starting with %)

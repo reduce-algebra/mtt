@@ -1,0 +1,67 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: struc_txt2m
+
+# Structure file - txt to m-structure conversion
+# Copyright (C) 2003 by Peter J. Gawthrop
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+sys=$1
+infile=${sys}_struc.txt
+fun=${sys}_mstruc
+outfile=${fun}.m
+
+#Inform user
+echo Creating ${outfile}
+
+create_header() {
+    cat <<EOF
+function [struc] = ${fun};
+## Usage [struc] = ${fun};
+## Created by mtt on `date`
+EOF
+}
+create_structure() {
+cat ${infile} | strip_comments | gawk 'BEGIN{
+printf("  struc.input.name = \"\";\n");
+printf("  struc.output.name = \"\";\n");
+printf("  struc.state.name = \"\";\n");
+
+printf("  struc.input.full_name = \"\";\n");
+printf("  struc.output.full_name = \"\";\n");
+printf("  struc.state.full_name = \"\";\n");
+
+printf("  struc.input.causality = \"\";\n");
+printf("  struc.output.causality = \"\";\n");
+printf("  struc.state.causality = \"\";\n");
+}
+{
+printf("  struc.%s.name = [ struc.%s.name; \"%s\"];\n", $1, $1, $3)
+printf("  struc.%s.full_name = [ struc.%s.full_name; \"%s\"];\n", $1, $1, $4)
+printf("  struc.%s.causality = [ struc.%s.causality; \"%s\"];\n", $1, $1, $6)
+printf("  struc.repetitions(%i) = %i;\n", $2, $5)
+
+}'
+}
+
+create_footer() {
+    cat<<EOF
+endfunction
+EOF
+}
+
+
+create_header     >${outfile}
+create_structure >>${outfile}
+create_footer    >>${outfile}
+

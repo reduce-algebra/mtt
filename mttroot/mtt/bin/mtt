@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.133  1998/02/24 22:35:33  peterg
+## Added -p (preserve) switch to cp in tidy mode.
+##
 ## Revision 1.132  1998/02/24 22:33:23  peterg
 ## new state reresentation included
 ##
@@ -1102,10 +1105,13 @@ $1_state.txt:
 	mtt $mtt_switches $1 ss r; 
 	struc2state_txt2txt $1
 
-#SUMMARY state	state declaration (c) 
-$1_state.c:  $1_state.txt $1_sympar.c
-	txt2c $1 state
+#SUMMARY state	state declaration (m) 
+$1_state.m:  $1_state.txt $1_sympar.txt
+	txt2m $1 state
 
+#SUMMARY state	state declaration (c) 
+$1_state.c:  $1_state.txt $1_sympar.txt
+	txt2c $1 state
 
 #SUMMARY input	numerical input declaration (c) 
 ifeq ($switches,0)

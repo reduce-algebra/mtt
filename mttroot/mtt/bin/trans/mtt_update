@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  2000/10/13 09:28:16  peterg
+## Changed regexp to /\(.*$old.*=\)/
+##
 ## Revision 1.7  2000/10/13 08:56:51  peterg
 ## Output variables as column, not row.
 ##
@@ -65,7 +68,7 @@ case $rep in
 	    infofile=mtt_list.$ext
 	    moreinfofile=mtt_list_numpar.$ext
 	    grep "$rep" <$1_struc.txt |\
-	    awk '{printf("%s_%s_%s\n", $4, $5, $3)}' \
+	    awk '{printf("%s_%s\n", $4,$3)}' \
              > $infofile 
 	    cat $infofile $1_sympar.$ext> $moreinfofile  
 	    default='0.0'

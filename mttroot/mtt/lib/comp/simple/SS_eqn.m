@@ -19,6 +19,9 @@ function structure =  SS_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.7  1996/12/07 17:17:40  peterg
+% %% Added some ;
+% %%
 % %% Revision 1.6  1996/12/05 09:49:09  peterg
 % %% Explicit computation of port number from string.
 % %%
@@ -53,11 +56,11 @@ function structure =  SS_eqn(name,bond_number,bonds,direction,cr,args, ...
 effort_attribute = cr;
 flow_attribute = args;
 
-if length(effort_attribute)==0
+if strcmp(effort_attribute,'')
   effort_attribute = 'external';
 end;
 
-if length(flow_attribute)==0
+if strcmp(flow_attribute,'')
   flow_attribute = 'external';
 end;
 
@@ -115,7 +118,7 @@ else % named constant
       fprintf(filenum, '%s := MTTUi%1.0f;\n', ...
 	  varname(name, bond_number,-1), zero_outputs);
     else
-      mtt_info([effort_attribute, ' not appropriate for an output ']);
+      mtt_info([effort_attribute, ' not appropriate for an output '],filenum);
     end;
   end;
 end;
@@ -144,7 +147,7 @@ else % Named constant
       fprintf(filenum, '%s := MTTUi%1.0f;\n', ...
 	  varname(name, bond_number,1), zero_outputs);
     else
-      mtt_info([effort_attribute, ' not appropriate for an output ']);
+      mtt_info([effort_attribute, ' not appropriate for an output '], filenum);
     end;
   end;
 end;

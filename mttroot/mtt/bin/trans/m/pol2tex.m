@@ -11,6 +11,9 @@ function tex = pol2tex(pol,name,f)
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.2  2001/05/10 19:08:35  gawthrop
+  ## Cosmetic improvements
+  ##
   ## Revision 1.1  2001/05/10 11:44:40  gawthrop
   ## Useful conversion functions
   ##
@@ -20,7 +23,7 @@ function tex = pol2tex(pol,name,f)
   ###############################################################
 
   if nargin<2
-    name = "s"
+    name = "s";
   endif
   
   if nargin<3
@@ -41,9 +44,9 @@ function tex = pol2tex(pol,name,f)
   endif
   
   if n>2
-    tex = sprintf("%s{%s}^%i", tex, name, n-1);
+    tex = sprintf("%s%s^%i", tex, name, n-1);
   elseif n==2
-    tex = sprintf("%s{%s}", tex, name);
+    tex = sprintf("%s%s", tex, name);
   else
     tex = sprintf("%s", tex);
   endif
@@ -57,9 +60,9 @@ function tex = pol2tex(pol,name,f)
     ff = sprintf("%%s %%s %s",f);
     tex = sprintf(ff, tex, plusminus, abs(pol(i)));
     if i<n-1
-      tex = sprintf("%s{%s}^%i", tex, name, n-i);
+      tex = sprintf("%s%s^%i", tex, name, n-i);
     elseif i==n-1
-      tex = sprintf("%s{%s}", tex, name); 
+      tex = sprintf("%s%s", tex, name); 
     else
       tex = sprintf("%s", tex);
     endif

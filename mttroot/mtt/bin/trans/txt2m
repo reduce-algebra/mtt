@@ -15,6 +15,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.17  1999/11/04 04:54:24  peterg
+# %% Removed recreation of smx file.
+# %%
 # %% Revision 1.16  1999/03/06 02:18:10  peterg
 # %% Changed argument list.
 # %%
@@ -83,18 +86,6 @@ fi
 if [ "$representation" = "input" ]; then
     name='mttu';
     arg='(mttt,mttx,mtty)'
-fi
-if [ "$representation" = "simpar" ]; then
-    # Check if implicit method and generate xmx.m if
-    implicit=`grep -i METHOD $1_simpar.txt | grep -i -c IMPLICIT`
-    if [ "$implicit" = "0" ]; then
-echo Creating dummy $1_smx.m
-cat<<EOF > $1_smx.m
-%% No code as implicit method not used here %%
-EOF
-    else
-#	mtt -q $1 smx m
-    fi
 fi
 
 # Inform user

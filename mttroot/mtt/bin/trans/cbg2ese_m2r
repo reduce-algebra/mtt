@@ -16,6 +16,9 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.26  2000/12/05 09:04:54  peterg
+## *** empty log message ***
+##
 ## Revision 1.25  2000/12/01 14:51:26  peterg
 ## Major changes towards partioning
 ##
@@ -190,7 +193,8 @@ else # Partition the system
   mv $1_def.r mtt_all_def.r
 
 ## Recreate def file from the ese file directly
-function makedef {
+makedef ()
+{
 
 echo Creating $1_def.r
 
@@ -225,13 +229,15 @@ echo "END;" >> $1_def.r
 }
 
 
-function get_indices {
+get_indices ()
+{
   sys=$1
   which=$2
   awk '{if ($1==which) print $2}' which=$which < ${sys}_struc.txt
 }
 
-function convert_indices {
+convert_indices ()
+{
   sys=$1
   Which="input output state"
   for which in $Which; do

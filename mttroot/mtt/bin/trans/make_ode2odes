@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.43  2000/12/04 10:59:40  peterg
+## *** empty log message ***
+##
 ## Revision 1.42  2000/11/10 14:19:50  peterg
 ## Corrected the csex and cseo functions
 ##
@@ -167,7 +170,8 @@ else
     algorithm="mtt_euler(x,dx,ddt,$Nx,open_switches)"
 fi
 
-function make_m() {
+make_m()
+{
 #lang_header  $1 ode2odes m  'x,par,simpar' '[Y,X,t]' > $filename
 mtt_header ${sys} ode2odes m > $filename
 cat <<EOF >> $filename 
@@ -236,7 +240,8 @@ endfunction
 EOF
 } # make_m
 
-function make_cc() {
+make_cc() 
+{
 
 cat <<EOF  > $filename
 #include <octave/oct.h>
@@ -531,7 +536,7 @@ Usage: ${sys}_ode2odes (x, par, simpar)
   register double t	= 0.0;
 
   const double	ddt	= simpar ["dt"].double_value () / simpar ["stepfactor"].double_value ();
-  const int	ilast	= (int)round (simpar ["last"].double_value () / ddt);
+  const int	ilast	= (int)round (simpar ["last"].double_value () / ddt) + 1;
 
   // cse translation
   // LSODE will need ODEFUNC
@@ -562,7 +567,7 @@ cat <<EOF >> $filename
       x =  $algorithm; 
       t += ddt;
       j++;
-      j = (j == (int)simpar ["stepfactor"].double_value ()) ? j : 0;
+      j = (j == (int)simpar ["stepfactor"].double_value ()) ? 0 : j;
     }
 
   retval (0) = octave_value (y);

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1996/08/15 09:37:58  peter
+## Parameters in title.
+##
 ## Revision 1.4  1996/08/14 09:21:17  peter
 ## Gnu plot conversion now done externally in dat2gdat
 ##
@@ -32,7 +35,8 @@
 echo Creating $1.ps
 
 gnuplot << EOF
-  set terminal postscript
+  set terminal postscript eps color "Times-Roman" 24
+  set size 1.5,1.5
   set output '$1.ps'
   set grid
   set title "$(date) $2 "

@@ -15,6 +15,9 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.6  1996/08/09 08:27:29  peter
+% %% Added a few deguging lines
+% %%
 % %% Revision 1.5  1996/08/08 18:06:18  peter
 % %% Unified file naming scheme
 % %%
@@ -94,63 +97,77 @@ else % Copy the port bonds
   end;
 end;
 
+
 % Set initial status
 status = -ones(n_components,1);
 total = 2*n_bonds;
+
 done = sum(sum(abs(bonds)))/total*100;
 
-old_done = inf;
-
-while done~=old_done
-  disp(sprintf('Causality is %3.0f%s complete.', done, pc));
-  old_done = done;
+% Outer while loop sets preferred causality
+ci_index=1;
+while ci_index>0
+  old_done = inf;
+  % Inner loop propogates causality
+  while done~=old_done
+    disp(sprintf('Causality is %3.0f%s complete.', done, pc));
+    old_done = done;
   
-  for i = 1:n_components
-    comp = nozeros(components(i,:));
-    bond_list = abs(comp);
-    direction = sign(comp)'*[1 1];
-    % Convert from arrow orientated to component orientated causality
-    comp_bonds = bonds(bond_list,:).*direction;
-    eval([ '[comp_type,name,cr,arg] = ', system_type, '_cmp(i);' ]);
-    % change name of 0 and 1 components -- matlab doesn't like numbers here
-    if strcmp(comp_type,'0')
-      comp_type = 'zero';
-    end;
-    if strcmp(comp_type,'1')
-      comp_type = 'one';
+    for i = 1:n_components
+      comp = nozeros(components(i,:));
+      bond_list = abs(comp);
+      direction = sign(comp)'*[1 1];
+      % Convert from arrow orientated to component orientated causality
+      comp_bonds = bonds(bond_list,:).*direction;
+      eval([ '[comp_type,name,cr,arg] = ', system_type, '_cmp(i);' ]);
+      % change name of 0 and 1 components -- matlab doesn't like numbers here
+      if strcmp(comp_type,'0')
+	comp_type = 'zero';
+      end;
+      if strcmp(comp_type,'1')
+	comp_type = 'one';
+      end;
+      
+      % Component causality procedure name
+      cause_name = [comp_type, '_cause'];
+      
+      % Invoke  the appropriate causality procedure
+      if exist(cause_name)~=2 % Try a compound component
+	% disp('------------PUSH-----------------');
+	[comp_bonds,s] = abg2cbg(name, comp_type, full_name, comp_bonds, ...
+	    infofile);
+	status(i)=max(abs(s));
+	% disp('------------POP-----------------');
+      else % its a simple component
+	% disp(['---', name, ' (', cause_name, ') ---']);
+	% comp_bonds
+	eval([ '[comp_bonds,status(i)] = ', cause_name, '(comp_bonds);' ]);
+	% comp_bonds
+      end;
+      
+      % Update the full bonds list
+      % and convert from component orientated to arrow orientated causality
+      bonds(bond_list,:) = comp_bonds.*direction; 
     end;
     
-    % Component causality procedure name
-    cause_name = [comp_type, '_cause'];
     
-    % Invoke  the appropriate causality procedure
-    if exist(cause_name)~=2 % Try a compound component
-      disp('------------PUSH-----------------');
-      [comp_bonds,s] = abg2cbg(name, comp_type, full_name, comp_bonds, ...
-	  infofile);
-      status(i)=max(abs(s));
-      disp('------------POP-----------------');
-    else % its a simple component
-      disp(['---', name, ' (', cause_name, ') ---']);
-      comp_bonds
-      eval([ '[comp_bonds,status(i)] = ', cause_name, '(comp_bonds);' ]);
-      comp_bonds
-    end;
+    done = sum(sum(abs(bonds)))/total*100;
+    %  mtt_info(sprintf('Causality is %3.0f%s complete.', done, pc), infofile);
     
-    % Update the full bonds list
-    % and convert from component orientated to arrow orientated causality
-    bonds(bond_list,:) = comp_bonds.*direction; 
   end;
-
-
-  done = sum(sum(abs(bonds)))/total*100;
-  %  mtt_info(sprintf('Causality is %3.0f%s complete.', done, pc), infofile);
+  
+  % Set causality of C and I which is not set
+  [ci_index,prefered] = getdynamic(status,system_type);
+  if ci_index>0
+    bond_index = components(ci_index,1) % its a one port
+    bonds(bond_index,1) = prefered;
+    bonds(bond_index,2) = prefered;
+  end;
   
 end;
 
-
+% Print final causality
 final_done =  (sum(status==zeros(n_components,1))/n_components)*100;;
-
 mtt_info(sprintf('Final causality is %3.0f%s complete.', final_done, pc),
 infofile);
 
@@ -183,6 +200,10 @@ for i = 1:n_ports
 end;
 
 disp('----------------------');
+
+
+
+
 
 
 

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1996/11/01 12:34:54  peterg
+## Initial revision
+##
 ###############################################################
 
 topic=$1
@@ -24,7 +27,10 @@ fi;
 
 if [ "$topic" = "comps" ]; then
   echo 'Components:'
-  grep -h '\%SUMMARY' $MTTPATH/comp/compound/*_lbl.txt  $MTTPATH/comp/simple/*_cause.m|\
+  grep -h '\%SUMMARY' \
+	$MTTPATH/comp/compound/*_lbl.txt  \
+	$MTTPATH/comp/simple/*_cause.m \
+	$MTTPATH/cr/r/*.cr|\
   sed 's/\%SUMMARY[ ]*/	/' |\
   grep $subtopic |\
   sed 's/:[ ]*/	/' |\
@@ -37,16 +43,30 @@ elif [ "$topic" = "reps" ]; then
   grep $subtopic |\
   sort
 
+elif [ "$topic" = "crs" ]; then
+  echo 'Constitutive relationships'
+  grep -h '\%SUMMARY' \
+	*.cr \
+	$MTTPATH/cr/r/*.cr 2>/dev/null |\
+  sed 's/\%SUMMARY[ ]*/	/' |\
+  grep $subtopic |\
+  sed 's/:[ ]*/	/' |\
+  sort
+
 else
   grep -h '\%SUMMARY' \
        $MTTPATH/comp/compound/$1_lbl.txt \
-       $MTTPATH/comp/simple/$1_cause.m 2>/dev/null |\
+       $MTTPATH/comp/simple/$1_cause.m \
+       $MTTPATH/cr/r/$1.cr \
+       2>/dev/null |\
   sed 's/\%SUMMARY[ ]*//' |\
   sed 's/:[ ]*/	/'
 
   grep -h '\%DESCRIPTION' \
        $MTTPATH/comp/compound/$1_lbl.txt \
-       $MTTPATH/comp/simple/$1_cause.m 2>/dev/null |\
+       $MTTPATH/comp/simple/$1_cause.m \
+       $MTTPATH/cr/r/$1.cr \
+	2>/dev/null |\
   sed 's/\%DESCRIPTION[	]*/	  /' |\
   sed 's/:[ ]*/	/'
 fi;

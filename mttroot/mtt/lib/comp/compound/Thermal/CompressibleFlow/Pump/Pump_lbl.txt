@@ -1,9 +1,16 @@
 %SUMMARY Pump Ideal pump component for compressible flow
+
+%DESCRIPTION Pump represents an ideal pumping component for compressible
+%DESCRIPTION or incompressible flow though a pipe, it may also be used as a turbine.
+%DESCRIPTION The pump is ideal in the sense that the mass flow rate
+%DESCRIPTION depends only on the shaft speed.
+
 %DESCRIPTION Parameter 1: c_v - specific heat of fluid
 %DESCRIPTION Parameter 2: Parameter passed to Density component
 %DESCRIPTION Parameter 3: alpha = (n-1)/n, n coefficient of polytropic
 %DESCRIPTION expansion.
 %DESCRIPTION Parameter 4: k_p pump constant: mass flow = k_p*shaft speed
+
 %ALIAS	in  Thermal_in,Hydraulic_in
 %ALIAS	out Thermal_out,Hydraulic_out
 
@@ -15,8 +22,8 @@
 
 %ALIAS	Work	Shaft
 
-%ALIAS  $1		c_p
-%ALIAS  $2		ideal_gas,r
+%ALIAS  $1		c_v
+%ALIAS  $2		density,ideal_gas,r
 %ALIAS  $3		alpha
 %ALIAS  $4		flow,k_p
 
@@ -27,6 +34,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.6  1998/07/03 15:02:25  peterg
+% %% Work alias added
+% %%
 % %% Revision 1.5  1998/07/03 14:43:24  peterg
 % %% Added parameter aliases
 % %%
@@ -51,19 +61,19 @@
 
 
 
-% Component type Pipe
-	pipe	none			c_p;ideal_gas,r
+% Component type wPipe
+	pipe	none			c_v;density,ideal_gas,r
 
 % Component type Poly
 	poly		Poly		alpha
 
 % Component type SS
-	[Hydraulic_in]		external	external
-	[Hydraulic_out]	external	external
-	[Shaft]		external	external
-	[Thermal_in]	external	external
-	[Thermal_out]	external	external
-	T		external	0
+	[Hydraulic_in]	SS	external,external
+	[Hydraulic_out]	SS	external,external
+	[Shaft]		SS	external,external
+	[Thermal_in]	SS	external,external
+	[Thermal_out]	SS	external,external
+	T		SS	external,0
 
 % Component type TF
 	k_p		lin	flow,k_p

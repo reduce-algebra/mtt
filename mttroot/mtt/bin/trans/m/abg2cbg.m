@@ -17,6 +17,9 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.24  1998/06/25 17:45:03  peterg
+% %% No change -- but checked that explicit causality works!
+% %%
 % %% Revision 1.23  1998/04/04 10:46:37  peterg
 % %% Coerces port bonds to have smae direction as the imposing bonds
 % %% _cbg now generates the (coerced) components as welll as the (coerced)
@@ -262,6 +265,9 @@ while( ci_index>0)
       
 	% Component causality procedure name
 	cause_name = [comp_type, '_cause'];
+
+	% Component equation procedure name
+	eqn_name = [comp_type, '_eqn'];
 	
         % Bonds on this component (arrow-orientated) -- these become the
         % port bonds on the ith component of this subsystem.
@@ -273,13 +279,27 @@ while( ci_index>0)
 	
 
       % Invoke  the appropriate causality procedure
-      if exist(cause_name)~=2 % Try a compound component
+      if exist(eqn_name)~=2 % Try a compound component
         % Port status depends on whether the corresponding bonds are
         %  fully causal at this stage.
         one = ones(n_bonds,1);
         port_status = (sum(abs(comp_bonds'))'==2*one) - one;
+
 	% Direction of bonds on the ports (0 if next to port)
 	port_bond_direction = -sign(components(i,1:n_bonds))';
+
+	% If there is a predefined causality function; use it
+        if exist(cause_name)==2
+    	  % Convert from arrow orientated to component orientated causality
+	  comp_bonds = comp_bonds.*(port_bond_direction*[1 1]);
+	
+          % Evaluate the built-in causality procedure
+	  eval([ '[comp_bonds] = ', cause_name, '(comp_bonds);' ]);
+
+         % and convert from component orientated to arrow orientated causality
+         comp_bonds = comp_bonds.*(port_bond_direction*[1 1]); 
+        end;
+
 	[comp_bonds,s] = abg2cbg(name, comp_type, full_name, 
             comp_bonds, port_bond_direction, port_status, ...
 	    typefile, infofile);
@@ -305,8 +325,8 @@ while( ci_index>0)
         % Evaluate the built-in causality procedure
 	eval([ '[comp_bonds,status(i)] = ', cause_name, '(comp_bonds);' ]);
 
-       % and convert from component orientated to arrow orientated causality
-       comp_bonds = comp_bonds.*direction; 
+        % and convert from component orientated to arrow orientated causality
+        comp_bonds = comp_bonds.*direction; 
        
        comp_bonds_out = comp_bonds
       end;

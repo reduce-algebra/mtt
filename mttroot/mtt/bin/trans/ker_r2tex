@@ -1,0 +1,61 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: ker_r2tex
+# Reduce constrained-state matrices to LaTex constrained-state matrices.
+# P.J.Gawthrop  9 Sep 1991, May 1994
+# Copyright (c) P.J.Gawthrop, 1991, May 1994, 1996.
+# Copyright (C) 2001 by Peter J. Gawthrop
+
+
+# Inform user
+echo Creating $1_ker.tex
+
+# Remove the old log file
+rm -f ker_r2tex.log
+
+# Use reduce to accomplish the transformation
+reduce >ker_r2tex.log << EOF
+
+%Read the definitions file
+in "$1_def.r";
+
+%Read the constrained-state matrices file
+in "$1_ker.r";
+
+%Read the symbolic parameters file
+%%in "$1_sympar.r";
+
+%Read the substitution file
+in "$1_subs.r";
+
+%Read the simplification file
+in "$1_simp.r";
+
+%Read the formatting function
+in "$MTTPATH/trans/latex_matrix.r";
+
+OFF Echo;
+OFF Nat;
+
+MATRIX MTT_Matrix(MTTNy-MTTNu,MTTNy);
+
+OUT "$1_ker.tex";
+
+%Write out the kernel matrix
+write "%Kernel  matrices $1";
+write "%File: $1_ker.tex";
+write"";
+
+MTT_Matrix := MTTR$ 
+MTT_Matrix_name := "MTTR"$
+MTT_Matrix_n := MTTNy-MTTNu$
+MTT_Matrix_m := MTTNy$
+LaTeX_Matrix()$
+
+SHUT "$1_ker.tex";
+quit;
+EOF

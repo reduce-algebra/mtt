@@ -13,6 +13,13 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.12  2002/06/28 10:13:40  geraint
+## Includes fix_c.r in ese2rdae and def2write_r to eliminate occurrances of x**y.
+##
+## Revision 1.11.2.1  2002/06/05 11:14:51  geraint
+## ae.r now generated using def2write_r like cse?.r
+## fix_c.r called at ese2rdae stage so that pow gets fixed in ae.r.
+##
 ## Revision 1.11  2002/05/17 09:14:58  geraint
 ## Optimises each line in a separate session. Allows larger models to be built.
 ##
@@ -86,6 +93,11 @@ Nyz=`mtt_getsize $sys yz` # Zero outputs
 
 # Set up representation-specific stuff
 case $rep in
+    ae)
+	matrices='Yz'
+	ns="$Nyz"
+	ms="1"
+	;;
     cse)
         matrices='EdX E'
         ns="$Nx $Nx"
@@ -184,7 +196,7 @@ EOF
 shut "$tmp2"$
 EOF
     } >> $tmp
- 
+    echo "%%% $lhs %%%" >> def2write_r1.log
     ${SYMBOLIC:-reduce} < $tmp >> def2write_r1.log 2>> def2write_r2.log
     cat $tmp2 | gawk -v RS=';' '($2 == ":=") {print $0}' > $tmp3
     cat $tmp3 | mtt_fix_integers
@@ -212,18 +224,20 @@ for matrix in $matrices; do
     m=`first "$ms"`; ms=`rest "$ms"`
     is=`n2m 1 $n`; 
     js=`n2m 1 $m`; 
-    for i in $is; do
-      for j in $js; do
-	if [ ${opt:-""} = "-optimise" ]; then
-	    name=`echo MTT$matrix'('$i','$j')'`
-	    mtt_optimise $1 "$comma$name" "$name"
-	    comma=''
-	else
-	    echo 'write'
-	    name=`echo MTT$matrix'('$i','$j')'`
-	    echo '  '$comma$name ':=' $name '$'
-	fi >> $1_$2_write.r
-      done
-    done
+    if [ $n -ge 1 ]; then
+	for i in $is; do
+	    for j in $js; do
+		if [ ${opt:-""} = "-optimise" ]; then
+		    name=`echo MTT$matrix'('$i','$j')'`
+		    mtt_optimise $1 "$comma$name" "$name"
+		    comma=''
+		else
+		    echo 'write'
+		    name=`echo MTT$matrix'('$i','$j')'`
+		    echo '  '$comma$name ':=' $name '$'
+		fi >> $1_$2_write.r
+	    done
+	done
+    fi
 done
 echo ';END;'                           >>$1_$2_write.r

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  2000/09/07 12:07:26  peterg
+## *** empty log message ***
+##
 ## Revision 1.7  2000/09/01 13:34:15  peterg
 ## Exit on option error
 ##
@@ -177,44 +180,44 @@ if [ -n "$partition" ]; then
   subsystems=`mtt_get_subsystems $1`
 
   for subsystem in $subsystems; do
-  echo Doing $subsystem
-  ucname="MTT_"$subsystem"_uc"
-
-  Nu=`mtt_getsize -internal $subsystem"_1" u`
-  echo Nu $Nu
-
-  # Use symbolic algebra to accomplish the transformation
-  $SYMBOLIC >$logname  << EOF
-
-  %Read the formatting function
-  in "$MTTPATH/trans/reduce_matrix.r";
-
-  % Definitions
-  in "$defname";
-
-  % Elementary system equations
-  in "$esename";
-
-  OFF Echo;
-  OFF Nat;
- 
-  %Create the output file
-  OUT "mtt_junk";
-  % Connecting inputs
-  MTT_Matrix := $ucname $
-  MTT_Matrix_name := "$ucname" $
-  MTT_Matrix_n := $Nu $
-  MTT_Matrix_m := 1$
-  Reduce_Matrix()$
-
-  shut "mtt_junk";
+    echo Doing $subsystem
+    ucname="MTT_"$subsystem"_uc"
+  
+    Nu=`mtt_getsize -internal $subsystem"_1" u`
+    echo Nu $Nu
+  
+    # Use symbolic algebra to accomplish the transformation
+    $SYMBOLIC >$logname  << EOF
+  
+    %Read the formatting function
+    in "$MTTPATH/trans/reduce_matrix.r";
+  
+    % Definitions
+    in "$defname";
+  
+    % Elementary system equations
+    in "$esename";
+  
+    OFF Echo;
+    OFF Nat;
+   
+    %Create the output file
+    OUT "mtt_junk";
+    % Connecting inputs
+    MTT_Matrix := $ucname $
+    MTT_Matrix_name := "$ucname" $
+    MTT_Matrix_n := $Nu $
+    MTT_Matrix_m := 1$
+    Reduce_Matrix()$
+  
+    shut "mtt_junk";
 EOF
-  echo >> $1_rdae.r
-  echo %Connections for subsystem $subsystem  >> $1_rdae.r
-  echo >> $1_rdae.r
-
-  cat mtt_junk >> $1_rdae.r
-  rm -rf mtt_junk
+    echo >> $1_rdae.r
+    echo %Connections for subsystem $subsystem  >> $1_rdae.r
+    echo >> $1_rdae.r
+  
+    cat mtt_junk >> $1_rdae.r
+    rm -rf mtt_junk
   done
 fi
 

@@ -1,4 +1,3 @@
-//#define pi 3.14159 // Predefine pi
 
 #ifndef HAVE_USEFUL_FUNCTIONS_HH
 #define HAVE_USEFUL_FUNCTIONS_HH
@@ -6,35 +5,40 @@
 
 #ifndef __cplusplus
 #define inline			/* strip */
-#endif // ! __cplusplus
-
+#define cast_to_double	(double)
+typedef unsigned int bool;
+const bool true = 1;
+const bool false = 0;
+#else
+#define cast_to_double	static_cast<double>
+#endif /* ! __cplusplus */
 
 static inline double
 max (const double x1, const double x2)
 {
-  return static_cast<double>((x1 >= x2) ? x1 : (x1 < x2) ? x2 : 0);
+  return cast_to_double ((x1 >= x2) ? x1 : (x1 < x2) ? x2 : 0);
 }
 
 static inline double
 min (const double x1, const double x2)
 {
-  return static_cast<double>((x1 <= x2) ? x1 : (x1 > x2) ? x2 : 0);
+  return cast_to_double ((x1 <= x2) ? x1 : (x1 > x2) ? x2 : 0);
 }
 
 static inline double
 nonsingular (const double x)
 {
-  return static_cast<double>((x == 0) ? 1.0e-30 : x);
+  return cast_to_double ((x == 0) ? 1.0e-30 : x);
 }
 
 static inline double
 sign (const double x)
 {
-  return static_cast<double>((x > 0) ? +1 : (x < 0) ? -1 : 0);
+  return cast_to_double ((x > 0) ? +1 : (x < 0) ? -1 : 0);
 }
 
 
-// Octave functions
+/* Octave functions */
 #ifdef __cplusplus
 static Matrix
 ones (const int r = 1, const int c = 1)
@@ -77,8 +81,8 @@ zeros (const int r, const int c)
   Matrix m (r, c, 0.0);
   return m;
 }
-#endif // __cplusplus
+#endif /* __cplusplus */
 
 
 
-#endif // HAVE_USEFUL_FUNCTIONS_HH
+#endif /* HAVE_USEFUL_FUNCTIONS_HH */

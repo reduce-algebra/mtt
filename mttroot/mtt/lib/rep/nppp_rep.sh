@@ -295,15 +295,7 @@ case ${lang} in
 	;;
     dat2)
 	## The dat2 language (output data)
-	if [ -f "${dat2_file}" ]; then
-	  if [ "${dat2_file}" -ot "${nppp_numpar_file}" ]; then
-	    make_dat2; 
-	  else 
-	    echo Using ${dat2_file}
-	  fi
-	else
-	  make_dat2;    
-        fi
+	make_dat2; 
 	;;
     gdat)
         cp ${dat2_file} ${dat2s_file} 

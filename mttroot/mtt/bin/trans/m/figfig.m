@@ -14,6 +14,9 @@ function figfig(filename,language,boxed,monochrome)
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.9  2002/09/12 08:39:27  gawthrop
+  ## Removed spurious text
+  ##
   ## Revision 1.8  2002/09/11 15:04:59  gawthrop
   ## Optional boxing
   ##
@@ -54,6 +57,7 @@ function figfig(filename,language,boxed,monochrome)
   
   eval(sprintf("gset output \"%s\" ",figfilename));
 
+  gset nokey			# No legend
   if (monochrome==1)
     gset term fig monochrome portrait fontsize 16 size 20 10 metric thickness 3
   else

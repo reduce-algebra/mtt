@@ -5,6 +5,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2001/06/04 08:18:52  gawthrop
+## Putting documentation under CVS
+##
 ## Revision 1.2  1998/07/02 18:40:07  peterg
 ## More on install option
 ##
@@ -18,12 +21,12 @@
 #DOCPATH = /home/peterg/web-docs/software/MTT/doc
 #INFOPATH = /usr/info
 
-MTTPATH = /home/peterg/mtt_new/mtt
-MTT_COMPONENTS = /home/eng4/peterg/mtt_new/mtt/lib/comp
-MTT_EXAMPLES = /home/eng4/peterg/mtt_new/mtt/lib/examples
-DOCPATH = /home/peterg/web-docs/software/MTT/doc
+MTTPATH ?= /home/peterg/mtt_new/mtt
+MTT_COMPONENTS ?= /home/eng4/peterg/mtt_new/mtt/lib/comp
+MTT_EXAMPLES ?= /home/eng4/peterg/mtt_new/mtt/lib/examples
+DOCPATH ?= /home/peterg/web-docs/software/MTT/doc
 #INFOPATH = $(DOCPATH)
-INFOPATH = /usr/info
+INFOPATH ?= /usr/info
 
 all: mtt.info  mtt.html mtt.pdf mtt.ps.gz 
 

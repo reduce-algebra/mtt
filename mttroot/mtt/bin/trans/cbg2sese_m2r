@@ -9,6 +9,9 @@
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.1  2003/03/13 15:44:53  gawthrop
+  ## The main transformation for sorted elementary equations
+  ##
   ## Revision 1.3  2003/03/13 09:00:22  peterg
   ## Revised for new mtt_component_eqn arg list
   ##
@@ -24,7 +27,18 @@
 ## cbg2seqn_m2r: Converts causal bond graph into sorted equations
 ## Copyright (C) 2003 by Peter J. Gawthrop
 
+while [ -n "`echo $1 | grep '^-'`" ]; do
+  case $1 in
+	-I )
+                info=info;;
 
+	*)
+		echo "$1 is an invalid argument - ignoring" ;;
+  esac
+  shift
+done
+
+infofile='mtt_info.txt';
 strucfile=$1_struc.txt
 outfile=$1_sese.r
 make=mtt_make_sese.m
@@ -72,7 +86,7 @@ gawk '{
   if ($1==which) {
      printf("printf(\"\\n%s The %s equation for %s\");\n", CD, $1, $4);
      printf("[known] = mtt_component_eqn\\\n");
-     printf("(\"%s\",1,mtt_other_causality(\"%s\"),known);\n", $4, $6);
+     printf("(\"%s\",1,mtt_other_causality(\"%s\"),known,\"\",\"\");\n", $4, $6);
    }
 }' "CD=${CD}" which=$1 < ${strucfile}         
 }
@@ -124,3 +138,9 @@ done
 cat<<EOF >> ${outfile}
 END;
 EOF
+
+## Print info
+
+if [ "$info" = "info" ]; then
+  cat $infofile
+fi

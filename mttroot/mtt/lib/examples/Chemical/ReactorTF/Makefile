@@ -6,7 +6,7 @@ ReactorTF_pic.ps: ReactorTF_pic.fig
 
 ReactorTF_zero_1.ps: ReactorTF_abg.fig
 	mtt -q ReactorTF sm m; mtt -q ReactorTF numpar m;
-	mtt -q Reactor sympar m;
+	mtt -q ReactorTF sympar m;
 	octave MakeFigure.m
 
 ReactorTF_zero_2.ps: ReactorTF_zero_1.ps

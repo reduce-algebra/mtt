@@ -12,6 +12,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.18  2000/12/03 16:06:22  peterg
+## Fixed bug in generating dummies
+## Added logic declarations
+##
 ## Revision 1.17  2000/12/01 20:55:01  peterg
 ## Added Geraint's fix for zeroing matrices
 ##
@@ -345,7 +349,7 @@ cat <<EOF
 
 $Lc Switches $Rc
 EOF
-strip_comments <${system}_logic.txt | awk '{printf("  int %s = 0;\n", tolower($1))}' 
+strip_comments <${system}_switch.txt | awk '{printf("  int %s = 0;\n", tolower($1))}' 
 
 fi
 

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/12/28 12:24:03  peterg
+## Put under RCS
+##
 ## Revision 1.2  1996/08/25 10:11:32  peter
 ## Added END in output file.
 ## Error handling.
@@ -23,11 +26,23 @@
 ##
 ###############################################################
 
+optimise=''; optimise_msg=''
+while [ -n "`echo $1 | grep '^-'`" ]; do
+    case $1 in
+	-optimise)
+	    optimise='-optimise'
+	    optimise_msg=' with optimisation' ;;
+	*)
+	    echo "$1 is an invalid argument - ignoring" ;;
+    esac
+    shift
+done
+
 # Create the reduce output code
-def2write_r $1 $2
+def2write_r $optimise $1 $2
 
 # Inform user
-echo Creating $1_$2.r
+echo Creating $1_$2.r $optimise_msg
 
 case $2 in
     sm)

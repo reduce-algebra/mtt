@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.318  2001/07/24 04:17:30  gawthrop
+## Removed all " from #SUMMARY lines - messes up xmtt
+##
 ## Revision 1.317  2001/07/24 00:55:17  gawthrop
 ## Resolved clashes -- marked with ## >>>
 ##
@@ -2539,7 +2542,7 @@ ifneq ($partition,)
 	echo Doing subsystems
 	mtt_make_subsystems  ${sys} cse r
 endif
-	dae2cse_r $Solve ${Subsystem}; tidy ${Subsystem}_cse.r #$1_subs.r
+	dae2cse_r $optimise $Solve ${Subsystem}; tidy ${Subsystem}_cse.r #$1_subs.r
 $1_csex.r: $1_cse.r
 	touch $1_csex.r
 $1_cseo.r: $1_cse.r
@@ -2607,7 +2610,7 @@ $1_ode.r: $1_dae.r
 	cp $1_dae.r  $1_ode.r
 else
 $1_ode.r: $1_cse.r $1_cseo.r $1_def.r $1_sympar.r $1_subs.r
-	cse2ode_r $1; tidy $1_ode.r
+	cse2ode_r $optimise $1; tidy $1_ode.r
 endif
 
 $1_odeo.r: $1_ode.r
@@ -2626,7 +2629,7 @@ $1_ode.tex: $1_ode.r  $1_sympar.r $1_simp.r
 
 
 $1_lde.r: $1_dae.r
-	dae2lde_r $1; tidy $1_lde.r
+	dae2lde_r $optimise $1; tidy $1_lde.r
 
 $1_lde.tex: $1_lde.r  $1_sympar.r $1_simp.r
 	lde_r2tex $1; latex_tidy $1_lde.tex
@@ -2851,7 +2854,7 @@ $1_scsm.tex: $1_scsm.r  $1_sympar.r $1_simp.r
 #SUMMARY sm	state matrices (ps)
 #Linearised system: state matrices
 $1_sm.r: $1_csm.r $1_def.r $1_cr.r $1_ss.r $1_sympar.r
-	csm2sm_r $1 sm; tidy $1_sm.r
+	csm2sm_r $optimise $1 sm; tidy $1_sm.r
 $1_sm.m: $1_def.r $1_sm.r $1_sympars.txt 
 		mtt_r2m $optimise  -parameters $1 sm
 $1_sm.icad:  $1_sm.m $1_numpar.m
@@ -2868,7 +2871,7 @@ $1_sm.tex: $1_sm.r  $1_sympar.r $1_simp.r
 #SUMMARY ssm	sensitivity state matrices (ps)
 #Linearised system: sensitivity state matrices
 $1_ssm.r: $1_scsm.r $1_def.r $1_cr.r $1_ss.r $1_sympar.r
-	csm2sm_r $1 ssm; tidy $1_ssm.r
+	csm2sm_r $optimise $1 ssm; tidy $1_ssm.r
 $1_ssm.m: $1_def.r $1_ssm.r $1_sympars.txt 
 		mtt_r2m $optimise -parameters $1 ssm
 $1_ssm.tex: $1_ssm.r  $1_sympar.r $1_simp.r

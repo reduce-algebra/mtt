@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  2001/07/13 04:54:04  geraint
+## Branch merge: numerical-algebraic-solution back to main.
+##
 ## Revision 1.1.4.1  2001/05/04 04:07:24  geraint
 ## Numerical solution of algebraic equations.
 ## sys_ae.cc written for unsolved inputs.
@@ -30,13 +33,25 @@
 ##
 ###############################################################
 
+optimise=''; optimise_msg=''
+while [ -n "`echo $1 | grep '^-'`" ]; do
+    case $1 in
+	-optimise)
+	    optimise='-optimise'
+	    optimise_msg=' with optimisation' ;;
+	*)
+	    echo "$1 is an invalid argument - ignoring" ;;
+    esac
+    shift
+done
+
 # Create the reduce output code
-def2write_r $1 ode
-def2write_r $1 odeo
+def2write_r $optimise $1 ode
+def2write_r $optimise $1 odeo
 
 #Inform user
-echo Creating $1_ode.r
-echo Creating $1_odeo.r
+echo Creating $1_ode.r $optimise_msg
+echo Creating $1_odeo.r $optimise_msg
 
 # Remove the old log file
 rm -f cse2ode_r.log

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  2001/07/13 04:54:04  geraint
+## Branch merge: numerical-algebraic-solution back to main.
+##
 ## Revision 1.7.2.1  2001/05/04 04:07:24  geraint
 ## Numerical solution of algebraic equations.
 ## sys_ae.cc written for unsolved inputs.
@@ -43,11 +46,23 @@
 ##
 ###############################################################
 
+optimise=''
+while [ -n "`echo $1 | grep '^-'`" ]; do
+    case $1 in
+	-optimise)
+	    opt='-optimise'
+	    optimise_msg=' with optimisation' ;;
+	*)
+	    echo "$1 is an invalid argument - ignoring" ;;
+    esac
+    shift
+done
+
 sys=$1 # System name
 rep=$2 # System representation
 
 # Inform User
-echo Creating $1_$2_write.r
+echo Creating $1_$2_write.r $optimise_msg
 
 # Find system constants
 Nx=`mtt_getsize $sys x` # States
@@ -105,7 +120,13 @@ case $rep in
 esac
 
 # Write out the code
-echo 'off echo$ load scope$'                    >$1_$2_write.r
+echo 'off echo$'                    >$1_$2_write.r
+
+if [ ${opt:-""} = "-optimise" ]; then
+    echo 'load scope$'
+else
+    echo 'load gentran$'
+fi >> $1_$2_write.r
 
 for matrix in $matrices; do
     n=`first "$ns"`; ns=`rest "$ns"` 
@@ -114,11 +135,17 @@ for matrix in $matrices; do
     js=`n2m 1 $m`; 
     for i in $is; do
       for j in $js; do
-        echo 'optimize'                      >>$1_$2_write.r
-        name=`echo MTT$matrix'('$i','$j')'`
-        echo '  '$comma$name ':=:' $name >>$1_$2_write.r
-        echo 'INAME mtt_tmp$'                 >>$1_$2_write.r
-        comma=''
+	if [ ${opt:-""} = "-optimise" ]; then
+       	    echo 'optimize'
+	    name=`echo MTT$matrix'('$i','$j')'`
+	    echo '  '$comma$name ':=:' $name
+	    echo 'INAME mtt_tmp$'
+	    comma=''
+	else
+	    echo 'write'
+	    name=`echo MTT$matrix'('$i','$j')'`
+	    echo '  '$comma$name ':=' $name '$'
+	fi >> $1_$2_write.r
       done
     done
 done

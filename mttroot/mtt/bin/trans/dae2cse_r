@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.16  2001/07/13 04:54:04  geraint
+## Branch merge: numerical-algebraic-solution back to main.
+##
 ## Revision 1.15.2.4  2001/06/26 00:55:48  geraint
 ## Writes algebraic equation Jacobian _aej.r (not used yet).
 ##
@@ -95,12 +98,17 @@
 ##
 ###############################################################
 
-#Explicit solution option
-solve=0
+#Explicit solution option and optimise option
+solve=0; solve_msg=''
+optimise=''; optimise_msg=''
 while [ -n "`echo $1 | grep '^-'`" ]; do
   case $1 in
         -A )
-                solve=1;;
+                solve=1
+		solve_msg=' with explicit solution of algebraic equations' ;;
+	-optimise)
+	    optimise='-optimise'
+	    optimise_msg=' with optimisation' ;;
         *)
                 echo "$1 is an invalid argument - ignoring" ;;
   esac
@@ -108,18 +116,13 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 done
 
 # Create the reduce output code
-def2write_r $1 cse      
-def2write_r $1 csex  # Version without E matrix
-def2write_r $1 cseo
+def2write_r $optimise $1 cse 
+def2write_r $optimise $1 csex # Version without E matrix
+def2write_r $optimise $1 cseo
 
-if [ "$solve" = "1" ]; then
-    echo "Creating $1_cse.r (with explicit solution of algebraic equations)"
-else
-    echo "Creating $1_cse.r"
-fi
-
-echo "Creating $1_csex.r"
-echo "Creating $1_cseo.r"
+echo "Creating $1_cse.r $solve_msg $optimise_msg"
+echo "Creating $1_csex.r $optimise_msg"
+echo "Creating $1_cseo.r $optimise_msg"
 
 # Remove the old log file
 rm -f dae2cse_r.log

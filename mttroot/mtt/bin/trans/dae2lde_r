@@ -13,15 +13,30 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/12/28 12:25:13  peterg
+## Initial revision
+##
 ###############################################################
 
+optimise=''; optimise_msg=''
+while [ -n "`echo $1 | grep '^-'`" ]; do
+    case $1 in
+	-optimise)
+	    optimise='-optimise'
+	    optimise_msg=' with optimisation' ;;
+	*)
+	    echo "$1 is an invalid argument - ignoring" ;;
+    esac
+    shift
+done
+
 # Create the reduce output code
-def2write_r $1 lde
-def2write_r $1 ldeo
+def2write_r $optimise $1 lde
+def2write_r $optimise $1 ldeo
 
 #Inform user
-echo Creating $1_lde.r
-echo Creating $1_ldeo.r
+echo Creating $1_lde.r $optimise_msg
+echo Creating $1_ldeo.r $optimise_msg
 
 # Remove the old log file
 rm -f cse2lde_r.log

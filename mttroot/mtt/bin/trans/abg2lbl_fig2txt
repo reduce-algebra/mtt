@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.1  1997/03/18  13:55:01  peterg
+# Initial revision
+#
 ###############################################################
 
 
@@ -51,10 +54,17 @@ sort | \
 tee $1_raw_list | \
 sort -u> $1_unique_raw_list
 
-grep -v  '\[[0-9]*\]'  $1_raw_list | awk --field-separator ':' \
- '{if ($1 ~ "SS") \
+#Write out non-unique names
+#echo 'Non-unique names (if any):'
+#diff $1_unique_raw_list  $1_raw_list | grep '>' | sed 's/>/	/'
+
+#Write out the outline lbl file
+grep -v  '\[[0-9]*\]'  $1_unique_raw_list | awk --field-separator ':' \
+ '{if (($1 !~ "0")&&($1 !~ "1")) \
+    {if ($1 ~ "SS") \
 	print "% Component type", $1, "\n\t" $2 "\t\texternal\texternal";
 	else \
-	print "% Component type", $1, "\n\t" $2 "\t\tlin\t\targ1,arg2" }' \
+	print "% Component type", $1, "\n\t" $2"\t\tlin\t\targ1,arg2"} \
+ }' \
 >>$1_lbl.txt
 

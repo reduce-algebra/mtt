@@ -4,9 +4,9 @@
      ##### Model Transformation Tools #####
      ######################################
 
-# Bourne shell script: mtt_p2oct
+# Bourne shell script: mtt_p2cc
 
-# Pascal to .oct (octave loadable binary).
+# Pascal to .cc (for octave .oct files).
 # P.J.Gawthrop Feb 2000
 # Copyright (C) 2000 by Peter J. Gawthrop
 
@@ -114,6 +114,6 @@ esac
 echo "}" >> $sys_rep.cc;
 
 # Convert to octave loadable code
-echo Creating $sys_rep.oct
-mkoctfile $sys_rep.cc
+#echo Creating $sys_rep.oct
+#mkoctfile $sys_rep.cc
 

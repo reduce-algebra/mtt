@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.52  2004/09/12 22:27:27  geraint
+  ## ## Appended 't' to fopen mode string to open in text mode.
+  ## ##
   ## ## Revision 1.51  2003/05/16 11:16:28  gawthrop
   ## ## Fixed bug with multiports
   ## ##
@@ -198,8 +201,8 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   sub_delim = "__";		# Subsystem delimiter
   
 
-  unit_error = "Component %s connects inconsistent ports with units %s and %s"  
-  unit_info = "Component %s connects ports with units %s and %s"  
+  unit_error = "Component %s connects inconsistent ports with units %s and %s";
+  unit_info = "Component %s connects ports with units %s and %s";  
 
   ## Set up the names corresponding to the structure matrix.
   structure_name = [
@@ -548,13 +551,18 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
  	      for which_index=which_indices
  	    	value = structure(which_index);
 	    	value_change=value-old_structure(which_index);
-	    	for k=1:value_change
-		  fprintf(structure_file, ...
-			  "%s\t%i\t%s\t%s%s%s\t%i\t%s\n", ...
-			  structure_name(which_index,:), value-k+1, ...
-			  comp_name, full_name_repetition, sub_delim, comp_name, \
-			  repetition, cause2name(-comp_bonds(k,1)));
-	    	endfor;
+ 	    	for k=1:value_change
+		  if strcmp(subsystem.type,"SS") # One port, may be bicausal
+		    cause_name = cause2name(-comp_bonds(1,k));
+		  else		# Maybe multiport - but unicausal
+		    cause_name = cause2name(-comp_bonds(k,1));
+		  endif
+ 		  fprintf(structure_file, ...
+ 			  "%s\t%i\t%s\t%s%s%s\t%i\t%s\n", ...
+ 			  structure_name(which_index,:), value-k+1, ...
+ 			  comp_name, full_name_repetition, sub_delim, comp_name, \
+ 			  repetition, cause_name); 
+ 	    	endfor;
  	      endfor;
  	    endif;
 	  endif

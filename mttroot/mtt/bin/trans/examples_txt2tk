@@ -39,7 +39,7 @@ awk 'BEGIN{
     oldcategory=category
     split($2,EXAMPLE,"_");
     example = EXAMPLE[1];
-    printf(" set mtt \"xmtt -example %s\" \n", example); 
+    printf(" set mtt \"xmtt --example %s\" \n", example); 
     printf("%s add command -label %s -command \" exec $mtt &\"\n", menu, example);
  }
 }' 

@@ -16,7 +16,7 @@ Ny=`mtt_getsize ${sys} y`
 cat <<EOF > ${out}
 #!/bin/sh
 # Next line replaces shell with wish\\
-exec wish "${out}" "$@"
+exec wish "\$0" "\$@"
 
 ## main window
 wm title . "MTT Viewer: ${sys}"
@@ -27,20 +27,20 @@ button .quit  -text "Quit"  -command exit
 ## states canvas
 canvas		.cx
 listbox		.cx.l
-scrollbar	.cx.s
+scrollbar	.cx.sy	-orient v
 label		.cx.t	-text		"States"
 
 ## outputs canvas
 canvas		.cy
 listbox		.cy.l
-scrollbar	.cy.s
+scrollbar	.cy.sy	-orient v
 label		.cy.t	-text		"Outputs"
 
 ## configure scrollbars
-.cx.s configure -command ".cx.l yview"
-.cy.s configure -command ".cy.l yview"
-.cx configure -yscrollcommand ".cx.s set" -scrollregion "0 0 20 ${Nx}"
-.cy configure -yscrollcommand ".cy.s set" -scrollregion "0 0 20 ${Ny}"
+.cx.sy configure -command ".cx.l yview"
+.cy.sy configure -command ".cy.l yview"
+.cx.l configure -yscrollcommand ".cx.sy set"
+.cy.l configure -yscrollcommand ".cy.sy set"
 
 ## bind lists
 bind .cx.l <<ListboxSelect>> { plot [ .cx.l get anchor ] }
@@ -62,21 +62,22 @@ cat <<EOF >> ${out}
 pack .cx.t -expand false -fill x -side top
 pack .cy.t -expand false -fill x -side top
 
+pack .cx.sy -expand false -fill y -side right
+pack .cy.sy -expand false -fill y -side right
+
 pack .cx.l -expand true -fill both -side left
 pack .cy.l -expand true -fill both -side left
 
-pack .cx.s -expand false -fill y -side right
-pack .cy.s -expand false -fill y -side right
-
 pack .cx -expand true -fill both
-#pack .cy -expand true -fill both
-radiobutton .states  -text "States"  -textvariable showx -command { .outputs deselect ; raise .cx }
-radiobutton .outputs -text "Outputs" -textvariable showy -command { .states  deselect ; raise .cy }
 place .cy -in .cx -relx 0 -rely 0 -relwidth 1 -relheight 1 -anchor nw -bordermode outside
+
+radiobutton .states  -text "States"  -value states  -variable view -command { raise .cx } -relief solid
+radiobutton .outputs -text "Outputs" -value outputs -variable view -command { raise .cy } -relief solid
+
+pack .states .outputs -side left
 
 pack .quit  -expand false -fill x -side right
 pack .print -expand false -fill x -side right
-pack .states .outputs -side right
 
 
 ## map names to column numbers
@@ -102,7 +103,7 @@ cat <<EOF >> ${out}
 
 ## call gnuplot
 proc "plot_var" "title column" {
-    exec echo plot \"${dat2}\" using 1:\$column title \"\$title\" > ${tmp}
+    exec echo plot \\\"${dat2}\\\" using 1:\$column title \\\"\$title\\\" with lines > ${tmp}
     exec echo pause -1 >> ${tmp}
     exec gnuplot -title "\$title" ${tmp} &
 }

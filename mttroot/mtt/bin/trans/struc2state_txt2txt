@@ -15,6 +15,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.6  1998/07/27 20:32:11  peterg
+# %% Octave mode forced
+# %%
 # %% Revision 1.5  1998/07/25 20:10:01  peterg
 # %% Lower case mttx
 # %%
@@ -34,8 +37,8 @@
 
 
 
-# Inform user
-echo Creating $1_state.txt
+# Switches
+steadystate_computation="$2"
 
 #Create the state file complete with headers.
 echo '# -*-octave-*- Put Emacs into octave-mode' > $1_state.txt
@@ -45,20 +48,34 @@ cat $MTTPATH/trans/rcs_header.sh  >> $1_state.txt
 
 #Write out the defaults -- states to steady-state values
 echo "# Set the states"  >> $1_state.txt
-#cat $1_ss.r  $1_struc.txt | sed 's/\$//' |\
-#awk '{
-#  if(match($1,"MTTx")) {
-#    j++
-#    x[j]=$3 $4 $5 $6 $7 $8 $9;
-#  }
-#    
-#  if($1=="state") {
-#    i++; 
-#    print  "x(" i ") =\t", x[i], "; \# " $4 " (" $3 ")"
-#  }
-#}'  >> $1_state.txt
+
+if [ -n "$steadystate_computation" ]; then 
+# Compute state from ss.r file
+# Inform user
+echo Creating $1_state.txt - compute from steady-state information
+
+cat $1_ss.r  $1_struc.txt | sed 's/\$//' |\
+awk '{
+  if(match($1,"MTTx")>0) {
+    j++
+    split($0,a,"="); print j,$0,a[2]
+    x[j]=a[2];
+  }
+    
+  if($1=="state") {
+    i++; 
+    print  "x(" i ") =\t", x[i], " \# " $4 " (" $3 ")"
+  }
+}'  >> $1_state.txt
+else
+# Set states to zero
+# Inform user
+echo Creating $1_state.txt - default states to zero
 
 awk '{
   if ($1=="state") printf("mttx(%s) \t= 0.0; \t\# %s (%s)\n", $2,$3,$4)
 }' <$1_struc.txt >> $1_state.txt
+    
+fi
+
 

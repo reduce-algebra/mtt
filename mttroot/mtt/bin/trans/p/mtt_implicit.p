@@ -10,9 +10,7 @@ VAR
    BB,xsub   : StateVector;
    AAsub     : StateMatrix;
    
-(*$I $MTTPATH/trans/p/mtt_ludcmp.p *)
-(*$I $MTTPATH/trans/p/mtt_lubksb.p *)
-(*$I $MTTPATH/trans/p/mtt_solve_lud.p *)
+(*$I $MTTPATH/trans/p/mtt_solve.p *)
 
 BEGIN{mtt_implicit}
    ii := 0;
@@ -32,7 +30,7 @@ BEGIN{mtt_implicit}
    END;
 
    Nx := ii; {New size}
-   mtt_solve_lud(xsub,AAsub,BB,Nx); {Solve AAx=BB}
+   mtt_solve(xsub,AAsub,BB,Nx); {Solve AAx=BB}
 
    ii := 0;
    FOR i := 1 TO Nx DO

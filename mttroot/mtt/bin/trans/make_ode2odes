@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.39  2000/10/14 08:04:40  peterg
+## Changed arguments to _inout for consistency
+##
 ## Revision 1.38  2000/10/11 09:08:08  peterg
 ## cse --> csex
 ##
@@ -208,7 +211,7 @@ EOF
 fi
 
 cat <<EOF >> $1_ode2odes.m
-    [open_switches] = $1_switchopen(x);	# Open switches
+    [open_switches] = $1_logic(x,u,t,par); # Switch logic
     [x] = $algorithm; # Integration update
     t = t + ddt;   # Time update
     mttj = mttj+1;    # Increment counter
@@ -250,8 +253,8 @@ cat << EOF >> $1_ode2odes.m
 #    if mttmethod==1		# Euler
       for MTTjt = 1:mttstepfactor
 	[MTTdx] = $1_$ode(MTTx,MTTu,MTTt,MTTpar); # State derivative
-        [MTTopen] = $1_switchopen(MTTx);        # Open switches
-	    [MTTx] = mtt_euler(MTTx,MTTdx,ddt,$Nx,MTTopen); # Euler update
+        [MTTopen] = $1_logic(MTTx,MTTu,MTTt,MTTpar); # Switch logic
+	[MTTx] = mtt_euler(MTTx,MTTdx,ddt,$Nx,MTTopen); # Euler update
 	MTTt = MTTt + ddt;
       endfor;
 #    endif;
@@ -264,7 +267,7 @@ cat << EOF >> $1_ode2odes.m
       [MTTdx] = $1_$ode(MTTx,MTTu,MTTt,MTTpar); # State derivative
       [mttAA] = $1_smxa(MTTx,MTTu,mttdt,MTTpar);	# (I-Adt) and (I-Adt)x
       [mttAAx] = $1_smxax(MTTx,MTTu,mttdt,MTTpar);	# (I-Adt) and (I-Adt)x
-      [MTTopen] = $1_switchopen(MTTx);        # Open switches
+      [MTTopen] = $1_logic(MTTx,MTTu,MTTt,MTTpar); # Switch logic
       [MTTx] = $algorithm(MTTx,MTTdx,mttAA,mttAAx,mttdt,$Nx,MTTopen); # Implicit update
       MTTt = MTTt + mttdt;
 #    endif;

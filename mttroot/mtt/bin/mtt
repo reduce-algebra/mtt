@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.39  1996/11/09 20:22:54  peterg
+## VERSION 2.0
+##
 ## Revision 1.38  1996/11/09 20:17:34  peterg
 ## Fixed bug with null ARGS argument
 ## Put in new lib paths.
@@ -369,7 +372,7 @@ gmake -s  -f -  $1_$2.$3 << EOF
 %.dvi: %.tex
 
 # If level>0, try and get subsystem files
-ifneq ($level,"0")
+ifneq ("$level","0")
 $1_abg.fig:
 	mtt -q copy $1 $MTTPATH/lib/comp/compound
 endif

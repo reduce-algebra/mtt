@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  2004/02/10 16:11:01  gawthrop
+## Removed debug
+##
 ## Revision 1.4  2004/02/10 10:22:10  gawthrop
 ## Do proper arithmetic via let
 ## Three levels of output
@@ -103,7 +106,7 @@ fi
 if [ -n "$2" ]; then
   #Set up some names
   filename=$2
-  figfile=$3_abg.fig
+  abgfile=$3_abg.m
   lblfile=$1_lbl.txt
   summary='[%|#]SUMMARY'
 
@@ -113,7 +116,7 @@ if [ -n "$2" ]; then
   desc=`grep $summary $lblfile | sed "s/$summary//"`
 
   #Count the number of subsystems
-  subs=`grep -c " $system" $figfile`
+  subs=`grep -c " $system" $abgfile`
 
   if [ "$labels" = "yes" ]; then
     echo '  \item '$desc ' ('$subs') Section \Ref{sec:'$system'}' >> $filename

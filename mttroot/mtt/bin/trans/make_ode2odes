@@ -9,8 +9,11 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.33  2000/05/11 19:33:18  peterg
+## Uniform version for _sim.m
+##
 ## Revision 1.32  2000/05/11 08:30:00  peterg
-## Old version -- about to try new parameterised version
+
 ##
 ## Revision 1.31  2000/05/10 18:33:25  peterg
 ## Use smxa and smxax in place of smx
@@ -140,41 +143,41 @@ Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
 
 # Do the globals
 #sympar2global_txt2m $1 >> $1_ode2odes.m
-lang_header  $1 ode2odes m  'x,U,par,simpar' '[Y,X,t]' > $1_ode2odes.m
+lang_header  $1 ode2odes m  'x,par,simpar' '[Y,X,t]' > $1_ode2odes.m
 
 cat >> $1_ode2odes.m <<EOF
 global MTT_data;
 
-  if nargin<1 
+  if nargin<1
     x  =  $1_state; 
+    [x] = mtt_state_update(x);
   endif
   if nargin<2
-    U =   $1_input(0);
-   endif
-  if nargin<3
     par = $1_numpar; 
+    [par] = mtt_numpar_update(par);
   endif
-  if nargin<4
+  if nargin<3
     simpar = $1_simpar; 
+    [simpar.dt] = mtt_simpar_update;
   endif
 
   ## Initialise
   t = 0.0;
-  ilast = round(simpar.last/simpar.dt); # Total number of steps
+  ilast = round(simpar.last/simpar.dt)+1; # Total number of steps
 
   [u]  = zero_input(1);		# Zero the input
 
   for it = 1:ilast		#Integration loop
     [y] = $1_cseo(x,u,t,par);# Output 
-    [u] = $1_input(t,x,y,U);	# Input
+    [u] = $1_input(t,x,y);	# Input
     if (t>=simpar.first)
       mtt_write(t,x,y,$Nx,$Ny); # Write it out
     endif
     [dx] = $1_cse(x,u,t,par);	# State derivative
     [AA] = $1_smxa(x,u,simpar.dt,par);	# (I-Adt) and (I-Adt)x
     [AAx] = $1_smxax(x,u,simpar.dt,par); # (I-Adt) and (I-Adt)x
-    [open] = $1_switchopen(x);	# Open switches
-    [x] = mtt_implicit(x,dx,AA,AAx,simpar.dt,$Nx,open); # Implicit update
+    [open_switches] = $1_switchopen(x);	# Open switches
+    [x] = mtt_implicit(x,dx,AA,AAx,simpar.dt,$Nx,open_switches); # Implicit update
     t = t + simpar.dt;
   endfor;			# Integration loop
 

@@ -2,13 +2,18 @@
 
      ###################################### 
      ##### Model Transformation Tools #####
-     ######################################
+    ######################################
 
 ###############################################################
 ## Version control history
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.19  1999/03/30 21:39:25  peterg
+## In implicit approach, set derivatives to zero (when switch is off)
+## before update. This seems to stop numerical leakage though non-return
+## switches.
+##
 ## Revision 1.18  1999/03/15 01:17:07  peterg
 ## Removed some spurious debugging code
 ##
@@ -125,7 +130,7 @@ for MTTit = 1:MTTilast		#Integration loop
     endif;
     if mttmethod==2		# Implicit 
       [MTTdx] = $1_ode(MTTx,MTTu,MTTt); # State derivative
-      [MTTdx] = $1_switch(MTTx);	# Set derivs to zero if states to zero
+      #[MTTdx] = $1_switch(MTTx);	# Set derivs to zero if states to zero
       [mttAA,mttAAx] = $1_smx(MTTx,MTTu,mttdt);	# (I-Adt) and (I-Adt)x
       [mttAA] = $1_switcha(mttAA,MTTx);	# Switches
       [MTTx] = mtt_implicit(MTTx,MTTdx,mttAA,mttAAx,mttdt,$Nx); # Implicit update

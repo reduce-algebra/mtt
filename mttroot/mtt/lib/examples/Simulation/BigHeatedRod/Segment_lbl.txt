@@ -1,0 +1,30 @@
+%SUMMARY Segment: Segment of HeatedRod
+%DESCRIPTION Part of the HeatedRod example.
+%% Label file for system Segment (Segment_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type CT
+	c_t		lin	effort,c_t
+
+% Component type RS
+	r		lin	flow,r
+
+% Component type RT
+	r_t		lin	flow,r_t
+
+% Component type SS
+	T_s		external	0
+

@@ -7,6 +7,9 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,\
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.41  1999/08/19 21:12:33  peterg
+  ## ## Tidied and started implementaation of vector junctions
+  ## ##
   ## ## Revision 1.40  1999/08/19 05:39:55  peterg
   ## ## Put into octave format
   ## ##
@@ -233,11 +236,27 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,\
 
   ## Now do a list of the bonds on each component - unsorted at this stage.
   ## Also expand aliases using the alias list for each component
-  components = [];
+  components = []; 
+  i_vector=0;			# Counter for vector components
   for i = 1:n_components
     ##Get component type
     eval(['[comp_type, comp_name] = ', name, '_cmp(i)']);
 
+#     ## Vector 0 and 1
+#     n_vector = 1;		# Default to scalar component
+#     if (comp_type(1)=='0')||(comp_type(1)=='1')
+#       n_name = length(comp_type);
+#       if n_name>1
+# 	n_vector = str2num(comp_type(2:n_name));
+#       endif
+#     endif
+#     n_vector
+
+    ## Create scalar versions of vector components
+    for new_comp=2:n_vector
+      i_vector++;
+    endfor
+    
     ## There are n_comp_bonds bonds on this component with corresponding index
     [index,n_comp_bonds] = getindex(comp_near_bond,i);
 
@@ -488,15 +507,16 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,\
     ##Get component type
     eval(['[comp_type, comp_name] = ', name, '_cmp(i)']);
 
-    ##Convert junction names & get order of vector ports
-    
+
+    ##Convert junction names   
     if comp_type(1)=='0'
       comp_type = 'zero';
-    end
+    endif
+    
 
     if comp_type(1)=='1'
       comp_type = 'one';
-    end
+    endif
 
     ## Find the (unsorted) bond list on this component
     signed_bond_list = nozeros(components(i,:));

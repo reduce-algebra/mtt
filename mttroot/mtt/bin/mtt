@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.402  2004/09/03 08:35:27  geraint
+## Copies Perl CRs to an mtt subdirectory (=> mtt:: workspace).
+##
 ## Revision 1.401  2004/09/02 22:04:06  geraint
 ## Passes ${use_reduce} to mtt_make_sympar so that it can decide
 ## if to issue warnings about Reduce reserved words
@@ -3027,26 +3030,27 @@ ${sys}_sae.m: ${sys}_def.r ${sys}_sae.r ${sys}_sympar.txt
 	echo Creating \$@
 	mtt_r2m ${sys} sae m
 
-${sys}_sese.r: ${sys}_sese.make ${sys}_cr.txt perl_crs.stamp
+${sys}_sese.r: ${sys}_sese.make
 	echo Creating \$@
-	make -f \$< all |\
-	apply_crs ${sys} > \$@
-${sys}_sesx.r: ${sys}_sese.make ${sys}_cr.txt perl_crs.stamp
+	make -f \$< all   > \$@
+${sys}_sesx.r: ${sys}_sese.make
 	echo Creating \$@
-	make -f \$< MTTdX |\
-	apply_crs ${sys} > \$@
-${sys}_sesy.r: ${sys}_sese.make ${sys}_cr.txt perl_crs.stamp
+	make -f \$< MTTdX > \$@
+${sys}_sesy.r: ${sys}_sese.make
 	echo Creating \$@
-	make -f \$< MTTy |\
-	apply_crs ${sys} > \$@
-${sys}_sae.r: ${sys}_sese.make ${sys}_cr.txt perl_crs.stamp
+	make -f \$< MTTy  > \$@
+${sys}_sae.r: ${sys}_sese.make
 	echo Creating \$@
-	make -f \$< MTTyz |\
-	apply_crs ${sys} > \$@
+	make -f \$< MTTyz > \$@
 
-${sys}_sese.make: ${sys}_ese.r
+${sys}_sese.make: ${sys}_ese.txt
 	echo Creating \$@
-	ese_r2make.pl --sys=${sys} --outfile=\$@ --$debug
+	ese_txt2make.pl --sys=${sys} --infile=${sys}_ese.txt --outfile=\$@ --$debug
+
+${sys}_ese.txt: ${sys}_ese.r ${sys}_cr.txt perl_crs.stamp
+	echo Creating \$@
+	ese_r2txt.pl < \$< |\
+	apply_crs ${sys} > \$@
 
 perl_crs.stamp:
 	echo Copying CRs from ${MTT_LIB}/cr/perl

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1997/09/04 09:15:19  peterg
+## Includes summary line as well as description lines
+##
 ## Revision 1.1  1996/11/10 10:48:45  peterg
 ## Initial revision
 ##
@@ -21,19 +24,20 @@
 
 path=$1
 name=$2
-operation=$3
-all=$4
+fullname=$2_lbl.txt
+all=$3
+
 q=\
+
 
 # awk splits the path into components and writes a find for each
 # If all argument null, then succesful find terminates.
-
-awk 'END{ \
+foundpath=`awk 'END{ \
   n=split(path,a,":"); 
   if (all == "") { 
     printf("if ");
   }  for (i=1;i<=n;i++) { 
-  printf("find %s -name \"%s\" -exec %s {} \\; \n", a[i], name, operation);
+  printf("find %s -type d -name \"%s\"  -print \n", a[i], name);
   if (all == "") { 
     printf("then\n"); 
     printf("exit\n"); 
@@ -41,4 +45,17 @@ awk 'END{ \
   }
    }
      }' path="$path" name="$name" operation="$operation" all="$all" \
-</dev/null  | sh
+</dev/null  | sh`
+
+# If non-null result, check that the name_lbl.txt file exists in dir name
+# and print dirname and file name and last access time
+
+if [ -n "$foundpath" ]; then
+  find $foundpath -maxdepth 1 -name $fullname  -printf '%h\t%f\t%Ac\n' | sort -u
+fi
+
+
+
+
+
+

@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.38  2000/11/16 10:00:57  peterg
+  ## ## *** empty log message ***
+  ## ##
   ## ## Revision 1.37  2000/11/12 16:45:57  peterg
   ## ## Close ese file before recursive call of cbg2ese -- reopen when
   ## ## finished.
@@ -149,7 +152,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## system_name, system_type, full_name, repetition
   
   pc = "%";
-  
+  unit_error = "Component %s connects inconsistent ports with units %s and %s"  
+  unit_info = "Component %s connects ports with units %s and %s"  
+
   ## Set up the names corresponding to the structure matrix.
   structure_name = [
 		    "state        ",
@@ -205,7 +210,13 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   if (columns ~= 2)&(n_bonds>0)
     error("Incorrect bonds matrix: must have 2 columns");
   endif;
-  
+
+  ## Set up initial bond units
+  for i=1:n_bonds
+    bond_effort_unit(i,:)="null";
+    bond_flow_unit(i,:)="null";
+  endfor
+
   ##  ## Find number of components
   ##  [n_components,columns] = size(components);
   ##  n_components = n_components
@@ -336,7 +347,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	    disp("---POP---");
 	    ese_file = fopen(ese_name, "a") # open file (again)
 
-	    ## Link up the bonds
+	    eval(["subABG = ",subsystem.type , "_abg;"]); # Get the information
+
+	    ## Link up the bonds for this compound component
 	    fprintf(ese_file, ...
 		    "\n\t%s Equations linking up subsystem %s (%s)\n\n", ...
 		    pc, comp_name, subsystem.type);
@@ -345,10 +358,67 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	    
 	    printf("\n\t%s Equations linking up subsystem %s (%s)\n\n",\
 		   pc, comp_name, subsystem.type);
-	    bond_list
 	    
 	    u_index = 0; y_index = 0; ## Count the inputs and outputs
 	    for port_number=1:length(bond_list)
+              port_bond_number = bond_list(port_number);
+	      this_bond_effort_unit = \
+		  deblank(bond_effort_unit(port_bond_number,:));
+	      this_bond_flow_unit = \
+		  deblank(bond_flow_unit(port_bond_number,:));
+
+	      ## Extract the unit/domain stuff
+              this_port_name = subABG.portlist(port_number,:);
+              
+              eval(sprintf("this_port = subABG.ports.%s;", \
+			   this_port_name));
+	      if struct_contains(this_port,"units")
+                eval(["effort_unit = \
+		    subABG.ports.",this_port_name,".units.effort;"]);
+                eval(["flow_unit = \
+		    subABG.ports.",this_port_name,".units.flow;"]);
+	      else
+		effort_unit = "none";
+		flow_unit = "none";
+	      endif
+
+	      ## and check consistency
+              ## Efforts
+	      if strcmp(this_bond_effort_unit,"null") # set
+		bond_effort_unit = \
+		    [bond_effort_unit(1:port_bond_number-1,:)
+		     effort_unit
+		     bond_effort_unit(port_bond_number+1:n_bonds,:)
+		     ]
+	      else # check
+		mtt_info(sprintf(unit_info,full_name, effort_unit, \
+				 this_bond_effort_unit), infofilenum);
+		if !strcmp(this_bond_effort_unit,effort_unit)
+		  error_string = sprintf(unit_error, full_name,\
+					 effort_unit, \
+					 this_bond_effort_unit);
+		  mtt_error(error_string);
+		endif
+	      endif
+	      ## Flows
+	      if strcmp(this_bond_flow_unit,"null") # set
+		bond_flow_unit = \
+		    [bond_flow_unit(1:port_bond_number-1,:)
+		     flow_unit
+		     bond_flow_unit(port_bond_number+1:n_bonds,:)
+		     ]
+	      else # check
+		mtt_info(sprintf(unit_info,full_name, flow_unit, \
+				 this_bond_flow_unit), infofilenum);
+		if !strcmp(this_bond_flow_unit,flow_unit)
+		  error_string = sprintf(unit_error, full_name,\
+					 flow_unit, \
+					 this_bond_flow_unit);
+		  mtt_error(error_string);
+		endif
+	      endif
+	      
+
 	      ## Effort
 	      if comp_bonds(port_number,1)==1 # Source
 	     	u_index = u_index + 1;

@@ -18,6 +18,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1998/03/04 12:07:37  peterg
+% %% Renamed CR from Isentropic nozzle to RG
+% %%
 % %% Revision 1.1  1997/11/21 19:18:28  peterg
 % %% Initial revision
 % %%
@@ -34,7 +37,7 @@
 	rg			RG		$1,$2,$3
 
 % Component type SS
-	[mass_in]		external	external
-	[mass_out]		external	external
-	[thermal_in]		external	external
-	[thermal_out]		external	external
+	[mass_in]		SS	external,external
+	[mass_out]		SS	external,external
+	[thermal_in]		SS	external,external
+	[thermal_out]		SS	external,external

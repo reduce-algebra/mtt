@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  1998/07/25 08:05:41  peterg
+## Reverted to original default - not using SS mechanism
+##
 ## Revision 1.6  1998/02/24 10:14:56  peterg
 ## Now defaults to the steady-state values
 ##
@@ -75,7 +78,12 @@ cat $MTTPATH/trans/rcs_header.sh  >> $1_input.txt
 echo "# Set the inputs"  >> $1_input.txt
 
 awk '{
-  if ($1=="input") printf("MTTu%s = 1.0; \t\# %s (%s)\n", $2,$3,$4)
+  if ($1=="input") {
+    if ($2==1)
+      printf("MTTu(%s) = 1.0; \t\# %s (%s)\n", $2,$3,$4)
+    else
+      printf("MTTu(%s) = 0.0; \t\# %s (%s)\n", $2,$3,$4)
+  }
 }' Nu=$Nu  <$1_struc.txt >> $1_input.txt
 
 #Set some switches

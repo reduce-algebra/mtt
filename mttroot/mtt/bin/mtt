@@ -19,6 +19,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.7  1996/08/11 19:49:27  peter
+## Parameter passing (via $4) added.
+##
 ## Revision 1.6  1996/08/11 10:40:56  peter
 ## Added new numpar stuff.
 ## Added step response.
@@ -87,6 +90,11 @@ if [ "$1" = "clean" ] && [$2 = ""]; then
   exit
 fi
 
+# Save up the argument list in a file.
+cat > macmic_args.m <<EOF
+$4
+EOF
+
 # This is the main mtt programme
  
 make  -s -f -  $1_$2.$3 << EOF
@@ -123,7 +131,7 @@ $1_simp.r:
 	echo "%% Reduce comands to simplify output ($1_simp.r)"; \
         )> $1_simp.r
 $1_numpar.m: $1_sympar.r
-	mknumpar $1; matlab_tidy $1_numpar.m; matlab_tidy $1_parconv.m
+	mknumpar $1; matlab_tidy $1_numpar.m;
 
 $1_sspar.r:
 	echo Creating $1_sspar.r
@@ -242,13 +250,13 @@ $1_tf.tex: $1_def.r $1_tf.r $1_sympar.r $1_simp.r
 
 
 #Time responses
-$1_ir.dat: $1_dm.m $1_numpar.m
+$1_ir.dat: $1_dm.m $1_numpar.m $1_args.m
 	dm2ir_m2dat $1 '$4'
-$1_sr.dat: $1_dm.m $1_numpar.m
+$1_sr.dat: $1_dm.m $1_numpar.m $1_args.m
 	dm2sr_m2dat $1 '$4'
 
 #Frequency responses
-$1_fr.dat: $1_dm.m $1_numpar.m
+$1_fr.dat: $1_dm.m $1_numpar.m $1_args.m
 	dm2fr_m2dat $1 '$4'
 
 #Partially-known system indentification structure matrices

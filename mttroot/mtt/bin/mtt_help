@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  1998/05/18 08:35:19  peterg
+## Surround arguments to tr with ""
+##
 ## Revision 1.9  1998/03/26 08:23:02  peterg
 ## Use mixed case Topic for *) part of case sttement
 ##
@@ -63,12 +66,13 @@ fi
 ext='_[cl]*.*[mt]'
 summary='[%#]SUMMARY'
 description='[%#]DESCRIPTION'
+alias='[%#]ALIAS'
 
 case $topic in
   components)
     key=$summary 
     find_path=$MTT_COMPONENTS
-    name='*_*.*'
+    name=''
     sort='sort -u'
     blurb="Components";;
 
@@ -82,7 +86,7 @@ case $topic in
   examples) 
     key=$summary 
     find_path=$MTT_EXAMPLES
-    name='*_lbl.txt'
+    name=''
     all='all'
     sort='sort -u'
     blurb="Examples";;
@@ -96,12 +100,13 @@ case $topic in
     blurb="Representations";;
 
   *)
-    key="\"$summary|$description\"" 
+    key="$summary|$description|$alias" 
     find_path=$MTT_LIB
-    name=$Topic$ext
-    all=''
+    name=$Topic
+    all='all'
     sort='cat'
     blurb=$Topic;;     
+
   
 esac
 
@@ -111,19 +116,14 @@ if [ "$subtopic" = "" ]; then
 fi;
 
 echo $blurb
-  mtt_find $find_path "$name" "egrep -i $key.*$subtopic" $all|\
-  sed "s/$summary[	]*/  /" |\
+
+  mtt_find $find_path "$name" |\
+  awk '{print "cat " $1 "/" $2}'   | sh  |\
+  egrep $key |\
+  sed "s/$summary[	]*//" |\
   sed "s/$description[	]*/  /" |\
+  sed "s/$alias[	]*/  Alias: /" |\
   sed "s!$find_path/!!" |\
   $sort
-
-
-
-
-
-
-
-
-
 
 

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  2000/11/09 10:12:24  peterg
+## Removed debugging line
+##
 ## Revision 1.4  2000/10/14 16:19:54  peterg
 ## Just optimize one line at a time ...
 ##
@@ -40,7 +43,7 @@ Nxx=`mtt_getsize $sys xx` # States x States
 Nu=`mtt_getsize $sys u` # Inputs 
 Ny=`mtt_getsize $sys y` # Outputs 
 Nyz=`mtt_getsize $sys yz` # Zero outputs
-Npar=`wc -l $sys\_sympar.txt | awk '{print $1}'`
+#Npar=`wc -l $sys\_sympar.txt | awk '{print $1}'`
 
 # Set up representation-specific stuff
 case $rep in

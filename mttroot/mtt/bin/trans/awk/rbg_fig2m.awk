@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  1996/08/19 10:48:57  peter
+## Added `-' to the component regexp.
+##
 ## Revision 1.10  1996/08/19 09:03:13  peter
 ## Parses repetative components: ie suffixed by *n.
 ##
@@ -350,7 +353,7 @@ BEGIN {
   terminator = "\\001";
   component_regexp = "[^0-9a-zA-Z_:\*-]";
   port_regexp = "\[[0-9]*\]";
-  nonport_regexp = "a-zA-Z";
+  nonport_regexp = "[a-zA-Z]";
     
   isa_fig_file = 0;
   min_line_length = 10;

@@ -7,6 +7,8 @@
 sys=$1
 rep=nppp
 lang=$2
+mtt_parameters=$3
+parameters=$4
 
 target=${sys}_${rep}.${lang}
 
@@ -18,7 +20,7 @@ echo Creating ${filename}
 cat > ${filename} <<EOF    
 function [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, extras)
 
-  ## usage:  [y,u,t] = ${sys}_nppp (N, ppp_names, par_names, extras)
+  ## usage:  [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, extras)
   ##
   ## last      last time in run
   ## ppp_names Column vector of names of ppp params
@@ -35,13 +37,13 @@ function [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, extras)
 
   if nargin<4
     ## Set up optional parameters
-    extras.criterion = 1e-5;
+    extras.criterion = 1e-3;
     extras.emulate_timing = 0;
-    extras.max_iterations = 10;
+    extras.max_iterations = 15;
     extras.simulate = 1;
     extras.v =  1e-6;
     extras.verbose = 0;
-    extras.visual = 0;
+    extras.visual = 1;
   endif
   
   ## System info
@@ -64,12 +66,10 @@ function [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, extras)
   endif
   
   t_horizon = [simpars.first+simpars.dt:simpars.dt:simpars.last]';
-  w = zeros(n_y,1); w(1) = 1;
+  w = zeros(n_y,1); w(1) = 1
   w_s = ones(size(t_horizon))*w';
 
-
   ## Setup the indices of the adjustable stuff
-
   if nargin<2
     i_ppp = []
   else
@@ -86,12 +86,48 @@ function [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, extras)
   
   ## Specify basis functions
   A_w = zeros(1,1);
-  A_u = ppp_aug(A_w,laguerre_matrix(n_ppp-1,5.0));
+  A_u = ppp_aug(A_w,laguerre_matrix(n_ppp-1,2.0));
+
+  ## Weights
+    Q = [1;0]
+
+  if extras.visual		# Do some simulations
+    ## System itself
+    par = ${sys}_numpar;
+    x_0_ol = ${sys}_state(par);
+    [y_ol,x_ol, t_ol] =  ${sys}_sim(x_0_ol, par, simpar, ones(1,n_u));
+    simpar_OL = simpar;
+    simpar_OL.last = simpars.last;
+    [y_OL,x_OL, t_OL] =  ${sys}_sim(x_0_ol, par, simpar_OL, ones(1,n_u));
+
+    pars = s${sys}_numpar;
+    x_0_ppp = s${sys}_state(pars);
+    [y_ppp,y_par,x_ppp, t_ppp] =  s${sys}_ssim(x_0_ppp, pars, simpars, ones(1,n_u));
+
+    simpar_PPP = simpars;
+    simpar_PPP.first = simpar.first;
+    [y_PPP,y_par,x_PPP, t_PPP] =  s${sys}_ssim(x_0_ppp, pars, simpar_PPP, ones(1,n_u));
+
+
+
+    figure(2); 	
+    grid; title("Outputs of ${sys}_sim and s${sys}_ssim");
+    plot(t_ol,y_ol, '*', t_ppp, y_ppp, '+', t_OL, y_OL, t_PPP, y_PPP);
+
+    ## Basis functions
+    Us = ppp_ustar(A_u,1,t_OL',0,0)';
+
+    figure(3); 	
+    grid; title("Basis functions");
+    plot(t_OL, Us);
+
+  endif
+
 
 
   ## Do it
   [y,u,t,p,U,t_open,t_ppp,t_est,its_ppp,its_est] \
-      = ppp_nlin_run ("${sys}",i_ppp,i_par,A_u,w_s,N,extras);
+      = ppp_nlin_run ("${sys}",i_ppp,i_par,A_u,w_s,N,Q,extras);
 
   ## Compute values at ends of ol intervals
   T_open = cumsum(t_open);
@@ -137,31 +173,32 @@ if [ "${lang}" = "oct" ]; then
 fi
 
 ## System
-mtt -q -stdin ${sys} sympar m
-mtt -q -stdin ${sys} simpar m
-mtt -q -stdin ${oct} ${sys} state ${lang}
-mtt -q -stdin ${oct} ${sys} numpar ${lang}
-mtt -q -stdin ${oct} ${sys} input ${lang}
-mtt -q -stdin ${oct} ${sys} ode2odes ${lang}
-mtt -q -stdin ${sys} sim m
+mtt -q ${mtt_parameters} -stdin ${sys} sympar m
+mtt -q ${mtt_parameters} -stdin ${sys} simpar m
+mtt -q ${mtt_parameters} -stdin ${oct} ${sys} state ${lang}
+mtt -q ${mtt_parameters} -stdin ${oct} ${sys} numpar ${lang}
+mtt -q ${mtt_parameters} -stdin ${oct} ${sys} input ${lang}
+mtt -q ${mtt_parameters} -stdin ${oct} ${sys} ode2odes ${lang}
+mtt -q ${mtt_parameters} -stdin ${sys} sim m
 
 ## Sensitivity system
-mtt -q -stdin -s s${sys} sympar m
-mtt -q -stdin -s s${sys} simpar m
-mtt -q -stdin ${oct} -s s${sys} state ${lang}
-mtt -q -stdin ${oct} -s s${sys} numpar ${lang}
-mtt -q -stdin ${oct} -s s${sys} input ${lang}
-mtt -q -stdin ${oct} -s s${sys} ode2odes ${lang}
-mtt -q -stdin -s s${sys} ssim m
+mtt -q ${mtt_parameters} -stdin -s s${sys} sympar m
+mtt -q ${mtt_parameters} -stdin -s s${sys} simpar m
+mtt -q ${mtt_parameters} -stdin ${oct} -s s${sys} state ${lang}
+mtt -q ${mtt_parameters} -stdin ${oct} -s s${sys} numpar ${lang}
+mtt -q ${mtt_parameters} -stdin ${oct} -s s${sys} input ${lang}
+mtt -q ${mtt_parameters} -stdin ${oct} -s s${sys} ode2odes ${lang}
+mtt -q ${mtt_parameters} -stdin -s s${sys} ssim m
 
 ## Additional system reps for PPP
-mtt -q -stdin  ${sys} sm m
-mtt -q -stdin  ${sys} def m
-mtt -q -stdin  -s s${sys} def m
+mtt -q ${mtt_parameters} -stdin  ${sys} sm m
+mtt -q ${mtt_parameters} -stdin  ${sys} def m
+mtt -q ${mtt_parameters} -stdin  -s s${sys} def m
 
 }
 
 ## Make the code
-make_model;
+#
+#make_model;
 make_nppp;
 

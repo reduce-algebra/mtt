@@ -5,14 +5,19 @@
 %DESCRIPTION expansion.
 %DESCRIPTION Parameter 4: k_t pump constant: mass flow = k_t*shaft speed
 
-%ALIAS	in Thermal_in,Hydraulic_in
-%ALIAS	out Thermal_out,Hydraulic_out
+%ALIAS	[in]		[Thermal_in,Hydraulic_in]
+%ALIAS	[out]		[Thermal_out,Hydraulic_out]
 
-%ALIAS	Th_in  Thermal_in
-%ALIAS	Hy_in  Hydraulic_in
+%ALIAS	[Th_in]		[Thermal_in]
+%ALIAS	[Hy_in]		[Hydraulic_in]
 
-%ALIAS	Th_out  Thermal_out
-%ALIAS	Hy_out  Hydraulic_out
+%ALIAS	[Th_out]	[Thermal_out]
+%ALIAS	[Hy_out]	[Hydraulic_out]
+
+%ALIAS  $P1		c_p
+%ALIAS  $P2		ideal_gas,r
+%ALIAS  $P3		alpha
+%ALIAS  $P4		effort,k
 
 %% Label file for system Turb (Turb_lbl.txt)
 
@@ -21,6 +26,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.4  1998/07/02 19:48:45  peterg
+% %% Changed aliases
+% %%
 % %% Revision 1.3  1998/07/02 10:55:24  peterg
 % %% Lower case in out
 % %%
@@ -40,10 +48,10 @@
 
 
 % Component type Pipe
-	pipe	none		$1;$2
+	pipe	none		c_p;ideal_gas,r
 
 % Component type Poly
-	poly		Poly		$3
+	poly		Poly		alpha
 
 % Component type SS
 	[Hydraulic_in]	external	external
@@ -54,7 +62,7 @@
 	T		external	0
 
 % Component type TF
-	k_t		lin	effort,$4
+	k_t		lin	effort,k
 
 
 

@@ -10,6 +10,9 @@ function sr = dm2sr(A,B,C,D,E,T);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/08/11 09:42:40  peter
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -29,6 +32,7 @@ sr = zeros(N,NN);
 i = 0;
 for t = T'
   i=i+1;
-  sr(i,:) = reshape(C*(1-exp(A*t))*B + D*ones(size(t)), 1,NN);
+  SR = C*( A\(exp(A*t)-1) )*B + D*ones(size(t));
+  sr(i,:) = reshape(SR, 1,NN);
 end;
 

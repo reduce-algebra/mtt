@@ -1,0 +1,30 @@
+%SUMMARY CM: Mechanical (moving-plate) capacitor
+%DESCRIPTION Parameter 1: Capacitance at plate separation of x_0
+%DESCRIPTION Parameter 2: x_0
+%DESCRIPTION Parameter 3: mass of moving-plate
+
+%% Label file for system CM (CM_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type C
+	transducer	cm		$1,$2
+
+% Component type I
+	mass		lin		flow,$3
+
+% Component type SS
+	[in]		SS	external,external
+	[out]		SS	external,external

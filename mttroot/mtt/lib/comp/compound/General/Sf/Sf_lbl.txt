@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/03/03 21:50:15  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -14,7 +17,7 @@
 %ALIAS	out	out
 
 % Argument aliases
-
+%ALIAS	   $1	f_s
 %% Each line should be of one of the following forms:
 %	     a comment (ie starting with %)
 %	     component-name	cr_name	arg1,arg2,..argn
@@ -24,4 +27,4 @@
 
 % Component type SS
 	[out]	SS		external,external
-	u	SS		internal,external
+	u	SS		internal,f_s

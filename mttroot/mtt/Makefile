@@ -1,0 +1,88 @@
+#! /usr/bin/make -f
+
+# Destinations compliant with Filesystem Hierarchy Standard (FHS) 2.1
+# DESTDIR prefix required by Debian build process
+CONFDIR=$(DESTDIR)/etc
+PROGDIR=$(DESTDIR)/usr/bin
+INSTDIR=$(DESTDIR)/usr/share/mtt
+
+# DOCPATH and INFOPATH required by doc/Makefile
+DOCDIR=$(DESTDIR)/usr/share/doc/mtt
+INFODIR=$(DESTDIR)/usr/share/info
+
+configure: configure-stamp
+configure-stamp:
+	@touch configure-stamp
+
+build: configure mtt.sh build-stamp
+build-stamp:
+	@touch build-stamp
+
+clean:
+	@touch clean.sh
+	@-chmod a+x clean.sh
+	@./clean.sh
+	@rm -f clean.sh
+
+clean-doc:
+	@touch clean-doc.sh
+	@-chmod a+x clean-doc.sh
+	@./clean-doc.sh
+	@rm -f clean-doc.sh
+
+distclean: clean clean-doc
+	@-rm -f build-stamp configure-stamp config.log mtt.sh
+
+install: build clean.sh
+	@-mkdir -p $(INSTDIR) $(CONFDIR) $(PROGDIR)
+	@cp -a bin/mttrc $(CONFDIR)/mtt.conf
+	@cp -a bin cc lib $(INSTDIR)
+	@mv -f mtt.sh $(PROGDIR)/mtt
+	@chmod -f a+rx $(PROGDIR)/mtt $(CONFDIR)/mtt.conf
+
+install-doc: clean-doc.sh
+	@-mkdir -p $(DOCDIR) $(INFODIR)
+	@cd doc ; DOCPATH=$(DOCDIR) INFOPATH=$(INFODIR) make -s install-doc
+
+.PHONY: FORCE
+
+clean.sh: FORCE
+	@echo '#! /bin/sh'						>>clean.sh
+	@echo '# This file is auto-generated - do not edit'		>>clean.sh
+	@echo 'rm -f  $(CONFDIR)/mtt.conf'				>>clean.sh
+	@echo 'rm -f  $(PROGDIR)/mtt'					>>clean.sh
+	@echo 'rm -fr $(INSTDIR)'					>>clean.sh
+
+clean-doc.sh: FORCE
+	@echo '#! /bin/sh'						>>clean-doc.sh
+	@echo '# This file is auto-generated - do not edit'		>>clean-doc.sh
+	@echo 'rm -fr $(DOCDIR)'					>>clean-doc.sh
+	@echo 'rm -f  $(INFODIR)/mtt.info*'				>>clean-doc.sh
+
+mtt.sh:
+	@echo '#! /bin/sh'						> mtt.sh
+	@echo '# This file is auto-generated - do not edit'		>>mtt.sh
+	@echo ''							>>mtt.sh
+	@echo 'mtt_config_file=$(CONFDIR)/mtt.conf'			>>mtt.sh
+	@echo 'mtt_program_dir=$(PROGDIR)'				>>mtt.sh
+	@echo 'mtt_install_dir=$(INSTDIR)'				>>mtt.sh
+	@echo ''							>>mtt.sh
+	@echo '# get site-specific settings'				>>mtt.sh
+	@echo 'if [[ -r $${mtt_config_file} ]]; then'			>>mtt.sh
+	@echo '   . $${mtt_config_file} $${mtt_install_dir}'		>>mtt.sh
+	@echo ''							>>mtt.sh
+	@echo 'elif [[ -r $${mtt_install_dir}/bin/mttrc ]]; then'	>>mtt.sh
+	@echo '   . $${mtt_install_dir}/bin/mttrc $${mtt_install_dir}'	>>mtt.sh
+	@echo 'fi'							>>mtt.sh
+	@echo ''							>>mtt.sh
+	@echo '# get user-specific settings'				>>mtt.sh
+	@echo 'if [[ -r $${HOME}/.mttrc ]]; then'			>>mtt.sh
+	@echo '   . $${HOME}/.mttrc'					>>mtt.sh
+	@echo 'fi'							>>mtt.sh
+	@echo ''							>>mtt.sh
+	@echo '# get directory-specific settings'			>>mtt.sh
+	@echo 'if [[ -r ./.mttrc ]]; then'				>>mtt.sh
+	@echo '   . ./.mttrc'						>>mtt.sh
+	@echo 'fi'							>>mtt.sh
+	@echo ''							>>mtt.sh
+	@cat bin/mtt							>>mtt.sh

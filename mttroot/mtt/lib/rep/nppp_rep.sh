@@ -108,8 +108,7 @@ function [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, A_u, A_w, w, Q, extr
     i_par = ppp_indices (par_names,sympar,sympars); # Parameters
   endif
   
-
-  if extras.visual		# Do some simulations
+    ## Do some simulations to check things out
     ## System itself
     par = ${sys}_numpar;
     x_0_ol = ${sys}_state(par);
@@ -126,14 +125,15 @@ function [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, A_u, A_w, w, Q, extr
     simpar_PPP.first = simpar.first;
     [y_PPP,y_par,x_PPP, t_PPP] =  s${sys}_ssim(x_0_ppp, pars, simpar_PPP, ones(1,n_u));
 
+    ## Basis functions
+    Us = ppp_ustar(A_u,1,t_OL',0,0)';
 
 
+  if extras.visual		#Show some graphs
     figure(2); 	
     grid; title("Outputs of ${sys}_sim and s${sys}_ssim");
     plot(t_ol,y_ol, '*', t_ppp, y_ppp, '+', t_OL, y_OL, t_PPP, y_PPP);
 
-    ## Basis functions
-    Us = ppp_ustar(A_u,1,t_OL',0,0)';
 
     figure(3); 	
     grid; title("Basis functions");
@@ -144,7 +144,7 @@ function [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, A_u, A_w, w, Q, extr
 
 
   ## Do it
-  [y,u,t,p,U,t_open,t_ppp,t_est,its_ppp,its_est] \
+  [y,u,t,P,U,t_open,t_ppp,t_est,its_ppp,its_est] \
       = ppp_nlin_run ("${sys}",i_ppp,i_par,A_u,w_s,N,Q,extras);
 
   ## Compute values at ends of ol intervals
@@ -160,20 +160,64 @@ function [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, A_u, A_w, w, Q, extr
   ## Plots
 
     gset nokey
-    gset format x "%i"
+    gset nogrid
+    gset format x "%4.1f"
     gset format y "%4.1f"
     gset term fig monochrome portrait fontsize 20 size 20 20 metric \
 	     thickness 4
     gset output "${sys}_nppp.fig"
 
     title("");
-    grid;
     xlabel("Time (s)");
     ylabel("u");
     subplot(2,1,2); plot(t,u,'-',  T_open, u_open,"^");  
-    grid;
     ylabel("y");
     subplot(2,1,1); plot(t,y,'-', T_open, y_open,"^"); 
+
+    oneplot;
+    gset output "${sys}_nppp.basis.fig"
+    title("");
+    xlabel("Time (s)");
+    ylabel("Basis functions");
+    plot(t_OL, Us);
+
+
+    ## Create plot against time
+    TTT = [ [0;T_open] [T_open; last] ]';
+    TT = TTT(:);
+
+    [n,m] = size(P);
+    if m>0
+      P = P(1:n-1,:);  # Loose last point
+      PP = [];
+      for j=1:m
+        pp = [P(:,j) P(:,j)]';
+        PP = [PP pp(:)];
+      endfor
+
+      oneplot;
+      gset output "${sys}_nppp.par.fig"
+      title("");
+      xlabel("Time (s)");
+      ylabel("Parameters");
+      plot(TT,PP);
+    endif
+
+    [n,m] = size(U);
+    if m>0    oneplot;
+      gset output "${sys}_nppp.U.fig"
+      title("");
+      xlabel("Time (s)");
+      ylabel("U");
+      [n,m] = size(U);
+      U = U(1:n-1,:);  # Loose last point
+      UU = [];
+      for j=1:m
+        uu = [U(:,j) U(:,j)]';
+        UU = [UU uu(:)];
+      endfor
+      plot(TT,UU);
+    endif
 
 endfunction
 
@@ -250,8 +294,9 @@ case ${lang} in
         ## Make the code
         make_nppp;
 	;;
-    dat2|fig)
-    ## The dat2 language (output data) & fig file
+    dat2|fig|basis.fig|par.fig|U.fig)
+        ## The dat2 language (output data) & fig file
+        rm ${sys}_nppp*.fig
 	make_dat2; 
 	;;
     gdat)
@@ -259,16 +304,19 @@ case ${lang} in
 	dat22dat ${sys} ${rep} 
         dat2gdat ${sys} ${rep}
 	;;
-#    fig)
-#	gdat2fig ${sys}_${rep}
-#	;;
-    ps)
-	fig2dev -Leps ${sys}_${rep}.fig > ${sys}_${rep}.ps
+    ps|basis.ps|par.ps|U.ps)
+        figs=`ls ${sys}_nppp*.fig | sed -e 's/\.fig//'`
+        echo $figs
+	for fig in ${figs}; do
+            fig2dev -Leps ${fig}.fig > ${fig}.ps
+	done
 	;;
-
     view)
-	echo Viewing ${sys}_${rep}.ps
-        gv ${sys}_${rep}.ps&
+	pss=`ls ${sys}_nppp*.ps` 
+        echo Viewing ${pss}
+        for ps in ${pss}; do
+          gv ${ps}&
+	done
 	;;
     *)
 	echo Language ${lang} not supported by ${rep} representation

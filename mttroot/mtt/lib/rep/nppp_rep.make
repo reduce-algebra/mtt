@@ -21,6 +21,10 @@ nppp_m = ${SYS}_nppp.m ${SYS}_nppp_numpar.m
 ## Targets for the nppp simulation
 nppp_reps = ${nppp_m} ${sims} ${model_reps} ${sensitivity_reps}
 
+## ps output files
+psfiles = ${SYS}_nppp.ps ${SYS}_nppp.basis.ps ${SYS}_nppp.par.ps ${SYS}_nppp.U.ps
+figfiles = ${psfiles:%.ps=%.fig}
+
 all: ${SYS}_nppp.${LANG}
 
 echo:
@@ -32,7 +36,7 @@ echo:
 ${SYS}_nppp.view: ${SYS}_nppp.ps
 	nppp_rep.sh ${SYS} view
 
-${SYS}_nppp.ps: ${SYS}_nppp.fig
+${psfiles}: ${SYS}_nppp.fig
 	nppp_rep.sh ${SYS} ps
 
 ${SYS}_nppp.gdat: ${SYS}_nppp.dat2

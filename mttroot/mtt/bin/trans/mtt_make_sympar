@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  2000/10/16 09:41:29  peterg
+## Fixed bug with printing a blank line.
+##
 ## Revision 1.2  2000/10/16 09:10:08  peterg
 ## Now strips out "unwanted" bits frome the _aliased.txt file
 ##
@@ -36,8 +39,16 @@ sh | sort -u > mtt_all_sympar.txt
 # Sort the aliased list
 mtt_strip_args < $1_aliased.txt | sort -u  > mtt_aliased_sort.txt
 
+# Create list of unwanted stuff
+cat  mtt_aliased_sort.txt> mtt_unwanted.txt
+
+notvar="[%|#]NOT[VAR|PAR]";
+grep $notvar $1_lbl.txt | awk '{printf("%s\t%s\n", $2,sys)'} sys=$1 >>mtt_unwanted.txt
+
+sort -u mtt_unwanted.txt > mtt_unwanted_sort.txt
+
 # Compare it with the aliased list and show the differences
-diff mtt_all_sympar.txt mtt_aliased_sort.txt |\
+diff mtt_all_sympar.txt mtt_unwanted_sort.txt |\
 awk '{if ($1=="<") printf("%s\t%s\n", $2,$3)}' > mtt_sympar.txt
 
 # Assume same name in different system is the same

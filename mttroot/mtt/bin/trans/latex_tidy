@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1996/08/18 20:03:12  peter
+## Initial revision
+##
 ###############################################################
 
 cat $1 | \
@@ -21,7 +24,7 @@ tr "[A-Z]" "[a-z]" | \
 sed -e "s/\// \\\over /g" \
     -e "s/mttex/\\\chi/g" \
     -e "s/mttdx/\\\dot x/g" \
-    -e "s/mttdz/\\\dot z/g" \
+    -e "s/mttdz/\\\dot z_/g" \
     -e "s/mttdu/\\\dot u_/g" \
     -e "s/dot_/ \\\dot /g" \
     -e "s/mtta/A/g" \

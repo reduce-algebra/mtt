@@ -8,6 +8,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/03/03 21:55:46  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -15,6 +18,7 @@
 %ALIAS	out	out
 
 % Argument aliases
+%ALIAS $1	e_s
 
 %% Each line should be of one of the following forms:
 %	     a comment (ie starting with %)
@@ -25,4 +29,4 @@
 
 % Component type SS
 	[out]	SS		external,external
-	u	SS		external,internal
+	u	SS		e_s,internal

@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.320  2001/07/27 23:38:38  geraint
+## Changed comment below (# SUMMARY) - fixes xmtt.
+##
 ## Revision 1.319  2001/07/27 23:29:10  geraint
 ## *** empty log message ***
 ##
@@ -1374,6 +1377,7 @@ if [ -z "$1" ]; then
     echo '         -I  prints more information'
     echo '         -abg start at abg.m representation'
     echo '         -c  c-code generation'
+    echo '         -cc C++ code generation'
     echo '         -cr Use cr before resolving equations'
     echo '         -d  <dir>  use directory <dir>'
     echo '         -dc Maximise derivative (not integral) causality'

@@ -19,7 +19,4 @@ function [P,A_u,A_w,k] = ppp_are (A,B,C,D,Q,R)
   ## Setpoint basis functions
   A_w = 0;
 
-  ## Include A_w in A_u
-  A_u = ppp_aug(A_u,A_w);
-
 endfunction

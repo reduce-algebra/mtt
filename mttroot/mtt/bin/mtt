@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.267  2000/09/21 10:08:30  peterg
+## Version 4.7.1 - bug in odes.dat representation fixed in dat22dat
+##
 ## Revision 1.266  2000/09/19 07:47:38  peterg
 ## fig2dev back to eps - ps produces a4 style output.
 ##
@@ -900,7 +903,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='4.7.1'
+version='4.7.2'
 
 # MTT recursion level is zero unless explicitly set
 level=0

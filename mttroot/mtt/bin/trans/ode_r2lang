@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1998/07/19 16:22:29  peterg
+## Changed header to inculde mttu
+##
 ## Revision 1.2  1998/06/21 10:40:58  peterg
 ## Added fsolve error message.
 ##
@@ -29,7 +32,7 @@ language=$2
 case $language in
     m)
 	ext='m';
-	codegenerator='FORTRAN'
+	codegenerator='PASCAL'
 	Lc='#';
 	Rc='#';
 	Lb='(';
@@ -66,11 +69,11 @@ rm -f ode_r2lang.log
 
 #Remove the temporary files
 rm -f $1_ode.$ext.1
-rm -f $1_odea.$ext.1;
-rm -f $1_odeo.$ext.1;
+rm -f $1_odea.$ext.1
+rm -f $1_odeo.$ext.1
 
 # Use reduce to accomplish the transformation
-$SYMBOLIC >ode_r2lang.log << EOF
+$SYMBOLIC  << EOF #>ode_r2lang.log
 
 %Read the reduce definitions file
 in "$1_def.r";
@@ -84,7 +87,9 @@ in "$1_ode.r";
 LOAD GENTRAN;
 GENTRANLANG!* := '$codegenerator;
 ON GENTRANSEG;
-MAXEXPPRINTLEN!* := 40;
+MAXEXPPRINTLEN!* := 80;
+TEMPVARNUM!* := 1;
+TEMPVARNAME!* := 'mtt_temp;
 
 % Matrix output function
 in"$MTTPATH/trans/lang_matrix.r";
@@ -100,8 +105,8 @@ in "$1_sympar.r";
   mtt_matrix := MTTdX$
   mtt_matrix_n := MTTNx$
   mtt_matrix_m := 1$
-  mtt_matrix_name := MTTdX$
-  lang_matrix(); 
+  mtt_matrix_name := 'MTTdX$
+  lang_matrix()$ 
   GENTRANSHUT "$1_ode.$ext.1";
   
 % The algebraic equations (if any)
@@ -110,7 +115,7 @@ in "$1_sympar.r";
   mtt_matrix_n := MTTNYz$
   mtt_matrix_m := 1$
   mtt_matrix_name := MTTYz$
-  lang_matrix(); 
+  lang_matrix()$ 
   GENTRANSHUT "$1_odea.$ext.1";
 
 
@@ -121,7 +126,7 @@ in "$1_sympar.r";
   mtt_matrix_n := MTTNy$
   mtt_matrix_m := 1$
   mtt_matrix_name := MTTy$
-  lang_matrix(); 
+  lang_matrix()$ 
   GENTRANSHUT "$1_odeo.$ext.1";
 
 EOF
@@ -230,7 +235,10 @@ cat <<EOF >> $1_odeo.$ext
 EOF
 sed 's/mtt_matrix/mtty/' $1_odeo.$ext.1 >> $1_odeo.$ext
 
-
+# Convert from Pascal syntax to Octave syntax
+mv $1_ode.m mtt_junk; mtt_p2m<mtt_junk > $1_ode.m
+mv $1_odeo.m mtt_junk; mtt_p2m<mtt_junk > $1_odeo.m
+mv $1_odea.m mtt_junk; mtt_p2m<mtt_junk > $1_odea.m
 
 
 

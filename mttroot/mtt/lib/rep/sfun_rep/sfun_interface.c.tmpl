@@ -85,6 +85,34 @@ array_of_double (size_t n)
 }
 
 static void
+check_finite(SimStruct *S, double *array, unsigned int index)
+{
+  const char *array_name;
+  char warning[128];
+  if ((array[index] <= 0.0) || (array[index] >= 0.0)) {
+    ; /* no problem */
+  } else {
+    if (array == mttpar) {
+      array_name = "mttpar";
+    } else if (array == mttu) {
+      array_name = "mttu";
+    } else if (array == mttx) {
+      array_name = "mttx";
+    } else if (array == mtty) {
+      array_name = "mtty";
+    } else if (array == controller_inputs) {
+      array_name = "controller_inputs";
+    } else if (array == controller_outputs) {
+      array_name = "controller_outputs";
+    } else {
+      array_name = "unknown_array";
+    }
+    sprintf(warning, "(time %f) Non-finite array element: %s[%d]\n", mttt, array_name, index);
+    ssWarning(S, warning);
+  }
+}
+
+static void
 initialise_arrays (void)
 {
   PRINT_ENTER;
@@ -106,15 +134,19 @@ update_inputs_from_simulink (SimStruct *S)
   PRINT_ENTER;
   for (i = 0; i < MTTNU; i++) {
     mttu[i] = *ssGetInputPortRealSignalPtrs (S, 0)[i];
+    check_finite(S, mttu, i);
   }
   for (i = 0; i < MTTNX; i++) {
     mttx[i] = *ssGetInputPortRealSignalPtrs (S, 1)[i];
+    check_finite(S, mttx, i);
   }
   for (i = 0; i < MTTNY; i++) {
     mtty[i] = *ssGetInputPortRealSignalPtrs (S, 2)[i];
+    check_finite(S, mtty, i);
   }
   for (i = 0; i < NumberOfControllerOutputs; i++) {
     controller_outputs[i] = *ssGetInputPortRealSignalPtrs (S, 3)[i];
+    check_finite(S, controller_outputs, i);
   }
   PRINT_LEAVE;
 }
@@ -198,10 +230,12 @@ static void mdlOutputs(SimStruct *S, int_T tid)
   UNUSED_ARG(tid); /* not used in single tasking mode */
 
   for (i = 0; i < MTTNU; i++) {
+    check_finite(S, mttu, i);
     ssGetOutputPortRealSignal (S, 0)[i] = mttu[i];
   }
   
   for (i = 0; i < NumberOfControllerInputs; i++) {
+    check_finite(S, controller_inputs, i);
     ssGetOutputPortRealSignal (S, 1)[i] = controller_inputs[i];
   }
 

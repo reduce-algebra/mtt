@@ -11,6 +11,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.15  2000/11/03 14:53:33  peterg
+## Copy NOTPAR as well
+##
 ## Revision 1.14  2000/09/14 08:41:35  peterg
 ## Strip off the additional direction info from rbonds
 ##
@@ -103,20 +106,25 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
   case $1 in
 	-I )
                 info=info;;
+	-nounits )
+                units=no;;
 	*)
 		echo "$1 is an invalid argument - ignoring" ;;
   esac
   shift
 done
 
-
+## Set up some vars
+sys=$1
+lbl_file=${sys}_lbl.txt
+abg_file=${sys}_abg.m
 
 # Remove the old log file
 rm -f rbg2abg_m.log
-rm -f $1_abg.m
+rm -f ${abg_file}
 
 #Inform user
-echo Creating $1_abg.m
+echo Creating ${abg_file}
 
 # Use matrix manipulation to accomplish the transformation
 $MATRIX > rbg2abg_m.log  2>mtt_error.txt << EOF
@@ -141,30 +149,67 @@ $MATRIX > rbg2abg_m.log  2>mtt_error.txt << EOF
 
   %Write the function m-file for the causal bond graph
   write_abg(name,bonds,components,n_vector_bonds);    
-
-#  filename = '$1_abg.m';
-#  filenum = fopen(filename,'w');
-#  c = '%';
-#  fprintf(filenum, 'function [bonds,components,n_ports,N_ports] = $1_abg\n');
-#  fprintf(filenum, '%s [bonds,components,n_ports] = $1_abg\n', c);
-#  fprintf(filenum, '%s Acausal bond graph created by MTT on %s\n\n', ...
-#                     c, date);
-#  mat2mfile(bonds, 'bonds', filenum);
-#  mat2mfile(components, 'components', filenum);
-#  fprintf(filenum, 'n_ports = %1.0f;\n', n_ports);
-#  fprintf(filenum, 'N_ports = %1.0f;\n', N_ports);
-
 EOF
+
+## Sets the units for the abg file
+function test_units
+{ 
+  grep '^[\s]*[#|%]UNITS' < ${lbl_file} >/dev/null
+  if [ $? = "0" ]; then 
+    grep '^[\s]*[#|%]UNITS' < ${lbl_file} |\
+    awk '{
+      printf("mtt_units.sh %s %s %s %s %s\n", sys, $2, $3, $4, $5)
+    }' sys=${sys}  | sh | grep ERROR
+    if [ $? = "0" ]; then
+      echo "    " *MTT_ERRROR: domains and units are not OK - exiting
+      exit 1  
+    else
+      echo "    " domains and units are OK 
+    fi
+  else
+    echo "  no domains or units declared"
+  fi
+} 
+
+function check_ports_exist
+{
+ declared_ports=`grep '^[\s]*[#|%]UNITS' < ${lbl_file} | awk '{print $2}'`
+  for declared_port in $declared_ports; do
+    grep "${sys}\.ports\.${declared_port}\.type" ${abg_file} >/dev/null
+    if [ $? = "1" ]; then
+      echo "*MTT_ERRROR: Units declared for non-existent port ${declared_port}"
+      exit 1
+    fi
+  done
+}
+
+function set_units
+{ 
+  grep '^[\s]*[#|%]UNITS' < ${lbl_file} |\
+  awk '{
+    printf("  %s.ports.%s.domain = \"%s\";\n", sys, $2, $3);
+    printf("  %s.ports.%s.units.effort = \"%s\";\n", sys, $2, $4);
+    printf("  %s.ports.%s.units.flow = \"%s\";\n", sys, $2, $5);
+  }' sys=${sys}
+} 
+
+if [ -z "$units" ]; then
+  echo Checking port domains and units
+  check_ports_exist;
+  test_units;
+  echo "## Port domain and units" >> ${abg_file}
+  set_units >> ${abg_file}
+fi
 
 # Append any VAR declarations
 if [ -f "$1_lbl.txt" ]; then
-  echo "# Explicit variable declarations" >> $1_abg.m
-  grep '^[\s]*[%|#][V|P]AR' $1_lbl.txt | tr '%' '#' >> $1_abg.m    
-  grep '^[\s]*[%|#]NOT[V|P]AR' $1_lbl.txt | tr '%' '#' >> $1_abg.m    
+  echo "## Explicit variable declarations" >> ${abg_file}
+  grep '^[\s]*[%|#][V|P]AR' $1_lbl.txt | tr '%' '#' >> ${abg_file}    
+  grep '^[\s]*[%|#]NOT[V|P]AR' $1_lbl.txt | tr '%' '#' >> ${abg_file}    
 fi
 
 ## Close off the function
-echo "endfunction" >> $1_abg.m
+echo "endfunction" >> ${abg_file}
 
 ## Errors and info
 if [ "$info" = "info" ]; then

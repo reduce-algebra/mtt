@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.131  1998/02/23 16:21:21  peterg
+## Just do model name in summary line of lbl file
+##
 ## Revision 1.130  1998/02/19 13:40:24  peterg
 ## Removed prerequisit from sspar.r target.
 ##
@@ -553,7 +556,7 @@ if [ -z "$1" ]; then
     echo '       mtt manual           -- dvi manual'
     echo '       mtt warranty'
     echo '       mtt clean           -- cleans up intermediate files'
-    echo '       mtt Clean           -- cleans up all files'
+    echo '       mtt Clean           -- cleans up all generated files'
     echo '       mtt <system_name> clean'
     echo '       mtt copy <system_name> <path_name>'
     echo '       mtt rename <old_name> <new_name>'
@@ -1069,22 +1072,37 @@ $1_numpar.m:  $1_numpar.txt $1_sympar.txt
 
 #SUMMARY numpar	numerical parameter declaration (c) 
 $1_numpar.c:  $1_numpar.txt $1_sympar.c
-	numpar_txt2c $1
+	txt2c $1 numpar
 
 #SUMMARY input	numerical input declaration (txt) -- default
 ifeq ($switches,0)
 $1_input.txt: 
-	mtt $mtt_switches $1 struc txt; struc2input_txt2txt $1
+	mtt $mtt_switches $1 struc txt; 
+	mtt $mtt_switches $1 ss r; 
+	struc2input_txt2txt $1
 endif
 ifeq ($switches,1)
 $1_input.txt: 
 	mtt $mtt_switches -q -u $1 struc txt; 
+	mtt $mtt_switches $1 ss r; 
 	mtt $mtt_switches -q -u $1 switch txt; 	
 	struc2input_txt2txt -s $1
 endif
+
 #SUMMARY input	numerical input declaration (m) 
-$1_input.m:  $1_input.txt $1_sympar.txt
+$1_input.m:  $1_input.txt $1_sympar.txt $1_ss.r
 	input_txt2m $1
+
+#SUMMARY state	state declaration (txt) -- default
+$1_state.txt: 
+	mtt $mtt_switches $1 struc txt; 
+	mtt $mtt_switches $1 ss r; 
+	struc2state_txt2txt $1
+
+#SUMMARY state	state declaration (c) 
+$1_state.c:  $1_state.txt $1_sympar.c
+	txt2c $1 state
+
 
 #SUMMARY input	numerical input declaration (c) 
 ifeq ($switches,0)
@@ -1501,7 +1519,7 @@ $1_odes.m: $1_ode.m $1_numpar.m $1_args.m $1_def.m $1_input.m
 	ode2odes_m $1 '$ARGS'
 endif
 ifeq ($computation,c)
-$1_odes.m: $1_odes.c $1_ode.c $1_numpar.c $1_odes.h\
+$1_odes.m: $1_odes.c $1_ode.c $1_numpar.c $1_state.c $1_odes.h\
          $1_sympar.c $1_sympar.h\
          $1_numpar.c $1_input.c sign.c
 	echo Creating $1_odes.m

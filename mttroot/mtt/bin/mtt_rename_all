@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1998/07/22 15:20:06  peterg
+## Added state.txt
+##
 ## Revision 1.5  1998/04/13 09:15:36  peterg
 ## Added obspar
 ##
@@ -43,6 +46,7 @@ mtt_rename $old_name $new_name _numpar.txt
 mtt_rename $old_name $new_name _obspar.r
 mtt_rename $old_name $new_name _odes.h
 mtt_rename $old_name $new_name _rep.txt
+mtt_rename $old_name $new_name _pic.fig
 mtt_rename $old_name $new_name _simp.r
 mtt_rename $old_name $new_name _simpar.txt
 mtt_rename $old_name $new_name _sspar.r

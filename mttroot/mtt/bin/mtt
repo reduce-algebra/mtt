@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.110  1998/01/06  13:59:30  peterg
+# Added rename function.
+#
 # Revision 1.109  1998/01/06  09:20:02  peterg
 # Made LATEX2HTML an environment variable.
 #
@@ -402,7 +405,7 @@ print='';
 mtt_switches='';
 
 #Look for a command line argument
-while [ -n "`echo $1 | grep '-'`" ]; do
+while [ -n "`echo $1 | grep '^-'`" ]; do
   case $1 in
 	-q )
                 mtt_switches="$mtt_switches $1";
@@ -542,9 +545,9 @@ if [ "$1" = "clean" ] && [ "$2" = "" ]; then
   rm -f *_sub.* *_type.sh
   rm -f *_dae*.* *_cse.* *_ode.*
   rm -f *_obs.* *_rfe.* *_ss.*
-  rm -f *_dm.* *_csm.* *_sm.* *_tf.* *_sr*.* *_ir*.* *_*fr.*
-  rm -f  *_numpar.m *_numpar.c *_input.m *_input.c *_switch.c *_switch.txt
-  rm -f *_sm*.*
+  rm -f *_dm.* *_csm.*  *_tf.* *_sr*.* *_ir*.* *_*fr.*
+  rm -f *_numpar.m *_numpar.c *_input.m *_input.c *_switch.c *_switch.txt
+  rm -f *_sm.* *_can.*
   rm -f *_struc.* *_sympar.txt *_sympar.c *_sympar.h *_sympar.m
   rm -f *_odes.c *_odes.dat *_odes.gdat *_odes.m *_odes.ps
   rm -f *_odeso.dat *_odeso.gdat *_odeso.sdat *_odeso.m *_odeso.ps
@@ -566,9 +569,9 @@ if [ "$2" = "clean" ] && [ "$3" = "" ]; then
   rm -f $1_rbg.* $1_cmp.* $1_fig.fig $1*_*cbg.* $1*_ese.* $1_def.* 
   rm -f $1_sub.* $1_type.sh
   rm -f $1_dae*.* $1_cse.* $1_ode.*  $1_obs.* $1_rfe.* $1_ss.*
-  rm -f $1_dm.* $1_csm.* $1_sm.* $1_tf.* $1_sr*.* $1_ir*.* $1_*fr.*
+  rm -f $1_dm.* $1_csm.* $1_tf.* $1_sr*.* $1_ir*.* $1_*fr.*
   rm -f  $1_numpar.m $1_numpar.c $1_input.m $1_input.c $1_switch.c $1_switch.txt
-  rm -f $1_sm*.*
+  rm -f $1_sm*.* $1_can.*
   rm -f $1_struc.* $1_sympar.txt $1_sympar.c $1_sympar.h $1_sympar.m
   rm -f $1_odes.c $1_odes.dat $1_odes.gdat $1_odes.sdat $1_odes.m $1_odes.ps
   rm -f $1_odeso.dat $1_odeso.gdat $1_odeso.m $1_odeso.ps
@@ -1166,6 +1169,7 @@ $1_csm.tex: $1_csm.r  $1_sympar.r $1_simp.r
 #SUMMARY sm	state matrices (r)
 #SUMMARY sm	state matrices (m)
 #SUMMARY sm	state matrices (tex)
+#SUMMARY sm	state matrices (c)
 #SUMMARY sm	state matrices (view)
 #SUMMARY sm	state matrices (ps)
 #Linearised system: state matrices
@@ -1177,6 +1181,20 @@ $1_sm.c: $1_def.r $1_sm.r $1_sympar.c
 		sm_r2c $1
 $1_sm.tex: $1_sm.r  $1_sympar.r $1_simp.r
 	sm_r2tex $1; latex_tidy $1_sm.tex
+
+#SUMMARY can	canonical form matrices - siso only (r)
+#SUMMARY can	canonical form matrices - siso only (tex)
+#SUMMARY can	canonical form matrices - siso only (m)
+#SUMMARY can	canonical form matrices - siso only (view)
+#SUMMARY can	canonical form matrices - siso only (ps)
+#Linearised system: canonical form matrices
+$1_can.r: $1_sm.r $1_def.r $1_tf.r 
+	sm2can_r $1; tidy $1_can.r
+$1_can.tex: $1_can.r  $1_simp.r
+	can_r2tex $1; latex_tidy $1_can.tex
+$1_can.m: $1_def.r $1_can.r $1_numpar.m
+		can_r2m $1;  matlab_tidy $1_can.m
+
 
 #SUMMARY tf	transfer function (r)
 #SUMMARY tf	transfer function (m)
@@ -1474,6 +1492,7 @@ nrutil.h:
 	echo Copying nrutil.h; cp $MTTPATH/trans/c/nrutil.h .
 sign.c:
 	echo Copying sign.c; cp $MTTPATH/trans/c/sign.c .
+
 EOF
 
 # Tidy up.

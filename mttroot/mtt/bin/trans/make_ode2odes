@@ -9,6 +9,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.25  1999/08/29 06:55:26  peterg
+## Removed [MTTu]  = zero_input($Nu);	# Zero the input
+## to avoide the p2c bug ????
+##
 ## Revision 1.24  1999/08/27 06:02:16  peterg
 ## removed zero_input to avoid p2c bug
 ##
@@ -110,7 +114,7 @@ MTTilast = round(mttlast/mttdt); # Total number of steps
 #Initialise
 MTTt = 0.0;
 
-#[MTTu]  = zero_input($Nu);	# Zero the input
+[MTTu]  = zero_input($Nu);	# Zero the input
 
 [MTTx] = $1_state;	        # Read in initial state
 

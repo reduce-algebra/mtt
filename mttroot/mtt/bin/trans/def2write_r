@@ -1,0 +1,62 @@
+#!/bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: def2write.r
+# Generates r code to write matrices
+# Copyright (C) 2000 by Peter J. Gawthrop
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+sys=$1 # System name
+rep=$2 # System representation
+
+# Inform User
+echo Creating $1_$2_write.r
+
+# Find system constants
+Nx=`mtt_getsize $sys x` # States
+Nxx=`mtt_getsize $sys xx` # States x States
+Nu=`mtt_getsize $sys u` # Inputs 
+Ny=`mtt_getsize $sys y` # Outputs 
+Nyz=`mtt_getsize $sys yz` # Zero outputs
+Npar=`wc -l $sys\_sympar.txt | awk '{print $1}'`
+
+# Set up representation-specific stuff
+case $rep in
+    ode)
+        matrices='dX Y Yz'
+        ns="$Nx $Ny $Nyz"
+        ms="1 1 1"
+	;;
+    *)
+        echo def2write_r: representation $rep not recognised
+        exit
+esac
+
+# Write out the code
+echo 'off echo$ load scope$'                    >$1_$2_write.r
+echo 'optimize'                      >>$1_$2_write.r
+for matrix in $matrices; do
+    n=`first "$ns"`; ns=`rest "$ns"` 
+    m=`first "$ms"`; ms=`rest "$ms"`
+
+    is=`n2m 1 $n`; 
+    js=`n2m 1 $m`; 
+    for i in $is; do
+      for j in $js; do
+        name=`echo MTT$matrix'('$i','$j')'`
+        echo '  '$name ':=:' $name',' >>$1_$2_write.r
+      done
+    done
+done
+echo 'INAME mtt_tmp$'                 >>$1_$2_write.r
+echo 'END$'                           >>$1_$2_write.r

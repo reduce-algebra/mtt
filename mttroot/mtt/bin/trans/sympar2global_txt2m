@@ -1,0 +1,39 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: sympar2global_txt2m
+
+# Symbolic parameters to default paramers (m)
+# P.J.Gawthrop March 1997
+# Copyright (c) P.J.Gawthrop, 1997.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+
+
+
+
+
+#Write out the variables in matlab global format
+awk '
+BEGIN{
+  print "global ..."
+}
+{i++; print tolower($1), "..."}
+END{
+  print ";"
+}' $1_sympar.txt
+
+# Now invoke the standard error handling.
+# mtt_error mtt_error.txt
+
+

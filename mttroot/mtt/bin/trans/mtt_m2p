@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.20  1998/10/01 16:01:09  peterg
+## Now does implicit integration with switches
+##
 ## Revision 1.19  1998/09/29 15:37:18  peterg
 ## Declare mttINPUT
 ##
@@ -240,8 +243,8 @@ BEGIN{
           printvar("y",Ny);
           printvar("_t",Nt);
 
-          printf("\n{%s %s_smx.p}\n",inc,sys)
           printf("\n{%s sign.p}\n",inc,sys)
+          printf("\n{%s %s_smx.p}\n",inc,sys)
           printf("{%s mtt_euler.p}\n",inc)
           printf("{%s mtt_implicit.p}\n",inc)
           printf("{%s mtt_write.p}\n",inc)

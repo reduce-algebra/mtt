@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2001/05/24 07:42:12  gawthrop
+## Included and updated the missing tf_r2m
+##
 ## Revision 1.1  1996/09/18 14:05:31  peter
 ## Initial revision
 ##
@@ -87,7 +90,7 @@ matrix MTTnum(MTTNy,MTTNu);
     FOR Col := 1:MTTNu DO
     MTTnum(Row,Col) := num(MTTtf(Row,Col))*(MTTden/den(MTTtf(Row,Col)));
   END;
-MTTnum;
+MTTnum := MTTnum;
 
 %Put coefficients into matrices
 matrix MTTdenco(1,Nmax);
@@ -98,6 +101,7 @@ BEGIN
   IF j>length(MTTCoeff) THEN MTTdenco(1,i) := 0 
                         ELSE MTTdenco(1,i) := part(MTTCoeff,j);
 END; 
+MTTdenco := MTTdenco;
 
 matrix MTTnumco(MTTNy,MTTNu*Nmax);
 FOR MTTRow := 1:MTTNy DO
@@ -145,7 +149,4 @@ mtt_header $1 tf m > $1_tf.m
 cat $1_tf.m1  >> $1_tf.m
 echo '## END Code' >> $1_tf.m
 rm -f $1_tf.m1
-
-
-
 

@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  1998/11/18 10:53:38  peterg
+## Put in some more "IF MTTNx>0 THEN" to avoid error messages when no
+## states.
+##
 ## Revision 1.8  1998/11/10 08:54:34  peterg
 ## Put in "IF MTTNx>0 THEN" to prevent probs when Nx=0
 ##  -- still a couple of apparent error messages - but answers now
@@ -71,6 +75,9 @@ rm -f dae2cse_r.log
 
 # Use reduce to accomplish the transformation
 $SYMBOLIC >dae2cse_r.log << EOF
+
+%Read the formatting function
+in "$MTTPATH/trans/reduce_matrix.r";
 
 OFF Echo;
 OFF Nat;
@@ -241,58 +248,52 @@ END; % IF MTTNyz>0
 %%Create the _cse.r file
 OUT "$1_cse.r";
 
-IF MTTNx>0 THEN
-BEGIN
-  write "matrix MTTEdX(", MTTNx, ",1)";
-END;
-IF MTTNx>0 THEN
-  MTTEdX := MTTEdX;
+% State derivative
+MTT_Matrix := MTTEdX$ 
+MTT_Matrix_name := "MTTEdX"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := 1$
+Reduce_Matrix()$
 
-IF MTTNy>0 THEN
-BEGIN
-  write "matrix MTTY(", MTTNy, ",1)";
-END;
+% Output
+MTT_Matrix := MTTY$ 
+MTT_Matrix_name := "MTTY"$
+MTT_Matrix_n := MTTNy$
+MTT_Matrix_m := 1$
+Reduce_Matrix()$
 
-MTTY := MTTY;
+% Inputs
+MTT_Matrix := MTTU$ 
+MTT_Matrix_name := "MTTU"$
+MTT_Matrix_n := MTTNu$
+MTT_Matrix_m := 1$
+Reduce_Matrix()$
+MTT_Matrix := MTTdU$ 
+MTT_Matrix_name := "MTTdU"$
+MTT_Matrix_n := MTTNu$
+MTT_Matrix_m := 1$
+Reduce_Matrix()$
 
-IF MTTNu>0 THEN
-BEGIN
-  write "matrix MTTU(", MTTNu, ",1)";
-  write "matrix MTTdU(", MTTNu, ",1)";
-END;
-MTTU := MTTU;
+% E matrix
+MTT_Matrix := MTTE$ 
+MTT_Matrix_name := "MTTE"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := MTTNx$
+Reduce_Matrix()$
 
-IF MTTNx>0 THEN
-BEGIN
-  write "matrix MTTE(", MTTNx, ",", MTTNx, ")";
-END;
-IF MTTNx>0 THEN
-  MTTE := MTTE;
+% Eyx matrix
+MTT_Matrix := MTTEyx$ 
+MTT_Matrix_name := "MTTEyx"$
+MTT_Matrix_n := MTTNy$
+MTT_Matrix_m := MTTNx$
+%Reduce_Matrix()$
 
-IF MTTNz>0 THEN
-BEGIN
-  IF MTTNx>0 THEN IF MTTNy>0 THEN
-  BEGIN
-    write "matrix MTTEyx(", MTTNy, ",", MTTNx, ")";
-  END;
-
-IF MTTNx>0 THEN
-  MTTEyx := MTTEyx;
-%%%%%  MTTdU := MTTdU;
-END;
-
-IF MTTNyz>0 THEN
-  BEGIN
-  write "matrix MTTYz(", MTTNyz, ",1)";
-  END
-ELSE
-  BEGIN
-  write "MTTNYz := 0;";
-  MTTYz := 0;
-  END;
-
-  MTTYz := MTTYz;
-
+% Yz
+MTT_Matrix := MTTYz$ 
+MTT_Matrix_name := "MTTYz"$
+MTT_Matrix_n := MTTNyz$
+MTT_Matrix_m := 1$
+Reduce_Matrix()$
 
 write ";END;";
 

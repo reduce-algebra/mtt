@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  2001/10/15 14:25:44  gawthrop
+## Now handles white space at the end of component names
+## Converts ports lables [1:5] into [1,2,3,4,5]
+##
 ## Revision 1.7  2001/07/24 22:42:59  geraint
 ## Fixes problem when lbl.txt does not end with newline.
 ##
@@ -67,7 +71,9 @@ touch $1_bnd.fig
 touch $1_art.fig
 
 # Deletes trailing white space in component names
-sed 's/[	 ]*\\001/\\001/' < $1_abg.fig >$1_abg.mtt1
+# and break compound objects
+sed 's/[	 ]*\\001/\\001/' < $1_abg.fig |\
+grep -v "^6 [0-9 ]*" | grep -v "^-6$" >$1_abg.mtt1
 
 # Replace [1:5] with [1,2,3,4,5]
 awk '{

@@ -330,6 +330,12 @@ function [bonds,components,n_vector_bonds] = \
 		       head_bond.label, tail_bond.label), infofile);
     endif
 
+    ## write type at other end
+    eval(sprintf("%s.other_end_type = '%s';",
+		 head_str, tail.type));
+    eval(sprintf("%s.other_end_type = '%s';",
+		 tail_str, head.type));
+
     ## assign bond number
     for i = 1:head.n_subs
       ++unique_bond_number;
@@ -467,11 +473,24 @@ function [bonds,components,n_vector_bonds] = \
       counter = 0;
       for [bond, bond_name] = comp
 	if (index(bond_name, "bond") == 1)
-	  for [sub_bond, sub_bond_name] = bond
-	    if (index(sub_bond_name, "subbond") == 1)
-	      components(comp.index, ++counter) = sub_bond.index
-	    endif
-	  endfor
+	  if (strcmp(bond.other_end_type, "SS"))
+	    for [sub_bond, sub_bond_name] = bond
+	      if (index(sub_bond_name, "subbond") == 1)
+		components(comp.index, ++counter) = sub_bond.index
+	      endif
+	    endfor
+	  endif
+	endif
+      endfor
+      for [bond, bond_name] = comp
+	if (index(bond_name, "bond") == 1)
+	  if (!strcmp(bond.other_end_type, "SS"))
+	    for [sub_bond, sub_bond_name] = bond
+	      if (index(sub_bond_name, "subbond") == 1)
+		components(comp.index, ++counter) = sub_bond.index
+	      endif
+	    endfor
+	  endif
 	endif
       endfor
     endfor

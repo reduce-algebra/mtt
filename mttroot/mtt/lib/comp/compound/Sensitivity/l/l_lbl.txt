@@ -7,13 +7,16 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/07/29 04:49:49  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 % Port aliases
 %ALIAS	in	A1,B1
 %ALIAS	out	A2,B2
-%ALIAS	out_2	A3,B3
+%ALIAS	in_2|out_2	A3,B3
 
 % Argument aliases
 

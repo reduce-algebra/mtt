@@ -1,26 +1,27 @@
 %% Label file for system sR (sR_lbl.txt)
-%SUMMARY sR Two-port sensitivity model of R component
-%DESCRIPTION [Actual] port corresponds to ordinary R component 
-%DESCRIPTION [Sensitivity] port corresponds to sensitivity R component 
+%SUMMARY sR Sensitivity R component
+%DESCRIPTION 
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2001/04/05 12:00:18  gawthrop
+% %% Identification example
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 % Port aliases
-%ALIAS	in	Actual,Sensitivity
+%ALIAS	in	actual,sensitivity
 
 % Argument aliases
 %ALIAS	$1	flow,r
-%ALIAS	$2	k_s
+%ALIAS	$2	rs
 
-% CR aliases
-%ALIAS	$1	lin
-%ALIAS	$2	slin
+%CR alias
+%ALIAS $1 slin
 
 %% Each line should be of one of the following forms:
 %	     a comment (ie starting with %)
@@ -28,14 +29,11 @@
 %	     blank
 
 % ---- Component labels ----
-
-% Component type AFe
-	afe		lin	-1*k_s
-
-% Component type R
-	r_1		lin	flow,r
-	r_2		slin	flow,r
+	r	slin 	flow,r;rs
 
 % Component type SS
-	[Actual]	SS		external,external
-	[Sensitivity]	SS		external,external
+	[actual]	SS		external,external
+	[sensitivity]	SS		external,external
+
+
+

@@ -1,28 +1,27 @@
 %% Label file for system sC (sC_lbl.txt)
-%SUMMARY sC
-%DESCRIPTION <Detailed description here>
+%SUMMARY sC Sensitivity C component
+%DESCRIPTION 
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
-% %% Revision 1.1  1999/07/29 04:24:11  peterg
-% %% Initial revision
+% %% Revision 1.1  2001/04/05 12:00:18  gawthrop
+% %% Identification example
 % %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 % Port aliases
-%ALIAS	in	Actual,Sensitivity
+%ALIAS	in	actual,sensitivity
 
 % Argument aliases
 %ALIAS	$1	effort,c
-%ALIAS	$2	k_s	% 0 or 1/c
+%ALIAS	$2	cs
 
-% CR aliases
-%ALIAS	$1	lin
-%ALIAS	$2	slin
+%CR alias
+%ALIAS $1 slin
 
 %% Each line should be of one of the following forms:
 %	     a comment (ie starting with %)
@@ -30,15 +29,12 @@
 %	     blank
 
 % ---- Component labels ----
-
-% Component type AE
-	ae		lin	k_s
-
 % Component type C
-	c_1		lin	effort,c
-	c_2		slin	effort,c
+	c	slin 	effort,c;cs
 
 % Component type SS
-	[Actual]	SS		external,external
-	[Sensitivity]	SS		external,external
+	[actual]	SS		external,external
+	[sensitivity]	SS		external,external
+
+
 

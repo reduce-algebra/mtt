@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  2000/09/01 13:30:32  peterg
+## Added -partition switch
+##
 ## Revision 1.5  2000/09/01 12:14:57  peterg
 ## Added connecti9ng inputs
 ##
@@ -80,7 +83,8 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 blurb='with partitioning';
 		;;
 	*)
-		echo "$1 is an invalid argument - ignoring" ;;
+		echo "$1 is an invalid argument - ignoring";
+                exit ;;
   esac
   shift
 done

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1999/08/25 21:20:07  peterg
+## Don't list components starting with 0 ot 1
+##
 ## Revision 1.5  1996/11/09 21:09:43  peterg
 ## Added lib path.
 ##
@@ -30,9 +33,14 @@
 ##
 ###############################################################
 
+if [ -f "$1_sub.sh" ]; then
+    echo Using "$1_sub.sh"
+    exit
+else
+    #Inform user
+    echo Creating $1_sub.sh    
+fi
 
-#Inform user
-echo Creating $1_sub.sh
 
 echo '# Commands to generate subsystem representations'>  $1_sub.sh
 echo "# File $1_sub.sh"			>> $1_sub.sh

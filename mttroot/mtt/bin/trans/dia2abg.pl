@@ -352,7 +352,6 @@ sub output_abg {
 	output_component($NM,$type,$cr,$arg,$rep,$stat,$connections,$subsys_or_port);
     }
     
-    print OUT "# Ordered list of subsystem names\n";
     # order component id's so that entries found in _lbl.txt file are
     # in _lbl file order, and other entries follow.
     my (@id_list);
@@ -366,12 +365,28 @@ sub output_abg {
 	$strlength = length($name) if length($name) > $strlength;
     };
 
+    print OUT "# Ordered list of Port names\n";
     my $i=1;
     foreach my $id (@id_list) {
-	my $name = id_to_name($id);
-	print OUT "  " . $diagram_name . ".subsystemlist($i,:)" . ' = "'
-	    . $name . " " x ($strlength - length($name)) . '";' . "\n";
-	$i++;
+	my ($subsys_or_port,$name) = id_to_name($id);
+	if ($subsys_or_port eq "ports") {
+	    $_ = $name; remove_brackets(); $name = $_;
+	    print OUT "  " . $diagram_name . ".portlist($i,:)" . ' = "'
+		. $name . " " x ($strlength - length($name)) . '";' . "\n";
+	    $i++;
+	}
+    }
+    print OUT "\n";
+
+    print OUT "# Ordered list of subsystem names\n";
+    $i=1;
+    foreach my $id (@id_list) {
+	my ($subsys_or_port,$name) = id_to_name($id);
+	if ($subsys_or_port eq "subsystems") {
+	    print OUT "  " . $diagram_name . ".subsystemlist($i,:)" . ' = "'
+		. $name . " " x ($strlength - length($name)) . '";' . "\n";
+	    $i++;
+	}
     }
     print OUT "\n";
 }

@@ -1,0 +1,43 @@
+%SUMMARY Turb Ideal turbine component for compressible flow
+%DESCRIPTION Parameter 1: c_p - specific heat of fluid
+%DESCRIPTION Parameter 2: Parameter passed to Density component
+%DESCRIPTION Parameter 3: alpha = (n-1)/n, n coefficient of polytropic
+%DESCRIPTION expansion.
+%DESCRIPTION Parameter 4: k_t pump constant: mass flow = k_t*shaft speed
+
+%% Label file for system Turb (Turb_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type Pipe
+	pipe	none		$1;$2
+
+% Component type Poly
+	poly		Poly		$3
+
+% Component type SS
+	[Hy_in]		external	external
+	[Hy_out]	external	external
+	[Shaft]		external	external
+	[Th_in]		external	external
+	[Th_out]	external	external
+	T		external	0
+
+% Component type TF
+	k_t		lin	effort,$4
+
+
+
+

@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.42  2000/11/10 14:19:50  peterg
+## Corrected the csex and cseo functions
+##
 ## Revision 1.41  2000/11/09 17:06:39  peterg
 ## Now does euler for cc
 ##
@@ -190,14 +193,14 @@ global MTT_data;
 
 ## Following removed due to p2c bug
 ##  [u]  = zero_input($Nu);		# Zero the input
-  for MTTi=1:$Nu
-    u(MTTi) = 0;
+  for MTTi=1:$Ny
+    y(MTTi) = 0;
   endfor;
 
   mttj = 0;
     for it = 1:ilast		#Integration loop
-    [y] = ${sys}_$odeo(x,u,t,par);  # Output 
     [u] = ${sys}_input(x,y,t,par);	# Input
+    [y] = ${sys}_$odeo(x,u,t,par);  # Output 
     if mttj==0
      mtt_write(t,x,y,$Nx,$Ny);   # Write it out
     endif

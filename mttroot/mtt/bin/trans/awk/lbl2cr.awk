@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  1998/03/08 21:01:40  peterg
+## Now does multiple crs
+##
 ## Revision 1.8  1998/03/06 09:15:28  peterg
 ## Ignores SS fields (assumes that if first field is a symbol then other
 ## field is and SS-style field.
@@ -56,7 +59,7 @@ function matches(names, name) {
 
 
 BEGIN {
-comment = "%";
+comment = "%|#";
 cr_delimiter = ";";
 not_a_cr = "effort flow state internal external zero none";
 is_a_SS = "internal external zero";
@@ -65,6 +68,7 @@ symbolic = "\044"; # Ascii $
 symbol_count = 0;
 symbols = "";
 
+# Include lin cr anyway.
 print "lin"
 }
 {

@@ -6,9 +6,12 @@ function string_array = replace_name(string_array, new, index);
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/07/02 12:36:39  peterg
+## Initial revision
+##
 ###############################################################
 
-
+string_array,new,index
   [N,M]=size(string_array);
   L = length(new);
   

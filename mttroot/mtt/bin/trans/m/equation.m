@@ -17,6 +17,9 @@ function eqn =  equation(name,cr,args,outbond,outcause,outport, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.5  1996/12/05  11:26:51  peterg
+% %% Null strings now detected with strcmp not length.
+% %%
 % %% Revision 1.4  1996/09/12 16:42:01  peter
 % %% Default now out side this function - need to be none for each
 % %% component.
@@ -35,9 +38,11 @@ function eqn =  equation(name,cr,args,outbond,outcause,outport, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+inbonds
+incauses
 
 % Find the number of inports
-nports = length(inbonds);
+nports = length(inbonds)
 
 % Check some arguments
 if length(incauses) ~= nports

@@ -7,6 +7,9 @@ function write_matrix(matrix,name);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.5  1998/02/03 08:40:39  peterg
+% %% Fixed a horrible bug -- changed filename -> filenum
+% %%
 % %% Revision 1.4  1996/08/15  11:56:11  peter
 % %% Does complex matrices.
 % %%
@@ -35,11 +38,10 @@ fprintf(filenum, 'data = [\n');
 [N,M] = size(matrix);
 for row = 1:N
   for col = 1:M
-    re = real(matrix(row,col));
-    im = imag(matrix(row,col));
-    fprintf(filenum, '%g', re);
-    if im ~= 0
-      fprintf(filenum, '+ %g*i', im);
+    value = matrix(row,col);
+    fprintf(filenum, '%g', real(value));
+    if is_complex(value)
+      fprintf(filenum, '+ %g*i', imag(value));
     end
     if col<M
       fprintf(filenum, '\t');

@@ -1,49 +1,41 @@
-function psfig(filename)
-  ## Usage: psfig(filename)
-  ## Puts figure into ps file
+function figfig(filename,language)
+  ## Usage: figfig(filename[,language])
+  ## Puts octave figure into fig file (filename.fig)
+  ## If second argument, converts to filename.language using fig2dev
+  ## eg:
+  ##    figfig("foo");
+  ##    figfig("foo","eps");
+  ##    figfig("foo","pdf");
 
   ###############################################################
   ## Version control history
   ###############################################################
   ## $Id$
   ## $Log$
-  ## Revision 1.3  2000/10/09 14:41:47  peterg
-  ## Put back color
-  ##
-  ## Revision 1.2  2000/10/09 09:53:14  peterg
-  ## Changed font size
-  ##
-  ## Revision 1.1  1999/11/30 23:26:21  peterg
+  ## Revision 1.1  2000/11/03 10:43:10  peterg
   ## Initial revision
-  ##
-  ## Revision 1.3  1999/09/04 02:23:30  peterg
-  ## Removed mv stuff - now uses gset on actual file
-  ##
-  ## Revision 1.2  1999/06/15 02:05:44  peterg
-  ## Now adds a .ps if not there already
-  ##
-  ## Revision 1.1  1999/03/25 01:35:00  peterg
-  ## Initial revision
-  ##
   ###############################################################
 
-  ## Add .ps if not there already
-  if !index(filename,".")	# Is there a .
-    filename = sprintf("%s.ps",filename);
-  endif
+  figfilename = sprintf("%s.fig",filename);
   
-  eval(sprintf("gset output \"%s\" ",filename));
-  gset linestyle 1 lw 4		# Thicker lines
-  gset linestyle 2 lw 4		# Thicker lines
-  gset linestyle 3 lw 4		# Thicker lines
-  gset linestyle 4 lw 4		# Thicker lines
-  gset linestyle 5 lw 4		# Thicker lines
+  eval(sprintf("gset output \"%s\" ",figfilename));
 
-
-  gset term postscript eps color 30
+  gset term fig color portrait fontsize 16 size 20 10 metric
   replot;
   gset term x11
   gset output 
   replot;
 
+  ## Add a box - makes a visible bounding box
+  fid = fopen(figfilename,"a+");
+  fprintf(fid,"2 4 0 2 31 7 50 0 -1 0.000 0 0 7 0 0 5\n");
+  fprintf(fid,"\t9675 5310 9675 270 225 270 225 5310 9675 5310\n");
+  fclose(fid);
+
+  if nargin>1			# Do a ps file
+    psfilename = sprintf("%s.%s",filename,language);
+    convert = sprintf("fig2dev -L%s %s > %s", language, figfilename, psfilename)
+    system(convert);
+  endif
+  
 endfunction

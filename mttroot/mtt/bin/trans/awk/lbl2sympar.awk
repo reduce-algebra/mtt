@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.13  1998/07/15 09:26:50  peterg
+## Reinstated the second column of the sympar file - the system name
+##
 ## Revision 1.12  1998/07/04 11:09:46  peterg
 ## Cleaned up - assumes new lbl style for SS
 ##
@@ -54,7 +57,7 @@
 
 function exact_match(name1, name2) {
   return ((match(name1,name2)>0)&&(length(name1)==length(name2)))
-    }
+}
 
 function matches(names, name) {
   n_matches = split(names,match_name);
@@ -66,12 +69,13 @@ function matches(names, name) {
     }
   }
   return matched;
-    }
+}
 
 
 BEGIN {
 sys_name = ARGV[1];
-comment = "%";
+comment = "%|#";
+var = "[%|#]VAR";
 arg_delimiter = ",";
 not_an_arg = "effort flow state internal external zero unknown 0 1";
 SS_parameter = "internal external zero 0 1";
@@ -80,6 +84,8 @@ symbol_count = 0;
 symbols = "";
 }
 {
+  if (match($1,var)>0) print $2 "\t" name;
+
   if ( (match($1,comment)==0) && (NF>=3) ) {
     n_args = split($3,arg,arg_delimiter);
     for (i = 1; i <= n_args; i++) {

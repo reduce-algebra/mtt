@@ -12,18 +12,21 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.2  1997/04/15  11:18:49  peterg
+# Uses supertabular package
+#
 # Revision 1.1  1996/08/18  20:00:10  peter
 # Initial revision
 #
 ###############################################################
 
 
-BEGIN {
-  split(ARGV[1],a,"_");
-  system_name = a[1];
-  split(a[2],b,".");
-  representation = b[1];
-  makefile = sprintf("%s_rep.make", system_name, representation);
+END{
+#  split(ARGV[1],a,"_");
+#  system_name = a[1];
+#  split(a[2],b,".");
+#  representation = b[1];
+  makefile = sprintf("%s_rep.make", $system_name, $representation);
   print "\\documentclass[12pt,a4paper]{article}";
   printf("\\title{System %s, representation %s}\n", \
 	 system_name, representation) 
@@ -32,6 +35,7 @@ BEGIN {
   print "  \\usepackage{supertabular}";
   print "\\begin{document}";
   print "  \\maketitle";
-  printf("  \\input{%s_%s}\n", system_name, representation);
+  print"  \\input{}", system_nam,e $representation;
+  print $system_name $representation
   print "\\end{document}"
 }

@@ -1,5 +1,5 @@
-function [w,y,y_theta] = mtt_sfreq(system_name,theta,indices);
-  ## usage: [t,y,y_theta] = mtt_sfreq(system_name,theta);
+function [w,y,y_theta] = mtt_sfreq(system_name,theta,free);
+  ## usage: [w,y,y_theta] = mtt_sfreq(system_name,theta,free);
   ##
   ## Frequency response with name system_name and parameter vector theta
   ## The order of components in theta is determined in system_numpar.txt:
@@ -12,34 +12,44 @@ function [w,y,y_theta] = mtt_sfreq(system_name,theta,indices);
   ## Assumes SISO system 
 
   global mtt_n_parameters mtt_parameters # Global "argc argv"
+  global mtt_w # Frequencies (if not specified in simpar file
+ N = length(theta);
 
+  eval(sprintf("[nx,ny,nu,nz,nyz] = %s_def;", system_name));
   if nargin<3
-    indices = ones(size(theta));
+    free = 1;
   endif
-  
-  N = length(theta);
-  if N!=length(indices)
-    error(sprintf("The length (%i) of indices must be the same as that of theta (%i)",length(indices),N));
-  endif
-  
-
-  eval(sprintf("%s_simpar;", system_name)); # Read the "simulation" parameters
-  w = logspace(mttwmin,mttwmax,mttwsteps)'; # Frequency range
   
   y_theta = [];
-  mtt_n_parameters = 2*N;
-  mtt_parameters(2:2:2*N) = theta; # The actual parameters
-  for i = 1:N
-    if indices(i)
-      mtt_parameters(1:2:2*N-1) = 0; # The sensitivity switches are off
-      mtt_parameters(2*i-1) = 1;	# Set the approriate sensitivity switch
-				# on
-      eval(sprintf("%s_numpar;", system_name)); # Read the parameters
-      eval(sprintf("[A,B,C,D,E] = %s_dm;", system_name)); # Evaluate the descriptor matrices
-      fr = dm2fr(A,B,C,D,E,w);
-      y_theta = [y_theta fr(:,2)]; # Sensitivity frequency response
-    endif
-    
+
+  if length(free)==0
+    free=1;			# Make the loop happen once to get y and X
+  endif
+  
+  [n,m]  = size(free);
+  if m==1
+    free = free';
+  endif
+  
+  
+  eval(sprintf("%s_simpar;", system_name)); # Read the "simulation"
+					    # parameters
+  if exist("mttwmin")		# Compute frequency range
+    w = logspace(mttwmin,mttwmax,mttwsteps)'; # Frequency range
+  else				# use global mtt_w
+    w = mtt_w;
+  endif
+  
+  y_theta = [];
+  mtt_n_parameters = 1+N;
+  mtt_parameters(2:1+N) = theta; # The actual parameters
+  for i = free
+    mtt_parameters(1) = i; # Select wich sens. function
+    eval(sprintf("%s_numpar;", system_name)); # Read the parameters
+    eval(sprintf("[A,B,C,D,E] = %s_dm;", system_name)); # Evaluate the
+				# descriptor matrices
+    fr = dm2fr(A,B,C,D,E,w);
+    y_theta = [y_theta fr(:,2)]; # Sensitivity frequency response
   endfor
 
   y = fr(:,1);			# Actual frequency response

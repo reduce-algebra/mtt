@@ -7,6 +7,9 @@ function psfig(filename)
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.1  1999/11/30 23:26:21  peterg
+  ## Initial revision
+  ##
   ## Revision 1.3  1999/09/04 02:23:30  peterg
   ## Removed mv stuff - now uses gset on actual file
   ##
@@ -23,8 +26,15 @@ function psfig(filename)
     filename = sprintf("%s.ps",filename);
   endif
   
-  gset term postscript eps
   eval(sprintf("gset output \"%s\" ",filename));
+  gset linestyle 1 lw 4		# Thicker lines
+  gset linestyle 2 lw 4		# Thicker lines
+  gset linestyle 3 lw 4		# Thicker lines
+  gset linestyle 4 lw 4		# Thicker lines
+  gset linestyle 5 lw 4		# Thicker lines
+
+
+  gset term postscript eps 
   replot;
   gset term x11
   gset output 

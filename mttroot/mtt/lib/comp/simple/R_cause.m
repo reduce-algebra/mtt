@@ -8,11 +8,18 @@ function [bonds,status] = R_cause(bonds);
 % Matlab function  R_cause
 % [bonds,status] = R_cause(bonds)
 
+%SUMMARY R: R component
+%DESCRIPTION Multiport component with no dynamics
+%DESCRIPTION Cannot be bicausal
+
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/08/30 19:05:08  peter
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 

@@ -8,11 +8,18 @@ function [bonds,status] = AF_cause(bonds);
 % Matlab function  AF_cause
 % [bonds,status] = AF_cause(bonds)
 
+%SUMMARY AF: flow amplifier
+%DESCRIPTION Port[1]: amplifier flow input f_1 (e_1=0)
+%DESCRIPTION Port[2]: amplifier flow output f_2 
+
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/08/30 19:05:32  peter
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 

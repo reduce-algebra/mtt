@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/07/25 16:35:43  peterg
+## Sorted out log files etc
+##
 ## Revision 1.1  1998/07/25 16:28:38  peterg
 ## Initial revision
 ##
@@ -27,7 +30,8 @@ info=''
 while [ -n "`echo $1 | grep '^-'`" ]; do
   case $1 in
 	-I )
-                info=info;;
+                info=info;
+                ;;
 	*)
 		echo "$1 is an invalid argument - ignoring" ;;
   esac
@@ -37,16 +41,14 @@ done
 # Inform user
 echo Creating $1_$2.c
 
-# Use p2c to do the translation - but zap the PASCAL_MAIN which we don't want. 
-p2c -V  $1_$2.p  2>/dev/null
+# Use p2c to do the translation 
+p2c -V  $1_$2.p  | grep Warning # > mtt_p2c.log 2>> mtt_p2c.log
+cat $1_$2.log >> mtt_p2c.log
 
+# zap the PASCAL_MAIN which we don't want. 
 mv $1_$2.c mtt_junk
 grep -v 'PASCAL_MAIN' < mtt_junk > $1_$2.c
 
-# Info if needed
 if [ -n "$info" ]; then
-    cat $1_ode2odes.log
-else
-    rm -f $1_ode2odes.log
+    cat mtt_p2c.log
 fi
-

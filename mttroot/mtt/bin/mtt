@@ -19,6 +19,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.11  1996/08/15 11:55:30  peter
+## Checks for changed argument.
+## Handles frequency response.
+##
 ## Revision 1.10  1996/08/15 07:44:24  peter
 ## Now handles generic transformations using %.
 ##
@@ -104,11 +108,11 @@ ARGS=$4;
 cat > $1_args.new <<EOF
 $ARGS
 EOF
-
+touch $1_args.m
 DIFF=$(diff -bq $1_args.m $1_args.new)
 
 if [ -n "$DIFF" ]; then
-  mv macmic_args.new macmic_args.m
+  mv $1_args.new $1_args.m
 fi
 
 # This is the main mtt programme
@@ -199,7 +203,7 @@ $1_def.m: $1_def.r
 $1_dae.r:	$1_ese.r $1_cr.r $1_sympar.r
 	ese2dae_r $1; tidy $1_dae.r
 $1_dae.m: $1_def.r $1_dae.r  $1_sympar.r
-	dae_r2m $1; matlab_tidy $1_dae.m
+	dae_r2m $1; matlab_tidy $1_dae.m; matlab_tidy $1_daeo.m
 $1_dae.c: $1_def.r $1_dae.r  $1_sympar.r
 	dae_r2c $1; c_tidy $1_dae.c
 $1_dae.tex:	$1_dae.r $1_simp.r
@@ -272,15 +276,15 @@ $1_tf.tex: $1_def.r $1_tf.r $1_sympar.r $1_simp.r
 
 
 #Time responses
-$1_ir.dat: $1_dm.m $1_numpar.m $1_args.m
-	dm2ir_m2dat $1 '$ARGS'
 $1_sr.m: $1_dm.m $1_numpar.m $1_args.m $1_def.m
 	dm2sr_m $1 '$ARGS'
 $1_odesol.m: $1_ode.m $1_numpar.m $1_args.m $1_def.m
 	ode2odesol_m $1 '$ARGS'
+$1_daesol.m: $1_dae.m $1_numpar.m $1_args.m $1_def.m
+	dae2daesol_m $1 '$ARGS'
 
 #Frequency responses
-$1_fr.m: $1_dm.m $1_numpar.m $1_args.m
+$1_fr.m: $1_dm.m $1_numpar.m $1_args.m $1_def.m
 	dm2fr_m $1 '$ARGS'
 $1_lmfr.m: $1_fr.m
 	touch $1_lmfr.m
@@ -314,20 +318,20 @@ $1_$2.dvi: $1_$2.doc
 	echo Creating $1_$2.dvi
 	latex $1_$2.doc > /dev/null
 
-#Create PostScript version of dat file
-%.ps: %.gdat
-	gdat2ps $1_$2 '$ARGS'
-
 #Create PostScript version of fig files
 %.ps : %.fig
 	echo Creating $1_$2.ps
 	fig2dev -Lps $1_$2.fig >$1_$2.ps
 
+
+#Create PostScript version of dat file
+%.ps: %.gdat
+	gdat2ps $1_$2 '$ARGS'
+
 #Create PostScript version of dvi file
 %.ps: %.dvi
 	echo Creating $1_$2.ps
 	dvips -o $1_$2.ps $1_$2
-
 
 #View a ps file
 $1_$2.view: $1_$2.ps

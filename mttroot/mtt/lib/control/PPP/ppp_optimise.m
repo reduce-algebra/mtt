@@ -1,7 +1,7 @@
-function [par,Par,Error,Y,iterations] = \
+function [par,Par,Error,Y,iterations,x] = \
       ppp_optimise(system_name,x_0,par_0,simpar,u,y_0,free,extras);
   ## Levenberg-Marquardt optimisation for PPP/MTT
-  ## Usage: [par,Par,Error,Y,iterations] = ppp_optimise(system_name,x_0,par_0,simpar,u,y_0,free[,extras]);
+  ## Usage: [par,Par,Error,Y,iterations,x] = ppp_optimise(system_name,x_0,par_0,simpar,u,y_0,free[,extras]);
   ##  system_name     String containing system name
   ##  x_0             Initial state
   ##  par_0           Initial parameter vector estimate
@@ -28,6 +28,9 @@ function [par,Par,Error,Y,iterations] = \
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.4  2001/05/26 15:46:38  gawthrop
+  ## Updated to account for new nonlinear ppp
+  ##
   ## Revision 1.3  2001/04/05 11:50:12  gawthrop
   ## Tidied up documentation + verbose mode
   ##
@@ -97,7 +100,7 @@ function [par,Par,Error,Y,iterations] = \
 
     iterations = iterations + 1; # Increment iteration counter
 
-    [y,y_par] = eval(sim_command); # Simulate
+    [y,y_par,x] = eval(sim_command); # Simulate
     [N_data,N_y] = size(y);
 
     if (N_y!=n_y)

@@ -15,6 +15,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.13  1998/08/31 11:43:37  peterg
+# %% Now lower cases globals in numpar files
+# %%
 # %% Revision 1.12  1998/08/14 10:47:31  peterg
 # %% Put ImplicitS sub before Implicit!!
 # %%
@@ -72,6 +75,13 @@ if [ "$representation" = "input" ]; then
     name='mttu';
     arg='(mttx,mttt)'
 fi
+if [ "$representation" = "simpar" ]; then
+    # Check if implicit method and generate xmx.m if
+    implicit=`grep -i METHOD $1_simpar.txt | grep -i -c IMPLICIT`
+    if [ "$implicit" = "1"  ]; then
+	mtt -q $1 smx m
+    fi
+fi
 
 # Inform user
 echo Creating $1_$2.m
@@ -121,6 +131,7 @@ doublequote = "\042";
     sub(/^WMIN/, "mttWMIN", LHS);
     sub(/^WMAX/, "mttWMAX", LHS);
     sub(/^WSTEPS/, "mttWSTEPS", LHS);
+    sub(/^INPUT/, "mttinput", LHS);
     LHS = tolower(LHS);
     RHS = tolower(RHS);
     sub(/["]*euler["]*/, 1, RHS);   

@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.27  2001/02/14 06:06:34  geraint
+## Removed octave_value_list wrappers from standalone.exe - speed improvements
+##
 ## Revision 1.26  2001/02/05 08:50:58  geraint
 ## Octave 2.1.x compatability.
 ##
@@ -350,7 +353,7 @@ declare_dummies()
 dummies="mtt_tmp"
 rm -f mtt_dummies
 for dummy in $dummies; do
-    grep "${dummy}[0-9]* " < ${fun_name}.m |\
+    grep "${dummy}[0-9]*[ \t\n]*=" < ${fun_name}.m |\
     awk '{ 
           if (match($1,dummy)==1)
              print $1

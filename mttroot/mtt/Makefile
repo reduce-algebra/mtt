@@ -99,7 +99,6 @@ mtt.sh:
 	@echo 'mtt_config_file=$(CONFDIR)/mtt.conf'			>>mtt.sh
 	@echo 'mtt_program_dir=$(PROGDIR)'				>>mtt.sh
 	@echo 'mtt_install_dir=$(INSTDIR)'				>>mtt.sh
-	@echo 'MTT_DOC=$(DOCDIR)'					>>mtt.sh
 	@echo ''							>>mtt.sh
 	@echo '# get site-specific settings'				>>mtt.sh
 	@echo 'if [[ -r $${mtt_config_file} ]]; then'			>>mtt.sh
@@ -108,6 +107,8 @@ mtt.sh:
 	@echo 'elif [[ -r $${mtt_install_dir}/bin/mttrc ]]; then'	>>mtt.sh
 	@echo '   . $${mtt_install_dir}/bin/mttrc $${mtt_install_dir}'	>>mtt.sh
 	@echo 'fi'							>>mtt.sh
+	@echo ''							>>mtt.sh
+	@echo 'MTT_DOC=$(DOCDIR)'					>>mtt.sh
 	@echo ''							>>mtt.sh
 	@echo '# get user-specific settings'				>>mtt.sh
 	@echo 'if [[ -r $${HOME}/.mttrc ]]; then'			>>mtt.sh

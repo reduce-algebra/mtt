@@ -6,11 +6,12 @@ function [index,prefered] = getdynamic(status,system_type);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/08/16 12:50:41  peter
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
 index=0; prefered=0;
-s = status'
 n_components = length(status);
 
 for i = 1:n_components
@@ -28,4 +29,3 @@ for i = 1:n_components
     end;
   end;
 end;
-index

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.48  2000/05/18 09:39:38  peterg
+## Removed fifth argument from _input
+##
 ## Revision 1.47  2000/05/16 18:56:03  peterg
 ## Upgraded for new simulation approach - uses data files to input
 ## parameters -- no more argv stuff
@@ -217,7 +220,7 @@ Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
         echo "PROCEDURE $Sys_rep(VAR mttu : InputVector;"
 	echo "                       mttt : REAL;"
 	echo "                       mttx : StateVector;"
-	echo "                       mtty : OutputVector)"
+	echo "                       mtty : OutputVector);"
 	;;
     ode)
 	echo "PROCEDURE $Sys_rep(VAR mttdx: StateVector;"

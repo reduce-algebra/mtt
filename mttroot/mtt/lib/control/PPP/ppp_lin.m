@@ -1,5 +1,5 @@
-function [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,cond_uu] = ppp_lin(A,B,C,D,A_u,A_w,tau,Q,max_cond);
-  ## usage:   [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,cond_uu] = ppp_lin(A,B,C,D,A_u,A_w,tau,Q,max_cond)
+function [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,cond_uu] = ppp_lin(A,B,C,D,A_u,A_w,tau,Q,R,P,max_cond);
+  ## usage:   [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,cond_uu] = ppp_lin(A,B,C,D,A_u,A_w,tau,Q,R,P,max_cond)
   ##
   ## Linear PPP (Predictive pole-placement) computation 
   ## INPUTS:
@@ -35,13 +35,23 @@ function [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,cond_uu] = ppp_l
     return
   endif
 
-  ## Default Q
+  ## Default Q (output weight)
   if nargin<8
     Q = ones(n_y,1);
   endif
 
-  ## Default order
+  ## Default R (input weight)
   if nargin<9
+    R = zeros(n_u,1);
+  endif
+
+  ## Default P (terminal weight)
+  if nargin<10
+    P = zeros(n_x,n_x);
+  endif
+
+  ## Default condittion number
+  if nargin<11
     max_cond = 1e20;
   endif
   
@@ -71,6 +81,7 @@ function [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,cond_uu] = ppp_l
   if n_t != 1
     error("tau must be a row vector");
   endif
+  dt = tau(2) - tau(1);		# Sample interval
 
   [n_Q,m_Q] = size(Q);
   if ((m_Q != 1)&&(m_Q != m_t)) || (n_Q != n_y)
@@ -89,13 +100,16 @@ function [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,cond_uu] = ppp_l
   i_U = 0;
   x_0 = zeros(n_x,1);		# This is for x=0
   y_u = [];			# Initialise
+  x_u_t = [];			# Initialise
   Us = [];			# Initialise
   for i=1:n_U			# Do for each input function U*_i
     dU = zeros(n_U,1);
     dU(++i_U) = 1;		# Create dU/dU_i 
-    [ys,us] = ppp_ystar (A,B,C,D,x_0,A_u,dU,tau); # Find ystar and ustar
+    [ys,us,xs] = ppp_ystar (A,B,C,D,x_0,A_u,dU,tau); # Find ystar and ustar
     y_u = [y_u ys'];		# Save y_u (y for input u)  with one row for each t.
-    Us = [Us us'];		# Save u (input)  with one row for each t.
+    Us = [Us us'];		# Save u (input)  with one row for each
+				# t.
+    x_u_t = [x_u_t xs(:,m_t)];	# x_u at terminal time
   endfor
 
   Ws = [];			# Initialise
@@ -140,7 +154,7 @@ function [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,cond_uu] = ppp_l
   ## each element of U
 
   ## Scale Q
-  Q = Q/m_t;			# Scale by T/dt = number of points
+  Q = Q*dt;			# Scale to give correct units
   ## Non-w bits
   for i = 1:n_y			# For each output
     QQ = ones(n_U,1)*Q(i,:);	# Resize Q
@@ -150,11 +164,29 @@ function [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,cond_uu] = ppp_l
     J_xx = J_xx + (QQ .* y_x(:,i:n_y:n_yx)') * y_x(:,i:n_y:n_yx);
   endfor
 
+  ## Input weighting (scalar for the moment)
+  if (n_u>1)
+    warning("Sorry, cant do n_u>1 just now");
+  endif
+
+  ## Scale R
+  R = R*dt;			# Scale to give correct units
+  for i = 1:m_t
+    Ust = Us(i,:);
+    J_uu = J_uu + Ust'*R*Ust;
+  endfor
+  
   ## Exit if badly conditioned
   cond_uu = cond(J_uu);
   if cond_uu>max_cond
     error(sprintf("J_uu is badly conditioned. Condition number = 10^%i",log10(cond_uu)));
   endif
+
+  ## Terminal constraint
+  tau_last = tau(m_t);
+  x_x_t = expm(A*tau_last);	# deriv. of x*(tau_2) wrt x(0)
+  J_ux = J_ux + x_u_t'*P*x_x_t;
+  J_uu = J_uu + x_u_t'*P*x_u_t;
 
   ## w bits
   if n_W>0

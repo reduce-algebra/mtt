@@ -16,6 +16,9 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.19  2003/10/10 22:22:18  geraint
+@comment  typo.
+@comment
 @comment  Revision 1.18  2003/09/07 20:41:19  geraint
 @comment  *** empty log message ***
 @comment
@@ -421,6 +424,10 @@ User interface
 * Options::                     
 * Utilities::                   
 
+Options
+
+* Model-specific options::      
+
 Utilities
 
 * Help::                        
@@ -548,7 +555,7 @@ Stripped acausal bond graph (sabg)
 
 Labels (lbl)
 
-* SS component labels ::        
+* SS component labels::         
 * Other component labels::      
 * Component names::             
 * Component constitutive relationship::  
@@ -679,7 +686,7 @@ Extending MTT
 
 * Makefiles::                   
 * New (DIY) representations::   
-* Component library ::          
+* Component library::           
 
 New (DIY) representations
 
@@ -1311,6 +1318,54 @@ The available options are:
 @item --versions 
        print version of mtt and components and exit
 @end vtable
+
+@menu
+* Model-specific options::      
+@end menu
+
+@node Model-specific options,  , Options, Options
+@subsection Model specific options
+@cindex Model-specific options
+It is often desirable to keep the options used to build a model associated with the directory in which the model is contained, along with information about compiler options or paths to component libraries. In these cases, it is convenient to create an executable shell script, say @code{call_mtt} which sets environment variables and options before calling mtt proper, for example:
+@example
+@verbatim
+#! /bin/sh
+# call_mtt: sets model specific environment and options
+
+## Processor flags
+
+# use 32 bit Reduce
+export SYMBOLIC="reduce"
+
+# set compiler debug and optimization options
+export MTT_CXXFLAGS="${MTT_CXXFLAGS}\
+        -Wall-Wno-unused -Wuninitialized\
+        -O1 -march=pentiumpro -save-temps"
+
+## Model flags
+
+# use directory ../.. as base directory
+export DIR=${DIR:-${PWD}/../..}
+
+# additional components are in directory ../comp
+export MTT_COMPONENTS="${MTT_COMPONENTS}:${DIR}/comp"
+
+# additional constitutive relationships are in ../cr
+export MTT_CRS="${MTT_CRS}:${DIR}/cr"
+
+# C header files in ../cr/h
+export MTT_CXXINCS="${MTT_CXXINCS} -I${DIR}/cr/h"
+
+# call mtt with model specific options
+exec ${MTTPATH}/mtt -cc -cr -i euler -D -optl -ntmpvar 1200 $*
+@end verbatim
+@end example
+
+which may then be used in place of mtt on the command line,
+
+@example
+./call_mtt sys gnuplot view
+@end example
 
 @node Utilities,  , Options, User interface
 @comment  node-name,  next,  previous,  up
@@ -2401,7 +2456,9 @@ mtt -cc [options] sys ode2odes exe
 @node Dynamically linked functions,  , Simulation code, Simulation code
 @comment  node-name,  next,  previous,  up
 @subsection Dynamically linked functions
-
+@cindex Compiling C++ files
+@cindex mex files
+@cindex oct files
 Some model representations can be compiled into dynamically loaded
 code (shared objects) which are compiled prior to use in other
 modelling and simulation environments; in particular, .oct files can
@@ -3598,7 +3655,7 @@ The old-style lbl files (@pxref{Old-style labels (lbl)}) are NO LONGER
 supported -- you are encouraged to convert them ASAP.
 
 @menu
-* SS component labels ::        
+* SS component labels::         
 * Other component labels::      
 * Component names::             
 * Component constitutive relationship::  
@@ -3660,7 +3717,7 @@ ss2     SS              0,external
 @end example
 
 
-@node Other component labels, Component names, SS component labels , Labels (lbl)
+@node Other component labels, Component names, SS component labels, Labels (lbl)
 @comment  node-name,  next,  previous,  up
 @subsection Other component labels 
 @cindex Other component labels 
@@ -4628,6 +4685,9 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.19  2003/10/10 22:22:18  geraint
+# %% typo.
+# %%
 # %% Revision 1.18  2003/09/07 20:41:19  geraint
 # %% *** empty log message ***
 # %%
@@ -5568,7 +5628,7 @@ that some of these  involve the creation of `make files'.
 @menu
 * Makefiles::                   
 * New (DIY) representations::   
-* Component library ::          
+* Component library::           
 @end menu
 
 @node Makefiles, New (DIY) representations, Extending MTT, Extending MTT
@@ -5604,7 +5664,7 @@ TwoLinkGMV_numpar.m: TwoLinkGMV_numpar.txt
 All of the files in the line stating `all:' are created when
 @strong{MTT} is executed (if they don't already exist).
 
-@node New (DIY) representations, Component library , Makefiles, Extending MTT
+@node New (DIY) representations, Component library, Makefiles, Extending MTT
 @comment  node-name,  next,  previous,  up
 @section New (DIY) representations
 @cindex New representations
@@ -6143,7 +6203,7 @@ ways:
 @item emacs
       type ^h^i followed by mmtt in the command window
 @item browser
-      point browser to mtt.sf.netb
+      point browser to http://mtt.sf.net
 @end vtable
 
 @node On-line documentation,  , Manual (Documentation), Documentation

@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1998/07/30 10:44:37  peterg
+## INcluded othe integration methods.
+##
 ## Revision 1.5  1998/07/26 11:02:20  peterg
 ## Put mtt or MTT  in front of variable names to avoid clashes with
 ## globals
@@ -52,14 +55,15 @@ mttDDT = mttDT/mttSTEPFACTOR;
 
 #Initialise
 MTTt = 0.0;
-MTTx = $1_state;	        # Read in initial state
-MTTu = $1_input(MTTx,MTTt);        # Evaluate initial input
-MTTy = $1_odeo(MTTx,MTTu,MTTt);    # Evaluate initial output
+[MTTx] = $1_state;	        # Read in initial state
+[MTTu] = $1_input(MTTx,MTTt);        # Evaluate initial input
+[MTTy] = $1_odeo(MTTx,MTTu,MTTt);    # Evaluate initial output
 mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny); # And write them
+[mttA] = zeros($Nx); # Zero the A matrix
 
-
-mttA = $1_smx(MTTx,MTTu); # Set up A matrix - linearised system
-
+if mttMETHOD==2 #Linear implicit
+  mttA = $1_smx(MTTx,MTTu); # Set up A matrix - linearised system
+end;
 
 #Integration loop
 for MTTit = 1:MTTiLast

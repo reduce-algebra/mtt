@@ -13,15 +13,16 @@
 #echo "Creating $1_sympar.txt"
 
 # Separation characters
-SEPS='=*;+/()-'
+SEPS='=*;+/()-^'
 # Replace by ,
-REPS=',,,,,,,,'
+REPS=',,,,,,,,,'
 
 SystemName=$2
 UseLabelFile=$3
 
 if [ -n "$UseLabelFile" ]; then ## Take input from lbl.txt
-     strip_comments < $1_lbl.txt | awk '{printf("%s %s \"%s\",\n",$1,$2,$3)}' > mtt_stripped_file
+     strip_comments < $1_lbl.txt | tr $SEPS $REPS |\
+     awk '{printf("%s %s \"%s\",\n",$1,$2,$3)}' > mtt_stripped_file
 else ## Take input from _abg.m
      cat $1_abg.m | grep "arg =" | tr $SEPS $REPS > mtt_stripped_file
 fi

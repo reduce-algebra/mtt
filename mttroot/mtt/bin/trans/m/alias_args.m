@@ -5,6 +5,10 @@ function args = alias_args(args,alias,delim,message,FileID,sys_name)
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  2001/04/23 16:23:30  gawthrop
+## Now stips ; from bottlom level argument list - allows aliasing of
+## parts of a,b,c (eg a,b by using a,b;c
+##
 ## Revision 1.5  2000/10/12 19:27:20  peterg
 ## Now writes out the aliased args ...
 ##
@@ -25,7 +29,6 @@ function args = alias_args(args,alias,delim,message,FileID,sys_name)
 ##
 ###############################################################
 
-
   if is_struct(alias)
     if !isempty(args)
       Args = split(args,delim); args="";
@@ -40,18 +43,23 @@ function args = alias_args(args,alias,delim,message,FileID,sys_name)
   	  mtt_save_alias(arg,sys_name);
 
           arg = new_arg;
-	else
-	  mtt_info(["NOT replacing ", arg, message],FileID);
+# 	else
+# 	  mtt_info(["NOT replacing ", arg, message],FileID);
         end
-        SEPS = ",+-*/()";
+        SEPS = ",+-*/()^";
         for j = 1:length(SEPS)
-	  if length(findstr(arg,SEPS(j)))>0
+	  if (length(arg)>0)&&(length(findstr(arg,SEPS(j)))>0)
 	    arg = alias_args(arg,alias,SEPS(j),message,FileID,sys_name);
 	  end 
 	end;
         args = sprintf("%s%s%s", args, delim, arg);
       end
-      args = substr(args,2); % loose leading ;
+      if (length(args)>1)
+	if (substr(args,1,1)==delim)
+	  args = substr(args,2); # loose leading delimiter
+	endif
+      endif
+      
     end
   end;
 endfunction;

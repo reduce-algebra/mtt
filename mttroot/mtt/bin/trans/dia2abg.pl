@@ -23,18 +23,12 @@
 #----------------------------------------------------------------------------
 
 #############################################################################
-# Given a DIA diagram, and a mtt label file, this script writes an
-# acausal bond graph in octave/matlab (.m) form, suitable for input to
-# mtt, the model transformation tools.
-#
-# This script does not manage half-causal strokes.
-#
-# The dia arrow code is not quite adapted to bond graphs yet.  A
-# half-head arrow exists to indicate power flow.  Nothing appropriate
-# for causal strokes is implemented, however.  The closest
-# approximations are:
-#	'slashed cross' = arrow with half head and causal stroke.
-#	'cross' = arrow with causal stroke.
+# Given a DIA diagram, the script has functions that perform the following
+# MTT (model transformation tools) functions:
+# 1. Write a _cmp.txt file containing component types:names
+# 2. Write a _abg.m file containing an acausal bond graph suitable for input
+#    to Octave.
+# 3. Modify a diagram by changing causality as desired.
 #############################################################################
 
 #----------------------------------------------------------------------------
@@ -61,11 +55,23 @@
 # key=bond_id
 # value=component_id
 
-# The %bond_id_start_arrow and %bond_id_end_arrow hashes provide arrow
-# ending info.
+# The %bond_id_arrow_on_start hash is a boolean that indicates whether
+# the power arrow (half head) is on the dia line start point.
 #
 # key=bond_id
-# value=dia arrow number
+# value=boolean arrow_on_start
+
+# The %bond_id_effort_causality hash is a boolean that provides the
+# effort arrow-oriented causality.
+#
+# key=bond_id
+# value=arrow-oriented effort causality.
+
+# The %bond_id_flow_causality hash is a boolean that provides the
+# flow arrow-oriented causality.
+#
+# key=bond_id
+# value=arrow-oriented flow causality.
 
 # %mtt_bond_id_index provides a unique positive integer index for each
 # Dia bond ID.  The index is written to the abg.m file for mtt.
@@ -83,31 +89,38 @@ use XML::DOM;
 
 my (%component_id_tag, %bond_id_start_id, %bond_id_end_id,
     %component_label_data, $objects, %mtt_bond_id_index,
-    %bond_id_start_arrow, %bond_id_end_arrow);
+    %bond_id_arrow_on_start, %bond_id_flow_causality, %bond_id_effort_causality);
 
 # Parse user options:
 my $diagram_name = '';
-my $dia_file = '';
+my $dia_input_file = '';
+my $dia_output_file = '';
 my $label_file = '';
 my $component_list_file = '';
 my $debug = 0;
 my $create_component_list = 0;
 my $create_abg = 0;
 my $abg_file = '';
+my $change_flow_causality = '';
+my $change_effort_causality = '';
 GetOptions ('diagram_name=s' => \$diagram_name,
-	    'dia_file=s' => \$dia_file,
+	    'dia_input_file=s' => \$dia_input_file,
+	    'dia_output_file=s' => \$dia_output_file,
 	    'label_file=s' => \$label_file,
 	    'component_list_file=s' => \$component_list_file,
 	    'debug' => \$debug,
 	    'create_component_list' => \$create_component_list,
 	    'create_abg' => \$create_abg,
 	    'abg_file=s' => \$abg_file,
+	    'change_flow_causality=s' => \$change_flow_causality,
+	    'change_effort_causality=s' => \$change_effort_causality,
 	    );
 
 die usage() if $diagram_name eq '';
 
 # Use defaults if necessary:
-$dia_file = $diagram_name . "_abg.dia" if ($dia_file eq '');
+$dia_input_file = $diagram_name . "_abg.dia" if ($dia_input_file eq '');
+$dia_output_file = $diagram_name . "_abg.dia" if ($dia_output_file eq '');
 $label_file = $diagram_name . "_lbl.txt" if ($label_file eq '');
 $abg_file = $diagram_name . "_abg.m" if ($abg_file eq '');
 $component_list_file = $diagram_name . "_cmp.txt" if ($component_list_file eq '');
@@ -116,7 +129,7 @@ $component_list_file = $diagram_name . "_cmp.txt" if ($component_list_file eq ''
 my $dom = new XML::DOM::Parser;
 my ($doc);
 
-$doc = $dom->parsefile($dia_file);
+$doc = $dom->parsefile($dia_input_file);
 $objects = get_objects_node($doc,"Bond Graph");
 
 get_component_data($objects);
@@ -129,9 +142,9 @@ if ($create_abg) {
 
     # Don't update the label file unless we are creating component list and abg simultaneously...
     if ($create_component_list) {
+	print STDERR "WARNING: Label file may be stale.\n" 
 	#system("abg2lbl_fig2txt -c $component_list_file $diagram_name") &&
-	system("abg2lbl_fig2txt -x $diagram_name") &&
-	    die "abg2lbl_fig2txt failed.";
+	#system("abg2lbl_fig2txt -x $diagram_name") && die "abg2lbl_fig2txt failed.";
     }
 
     get_label_data();
@@ -141,8 +154,12 @@ if ($create_abg) {
     print OUT "endfunction\n";
 }
 
-
-#print $doc->toString;
+if ($change_flow_causality ne '' || $change_effort_causality ne '') {
+    open (DIA_OUT,">$dia_output_file") ||
+	die "Cannot open $dia_output_file for writing.\n";
+    print DIA_OUT $doc->toString;
+    close DIA_OUT;
+}
 
 exit 0;
 
@@ -235,41 +252,6 @@ sub get_objects_node {
     return $objects;
 }
 
-# Return 1 if a half-stroke is on bond 'end', -1 on bond 'start', 0 otherwise.
-sub get_sign_of_power {
-    my ( $bond_id )= @_;
-    my ($on_start,$on_end);
-
-    $on_end = $bond_id_end_arrow{$bond_id}==6 || $bond_id_end_arrow{$bond_id}==7;
-    $on_start = $bond_id_start_arrow{$bond_id}==6 || $bond_id_start_arrow{$bond_id}==7;
-
-    die "On bond $bond_id, power flows in both directions!\n"
-	if ($on_start && $on_end);
-
-    return 1 if $on_end;
-    return -1 if $on_start;
-
-    die "No power direction on bond $bond_id\n";
-    return 0;
-}
-
-# Return 1 if a causal-stroke is on bond 'end', -1 on bond 'start', 0 otherwise.
-sub get_sign_of_causality {
-    my ( $bond_id )= @_;
-
-    my ($on_start,$on_end);
-
-    $on_end = $bond_id_end_arrow{$bond_id}==7 || $bond_id_end_arrow{$bond_id}==21;
-    $on_start = $bond_id_start_arrow{$bond_id}==7 || $bond_id_start_arrow{$bond_id}==21;
-
-    die "On bond $bond_id, causality is defined in both directions!\n"
-	if ($on_start && $on_end);
-
-    return 1 if $on_end;
-    return -1 if $on_start;
-    return 0;
-}
-
 sub output_abg_header {
     my ($date);
     $date = `date`; chomp($date);
@@ -338,14 +320,13 @@ sub output_abg {
 
 	@clist = ();
 	while (($bond_id,$start) = each(%bond_id_start_id)) {
-	    push(@clist, -get_sign_of_power($bond_id) * $mtt_bond_id_index{$bond_id})
-		if $start eq $id;
+	    push(@clist, ($bond_id_arrow_on_start{$bond_id} ? -1 : 1) *
+		 $mtt_bond_id_index{$bond_id}) if $start eq $id;
 	}
 	while (($bond_id,$end) = each(%bond_id_end_id)) {
 	    
-	    push(@clist, get_sign_of_power($bond_id) * $mtt_bond_id_index{$bond_id})
-		if $end eq $id;
-
+	    push(@clist, ($bond_id_arrow_on_start{$bond_id} ? 1 : -1) *
+		 $mtt_bond_id_index{$bond_id}) if $end eq $id;
 	}
 	$connections = join(" ",@clist);
 
@@ -392,7 +373,8 @@ sub output_abg {
 }
 
 sub output_bond_causality {
-    my ($mtt_bond_id,$dia_bond_id,$mtt_causality,%reverse_mtt_bond_id_index);
+    my ($mtt_bond_id,$dia_bond_id,$mtt_flow_causality,$mtt_effort_causality,
+	%reverse_mtt_bond_id_index);
 
     print OUT "# Bonds\n";
     print OUT "  $diagram_name.bonds = [\n";
@@ -400,10 +382,10 @@ sub output_bond_causality {
     %reverse_mtt_bond_id_index = reverse(%mtt_bond_id_index);
 
     while (($mtt_bond_id,$dia_bond_id) = each(%reverse_mtt_bond_id_index)) {
-	$mtt_causality =
-	    get_sign_of_power($dia_bond_id) * get_sign_of_causality($dia_bond_id);
+	$mtt_flow_causality = $bond_id_flow_causality{$dia_bond_id};
+	$mtt_effort_causality = $bond_id_effort_causality{$dia_bond_id};
 
-	print OUT "      $mtt_causality $mtt_causality\n";
+	print OUT "      $mtt_effort_causality $mtt_flow_causality\n";
     }
     print OUT "      ];\n\n";
 }
@@ -412,10 +394,10 @@ sub get_component_data {
     my ( $objects_node )= @_;
     my($obj,$id,$attr,$comp,$strattr,$str_elem,$string);
 
-    print_debug("READING COMPONENTS FROM $dia_file...\n");
+    print_debug("READING COMPONENTS FROM $dia_input_file...\n");
     for my $i (0..$objects_node->getLength-1) {
       $obj = $objects_node->item($i);
-      next if ($obj->getAttributeNode("type")->getValue ne "Flowchart - Box");
+      next if ($obj->getAttributeNode("type")->getValue ne "BondGraph - MTT port");
       
       $id = $obj->getAttributeNode("id")->getValue;
       print_debug($id . "\n");
@@ -432,36 +414,49 @@ sub get_component_data {
 
 # Dia stores its attributes in a strange way, not using typical xml attributes.
 sub get_dia_attribute_value {
-    my ( $attribute_node )= @_;
+    my ($type, $attribute_node )= @_;
     my ($subnode);
-    $subnode = get_first_subnode_by_nodename_attribute(0,$attribute_node,"dia:enum");
+    $subnode = get_first_subnode_by_nodename_attribute(0,$attribute_node,$type);
 
     return $subnode->getAttributeNode("val")->getValue;
 }
 
-sub check_arrow_values {
-    my ($arrow_number) = @_;
-    
-    die "Lines can have the following endings: none, half-head (power),
-	cross (causality), slashed-cross (power+causality).\n" if
-	    ($arrow_number != 0 &&
-	     $arrow_number != 6 &&
-	     $arrow_number != 7 &&
-	     $arrow_number != 21);
+# Dia stores its attributes in a strange way, not using typical xml attributes.
+sub set_dia_attribute_value {
+    my ($type, $attribute_node, $new_value )= @_;
+    my ($subnode);
+    $subnode = get_first_subnode_by_nodename_attribute(0,$attribute_node,$type);
+
+    $subnode->setAttribute(val => $new_value);
+#    return $subnode->getAttributeNode("val")->getValue;
 }
 
 sub get_arrow_info {
-    my ( $object_node, $id )= @_;
+    my ( $object_node, $id, $id_index )= @_;
     my($attribute,$attributes);
-    
-    $attribute = get_first_subnode_by_nodename_attribute(1,$object_node, "dia:attribute", "name", "end_arrow");
-    $bond_id_end_arrow{$id} = defined($attribute) ? get_dia_attribute_value($attribute) : 0;
 
-    $attribute = get_first_subnode_by_nodename_attribute(1,$object_node, "dia:attribute", "name", "start_arrow");
-    $bond_id_start_arrow{$id} = defined($attribute) ? get_dia_attribute_value($attribute) : 0;
+    $attribute = get_first_subnode_by_nodename_attribute(1,$object_node, "dia:attribute", "name", "arrow_on_start");
+    $bond_id_arrow_on_start{$id} = defined($attribute) ? get_dia_attribute_value("dia:boolean",$attribute) : 0;
 
-    check_arrow_values($bond_id_start_arrow{$id});
-    check_arrow_values($bond_id_end_arrow{$id});
+    $attribute = get_first_subnode_by_nodename_attribute(1,$object_node, "dia:attribute", "name", "effort_causality");
+    change_causality($id_index, $attribute, $change_effort_causality);
+    $bond_id_effort_causality{$id} = defined($attribute) ? get_dia_attribute_value("dia:enum",$attribute)-1 : 1;
+
+    $attribute = get_first_subnode_by_nodename_attribute(1,$object_node, "dia:attribute", "name", "flow_causality");
+    change_causality($id_index, $attribute, $change_flow_causality);
+    $bond_id_flow_causality{$id} = defined($attribute) ? get_dia_attribute_value("dia:enum",$attribute)-1 : 1;
+}
+
+sub change_causality() {
+    my ($id_index, $attribute_node, $causality_change_string)=@_;
+    my ($mtt_id, $arrow_oriented_causality);
+
+    foreach my $id_causality (split(/;/,$causality_change_string)) {
+	($mtt_id, $arrow_oriented_causality) = split(/:/,$id_causality);
+	if ($mtt_id eq "all" || $id_index == $mtt_id) {
+	    set_dia_attribute_value("dia:enum",$attribute_node,$arrow_oriented_causality + 1);
+	}
+    }
 }
 
 sub get_bond_data {
@@ -469,20 +464,21 @@ sub get_bond_data {
     my ($id_index, $obj, $id, $connections, $connection, $to, $handle,
 	$connections_att);
 
-    print_debug("READING BONDS FROM $dia_file...\n");
+    print_debug("READING BONDS FROM $dia_input_file...\n");
     $id_index = 0;
     for my $i (0..$objects_node->getLength-1) {
       $obj = $objects_node->item($i);
-      next if ($obj->getAttributeNode("type")->getValue ne "Standard - Line");
+      next if ($obj->getAttributeNode("type")->getValue ne "BondGraph - MTT bond");
       
       $id = $obj->getAttributeNode("id")->getValue;
       
       print_debug("Bond " . $id . ":\n");
       $mtt_bond_id_index{$id} = ++$id_index;
       
-      get_arrow_info($obj,$id);
-      print_debug("Start arrow:" . $bond_id_start_arrow{$id} . "\n");
-      print_debug("End arrow:" . $bond_id_end_arrow{$id} . "\n");
+      get_arrow_info($obj,$id,$id_index);
+      print_debug("Flow causality ($id):" . $bond_id_flow_causality{$id} . "\n");
+      print_debug("Effort causality ($id):" . $bond_id_effort_causality{$id} . "\n");
+      print_debug("Arrow on start ($id):" . $bond_id_arrow_on_start{$id} . "\n");
 
       # get connection info
       $connections_att = $obj->getElementsByTagName('dia:connections');
@@ -613,12 +609,25 @@ sub usage {
 	"\n" .
 	"Usage: dia2abg.pl --diagram_name <diagram_name> [options]\n" .
 	"Options:\n" .
-	"\t--dia_file <dia_file>\n" .
+	"\t--dia_input_file <dia_input_file>\n" .
 	"\t--label_file <label_file>\n" .
 	"\t--component_list_file\n" .
 	"\t--create_component_list\n" .
 	"\t--create_abg\n" .
 	"\t--debug\n" .
 	"\t--abg_file <abg_file>\n" .
+	"\t--change_flow_causality <bond causality spec>\n" .
+	"\t--change_effort_causality <bond causality spec>\n" .
+	"\n" .
+	"\t\tBond causality spec:\n" .
+	"\t\t 'bond:causality;bond:causality;...'\n" .
+	"\t\tbond:\n" .
+	"\t\t [mtt_bond_id|all]\n" .
+	"\t\tcausality:\n" .
+	"\t\t [-1|0|1]\n" .
+	"\n" .
+	"\t\tCausality is arrow-oriented-causality.\n" .
+	"\t\tAny causality changes are made BEFORE further processing.\n" .
 	"\n"
 }
+

@@ -4,6 +4,13 @@
      ##### Model Transformation Tools #####
      ######################################
 
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
 # Bourne shell script: matlab_tidy
 # Tidies up Matlab format files
 # P.J.Gawthrop 14 June 1990 13 Nov 1990, 19 Nov 93, April 1994, Dec 1994, 

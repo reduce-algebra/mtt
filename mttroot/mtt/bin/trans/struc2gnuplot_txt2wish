@@ -331,16 +331,16 @@ proc "plot_var" "" {
 		    do_cmd "set xlabel '\$xtitle'"
 		    do_cmd "set ylabel '\$ytitle'"
 		    do_cmd "set nokey"
-		    do_cmd "plot '${dat2}' using \$xcolumn:\$ycolumn title 'y:\$ytitle  x:\$xtitle' with lines"
+		    do_cmd "plot '${dat2}' using \$xcolumn:\$ycolumn title 'y:\$ytitle  x:\$xtitle' "
 		}
 		Multi	{
 		    do_cmd "set xlabel ''"
 		    do_cmd "set ylabel ''"
 		    do_cmd "set key"
 		    if {"\$lastplot" != "2D"} {
-			do_cmd "plot '${dat2}' using \$xcolumn:\$ycolumn title 'y:\$ytitle  x:\$xtitle' with lines"
+			do_cmd "plot '${dat2}' using \$xcolumn:\$ycolumn title 'y:\$ytitle  x:\$xtitle' "
 		    } else {
-			do_cmd "replot '${dat2}' using \$xcolumn:\$ycolumn title 'y:\$ytitle  x:\$xtitle' with lines"	    
+			do_cmd "replot '${dat2}' using \$xcolumn:\$ycolumn title 'y:\$ytitle  x:\$xtitle' "	    
 		    }
 		}
 	    }
@@ -353,7 +353,7 @@ proc "plot_var" "" {
 		    do_cmd "set ylabel '\$ytitle'"
 		    do_cmd "set zlabel '\$ztitle'"
 		    do_cmd "set nokey"
-		    do_cmd "splot '${dat2}' using \$xcolumn:\$ycolumn:\$zcolumn title 'z:\$ztitle  y:\$ytitle  x:\$xtitle' with lines"
+		    do_cmd "splot '${dat2}' using \$xcolumn:\$ycolumn:\$zcolumn title 'z:\$ztitle  y:\$ytitle  x:\$xtitle' "
 		}
 		Multi	{
 		    do_cmd "set xlabel ''"
@@ -361,9 +361,9 @@ proc "plot_var" "" {
 		    do_cmd "set zlabel ''"
 		    do_cmd "set key"
 		    if {"\$lastplot" != "3D"} {
-			do_cmd "splot '${dat2}' using \$xcolumn:\$ycolumn:\$zcolumn title 'z:\$ztitle  y:\$ytitle  x:\$xtitle' with lines"
+			do_cmd "splot '${dat2}' using \$xcolumn:\$ycolumn:\$zcolumn title 'z:\$ztitle  y:\$ytitle  x:\$xtitle' "
 		    } else {
-			do_cmd "replot '${dat2}' using \$xcolumn:\$ycolumn:\$zcolumn title 'z:\$ztitle  y:\$ytitle  x:\$xtitle' with lines"
+			do_cmd "replot '${dat2}' using \$xcolumn:\$ycolumn:\$zcolumn title 'z:\$ztitle  y:\$ytitle  x:\$xtitle' "
 		    }
 		}
 	    }
@@ -560,6 +560,7 @@ do_cmd "set grid"
 do_cmd "set nopolar"
 do_cmd "set term X11 0"
 do_cmd "set key"
+do_cmd "set data style lines"
 
 EOF
 chmod +x ${out}

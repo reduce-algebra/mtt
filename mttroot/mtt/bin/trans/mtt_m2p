@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.37  2000/04/07 08:17:37  peterg
+## Added mttpar to the arg list of cse and cseo
+##
 ## Revision 1.36  1999/11/29 06:49:26  peterg
 ## Upped number of mtt_tnn
 ##
@@ -160,6 +163,7 @@ Nx=`mtt_getsize $Sys x` # States
 Nu=`mtt_getsize $Sys u` # Inputs 
 Ny=`mtt_getsize $Sys y` # Inputs 
 Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
+Nxx=`echo "$Nx * $Nx" | bc` # Nxx is Nx*Nx
 
 #if [ "$rep" = "simpar" ]; then
 #    mtt -q $Sys smx p
@@ -205,11 +209,27 @@ Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
 	echo "                       mttpar : ParameterVector);"
 
 	;;
-    smx)
+    smx )
 	echo "PROCEDURE $Sys_rep(VAR mtta       : StateMatrix;"
-	echo "                   VAR mttax,mttx : StateVector;"
-	echo "                   VAR mttu       : InputVector;"
-	echo "                       mttdt      : REAL);"
+	echo "                   VAR mttax      : StateVector;"
+	echo "                       mttx       : StateVector;"
+	echo "                       mttu       : InputVector;"
+	echo "                       mttdt      : REAL;"
+	echo "                       mttpar     : ParameterVector);"
+	;;
+    smxa )
+	echo "PROCEDURE $Sys_rep(VAR mtta       : StateMatrixVector;"
+	echo "                       mttx       : StateVector;"
+	echo "                       mttu       : InputVector;"
+	echo "                       mttt      : REAL;"
+	echo "                       mttpar     : ParameterVector);"
+	;;
+    smxax )
+	echo "PROCEDURE $Sys_rep(VAR mttax      : StateVector;"
+	echo "                       mttx       : StateVector;"
+	echo "                       mttu       : InputVector;"
+	echo "                       mttt      : REAL;"
+	echo "                       mttpar     : ParameterVector);"
 	;;
     ode2odes)
 	echo "PROGRAM $Sys_rep;"
@@ -221,6 +241,7 @@ Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
 	echo "    OutputVector = ARRAY[1..$Ny] OF REAL;"
 	echo "    ParameterVector = ARRAY[1..$Npar] OF REAL;"
 	echo "    StateMatrix  = ARRAY[1..$Nx,1..$Nx] OF REAL;"
+	echo "    StateMatrixVector  = ARRAY[1..$Nxx] OF REAL;"
 	echo "    glnparray    = StateVector;"
 	echo "    glmparray    = StateVector;"
 	echo "    glnarray     = StateVector;"

@@ -15,6 +15,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.4  2000/05/18 12:05:42  peterg
+# %% Replaced sympar by sympars in numpar rep
+# %%
 # %% Revision 1.3  2000/05/11 16:09:24  peterg
 # %% Put in simpar.first parameter
 # %%
@@ -112,7 +115,9 @@ case $representation in
       lang_header -noglobals $1 simpar m '' mttsimpar > $1_simpar.m
       ;;
     numpar)
-      lang_header $1 numpar m '' MTTpar > $1_numpar.m
+      lang_header $1 numpar m '' MTTpar > $1_numpar.m;
+      echo "## Set parameters to zero" >> $1_numpar.m;
+      sympar2par_txt2m $1 zero >> $1_numpar.m;
       ;;
     *)
       echo "function $name = $1_$2$arg" > $1_$2.m
@@ -173,9 +178,8 @@ doublequote = "\042";
 
 
 if [ "$2" = "numpar" ]; then
-    awk '{
-       printf("  MTTpar(%i) \t= %s;\n",++i, tolower($1));
-     }'< $1_sympars.txt  >>$1_numpar.m
+   echo "## Set up the parameter vector"  >> $1_numpar.m;
+   sympar2par_txt2m $1 set   >> $1_numpar.m;
 fi
 
 

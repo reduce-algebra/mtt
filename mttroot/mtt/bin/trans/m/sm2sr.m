@@ -10,6 +10,9 @@ function [Y,X] = sm2sr(A,B,C,D,T,u0,x0);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1996/09/10  16:48:21  peter
+% %% Changed ar counts in default settings.
+% %%
 % %% Revision 1.1  1996/08/19 15:34:29  peter
 % %% Initial revision
 % %%
@@ -40,12 +43,17 @@ one = eye(Nx);
 
 Y = zeros(N,Ny);
 X = zeros(N,Nx);
+
+dt = T(2)-T(1);% Assumes fixed interval
+expAdt = expm(A*dt); % Compute matrix exponential
 i = 0;
+expAt = one;
+
 for t = T'
   i=i+1;
   if Nx>0
-    expAt = expm(A*t);
     x = ( A\(expAt-one) )*B*u0 + expAt*x0;
+    expAt = expAt+expAdt;
     X(i,:) = x';
     if Ny>0
       y = C*x + D*u0;

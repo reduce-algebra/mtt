@@ -8,6 +8,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  1999/01/20 22:19:21  peterg
+## Puts emacs mode line at top of .m files
+##
 ## Revision 1.6  1998/07/27 20:30:39  peterg
 ## Mods for dm rep - no globals ...
 ##
@@ -65,7 +68,9 @@ case $language in
 esac
 
 # Appropriate emacs mode line
-echo $modeline
+cat <<EOF
+$modeline
+EOF
 
 ######### Octave (matlab) code
 if [ "$language" = m ]; then

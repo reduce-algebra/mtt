@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/03/22 11:13:27  peterg
+## Back under RCS
+##
 # Revision 1.1  1997/04/16  11:37:22  peterg
 # Initial revision
 #
@@ -30,7 +33,7 @@ BEGIN{
 {i++; print tolower($1), "..."; var = $1}
 END{
   print var ";" # Repeat the last variable to avoid the trailing ...
-}' $1_sympar.txt
+}' $1_sympars.txt
 
 # Now invoke the standard error handling.
 # mtt_error mtt_error.txt

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1998/03/05 10:14:37  peterg
+## Toned down the error warning message
+##
 ## Revision 1.4  1998/02/26 10:21:51  peterg
 ## Revised to take account of new (??) wc output - now echos the file
 ## name (??)
@@ -35,7 +38,7 @@ error_file=$1;
 err_length=`wc -c <$error_file | awk '{print $1}'`
 if [ "$err_length" != "0" ]
 then
-  echo An MTT transformation has generated the following messages 
+  echo INFORMATION: An MTT transformation has generated the following messages 
   echo which may not be important
   cat $error_file
   exit 1

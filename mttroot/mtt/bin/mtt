@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.228  2000/03/07 10:54:14  peterg
+## Added  $1_lbl.txt to sympar.txt
+##
 ## Revision 1.227  2000/02/16 15:05:46  peterg
 ## Replaced spurious 8spaces by tab
 ##
@@ -1822,8 +1825,8 @@ $1_sabg.fig: $1_rbg.m
 
 #Subsystem creation commands
 #SUMMARY sub Executable subsystem list (sh)
-$1_sub.sh: $1_cmp.m
-	cmp2sub_m2sh $1
+$1_sub.sh: $1_abg.m
+	abg2sub_m2sh $1
 
 #SUMMARY sub LaTeX subsystem list (tex)
 #SUMMARY sub subsystem list (ps)

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.170  1998/07/25 19:16:22  peterg
+## Sorted out sympar + switch variables - new sympars rep combines both
+##
 ## Revision 1.169  1998/07/25 16:35:12  peterg
 ## Incorporated mtt_p2c (uses p2c)
 ##
@@ -631,9 +634,6 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-o )
                 mtt_switches="$mtt_switches $1";
 		dae_is_ode=1 ;;
-	-s )
-                mtt_switches="$mtt_switches $1";
-		switches=1 ;;
 	-d )
 		directory=$2; cd $directory; shift ;;
 	-S )
@@ -724,7 +724,6 @@ if [ -z "$1" ]; then
     echo '         -p  print environment variables'
     echo '         -c  c-code generation'
     echo '         -o  ode and dae are the same'
-    echo '         -s  use switch (ISW and CSW) components'
     echo '         -d  <dir>  use directory <dir>'
     echo '         -t  tidy mode (default)'
     echo '         -u  untidy mode (leaves files in current dir)'
@@ -1642,7 +1641,8 @@ $1_odeo.p : $1_def.r $1_odeo.m
 $1_switch.p : $1_def.r $1_switch.m
 	mtt_m2p $1_switch.m
 $1_ode2odes.p : $1_def.r $1_simpar.p $1_numpar.p $1_state.p $1_input.p \
-               $1_ode.p $1_odeo.p  $1_switch.p $1_ode2odes.m mtt_write.p
+                $1_ode.p $1_odeo.p  $1_switch.p $1_ode2odes.m mtt_write.p \
+                mtt_update.p
 	mtt_m2p $1_ode2odes.m
 
 $1_ode2odes.c: $1_ode2odes.p 
@@ -2111,6 +2111,8 @@ $1_$2.vc: RCS
 # Copy Pascal utilities
 mtt_write.p: 
 	echo Copying mtt_write.p; cp $MTTPATH/trans/p/mtt_write.p .
+mtt_update.p: 
+	echo Copying mtt_update.p; cp $MTTPATH/trans/p/mtt_update.p .
 
 # Copy c utilities
 dsvdcmp.c: dpythag.c nrutil.c nrutil.h

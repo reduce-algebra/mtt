@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.323  2001/08/08 02:14:59  geraint
+## Rationalisation of solver code, beginning with algebraic solvers.
+##
 ## Revision 1.322  2001/08/01 04:06:07  geraint
 ## Added -i dassl for -cc and -oct.
 ##
@@ -3075,6 +3078,7 @@ $1_sro.dat: $1_sro.m
 $1_sms.c: $1_sm.c $1_def.r $1_sympar.r
 	sm2sms_r2c $1
 
+.PRECIOUS: $1_odes.dat2
 ifeq ($computation,octave)
 ifeq ($using_oct,yes)
 $1_odes.dat2: $1_ode2odes.oct

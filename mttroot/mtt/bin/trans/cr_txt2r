@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  2000/08/01 07:34:33  peterg
+## Replaced printf by echo
+##
 ## Revision 1.10  2000/02/25 09:10:12  peterg
 ## Changed -e to -f in if [ -f "$crf" ]; then
 ##  -- cuased probs on SUN
@@ -116,10 +119,10 @@ else
         crf=$cr'_cr.r'
 	if [ -f "$crf" ]; then
 ##	   printf "\045 (%s exists)\n" $crf >> $crfile
-	   echo "% ($crf exists)\n"  >> $crfile
+	   echo "% ($crf exists)"  >> $crfile
 	else
 ##	   printf 'in "%s.cr";\n' $cr >> $crfile
-	   echo 'in "'$cr.cr'";\n' >> $crfile
+	   echo 'in "'$cr.cr'";' >> $crfile
 	fi
     done
 ##  fi

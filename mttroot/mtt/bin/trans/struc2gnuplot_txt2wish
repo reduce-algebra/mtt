@@ -28,13 +28,13 @@ button .quit  -text "Quit"  -command exit
 canvas		.cx
 listbox		.cx.l
 scrollbar	.cx.sy	-orient v
-label		.cx.t	-text		"States"
+checkbutton    	.cx.t	-text		"States"
 
 ## outputs canvas
 canvas		.cy
 listbox		.cy.l
 scrollbar	.cy.sy	-orient v
-label		.cy.t	-text		"Outputs"
+checkbutton    	.cy.t	-text		"Outputs"
 
 ## configure scrollbars
 .cx.sy configure -command ".cx.l yview"
@@ -46,18 +46,57 @@ label		.cy.t	-text		"Outputs"
 bind .cx.l <<ListboxSelect>> { plot [ .cx.l get anchor ] }
 bind .cy.l <<ListboxSelect>> { plot [ .cy.l get anchor ] }
 
+proc "reverse_name" "name" {
+    set delim "_"
+    set split_name [split \$name \$delim]
+    set reversed_name [lindex \$split_name 0]
+    for {set i 1} {\$i<[llength \$split_name]} {incr i} {
+        set reversed_name [lindex \$split_name \$i]\$delim\$reversed_name
+    }
+    return \$reversed_name
+}
+
+proc "reverse_sort" "list" {
+    set temp_list {}
+    set delim " "
+    foreach name [split \$list \$delim] {
+	set temp_list \$temp_list\$delim[reverse_name \$name]
+    }
+    set temp_list [lsort -ascii \$temp_list]
+    set list {}
+    foreach name [split \$temp_list \$delim] {
+	set list \$list\$delim[reverse_name \$name]
+    }
+    return \$list
+}
+
+proc "sort_list" "list sortorder" {
+    puts "sortorder: \$sortorder"
+    if ("\$sortorder"=="normal") {
+	return [lsort -ascii \$list]
+    }
+    if ("\$sortorder"=="reverse") {
+	return [reverse_sort \$list]
+    }
+}
+
 EOF
 
 ## create states and outputs lists
 awk '
 ($1 == "state") {
-    printf ".cx.l insert end state:%s\n", $4
+    printf "lappend xl state:%s\n", $4
 }
 ($1 == "output") {
-    printf ".cy.l insert end output:%s\n", $4
+    printf "lappend yl output:%s\n", $4
 }' ${struc} >> ${out}
 
 cat <<EOF >> ${out}
+.cx.l configure -listvar xl
+.cy.l configure -listvar yl
+
+.cx.t configure -command { set xl [sort_list \$xl \$xsortorder] } -indicatoron false -onvalue "reverse" -offvalue "normal" -variable xsortorder
+.cy.t configure -command { set yl [sort_list \$yl \$ysortorder] } -indicatoron false -onvalue "reverse" -offvalue "normal" -variable ysortorder
 
 pack .cx.t -expand false -fill x -side top
 pack .cy.t -expand false -fill x -side top
@@ -76,8 +115,8 @@ radiobutton .outputs -text "Outputs" -value outputs -variable view -command { ra
 
 pack .states .outputs -side left
 
-pack .quit  -expand false -fill x -side right
-pack .print -expand false -fill x -side right
+pack .quit   -expand false -fill x -side right
+pack .print  -expand false -fill x -side right
 
 
 ## map names to column numbers
@@ -103,7 +142,7 @@ cat <<EOF >> ${out}
 
 ## call gnuplot
 proc "plot_var" "title column" {
-    exec echo plot \\\"${dat2}\\\" using 1:\$column title \\\"\$title\\\" with lines > ${tmp}
+    exec echo plot \"${dat2}\" using 1:\$column title \"\$title\" with lines > ${tmp}
     exec echo pause -1 >> ${tmp}
     exec gnuplot -title "\$title" ${tmp} &
 }
@@ -111,7 +150,7 @@ proc "plot_var" "title column" {
 ## print output
 proc "print" "" {
     exec echo set term postscript > ${tmp}.print
-    exec echo set output \\\"../${sys}_gnuplot.ps\\\" >> ${tmp}.print
+    exec echo set output \"../${sys}_gnuplot.ps\" >> ${tmp}.print
     exec grep -v pause ${tmp} >> ${tmp}.print
     exec gnuplot ${tmp}.print
     puts "Graph printed to ${sys}_gnuplot.ps"

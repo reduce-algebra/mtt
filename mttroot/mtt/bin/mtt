@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.388  2004/08/11 08:18:07  geraint
+## Ignores diy make files if the file ${rep}_rep.make.ignore exists, thus allowing user-defined makefiles to use the default MTT rules for languages which they do not override. See odes_rep.make and odeso_rep.make for an example of its use.
+##
 ## Revision 1.387  2004/08/11 07:44:18  geraint
 ## Included cmp.m as a prerequisite for abg.m
 ##
@@ -2840,29 +2843,21 @@ endif
 #Raw bond graph to acausal bond graph: mfile
 
 ifneq ($start_at_abg,yes)
-ifneq ($use_ibg,yes)
-%_abg.m: %_abg.dia %_cmp.m %_lbl.txt %_alias.m
-	abg_dia2m \$*
+%_abg.m: %_ibg.m %_cmp.m %_lbl.txt %_alias.m %_sub.sh %_icd.m
+	@echo "Creating \$@"
 	(sh \$*_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
+	ibg2abg_m $info_switch \$*
+endif
 
-%_abg.m: %_rbg.m %_cmp.m %_lbl.txt %_alias.m %_sub.sh %_icd.m
-	(sh \$*_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
-	rbg2abg_m $info_switch \$*
-else
+
 .PRECIOUS: %_ibg.m
 %_ibg.m: %_abg.dia %_alias.m
 	abg2ibg_dia2m \$*
 
-%_ibg.m: %_rbg.m
-	@echo "EXPERIMENTAL: Creating \$@"
+%_ibg.m: %_abg.fig %_rbg.m
+	@echo "Creating \$@"
 	rbg2ibg_m $info_switch \$*
 
-%_abg.m: %_ibg.m %_cmp.m %_lbl.txt %_alias.m %_sub.sh %_icd.m
-	@echo "EXPERIMENTAL: Creating \$@"
-	(sh \$*_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
-	ibg2abg_m $info_switch \$*
-endif
-endif
 
 #SUMMARY cbg*	causal bond graph (m)
 #Acausal bond graph to causal bond graph: mfile

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.265  2000/09/19 07:45:28  peterg
+## Version 4.7
+##
 ## Revision 1.264  2000/09/15 08:37:27  peterg
 ## Fixed bug using -sub in cbg view
 ##
@@ -894,7 +897,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='4.7'
+version='4.7++'
 
 # MTT recursion level is zero unless explicitly set
 level=0
@@ -2674,7 +2677,7 @@ $1_$2.dvi: $1_$2.doc
 ifeq ($REPTYPE,bg)
 $1_$2.ps : $1_$2.fig
 	echo Creating $1_$2.ps
-	multi_command2 'fig2dev -Lps' $1 $2.fig $2.ps | sh
+	multi_command2 'fig2dev -Leps' $1 $2.fig $2.ps | sh
 endif
 
 

@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.341  2002/05/09 15:40:22  gawthrop
+## -dr touches copied files to redo timestamp
+##
 ## Revision 1.340  2002/05/08 22:13:47  geraint
 ## Removed redundant path from mtt_*.cc targets in mexglx build line.
 ##
@@ -1610,6 +1613,7 @@ if [ "$1" = "Clean" ] && [ "$2" = "" ]; then
   rm -f *_cseo.mexglx *_input.mexglx *_simpar.mexglx *_smxax.mexglx
   rm -f *_csex.mexglx *_numpar.mexglx *_smxa.mexglx *_state.mexglx 
   rm -f *_ode.mexglx *_odeo.mexglx
+  rm -f *_sfun.mexglx
   rm -f *_cseo.cc *_input.cc *_simpar.cc *_smxax.cc
   rm -f *_csex.cc *_numpar.cc *_smxa.cc *_state.cc 
   rm -f *_ode.cc *_odeo.cc
@@ -1650,6 +1654,7 @@ if [ "$2" = "Clean" ] && [ "$3" = "" ]; then
   rm -f $1_cseo.mexglx $1_input.mexglx $1_simpar.mexglx $1_smxax.mexglx
   rm -f $1_csex.mexglx $1_numpar.mexglx $1_smxa.mexglx $1_state.mexglx 
   rm -f $1_ode.mexglx $1_odeo.mexglx
+  rm -f $1_sfun.mexglx
   rm -f $1_cseo.cc $1_input.cc $1_simpar.cc $1_smxax.cc
   rm -f $1_csex.cc $1_numpar.cc $1_smxa.cc $1_state.cc 
   rm -f $1_ode.cc $1_odeo.cc

@@ -17,6 +17,9 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.17  1997/08/07 16:10:13  peterg
+% %% Move the if status ..  to the beginning of the main loop.
+% %%
 % %% Revision 1.16  1997/08/04 13:11:19  peterg
 % %% Only change to component-orientated causality for simple components
 % %% NOT for compound components.
@@ -72,7 +75,6 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-mtt_info(system_name, infofile);
 pc = '%';
 if nargin<1
   system_name = 'no_name';

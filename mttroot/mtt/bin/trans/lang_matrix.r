@@ -13,6 +13,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.1  1998/05/23 10:49:25  peterg
+% % Initial revision
+% %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -35,7 +38,7 @@ BEGIN
          GENTRAN mtt_matrix(i) ::=: mtt_matrix(i,1);
         END;
     END;
-  write MTT_matrix_name, " = mtt_matrix;";
+%  write MTT_matrix_name, " = mtt_matrix;";
 END;
 
 END;;

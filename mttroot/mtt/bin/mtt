@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.116  1998/02/04 11:00:04  peterg
+## Added view of subsystems.
+##
 ## Revision 1.115  1998/01/29 19:37:31  peterg
 ## Fixed spurious call to X server bug
 ##
@@ -419,8 +422,12 @@ switches=0
 #By default, don't print the environment variables
 print='';
 
+# By default, make it untidy
+tidy=untidy;
+
 #Initialise list
 mtt_switches='';
+
 
 #Look for a command line argument
 while [ -n "`echo $1 | grep '^-'`" ]; do
@@ -441,9 +448,18 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 mtt_switches="$mtt_switches $1";
 		switches=1 ;;
 	-d )
+                mtt_switches="$mtt_switches $1";
 		directory=$2; cd $directory; shift ;;
 	-D )
+                mtt_switches="$mtt_switches $1";
 		debug=debug ;;
+	-t )
+		tidy=tidy ;;
+	-T )
+		tidy=tidy;
+                verytidy=verytidy ;;
+	-u )
+		tidy=untidy ;;
 	-l )
                 mtt_switches="$mtt_switches $1";
 		level=$2; shift ;;
@@ -460,12 +476,11 @@ if [ "$quiet" != "quiet" ]; then
   echo 'This is free software with ABSOLUTELY NO WARRANTY.'
   echo 'Type `mtt warranty'\' 'for details.'
   echo
-fi
-
-# Print current directory if in -d mode
-if [ -n "$directory" ]; then
-  echo Using directory $directory
-  echo
+  # Print current directory if in -d mode
+  if [ -n "$directory" ]; then
+    echo Using directory $directory
+    echo
+  fi
 fi
 
 #Check the principle paths
@@ -475,6 +490,24 @@ mtt_check_vars $print
 if [ "$print" != "" ]; then
   exit
 fi
+
+# Tidy mode - operate in the directory MTT-work
+if [ "$tidy" = "tidy" ]; then
+   mkdir -p MTT_work
+   cp -u *_*.* MTT_work
+   cd MTT_work
+   mtt -u -q  $mtt_switches $1 $2 $3 $4
+   if [ "$3" != "view" ]; then
+     cp -f MTT_work/$1_$2.$3 .
+   fi
+
+   # Remove the MTT_work directory if very tidy
+   if [ "$verytidy" = "verytidy" ]; then
+    echo Removing all working files
+    rm -rf ../MTT_work
+  fi
+exit
+fi 
 
 if [ -z "$1" ]; then
   if [ -z "$print" ]; then
@@ -573,7 +606,7 @@ if [ "$1" = "clean" ] && [ "$2" = "" ]; then
   rm -f *_rep.tex
   rm -f  *_unique_raw_list *_raw_list
   rm -f mtt_error.txt mtt_info.txt a.out 
-  rm -fR *_rep
+  rm -fR *_rep MTT_work
   exit
 fi
 
@@ -597,7 +630,7 @@ if [ "$2" = "clean" ] && [ "$3" = "" ]; then
   rm -f $1_rep.tex
   rm -f $1_unique_raw_list $1_raw_list
   rm -f mtt_error.txt mtt_info.txt a.out 
-  rm -fR $1_rep
+  rm -fR $1_rep MTT_work
   exit
 fi
 
@@ -620,38 +653,66 @@ fi
 
 # Copy systems from the example library
 if [ "$1" = "copy" ]; then
-  # check that its not here already
-  file_exists=`ls $2 2> /dev/null`
+   #set up source and destination dirs
+    source=$3
+    if [ -z "$source" ]; then
+      source=$MTTPATH/lib/examples
+    fi
+    destination=$4
+    if [ -z "$destination" ]; then
+      destination=$2
+    fi      
+# check that its not here already
+  file_exists=`ls $destination/$2_abg.fig 2> /dev/null`
   if [ -n "$file_exists" ]; then
     if [ "$quiet" != "quiet" ]; then    
-      echo Directory $2 exists already - no action taken
+      echo System $2 exists already - no action taken
     fi
   else
-    path_name=$3
-    if [ -z "$path_name" ]; then
-      path_name=$MTTPATH/lib/examples
+    source=$3
+    if [ -z "$source" ]; then
+      source=$MTTPATH/lib/examples
     fi
-    echo Copying system $2 to here from $path_name into directory $2
-    find $path_name -name "$2" -exec cp -r {} . \; 
+    destination=$4
+    if [ -z "$destination" ]; then
+      destination=$2
+    fi    
+echo Copying system $2 from $source into directory $destination
+    find $source -name "$2" -exec cp -rf {} . \; 
   fi
   exit
 fi
 
 # Copy components from the library
 if [ "$1" = "compcopy" ]; then
+   #set up source and destination dirs
+    source=$3
+    if [ -z "$source" ]; then
+      source=$MTTPATH/lib/comp/compound
+    fi
+    destination=$4
+    if [ -z "$destination" ]; then
+      destination='.'
+    fi   
+
   # check that its not here already
-  file_exists=`ls $2_abg.fig 2> /dev/null`
+  file_exists=`ls $destination/$2_abg.fig 2> /dev/null`
   if [ -n "$file_exists" ]; then
     if [ "$quiet" != "quiet" ]; then    
-      echo $2_abg.fig exists already - no action taken
+      echo $destination/$2_abg.fig exists already - no action taken
     fi
   else
-    path_name=$3
-    if [ -z "$path_name" ]; then
-      path_name=$MTTPATH/lib/comp/compound
+    if [ -z "$source" ]; then
+      source=$MTTPATH/lib/comp/compound
     fi
-    echo Copying component $2 from $path_name
-    find $path_name -name "$2_*.*" -exec cp {} . \;
+    if [ "$quiet" != "quiet" ]; then    
+      echo Copying component $2 from $source to  $destination
+    fi
+    if [ $source = "." ]; then
+      cp -u *_*.* $destination
+    else
+      find $source -name "$2_*.*" -exec cp {} $destination \;
+    fi
   fi
   exit
 fi
@@ -1572,5 +1633,8 @@ EOF
 if [ "$debug" != "debug" ]; then
   rm -f *.log
 else
-  echo Debugging - log files retained
+  echo Debugging - log files retained in $directory/LOGFILES  
+  mkdir -p LOGFILES
+  mv -f *.log LOGFILES
 fi
+

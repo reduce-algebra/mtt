@@ -19,8 +19,8 @@ function [bonds,components,n_vector_bonds] = ibg2abg(name,bonds, \
     ## heads
     head_type_name = bond.head.component;
     head_type_name = deblank(split(head_type_name, ":"));
-    head_type = head_type_name(1,:);
-    head_name = head_type_name(2,:);
+    head_type = deblank(head_type_name(1,:));
+    head_name = deblank(head_type_name(2,:));
     if (exist("component_struct"))
       if (struct_contains(component_struct, head_name))
 	## create a copy to work on - clearer than eval(sprintf(...))
@@ -49,8 +49,8 @@ function [bonds,components,n_vector_bonds] = ibg2abg(name,bonds, \
     ## tails
     tail_type_name = bond.tail.component;
     tail_type_name = deblank(split(tail_type_name, ":"));
-    tail_type = tail_type_name(1,:);
-    tail_name = tail_type_name(2,:);
+    tail_type = deblank(tail_type_name(1,:));
+    tail_name = deblank(tail_type_name(2,:));
     if (exist("component_struct"))
       if (struct_contains(component_struct, tail_name))
 	## create a copy to work on - clearer than eval(sprintf(...))
@@ -75,6 +75,23 @@ function [bonds,components,n_vector_bonds] = ibg2abg(name,bonds, \
     eval(sprintf("component_struct.%s = tail", tail_name));
     clear tail;
 
+    ## causality
+    if (bond.causality.effort == "head")
+      causality(i,1) = +1;
+    elseif (bond.causality.effort == "tail")
+      causality(i,1) = -1;
+    else
+      causality(i,1) = 0;
+    endif
+
+    if (bond.causality.flow == "head")
+      causality(i,2) = -1;
+    elseif (bond.causality.flow == "tail")
+      causality(i,2) = +1;
+    else
+      causality(i,2) = 0;
+    endif
+
   endfor
   
   ## Get component indices from sys_cmp.m
@@ -91,7 +108,7 @@ function [bonds,components,n_vector_bonds] = ibg2abg(name,bonds, \
   endfor
   
   for [comp, comp_name] = component_struct
-    ## Unalias and/or default all ports on this component
+    ## default port names
     if ((strcmp(deblank(comp.type), "0")) || (strcmp(deblank(comp.type), "1")))
       disp("---- default junctions ----");
       if (comp.named_ports == 1) # one named port
@@ -156,16 +173,49 @@ function [bonds,components,n_vector_bonds] = ibg2abg(name,bonds, \
 		    "]\t on component "  comp_name " (" \
 		    deblank(comp.type) ")"], infofile);
 	endif
-	## ???	
       endif
-    ## ???	
+
+      ## strip port names of blanks and []
+      for [port, port_name] = comp.ports
+	eval(sprintf("comp.ports.%s.name = \
+	mtt_strip_name(comp.ports.%s.name)", port_name, port_name));
+      endfor
+      
+      ## replace aliases
+      eval(sprintf("alias = %s_alias", comp.type))
+      if (is_struct(alias))
+	for [port, port_name] = comp.ports
+	  if (struct_contains(alias,port_name))
+	    eval(sprintf("new_port_name = alias.%s", port.name))
+	    mtt_info(sprintf("Aliasing name [%s]\t on component %s (%s) to \
+	    [%s]", port.name, comp_name, comp.type, new_port_name), \
+		     infofile);
+	    eval(sprintf("comp.ports.%s.name = new_port_name", port_name))
+	  endif
+	endfor
+      endif
+      
     endif
-    ## ???
+
     eval(sprintf("component_struct.%s = comp", comp_name));    
   endfor
-component_struct;
+
+  ## All ports should bow be labelled
+  disp("--- Completed portnames and the corresponding bonds ---");
+
+  ## Create list of bonds
+  bonds = causality;
+
+  ## Find number of bonds on each component BEFORE vectorisation
+  for [comp, comp_name] = component_struct
+    n_vector_bonds(comp.index) = comp.n_bonds;
+  endfor
+
+  ## Now expand vector ports
+  disp("Expanding vector ports");
+  disp("... but not today!");
   ## ???
-  bonds;
+
   components;
   n_vector_bonds = 1;
 endfunction

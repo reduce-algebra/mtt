@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.189  1998/08/31 10:49:15  peterg
+## Minor changes to -abg operation
+##
 ## Revision 1.188  1998/08/27 08:33:21  peterg
 ## New reduce integration methods - euler/Implicit only
 ##
@@ -647,7 +650,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='3.1++'
+version='3.2'
 
 # MTT recursion level is zero unless explicitly set
 level=0

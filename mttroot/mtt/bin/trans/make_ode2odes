@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.13  1998/09/30 17:41:24  peterg
+## Implicit method now allows for switches via _switchA
+##
 ## Revision 1.12  1998/08/27 08:55:18  peterg
 ## Mods to integration methods
 ##
@@ -93,18 +96,18 @@ for MTTit = 1:MTTilast
     for MTTjt = 1:mttstepfactor
       [MTTdx] = $1_ode(MTTx,MTTu,MTTt); # State derivative
       [MTTx] = mtt_euler(MTTx,MTTdx,MTTddt,$Nx); # Euler update
+      [MTTx] = $1_switch(MTTx);	# Switches
       MTTt = MTTt + MTTddt;
     endfor;
   endif;
   if mttmethod==2		# Implicit 
     [MTTdx] = $1_ode(MTTx,MTTu,MTTt); # State derivative
     [mttAA,mttAAx] = $1_smx(MTTx,MTTu,mttdt);	# (I-Adt) and (I-Adt)x
-    [mttAA] = $1_switchA(mttAA,MTTx);	# Switches
+    [mttAA] = $1_switcha(mttAA,MTTx);	# Switches
     [MTTx] = mtt_implicit(MTTx,MTTdx,mttAA,mttAAx,mttdt,$Nx); # Implicit update
     MTTt = MTTt + mttdt;
   endif;
 
-  [MTTx] = $1_switch(MTTx);	# Switches
 
   [MTTy] = $1_odeo(MTTx,MTTu,MTTt);
   mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny);

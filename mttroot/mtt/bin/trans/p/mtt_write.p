@@ -16,6 +16,9 @@ PROCEDURE mtt_write(t	  : REAL;
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1998/07/25 20:41:38  peterg
+## Spaces between numbers
+##
 ## Revision 1.2  1998/07/25 14:04:14  peterg
 ## Changed format
 ##
@@ -36,7 +39,7 @@ BEGIN
       write(y[i]," ");
    write(" # ");
 
-   write(t);
+   write(t," ");
    FOR i := 1 TO nx DO
       write(x[i]," ");
    writeln;

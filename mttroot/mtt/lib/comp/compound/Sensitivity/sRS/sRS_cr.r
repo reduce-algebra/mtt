@@ -24,7 +24,7 @@ LET sRS(gain_cause,r,rs,out_cause,2,
 	sinp,in_cause,3,
 	stemp,effort,4
 	) 
-        = lin(gain_cause,r,temp_cause,1,
+        = inp*lin(gain_cause,r,temp_cause,1,
                inp,in_cause,1)/temp;
 
 % Sensitivity ports
@@ -51,7 +51,7 @@ LET sRS(gain_cause,r,rs,out_cause,4,
 	) 
         = 2*inp*sinp*r/temp
         + (inp^2)*rs/temp
-        - (inp^2)*r*temps/(temp^2);
+        - (inp^2)*r*stemp/(temp^2);
 
 %% - effort in
 FOR ALL gain_cause,r,rs,out_cause,inp,sinp,in_cause,temp,stemp

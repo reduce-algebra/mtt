@@ -9,7 +9,7 @@
 
 ## Argument aliases
 #ALIAS	$1	flow,r
-#ALIAS	$2	r_s
+#ALIAS	$2	rs
 
 ## Each line should be of one of the following forms:
 ##	     a comment (ie starting with #)
@@ -19,7 +19,7 @@
 ## ---- Component labels ----
 
 ## Component type R
-	r	sRS		flow,r,rs		
+	r	sRS		flow,r;rs		
 
 ## Component type SS
 	[In]	SS		external,external		

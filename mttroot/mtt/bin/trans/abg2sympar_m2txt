@@ -78,7 +78,7 @@ else
     ext=_abg.m
 fi
 
-sh $1_type.sh "strip_pars.sh " "$ext " " " | sort -u > mtt_explicit_args
+strip_pars.sh $1${ext} $1 |  sort -u > mtt_explicit_args
 
 ## And write sorted list
 cat  mtt_explicit_args mtt_stripped_args 

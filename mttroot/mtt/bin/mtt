@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.386  2004/08/05 00:02:57  geraint
+## Uses lbl2cmp_txt2m.pl to generate _cmp.m.
+##
 ## Revision 1.385  2004/08/02 20:25:47  geraint
 ## abg.m requires lbl.txt to allow units to be checked.
 ##
@@ -2831,11 +2834,11 @@ endif
 
 ifneq ($start_at_abg,yes)
 ifneq ($use_ibg,yes)
-%_abg.m: %_abg.dia %_lbl.txt %_alias.m
+%_abg.m: %_abg.dia %_cmp.m %_lbl.txt %_alias.m
 	abg_dia2m \$*
 	(sh \$*_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
 
-%_abg.m: %_rbg.m %_lbl.txt %_alias.m %_sub.sh %_icd.m %_cmp.m
+%_abg.m: %_rbg.m %_cmp.m %_lbl.txt %_alias.m %_sub.sh %_icd.m
 	(sh \$*_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
 	rbg2abg_m $info_switch \$*
 else
@@ -2847,7 +2850,7 @@ else
 	@echo "EXPERIMENTAL: Creating \$@"
 	rbg2ibg_m $info_switch \$*
 
-%_abg.m: %_ibg.m %_lbl.txt %_cmp.m %_alias.m %_sub.sh %_icd.m
+%_abg.m: %_ibg.m %_cmp.m %_lbl.txt %_alias.m %_sub.sh %_icd.m
 	@echo "EXPERIMENTAL: Creating \$@"
 	(sh \$*_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
 	ibg2abg_m $info_switch \$*

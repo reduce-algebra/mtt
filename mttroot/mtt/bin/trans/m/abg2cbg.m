@@ -17,6 +17,9 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.27  1998/07/03 19:03:31  peterg
+% %% Always override the causality of port bonds!
+% %%
 % %% Revision 1.26  1998/06/27 13:24:04  peterg
 % %% Causality now set correctly for:
 % %% 	multi-port C and I
@@ -227,9 +230,9 @@ if ~at_top_level
     for j = 1:n_port_bonds
       jj = port_bond_index(j);
       for k = 1:2
-#	if bonds(jj,k)==0 % only copy if not already set
+	if bonds(jj,k)==0 % only copy if not already set
 	bonds(jj,k) = port_bonds(j,k);
-#	end;
+	end;
       end;
       status(1:n_ports) = port_status;
     end

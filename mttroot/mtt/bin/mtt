@@ -17,6 +17,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.377  2003/06/11 15:48:02  gawthrop
+## Copies (aliased) subsystems first.
+## Include switches in .ps file names.
+##
 ## Revision 1.376  2003/05/09 09:46:35  gawthrop
 ## Fixed html output of figures
 ##
@@ -2626,7 +2630,12 @@ else
 endif
 
 #SUMMARY state	numerical state declaration  -- default (txt)
+ifeq ($steadystate_computation,yes)
+$1_state.txt : $1_struc.txt $1_sympar.txt $1_def.r $1_ss.r
+else
 $1_state.txt : $1_struc.txt $1_sympar.txt $1_def.r
+endif
+
 ifeq ($target,$1_state.txt)
 	mtt_update $1 state update
 else

@@ -8,6 +8,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  2000/04/18 11:14:32  peterg
+## - parameters option
+##
 ## Revision 1.9  2000/04/08 10:23:38  peterg
 ## Added -noglobal option
 ##
@@ -40,8 +43,8 @@
 # Args
 while [ -n "`echo $1 | grep '^-'`" ]; do
   case $1 in
-    -noglobal)
-	noglobal=noglobal;
+    -noglobals)
+	noglobals=noglobals;
 	;;
     -parameters)
 	parameters=parameters;
@@ -190,14 +193,13 @@ EOF
 fi
 
 # Globals
-if [ -z "$noglobal" ]; then
+if [ -z "$noglobals" ]; then
     sympar2global_txt2lang $1 $language
-else
-cat<<EOF
-global ...
-mtt_no_globals ..
-;
-EOF
+#else
+#cat<<EOF
+#global ...
+#mtt_no_globals ;
+#EOF
 fi
 
 # Explicit parameters

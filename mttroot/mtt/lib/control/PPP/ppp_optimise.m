@@ -29,6 +29,9 @@ function [par,Par,Error,Y,iterations,x] = \
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.12  2002/06/11 11:25:25  gawthrop
+  ## No longer delay the simulated data.
+  ##
   ## Revision 1.11  2002/05/20 13:32:36  gawthrop
   ## Sanity check on y_0
   ##
@@ -66,7 +69,9 @@ function [par,Par,Error,Y,iterations,x] = \
   ###############################################################
 
 
-  ## Copyright (C) 1999,2000 by Peter J. Gawthrop
+  ## Copyright (C) 1999,2000,2001,2002 by Peter J. Gawthrop
+
+  ## Simulation command
   sim_command = sprintf("%s_ssim(x_0,par,simpar,u,i_s)", system_name);
 
   ## Extract indices
@@ -123,10 +128,10 @@ function [par,Par,Error,Y,iterations,x] = \
 	(abs(err)>extras.criterion)&&\
 	(iterations<extras.max_iterations)
 
-    iterations = iterations + 1 # Increment iteration counter
+    iterations = iterations + 1; # Increment iteration counter
 
     [y,y_par,x] = eval(sim_command); # Simulate
-    [N_data,N_y] = size(y)
+    [N_data,N_y] = size(y);
 
     if (N_y!=n_y)
       mess = sprintf("n_y (%i) in data not same as n_y (%i) in model", n_y,N_y);
@@ -138,7 +143,6 @@ function [par,Par,Error,Y,iterations,x] = \
 #     if ( (N_data-n_data)<1 )
 #       error(sprintf("y_0 (%i) must be shorter than y (%i)", n_data, N_data));
 #     endif
-    
     y = y(N_data-n_data+1:N_data,:);
     y_par = y_par(N_data-n_data+1:N_data,:);
 

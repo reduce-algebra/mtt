@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  2000/01/26 10:11:10  peterg
+## Added I component
+##
 ## Revision 1.9  1999/11/10 00:47:08  peterg
 ## Replaced ifs by a table of cr/arg information
 ##
@@ -102,6 +105,7 @@ sort -u> $1_unique_raw_list
 grep -v  '\[[0-9]*\]'  $1_unique_raw_list | \
 awk --field-separator ':' '
  BEGIN {
+    OldComponent="None";
  }
  { 
   Component = $1;
@@ -119,13 +123,11 @@ awk --field-separator ':' '
     }
  }
 
-
-
     ## Table of components
     cr["SS"] = "SS";  arg["SS"] = "external,external";
 
-    cr["Se"] = "SS";  arg["Se"] = "external";
-    cr["Sf"] = "SS";  arg["Sf"] = "external";
+    cr["Se"] = "SS";  arg["Se"] = sprintf("external%s", s_arg);
+    cr["Sf"] = "SS";  arg["Sf"] = sprintf("external%s", s_arg);
 
     cr["De"] = "SS";  arg["De"] = "external";
     cr["Df"] = "SS";  arg["Df"] = "external";
@@ -133,8 +135,15 @@ awk --field-separator ':' '
     cr["R"] = "lin";  arg["R"]  = sprintf("flow,%s%s", $2, s_arg);
     cr["C"] = "lin";  arg["C"]  = sprintf("effort,%s%s", $2, s_arg);
     cr["I"] = "lin";  arg["I"]  = sprintf("flow,%s%s", $2, s_arg);
+
+    cr["CS"] = "lin";  arg["CS"]  = sprintf("effort,%s;x_0%s", $2, s_arg);
+    cr["IS"] = "lin";  arg["IS"]  = sprintf("flow,%s;x_0%s", $2, s_arg);
+
     cr["TF"] = "lin";  arg["TF"]  = sprintf("flow,%s%s", $2, s_arg);
     cr["GY"] = "lin";  arg["GY"]  = sprintf("flow,%s%s", $2, s_arg);
+
+    cr["AE"] = "lin";  arg["AE"]  = sprintf("%s%s", $2, s_arg);
+    cr["AF"] = "lin";  arg["AF"]  = sprintf("%s%s", $2, s_arg);
 
   ## Heading
   if (Component !~ OldComponent) print "\n% Component type", Component

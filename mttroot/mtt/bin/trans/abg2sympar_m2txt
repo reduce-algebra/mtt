@@ -37,7 +37,7 @@ function matches(names, name) {
 }
 
 BEGIN {
-  var = "[%|#]VAR";
+  var = "[%|#][PAR|VAR]";
   not_an_arg = "effort flow state internal external zero unknown\
                 mtt_e mtt_f sqrt exp log sign none abs";
   arg_line = "arg = ";

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1996/11/09 21:10:20  peterg
+## Tidied up searches by putting everyrhing into lib.
+##
 # Revision 1.2  1996/11/02  10:22:54  peterg
 # Now browses crs.
 #
@@ -27,61 +30,71 @@ topic=$1
 if [ "$topic" = "" ]; then
     echo 'Usage: mtt help representations'
     echo '       mtt help components'
+    echo '       mtt help examples' 
     echo '       mtt help CRs'    
     echo '       mtt help representations <match_string>'
     echo '       mtt help components <match_string>'
     echo '       mtt help examples  <match_string>'
     echo '       mtt help CRs <match_string>'
     echo '       mtt help <component_or_example_or_CR_name>'
+  exit
 fi
+
+ext='*'
+summary='[%#]SUMMARY'
+description='[%#]DESCRIPTION'
+
+case $topic in
+  components)
+    key=$summary 
+    find_path=$MTT_COMPONENTS
+    name='*_*.*'
+    blurb="Components";;
+
+  crs) 
+    key=$summary 
+    find_path=$MTT_CRS
+    name='*.cr'
+    blurb="Constitutive Relationships";;
+
+  examples) 
+    key=$summary 
+    find_path=$MTT_EXAMPLES
+    name='*_lbl.txt'
+    all='all'
+    blurb="Examples";;
+
+  representations)
+    key=$summary 
+    find_path=$MTTPATH/mtt
+    name='mtt'
+    all='all'
+    blurb="Representations";;
+
+  *)
+    key="\"$summary|$description\"" 
+    find_path=$MTT_LIB
+    name=$topic$ext
+    all=''
+    blurb=$topic;;     
+  
+esac
 
 subtopic=$2
 if [ "$subtopic" = "" ]; then
   subtopic='.'
 fi;
 
-if [ "$topic" = "components" ]; then
-  echo 'Components:'
-  find $MTTPATH/lib/comp \
-    -name '*_lbl.txt' \
-    -exec grep -i "%SUMMARY.*$subtopic.*" {} \; |\
-  sed "s/%SUMMARY[	]*/  /" |\
-  sort
+echo $blurb
+  mtt_find $find_path "$name" "egrep -i $key.*$subtopic" $all|\
+  sed "s/$summary[	]*/  /" |\
+  sed "s/$description[	]*/  /"
 
 
-elif [ "$topic" = "examples" ]; then
-  echo 'Examples:'
-  find $MTTPATH/lib/examples -name '*_lbl.txt' \
-    -exec grep -i "%SUMMARY.*$subtopic.*" {} \; |\
-  sed "s/%SUMMARY[	]*/  /" |\
-  sort
 
 
-elif [ "$topic" = "representations" ]; then
-  echo 'Representations:'
-  grep  '#REPRESENTATION' $MTTPATH/mtt |\
-  sed 's/#REPRESENTATION[	]*/  /' |\
-  grep -i $subtopic |\
-  sort
 
-elif [ "$topic" = "crs" ]; then
-  echo 'Constitutive relationships'
-  grep -h '\%SUMMARY' \
-	*.cr \
-	$MTTPATH/lib/cr/r/*.cr 2>/dev/null |\
-  sed 's/\%SUMMARY[ ]*/	/' |\
-  grep -i $subtopic |\
-  sed 's/:[ ]*/	/' |\
-  sort
 
-else
-  find $MTTPATH/lib \
-   -name "$1_lbl.txt" \
-   -exec grep  "%SUMMARY" {} \; \
-   -exec grep  "%DESCRIPTION" {} \; |\
-  sed "s/%SUMMARY[	]*//" |\
-  sed "s/%DESCRIPTION[	]*/  /"
-fi;
 
 
 

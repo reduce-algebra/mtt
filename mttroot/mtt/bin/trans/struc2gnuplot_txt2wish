@@ -20,27 +20,24 @@ exec wish "\$0" "\$@"
 
 ## main window
 wm title . "MTT Viewer: ${sys}"
-set parameter ""
-set windownum 0
-set view outputs
 
 # menu bar
 canvas .menubar
 
 menubutton .menubar.file -text "File" -underline 0 -menu .menubar.file.menu
 menu .menubar.file.menu
-.menubar.file.menu add command -label "Open  (Gnuplot plot file)" -underline 0   -command open_plotfile
-.menubar.file.menu add command -label "Save  (Gnuplot plot file)" -underline 0   -command save_plotfile
+.menubar.file.menu add command -label "Open    (Gnuplot template)" -underline 0   -command open_plotfile
+.menubar.file.menu add command -label "Save    (Gnuplot template)" -underline 0   -command save_plotfile
 .menubar.file.menu add separator
-.menubar.file.menu add command -label "Print (PostScript file)"   -underline 0   -command print_postscript
+.menubar.file.menu add command -label "Print     (PostScript)"   -underline 0   -command print_postscript
 .menubar.file.menu add separator
 .menubar.file.menu add command -label "Quit"			  -underline 0   -command exit
 
 menubutton .menubar.edit -text "Edit" -underline 0 -menu .menubar.edit.menu
 menu .menubar.edit.menu
-.menubar.edit.menu add cascade -label "Axes" -underline 0 -menu .menubar.edit.menu.axes
-.menubar.edit.menu add cascade -label "Grid" -underline 0 -menu .menubar.edit.menu.grid
-.menubar.edit.menu add cascade -label "Key"  -underline 0 -menu .menubar.edit.menu.key
+.menubar.edit.menu add cascade -label "Axes"         -underline 0 -menu .menubar.edit.menu.axes
+.menubar.edit.menu add cascade -label "Grid"         -underline 0 -menu .menubar.edit.menu.grid
+.menubar.edit.menu add cascade -label "Key"          -underline 0 -menu .menubar.edit.menu.key
 
 menu .menubar.edit.menu.axes
 .menubar.edit.menu.axes add command -label "Cartesian" -underline 0 -command { puts "set nopolar ; replot" }
@@ -53,6 +50,15 @@ menu .menubar.edit.menu.grid
 menu .menubar.edit.menu.key
 .menubar.edit.menu.key add command -label "Show Key"   -underline 0 -command { puts "set   key   ; replot" }
 .menubar.edit.menu.key add command -label "Hide Key"   -underline 0 -command { puts "set nokey   ; replot" }
+.menubar.edit.menu.key add cascade -label "Position"   -underline 0 -menu .menubar.edit.menu.key.posn
+
+menu .menubar.edit.menu.key.posn
+.menubar.edit.menu.key.posn add command -label "Left"    -underline 0 -command { puts "set key left    ; replot" }
+.menubar.edit.menu.key.posn add command -label "Right"   -underline 0 -command { puts "set key right   ; replot" }
+.menubar.edit.menu.key.posn add command -label "Top"     -underline 0 -command { puts "set key top     ; replot" }
+.menubar.edit.menu.key.posn add command -label "Bottom"  -underline 0 -command { puts "set key bottom  ; replot" }
+.menubar.edit.menu.key.posn add command -label "Outside" -underline 0 -command { puts "set key outside ; replot" }
+.menubar.edit.menu.key.posn add command -label "Below"   -underline 3 -command { puts "set key below   ; replot" }
 
 menubutton .menubar.tool -text "Tools" -underline 0 -menu .menubar.tool.menu
 menu .menubar.tool.menu
@@ -78,22 +84,43 @@ pack .menubar.edit    -expand false -fill x -side left
 pack .menubar.tool    -expand false -fill x -side left
 pack .menubar.quit    -expand false -fill x -side right
 
-# status bar
-canvas .statusbar
+# list bar
+canvas .listbar
 
-radiobutton .statusbar.states  -text "States"      -value states  -variable view -command { .parameters.list configure -listvar xl }
-radiobutton .statusbar.outputs -text "Outputs"     -value outputs -variable view -command { .parameters.list configure -listvar yl }
+radiobutton .listbar.states  -text "States"   -value states  -variable view -command { .parameters.list configure -listvar xl }
+radiobutton .listbar.outputs -text "Outputs"  -value outputs -variable view -command { .parameters.list configure -listvar yl }
 
-tk_optionMenu .statusbar.plot  plottype "Single Plot" "Multi Plot" "New Window"
-checkbutton .statusbar.sort -text "Toggle Sort" -relief flat -indicatoron false -onvalue "reverse" -offvalue "normal" -variable sortorder -command {    
+checkbutton .listbar.sort -text "Toggle Sort" -relief flat -indicatoron false -onvalue "reverse" -offvalue "normal" -variable sortorder -command {    
     set xl [sort_list \$xl \$sortorder ]
     set yl [sort_list \$yl \$sortorder ]
 }
 
-pack .statusbar.states  -expand false -fill x -side left
-pack .statusbar.outputs -expand false -fill x -side left
-pack .statusbar.plot    -expand false -fill x -side right
-pack .statusbar.sort	-expand false -fill x -side right
+pack .listbar.states  -expand false -fill x -side left
+pack .listbar.outputs -expand false -fill x -side left
+pack .listbar.sort    -expand false -fill x -side right
+
+# side bar
+canvas .plotbar
+
+tk_optionMenu .plotbar.select select  "Select X" "Select Y" "Select Z"
+
+tk_optionMenu .plotbar.dim   dimension "2D" "3D"
+
+tk_optionMenu .plotbar.plot  plottype "Single" "Multi"
+
+pack .plotbar.dim     -expand false -fill x -side right
+pack .plotbar.plot    -expand false -fill x -side right
+pack .plotbar.select  -expand false -fill x -side right
+
+# button bar
+canvas .buttonbar
+
+button .buttonbar.newwin -text "New Plot"  -relief raised -command {
+    set windownum [expr 1 + \$windownum]
+    puts "set term x11 \$windownum"
+}
+
+pack .buttonbar.newwin  -expand false -side right
 
 ## parameter list canvas
 canvas		.parameters
@@ -105,7 +132,11 @@ scrollbar	.parameters.yscrollbar	-orient v
 .parameters.list configure -yscrollcommand ".parameters.yscrollbar set"
 
 ## bind lists
-bind .parameters.list <<ListboxSelect>> { set parameter [ .parameters.list get anchor ] ; plot \$parameter }
+bind .parameters.list <<ListboxSelect>> {
+    set parameter [ .parameters.list get anchor ]
+    plot \$parameter
+    set select "Select Y"
+}
 
 proc "reverse_name" "name" {
     set delim "_"
@@ -145,63 +176,127 @@ EOF
 ## create states and outputs lists
 gawk '
 ($1 == "state") {
-    printf "lappend xl state:%s\n", $4
+    printf "lappend xl %s\n", $4
 }
 ($1 == "output") {
-    printf "lappend yl output:%s\n", $4
+    printf "lappend yl %s\n", $4
 }' ${struc} >> ${out}
 
 cat <<EOF >> ${out}
+lappend xl Time
+lappend yl Time
 .parameters.list configure -listvar yl
 
 pack .menubar			-expand false -fill x    -side top
-pack .statusbar			-expand false -fill x    -side bottom
+pack .plotbar			-expand false -fill x    -side bottom
+pack .listbar			-expand false -fill x    -side top
+pack .buttonbar			-expand false -fill x    -side bottom
 pack .parameters.yscrollbar	-expand false -fill y    -side right
 pack .parameters.list		-expand true  -fill both -side left
 pack .parameters		-expand true  -fill both
 
 ## map names to column numbers
+proc "get_state_column" "title" {
 EOF
 
 gawk '
-BEGIN {
-    print "proc \"plot\" \"title\" {";
-}
 ($1 == "state") {
-    printf "if (\"%s\"==\"state:%s\") { plot_var \"%s\" %d }\n", Title, $4, $4, $2+2+Ny;
-}
-($1 == "output") {
-    printf "if (\"%s\"==\"output:%s\") { plot_var \"%s\" %d }\n", Title, $4, $4, $2+1;
-}    
-END {
-    print  "}"
+    printf "if (\"%s\"==\"%s\") { return %d }\n", Title, $4, $2+2+Ny;
 }
 ' Title=\$title Ny=${Ny} ${struc} >> ${out}
 
+cat <<EOF >> ${out}
+}
+
+proc "get_output_column" "title" {
+EOF
+
+gawk '
+($1 == "output") {
+    printf "if (\"%s\"==\"%s\") { return %d }\n", Title, $4, $2+1;
+}    
+' Title=\$title Ny=${Ny} ${struc} >> ${out}
 
 cat <<EOF >> ${out}
+}
+
+proc "plot" "title" {
+    global select
+    global view
+    global xcolumn
+    global ycolumn
+    global zcolumn
+    global xtitle
+    global ytitle
+    global ztitle
+    if {"\$title" == "Time"} {
+	set column 1
+    } elseif {"\$view" == "states"} {
+	set column [get_state_column \$title]
+    } elseif {"\$view" == "outputs"} {
+	set column [get_output_column \$title]
+    }    
+    if {"\$select" == "Select X"} {
+	set xcolumn \$column
+	set xtitle  \$title
+    } elseif {"\$select" == "Select Y"} {
+	set ycolumn \$column
+	set ytitle  \$title
+    } elseif {"\$select" == "Select Z"} {
+	set zcolumn \$column
+	set ztitle  \$title
+    }
+    plot_var
+}
 
 ## call gnuplot
-proc "plot_var" "title column" {
-    puts "set term X11"
-    global first_plot
-    if {"\$first_plot" == 1} {
-        set first_plot 0
-        set plot "plot"
-    } else {
-	global plottype
-	if {"\$plottype" == "Multi Plot"} {
-	    set plot "replot"
-	} elseif {"\$plottype" == "New Window"} {
-	    global windownum
-	    set windownum [ expr \$windownum + 1 ]
-	    puts "set terminal x11 \$windownum"
-	    set plot "plot"
-	} else {
-	    set plot "plot"
+proc "plot_var" "" {
+    global xcolumn
+    global ycolumn
+    global zcolumn
+    global xtitle
+    global ytitle
+    global ztitle
+    global dimension
+    global plottype
+    global lastplot
+    if {"\$dimension" == "2D"} {
+	if {"\$plottype" == "Single"} {
+	    puts "set xlabel '\$xtitle'"
+	    puts "set ylabel '\$ytitle'"
+	    puts "set nokey"
+	    puts "plot '${dat2}' using \$xcolumn:\$ycolumn title 'y:\$ytitle  x:\$xtitle' with lines"
+	} elseif {"\$plottype" == "Multi"} {
+	    puts "set xlabel ''"
+	    puts "set ylabel ''"
+	    puts "set key"
+	    if {"\$lastplot" != "2D"} {
+		puts "plot '${dat2}' using \$xcolumn:\$ycolumn title 'y:\$ytitle  x:\$xtitle' with lines"
+	    } else {
+		puts "replot '${dat2}' using \$xcolumn:\$ycolumn title 'y:\$ytitle  x:\$xtitle' with lines"	    
+	    }
 	}
+	set lastplot "2D"	
+    } elseif {"\$dimension" == "3D"} {
+	if {"\$plottype" == "Single"} {
+	    puts "set xlabel '\$xtitle'"
+	    puts "set ylabel '\$ytitle'"
+	    puts "set zlabel '\$ztitle'"
+	    puts "set nokey"
+	    puts "splot '${dat2}' using \$xcolumn:\$ycolumn:\$zcolumn title 'z:\$ztitle  y:\$ytitle  x:\$xtitle' with lines"
+	} elseif {"\$plottype" == "Multi"} {
+	    puts "set xlabel ''"
+	    puts "set ylabel ''"
+	    puts "set zlabel ''"
+	    puts "set key"
+	    if {"\$lastplot" != "3D"} {
+		puts "splot '${dat2}' using \$xcolumn:\$ycolumn:\$zcolumn title 'z:\$ztitle  y:\$ytitle  x:\$xtitle' with lines"
+	    } else {
+		puts "replot '${dat2}' using \$xcolumn:\$ycolumn:\$zcolumn title 'z:\$ztitle  y:\$ytitle  x:\$xtitle' with lines"
+	    }
+	}
+	set lastplot "3D"
     }
-    puts "\$plot '${dat2}' using 1:\$column title '\$title' with lines"
 }
 
 ## open gnuplot plot file
@@ -269,10 +364,19 @@ proc "print_postscript" "" {
 }
 
 # Defaults
-puts "set key"
+set parameter ""
+set windownum 0
+set view outputs
+set lastplot ""
+set select "Select Y"
+set xcolumn 1 ; set xtitle "Time"
+set ycolumn 1 ; set ytitle "Time"
+set zcolumn 1 ; set ztitle "Time"
+
 puts "set grid"
 puts "set nopolar"
-set first_plot 1
+puts "set term X11 0"
+puts "set key"
 
 EOF
 chmod +x ${out}

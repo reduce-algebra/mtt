@@ -14,12 +14,16 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1996/11/10 10:48:45  peterg
+## Initial revision
+##
 ###############################################################
 
 path=$1
 name=$2
 operation=$3
 all=$4
+q=\
 
 # awk splits the path into components and writes a find for each
 # If all argument null, then succesful find terminates.
@@ -36,4 +40,5 @@ awk 'END{ \
     printf("fi\n");
   }
    }
-     }' path="$path" name="$name" operation="$operation" all="$all"</dev/null 
+     }' path="$path" name="$name" operation="$operation" all="$all" \
+</dev/null  | sh

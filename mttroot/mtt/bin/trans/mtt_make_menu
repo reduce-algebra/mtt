@@ -12,7 +12,8 @@
 title=`mtt --version`
 
 #Collect all systems (inc dir name)
-dirname="basename `pwd`"
+pwd=`pwd`;
+dirname=`basename $pwd`
 systems=`echo *_abg.fig | sed 's/\([a-zA-Z0-9]*\)_abg.fig/\1/g'`
 dirname_in_systems=`echo $systems | grep -c $dirname`
 if [ "$dirname_in_systems" = "0" ]; then

@@ -161,6 +161,8 @@ function [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, A_u, A_w, w, Q, extr
 
     gset nokey
     gset nogrid
+    #eval(sprintf("gset xtics %g", simpar.last));
+    #gset noytics
     gset format x "%.1f"
     gset format y "%.2f"
     gset term fig monochrome portrait fontsize 20 size 20 20 metric \
@@ -170,10 +172,11 @@ function [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, A_u, A_w, w, Q, extr
     title("");
     xlabel("Time (s)");
     ylabel("u");
-    subplot(2,1,2); plot(t,u,'-',  T_open, u_open,"^");  
+    subplot(2,1,2); plot(t,u,'-',  T_open, u_open,"+");
+    #subplot(2,1,2); plot(t,u);   
     ylabel("y");
-    subplot(2,1,1); plot(t,y,'-', T_open, y_open,"^"); 
-
+    subplot(2,1,1); plot(t,y,'-',  T_open, y_open,"+"); 
+    #subplot(2,1,1); plot(t,y); 
     oneplot;
     gset term fig monochrome portrait fontsize 20 size 20 10 metric \
 	     thickness 4

@@ -11,6 +11,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1998/02/19 08:57:02  peterg
+## Fixed mtt-info bug -- confused filename with number
+##
 ## Revision 1.7  1997/08/05 08:38:23  peterg
 ## Added n-ports to the argument list in the comment.
 ##
@@ -77,6 +80,17 @@
 # P.J.Gawthrop May 1996
 # Copyright (c) P.J.Gawthrop, 1996.
 
+while [ -n "`echo $1 | grep '^-'`" ]; do
+  case $1 in
+	-I )
+                info=info;;
+	*)
+		echo "$1 is an invalid argument - ignoring" ;;
+  esac
+  shift
+done
+
+
 
 # Remove the old log file
 rm -f rbg2abg_m.log
@@ -110,7 +124,9 @@ $MATRIX > rbg2abg_m.log  2>mtt_error.txt << EOF
 
 EOF
 
-cat mtt_info.txt
+if [ "$info" = "info" ]; then
+  cat mtt_info.txt    
+fi
 
 mtt_error mtt_error.txt
 

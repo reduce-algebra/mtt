@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/05/23 16:17:14  peterg
+## Initial revision
+##
 ###############################################################
 
 # Set up the language specific stuff
@@ -128,7 +131,10 @@ if nyz>0
   end;
   printf("\n");
 
-  printf("mttui = fsolve('$1_odea',mttui);\n");
+  printf("[mttui,info] = fsolve('$1_odea',mttui);\n");
+  printf("if (info!=1)\n"); 
+  printf("  error('fsolve has not converged')\n");
+  printf("end\n");
   printf("\n");
 
   printf("$Lc====== Set up the internal input variables ======$Rc\n");

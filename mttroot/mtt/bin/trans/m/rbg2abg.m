@@ -5,6 +5,9 @@ function [bonds,components] = rbg2abg(rbonds,rstrokes,rcomponents,rports,infofil
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/08/04 18:30:14  peter
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -107,48 +110,48 @@ for i = 1:n_components
   end;
 end;
 
-% Find out location of centre and ends of stroke.
+% Deduce causality from the strokes (if any).
+causality = zeros(n_bonds,2);
 if n_strokes>0
-  causality = zeros(n_bonds,2);
+  % Find out location of centre and ends of stroke.
   stroke_end_1 = [rstrokes(:,1) rstrokes(:,2)];
   stroke_end_2 = [rstrokes(:,3) rstrokes(:,4)];
   
   stroke_centre = (stroke_end_1 + stroke_end_2)/2;
   stroke_vector = (stroke_end_1 - stroke_end_2);
   stroke_length = length2d(stroke_vector);
-end;
 
 % Deduce bond causality from the strokes 
-for i = 1:n_strokes
-  stroke = [stroke_centre(i,:)
+  for i = 1:n_strokes
+    stroke = [stroke_centre(i,:) 
     stroke_end_1(i,:)
     stroke_end_2(i,:)];
 
 
-  % Find the nearest bond end.
-  [index,distance] = adjbond(stroke(1,:),arrow_end,other_end);
-  if (distance>2*stroke_length(i))
-    info = sprintf('Stroke at (%4.3f,%4.3f) is %4.3f away from the nearest bond\n', ...
+    % Find the nearest bond end.
+    [index,distance] = adjbond(stroke(1,:),arrow_end,other_end);
+    if (distance>2*stroke_length(i))
+      info = sprintf('Stroke at (%4.3f,%4.3f) is %4.3f away from the nearest bond\n', ...
 	stroke(1,1)/scale, stroke(1,2)/scale, distance/scale);
+    end;
+  
+    % Bond end coordinates
+    j = index(1,1);
+    which_end = index(1,2)==1;
+    bond_end = arrow_end(j,:)*which_end + other_end(j,:)*(1-which_end);
+  
+    % Now decide which bit of the stroke is nearest
+    stroke_index = adjbond(bond_end,stroke,zeros(size(stroke)));
+  
+    if stroke_index(1)==1 % uni-causal stroke
+      causality(j,1:2) = (2*which_end-1)*[1 1];
+    else % bicausal stroke
+      % Find out whether stroke is on flow side of bond
+      stroke_direction = stroke(1,:) - stroke(stroke_index(1),:);
+      flow_side = stroke_direction*arrow_vector(j,:)'>0;
+      causality(j,1+flow_side) = 2*which_end-1;
+    end;
   end;
-  
-  % Bond end coordinates
-  j = index(1,1);
-  which_end = index(1,2)==1;
-  bond_end = arrow_end(j,:)*which_end + other_end(j,:)*(1-which_end);
-  
-  % Now decide which bit of the stroke is nearest
-  stroke_index = adjbond(bond_end,stroke,zeros(size(stroke)));
-  
-  if stroke_index(1)==1 % uni-causal stroke
-    causality(j,1:2) = (2*which_end-1)*[1 1];
-  else % bicausal stroke
-    % Find out whether stroke is on flow side of bond
-    stroke_direction = stroke(1,:) - stroke(stroke_index(1),:);
-    flow_side = stroke_direction*arrow_vector(j,:)'>0;
-    causality(j,1+flow_side) = 2*which_end-1;
-  end;
-  
 end;
 
 bonds = causality;

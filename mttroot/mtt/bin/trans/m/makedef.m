@@ -5,6 +5,9 @@ function makedef(structure,deffilenum);
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## %% $Id$
   ## %% $Log$
+  ## %% Revision 1.8  2000/10/20 13:26:41  peterg
+  ## %% Made sure that mttui not declared twice
+  ## %%
   ## %% Revision 1.7  2000/10/20 13:16:29  peterg
   ## %% Reformated
   ## %%
@@ -123,8 +126,6 @@ function makedef(structure,deffilenum);
     fprintf(deffilenum, 'MTTdz(%1.0f,1) := MTTdz%1.0f;\n', i, i);
   endfor
 
+  fflush (deffilenum);
+
 endfunction
-  
-
-
-

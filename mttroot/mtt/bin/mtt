@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.63  1997/03/22  17:09:11  peterg
+# Fixed bug in recursive cr.txt generation.
+# Fixed bug in recursive sympar.txt generation.
+#
 # Revision 1.62  1997/03/20  17:48:50  peterg
 # Better _input.c file default.
 #
@@ -371,6 +375,25 @@ if [ "$1" = "copy" ]; then
     fi
     echo Copying system $2 to here
     find $path_name -name "$2_*.*" -exec cp {} . \;
+  fi
+  exit
+fi
+
+# Copy CRs from the library
+if [ "$1" = "crcopy" ]; then
+  # check that its not here already
+  file_exists=`ls $2.cr 2> /dev/null`
+  if [ -n "$file_exists" ]; then
+    if [ "$quiet" != "quiet" ]; then    
+      echo $2.cr exists already - no action taken
+    fi
+  else
+    path_name=$3
+    if [ -z "$path_name" ]; then
+      path_name=$MTTPATH/lib/cr/r
+    fi
+    echo Copying CR $2 to here
+    find $path_name -name "$2.cr" -exec cp {} . \;
   fi
   exit
 fi

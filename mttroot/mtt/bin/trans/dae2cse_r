@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1998/07/19 12:44:35  peterg
+## Set MTTYz := 0 if the array is empty - avoids irritating error
+## message.
+##
 ## Revision 1.5  1998/05/20 15:23:26  peterg
 ## Put MTTYz := MTTYz outsise the BEGIN/END
 ##
@@ -163,10 +167,10 @@ MTTdX := MTTdXs;  %Restore the symbolic dX
 MTTEdX := MTTEdX + MTTExu*MTTdu;
 
 
-MTTY := MTTY + MTTEyx*MTTEdX;
+%%%%%MTTY := MTTY + MTTEyx*MTTEdX;
 %%% This causes the matrix mismatch
 %%% MTTdXs and MTTdu need setting in _def.r file
-%%MTTY := MTTY +  MTTEyu*MTTdu;
+MTTY := MTTY +  MTTEyu*MTTdu;
 MTTY := MTTY + MTTEyx*(MTTE^(-1))*MTTEdX;
 
 

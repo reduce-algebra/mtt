@@ -1,0 +1,19 @@
+%% Style file for postscript document
+
+\usepackage{mtt} % Common stuff
+
+%Postscript figures 
+\usepackage{graphicx}
+
+% Figure definition
+\newcommand{\fig}[4]{
+  \begin{figure}[htbp]
+    \begin{center}
+      \shadowbox{
+        \includegraphics[width=#3\linewidth]{#1.ps}
+        }
+        \caption{#4}
+      \label{fig:#2}
+    \end{center}
+  \end{figure}
+  }

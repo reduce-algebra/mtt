@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.30  2000/04/18 11:24:19  peterg
+## Removed _numpar.
+##
 ## Revision 1.29  2000/04/07 19:10:57  peterg
 ## *** empty log message ***
 ##
@@ -136,8 +139,8 @@ MTTilast = round(mttlast/mttdt); # Total number of steps
 MTTt = 0.0;
 
 [MTTu]  = zero_input($Nu);	# Zero the input
-
 [MTTx] = $1_state;	        # Read in initial state
+[MTTpar] = $1_numpar;	        # Read in initial state
 
 #[mttAA]  = zero_matrix($Nx);	# Zero the A matrix
 #[mttAAx] = zero_vector($Nx);	# Zero the AAx vector
@@ -181,7 +184,8 @@ if [ "$method" = "implicit" ]; then
 cat << EOF >> $1_ode2odes.m
 #    if mttmethod==2		# Implicit 
       [MTTdx] = $1_cse(MTTx,MTTu,MTTt,MTTpar); # State derivative
-      [mttAA,mttAAx] = $1_smx(MTTx,MTTu,mttdt,MTTpar);	# (I-Adt) and (I-Adt)x
+      [mttAA] = $1_smxa(MTTx,MTTu,mttdt,MTTpar);	# (I-Adt) and (I-Adt)x
+      [mttAAx] = $1_smxax(MTTx,MTTu,mttdt,MTTpar);	# (I-Adt) and (I-Adt)x
       [MTTopen] = $1_switchopen(MTTx);        # Open switches
       [MTTx] = mtt_implicit(MTTx,MTTdx,mttAA,mttAAx,mttdt,$Nx,MTTopen); # Implicit update
       MTTt = MTTt + mttdt;

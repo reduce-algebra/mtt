@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.74  1997/05/13  16:58:02  peterg
+# Added -s switch to get mtt to search for (Bond Graph) switches
+#
 ## Revision 1.73  1997/05/09 09:18:45  peterg
 ## Put ./ in front of a.out (again)
 ##
@@ -630,8 +633,6 @@ $1_sympar.txt: $1_sub.sh $1_struc.txt
 	  cat $1_sympar.txt1 $1_switch.txt> $1_sympar.txt; \
 	fi
 
-$1_switch.c: $1_sub.sh
-	struc2switch_txt2c $1
 endif
 
 
@@ -691,7 +692,9 @@ $1_input.c:  $1_input.txt $1_sympar.c
 endif
 
 ifeq ($switches,1)
-$1_input.c:  $1_input.txt $1_sympar.c
+$1_switch.c: $1_struc.txt
+	struc2switch_txt2c $1
+$1_input.c:  $1_input.txt $1_sympar.c $1_switch.c
 	input_txt2c -s $1
 endif
 

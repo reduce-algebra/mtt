@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.245  2000/05/19 17:50:10  peterg
+## Changes to state rep - now has parameter
+##
 ## Revision 1.244  2000/05/19 14:19:46  peterg
 ## Added library path for representations
 ##
@@ -1035,8 +1038,9 @@ fi
 
 
 if [ "$1" = "info" ]  && [ "$3" = "" ]; then
-  echo Invoking info
-  info -f $MTTPATH/doc/mtt.info $2
+  (cd $MTTPATH/doc/; make --silent mtt.info)
+  echo "Invoking info in xterm"
+  xterm -e info -f $MTTPATH/doc/mtt.info $2
   exit
 fi
 
@@ -1046,15 +1050,17 @@ if [ "$1" = "help" ]; then
 fi
 
 if [ "$1" = "hinfo" ] && [$2 = ""]; then
-   echo Invoking $HTMLVIEW
    mtt_check_var "$HTMLVIEW" HTMLVIEW
-   (cd $MTTPATH/doc; $HTMLVIEW ./mtt_toc.html)&
+  (cd $MTTPATH/doc/; make --silent mtt.html) 
+   echo Invoking $HTMLVIEW
+   (cd $MTTPATH/doc; $HTMLVIEW ./mtt.html)&
    exit
 fi
 
 if [ "$1" = "manual" ] && [$2 = ""]; then
   mtt_check_var "$PSVIEW" PSVIEW
-  echo Invoking $PSVIEW
+  (cd $MTTPATH/doc/; make --silent mtt.ps.gz) 
+  echo Invoking $PSVIEW 
   $PSVIEW  $MTTPATH/doc/mtt.ps.gz &
   exit
 fi
@@ -2021,7 +2027,8 @@ $1_scse.r: $1_cse.r $1_def.r
 #$1_cse.m: $1_def.r $1_cse.r $1_sympar.r  $1_subs.r 
 #	cse_r2m $1; matlab_tidy $1_cse.m
 $1_scse.m: $1_def.m $1_scse.r $1_sympars.txt
-	mtt_r2m $1 scse;  matlab_tidy $1_scse.m; matlab_tidy $1_scseo.m; 
+	mtt_r2m  -parameters $1 scse;  
+	matlab_tidy $1_scse.m; matlab_tidy $1_scseo.m; 
 
 $1_scse.tex: $1_scse.r  $1_sympar.r $1_simp.r
 	cse_r2tex $1 $2; latex_tidy $1_scse.tex
@@ -2046,7 +2053,7 @@ $1_ode.r: $1_dae.r
 endif
 
 $1_ode.m: $1_def.m $1_ode.r  $1_subs.r $1_sympars.txt
-	mtt_r2m $1 ode m; matlab_tidy $1_ode.m
+	mtt_r2m -parameters $1 ode m; matlab_tidy $1_ode.m
 
 $1_ode.oct: $1_def.r $1_ode.p $1_sympars.txt
 	mtt_p2oct $1 ode
@@ -2152,7 +2159,7 @@ endif
 $1_obs.r: $1_ode.r $1_def.r $1_obspar.r $1_subs.r
 	ode2obs_r $1; tidy $1_obs.r
 $1_obs.m: $1_def.r $1_sympars.txt $1_obs.r $1_obspar.r $1_numpar.m
-	mtt_r2m $1 obs
+	mtt_r2m  -parameters $1 obs
 $1_obs.tex: $1_obs.r  $1_sympar.r $1_simp.r
 	obs_r2tex $1; latex_tidy $1_obs.tex
 
@@ -2190,7 +2197,7 @@ $1_ss.tex: $1_def.r $1_ss.r $1_simp.r
 $1_dm.r: $1_dae.r $1_def.r $1_cr.r  $1_ss.r $1_sympar.r
 	dae2dm_r $1; tidy $1_dm.r
 $1_dm.m: $1_def.r $1_dm.r $1_sympars.txt
-		mtt_r2m $1 dm
+		mtt_r2m -parameters $1 dm
 $1_dm.tex: $1_dm.r $1_sympar.r $1_simp.r 
 	dm_r2tex $1; latex_tidy $1_dm.tex
 
@@ -2205,7 +2212,7 @@ $1_dm.tex: $1_dm.r $1_sympar.r $1_simp.r
 $1_csm.r: $1_cse.r $1_def.r $1_cr.r $1_sspar.r
 	cse2csm_r $1 csm; tidy $1_csm.r
 $1_csm.m: $1_def.r $1_csm.r $1_sympars.txt
-		mtt_r2m $1 csm;  matlab_tidy $1_csm.m
+		mtt_r2m  -parameters $1 csm;  matlab_tidy $1_csm.m
 $1_csm.tex: $1_csm.r  $1_sympar.r $1_simp.r
 	csm_r2tex $1 csm; latex_tidy $1_csm.tex
 #SUMMARY scsm	sensitivity constrained-state matrices (r)
@@ -2232,7 +2239,7 @@ $1_scsm.tex: $1_scsm.r  $1_sympar.r $1_simp.r
 $1_sm.r: $1_csm.r $1_def.r $1_cr.r $1_ss.r $1_sympar.r
 	csm2sm_r $1 sm; tidy $1_sm.r
 $1_sm.m: $1_def.r $1_sm.r $1_sympars.txt 
-		mtt_r2m $1 sm
+		mtt_r2m  -parameters $1 sm
 $1_sm.icad:  $1_sm.m $1_numpar.m
 		sm_m2icad $1
 $1_sm.c: $1_def.r $1_sm.r $1_sympar.c
@@ -2249,7 +2256,7 @@ $1_sm.tex: $1_sm.r  $1_sympar.r $1_simp.r
 $1_ssm.r: $1_scsm.r $1_def.r $1_cr.r $1_ss.r $1_sympar.r
 	csm2sm_r $1 ssm; tidy $1_ssm.r
 $1_ssm.m: $1_def.r $1_ssm.r $1_sympars.txt 
-		mtt_r2m $1 ssm
+		mtt_r2m -parameters $1 ssm
 $1_ssm.tex: $1_ssm.r  $1_sympar.r $1_simp.r
 	sm_r2tex $1 ssm; latex_tidy $1_ssm.tex
 

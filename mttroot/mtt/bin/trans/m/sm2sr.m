@@ -10,18 +10,21 @@ function [Y,X] = sm2sr(A,B,C,D,T,u0,x0);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/08/19 15:34:29  peter
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 [Ny,Nu] = size(D);
 [Ny,Nx] = size(C);
 
-if nargin<7
+if nargin<6
   u0 = zeros(Nu,1);
   u0(1) = 1;
 end;
 
-if nargin<8
+if nargin<7
   x0 = zeros(Nx,1);
 end;
 

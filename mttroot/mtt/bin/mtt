@@ -17,6 +17,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.327  2001/11/15 02:56:17  geraint
+## Added DASSL as an option for solution of algebraic equations (-ae dassl).
+## Requires octave-2.1.35.
+##
 ## Revision 1.326  2001/10/26 01:01:47  geraint
 ## fixcc when rdae_is_dae (-cr).
 ##
@@ -2706,10 +2710,10 @@ endif
 #SUMMARY ode2odes Simulation function (oct)
 #SUMMARY ode2odes Simulation function (exe)
 $1_ode2odes.exe: $1_def.h $1_sympar.h\
-		 $1_ode2odes.o $1_ode2odes_common.o $1_ode2odes_${integration_method}.o $1_ode2odes_${algebraic_solver}.o
+		 $1_ode2odes.o $1_ode2odes_common.o $1_ode2odes_${integration_method}.o $1_ode2odes_${algebraic_solver}.o mtt_kpathsea.o
 	echo Creating $1_ode2odes.exe
 	${MTT_CXX} ${MTT_CXXFLAGS} -o $1_ode2odes.exe\
-	$1_ode2odes.o $1_ode2odes_common.o $1_ode2odes_${integration_method}.o $1_ode2odes_${algebraic_solver}.o\
+	$1_ode2odes.o $1_ode2odes_common.o $1_ode2odes_${integration_method}.o $1_ode2odes_${algebraic_solver}.o mtt_kpathsea.o\
 	${MTT_LDFLAGS} ${MTT_CXXLIBS}
 
 $1_ode2odes.o: $1_ode2odes.cc $1_ode2odes_common.o $1_ode2odes_${integration_method}.o $1_ode2odes_${algebraic_solver}.o

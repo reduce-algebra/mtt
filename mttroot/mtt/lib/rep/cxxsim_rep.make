@@ -1,144 +1,65 @@
 # -*-makefile-*-
-# $Id$
-# $Log$
-# Revision 1.1  2000/12/28 10:12:48  peterg
-# Initial revision
-#
-# Revision 1.1  2000/08/31 14:31:28  peterg
-# Initial revision
-#
-# Revision 1.3  2000/08/31 02:56:18  geraint
-# Keep mkdir quiet if $(SYS)_Simulation_Dir exists
-#
-# Revision 1.2  2000/08/30 04:34:55  geraint
-# *** empty log message ***
-#
 
-BIN=$(MTTPATH)/trans
-INC=$(MTTPATH)/lib/cr/hh
-SRC=$(MTTPATH)/trans/cc
+# usage: mtt <sys> cxxsim view
+
+# example:
+# mtt copy MotorGenerator && cd MotorGenerator && mtt MotorGenerator cxxsim view
+
+# cxxsim creates a very simple C++ simulation without using Reduce
+# it doesn't use MTT's normal .txt files so the resultant .cc must be edited 
+# manually to alter parameter, input and logic values
+
+# a more intelligent version would just do ese_r2cc to create <sys>_ese.cc
+# this could then be embedded into MTT's normal code like <sys>_ode.cc
+# maybe another day ...
 
 CC=g++
 
-INCLUDE=-I$(MTTPATH)/lib/cr/hh
-OPTIMISE=-O3
+INCLUDE=-I. -I${MTT_LIB}/cr/hh
+OPTIMISE=-O0
 WARNINGS=-Wall -ansi -pedantic
 
-DIR=$(SYS)_Simulation_Dir
-EXE=$(SYS)_cxxsim.exe
-OBJ=$(SYS)_input.o $(SYS)_numpar.o $(SYS)_ode.o $(SYS)_init.o $(SYS)_cxxsim.o $(SYS)_switch.o
 
-MTTFLAGS=-c -i euler -o -q
+all: $(SYS)_cxxsim.$(LANG)
 
-all: $(EXE)
+# view rule copied from gnuplot_rep.make
+# need it here to prevent MTT using the default route (via dae)
+$(SYS)_cxxsim.view: $(SYS)_gnuplot.wish $(SYS)_cxxsim.exe
+	./$(SYS)_cxxsim.exe > $(SYS)_odes.dat2
+	sh $(SYS)_gnuplot.wish			|\
+		tee gnuplot_in.log		|\
+		 gnuplot -geometry 400x300	\
+		 > gnuplot_out.log 2> gnuplot_err.log &
 
-$(SYS)_cxxsim.exe: $(OBJ) 
+$(SYS)_cxxsim.exe: $(SYS)_cxxsim.cc
 	echo Creating $(SYS)_cxxsim.exe
-	$(CC) $(WARNINGS) $(OPTIMISE) $(INCLUDE) $(CFLAGS) $(OBJ) -o $(SYS)_cxxsim.exe
-	mkdir -p ../$(DIR)
-	cp *.cc ../$(DIR)
-	cp *.hh ../$(DIR)
-	cp *.o ../$(DIR)
-	cp $(EXE) ../$(DIR)
+	$(CC) -o $@ $^ $(OPTIMISE) $(WARNINGS) $(INCLUDE)
 
-$(SYS)_cxxsim.o: $(SYS)_cxxsim.cc $(SYS)_struc.hh
-	echo Creating $(SYS)_cxxsim.o
-	$(CC) $(WARNINGS) $(OPTIMISE) $(INCLUDE) $(CFLAGS) -c $(SYS)_cxxsim.cc
+$(SYS)_cxxsim.cc: $(SYS)_cr.txt $(SYS)_ese.r $(SYS)_struc.txt $(SYS)_sympar.txt cxxsim
+	./cxxsim $(SYS)
+	cp $@ ..
 
-$(SYS)_cxxsim.cc: cxxsim.txt
-	echo Creating $(SYS)_cxxsim.cc
-	$(BIN)/cxxsim_txt2cc $(SYS) cxxsim < cxxsim.txt > $(SYS)_cxxsim.cc
-
-cxxsim.txt:
-	echo Creating cxxsim.txt:
-	cp $(MTTPATH)/trans/cc/src/cxxsim.txt .
+cxxsim: ${MTT_LIB}/rep/cxxsim.cc
+	echo creating $@
+	echo Compiling $^
+	$(CC) -o $@ $^ $(OPTIMISE) $(WARNINGS) $(INCLUDE)
 
 # list of constitutive relationships
-$(SYS)_cr.hh: $(SYS)_cr.txt
-	echo Creating $(SYS)_cr.hh
-	$(BIN)/cr_txt2hh $(SYS) < $(SYS)_cr.txt > $(SYS)_cr.hh
-
 $(SYS)_cr.txt:
-	mtt $(MTTFLAGS) $(SYS) cr txt
+	mtt -q $(OPTS) $(SYS) cr txt
 
-# elementary system equations, Reduce format
+# elementary system equations
 $(SYS)_ese.r:
-	echo Creating $(SYS)_ese.r
-	mtt --version
-	mtt $(MTTFLAGS) $(SYS) ese r
+	mtt -q $(OPTS) $(SYS) ese r
 
-# state initialisation (MTT already has state.cc)
-$(SYS)_init.o: $(SYS)_init.cc
-	echo Creating $(SYS)_init.o
-	$(CC) $(WARNINGS) $(OPTIMISE) $(INCLUDE) $(CFLAGS) -c $(SYS)_init.cc
-
-$(SYS)_init.cc: $(SYS)_struc.txt
-	echo Creating $(SYS)_init.cc
-	$(BIN)/struc2state_txt2cc $(SYS) < $(SYS)_struc.txt > $(SYS)_init.cc
-
-# system inputs
-$(SYS)_input.o: $(SYS)_input.cc $(SYS)_cr.hh $(SYS)_numpar.hh
-	echo Creating $(SYS)_input.o
-	$(CC) $(WARNINGS) $(OPTIMISE) $(INCLUDE) $(CFLAGS) -c $(SYS)_input.cc
-
-$(SYS)_input.cc: $(SYS)_struc.txt
-	echo Creating $(SYS)_input.cc
-	$(BIN)/struc2input_txt2cc $(SYS) < $(SYS)_struc.txt > $(SYS)_input.cc
-
-# system numerical parameters
-$(SYS)_numpar.o: $(SYS)_numpar.cc
-	echo Creating $(SYS)_numpar.o
-	$(CC) $(WARNINGS) $(OPTIMISE) $(INCLUDE) $(CFLAGS) -c $(SYS)_numpar.cc
-
-$(SYS)_numpar.cc: $(SYS)_sympar.txt
-	echo Creating $(SYS)_numpar.cc
-	$(BIN)/sympar2numpar_txt2cc $(SYS) < $(SYS)_sympar.txt > $(SYS)_numpar.cc
-
-$(SYS)_numpar.hh: $(SYS)_sympar.txt
-	echo Creating $(SYS)_numpar.hh
-	$(BIN)/sympar2numpar_txt2hh $(SYS) < $(SYS)_sympar.txt > $(SYS)_numpar.hh
-
-$(SYS)_numpar.txt:
-	echo Creating $(SYS)_numpar.txt
-	mtt $(MTTFLAGS) $(SYS) numpar txt
-
-# ordinary differential equations
-$(SYS)_ode.o: $(SYS)_ode.cc $(SYS)_cr.hh $(SYS)_numpar.hh
-	echo Creating $(SYS)_ode.o
-	$(CC) $(WARNINGS) $(OPTIMISE) $(INCLUDE) $(CFLAGS) -c $(SYS)_ode.cc
-
-$(SYS)_ode.cc: $(SYS)_ode.txt
-	echo Creating $(SYS)_ode.cc
-	$(BIN)/ode_txt2cc $(SYS) < $(SYS)_ode.txt > $(SYS)_ode.cc
-
-$(SYS)_ode.txt: $(SYS)_ese.r
-	echo Creating $(SYS)_ode.txt
-	$(BIN)/stripComments '%' < $(SYS)_ese.r | $(BIN)/resolve $(SYS) > $(SYS)_ode.txt
-
-# system structure, sizes of state-space matrices
-$(SYS)_struc.hh: $(SYS)_struc.txt
-	echo Creating $(SYS)_struc.hh
-	$(BIN)/struc_txt2hh $(SYS) < $(SYS)_struc.txt > $(SYS)_struc.hh
-
+# system structure
 $(SYS)_struc.txt:
-	echo Creating $(SYS)_struc.txt
-	mtt $(MTTFLAGS) $(SYS) struc txt
-
-# logic control
-$(SYS)_switch.o: $(SYS)_switch.cc $(SYS)_struc.txt $(SYS)_sympars.txt
-	echo Creating $(SYS)_switch.o
-	$(CC) $(WARNINGS) $(OPTIMISE) $(INCLUDE) $(CFLAGS) -c $(SYS)_switch.cc
-
-$(SYS)_switch.cc: $(SYS)_struc.txt
-	echo Creating $(SYS)_switch.cc
-	$(BIN)/struc2switch_txt2cc $(SYS) < $(SYS)_struc.txt > $(SYS)_switch.cc
+	mtt -q $(OPTS) $(SYS) struc txt
 
 # list of symbolic parameters
 $(SYS)_sympar.txt:
-	echo Creating $(SYS)_sympar.txt
-	mtt $(MTTFLAGS) $(SYS) sympar txt
+	mtt -q $(OPTS) $(SYS) sympar txt
 
-# list of symbolic parameters and switch controls
-$(SYS)_sympars.txt:
-	echo Creating $(SYS)_sympars.txt
-	mtt $(MTTFLAGS) $(SYS) sympars txt
+# gnuplot script
+$(SYS)_gnuplot.wish:
+	mtt -q $(OPTS) $(SYS) gnuplot wish

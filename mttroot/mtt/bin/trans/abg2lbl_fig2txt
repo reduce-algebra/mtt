@@ -13,6 +13,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.26  2002/04/28 18:41:26  geraint
+## Fixed [ 549658 ] awk should be gawk.
+## Replaced calls to awk with call to gawk.
+##
 ## Revision 1.25  2001/10/15 14:27:00  gawthrop
 ## Now handles [1:N] style port labels
 ##
@@ -234,12 +238,17 @@ gawk --field-separator ':' '
     cr["C"] = lin;  arg["C"]  = sprintf("effort,%s%s", Name, s_arg);
     cr["I"] = lin;  arg["I"]  = sprintf("flow,%s%s", Name, s_arg);
 
+    cr["INTF"] = lin;  arg["INTF"]  = "";
+
     cr["CS"] = "lin";  arg["CS"]  = sprintf("effort,%s;%s_x0%s", Name, Name, s_arg);
     cr["IS"] = "lin";  arg["IS"]  = sprintf("flow,%s;%s_x0%s", Name, Name, s_arg);
     cr["INTFS"] = "lin";  arg["INTFS"]  = sprintf("%s_x0%s", Name, s_arg);
 
     cr["TF"] = "lin";  arg["TF"]  = sprintf("flow,%s%s", Name, s_arg);
     cr["GY"] = "lin";  arg["GY"]  = sprintf("flow,%s%s", Name, s_arg);
+
+    ##cr["EMTF"] = sprintf("%s", Name);  arg["EMTF"]  = sprintf("l%s",  s_arg);
+    cr["EMTF"] = "lin";  arg["EMTF"]  = sprintf("flow,%s%s", Name, s_arg);
 
     cr["AE"] = "lin";  arg["AE"]  = sprintf("%s%s", Name, s_arg);
     cr["AF"] = "lin";  arg["AF"]  = sprintf("%s%s", Name, s_arg);
@@ -263,7 +272,7 @@ gawk --field-separator ':' '
     }
 
   ## Print component header 
-  if (Component !~ OldComponent) print "\n## Component type", Component_type
+  if (Component != OldComponent) print "\n## Component type", Component_type
 
   ## Print Component
     printf("\t%s\t", Name);

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.45  2000/05/13 13:16:52  peterg
+## Matrix initialisation for smxa
+##
 ## Revision 1.44  2000/05/13 11:52:16  peterg
 ## A now matrix in smxa rep
 ##
@@ -263,10 +266,12 @@ Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
 	;;
     ode2odes)
 	echo "PROGRAM $Sys_rep;"
+        echo ""
 	echo "CONST"
 	echo "    MTT_MaxParameters = 100;"
 	echo "    MTT_Npar = $Npar;"
 	echo "    MTT_Nx = $Nx;"
+        echo ""
 	echo "TYPE"
 	echo "    StateVector  = ARRAY[1..$Nx] OF REAL;"
 	echo "    InputVector  = ARRAY[1..$Nu] OF REAL;"
@@ -297,7 +302,8 @@ Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
 	echo "    MTTi,MTTj,it,iLast: INTEGER;"
 	##echo "    mttSTEPFACTOR,mttWSTEPS,mttSTEPS,mttINPUT : INTEGER;"
 	## echo "    mttMETHOD : IntegrationMethod;"
-	echo "    open  : StateVector;"
+	echo "    open_switches  : StateVector;"
+	echo "    numparfile, statefile, simparfile  : TEXT;"
 	echo ""
         ;;
     switchopen)
@@ -326,7 +332,7 @@ EOF
   space="[ $tab]*"
   spaces="[ $tab][ $tab]*"
   non_space="[^ ]*"
-  args="[a-zA-Z0-9,.]*"
+  args='[a-zA-Z0-9,._"]*'
 
 # Body	
 cat $Sys_rep.m |\
@@ -384,6 +390,7 @@ BEGIN{
       if (doing_header==1){
         if (rep=="ode2odes"){
           printf("\n{%s $MTTPATH/trans/p/mtt_write.p}\n",inc)
+          printf("{%s $MTTPATH/trans/p/mtt_par_update.p}\n",inc)
           printf("{%s $MTTPATH/trans/p/sign.p}\n",inc)
           printf("{%s $MTTPATH/trans/p/mtt_euler.p}\n",inc)
           printf("{%s $MTTPATH/trans/p/mtt_solve.p}\n",inc)
@@ -393,7 +400,7 @@ BEGIN{
           printf("{%s $MTTPATH/trans/p/zero_state.p}\n",inc)
           printf("{%s %s_simpar.p}\n",inc,Sys) 
           printf("{%s %s_numpar.p}\n",inc,Sys)
-          printf("{%s $MTTPATH/trans/p/mtt_getargs.p}\n",inc)
+          # printf("{%s $MTTPATH/trans/p/mtt_getargs.p}\n",inc)
           printf("{%s %s_state.p}\n",inc,Sys)
           printf("{%s %s_input.p}\n",inc,Sys)
           if (Method=="euler") {
@@ -411,6 +418,8 @@ BEGIN{
           for (k=1;k<=j;k++) printf("%s\n", comment[k])
           printf("\n")
           printf("\nBEGIN{%s}\n", Sys_rep)
+          printf("  open(statefile,\"%s_state.dat\");\n", Sys)
+          printf("  open(numparfile,\"%s_numpar.dat\");\n", Sys)
         }
         else{
           for (k=1;k<=j;k++) printf("%s\n", comment[k])
@@ -500,10 +509,7 @@ sed 's/(\(MTT[ijk0-9],MTT[ijk0-9]\))/\[\1\]/g' |\
 sed 's/(\(MTT[ijk0-9,]*\))/\[\1\]/g'  |\
 sed 's/switcha(mttAA,/switcha(/g'   |\
 sed 's/switch(MTTx,/switch(/g'  |\
-sed 's/nargin<1/mttnpar<1/'  |\
-sed 's/if nargin<2 THEN//'  |\
-sed 's/nargin<3/mttnpar<1/' | \
-sed 's/if nargin<4/if mttnpar<1/'  \
+sed 's/if nargin<[1-9] THEN//'  \
 >> $Filename
 
 # p2c doesn't like mixed case filenames!

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.243  2000/05/19 11:36:36  peterg
+## Added logic rep.
+##
 ## Revision 1.242  2000/05/18 20:12:02  peterg
 ## Version 4.2
 ##
@@ -1461,6 +1464,16 @@ exit
 fi 
 
 # User defined representations
+## Copy from library if not already here
+if [ -f "$MTT_REP/$2_rep.make" ]; then
+  if [ -f "$2_rep.make" ]; then
+    echo Using $2_rep.make
+  else
+    echo Copying $2_rep.make from $MTT_REP
+    cp $MTT_REP/$2_rep.make .
+  fi
+fi
+
 if [ -f "$2_rep.make" ]; then
    if [ -n "$4" ]; then
       filename=$1_$2-$4.$3

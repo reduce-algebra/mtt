@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.14  1998/02/25 22:12:07  peterg
+## Added , to regexp for subscripts
+##
 ## Revision 1.13  1998/02/18 09:06:07  peterg
 ## Added dX0
 ##
@@ -123,7 +126,6 @@ sed \
     -e "s/sigma/\\\sigma/g" \
     -e "s/omega/\\\omega/g" \
     -e "s/zeta/\\\zeta/g" \
-    -e "s/eta/\\\eta/g" \
     -e "s/infty/\\\infty/g" \
     -e "s/sin/\\\sin/g" \
     -e "s/cos/\\\cos/g" \

@@ -5,6 +5,9 @@ function write_abg(system_name,bonds,connections);
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/08/25 06:22:02  peterg
+## Initial revision
+##
 ###############################################################
 
 
@@ -46,10 +49,13 @@ function write_abg(system_name,bonds,connections);
       endfor;
       fprintf(fid,"];\n");
     else
-      name = strrep(strrep(name,"[",""), "]", "");
+      name=name(2:length(name)-1); # Strip []
       fprintf(fid,"\n# Port %s\n", name); 
       fprintf(fid,PIformat,system_name,name,"index",++i_port);
+      fprintf(fid,PSformat,system_name,name,"type",comp_type);
+      fprintf(fid,PSformat,system_name,name,"cr",cr);
       fprintf(fid,PSformat,system_name,name,"arg",arg);
+      fprintf(fid,PIformat,system_name,name,"repetitions",repetitions);
 
       c = nozeros(connections(i,:));# Connections to this component
       m = length(c);		# Number of connections

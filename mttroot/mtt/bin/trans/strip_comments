@@ -1,0 +1,15 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: strip_comments
+# Strips comments from mtt text files
+# P.J.Gawthrop July 1997
+# Copyright (c) P.J.Gawthrop, 1997.
+
+sed 's/%/#/' |\
+awk --field-separator '#' '{if (length($1)>0) print $1}'  |\
+awk '{if (NF>0) print $0}'
+

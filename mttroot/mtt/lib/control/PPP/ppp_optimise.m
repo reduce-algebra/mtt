@@ -29,6 +29,9 @@ function [par,Par,Error,Y,iterations,x] = \
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.10  2002/05/13 16:01:09  gawthrop
+  ## Addes Q weighting matrix
+  ##
   ## Revision 1.9  2002/05/08 10:14:21  gawthrop
   ## Idetification now OK (Moved data range in ppp_optimise by one sample interval)
   ##
@@ -126,8 +129,13 @@ function [par,Par,Error,Y,iterations,x] = \
       mess = sprintf("n_y (%i) in data not same as n_y (%i) in model", n_y,N_y);
       error(mess);
     endif
+
+    if ( (N_data-n_data)<1 )
+      error(sprintf("y_0 (%i) must be shorter than y (%i)", n_data, N_data));
+    endif
     
     ## Use the last part of the simulation to compare with data
+    ## And shift back by one data point
     y = y(N_data-n_data:N_data-1,:);
     y_par = y_par(N_data-n_data:N_data-1,:);
 
@@ -135,7 +143,7 @@ function [par,Par,Error,Y,iterations,x] = \
     err = 0; 
     J = zeros(n_th,1);
     JJ = zeros(n_th,n_th);
-    
+   
     for i = 1:n_y
       E = y(:,i) - y_0(:,i);	#  Error in ith output
       err = err + Q(i)*(E'*E);	# Sum the squared error over outputs

@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.390  2004/08/13 09:49:13  geraint
+## Only use one level of MTT_work to prevent MTT from repeatedly copying or creating the same files.
+##
 ## Revision 1.389  2004/08/13 01:32:03  geraint
 ## Use ibg.m by default for both Xfig and Dia models.
 ##
@@ -1915,6 +1918,7 @@ case $2 in
 esac
 
 #SUMMARY abg*	acausal bond graph (fig)
+#SUMMARY abg*	acausal bond graph (dia)
 #SUMMARY abg*	acausal bond graph (ps)
 #SUMMARY abg*	acausal bond graph (view)
 # Invoke explicit requests for modification
@@ -2861,6 +2865,8 @@ endif
 	@echo "Creating \$@"
 	rbg2ibg_m $info_switch \$*
 
+%_connections.dat: %_abg.m
+	abg2connections_m2dat \$*
 
 #SUMMARY cbg*	causal bond graph (m)
 #Acausal bond graph to causal bond graph: mfile
@@ -2871,11 +2877,15 @@ $1_type.sh: $1_cbg.m
 	touch $1_type.sh
 
 #SUMMARY cbg*	causal bond graph (fig)
+#SUMMARY cbg*	causal bond graph (dia)
 #SUMMARY cbg*	causal bond graph (ps)
 #SUMMARY cbg*	causal bond graph (view)
 #Causal bond graph: mfile to fig conversion
 $1_cbg.fig: $1_cbg.m  $1_fig.fig $1_type.sh
 	sh $1_type.sh 'echo cbg_m2fig ' ' ' ' ' | sh
+
+$1_cbg.dia: $1_cbg.m
+	@sh $1_type.sh 'cbg_m2dia ' ' ' ' '
 
 #SUMMARY ese	elementary system equations (r)
 #SUMMARY def	definitions - system orders etc. (r)

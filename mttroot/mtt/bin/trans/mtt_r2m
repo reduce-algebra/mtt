@@ -16,6 +16,11 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.19  2000/08/28 20:17:59  peterg
+## Put in Winfried Neun's bug fix
+## -- prevents segmentation violation using optimised gentran when matrix
+## comtains a number
+##
 ## Revision 1.18  2000/08/24 17:11:40  peterg
 ## Now optimises as well as segmenting - uses the SCOPE package
 ##
@@ -115,13 +120,16 @@ LOAD SCOPE;
 GENTRANLANG!* := '$codegenerator;
 ON GENTRANSEG; % Segmentation
 ON GENTRANOPT; % Code optimise using scope
+
+ON GETDECS;    % Create decrarations automatically
+DEFTYPE!* := 'REAL; % and default to real
 OFF GENDECS;  % No declarations
 MAXEXPPRINTLEN!* := 80;
 TEMPVARNUM!* := 1;
 TEMPVARNAME!* := 'mtt_s;
-
+INAME(mtt_o);
 % Matrix output function
-in"$MTTPATH/trans/lang_matrix.r";
+%in"$MTTPATH/trans/lang_matrix.r";
 
 %Read the reduce definitions file
 in "$1_def.r";
@@ -181,15 +189,17 @@ $SYMBOLIC  > mtt_r2m.log <<EOF
     
     % The body of the odeo function
      GENTRANOUT "mtt_odeo";
-     mtt_matrix := MTTy$
-     mtt_matrix_n := MTTNy$
-     mtt_matrix_m := 1$
-     lang_matrix(); 
-     GENTRANSHUT "mtt_odeo";
+     %mtt_matrix := MTTy$
+     %mtt_matrix_n := MTTNy$
+     %mtt_matrix_m := 1$
+     %lang_matrix(); 
 
+     GENTRAN MTT_matrix :=: MTTy$
+     GENTRANSHUT "mtt_odeo";
 END;;
 
 EOF
+mtt_vectorise mtt_odeo; # Its really a vector
 
   if [ "$rep" = "ode" ]; then
   # Use reduce to accomplish the transformation
@@ -199,15 +209,17 @@ $SYMBOLIC  >> mtt_r2m.log <<EOF
       
   % The body of the ode function
     GENTRANOUT "mtt_ode";
-    mtt_matrix := MTTdX$
-    mtt_matrix_n := MTTNx$
-    mtt_matrix_m := 1$
-    lang_matrix();
+    %mtt_matrix := MTTdX$
+    %mtt_matrix_n := MTTNx$
+    %mtt_matrix_m := 1$
+    %lang_matrix();
+    GENTRAN MTT_matrix :=: MTTdX$
     GENTRANSHUT "mtt_ode";
-    
 END;;
 
 EOF
+mtt_vectorise mtt_ode; # Its really a vector
+
   else
 ## cse representation
 
@@ -217,10 +229,11 @@ $SYMBOLIC  >> mtt_r2m.log <<EOF
       
   % The body of the cse function
     GENTRANOUT "mtt_ode";
-    mtt_matrix := MTTEdX$
-    mtt_matrix_n := MTTNx$
-    mtt_matrix_m := 1$
-    lang_matrix();
+  %  mtt_matrix := MTTEdX$
+  %  mtt_matrix_n := MTTNx$
+  %  mtt_matrix_m := 1$
+  %  lang_matrix();
+    GENTRAN MTT_matrix :=: MTTEdX$
     GENTRANSHUT "mtt_ode";
     
 %    GENTRANOUT "mtt_odee";
@@ -231,8 +244,8 @@ $SYMBOLIC  >> mtt_r2m.log <<EOF
 %    GENTRANSHUT "mtt_odee";
 
 END;;
-
 EOF
+mtt_vectorise mtt_ode; # Its really a vector
 
   fi
 
@@ -245,7 +258,7 @@ sed 's/mtt_matrix/mttdx/' <mtt_ode  >> $1_$2.pas
 sed 's/mtt_matrix/mtty/'  <mtt_odeo >> $1_$2o.pas
 
 
-#rm -f mtt_odeo mtt_ode #mtt_odee
+rm -f mtt_odeo mtt_ode #mtt_odee
 
 # Convert from Pascal syntax to Octave syntax 
  mtt_p2m<$1_$2o.pas > $1_$2o.m 
@@ -348,9 +361,10 @@ fi
 
     GENTRANOUT "$outfile.1";
     mtt_matrix := MTT$Symbol;
-    mtt_matrix_n := $N;
-    mtt_matrix_m := $M;
-    lang_matrix();
+    %mtt_matrix_n := $N;
+    %mtt_matrix_m := $M;
+    %lang_matrix();
+    GENTRAN mtt_matrix :=: mtt_matrix;
     GENTRANSHUT "$outfile.1";
 END;
 EOF
@@ -374,7 +388,7 @@ fi
 
 rm -f $outfile.pas  
 rm -f mtt_zero.m
-#rm -f $outfile.1  
+rm -f $outfile.1  
   
 
 # Now invoke the standard error handling.

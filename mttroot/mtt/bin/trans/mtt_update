@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  2000/10/13 08:56:51  peterg
+## Output variables as column, not row.
+##
 ## Revision 1.6  2000/10/13 08:07:24  peterg
 ## Added state and input - it checks against sympar as well so that
 ## defined variables may be used here.
@@ -65,7 +68,7 @@ case $rep in
 	    awk '{printf("%s_%s_%s\n", $4, $5, $3)}' \
              > $infofile 
 	    cat $infofile $1_sympar.$ext> $moreinfofile  
-	    default='1.0'
+	    default='0.0'
 	;;
     *)
 	    echo Representation $rep not implemented
@@ -140,7 +143,9 @@ if [ -f "mtt_in_text" ]; then
 	y)
 	    answered=yes
  	    for old in $in_text; do
-	      sed "s/\($old[ \t]*=\)/## Removed by MTT on `date`: \1/" <$textfile > mtt_tmp
+              echo $old
+	      sed "s/\(.*$old.*=\)/## Removed by MTT on `date`: \1/"\
+               <$textfile > mtt_tmp
               mv mtt_tmp $textfile
               changed=yes
 	    done

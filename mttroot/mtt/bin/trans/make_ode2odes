@@ -9,6 +9,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.70  2002/04/28 18:41:27  geraint
+## Fixed [ 549658 ] awk should be gawk.
+## Replaced calls to awk with call to gawk.
+##
 ## Revision 1.69  2002/04/17 13:46:58  geraint
 ## #include <fstream> for -oct as well as -cc.
 ##
@@ -420,7 +424,6 @@ cat <<EOF  > $filename
 #include <octave/oct.h>
 #include <octave/load-save.h>
 #include <octave/lo-mappers.h>
-#include <octave/ov-struct.h>
 #include <octave/variables.h>
 
 #ifndef STANDALONE
@@ -457,7 +460,7 @@ extern ColumnVector F${sys}_logic (
 extern ColumnVector F${sys}_numpar (
 	void);
 
-extern Octave_map F${sys}_simpar (
+extern ColumnVector F${sys}_simpar (
      	void);
 
 extern ColumnVector F${sys}_state (
@@ -615,23 +618,15 @@ mtt_numpar (void)
 #endif
 }
 
-inline Octave_map
+inline ColumnVector
 mtt_simpar (void)
 {
 #ifdef STANDALONE
   return F${sys}_simpar ();
 #else
-  static octave_value_list args;
-  static Octave_map f;
-  f["first"]		= feval ("${sys}_simpar", args, 1)(0).map_value ()["first"];
-  f["dt"]		= feval ("${sys}_simpar", args, 1)(0).map_value ()["dt"];
-  f["last"]		= feval ("${sys}_simpar", args, 1)(0).map_value ()["last"];
-  f["stepfactor"]     	= feval ("${sys}_simpar", args, 1)(0).map_value ()["stepfactor"];
-  f["wmin"]		= feval ("${sys}_simpar", args, 1)(0).map_value ()["wmin"];
-  f["wmax"]		= feval ("${sys}_simpar", args, 1)(0).map_value ()["wmax"];
-  f["wsteps"]		= feval ("${sys}_simpar", args, 1)(0).map_value ()["wsteps"];
-  f["input"]		= feval ("${sys}_simpar", args, 1)(0).map_value ()["input"];
-  return (f);
+  static octave_value_list args, f;
+  f = feval ("${sys}_simpar", args, 1);
+  return f(0).${vector_value} ();
 #endif
 }
 
@@ -1020,7 +1015,7 @@ DEFUN_DLD (${sys}_ode2odes, args, ,
 #endif // STANDALONE
   static ColumnVector	x0;
   static ColumnVector	par;
-  static Octave_map	simpar;
+  static ColumnVector	simpar;
 
   static double
     first	= 0.0,
@@ -1032,35 +1027,35 @@ DEFUN_DLD (${sys}_ode2odes, args, ,
   switch (nargin)
     {
     case 3:
-      first		= args (2).map_value ()["first"].double_value ();
-      dt		= args (2).map_value ()["dt"].double_value ();
-      last		= args (2).map_value ()["last"].double_value ();
-      stepfactor     	= args (2).map_value ()["stepfactor"].double_value ();
+      first		= args (2).${vector_value} ()(0);
+      dt		= args (2).${vector_value} ()(1);
+      last		= args (2).${vector_value} ()(2);
+      stepfactor     	= args (2).${vector_value} ()(3);
       par    		= args (1).${vector_value} ();
       x0      		= args (0).${vector_value} ();
       break;
     case 2:
-      first		= mtt_simpar ()["first"].double_value ();
-      dt		= mtt_simpar ()["dt"].double_value ();
-      last		= mtt_simpar ()["last"].double_value ();
-      stepfactor     	= mtt_simpar ()["stepfactor"].double_value ();
+      first		= mtt_simpar ()(0);
+      dt		= mtt_simpar ()(1);
+      last		= mtt_simpar ()(2);
+      stepfactor     	= mtt_simpar ()(3);
       par    		= args (1).${vector_value} ();
       x0      		= args (0).${vector_value} ();
       break;
     case 1:
-      first		= mtt_simpar ()["first"].double_value ();
-      dt		= mtt_simpar ()["dt"].double_value ();
-      last		= mtt_simpar ()["last"].double_value ();
-      stepfactor     	= mtt_simpar ()["stepfactor"].double_value ();
+      first		= mtt_simpar ()(0);
+      dt		= mtt_simpar ()(1);
+      last		= mtt_simpar ()(2);
+      stepfactor     	= mtt_simpar ()(3);
       par    		= mtt_numpar ();
       x0      		= args (0).${vector_value} ();
       break;
     case 0:
 #endif // ! STANDALONE
-      first		= mtt_simpar ()["first"].double_value ();
-      dt		= mtt_simpar ()["dt"].double_value ();
-      last		= mtt_simpar ()["last"].double_value ();
-      stepfactor     	= mtt_simpar ()["stepfactor"].double_value ();
+      first		= mtt_simpar ()(0);
+      dt		= mtt_simpar ()(1);
+      last		= mtt_simpar ()(2);
+      stepfactor     	= mtt_simpar ()(3);
       par    		= mtt_numpar ();
       x0      		= mtt_state (par);
 #ifndef STANDALONE

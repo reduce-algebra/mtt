@@ -37,14 +37,14 @@ rep_footer ()
 (case ${REP} in
     simpar)
 	cat <<EOF
-  mttsimpar_map ["first"]      = (double) mttsimpar.first;
-  mttsimpar_map ["dt"]         = (double) mttsimpar.dt;
-  mttsimpar_map ["last"]       = (double) mttsimpar.last;
-  mttsimpar_map ["stepfactor"] = (double) mttsimpar.stepfactor;
-  mttsimpar_map ["wmin"]       = (double) mttsimpar.wmin;
-  mttsimpar_map ["wmax"]       = (double) mttsimpar.wmax;
-  mttsimpar_map ["wsteps"]     = (double) mttsimpar.wsteps;
-  mttsimpar_map ["input"]      = (double) mttsimpar.input;
+  mttsimpar_map(0)	= (double) mttsimpar.first;
+  mttsimpar_map(1)	= (double) mttsimpar.dt;
+  mttsimpar_map(2)	= (double) mttsimpar.last;
+  mttsimpar_map(3)	= (double) mttsimpar.stepfactor;
+  mttsimpar_map(4)	= (double) mttsimpar.wmin;
+  mttsimpar_map(5)	= (double) mttsimpar.wmax;
+  mttsimpar_map(6)	= (double) mttsimpar.wsteps;
+  mttsimpar_map(7)	= (double) mttsimpar.input;
 EOF
 	;;
     *)

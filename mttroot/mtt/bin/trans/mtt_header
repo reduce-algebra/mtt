@@ -12,6 +12,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.42  2002/04/28 18:41:27  geraint
+## Fixed [ 549658 ] awk should be gawk.
+## Replaced calls to awk with call to gawk.
+##
 ## Revision 1.41  2002/04/23 17:46:05  gawthrop
 ## _sim.m now returns time as third argument
 ##
@@ -643,8 +647,8 @@ get_arg_specific_stuff ()
 	    arg_init="(MTTNPAR,0.0)"
 	    ;;
 	mttsimpar_map)
-	    arg_type="Octave_map"
-	    arg_init="";
+	    arg_type="ColumnVector"
+	    arg_init="(8,0.0)";
 	    ;;
 	mttu)
 	    arg_type="ColumnVector"
@@ -727,7 +731,6 @@ write_DLD_header()
     cat <<EOF
 #ifndef STANDALONE
 #include <octave/oct.h>
-#include <octave/ov-struct.h>
 #include <octave/toplev.h>
 #include <math.h>
 #include "useful-functions.hh"
@@ -817,7 +820,6 @@ write_standalone_header ()
 
 #ifdef STANDALONE
 #include <octave/oct.h>
-#include <octave/ov-struct.h>
 #include "useful-functions.hh"
 #include "${system}_cr.h"
 #include "${system}_def.h"

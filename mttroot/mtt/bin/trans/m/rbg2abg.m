@@ -5,6 +5,9 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.27  1998/07/02 12:24:02  peterg
+% %% Expand port aliases
+% %%
 % %% Revision 1.26  1998/04/16 14:07:51  peterg
 % %% Sorted out [] problem with vector ports -- new octave function
 % %% split_port
@@ -100,7 +103,6 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %% Initial revision
 % %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 if nargin<7
   infofile='stdout';
@@ -207,15 +209,14 @@ for i = 1:n_components
   % which end of bond at component?
   bond_end = index(:,2); 
   direction = -sign(bond_end-1.5*one);
-  signed_bond_list = bond_list.*direction
+  signed_bond_list = bond_list.*direction;
   components = add_bond(components,signed_bond_list',i);
-
   % Unalias all the ports on this component - if not a junction
   if ((comp_type!="0")&&(comp_type!="1"))
-    eval( ["alias = ", comp_type, '_alias']); # Get aliases
+    eval( ["alias = ", comp_type, '_alias';]); # Get aliases
     if is_struct(alias)		# are there any aliases
       for j=1:n_comp_bonds
-      	port_name_index = getindex(port_bond,signed_bond_list(j))
+      	port_name_index = getindex(port_bond,signed_bond_list(j));
       	if port_name_index>0	# There is a port on this bond
       	  port_name_i = deblank(port_name(port_name_index,:));
           port_name_i = port_name_i(2:length(port_name_i)-1) # strip []

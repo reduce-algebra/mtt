@@ -12,6 +12,9 @@ options:
 	-d /path/to/mttroot
 		Build package from local directory /path/to/mttroot instead of sourceforge CVS.
 
+	-k
+		Keep temporary directory after package creation
+
 	-l changelog text
 		Write changelog text to changelog file
 		Note: this must be the last option given.
@@ -43,6 +46,7 @@ default_version=`date --iso-8601 | sed 's/\-/./g'`
 sources=${default_sources}
 logtext=${default_logtext}
 version=${default_version}
+keeptmp="remove"
 
 # look for command line arguments
 while [ -n "`echo $1 | grep '^-'`" ]; do
@@ -61,6 +65,8 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-h)
 	    usage
 	    exit 0 ;;	
+	-k) # keep temporary directory
+	    keeptmp="keep" ;;
 	-l) # specify changelog text
 	    shift
 	    logtext="$*"
@@ -110,6 +116,10 @@ cd ..
 # clean up
 cp mtt*.deb ${topdir}/
 cd ${topdir}
-rm -r ${tmpdir}
+if [ "${keeptmp}" = "remove" ]; then
+    rm -r ${tmpdir}
+else
+    echo Keeping temporary directory: ${tmpdir}
+fi
 
 exit 0

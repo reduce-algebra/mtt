@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.223  2000/02/08 09:55:00  peterg
+## Added .oct language for ode
+## -- octave loadable builtin
+##
 ## Revision 1.222  1999/12/23 10:03:42  peterg
 ## Added $1_sympars.txt to numpar.m target
 ##
@@ -1579,11 +1583,6 @@ $1_sympar.r: $1_sympar.txt
 $1_sympar.c: $1_sympar.txt
 	sympar_txt2c $1
 
-#SUMMARY sympar	symbolic parameters (h)
-# txt to ch (c header file) sympar conversion
-$1_sympar.h: $1_sympar.txt
-	sympar_txt2h $1
-
 #SUMMARY sympar	symbolic parameters (tex)
 # txt to tex (LaTeX) sympar conversion
 $1_sympar.tex: $1_sympar.txt
@@ -1662,10 +1661,6 @@ $1_simpar.txt:
 #SUMMARY simpar	simulation information (m)
 $1_simpar.m: $1_simpar.txt
 	txt2m $1 simpar
-
-#SUMMARY simpar	simulation information c header file (h) 
-$1_simpar.h: $1_simpar.txt
-	simpar_txt2h $1
 
 
 #SUMMARY numpar	numerical parameter declaration -- default (txt) 
@@ -1755,31 +1750,6 @@ $1_state.m:  $1_state.txt $1_sympars.txt
 $1_desc.tex:
 	makedesc $1
 
-#SUMMARY odes ODE simulation header file (h)
-$1_odes.h: 
-	echo Creating $1_odes.h
-	( \
-	echo '/*'; \
-	echo "%% Parameter file for system $1 ($1_odes.h)"; \
-	echo "%% This file provides the params for simulation:";\
-	echo '*/'; \
-	echo '#define DT 0.1 /* Time step (for printing) */'; \
-	echo '#define LAST 10.0 /* Last time */'; \
-	echo '#define STEPFACTOR 1000 /* Integration steps per time step */'; \
-	)> $1_odes.h
-
-#SUMMARY smss SM simulation header file (h)
- $1_sms.h: 
-	echo Creating $1_sms.h
-	( \
-	echo '/*'; \
-	echo "%% Parameter file for system $1 ($1_sms.h)"; \
-	echo "%% This file provides the params for simulation:";\
-	echo '*/'; \
-	echo '#define DT 0.1 /* Time step (for printing) */'; \
-	echo '#define LAST 10.0 /* Last time */'; \
-	echo '#define STEPFACTOR 1 /* Integration steps per time step */'; \
-	)> $1_sms.h
 
 #SUMMARY params	symbolic parameter setting (r)
  $1_params.r: 
@@ -2324,17 +2294,6 @@ $1_ode2odes.out: $1_ode2odes.c
 $1_odes.dat2: $1_ode2odes.out
 	echo Creating $1_odes.dat2
 	    time ./$1_ode2odes.out>$1_odes.dat2
-
-
-$1_sms.m: $1_sms.c $1_sm.c $1_numpar.c $1_simpar.h\
-         $1_sympar.c $1_sympar.h\
-         $1_numpar.c $1_input.c dsvdcmp.c
-	echo Creating $1_sms.m
-	echo Creating $1_smso.m
-	echo 'Compiling ...'
-	$CC $1_sms.c -lm
-	echo 'Running  ...'; time ./a.out; echo 'Done.'
-
 endif
 $1_odeso.m: $1_odes.m
 	touch $1_odeso.m

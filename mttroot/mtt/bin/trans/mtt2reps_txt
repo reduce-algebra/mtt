@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  2000/09/14 07:54:13  peterg
+## Removed -e option in echo
+##
 ## Revision 1.9  2000/04/05 08:34:30  peterg
 ## removed output tab
 ##
@@ -47,7 +50,7 @@ representations=`grep '#SUMMARY' $MTTPATH/mtt | awk '{print $2'} | sort -u `
 
 for rep in $representations ; do
     ## Title should be same for all languages -- but extract the first non-empty version
-      title=`grep '#SUMMARY' $MTTPATH/mtt | tr '\t' ' ' | grep "$rep[ *]" | \
+      title=`grep '#SUMMARY' $MTTPATH/mtt | tr '\t' ' ' | grep "[ *]$rep[ *]" | \
       awk  '{if (NF>2) {for (i=3;i<NF-1;i++) printf("%s ",$i); NF1=NF-1; printf("%s\n",$NF1)}}' |\
       head -1`
       

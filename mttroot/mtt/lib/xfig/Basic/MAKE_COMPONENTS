@@ -1,19 +1,24 @@
 #!/bin/sh
 ## Makes all components
 
-./MAKE R r_1
-./MAKE C c_1
-./MAKE I i_1
+./MAKE_COMPONENT R r_1
+./MAKE_COMPONENT C c_1
+./MAKE_COMPONENT I i_1
 
-./MAKE SS ss_1
-./MAKE Se se_1
-./MAKE Sf sf_1
-./MAKE De de_1
-./MAKE Df df_1
+./MAKE_COMPONENT 0
+./MAKE_COMPONENT 1
 
-./MAKE TF gy_1
-./MAKE GY gy_1
+./MAKE_COMPONENT SS ss_1
+./MAKE_COMPONENT Se se_1
+./MAKE_COMPONENT Sf sf_1
+./MAKE_COMPONENT De de_1
+./MAKE_COMPONENT Df df_1
 
-./MAKE EMTF emtf_1
+./MAKE_COMPONENT TF gy_1
+./MAKE_COMPONENT GY gy_1
+./MAKE_COMPONENT AE af_1
+./MAKE_COMPONENT AF af_1
 
-./MAKE Subsystem sub_1
+./MAKE_COMPONENT EMTF emtf_1
+
+./MAKE_COMPONENT Subsystem sub_1

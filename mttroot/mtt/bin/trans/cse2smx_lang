@@ -40,6 +40,13 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
   shift
 done
 
+## Representation
+if [ -z $1 ]; then
+    echo 'usage [options] cse2smx_lang system [smx|smxa|smxax]'
+    exit
+fi
+
+
 # Language
 if [ -n "$3" ]; then
     lang=$3
@@ -102,13 +109,14 @@ $SYMBOLIC << EOF  >cse2smx_lang.log
 
 lang := $lang;
 
-%% Fixes for c and cc (if needed)
-$include;
-
 in "$1_subs.r";
 in "$1_def.r";
 in "$1_cse.r";
 in "$1_cr.r";
+
+%% Fixes for c and cc (if needed)
+$include;
+
 
 clear mttx; % Dont need this now - use mkid instead
 

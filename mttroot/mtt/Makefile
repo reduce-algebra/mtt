@@ -67,6 +67,7 @@ install-cc: build-cc clean-cc.sh
 install-doc: build-doc clean-doc.sh
 	@install -d $(DOCDIR) $(INFODIR)
 	@cd doc ; DOCPATH=$(DOCDIR) INFOPATH=$(INFODIR) make -s install-doc
+	@install doc/mtt.info* $(INFODIR)
 
 .PHONY: FORCE
 

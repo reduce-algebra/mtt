@@ -14,60 +14,75 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.2  1996/11/02  10:22:54  peterg
+# Now browses crs.
+#
 ## Revision 1.1  1996/11/01 12:34:54  peterg
 ## Initial revision
 ##
 ###############################################################
 
 topic=$1
+
+if [ "$topic" = "" ]; then
+    echo 'Usage: mtt help representations'
+    echo '       mtt help components'
+    echo '       mtt help CRs'    
+    echo '       mtt help representations <match_string>'
+    echo '       mtt help components <match_string>'
+    echo '       mtt help examples  <match_string>'
+    echo '       mtt help CRs <match_string>'
+    echo '       mtt help <component_or_example_or_CR_name>'
+fi
+
 subtopic=$2
 if [ "$subtopic" = "" ]; then
   subtopic='.'
 fi;
 
-if [ "$topic" = "comps" ]; then
+if [ "$topic" = "components" ]; then
   echo 'Components:'
-  grep -h '\%SUMMARY' \
-	$MTTPATH/comp/compound/*_lbl.txt  \
-	$MTTPATH/comp/simple/*_cause.m \
-	$MTTPATH/cr/r/*.cr|\
-  sed 's/\%SUMMARY[ ]*/	/' |\
-  grep $subtopic |\
-  sed 's/:[ ]*/	/' |\
+  find $MTTPATH/lib/comp \
+    -name '*_lbl.txt' \
+    -exec grep -i "%SUMMARY.*$subtopic.*" {} \; |\
+  sed "s/%SUMMARY[	]*/  /" |\
   sort
 
-elif [ "$topic" = "reps" ]; then
+
+elif [ "$topic" = "examples" ]; then
+  echo 'Examples:'
+  find $MTTPATH/lib/examples -name '*_lbl.txt' \
+    -exec grep -i "%SUMMARY.*$subtopic.*" {} \; |\
+  sed "s/%SUMMARY[	]*/  /" |\
+  sort
+
+
+elif [ "$topic" = "representations" ]; then
   echo 'Representations:'
   grep  '#REPRESENTATION' $MTTPATH/mtt |\
-  sed 's/#REPRESENTATION[	]*/	/' |\
-  grep $subtopic |\
+  sed 's/#REPRESENTATION[	]*/  /' |\
+  grep -i $subtopic |\
   sort
 
 elif [ "$topic" = "crs" ]; then
   echo 'Constitutive relationships'
   grep -h '\%SUMMARY' \
 	*.cr \
-	$MTTPATH/cr/r/*.cr 2>/dev/null |\
+	$MTTPATH/lib/cr/r/*.cr 2>/dev/null |\
   sed 's/\%SUMMARY[ ]*/	/' |\
-  grep $subtopic |\
+  grep -i $subtopic |\
   sed 's/:[ ]*/	/' |\
   sort
 
 else
-  grep -h '\%SUMMARY' \
-       $MTTPATH/comp/compound/$1_lbl.txt \
-       $MTTPATH/comp/simple/$1_cause.m \
-       $MTTPATH/cr/r/$1.cr \
-       2>/dev/null |\
-  sed 's/\%SUMMARY[ ]*//' |\
-  sed 's/:[ ]*/	/'
-
-  grep -h '\%DESCRIPTION' \
-       $MTTPATH/comp/compound/$1_lbl.txt \
-       $MTTPATH/comp/simple/$1_cause.m \
-       $MTTPATH/cr/r/$1.cr \
-	2>/dev/null |\
-  sed 's/\%DESCRIPTION[	]*/	  /' |\
-  sed 's/:[ ]*/	/'
+  find $MTTPATH/lib \
+   -name "$1_lbl.txt" \
+   -exec grep  "%SUMMARY" {} \; \
+   -exec grep  "%DESCRIPTION" {} \; |\
+  sed "s/%SUMMARY[	]*//" |\
+  sed "s/%DESCRIPTION[	]*/  /"
 fi;
+
+
+
 

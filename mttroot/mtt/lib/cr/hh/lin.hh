@@ -3,11 +3,13 @@
 
 #include <iostream>
 
+#include "components.hh"
 // translated from lin.cr
 
 // one 2-port, R/C/I; two 2-port, TF/GY
 inline double
-lin(// parameters
+lin(const component_t	type,
+    // parameters
     const causality_t	gain_causality,
     const double	gain,
     // output
@@ -44,7 +46,8 @@ lin(// parameters
 
 // two 2-port, AE/AF
 inline double
-lin(// parameters
+lin(const component_t	type,
+    // parameters
     const double	gain,
     // output
     const causality_t	out_causality,
@@ -64,7 +67,8 @@ lin(// parameters
 
 // three 2-port, FMR
 inline double
-lin(// parameters
+lin(const component_t	type,
+    // parameters
     const causality_t	gain_causality,
     const double	gain,
     // output
@@ -113,7 +117,7 @@ lin(// parameters
 		  ||(out_causality == gain_causality && out_port == 1)) {
 	  return input / (gain * modulation);
 	} else {
-	  cerr << "* Error: __FILE__ does not cover this case" << endl;
+	  std::cerr << "* Error: __FILE__ does not cover this case" << std::endl;
 	  exit(-1);
 	}
     } // EMTF

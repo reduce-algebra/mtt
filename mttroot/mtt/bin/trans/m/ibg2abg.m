@@ -449,7 +449,7 @@ function [bonds,components,n_vector_bonds] = \
 
   if (struct_contains(comp_s, "comp"))
     for [comp, comp_name] = comp_s.comp
-      n_vector_bonds(comp.index) = comp.n_bonds;
+      n_vector_bonds(comp.index,1) = comp.n_bonds;
     endfor
   endif
 

@@ -15,6 +15,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.275  2000/10/12 18:38:47  peterg
+## New method of sympar generation implemented - uses mtt_make_sympar
+## Check/update of numpar.txt is forced.
+##
 ## Revision 1.274  2000/10/12 15:11:54  peterg
 ## Added the update function for numpar only
 ##
@@ -1256,7 +1260,7 @@ if [ "$1" = "Clean" ] && [ "$2" = "" ]; then
   rm -f *_rep.tex
   rm -f  *_unique_raw_list *_raw_list
   rm -f mtt_error.txt mtt_info.txt *_ode2odes.out 
-  rm -f *_*_write.r
+  rm -f *_*_write.r *_simpar.m *_simpar.p
   rm -fR *_rep MTT_work
   exit
 fi
@@ -1281,7 +1285,7 @@ if [ "$2" = "Clean" ] && [ "$3" = "" ]; then
   rm -f $1_rep.tex
   rm -f $1_unique_raw_list $1_raw_list
   rm -f mtt_error.txt mtt_info.txt $1_ode2odes.out 
-  rm -f $1_*_write.r
+  rm -f $1_*_write.r $1_simpar.m $1_simpar.p
   rm -fR $1_rep MTT_work
   exit
 fi
@@ -1434,7 +1438,9 @@ VC=''
 if [ "$3" = "vc" ]; then
   tidy=untidy;
   if [ -n "$4" ]; then
-  log_message=-m$4  
+    log_message=$4
+  else
+    log_message="No Message"
   fi
   case $2 in
 	abg )
@@ -1456,6 +1462,9 @@ if [ "$3" = "vc" ]; then
 		VC='ok'
 		VCext='txt' ;;
 	input )
+		VC='ok'
+		VCext='txt' ;;
+	state )
 		VC='ok'
 		VCext='txt' ;;
 	odes )
@@ -1950,7 +1959,19 @@ ifeq ($target,$1_numpar.txt)
 else
 	mtt_update $1 numpar
 endif
+
+#SUMMARY state	numerical state declaration  -- default (txt)
+$1_state.txt : FORCE
+	mtt -q $1 sympar txt
+ifeq ($target,$1_state.txt)
+	mtt_update $1 state update
+else
+	mtt_update $1 state
+endif
+
+# Dummy target
 FORCE:
+
 #SUMMARY numpar	numerical parameter declaration (m) 
 $1_numpar.m:  $1_numpar.txt $1_sympars.txt
 	mtt_txt2m $1 numpar
@@ -1961,25 +1982,24 @@ $1_numpar.c:  $1_numpar.txt $1_sympar.c
 	txt2c $1 numpar
 
 #SUMMARY input	numerical input declaration  -- default (txt)
-#SUMMARY state	numerical state declaration  -- default (txt)
 ifeq ($steadystate_computation,yes)
 $1_input.txt: 
 	mtt -q $mtt_switches $1 ss r
 	mtt -q $mtt_switches $1 struc txt
 	mtt -q $mtt_switches $1 switch txt
 	struc2input_txt2txt -ss $1
-$1_state.txt:
-	mtt -q $mtt_switches $1 ss r
-	mtt -q $mtt_switches $1 struc txt
-	struc2state_txt2txt -ss $1
+#$1_state.txt:
+#	mtt -q $mtt_switches $1 ss r
+#	mtt -q $mtt_switches $1 struc txt
+#	struc2state_txt2txt -ss $1
 else
 $1_input.txt: 
 	mtt -q $mtt_switches $1 struc txt
 	mtt -q $mtt_switches $1 switch txt
 	struc2input_txt2txt $1
-$1_state.txt: 
-	mtt -q $mtt_switches $1 struc txt
-	struc2state_txt2txt $1
+#$1_state.txt: 
+#	mtt -q $mtt_switches $1 struc txt
+#	struc2state_txt2txt $1
 endif
 
 
@@ -2846,8 +2866,8 @@ RCS:
 	echo Creating RCS
 	mkdir RCS
 $1_$2.vc: RCS 
-	echo Version control on $1_$2.$VCext
-	ci $log_message -I $1_$2.$VCext </dev/tty  ; co -l $1_$2.$VCext 
+	echo Version control on $1_$2.$VCext with message: $log_message
+	ci -m"$log_message" -I $1_$2.$VCext </dev/tty  ; co -l $1_$2.$VCext 
 
 EOF
 # Remember the exit status of make

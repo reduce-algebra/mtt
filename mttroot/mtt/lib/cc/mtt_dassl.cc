@@ -1,0 +1,86 @@
+
+#include <octave/oct.h>
+#include <octave/DASSL.h>
+
+
+#ifdef  OCTAVE_DEV
+#include <octave/parse.h>
+#define VECTOR_VALUE column_vector_value
+#else   // !OCTAVE_DEV
+#include <octave/toplev.h>
+#define VECTOR_VALUE vector_value
+#endif  // OCTAVE_DEV
+
+
+#ifdef STANDALONE
+extern ColumnVector
+Fmtt_residual (const ColumnVector &X, const ColumnVector &DX, double t);
+#endif // STANDALONE
+
+
+ColumnVector
+mtt_residual (const ColumnVector &X, const ColumnVector &DX, double t)
+{
+#ifdef STANDALONE
+  return Fmtt_residual (X, DX, t);
+#else // !STANDALONE
+  static octave_value_list args, f;
+  args(0) = octave_value (X);
+  args(1) = octave_value (DX);
+  args(2) = octave_value (t);
+  f = feval ("mtt_residual", args, 1);
+  return f(0).VECTOR_VALUE ();
+#endif // STANDALONE
+}
+
+
+#ifdef STANDALONE
+ColumnVector
+Fmtt_dassl (	  ColumnVector	&x,
+	    const ColumnVector	&u,
+	    const double	&t,
+	    const ColumnVector	&par,
+	    const ColumnVector	&dx,
+	    const double	&ddt,
+	    const int		Nx,
+	    const int		Nyz,
+	    const ColumnVector	&openx)
+{
+#else // !STANDALONE
+DEFUN_DLD (mtt_dassl, args, ,
+	   "dassl integration method")
+{
+  ColumnVector		x	= args(0).VECTOR_VALUE();
+  const ColumnVector   	u	= args(1).VECTOR_VALUE();
+  const double		t	= args(2).double_value();
+  const ColumnVector	par	= args(3).VECTOR_VALUE();
+  const ColumnVector	dx	= args(4).VECTOR_VALUE();
+  const double		ddt	= args(5).double_value();
+  const int		Nx	= static_cast<int> (args(6).double_value());
+  const int		Nyz	= static_cast<int> (args(7).double_value());
+  const ColumnVector	openx	= args(8).VECTOR_VALUE();
+#endif // STANDALONE
+
+  static DAEFunc fdae(mtt_residual);
+  static ColumnVector XX (Nx+Nyz);
+  XX.insert (x,0);
+
+  for (register int i = Nx; i < Nyz; i++)
+    XX(i) = 0.0;
+
+  double tout = t + ddt;
+
+  DASSL fdassl (XX, t, fdae);
+  x = fdassl.do_integrate (tout).extract (0,Nx-1);
+
+  for (register int i = 0; i < Nx; i++)
+    if (openx (i) > 0.5)
+      x (i) = 0.0;
+      
+
+#ifdef STANDALONE
+  return x;
+#else
+  return octave_value (x);
+#endif
+}

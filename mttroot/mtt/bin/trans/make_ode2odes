@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.60  2001/07/16 22:23:00  geraint
+## Fixed misleading variable name in .cc rep.
+##
 ## Revision 1.59  2001/07/13 04:54:04  geraint
 ## Branch merge: numerical-algebraic-solution back to main.
 ##
@@ -261,17 +264,25 @@ echo Creating $filename with $method integration method
 # Find system constants
 Nx=`mtt_getsize $sys x` # States
 Nu=`mtt_getsize $sys u` # Inputs 
-Ny=`mtt_getsize $sys y` # Inputs  
+Ny=`mtt_getsize $sys y` # Outputs  
 
-if [ "$method" = "implicit" ]; then
-    ode=csex
-    odeo=cseo
-    algorithm="mtt_implicit(x,dx,AA,AAx,ddt,$Nx,open_switches)"
-else
-    ode=ode
-    odeo=odeo
-    algorithm="mtt_euler(x,dx,ddt,$Nx,open_switches)"
-fi
+case "$method" in
+    "implicit")
+	ode=csex
+	odeo=cseo
+	algorithm="mtt_implicit(x,dx,AA,AAx,ddt,$Nx,open_switches)"
+	;;
+    "dassl")
+	ode=ode
+	odeo=odeo
+	algorithm="mtt_dassl(x,u,t,par,dx,ddt,MTTNX,MTTNYZ,open_switches)"
+	;;
+    "euler" | "rk4" | *)
+	ode=ode
+	odeo=odeo
+	algorithm="mtt_euler(x,dx,ddt,$Nx,open_switches)"
+	;;
+esac
 
 make_m()
 {
@@ -436,18 +447,9 @@ extern ColumnVector F${sys}_${odeo} (
 	ColumnVector &par);
 
 EOF
-if [ "$method" != "implicit" ]; then
-cat <<EOF >> $filename
-extern ColumnVector Fmtt_euler (
-	ColumnVector &x,
-	const ColumnVector &dx,
-	const double &ddt,
-	const int &nx,
-	const ColumnVector &open_switches);
- 
-EOF
-else
-cat <<EOF >> $filename
+case "$method" in
+    "implicit")
+	cat <<EOF >> $filename
 extern ColumnVector Fmtt_implicit (
 	ColumnVector &x,
 	ColumnVector &dx,
@@ -470,7 +472,34 @@ extern ColumnVector F${sys}_smxax (
 	ColumnVector &par);
  
 EOF
-fi
+    ;;
+    "dassl")
+	cat <<EOF >> $filename
+extern ColumnVector Fmtt_dassl (
+	ColumnVector &x,
+	const ColumnVector &u,
+	const double &t,
+	const ColumnVector &par,
+	const ColumnVector &dx,
+	const double &ddt,
+	const int nx,
+	const int nyz,
+	const ColumnVector &open_switches);
+
+EOF
+    ;;
+    "euler" | "rk4" | *)
+	cat <<EOF >> $filename
+extern ColumnVector Fmtt_euler (
+	ColumnVector &x,
+	const ColumnVector &dx,
+	const double &ddt,
+	const int &nx,
+	const ColumnVector &open_switches);
+ 
+EOF
+    ;;
+esac
 cat <<EOF >> $filename
 
 void set_signal_handlers (void);
@@ -557,6 +586,80 @@ mtt_numpar (void)
 #endif
 }
 
+#ifdef STANDALONE
+ColumnVector
+Fmtt_residual (const ColumnVector &X,
+	      const ColumnVector &DX,
+	      double t)
+{
+#else // !STANDALONE
+DEFUN_DLD (mtt_residual, args, , "mtt_residual")
+{
+    static ColumnVector	X  (MTTNX+MTTNYZ);
+    static ColumnVector	DX (MTTNX+MTTNYZ);
+    static double      	t;
+
+    X  = args(0).${vector_value} ();
+    DX = args(1).${vector_value} ();
+    t  = args(2).double_value ();
+#endif // STANDALONE
+
+    static ColumnVector residual (MTTNX+MTTNYZ);
+    static ColumnVector U (MTTNU+MTTNYZ);
+    static ColumnVector u (MTTNU);
+    static ColumnVector y (MTTNY,0.0);
+    static ColumnVector par (MTTNPAR);
+    static ColumnVector dx(MTTNX);
+    static ColumnVector yz(MTTNYZ);
+
+    static ColumnVector x (MTTNX);
+    static ColumnVector ui (MTTNYZ);
+
+    static octave_value_list new_args;
+
+    x = X.extract (0,MTTNX-1);
+    if (MTTNYZ > 0)
+      ui = X.extract (MTTNX,MTTNX+MTTNYZ-1);    
+
+#ifdef STANDALONE
+    par = F${sys}_numpar();
+    u = F${sys}_input(x,y,t,par);
+#else
+    par = feval ("${sys}_numpar",  new_args, 1)(0).${vector_value} ();
+    new_args(0) = octave_value (x);
+    new_args(1) = octave_value (u);
+    new_args(2) = octave_value (t);
+    new_args(3) = octave_value (par);
+    u = feval ("${sys}_input", new_args, 1)(0).${vector_value} ();
+#endif
+
+    U.insert (u,0);
+    if (MTTNYZ > 0)
+      U.insert (ui,MTTNX);
+
+#ifdef STANDALONE
+    dx = F${sys}_${ode} (x,U,t,par);
+    yz = F${sys}_ae (x,U,t,par);
+#else
+    new_args(1) = octave_value (U);
+    dx = feval ("${sys}_${ode}", new_args, 1)(0).${vector_value} ();
+    yz = feval ("${sys}_ae", new_args, 1)(0).${vector_value} ();
+#endif
+
+    for (register int i = 0; i < MTTNX; i++)
+      residual (i) = dx(i) - DX(i);
+    
+    if (MTTNYZ > 0)
+      residual.insert (yz,MTTNX);
+
+#ifdef STANDALONE
+    return residual;
+#else // !STANDALONE
+    return octave_value (residual);
+#endif // STANDALONE
+}
+    
+
 inline Octave_map
 mtt_simpar (void)
 {
@@ -629,32 +732,9 @@ mtt_output (ColumnVector &x,
 }
 
 EOF
-if [ "$method" != "implicit" ];then
-cat <<EOF >> $filename
-inline ColumnVector
-mtt_euler (ColumnVector &x,
-	   const ColumnVector &dx,
-	   const double &ddt,
-	   const int &nx,
-	   const ColumnVector &open_switches)
-{
-#ifdef STANDALONE
-  return Fmtt_euler (x, dx, ddt, nx, open_switches);
-#else
-  static octave_value_list args, f;
-  args (0) = octave_value (x);
-  args (1) = octave_value (dx);
-  args (2) = octave_value (ddt);
-  args (3) = octave_value ((double)nx);
-  args (4) = octave_value (open_switches);
-  f = feval ("mtt_euler", args, 1);
-  return f(0).${vector_value} ();
-#endif
-}
-
-EOF
-else
-cat <<EOF >> $filename
+case "$method" in
+    "implicit")
+	cat <<EOF >> $filename
 inline ColumnVector
 mtt_implicit (ColumnVector &x,
 	      ColumnVector &dx,
@@ -719,7 +799,66 @@ mtt_smxax (ColumnVector &x,
 }
 
 EOF
-fi
+    ;;
+    "dassl")
+cat <<EOF >> $filename
+inline ColumnVector
+mtt_dassl (ColumnVector &x,
+	   const ColumnVector &u,
+	   const double &t,
+	   const ColumnVector &par,
+	   const ColumnVector &dx,
+	   const double &ddt,
+	   const int &nx,
+	   const int &nyz,
+	   const ColumnVector &open_switches)
+{
+#ifdef STANDALONE
+   return Fmtt_dassl (x, u, t, par, dx, ddt, nx, nyz, open_switches);
+#else
+   static octave_value_list args, f;
+    args (0) = octave_value (x);
+    args (1) = octave_value (u);
+    args (2) = octave_value (t);
+    args (3) = octave_value (par);
+    args (4) = octave_value (dx);
+    args (5) = octave_value (ddt);
+    args (6) = octave_value (static_cast<double> (nx));
+    args (7) = octave_value (static_cast<double> (nyz));
+    args (8) = octave_value (open_switches);
+    f = feval ("mtt_dassl", args, 1);
+    return f(0).${vector_value} ();
+#endif
+}
+	   
+EOF
+    ;;
+    "euler" | "rk4" | *)
+cat <<EOF >> $filename
+inline ColumnVector
+mtt_euler (ColumnVector &x,
+	   const ColumnVector &dx,
+	   const double &ddt,
+	   const int &nx,
+	   const ColumnVector &open_switches)
+{
+#ifdef STANDALONE
+  return Fmtt_euler (x, dx, ddt, nx, open_switches);
+#else
+  static octave_value_list args, f;
+  args (0) = octave_value (x);
+  args (1) = octave_value (dx);
+  args (2) = octave_value (ddt);
+  args (3) = octave_value ((double)nx);
+  args (4) = octave_value (open_switches);
+  f = feval ("mtt_euler", args, 1);
+  return f(0).${vector_value} ();
+#endif
+}
+
+EOF
+    ;;
+esac
 cat <<EOF >> $filename
 
 inline void
@@ -907,8 +1046,9 @@ DEFUN_DLD (${sys}_ode2odes, args, ,
            mtt_write (t, x, y, nrows);
 	}
 EOF
-if [ "$method" = "rk4" ]; then
-cat << EOF >> $filename
+case "$method" in
+    "rk4")
+	cat << EOF >> $filename
       {
         static ColumnVector
           k1 (MTTNX,0.0),
@@ -932,19 +1072,22 @@ cat << EOF >> $filename
         dx = (k1 + 2.0 * (k2 + k3) + k4) / (6.0 * ddt);
       }
 EOF
-else
-cat << EOF >> $filename
+    ;;
+    "dassl")
+    ;;
+    "implicit")
+	cat << EOF >> $filename
       dx = mtt_rate (x, u, t, par);
-EOF
-fi
-
-if [ "$method" = "implicit" ]; then
-cat <<EOF >> $filename
-
       AA = mtt_smxa (x, u, ddt, par);
       AAx = mtt_smxax (x, u, ddt, par);
 EOF
-fi
+    ;;
+    "euler" | *)
+	cat << EOF >> $filename
+      dx = mtt_rate (x, u, t, par);
+EOF
+    ;;
+esac
 
 ## Common stuff
 cat <<EOF >> $filename

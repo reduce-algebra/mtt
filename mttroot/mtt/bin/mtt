@@ -17,6 +17,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.401  2004/09/02 22:04:06  geraint
+## Passes ${use_reduce} to mtt_make_sympar so that it can decide
+## if to issue warnings about Reduce reserved words
+##
 ## Revision 1.400  2004/08/31 01:29:48  geraint
 ## CRs are applied to sorted equation files during production.
 ##
@@ -3046,7 +3050,8 @@ ${sys}_sese.make: ${sys}_ese.r
 
 perl_crs.stamp:
 	echo Copying CRs from ${MTT_LIB}/cr/perl
-	cp ${MTT_LIB}/cr/perl/*.pm .
+	mkdir -p mtt
+	cp ${MTT_LIB}/cr/perl/*.pm mtt/
 	touch \$@
 endif
 

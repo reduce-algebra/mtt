@@ -1,7 +1,7 @@
 function [port_bonds, status] = abg2cbg(system_name, ...
     system_type, full_name, ...
     port_bonds,infofile)
-% [bonds,status] = abg2cbg(system_name,infofile)
+% [bonds,status] = abg2cbg(system_name, system_type, full_name, port_bonds, infofile)
 % 
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %     %%%%% Model Transformation Tools %%%%%
@@ -15,6 +15,8 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %%Revision 1.7  1996/08/16  12:58:58  peter
+% %% Now does preferred causality of I and C.
 % %% Revision 1.6  1996/08/09 08:27:29  peter
 % %% Added a few deguging lines
 % %%
@@ -168,8 +170,7 @@ end;
 
 % Print final causality
 final_done =  (sum(status==zeros(n_components,1))/n_components)*100;;
-mtt_info(sprintf('Final causality is %3.0f%s complete.', final_done, pc),
-infofile);
+mtt_info(sprintf('Final causality is %3.0f%s complete.', final_done, pc), infofile);
 
 % List overcausal bonds
 [over_causal_bonds,n] = getindex(status,1);

@@ -27,6 +27,9 @@
 %ALIAS  $3		alpha
 %ALIAS  $4		flow,k_p
 
+%ALIAS	wPipe	CompressibleFlow/wPipe
+%ALIAS	Poly	CompressibleFlow/Poly
+
 %% Label file for system Pump (Pump_lbl.txt)
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -34,6 +37,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.7  1998/07/04 08:39:58  peterg
+% %% New-style SS
+% %%
 % %% Revision 1.6  1998/07/03 15:02:25  peterg
 % %% Work alias added
 % %%

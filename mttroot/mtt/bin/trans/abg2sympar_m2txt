@@ -45,7 +45,7 @@ BEGIN {
 }
 {
   ## Explicit VAR declarations
-  if (match($1,var)>0) print $2 "\t" name;
+  if (match($1,var)>0) print $2 "\t" system_name;
 
    ## Implicit declarations from the arg list
   if (match($1,"arg")>0) {
@@ -53,11 +53,11 @@ BEGIN {
     N=split(args, arg, ",");
     for (i=1;i<=N;i++){
       if ( (length(arg[i])>0)&&(matches(not_an_arg,arg[i])==0) ){
-        print arg[i] "\t" name;
+        print arg[i] "\t" system_name;
       }
     }
   }
-}'name=$1 |\
+}' system_name=$1 |\
 sort -u > $1_sympar.txt 2>mtt_error.txt
 
 # Now invoke the standard error handling.

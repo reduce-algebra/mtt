@@ -16,8 +16,7 @@ function [t,y,y_theta] = mtt_simulate(system_name,theta);
        args = sprintf("%s%i %g ",args, i_sensitivity, theta(j));
      endfor
 
-     args
-     command = sprintf("./%s_ode2odes.out %s > mtt_data.dat\n", system_name, args)
+     command = sprintf("./%s_ode2odes.out %s > mtt_data.dat\n", system_name, args);
      system(command);
 
      ## Retrieve data

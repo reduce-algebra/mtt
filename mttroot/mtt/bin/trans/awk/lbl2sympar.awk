@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1996/08/30 09:35:10  peter
+## Fixed problem with global variable in function.
+##
 ## Revision 1.1  1996/08/24 13:34:48  peter
 ## Initial revision
 ##
@@ -23,7 +26,7 @@ function exact_match(name1, name2) {
   return ((match(name1,name2)>0)&&(length(name1)==length(name2)))
     }
 
-function matches(name, names) {
+function matches(names, name) {
   n_matches = split(names,match_name);
   matched = 0;
   for (i_matches = 1; i_matches <= n_matches; i_matches++) {
@@ -39,7 +42,7 @@ function matches(name, names) {
 BEGIN {
 comment = "%";
 arg_delimiter = ",";
-not_an_arg = "effort flow internal external zero";
+not_an_arg = "effort flow state internal external zero";
 numeric = "[0-9]";
 symbol_count = 0;
 symbols = "";
@@ -69,7 +72,7 @@ END {
     printf("MATRIX MTTVar(MTTNVar,1);\n");
     split(symbols,symbol);
     for (i = 1; i <= symbol_count; i++) {
-      printf("MTTVar(%1.0f,1) := %s;\n", i, symbol[i]);
+      printf("MTTVar(%1.0f,1) \t := %s;\n", i, symbol[i]);
     }
   }
   printf("END;\n\n");  

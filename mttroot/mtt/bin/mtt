@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.55  1997/02/24  19:31:10  peterg
+# Removed numpar.m requirement from .m files
+#
 ## Revision 1.54  1997/02/09 20:33:13  peterg
 ## Replaced a.out with ./a.out
 ##
@@ -290,13 +293,13 @@ fi
 if [ "$1" = "clean" ] && [ "$2" = "" ]; then
   echo 'Removing all generated files for all systems'
   rm -f *.log  mtt_info.txt warning.txt
-  rm -f *_abg.m *_abg.ps *_args.* *_cr.r *_sympar.r
+  rm -f *_abg.m *_abg.ps *_args.* *_cr.r *_sympar.r *_sympar.c
   rm -f *_rbg.* *_cmp.* *_fig.fig *_*cbg.* *_ese.* *_def.* 
   rm -f *_sub.sh *_type.sh
-  rm -f *_dae*.* *_cse.* *_ode*.* *_obs.* *_rfe.* *_ss.*
+  rm -f *_dae*.* *_cse.* *_ode*.c *_ode*.m *_obs.* *_rfe.* *_ss.*
   rm -f *_dm.* *_csm.* *_sm.* *_tf.* *_sr*.* *_ir*.* *_*fr.*
   rm -f  *_numpar.m *_numpar.c
-  rm -f mtt_error.txt mtt_info.txt
+  rm -f mtt_error.txt mtt_info.txt 
   exit
 fi
 
@@ -304,13 +307,13 @@ fi
 if [ "$2" = "clean" ] && [ "$3" = "" ]; then
   echo 'Removing all generated files for system ' $1
   rm -f *.log  mtt_info.txt warning.txt
-  rm -f $1_abg.m $1_abg.ps $1_args.* $1_cr.r $1_sympar.r
+  rm -f $1_abg.m $1_abg.ps $1_args.* $1_cr.r $1_sympar.r $1_sympar.c
   rm -f $1_rbg.* $1_cmp.* $1_fig.fig $1*_*cbg.* $1*_ese.* $1_def.* 
   rm -f $1_sub.sh $1_type.sh
-  rm -f $1_dae*.* $1_cse.* $1_ode*.* $1_obs.* $1_rfe.* $1_ss.*
+  rm -f $1_dae*.* $1_cse.* $1_ode*.c $1_ode*.m $1_obs.* $1_rfe.* $1_ss.*
   rm -f $1_dm.* $1_csm.* $1_sm.* $1_tf.* $1_sr*.* $1_ir*.* $1_*fr.*
   rm -f $1_numpar.m $1_numpar.c
-  rm -f mtt_error.txt mtt_info.txt
+  rm -f mtt_error.txt mtt_info.txt 
   exit
 fi
 
@@ -513,6 +516,7 @@ $1_numpar.c: $1_sympar.r
 	echo "%% Parameter file for system $1 ($1_params.c)"; \
 	echo "%% This file provides the system params for simulation:";\
 	echo '*/'; \
+	echo "#include \"$1_sympar.c\""; \
 	echo '$1_params()'; \
         echo '{'; \
 	echo '};'; \
@@ -561,7 +565,7 @@ $1_input.c:
 	echo Creating $1_input.c
 	( \
 	echo "$1_input(t)"; \
-	echo '  float t;'; \
+	echo '  double t;'; \
 	echo '/*'; \
 	echo "%% Input file for system $1 ($1_input.c)"; \
 	echo "%% This file provides the system input for simulation:";\
@@ -570,6 +574,7 @@ $1_input.c:
 	echo; \
 	echo "/* Change the following lines as you wish */"; \
         echo '{'; \
+        echo '  extern double u;'; \
 	echo '};'; \
         )> $1_input.c
 
@@ -613,6 +618,11 @@ $1_sympar.r: $1_lbl.txt $1_params.r
 	lbl2sympar_txt2r $1
 	echo "IN \"$1_params.r\";" >> $1_sympar.r
 	echo 'END;' >> $1_sympar.r
+
+#SUMMARY sympar	symbolic parameters (c)
+# r to c sympar conversion -- its part of the ode_r2c tool
+$1_sympar.c: $1_sympar.r
+	sympar_r2c $1
 
 #SUMMARY abg	acausal bond graph (m)
 #Raw bond graph to acausal bond graph: mfile
@@ -682,7 +692,7 @@ $1_ode.r: $1_cse.r $1_def.r $1_sympar.r
 	cse2ode_r $1; tidy $1_ode.r
 $1_ode.m: $1_def.r $1_ode.r $1_sympar.r 
 	ode_r2m $1; matlab_tidy $1_ode.m; matlab_tidy $1_odeo.m
-$1_ode.c: $1_def.r $1_ode.r $1_sympar.r
+$1_ode.c: $1_def.r $1_ode.r $1_sympar.r $1_sympar.c
 	ode_r2c $1
 $1_ode.tex: $1_ode.r  $1_sympar.r $1_simp.r
 	ode_r2tex $1; latex_tidy $1_ode.tex
@@ -838,9 +848,10 @@ endif
 ifeq ($computation,c)
 $1_odes.m: $1_odes.c $1_ode.c $1_numpar.c $1_odes.h $1_params.c $1_input.c
 	echo Creating $1_odes.m
+	echo Creating $1_odeso.m
 	echo 'Compiling ...'
-	gcc $1_odes.c $1_ode.c $1_numpar.c $1_params.c $1_input.c
-	echo 'Running  ...'; ./a.out; echo 'Done.'
+	gcc $1_odes.c $1_ode.c $1_numpar.c $1_params.c $1_input.c -lm
+	echo 'Running  ...'; ./a.out; rm -f a.out; echo 'Done.'
 endif
 $1_odeso.m: $1_odes.m
 	touch $1_odeso.m
@@ -961,7 +972,10 @@ $1_$2.view : $1_$2.pview
 endif
 
 ifeq ($REPTYPE,data)
-$1_$2.view : $1_$2.dview
+# This is the gnuplot version which leaves lots of defunct processes
+# $1_$2.view : $1_$2.dview
+$1_$2.view: $1_$2.ps
+	ghostview $1_$2.ps&
 endif
 
 ifeq ($REPTYPE,tex)

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.273  2000/10/10 21:00:27  peterg
+## More changes for new code gneration
+##
 ## Revision 1.272  2000/10/06 16:20:00  peterg
 ## added ode_write rule
 ##
@@ -1108,7 +1111,7 @@ if [ -z "$1" ]; then
     echo '       mtt <system_name> clean'
     echo '       mtt copy <system_name> <path_name>'
     echo '       mtt rename <old_name> <new_name>'
-    echo '       mtt <system_name> <representation> vc'
+    echo '       mtt <system_name> <representation> vc' 
     echo '       mtt <system_name> <representation> <language>'
     echo '       mtt <system_name> <representation> <language> <parameters>'
     echo 'Options: -q  quiet mode -- suppress MTT banner'
@@ -1427,6 +1430,9 @@ VC=''
 
 if [ "$3" = "vc" ]; then
   tidy=untidy;
+  if [ -n "$4" ]; then
+  log_message=-m$4  
+  fi
   case $2 in
 	abg )
 		VC='ok'
@@ -1930,10 +1936,12 @@ $1_simpar.m: $1_simpar.txt
 
 
 #SUMMARY numpar	numerical parameter declaration -- default (txt) 
-$1_numpar.txt:
-	mtt $mtt_switches -q -u $1 sympar txt; 
-	sympar2numpar_txt2txt $1
-
+ifeq ($target,$1_numpar.txt)
+$1_numpar.txt: $1_sympar.txt
+	mtt_update $1 numpar update
+else
+	mtt_update $1 numpar
+endif
 #SUMMARY numpar	numerical parameter declaration (m) 
 $1_numpar.m:  $1_numpar.txt $1_sympars.txt
 	mtt_txt2m $1 numpar
@@ -2155,7 +2163,8 @@ $1_dae.tex: $1_dae.r $1_simp.r
 #Constrained-state equations
 $1_cse.r: $1_dae.r $1_def.r $1_sympar.r $1_subs.r 
 	dae2cse_r $Solve $1; tidy $1_cse.r $1_subs.r
-
+$1_csex.r: $1_cse.r
+	touch $1_csex.r
 $1_cseo.r: $1_cse.r
 	touch $1_cseo.r
 
@@ -2163,6 +2172,8 @@ $1_cseo.r: $1_cse.r
 #	cse_r2m $1; matlab_tidy $1_cse.m
 $1_cse.m: $1_def.r $1_cse.r $1_sympars.txt
 	mtt_r2m $optimise -parameters  $1 cse;#  matlab_tidy $1_cse.m; matlab_tidy $1_cseo.m; 
+$1_csex.m: $1_def.r $1_csex.r $1_sympars.txt
+	mtt_r2m $1 csex
 $1_cseo.m: $1_def.r $1_cseo.r $1_sympars.txt
 	mtt_r2m $optimise -parameters  $1 cseo;#  matlab_tidy $1_cse.m; matlab_tidy $1_cseo.m; 
 $1_cse.tex: $1_cse.r  $1_sympar.r $1_simp.r
@@ -2230,7 +2241,7 @@ $1_ode.tex: $1_ode.r  $1_sympar.r $1_simp.r
 ifeq ($integration_method,implicit)
 $1_ode2odes.m : $1_def.r $1_sympars.txt $1_smxa.$m $1_smxax.$m\
 		$1_simpar.m $1_numpar.m $1_state.m $1_input.m \
-		$1_cse.$m $1_cseo.$m  $1_switchopen.m
+		$1_csex.$m $1_cseo.$m  $1_switchopen.m
 	make_ode2odes $1 $integration_method
 endif
 ifeq ($integration_method,euler)
@@ -2265,8 +2276,8 @@ $1_ode.p : $1_def.r $1_ode.m
 	mtt_m2p $1_ode.m
 $1_odeo.p : $1_def.r $1_odeo.m
 	mtt_m2p $1_odeo.m
-$1_cse.p : $1_def.r $1_cse.m
-	mtt_m2p $1_cse.m
+$1_csex.p : $1_def.r $1_cse.m
+	mtt_m2p $1_csex.m
 $1_cseo.p : $1_def.r $1_cseo.m
 	mtt_m2p $1_cseo.m
 $1_smx.p : $1_def.r $1_smx.m
@@ -2281,7 +2292,7 @@ $1_switchopen.p : $1_def.r $1_switchopen.m
 ifeq ($integration_method,implicit)
 $1_ode2odes.p : $1_ode2odes.m $1_def.r $1_smxa.p $1_smxax.p\
 		$1_simpar.p $1_numpar.p $1_state.p $1_input.p \
-		$1_cse.p $1_cseo.p  $1_switchopen.p
+		$1_csex.p $1_cseo.p  $1_switchopen.p
 	mtt_m2p $1_ode2odes.m $integration_method $stdin
 endif
 ifeq ($integration_method,euler)
@@ -2825,7 +2836,7 @@ RCS:
 	mkdir RCS
 $1_$2.vc: RCS 
 	echo Version control on $1_$2.$VCext
-	ci -I $1_$2.$VCext </dev/tty  ; co -l $1_$2.$VCext 
+	ci $log_message -I $1_$2.$VCext </dev/tty  ; co -l $1_$2.$VCext 
 
 EOF
 # Remember the exit status of make

@@ -16,6 +16,9 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.24  2004/08/13 01:39:24  geraint
+@comment  Fixed variable names in diy makefile example (again)
+@comment
 @comment  Revision 1.23  2004/08/11 08:24:28  geraint
 @comment  Replaced "gnuplot view" with "odeso gnuplot" in examples.
 @comment
@@ -3865,6 +3868,12 @@ Allowed units are those defined in the @strong{units} package.
 No checks are done if one or both ends of a bond are not connected to a
 port with defined units.
 
+The word ``none'' can be specified in place of a unit to prevent
+@strong{MTT} from checking the corresponding effort or flow while
+still checking the units of the other variable, if it is specified.
+This can be used to force checking of either the effort or flow on 
+signal bonds or in pseudo-bond graphs where the domain of the two
+variables may not be identical.
 
 
 @node Interface Control Definition, Aliases, Units declarations, Labels (lbl)
@@ -4695,6 +4704,9 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.24  2004/08/13 01:39:24  geraint
+# %% Fixed variable names in diy makefile example (again)
+# %%
 # %% Revision 1.23  2004/08/11 08:24:28  geraint
 # %% Replaced "gnuplot view" with "odeso gnuplot" in examples.
 # %%

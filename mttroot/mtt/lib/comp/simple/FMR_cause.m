@@ -3,15 +3,20 @@ function [bonds,status] = FMR_cause(bonds);
 % Causality for Flow-modulated R component
 
 %SUMMARY FMR: flow-modulated resistor
-%DESCRIPTION Port[1]: a simple one port resistor
-%DESCRIPTION Port[2]: flow provides modulation for the resistor
-%DESCRIPTION Can be bicausal - deduces modulation from e and f on port[1]
+%DESCRIPTION Port[in]: a simple one port resistor
+%DESCRIPTION Port[out]: flow provides modulation for the resistor
+%DESCRIPTION Used with the lin CR, with parameters flow,r this gives
+%DESCRIPTION a resistance r*f_m where f_m is the flow on port [out]
+%DESCRIPTION Can be bicausal - deduces modulation from e and f on port[in]
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1996/11/01 11:53:48  peterg
+% %% Documentation
+% %%
 % %% Revision 1.2  1996/08/30 13:29:05  peter
 % %% Error check on bond numbers.
 % %%

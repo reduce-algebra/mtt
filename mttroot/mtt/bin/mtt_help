@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  1998/03/22 20:21:11  peterg
+## $topic now converted to lower case.
+##
 ## Revision 1.6  1997/09/04 09:35:04  peterg
 ## Changed $ext to give accurate match -- matches t ot m at end of
 ## filename
@@ -35,7 +38,7 @@
 ##
 ###############################################################
 
-topic=`tr [A-Z] [a-z] $1`
+topic=`echo $1 | tr [A-Z] [a-z]`
 
 if [ "$topic" = "" ]; then
     echo 'Usage: mtt help representations'

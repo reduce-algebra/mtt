@@ -20,6 +20,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1997/01/21 10:52:23  peterg
+## Initial revision
+##
 ###############################################################
 
 # Inform user
@@ -69,15 +72,16 @@ write " "$
 
 %Function heading - c style
 
-write "void $1_ode("$
-write "                         float *y, /* $1_ode output */"$
-write "                         float *dx, /* $1_ode state derivative */"$ 
-write "                         float *x, /* $1_ode state */"$ 
-write "                         float *u /* $1_ode input */"$
-write "                         )"$
+write "void $1_ode()"$
 
 write "  "$
 write "{"$
+
+write "/* Declare standard arrays */"$
+write "  extern float y[", MTTNy+1, "]; /* $1_ode output */"$
+write "  extern float dx[", MTTNx+1, "]; /* $1_ode state derivative */"$ 
+write "  extern float x[", MTTNx+1, "]; /* $1_ode state */"$ 
+write "  extern float u[", MTTNu+1, "]; /* $1_ode input */"$
 
 %External (global) variable list
 write "/* External (global) variable list */ "$

@@ -339,11 +339,15 @@ function [bonds,components,n_vector_bonds] = \
     head.n_subs = size(struct_elements(head_bond))(1) - 2;
     tail.n_subs = size(struct_elements(tail_bond))(1) - 2;
     if (head.n_subs != tail.n_subs)
-      mtt_error(sprintf("Vector ports %s and %s are not compatible",
-			head_bond.label, tail_bond.label), errorfile);
+      mtt_error(sprintf("Vector ports '%s' (%s:%s) and '%s' (%s:%s) are not compatible",
+			head_bond.label, head.type, head_name,
+			tail_bond.label, tail.type, tail_name),
+		errorfile);
     elseif (head.n_subs > 1)
-      mtt_info(sprintf("Vector port %s matches %s",
-		       head_bond.label, tail_bond.label), infofile);
+      mtt_info(sprintf("Vector port '%s'(%s:%s) matches '%s' (%s:%s)",
+		       head_bond.label, head.type, head_name,
+		       tail_bond.label, tail.type, tail_type),
+	       infofile);
     endif
 
     ## write type at other end

@@ -19,6 +19,9 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 # ###############################################################
 # ## $Id$
 # ## $Log$
+# ## Revision 1.39  1998/08/25 20:06:16  peterg
+# ## Writes flipped port info
+# ##
 # ## Revision 1.38  1998/08/25 09:15:28  peterg
 # ## Fixed couple of problems with using two copies of the one data
 # ## stucture:
@@ -222,14 +225,14 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
     [n_subsystems,junk] = size(struct_elements(ABG.subsystems));
   endif
   
-  if struct_contains(ABG,"ports")# Are there any ports?
-    [n_ports,junk] = size(struct_elements(ABG.ports));
+  if struct_contains(ABG,"portlist")# Are there any ports?
+    [n_ports,junk] = size(ABG.portlist);
     port_bond_index=zeros(n_ports,1);
-    for port = ABG.ports	# Find indices of the internal
-				# port bonds in correct order
-       port_bond_index(port.index) = port.connections;
+    for i=1:n_ports		# Find indices of the internal
+      name = deblank(ABG.portlist(i,:)); # Name of this port
+      eval(["port = ABG.ports.",name,";"]); # Extract port info
+      port_bond_index(i) = abs(port.connections);
     endfor
-    port_bond_index=abs(port_bond_index);
   else
     n_ports = 0;
   endif				   
@@ -252,9 +255,12 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 # Coerce the port (SS:[]) component bonds to have the same direction as
 # of the bonds in the encapsulating system -- but not at top level
   Flipped.ports="";Flipped.subs="";Flipped.cons="";
+  
   if (n_ports>0)&&(!at_top_level) # Coerce directions
-    for [port,name] = ABG.ports	# Just ports are relevant here
-      if (sign(port.connections)!=port_bond_direction(port.index)) # Direction different?
+    for i=1:n_ports
+      name = deblank(ABG.portlist(i,:)); # Name of this port
+      eval(["port = ABG.ports.",name,";"]); # Extract port info
+      if (sign(port.connections)!=port_bond_direction(i)) # Direction different?
       	eval(["ABG.ports.",name,".connections = - port.connections;"]); # Flip direction at port
 	Flipped.ports=[Flipped.ports;name];	# Remember which port has been flipped
         bond_index=abs(port.connections); # Index of bond on port
@@ -280,9 +286,9 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 
 # If not at top level, then copy the port bonds.
   if !at_top_level		# Find number of port bonds
-    for port = ABG.ports	# Copy the port bonds.
-      jj = abs(port.connections); # The index of the bond
-      j = port.index;		# The index of the port bond
+
+    for j=1:n_ports
+      jj = port_bond_index(j); # The index of the bond
       for k = 1:2
 	if ABG.bonds(jj,k)==0 # only copy if not already set
 	  ABG.bonds(jj,k) = port_bonds(j,k);
@@ -292,7 +298,7 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
   else
     n_port_bonds=0;
   endif
-
+  
 # Causality indicator
   total = 2*n_bonds;
   done = sum(sum(abs(ABG.bonds)))/total*100;

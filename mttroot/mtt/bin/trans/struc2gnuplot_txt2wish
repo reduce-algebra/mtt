@@ -148,7 +148,6 @@ pack .plotbar.select  -expand false -fill x -side right
 # button bar
 canvas .buttonbar
 
-button .buttonbar.rotate -text "Rotate 3D" -relief raised -command { rotate_3d }
 button .buttonbar.replot -text "Refresh"   -relief raised -command { puts "replot" }
 
 button .buttonbar.newwin -text "New Plot"  -relief raised -command {
@@ -158,7 +157,21 @@ button .buttonbar.newwin -text "New Plot"  -relief raised -command {
 
 pack .buttonbar.newwin  -expand false -side right
 pack .buttonbar.replot  -expand false -side right
-pack .buttonbar.rotate  -expand false -side right
+
+# rotation bar
+canvas .rotationbar
+scale .rotationbar.xrot  -label "Rotate X" -orient h -from "0" -to "180" -command { do_rotate_3d "xrot" }
+scale .rotationbar.zrot  -label "Rotate Z" -orient h -from "0" -to "360" -command { do_rotate_3d "zrot" }
+pack .rotationbar.xrot  -side left
+pack .rotationbar.zrot  -side right
+.rotationbar.xrot set 30
+.rotationbar.zrot set 60
+pack .rotationbar		-expand false -fill x    -side bottom
+
+proc "enable_rotationbar" "" {
+}
+proc "disable_rotationbar" "" {
+}
 
 ## parameter list canvas
 canvas		.parameters
@@ -305,6 +318,7 @@ proc "plot_var" "" {
     global lastplot
     switch -- \$dimension {
 	2D	{
+	    disable_rotationbar
 	    switch -- \$plottype {
 		Single	{
 		    puts "set xlabel '\$xtitle'"
@@ -325,6 +339,7 @@ proc "plot_var" "" {
 	    }
 	}
 	3D	{
+	    enable_rotationbar
 	    switch -- \$plottype {
 		Single	{
 		    puts "set xlabel '\$xtitle'"
@@ -481,29 +496,10 @@ proc "get_scale" "string min max" {
     }
 }
 
-proc "rotate_3d" "" {
-    listbox .f -background slateblue
-    set xrot	30
-    set yrot	60
-    set scale	1
-    set zscale	1
-    scale .f.xrot   -background slateblue -foreground yellow -label "Rotate X" -orient h -from "0" -to "180" -command { do_rotate_3d "xrot" }
-    scale .f.yrot   -background slateblue -foreground yellow -label "Rotate Z" -orient h -from "0" -to "360" -command { do_rotate_3d "yrot" }
-    scale .f.scale  -background slateblue -foreground yellow -label "Scale"    -orient h -from "-4" -to "4" -command { do_rotate_3d "scale" }
-    scale .f.zscale -background slateblue -foreground yellow -label "Scale Z"  -orient h -from "-4" -to "4" -command { do_rotate_3d "zscale" }
-    button .f.ok -background slateblue -foreground yellow -text "OK" -command { destroy .f }
-    pack .f.xrot -side top
-    pack .f.yrot -side top
-    pack .f.scale -side top
-    pack .f.zscale -side top
-    pack .f.ok -side bottom
-    place .f -in .parameters -relx 0 -rely 0 -relwidth 1 -relheight 1 -anchor nw -bordermode outside
-}
-
 proc "do_rotate_3d" "var val" {
     switch -- \$var {
 	xrot	{ puts "set view \$val,,, ; replot" }
-	yrot	{ puts "set view ,\$val,, ; replot" }
+	zrot	{ puts "set view ,\$val,, ; replot" }
 	scale	{ puts "set view ,,[expr pow(2,\$val)], ; replot" }
 	zscale	{ puts "set view ,,,[expr pow(2,\$val)] ; replot" }
     }

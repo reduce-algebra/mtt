@@ -17,6 +17,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.333  2002/04/28 18:41:26  geraint
+## Fixed [ 549658 ] awk should be gawk.
+## Replaced calls to awk with call to gawk.
+##
 ## Revision 1.332  2002/04/26 23:19:00  geraint
 ## Fixed path to info files for "mtt info".
 ##
@@ -1197,9 +1201,11 @@ ps=ps
 eps=eps
 psview=$PSVIEW
 
-#Initialise list
+#Initialise list of switches
 mtt_switches='';
 
+#Initialise read dirs
+read_dirs=''
 
 #Look for a command line argument
 while [ -n "`echo $1 | grep '^-'`" ]; do
@@ -1359,6 +1365,14 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                  eps=pdf;
                  pdf='-pdf';
                  psview=$PDFVIEW;
+                ;;
+	-dr )   mtt_switches="$mtt_switches $1"; shift
+                mtt_switches="$mtt_switches $1"; read_dir=$1
+	        if [ -d "${read_dir}" ]; then
+		    read_dirs="${read_dirs} ${read_dir}"
+		else
+		    echo "${read_dir} does not exist - ignoring"
+		fi
                 ;;
 	-viewlevel )  mtt_switches="$mtt_switches $1 $2";
                       viewlevel=$2;
@@ -1912,10 +1926,24 @@ ARGS=$4; _ARGS=-$4; __ARGS=`echo $_ARGS | tr ',' '-'`
 #  mv $1_args.new $1_args.m
 #fi
 
+## If in MTT_work, then copy from -dr read dirs
+this_dir=`basename $PWD`
+if [ "${this_dir}" = "MTT_work" ]; then
+  # Copy from read dirs to MTT_work
+  for dir in ${read_dirs}; do
+    echo Copying ${dir}/*
+    cp --force ${dir}/* .
+   done
+fi
+
 # Tidy mode - operate in the directory MTT-work
 if [ "$tidy" = "tidy" ]; then
    mkdir -p MTT_work
-   cp -p -u  Makefile Make *.* .* MTT_work  2>/dev/null
+   valid_files=`ls | grep -v '^MTT'`
+   ##cp -p -u  Makefile Make *.* .* MTT_work  2>/dev/null
+   cp -p -u -R ${valid_files} MTT_work  2>/dev/null
+
+   # Go to MTT_work
    cd MTT_work
 
    if [ -f ".octaverc" ]; then
@@ -1947,7 +1975,7 @@ if [ "$tidy" = "tidy" ]; then
      exit 1
    fi
 
-  # Copy back form working directory
+  # Copy back from working directory
    if [ "$3" != "view" ] && [ "$3" != "hview" ] && [ -z "$reset" ]; then
       if [ "$3" = "html" ]; then
 	  echo Moving $1_$2
@@ -3352,7 +3380,7 @@ $1_reps_made:
 	rep_txt2sh $1 "$mtt_switches";  touch $1_reps_made
 
 $1_rep.tex: $1_rep.txt $1_reps_made
-	rep_txt2tex $1 "$documenttype" "$directory";
+	rep_txt2tex $1 "$documenttype" "$directory" "$mtt_switches";
 
 #SUMMARY abg Acausal bond graph report (tex)
 $1_abg.tex: $1_sub.sh

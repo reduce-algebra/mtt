@@ -14,6 +14,11 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  2001/07/06 00:46:50  gawthrop
+## Added -cr option -- forces cr to be loaded before the ese.r file
+## This avoids causality problems when using multi-port Rs to represent
+## arbitary equations
+##
 ## Revision 1.10  2000/11/30 15:23:16  peterg
 ## Taken out all subsystem stuff - now done in mtt using
 ## mtt_make_subsystems
@@ -93,7 +98,7 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 info=info;;
 	-cr )
                 load_cr=yes;
-                blurb2=' using cr first';
+                blurb2=' using cr and subs first';
                 ;;
 	-partition )
                 partition=yes;
@@ -119,6 +124,7 @@ fi
 
 defname=$topname"_def.r"
 crname=$topname"_cr.r"
+subsname=$topname"_subs.r"
 paramname=$topname"_params.r"
 daename=$sysname"_rdae.r"
 esename=$sysname"_ese.r"
@@ -126,6 +132,7 @@ logname=ese2rdae.log
 
 if [ -n "${load_cr}" ]; then
     load_cr_comm="in \"${crname}\";"
+    load_subs_comm="in \"${subsname}\";"
 fi
 
 # Inform user
@@ -137,8 +144,9 @@ rm -f $logname
 # Use symbolic algebra to accomplish the transformation
 $SYMBOLIC >$logname  << EOF
 
-%Read in the the cr is -cr set
+%Read in the cr and sub when  -cr is set
 $load_cr_comm
+$load_subs_comm
 
 %Read the formatting function
 in "$MTTPATH/trans/reduce_matrix.r";

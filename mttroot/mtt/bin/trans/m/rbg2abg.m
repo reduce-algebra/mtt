@@ -7,6 +7,10 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,\
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.38  1999/03/12 00:58:06  peterg
+% %% Now gets portlist from the _abg.m file NOT the _rbg.m file
+% %% - this allows expansion of vector SS ports.
+% %%
 % %% Revision 1.37  1998/07/28 19:06:43  peterg
 % %% Still some bugs (vector SS ports)??
 % %%
@@ -563,7 +567,7 @@ for i = 1:n_components
 #    n_unsorted_ports = 0;
 #  end;
   
-  % Junctions or no lables(order of ports unimportant)
+  % Junctions (order of ports unimportant)
   if strcmp(comp_type,'zero')|strcmp(comp_type,'one')
     for j = 1:n_comp_bonds
       components(i,j) = signed_bond_list(j);
@@ -575,6 +579,12 @@ for i = 1:n_components
     end;
     %Write out the signed bond list in the correct order
 unsorted_port_list
+[n_list,m_list] = size(unsorted_port_list);
+if n_list!=n_comp_bonds
+  error(sprintf("Component %s (%s) has %i bonds but %i port lables",\
+		comp_name, comp_type, n_comp_bonds, n_list))
+endif
+
 for j = 1:n_comp_bonds
   j
       name_k = unsorted_port_list(j,:)

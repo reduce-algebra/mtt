@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1999/05/17 21:27:39  peterg
+% %% Added damping
+% %%
 % %% Revision 1.2  1999/05/16 21:31:48  peterg
 % %% Renamed SS to patch
 % %%
@@ -27,6 +30,7 @@
 %ALIAS	$1	dk
 %ALIAS	$2	dm
 %ALIAS	$3	dz
+%ALIAS	$4	dr
 
 %% Each line should be of one of the following forms:
 %	     a comment (ie starting with %)
@@ -42,7 +46,7 @@
 	dk		lin	state,dk
 
 % Component type R
-	r_d		lin	flow,r_d
+	dr		lin	flow,dr
 
 % Component type SS
 	[y_in]		SS		external,external

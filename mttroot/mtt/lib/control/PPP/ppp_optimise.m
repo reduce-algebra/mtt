@@ -1,7 +1,7 @@
 function [par,Par,Error,Y,iterations,x] = \
       ppp_optimise(system_name,x_0,par_0,simpar,u,y_0,free,Q,extras);
   ## Levenberg-Marquardt optimisation for PPP/MTT
-  ## Usage: [par,Par,Error,Y,iterations,x] = ppp_optimise(system_name,x_0,par_0,simpar,u,y_0,free[,extras]);
+  ## Usage: [par,Par,Error,Y,iterations,x] = ppp_optimise(system_name,x_0,par_0,simpar,u,y_0,free[,Q,extras]);
   ##  system_name     String containing system name
   ##  x_0             Initial state
   ##  par_0           Initial parameter vector estimate
@@ -29,6 +29,9 @@ function [par,Par,Error,Y,iterations,x] = \
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.13  2002/08/20 15:43:45  gawthrop
+  ## Works with ident DIY rep
+  ##
   ## Revision 1.12  2002/06/11 11:25:25  gawthrop
   ## No longer delay the simulated data.
   ##

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  1997/02/24 13:02:17  peterg
+## Added gamma and delta transformations
+##
 ## Revision 1.8  1996/12/31 16:14:53  peterg
 ## Now handles multi-character subscripts.
 ##
@@ -97,6 +100,7 @@ sed \
     -e "s/lambda/\\\lambda/g" \
     -e "s/mu/\\\mu/g" \
     -e "s/phi/\\\phi/g" \
+    -e "s/pi/\\\pi/g" \
     -e "s/rho/\\\rho/g" \
     -e "s/sigma/\\\sigma/g" \
     -e "s/omega/\\\omega/g" \

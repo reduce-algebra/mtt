@@ -5,6 +5,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  2002/04/26 17:17:20  geraint
+## Allow variables to be set outside Makefile.
+##
 ## Revision 1.1  2001/06/04 08:18:52  gawthrop
 ## Putting documentation under CVS
 ##
@@ -79,7 +82,7 @@ tidy:
 
 install-doc: mtt.html mtt.ps.gz  mtt.info
 	cp mtt.info* $(INFOPATH)
-	cp mtt.html mtt_toc.html mtt.ps.gz  $(DOCPATH)
+	cp mtt*.html mtt.ps.gz  $(DOCPATH)
 	chmod -R a+r $(DOCPATH)
 	chmod a+x  $(DOCPATH)
 

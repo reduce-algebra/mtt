@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  2000/05/11 13:43:14  peterg
+## No change
+##
 ## Revision 1.1  1999/03/15 23:27:16  peterg
 ## Initial revision
 ##
@@ -22,7 +25,12 @@
 echo Creating $1_odes.dat2
 $MATRIX  <<EOF >octave_ode2odes.log 2>mtt_error.txt
   global MTT_data
-  $1_ode2odes;
+
+  ## Set up the simulation parameters
+  par = $1_numpar; 
+  x_0  =  $1_state(par);
+  simpar = $1_simpar;
+  $1_ode2odes(x_0,par,simpar); 
   if is_complex(MTT_data)
     mtt_error("octave_ode2odes: Simulated data is complex - something is wrong!");
     MTT_data = real(MTT_data);

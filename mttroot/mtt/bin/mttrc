@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.16  2000/12/27 15:16:44  peterg
+## If then else format
+##
 ## Revision 1.15  2000/12/27 14:57:43  peterg
 ## Now takes the base path as an argument
 ##
@@ -76,9 +79,9 @@ else
   
   # Setup the paths
   export MTTPATH=$MTT_BASE/bin
-  export MTT_LIB=$MTT_BASE/mtt-lib
-  export MTT_DOC=$MTT_BASE/mtt-doc
-  export MTT_CC=$MTT_BASE/mtt-cc
+  export MTT_LIB=$MTT_BASE/lib
+  export MTT_DOC=$MTT_BASE/doc
+  export MTT_CC=$MTT_BASE/cc
   
   export MTT_COMPONENTS=$MTT_LIB/comp
   export MTT_CRS=$MTT_LIB/cr

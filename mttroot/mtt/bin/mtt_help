@@ -1,0 +1,53 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: mtt_help
+
+# P.J.Gawthrop Nov 1996
+# Copyright (c) P.J.Gawthrop 1996
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+topic=$1
+subtopic=$2
+if [ "$subtopic" = "" ]; then
+  subtopic='.'
+fi;
+
+if [ "$topic" = "comps" ]; then
+  echo 'Components:'
+  grep -h '\%SUMMARY' $MTTPATH/comp/compound/*_lbl.txt  $MTTPATH/comp/simple/*_cause.m|\
+  sed 's/\%SUMMARY[ ]*/	/' |\
+  grep $subtopic |\
+  sed 's/:[ ]*/	/' |\
+  sort
+
+elif [ "$topic" = "reps" ]; then
+  echo 'Representations:'
+  grep  '#REPRESENTATION' $MTTPATH/mtt |\
+  sed 's/#REPRESENTATION[	]*/	/' |\
+  grep $subtopic |\
+  sort
+
+else
+  grep -h '\%SUMMARY' \
+       $MTTPATH/comp/compound/$1_lbl.txt \
+       $MTTPATH/comp/simple/$1_cause.m 2>/dev/null |\
+  sed 's/\%SUMMARY[ ]*//' |\
+  sed 's/:[ ]*/	/'
+
+  grep -h '\%DESCRIPTION' \
+       $MTTPATH/comp/compound/$1_lbl.txt \
+       $MTTPATH/comp/simple/$1_cause.m 2>/dev/null |\
+  sed 's/\%DESCRIPTION[	]*/	  /' |\
+  sed 's/:[ ]*/	/'
+fi;
+

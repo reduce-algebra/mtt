@@ -7,6 +7,9 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,\
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.36  1998/07/28 10:30:50  peterg
+% %% Implemented vector SS ports.
+% %%
 % %% Revision 1.35  1998/07/08 15:35:15  peterg
 % %% Added errorfile argument
 % %%
@@ -362,7 +365,7 @@ bonds = causality;
 
 % Now expand vector ports
 [n_bonds,junk] = size(bonds);
-n_ports=length(port_bond);
+n_ports = length(port_bond);
 n_exp_ports=n_ports;
 exp_port_name="";
 exp_port_bond = [];
@@ -390,8 +393,8 @@ for i=1:n_ports
     end;
     
     if other_bond_index>i %then its not been done yet
-      mtt_info(['Vector port: ', port_name_i],infofile);
-      mtt_info(['matching: ', other_port_name],infofile);
+      mtt_info(["Vector port: ", port_name_i],infofile);
+      mtt_info(["matching: ", other_port_name],infofile);
       % Remove sign info.
       bond_index = abs(signed_bond_index);
       sig = sign(signed_bond_index);
@@ -568,7 +571,7 @@ for i = 1:n_components
     %Write out the signed bond list in the correct order
 unsorted_port_list
 for j = 1:n_comp_bonds
-      j
+  j
       name_k = unsorted_port_list(j,:)
       k = name_in_list(name_k, port_list);
       % Check that it only appears once in port list
@@ -590,6 +593,17 @@ for j = 1:n_comp_bonds
     end;
   end;
 end;
+
+
+
+
+
+
+
+
+
+
+
 
 
 

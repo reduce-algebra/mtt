@@ -17,6 +17,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.392  2004/08/26 12:50:12  geraint
+## Replaced some implicit rules with explicit tests and patterns.
+## Better than having make search through every possible implicit rule.
+##
 ## Revision 1.391  2004/08/26 00:07:06  geraint
 ## Added rule to create cbg.dia.
 ##
@@ -2453,11 +2457,13 @@ endif
 ifneq ("$sensitivity","sensitivity")
 ifneq ("$level","0")
 # If level>0, try and get subsystem files; creating if necessary
+ifneq ("\$(wildcard $1_abg.dia)","$1_abg.dia")
 $1_abg.fig:
 	mtt -q -u $mtt_switches compcopy $1
 else
 $1_abg.fig:
 	
+endif
 endif
 endif
 
@@ -3669,18 +3675,15 @@ $1_$2.doc: $1_$2.tex
 	makedoc "$mtt_switches" "$1" "$2" "$3" "$4" "$documenttype" "$ps"
 
 
-#Create PostScript version of fig files
+#Create PostScript version of dia and fig files
 ifeq ($REPTYPE,bg)
-#ifeq ("\$(wildcard $1_abg.dia)","$1_abg.dia")
-#$1_$2.$ps : $1_$2.dia
-#	echo Creating $1_$2.$ps
-#	dia --no-splash --export-to-format=eps $1_$2.dia
-#	mv $1_$2.eps $1_$2.$ps
-#else
+ifeq ("\$(wildcard $1_abg.dia)","$1_abg.dia")
+$1_$2.$ps : $1_$2.dia
+else
 $1_$2.$ps : $1_$2.fig
+endif
 	echo Creating $1_$2.$ps
-	multi_command2 "fig2dev -L$eps" $1 $2.fig $2.$ps | sh
-#endif
+	bg2eps $1 $2 $ps $eps
 endif
 
 

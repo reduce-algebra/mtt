@@ -3,6 +3,8 @@
  * Matlab mex algebraic equations for <mtt_model_name>
  */
 
+#if <have_algebraic_equations> /* have_algebraic_equations */
+
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -116,3 +118,5 @@ mexFunction (int nlhs, mxArray *plhs[],
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* have_algebraic_equations */

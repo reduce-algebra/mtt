@@ -113,6 +113,7 @@ update_inputs_from_simulink (SimStruct *S)
 static void
 update_inputs_from_solver (void)
 {
+#if <have_algebraic_equations> /* have_algebraic_equations */
   mxArray *MTT_MATLAB_P;
   mxArray *MTT_MATLAB_T;
   mxArray *MTT_MATLAB_U;
@@ -178,6 +179,8 @@ update_inputs_from_solver (void)
   mxDestroyArray (MTT_MATLAB_X);
 
   PRINT_LEAVE;
+#endif /* have_algebraic_equations */
+  ;
 }
 
 static void

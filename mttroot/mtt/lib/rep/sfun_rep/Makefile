@@ -7,17 +7,19 @@ $(MTT_SYS)_sfun.mexglx: $(MTT_SYS)_sfun.c sfun_debug.h useful-functions.hh $(MTT
 	mex $(MTT_SYS)_sfun.c
 	cp *_sfun*mexglx $(MTT_SYS).mdl ..
 
-$(MTT_SYS)_sfun.c:: ${MTT_REP}/sfun_rep/sfun.c.tmpl
+$(MTT_SYS)_sfun.c:: ${MTT_REP}/sfun_rep/sfun.c.tmpl $(MTT_SYS)_def.r
 	echo Creating $@
-	cat $^ | sed 's/<mtt_model_name>/$(MTT_SYS)/g' > $@
+	cat $< | sed 's/<mtt_model_name>/$(MTT_SYS)/g' |\
+	sed s/\<have_algebraic_equations\>/`mtt_getsize $(MTT_SYS) yz`/ > $@
 
 $(MTT_SYS)_sfun_ae.mexglx: $(MTT_SYS)_sfun_ae.c sfun_debug.h useful-functions.hh $(MTT_SYS)_def.h $(MTT_SYS)_sympar.h $(MTT_SYS)_cr.h $(MTT_SYS)_ae.c
 	echo Creating $@
 	mex $(MTT_SYS)_sfun_ae.c
 
-$(MTT_SYS)_sfun_ae.c:: ${MTT_REP}/sfun_rep/mex_ae.c.tmpl
+$(MTT_SYS)_sfun_ae.c:: ${MTT_REP}/sfun_rep/mex_ae.c.tmpl $(MTT_SYS)_def.r
 	echo Creating $@
-	cat $^ | sed 's/<mtt_model_name>/$(MTT_SYS)/g' > $@
+	cat $< | sed 's/<mtt_model_name>/$(MTT_SYS)/g' |\
+	sed s/\<have_algebraic_equations\>/`mtt_getsize $(MTT_SYS) yz`/ > $@
 
 $(MTT_SYS)_sfun_input.mexglx: $(MTT_SYS)_sfun_input.c sfun_debug.h useful-functions.hh $(MTT_SYS)_def.h $(MTT_SYS)_sympar.h $(MTT_SYS)_cr.h $(MTT_SYS)_input.c $(MTT_SYS)_numpar.c
 	echo Creating $@

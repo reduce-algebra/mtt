@@ -11,8 +11,11 @@
 ###############################################################
 ## Version control history
 ###############################################################
-## $Header$
+## $Id$
 ## $Log$
+## Revision 1.1  1996/08/04 17:45:11  peter
+## Initial revision
+##
 ###############################################################
 
 # The causal BG is described by four matrices
@@ -85,10 +88,8 @@ echo Creating $1_cbg.m
   infofile= '$infofile';
 
   %Convert from acausal to causal bond graph in m-file form.
-  [bonds,components] = $1_abg;
   system_name = '$1';
-
-  [cbonds,status] = abg2cbg(system_name,bonds,infofile);
+  [cbonds,status] = abg2cbg(system_name,infofile);
 
 
   %Write the function m-file for the causal bond graph

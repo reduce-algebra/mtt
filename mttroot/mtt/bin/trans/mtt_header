@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.64  2004/08/29 01:48:46  geraint
+## Added rules to create headers for sorted systems: sesx and sesy.
+##
 ## Revision 1.63  2004/08/28 22:08:41  geraint
 ## Fixed zeromatrices statements: spaces instead of commas
 ##
@@ -403,6 +406,13 @@ case $rep in
 	output='mttsimpar'
 	oct_rep_include="#include <mtt_simpar.hh>"
 	oct_return_type="mtt_simpar"
+	;;
+    sae)
+	states=yes;
+	inputs=yes;
+	parameters=yes;
+	output=mttyz;
+	args=$eqnargs;
 	;;
     sese)
 	states=yes;

@@ -33,9 +33,11 @@ menu .menubar.file.menu
 .menubar.file.menu add separator
 .menubar.file.menu add command -label "Quit"			     -command exit
 
+button .menubar.xmtt  -text "xMTT" -relief flat		 -command { exec xmtt }
 button .menubar.quit  -text "Quit" -relief flat		 -command exit 
 
 pack .menubar.file    -expand false -fill x -side left
+pack .menubar.xmtt    -expand false -fill x -side left
 pack .menubar.quit    -expand false -fill x -side right
 
 # status bar

@@ -26,6 +26,9 @@ function cbg2fig(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.4  1996/12/07  21:34:52  peterg
+% %% Tests for null string with strcmp
+% %% 
 % %% Revision 1.3  1996/08/08  15:52:28  peter
 % %% Recursive version.
 % %% Fails due to octave bug - reported.
@@ -203,11 +206,22 @@ for i = 1:N_components
   fprintf(filenum, '%1.0f %1.0f ', coords(1), coords(2)); 
   fprintf(filenum, '%s:%s%s\n', comp_type, comp_name, Terminator);
   
-  % If it's a subsystem, do the fig file for that as well
-  cbg2fig(comp_name, ...
-                 comp_type, full_name, ...
-                 stroke_length, stroke_thickness, stroke_colour, ...
-                 comp_font, comp_colour_u, comp_colour_o);
+  % If it's a subsystem (ie not a component), do the fig file for that as
+  % well
+  if comp_type=='0'
+    comp_type='zero';
+  end
+  if comp_type=='1'
+    comp_type='one';
+  end
+  
+  if (exist([comp_type,'_cause'])==0)
+    cbg2fig(comp_name, ...
+	comp_type, full_name, ...
+        stroke_length, stroke_thickness, stroke_colour, ...
+        comp_font, comp_colour_u, comp_colour_o);
+  end;
+	   
 end;
 
 % Close the file

@@ -21,6 +21,12 @@ public:
   void
   Solve (void);
 
+  ColumnVector
+  solve (const ColumnVector	&x,
+	 const ColumnVector	&u,
+	 const double		&t,
+	 const ColumnVector	&par);
+
   ~Reduce_Solver (void) {};
 
 };

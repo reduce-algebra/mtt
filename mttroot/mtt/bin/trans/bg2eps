@@ -1,0 +1,24 @@
+#! /bin/sh
+
+set +e				# prevent dia errors from halting MTT
+
+sys=$1
+rep=$2
+ps=$3
+eps=$4
+
+dia_files=`ls ${sys}*_${rep}.dia 2>/dev/null | sed 's/\.dia$//'`
+fig_files=`ls ${sys}*_${rep}.fig 2>/dev/null | sed 's/\.fig$//'`
+
+for file in ${dia_files}
+  do
+  dia --export-to-format=eps ${file}.dia
+  if [ "${ps}" != "eps" ]
+      then mv ${file}.eps ${file}.${ps}
+  fi
+done
+
+for file in ${fig_files}
+  do
+  fig2dev -L${eps} ${file}.fig > ${file}.${ps}
+done

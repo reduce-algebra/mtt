@@ -6,292 +6,378 @@ function [bonds,components,n_vector_bonds] = \
   ## write useful quantity of data to log
   struct_levels_to_print = 4;
 
-
-
-  ###############################################
-  ## Extract data from bonds structure (ibg.m) ##
-  ###############################################
-  disp("--- Started extracting bonds data ---")
-
-  ## unique number for each (sub-) bond
-  bond_number = 0;
-
-  ## extract data from each bond
+  ################################
+  ## create component structure ##
+  ################################
+  
+  ## loop over each bond in ibg.m file
   for [bond, bond_name] = bonds
-    i = str2num(split(bond_name, "bond")(2,:))
+    i = str2num(split(bond_name, "bond")(2,:));
 
-    ## extract type and name of component at each end
-    head.name = deblank(split(bond.head.component, ":")(2,:));
-    head.type = deblank(split(bond.head.component, ":")(1,:));
-    tail.name = deblank(split(bond.tail.component, ":")(2,:));
-    tail.type = deblank(split(bond.tail.component, ":")(1,:));
+    ## populate "head" and "tail" structures
+    ## then copy the contents to an overall structure
 
-    ## capture directional info
-    head.end = "head";
-    tail.end = "tail";
+    ## track (signed) vector bond number within each component
+    head.index = +i
+    tail.index = -i
 
-    ## assign vector bond index
-    head.index = i;
-    tail.index = i;
+    ## extract type of component at each end
+    head_type = deblank(split(bond.head.component, ":")(1,:));
+    tail_type = deblank(split(bond.tail.component, ":")(1,:));
 
-    ## determine if internal port (and fix name) or subsystem
-    if (strcmp(head.type, "SS") & (index(head.name, "[") == 1))
-      head.is_port = true;
-      head.name = mtt_strip_name(head.name);
+    ## extract name of component at each end
+    head_name = deblank(split(bond.head.component, ":")(2,:));
+    tail_name = deblank(split(bond.tail.component, ":")(2,:));
+
+    ## extract port label data
+    head.label = bond.head.ports;
+    tail.label = bond.tail.ports;
+
+    ## determine whether internal port or subsystem
+    ## and fix names of ports
+    if (strcmp(head_type, "SS") & (index(head_name, "[") == 1))
+      head_comp_or_port = "port";
+      head_name = mtt_strip_name(head_name);
     else
-      head.is_port = false;
+      head_comp_or_port = "comp";
     endif
-    if (strcmp(tail.type, "SS") & (index(tail.name, "[") == 1))
-      tail.is_port = true;
-      tail.name = mtt_strip_name(tail.name);
+    if (strcmp(tail_type, "SS") & (index(tail_name, "[") == 1))
+      tail_comp_or_port = "port";
+      tail_name = mtt_strip_name(tail_name);
     else
-      tail.is_port = false;
+      tail_comp_or_port = "comp";
     endif
 
-    ## determine if junction
-    if (strcmp(head.type, "0") | (strcmp(head.type, "1")))
-      head.is_junction = true;
-    else
-      head.is_junction = false;
-    endif
-    if (strcmp(tail.type, "0") | (strcmp(tail.type, "1")))
-      tail.is_junction = true;
-    else
-      tail.is_junction = false;
-    endif
+    eval(sprintf("comp_s.%s.%s.type = '%s'",
+		 head_comp_or_port, head_name, head_type));
+    eval(sprintf("comp_s.%s.%s.type = '%s'",
+		 tail_comp_or_port, tail_name, tail_type));
 
-    ## assign (vector) port names
-    if (! head.is_junction)
-      if (strcmp(bond.head.ports, "[]"))
-	head.label = "in";
-	mtt_info(sprintf("Defaulting port name %s on component %s (%s)",
-			 head.label, head.name, head.type), infofile);
-      else
-	head.label = mtt_strip_name(bond.head.ports);
-      endif
-    endif
-    if (! tail.is_junction)
-      if (strcmp(bond.tail.ports, "[]"))
-	tail.label = "out";
-	mtt_info(sprintf("Defaulting port name %s on component %s (%s)",
-			 tail.label, tail.name, tail.type), infofile);
-      else
-	tail.label = mtt_strip_name(bond.tail.ports);
-      endif
-    endif
+    eval(sprintf("comp_s.%s.%s.bond%i = head", 
+		 head_comp_or_port, head_name, i));
+    eval(sprintf("comp_s.%s.%s.bond%i = tail", 
+		 tail_comp_or_port, tail_name, i));
+  endfor    
 
-    ## apply aliases
-      if (! head.is_junction)
-      head.alias = eval(sprintf("%s_alias", head.type));
-      if (is_struct(head.alias))
-	if (struct_contains(head.alias, head.label))
-	  old_name = head.label;
-	  new_name = eval(sprintf("head.alias.%s", old_name));
-	  head.label = new_name;	
-	  mtt_info(sprintf("Aliasing [%s]\t on component %s (%s) to [%s]",
-			   old_name, head.name, head.type, new_name), \
-		   infofile);
-	endif
-      endif
-    endif
-    if (!tail.is_junction)
-      tail.alias = eval(sprintf("%s_alias", tail.type));
-      if (is_struct(tail.alias))
-	if (struct_contains(tail.alias, tail.label))
-	  old_name = tail.label;
-	  new_name = eval(sprintf("tail.alias.%s", old_name));
-	  tail.label = new_name;	
-	  mtt_info(sprintf("Aliasing [%s]\t on component %s (%s) to [%s]",
-			   old_name, tail.name, tail.type, new_name), \
-		   infofile);
-	endif
-      endif
-    endif
+  ## comp_s
+  ##   comp
+  ##     %s (name)
+  ##       type
+  ##       bond%i
+  ##         label
+  ##   port
+  ##     %s (name)
+  ##       type
+  ##       bond%i
+  ##         label
 
-    ## expand vector bonds
-    disp("--- Expanding vector bonds ---");
-    if (! (head.is_junction | tail.is_junction))
-      ## junctions can't be expanded until all bonds are assigned      
-      ## as label might occur on only one bond
-      [head.sub_bonds, head.n_sub_bonds] = split_port(head.label)
-      [tail.sub_bonds, tail.n_sub_bonds] = split_port(tail.label)
-      if (head.n_sub_bonds != tail.n_sub_bonds)
-	mtt_error(sprintf("Vector ports %s and %s are not compatible",
-			  head.label, tail.label), errorfile);
-      elseif (head.n_sub_bonds > 1)
-	mtt_info(sprintf("Vector port %s matching %s",
-			 head.label, tail.label), infofile);
-      endif
-    endif
-    
-    ## assign unique number and causality to each sub-bond
-    if (! (head.is_junction | tail.is_junction))
-      for sub_bond = 1:head.n_sub_bonds
-	++bond_number;
-	
-	eval(sprintf("head.bond%i.index = %i", sub_bond, +bond_number));
-	eval(sprintf("tail.bond%i.index = %i", sub_bond, -bond_number));
-	
-	## effort causality
-	if (strcmp(bond.causality.effort, "head"))
-	  causality(bond_number, 1) = +1;
-	  head.causality = +1;
-	elseif (strcmp(bond.causality.effort, "tail"))
-	  causality(bond_number, 1) = -1;
-	  head.causality = -1;
-	else
-	  causality(bond_number, 1) = 0;
-	  head.causality = 0;
-	endif
-	
-	## flow causality
-	if (strcmp(bond.causality.flow, "head"))
-	  causality(bond_number, 2) = -1;
-	  tail.causality = -1;
-	elseif (strcmp(bond.causality.flow, "tail"))
-	  causality(bond_number, 2) = +1;
-	  tail.causality = +1;
-	else
-	  causality(bond_number, 2) = 0;
-	  tail.causality = 0;
-	endif
-	
-	eval(sprintf("head.bond%i.port = deblank(head.sub_bonds(%i,:))",
-		     sub_bond, sub_bond));
-	eval(sprintf("tail.port%i.port = deblank(tail.sub_bonds(%i,:))",
-		     sub_bond, sub_bond));
-	
-      endfor
-    else
-      ## save bond causality data within junction for later use
-      head.causality.effort = bond.causality.effort;
-      tail.causality.effort = bond.causality.effort;
-      head.causality.flow   = bond.causality.flow;
-      tail.causality.flow   = bond.causality.flow;
-    endif
+  ####################################################
+  ## count number of vector bonds on each component ##
+  ####################################################
 
-    ## copy bond data to component structure (comp_s)
-    if (head.is_port)
-      S = sprintf("comp_s.port.%s", head.name);
-      eval(sprintf("%s.vec_bond%i = head", S, i));
-      eval(sprintf("%s.name = '%s'", S, head.name));
-    else
-      S = sprintf("comp_s.comp.%s", head.name);
-      eval(sprintf("%s.vec_bond%i = head", S, i));
-      eval(sprintf("%s.name = '%s'", S, head.name));
-      eval(sprintf("%s.type = '%s'", S, head.type));
-    endif
+  if (struct_contains(comp_s, "comp"))
+    for [comp, comp_name] = comp_s.comp
+      n = size(struct_elements(comp))(1) - 1;
+      eval(sprintf("comp_s.comp.%s.n_bonds = %i",
+		   comp_name, n));
+    endfor
+  endif
+  
+  if (struct_contains(comp_s, "port"))
+    for [port, port_name] = comp_s.port
+      n = size(struct_elements(port))(1) - 1;
+      eval(sprintf("comp_s.port.%s.n_bonds = %i",
+		   port_name, n));
+    endfor
+  endif
 
-    if (tail.is_port)
-      S = sprintf("comp_s.port.%s", tail.name);
-      eval(sprintf("%s.vec_bond%i = tail", S, i));
-      eval(sprintf("%s.name = '%s'", S, tail.name));
-    else
-      S = sprintf("comp_s.comp.%s", tail.name);
-      eval(sprintf("%s.vec_bond%i = tail", S, i));
-      eval(sprintf("%s.name = '%s'", S, tail.name));
-      eval(sprintf("%s.type = '%s'", S, tail.type));
-    endif
-  endfor
+  ## comp_s
+  ##   comp
+  ##     %s (name)
+  ##       type
+  ##       n_bonds
+  ##       bond%i
+  ##         label
+  ##   port
+  ##     %s (name)
+  ##       type
+  ##       n_bonds
+  ##       bond%i
+  ##         label
 
-  disp("--- Finished extracting bond data ---");
+  ########################################################
+  ## ensure labels exist on all ports of each component ##
+  ########################################################
 
-  #############################
-  ## Expand vector junctions ##
-  #############################
   if (struct_contains(comp_s, "comp"))
     for [comp, comp_name] = comp_s.comp
       if (strcmp(comp.type, "0") | strcmp(comp.type, "1"))
-
-	n_ports = size(struct_elements(comp), 1) - 2;
-	## subtracted 2 for name and type
+	
+	## component is a junction
 	n_named_ports = 0;
-
+	
 	## get labelled ports
-	for [vec_bond, vec_bond_name] = comp
-	  if (! exist("vec_bond.label"))
-	    vec_bond.label = "[]";
-	  endif
-	  if (index(vec_bond_name, "vec_bond") == 1)
-	    if (! strcmp(vec_bond.label, "[]"))
+	for [bond, bond_name] = comp
+	  if (index(bond_name, "bond") == 1)
+	    if (! exist("bond.label"))
+	      bond.label = "[]";
+	    endif
+	    if (! strcmp(bond.label, "[]"))
 	      n_named_ports += 1;
-	      port_name = vec_bond.label;
+	      port_label = bond.label;
 	    endif
 	  endif
-	  eval(sprintf("comp.%s = vec_bond", vec_bond_name));
+	  eval(sprintf("comp.%s = bond", bond_name));
 	endfor
-
+	
 	## attach labels to unlabelled ports
 	if (n_named_ports == 0)
-	  for [vec_bond, vec_bond_name] = comp
-	    if (index(vec_bond_name, "vec_bond") == 1)
-	      vec_bond.label = "in";
+	  for [bond, bond_name] = comp
+	    if (index(bond_name, "bond") == 1)
+	      bond.label = "in";
 	    endif
-	    eval(sprintf("comp.%s = vec_bond", vec_bond_name));
+	    eval(sprintf("comp.%s = bond", bond_name));
 	  endfor
 	elseif (n_named_ports == 1)
-	  mtt_info(sprintf("Defaulting all ports on junction %s to %s",
-			   comp_name, port_name), infofile);
-	  for [vec_bond, vec_bond_name] = comp
-	    if (index(vec_bond_name, "vec_bond") == 1)
-	      vec_bond.label = port_name;
+	  mtt_info(sprintf("Defaulting all ports on junction %s to %s", \
+			   comp_name, port_label), infofile);
+	  for [bond, bond_name] = comp
+	    if (index(bond_name, "bond") == 1)
+	      bond.label = port_label;
 	    endif
-	    eval(sprintf("comp.%s = vec_bond", vec_bond_name));
+	    eval(sprintf("comp.%s = bond", bond_name));
 	  endfor
-	elseif ((n_named_ports != 0) && (n_named_ports != n_ports))
-	  mtt_error(sprintf("Junction must have 0,1 or %i port labels", 
-			    n_ports), errorfile);	  
+	elseif (n_named_ports != bond.n_bonds)
+	  mtt_error(sprintf("Junction must have 0,1 or %i port labels", \
+			    n_bonds), errorfile);
 	endif
-#	eval(sprintf("comp.%s.%s = vec_bond", comp_name, vec_bond_name))
-
-	## expand vector bonds
-	for [vec_bond, vec_bond_name] = comp
-	  if (index(vec_bond_name, "vec_bond") == 1)
-	    [sub_bonds, n_sub_bonds] = split_port(vec_bond.label)
-	    for sub_bond = 1:n_sub_bonds
-	      ++bond_number;
-
-	      if (strcmp(vec_bond.end, "head"))
-		direction = +1;
+	
+      else
+	## component is not a junction
+	for [bond, bond_name] = comp
+	  if (index(bond_name, "bond") == 1)
+	    if (strcmp(bond.label, "[]"))
+	      if (bond.index > 0)
+		bond.label = "in";
 	      else
-		direction = -1;
+		bond.label = "out";
 	      endif
-
-	      eval(sprintf("vec_bond.bond%i.index = %i",
-			   sub_bond, bond_number*direction));
-
-
-	      ## causality
-	      if (strcmp(vec_bond.causality.effort, "head"))
-		causality(bond_number, 1) = +1;
-	      elseif (strcmp(vec_bond.causality.effort, "tail"))
-		causality(bond_number, 1) = -1;
-	      else
-		causality(bond_number, 1) = 0;
-	      endif
-	      if (strcmp(vec_bond.causality.flow, "head"))
-		causality(bond_number, 2) = -1;
-	      elseif (strcmp(vec_bond.causality.flow, "tail"))
-		causality(bond_number, 2) = +1;
-	      else
-		causality(bond_number, 2) = 0;
-	      endif
-	    endfor
+	    else
+	      bond.label = mtt_strip_name(bond.label);
+	    endif
 	  endif
-	  eval(sprintf("comp.%s = vec_bond", vec_bond_name));
+	  eval(sprintf("comp.%s = bond", bond_name));
 	endfor
-     endif
-     eval(sprintf("comp_s.comp.%s = comp", comp_name));
+      endif
+      
+      eval(sprintf("comp_s.comp.%s = comp", comp_name));
     endfor
   endif
-  ## FIXME: add sub_bonds to junctions  
 
+  ####################
+  ## expand aliases ##
+  ####################
+
+  if (struct_contains(comp_s, "comp"))
+    for [comp, comp_name] = comp_s.comp
+      if ((! strcmp(comp.type, "0")) & (! strcmp(comp.type, "1")))
+	alias = eval(sprintf("%s_alias", comp.type));
+	if (is_struct(alias))
+	  for [bond, bond_name] = comp
+	    if (struct_contains(alias, "bond.label"))
+	      old_name = bond.label;
+	      new_name = eval(sprintf("alias.%s", old_name));
+	      bond.label = new_name;
+	      mtt_info(sprintf("Aliasing [%s] on %s (%s) to [%s]",
+			       old_name, comp_name, comp.type, new_name),
+		       infofile);
+	    endif
+	    eval(sprintf("comp.%s = bond", bond_name));
+	  endfor
+	endif
+	eval(sprintf("comp_s.%s = comp", comp_name));
+      endif
+    endfor
+  endif
+
+  ## comp_s
+  ##   comp
+  ##     %s (name)
+  ##       type
+  ##       n_bonds
+  ##       bond%i
+  ##         label
+  ##   port
+  ##     %s (name)
+  ##       type
+  ##       n_bonds
+  ##       bond%i
+  ##         label
+
+  ##########################################
+  ## create sub-bonds according to labels ##
+  ##########################################
+
+  if (struct_contains(comp_s, "comp"))
+    for [comp, comp_name] = comp_s.comp
+      for [bond, bond_name] = comp
+	if (index(bond_name, "bond") == 1)
+	  [sub_bonds, n_sub_bonds] = split_port(bond.label);
+	  for i = 1:n_sub_bonds
+	    eval(sprintf("bond.subbond%i.label = '%s'",
+			 i, deblank(sub_bonds(i,:))))
+	  endfor
+	endif
+	eval(sprintf("comp.%s = bond", bond_name));
+      endfor
+      eval(sprintf("comp_s.comp.%s = comp", comp_name));
+    endfor
+  endif
+
+  if (struct_contains(comp_s, "port"))
+    for [port, port_name] = comp_s.port
+      for [bond, bond_name] = port
+	if (index(bond_name, "bond") == 1)
+	  [sub_bonds, n_sub_bonds] = split_port(bond.label);
+	  for i = 1:n_sub_bonds
+	    eval(sprintf("bond.subbond%i.label = '%s'",
+			 i, deblank(sub_bonds(i,:))));
+	  endfor
+	endif
+	eval(sprintf("port.%s = bond", bond_name));
+      endfor
+      eval(sprintf("comp_s.port.%s = comp", port_name));
+    endfor
+  endif
+
+  ######################################################
+  ## check that both ends of each bond are compatible ##  
+  ######################################################
+
+  for [bond, bond_name] = bonds
+    ## FIXME:
+    1;
+  endfor
+
+  ## comp_s
+  ##   comp
+  ##     %s (name)
+  ##       type
+  ##       n_bonds
+  ##       bond%i
+  ##         label
+  ##         subbond%i
+  ##   port
+  ##     %s (name)
+  ##       type
+  ##       n_bonds
+  ##       bond%i
+  ##         label
+  ##         subbond%i
+
+  #########################################
+  ## assign a unique number to each bond ##
+  #########################################
+
+  unique_bond_number = 0;
   
+  for [bond, bond_name] = bonds
+    i = str2num(split(bond_name, "bond")(2,:));
+
+    ## extract type of component at each end
+    head.type = deblank(split(bond.head.component, ":")(1,:));
+    tail.type = deblank(split(bond.tail.component, ":")(1,:));
+
+    ## extract name of component at each end
+    head_name = deblank(split(bond.head.component, ":")(2,:));
+    tail_name = deblank(split(bond.tail.component, ":")(2,:));
+ 
+    ## determine whether internal port or subsystem
+    ## and fix names of ports
+    if (strcmp(head.type, "SS") & (index(head_name, "[") == 1))
+      head_comp_or_port = "port";
+      head_name = mtt_strip_name(head_name);
+    else
+      head_comp_or_port = "comp";
+    endif
+    if (strcmp(tail.type, "SS") & (index(tail_name, "[") == 1))
+      tail_comp_or_port = "port";
+      tail_name = mtt_strip_name(tail_name);
+    else
+      tail_comp_or_port = "comp";
+    endif
+
+    ## create strings to reference each component
+    head_str = sprintf("comp_s.%s.%s.bond%i",
+		       head_comp_or_port, head_name, i);
+    tail_str = sprintf("comp_s.%s.%s.bond%i",
+		       tail_comp_or_port, tail_name, i);
+    
+    head_bond = eval(head_str);
+    tail_bond = eval(tail_str);
+    
+    ## check compatible sizes
+    head.n_subs = size(struct_elements(head_bond))(1) - 2;
+    tail.n_subs = size(struct_elements(tail_bond))(1) - 2;
+    if (head.n_subs != tail.n_subs)
+      mtt_error(sprintf("Vector ports %s and %s are not compatible",
+			head_bond.label, tail_bond.label), errorfile);
+    elseif (head.n_subs > 1)
+      mtt_info(sprintf("Vector port %s matches %s",
+		       head_bond.label, tail_bond.label), infofile);
+    endif
+
+    ## assign bond number
+    for i = 1:head.n_subs
+      ++unique_bond_number;
+      eval(sprintf("%s.subbond%i.index = +%i",
+		   head_str, i, unique_bond_number));
+      eval(sprintf("%s.subbond%i.index = -%i",
+		   tail_str, i, unique_bond_number));
+
+      ## write causality for bond
+      if (strcmp(bond.causality.effort, "head"))
+	eval(sprintf("causality(%i,1) = +1", unique_bond_number));
+      elseif (strcmp(bond.causality.effort, "tail"))
+	eval(sprintf("causality(%i,1) = -1", unique_bond_number));
+      else
+	eval(sprintf("causality(%i,1) = 0", unique_bond_number));
+      endif
+
+      if (strcmp(bond.causality.flow, "head"))
+	eval(sprintf("causality(%i,2) = -1", unique_bond_number));
+      elseif (strcmp(bond.causality.flow, "tail"))
+	eval(sprintf("causality(%i,2) = +1", unique_bond_number));
+      else
+	eval(sprintf("causality(%i,2) = 0", unique_bond_number));
+      endif
+      
+    endfor
+  endfor
+  
+  ## causality matrix is called "bonds"
   bonds = causality;
 
+  ## comp_s
+  ##   comp
+  ##     %s (name)
+  ##       type
+  ##       n_bonds
+  ##       bond%i
+  ##         label
+  ##         subbond%i
+  ##           index
+  ##   port
+  ##     %s (name)
+  ##       type
+  ##       n_bonds
+  ##       bond%i
+  ##         label
+  ##         subbond%i
+  ##           index
 
   #################################
-  ## Map component data to cmp.m ##
+  ## map component data to cmp.m ##
   #################################
 
   ## count number of components
@@ -321,35 +407,56 @@ function [bonds,components,n_vector_bonds] = \
     eval(sprintf("comp_s.%s.%s.index = cmp", comp_or_port, this_name));
   endfor
 
-  disp("--- Finished reading _cmp.m ---");
-comp_s
+  ## comp_s
+  ##   comp
+  ##     %s (name)
+  ##       type
+  ##       n_bonds
+  ##       bond%i
+  ##         label
+  ##         subbond%i
+  ##           index
+  ##       index
+  ##   port
+  ##     %s (name)
+  ##       type
+  ##       n_bonds
+  ##       bond%i
+  ##         label
+  ##         subbond%i
+  ##           index
+  ##       index
+
   ##########################
-  ## Write n_vector_bonds ##
+  ## write n_vector_bonds ##
   ##########################
-  for [comp, comp_name] = comp_s.comp
-    i = 0;
-    for [val, key] = comp
-      if (index(key, "vec_bond") == 1)
-	++i;
-      endif
+
+  if (struct_contains(comp_s, "comp"))
+    for [comp, comp_name] = comp_s.comp
+      n_vector_bonds(comp.index) = comp.n_bonds;
     endfor
-    n_vector_bonds(comp.index) = i;
-  endfor
+  endif
 
   ###########################################
   ## Write connections matrix (components) ##
   ###########################################
   
+  if (struct_contains(comp_s, "comp"))
+    n_comps = size(struct_elements(comp_s.comp))(1);
+  else
+    n_comps = 0;
+  endif
+
   components = zeros(n_comps, max(n_vector_bonds));
+
   if (struct_contains(comp_s, "comp"))
     for [comp, comp_name] = comp_s.comp
       counter = 0;
-      bond_list = zeros(1, max(n_vector_bonds));
-      for [vbond, vbond_name] = comp
-	if (index(vbond_name, "vec_bond") == 1)
-	  for [sbond, sbond_name] = vbond
-	    if (index(sbond_name, "bond") == 1)
-	      components(comp.index, ++counter) = sbond.index;
+      for [bond, bond_name] = comp
+	if (index(bond_name, "bond") == 1)
+	  for [sub_bond, sub_bond_name] = bond
+	    if (index(sub_bond_name, "subbond") == 1)
+	      components(comp.index, ++counter) = sub_bond.index
 	    endif
 	  endfor
 	endif
@@ -357,120 +464,19 @@ comp_s
     endfor
   endif
 
-  disp("--- Finished writing components ---")
+  if (struct_contains(comp_s, "port"))
+    for [port, port_name] = comp_s.port
+      counter = 0;
+      for [bond, bond_name] = port
+	if (index(bond_name, "bond") == 1)
+	  for [sub_bond, sub_bond_name] = bond
+	    if (index(sub_bond_name, "subbond") == 1)
+	      components(port.index, ++counter) = subbond.index;
+	    endif
+	  endfor
+	endif
+      endfor
+    endfor
+  endif
 
 endfunction
-
-
-## TODO: to fix 1-label vector junctions
-## TODO: to put error checks back in
-## TODO: port_bond_list error (abg2cbg)
-
-#   ##########################################
-#   ## Assign names to all component ports  ##
-#   ##########################################
-#   disp("--- Assigning port names ---")
-
-#   if (struct_contains(comp_S, "comp"))
-#     for [comp, comp_name] = comp_S.comp
-#       if (strcmp(comp.type, "0") || strcmp(comp.type, "1"))
-# 	disp("---- default junctions ----")
-# 	if (comp.named_ports == 1)
-	  
-# 	  ## one named port, find it ...
-# 	  for [port, bond_number] = comp.ports
-# 	    if (! strcmp(port.name, "[]"))
-# 	      the_name = port.name
-# 	    endif
-# 	  endfor
-	  
-# 	  ## ... and name all remaining ports identically
-# 	  mtt_info(sprintf("Defaulting all ports on junction %s to %s",
-# 			   comp_name, the_name));
-# 	  for [port, bond_number] = comp.ports
-# 	    eval(sprintf("comp.ports.%s.name = the_name", bond_number));
-# 	  endfor
-	  
-# 	elseif ((comp.named_ports != 0)
-# 		&& (comp.named_ports != comp.n_vector_bonds))
-# 	  mtt_error(sprintf("Junction %s must have 0, 1 or %i port \
-# 						       labels", \
-# 			    comp_name, comp.n_vector_bonds));
-# 	endif
-	
-#       else
-	
-# 	## Not a junction
-# 	unlabelled_ports = comp.n_vector_bonds - comp.named_ports;
-# 	if (unlabelled_ports == 1)
-	  
-# 	  ## find the unlabelled port ...
-# 	  for [port, bond_number] = comp.ports
-# 	    if (strcmp(port.name, "[]"))
-	      
-# 	      ## ... and name it [in] or [out]
-# 	      if (port.sign == +1)
-# 		port_name = "[in]";
-# 	      elseif (port.sign == -1)
-# 		port_name = "[out]";
-# 	      endif
-# 	      eval(sprintf("comp.ports.%s.name = '%s'",
-# 			   bond_number, port_name));
-# 	      E = "Defaulting port name %s\t on component %s (%s)";
-# 	      mtt_info(sprintf(E, port_name, comp_name, comp.type),
-# 		       infofile);
-# 	    endif
-# 	  endfor
-	  
-# 	elseif (unlabelled_ports == 2)
-	  
-# 	  ## find the unlabelled ports ...
-# 	  clear unlabelled_port1
-# 	  for [port, bond_number] = comp.ports
-# 	    if (strcmp(port.name, "[]"))
-# 	      if (exist("unlabelled_port1"))
-# 		unlabelled_port2 = port;
-# 		bond_number2 = bond_number;
-# 	      else
-# 		unlabelled_port1 = port;
-# 		bond_number1 = bond_number;
-# 	      endif
-# 	    endif
-# 	  endfor
-	  
-# 	  ## ... and try to assign [in] and [out]
-# 	  if ((unlabelled_port1.sign == +1)
-# 	      && (unlabelled_port2.sign == +1))
-# 	    E = "More than one unlabelled INport on component %s (%s)";
-# 	    mtt_error(sprintf(E, comp_name, comp.type));
-# 	  elseif ((unlabelled_port1.sign == -1)
-# 		  && (unlabelled_port2.sign == -1))
-# 	    E = "More than one unlabelled OUTport on component %s (%s)";
-# 	    mtt_error(sprintf(E, comp_name, comp.type));
-# 	  else
-# 	    if (unlabelled_port1.sign == +1)
-# 	      name1 = "[in]";
-# 	      name2 = "[out]";
-# 	    elseif (unlabelled_port1.sign == -1)
-# 	      name1 = "[out]";
-# 	      name2 = "[in]";
-# 	    endif
-# 	    eval(sprintf("comp.ports.%s.name = '%s'",
-# 			 bond_number1, name1));
-# 	    eval(sprintf("comp.ports.%s.name = '%s'",
-# 			 bond_number2, name2));
-# 	    S = "Defaulting port name %s\t on component %s (%s)"    
-# 	    mtt_info(sprintf(S, name1, comp_name, comp.type), infofile);
-# 	    mtt_info(sprintf(S, name2, comp_name, comp.type), infofile);
-# 	  endif
-# 	endif
-		
-#       endif 
-#       eval(sprintf("comp_S.comp.%s = comp", comp_name));
-#     endfor
-#   endif
-
-#   disp(" --- Finished assigning port names ---")
-
-
-# endfunction

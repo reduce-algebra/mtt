@@ -12,6 +12,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.5  1998/11/23 10:45:49  peterg
+% %% Reinstated supertabular
+% %%
 % %% Revision 1.4  1998/07/01 17:34:43  peterg
 % %% No change
 % %%
@@ -26,6 +29,8 @@
 % %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Font
+\usepackage{times}
 
 %Verbatim file input
 \usepackage{verbatim}
@@ -43,35 +48,6 @@
 %Fancy boxes
 \usepackage{fancybox}
 
-%Citations package 
-%\usepackage{chicago}
-
-%Postscript figures 
-\usepackage{epsfig}
-
-% Figure definition
- \newcommand{\fig}[4]{
-        \begin{figure}[htbp]
-          \centerline{
-             \shadowbox{
-                \epsfig{file=#1.ps,width=#3\textwidth}
-              }
-            }
-            \caption{#4}
-            \label{#2}
-       \end{figure}
-       }
-
-% Rotated figure definition
- \newcommand{\rfig}[4]{
-        \begin{figure}[htbp]
-          \centerline{
-            \epsfig{file=#1.ps,width=#3\textheight,angle=90}
-                 }
-            \caption{#4}
-            \label{#2}
-       \end{figure}
-       }
 
 % Read in a verbatim file
 \newcommand{\txt}[2]{
@@ -88,4 +64,10 @@
 % Page refs as well.
 \newcommand{\Ref}[1]{\ref{#1} (on page \pageref{#1})}
 
-
+% Hyper stuff
+\usepackage[implicit=true,
+            bookmarks=true,
+            pdfauthor={MTT},
+            pdftitle={MTT report},
+            pdfsubject={MTT},
+            pdfkeywords={MTT, bond graphs}]{hyperref}

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.145  1998/04/03 11:17:44  peterg
+## VERSION 2.9
+##
 ## Revision 1.144  1998/03/27 13:32:25  peterg
 ## Removed sympar prerequisites from ss reps.
 ##
@@ -573,7 +576,7 @@ done
 #Print header if not in quiet (-q) mode.
 if [ "$quiet" != "quiet" ]; then
   echo
-  echo 'MTT (Model Transformation Tools) version 2.9'
+  echo 'MTT (Model Transformation Tools) version 2.9++'
   echo '($Date$)'
   echo 'This is free software with ABSOLUTELY NO WARRANTY.'
   echo 'Type `mtt warranty'\' 'for details.'

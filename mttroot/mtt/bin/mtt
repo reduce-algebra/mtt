@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.348  2002/05/20 08:50:12  geraint
+## Cleans _sfun_ae.mexglx.
+##
 ## Revision 1.347  2002/05/20 07:12:05  gawthrop
 ## Trying to get oct files generated with -oct
 ##
@@ -1209,6 +1212,16 @@
 ##
 ###############################################################
 
+set_oct() {
+## Sets ${m} to oct if such a rep is supported
+    m=m
+    supported_reps="ae input logic numpar simpar state"
+    for supported_rep in ${supported_reps}; do
+	if [ "${rep}" = "${supported_rep}" ]; then
+          m=oct	    
+	fi
+    done
+}
 
 #Check $MTTPATH has been set
 mtt_check_var "$MTTPATH" "MTTPATH"
@@ -1410,7 +1423,6 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 fixcc='-fixcc'
                 mtt_switches="$mtt_switches $1";
                 using_oct=yes;
-                m=oct
                 ;;
 	-opt )  mtt_switches="$mtt_switches $1";
                 optimise='-optimise';;
@@ -1968,17 +1980,21 @@ Subsystem_subs=$Subsystem"_subs"
 Subsystem_cr=$Subsystem"_cr"
 Subsystem_cbg=$Subsystem"_cbg"
 
+
 ## Create the make target name
-#if [ -z "${using_oct}" ]; then
-#  target=${sys}_${rep}.${lang}    
-#else
-#  if [ "${lang}" = "m" ]; then
-#    target=${sys}_${rep}.oct
-#  else
-#    target=${sys}_${rep}.${lang}
-#  fi
-#fi 
-target=${sys}_${rep}.${lang}
+if [ -z "${using_oct}" ]; then
+  target=${sys}_${rep}.${lang}    
+else
+  set_oct;
+  if [ "${lang}" = "m" ]; then
+    target=${sys}_${rep}.${m}
+  else
+    target=${sys}_${rep}.${lang}
+  fi
+fi 
+
+##echo $target
+##target=${sys}_${rep}.${lang}
 
 ## Arguments
 ARGS=$4; _ARGS=-$4; __ARGS=`echo $_ARGS | tr ',' '-'`

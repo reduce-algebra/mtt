@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  2003/08/19 13:10:47  gawthrop
+## More arg stuff
+##
 ## Revision 1.4  2002/05/09 16:07:54  gawthrop
 ## Now handles multiple options whis .tex files as well
 ##
@@ -192,6 +195,7 @@ gawk '
   else {
     header_args = __Args;
     gsub("-", " -", header_args);
+    gsub(/_/, "\\_", header_args);
     header_args = sprintf("(%s)", header_args); 
   }
 

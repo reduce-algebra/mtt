@@ -11,6 +11,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/07/27 06:47:32  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:
@@ -21,3 +24,4 @@
 % SS components
 	Force		SS	external,internal
 	Acceleration	SS	external,external
+

@@ -46,7 +46,7 @@ OFF Nat;
 ON NERO;        % Suppress zero elements
 
 mtt_matrix := MTTYY;
-mtt_matrix_n := MTTNY*MTTGPCNy;
+mtt_matrix_n := MTTNY*(MTTGPCNy+1);
 mtt_matrix_m := 1;
 mtt_matrix_name := Y;
 in"$MTTPATH/trans/matlab_matrix.r";

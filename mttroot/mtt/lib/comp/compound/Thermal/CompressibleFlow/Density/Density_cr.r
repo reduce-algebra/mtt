@@ -4,30 +4,30 @@
 OPERATOR Density;
 
 % Ideal gas
-FOR ALL R,Temperature,Pressure,Nothing
-LET Density(density,ideal_gas,R,effort,3,
+FOR ALL COMPONENT,  R,Temperature,Pressure,Nothing
+LET Density(COMPONENT, density,ideal_gas,R,effort,3,
 	Pressure,effort,1,
 	Temperature,effort,2,
 	Nothing,flow,3
 	) = Pressure/(R*Temperature);
 
-FOR ALL R,Temperature,Pressure,Nothing
-LET Density(specific_volume,ideal_gas,R,effort,3,
+FOR ALL COMPONENT,  R,Temperature,Pressure,Nothing
+LET Density(COMPONENT, specific_volume,ideal_gas,R,effort,3,
 	Pressure,effort,1,
 	Temperature,effort,2,
 	Nothing,flow,3
 	) = (R*Temperature)/Pressure;
 
 % Incompressible
-FOR ALL rho,Temperature,Pressure,Nothing
-LET Density(density,incompressible,rho,effort,3,
+FOR ALL COMPONENT,  rho,Temperature,Pressure,Nothing
+LET Density(COMPONENT, density,incompressible,rho,effort,3,
 	Pressure,effort,1,
 	Temperature,effort,2,
 	Nothing,flow,3
 	) = rho;
 
-FOR ALL rho,Temperature,Pressure,Nothing
-LET Density(specific_volume,incompressible,rho,effort,3,
+FOR ALL COMPONENT,  rho,Temperature,Pressure,Nothing
+LET Density(COMPONENT, specific_volume,incompressible,rho,effort,3,
 	Pressure,effort,1,
 	Temperature,effort,2,
 	Nothing,flow,3

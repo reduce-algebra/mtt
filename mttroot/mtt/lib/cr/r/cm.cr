@@ -12,6 +12,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2000/12/28 09:18:38  peterg
+% %% put under RCS
+% %%
 % %% Revision 1.1  1996/11/02  10:21:19  peterg
 % %% Initial revision
 % %%
@@ -23,16 +26,16 @@
 
 OPERATOR cm;
 %Linear electrical bit
-FOR ALL c_0,x_0,elec_state,mech_state LET
-cm(c_0,x_0,effort,1,
+FOR ALL comp,c_0,x_0,elec_state,mech_state LET
+cm(comp,c_0,x_0,effort,1,
 	elec_state,state,1,
 	mech_state,state,2
 	)
 	= elec_state/(c_0*x_0/mech_state);
 
 %Nonlinear mechanical bit
-FOR ALL c_0,x_0,elec_state,mech_state LET
-cm(c_0,x_0,effort,2,
+FOR ALL comp,c_0,x_0,elec_state,mech_state LET
+cm(comp,c_0,x_0,effort,2,
 	elec_state,state,1,
 	mech_state,state,2
 	)

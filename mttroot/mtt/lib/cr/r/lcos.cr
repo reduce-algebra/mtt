@@ -16,6 +16,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1998/03/04 17:51:02  peterg
+% %% Added END
+% %%
 % %% Revision 1.1  1996/11/02 10:18:07  peterg
 % %% Initial revision
 % %%
@@ -25,26 +28,26 @@
 OPERATOR lcos;
 
 %DESCRIPTION three port component: EMTF
-FOR ALL gain, input, causality, gain_causality, outport, inport,
+FOR ALL comp_type, gain, input, causality, gain_causality, outport, inport,
 	 m_input, m_causality
 SUCH THAT (
 	(causality = gain_causality) AND (outport = 2)
 	OR
 	(causality NEQ gain_causality) AND (outport = 1)
 	)
-LET lcos(gain_causality, gain, causality, outport, 
+LET lcos(comp_type, gain_causality, gain, causality, outport, 
 	input, causality, inport,
 	m_input, m_causality, 3)
 	 = cos(m_input)*gain*input;
 
-FOR ALL gain, input, causality, gain_causality, outport, inport,
+FOR ALL comp_type, gain, input, causality, gain_causality, outport, inport,
 	 m_input, m_causality
 SUCH THAT (
 	(causality NEQ gain_causality) AND (outport = 2)
 	OR
 	(causality = gain_causality) AND (outport = 1)
 	)
-LET lcos(gain_causality, gain, causality, outport, 
+LET lcos(comp_type, gain_causality, gain, causality, outport, 
 	input, causality, inport,
 	m_input, m_causality, 3)
 	 = input/(cos(m_input)*gain);

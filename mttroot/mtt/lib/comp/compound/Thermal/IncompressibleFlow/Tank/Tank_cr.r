@@ -4,15 +4,15 @@
 OPERATOR tank;
 
 %Pressure
-FOR ALL rho,c_p,c,Volume,Energy
-LET tank(rho,c_p,c,effort,1,
+FOR ALL COMPONENT, rho,c_p,c,Volume,Energy
+LET tank(COMPONENT, rho,c_p,c,effort,1,
 	Volume,state,1,
 	Energy,state,2
 	) = (Volume*rho)/c;
 
 %Temperature
-FOR ALL rho,c_p,c,Volume,Energy
-LET tank(rho,c_p,c,effort,2,
+FOR ALL COMPONENT, rho,c_p,c,Volume,Energy
+LET tank(COMPONENT, rho,c_p,c,effort,2,
 	Volume,state,1,
 	Energy,state,2
 	) = Energy/(Volume*rho*c_p);

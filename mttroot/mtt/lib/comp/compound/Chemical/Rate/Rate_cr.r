@@ -3,16 +3,16 @@
 OPERATOR Rate;
 
 % Reaction rate
-FOR ALL k,q,h,n,Conc,Temp LET
-    Rate(k,q,h,n,flow,1,
+FOR ALL comp,k,q,h,n,Conc,Temp LET
+    Rate(comp,k,q,h,n,flow,1,
          Conc,effort,1,
 	 Temp,effort,2
 	 ) 
 	 = k*Conc^n*e^(-q/Temp);
 
 % Heat
-FOR ALL k,q,h,n,Conc,Temp LET
-    Rate(k,q,h,n,flow,2,
+FOR ALL comp,k,q,h,n,Conc,Temp LET
+    Rate(comp,k,q,h,n,flow,2,
          Conc,effort,1,
 	 Temp,effort,2
 	 ) 

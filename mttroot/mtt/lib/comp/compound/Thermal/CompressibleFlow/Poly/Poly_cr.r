@@ -6,8 +6,8 @@ OPERATOR Poly;
 % Ideal gas
 
 % Temperature output on port [T2]
-FOR ALL alpha,P1,P2,T1,Nothing
-LET Poly(alpha,effort,4,
+FOR ALL COMPONENT,  alpha,P1,P2,T1,Nothing
+LET Poly(COMPONENT, alpha,effort,4,
 	P1,effort,1,
 	P2,effort,2,
 	T1,effort,3,

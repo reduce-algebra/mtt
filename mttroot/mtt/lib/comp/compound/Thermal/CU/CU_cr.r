@@ -13,6 +13,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2000/12/28 10:34:56  peterg
+% %% Put under RCS
+% %%
 % %% Revision 1.1  1997/12/07 20:45:21  peterg
 % %% Initial revision
 % %%
@@ -29,45 +32,45 @@ OPERATOR CU;
 
 %% Integral/Integral causality
 Port 1 - Thermal
-FOR ALL c_v,gamma,m,InternalEnergy,Volume
-LET CU(ideal_gas,c_v,gamma,m,effort,1,
+FOR ALL COMPONENT,  c_v,gamma,m,InternalEnergy,Volume
+LET CU(COMPONENT, ideal_gas,c_v,gamma,m,effort,1,
 	InternalEnergy, state, 1,
 	Volume, state, 2)
          = InternalEnergy/(m*c_v);
 
 Port 2 - Mechanical
-FOR ALL c_v,gamma,m,InternalEnergy,Volume
-LET CU(ideal_gas,c_v,gamma,m,effort,2,
+FOR ALL COMPONENT,  c_v,gamma,m,InternalEnergy,Volume
+LET CU(COMPONENT, ideal_gas,c_v,gamma,m,effort,2,
 	InternalEnergy, state, 1,
 	Volume, state, 2)
          = (gamma-1)*(InternalEnergy)/Volume;
 
 %% Derivative/Integral causality
 Port 1 - Thermal
-FOR ALL c_v,gamma,m,Temperature,Volume
-LET CU(ideal_gas,c_v,gamma,m,state,1,
+FOR ALL COMPONENT,  c_v,gamma,m,Temperature,Volume
+LET CU(COMPONENT, ideal_gas,c_v,gamma,m,state,1,
 	Temperature, effort, 1,
 	Volume, state, 2)
          = Temperature*(m*c_v);
 
 Port 2 - Mechanical
-FOR ALL c_v,gamma,m,Temperature,Volume
-LET CU(ideal_gas,c_v,gamma,m,effort,2,
+FOR ALL COMPONENT,  c_v,gamma,m,Temperature,Volume
+LET CU(COMPONENT, ideal_gas,c_v,gamma,m,effort,2,
 	Temperature, effort, 1,
 	Volume, state, 2)
          = (gamma-1)*(m*c_v)*(Temperature)/Volume;
 
 %% Integral/Derivative causality
 Port 1 - Thermal
-FOR ALL c_v,gamma,m,InternalEnergy,Pressure
-LET CU(ideal_gas,c_v,gamma,m,effort,1,
+FOR ALL COMPONENT,  c_v,gamma,m,InternalEnergy,Pressure
+LET CU(COMPONENT, ideal_gas,c_v,gamma,m,effort,1,
 	InternalEnergy, state, 1,
 	Pressure, effort, 2)
          = InternalEnergy/(m*c_v);
 
 Port 2 - Mechanical
-FOR ALL c_v,gamma,m,InternalEnergy,Pressure
-LET CU(ideal_gas,c_v,gamma,m,state,2,
+FOR ALL COMPONENT,  c_v,gamma,m,InternalEnergy,Pressure
+LET CU(COMPONENT, ideal_gas,c_v,gamma,m,state,2,
 	InternalEnergy, state, 1,
 	Pressure, effort, 2)
          = (gamma-1)*(InternalEnergy)/Pressure;

@@ -16,6 +16,7 @@ MTT::Hybrd_Solver::f_hybrd (const ColumnVector &tryUi)
 void
 MTT::Hybrd_Solver::Solve (void)
 {    
+  static std::fstream ferr ("MTT.Hybrd_messages", ios::out | ios::trunc | ios::app);
   int info;
   static int input_errors;
   static int user_errors;
@@ -26,7 +27,7 @@ MTT::Hybrd_Solver::Solve (void)
   
   NLFunc fcn(&Hybrd_Solver::f_hybrd);
   NLEqn	 eqn(Solver::_ui,fcn);
-  eqn.set_tolerance(0.000001);
+  eqn.set_tolerance(1.0e-3);
   Solver::_ui = eqn.solve(info);
 
   switch (info)
@@ -55,12 +56,12 @@ MTT::Hybrd_Solver::Solve (void)
     }
   if (1 != info)
     {
-      std::cerr << "input (" << input_errors << ") "
-		<< "  user (" << user_errors << ") "
-		<< "  converge (" << convergences << ") "
-		<< "  progress (" << progress_errors << ") "
-		<< "  limit (" << limit_errors << ")"
-		<< "  unknown (" << unknown_errors << ")"
-		<< "  (max error = " << std::abs(eval(_ui).max()) << ")" << std::endl;
+      std::cerr
+	<< " converge (" << convergences << ") "
+	<< " limit (" << limit_errors << ")"
+	<< " (max error = " << std::abs (eval(_ui).max()) << ")"
+	<< " other (" << input_errors + user_errors + progress_errors + unknown_errors << ") "
+	<< std::endl;
     }
+  ferr << info << " ";
 }

@@ -2,6 +2,7 @@
 #ifndef MTT_HYBRDSOLVER
 #define MTT_HYBRDSOLVER
 
+#include <fstream>
 
 #include <octave/NLEqn.h>
 #include "mtt_AlgebraicSolver.hh"

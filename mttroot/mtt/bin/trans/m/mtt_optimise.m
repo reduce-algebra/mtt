@@ -54,7 +54,7 @@ function [theta,Theta,Error,Y,iterations] = mtt_optimise (system_name,y_s,theta_
   Theta = [];
   Error = [];
   Y = [];
-  iterations = -1;
+  iterations = 0;
   while (abs(error_old-error)>criterion)&&(iterations<max_iterations)
     iterations = iterations + 1;
     error_old_old = error_old;

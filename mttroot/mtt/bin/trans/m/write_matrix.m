@@ -7,6 +7,9 @@ function write_matrix(matrix,name);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1996/08/14 19:20:41  peter
+% %% Fixed output naming bug.
+% %%
 % %% Revision 1.2  1996/08/14 08:36:52  peter
 % %% Puts a tab between columns.
 % %%
@@ -27,10 +30,15 @@ fprintf(filenum, '%s data = %s\n\n', pc, name);
 fprintf(filename, 'data = [\n');
 
 [N,M] = size(matrix);
-for i = 1:N,
-  for j = 1:M
-    fprintf(filename, '%g', matrix(i,j));
-    if j<M
+for row = 1:N
+  for col = 1:M
+    re = real(matrix(row,col));
+    im = imag(matrix(row,col));
+    fprintf(filename, '%g', re);
+    if im ~= 0
+      fprintf(filename, '+ %g*i', im);
+    end
+    if col<M
       fprintf(filename, '\t');
     end
   end;

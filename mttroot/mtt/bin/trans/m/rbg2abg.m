@@ -7,6 +7,9 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,\
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.37  1998/07/28 19:06:43  peterg
+% %% Still some bugs (vector SS ports)??
+% %%
 % %% Revision 1.36  1998/07/28 10:30:50  peterg
 % %% Implemented vector SS ports.
 % %%
@@ -465,9 +468,11 @@ for i = 1:n_components
   
   %Find the port list for this component
   if exist([comp_type, '_cause'])==0
-    eval(['[junk1,junk2,junk3,junk4,junk5,port_list]=', comp_type, '_rbg;']);
+#    eval(['[junk1,junk2,junk3,junk4,junk5,port_list]=', comp_type, '_rbg;']);
+    eval(["ABG = ",comp_type, "_abg;"]);
+    port_list = ABG.portlist;
   else
-    port_list=comp_ports(comp_type,n_comp_bonds);
+    port_list=comp_ports(comp_type,n_comp_bonds)
   end;
 
   [n_comp_ports,m_comp_ports] = size(port_list);

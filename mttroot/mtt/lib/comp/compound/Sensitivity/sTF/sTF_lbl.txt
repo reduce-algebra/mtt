@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/08/26 00:15:58  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -16,7 +19,7 @@
 
 
 % Argument aliases
-%ALIAS	$1	k
+%ALIAS	$1	flow,k
 %ALIAS	$2	k_s
 
 %% Each line should be of one of the following forms:

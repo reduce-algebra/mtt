@@ -1,9 +1,10 @@
 function [Gamma,gamma] = ppp_output_constraint (A,B,C,D,x_0,A_u,Tau,Min,Max,Order,i_y)
 
-  ## usage:  [Gamma,gamma] = ppp_output_constraint (A,B,C,D,A_u,Tau,Min,Max,Order)
+  ## usage:  [Gamma,gamma] = ppp_output_constraint (A,B,C,D,x_0,A_u,Tau,Min,Max,Order)
   ##
   ## Derives the output constraint matrices Gamma and gamma
-  ## For Constraints Min and max at times Tau 
+  ## For Constraints Min and Max at times Tau
+  ## Initial state x_0 
   ## Order=0 - output constraints
   ## Order=1 - output derivative constraints
   ## etc

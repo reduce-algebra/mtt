@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.28  1998/04/06 08:41:48  peterg
+## Fixed bug due to adding (and then removing) 0 and 1 as port types
+##
 ## Revision 1.27  1998/04/04 10:54:58  peterg
 ## Remove a debugging print statement
 ##
@@ -166,6 +169,29 @@ function exact_match(name1, name2) {
   return ((match(name1,name2)>0)&&(length(name1)==length(name2)))
     }
 
+function write_component(i) {
+    name = label[i,1];
+    cr   = label[i,2];
+    arg  = label[i,3];
+    
+    if (length(x[name])==0) {
+# print error unless its a port component
+      if (match(name,port_regexp)==0)
+        printf(warning_l, name);
+    }
+    else {
+      component_index++;
+      print x[name], y[name], info[name] >> b_file;
+      printf("if i==%1.0f\n", component_index) 	>> c_file;
+      printf("\tcomp_type = %s%s%s;\n", q, comp_type[name], q) >> c_file;
+      printf("\tname = %s%s%s;\n", q, name, q) >> c_file;
+      printf("\tcr = %s%s%s;\n", q, cr, q) >> c_file;
+      printf("\targ = %s%s%s;\n", q, arg, q) >> c_file;
+      printf("\trepetitions = %s;\n",  reps[name]) >> c_file;
+      print "end" >> c_file
+	}
+  }
+
 function process_lbl() {
 # This puts the components in the lable file at the top of the list
 # and saves up the corresponding CR and arguments
@@ -246,19 +272,19 @@ function process_text() {
   }
 
 # Do the port components
-  if (isa_port_component) {
-    i_port_component++;
-    type = a[1];
-    # Port name is the bit between the []
-    port_label  = substr(a[2],2,length(a[2])-2);
-    x_port[i_port_component] = x_coord;
-    y_port[i_port_component] = y_coord;
-    info_port[i_port_component] = fig_info();
-    port_labels[i_port_component] = port_label;
-      }
+#  if (isa_port_component) {
+#    i_port_component++;
+#    type = a[1];
+#    # Port name is the bit between the []
+#    port_label  = substr(a[2],2,length(a[2])-2);
+#    x_port[i_port_component] = x_coord;
+#    y_port[i_port_component] = y_coord;
+#    info_port[i_port_component] = fig_info();
+#    port_labels[i_port_component] = port_label;
+#      }
 
-# Do the plain components
-  if (isa_plain_component) {
+# Do the components
+  if (isa_component) {
     i_text++;
 
 # Get repetitions (if any)
@@ -536,6 +562,7 @@ BEGIN {
   i_name = 0;
   i_port_component = 0;
 
+  component_index = 0;
 }
 {
 # Start of .fig file?
@@ -579,51 +606,18 @@ END {
 
 
 # Do the port components, in order of appearance, first
-  for (i = 1; i <= i_port_component; i++) {
-    name = sprintf("[%s]", port_labels[i]);
-    port_type = "SS";
-    cr   = "MTT_port";
-    arg  = i;
-
-    if (length(x_port[i])==0)
-      printf(warning_p);
-    else {
-      j++;
-      print x_port[i], y_port[i], info_port[i] >> b_file;
-      printf("if i==%1.0f\n", j) 	>> c_file;
-      printf("\tcomp_type = %s%s%s;\n", q, port_type, q) >> c_file;
-      printf("\tname = %s%s%s;\n", q, name, q) >> c_file;
-      printf("\tcr = %s%s%s;\n", q, cr, q) >> c_file;
-      printf("\targ = %s%s%s;\n", q, arg, q) >> c_file;
-      printf("\trepetitions = 1;\n") >> c_file;
-      print "end" >> c_file
-	}
-    
+  for (i = 1; i <= i_label; i++) {
+    name = label[i,1];
+    if (match(name,port_regexp))
+      write_component(i);
   }
 
 # Now do the ordinary components (in no particular order)
   for (i = 1; i <= i_label; i++) {
     name = label[i,1];
-    cr   = label[i,2];
-    arg  = label[i,3];
-    
-    if (length(x[name])==0) {
-# print error unless its a port component
-      if (match(name,port_regexp)==0)
-        printf(warning_l, name);
-    }
-    else {
-      j++;
-      print x[name], y[name], info[name] >> b_file;
-      printf("if i==%1.0f\n", j) 	>> c_file;
-      printf("\tcomp_type = %s%s%s;\n", q, comp_type[name], q) >> c_file;
-      printf("\tname = %s%s%s;\n", q, name, q) >> c_file;
-      printf("\tcr = %s%s%s;\n", q, cr, q) >> c_file;
-      printf("\targ = %s%s%s;\n", q, arg, q) >> c_file;
-      printf("\trepetitions = %s;\n",  reps[name]) >> c_file;
-      print "end" >> c_file
-	}
-  }
+    if (!match(name,port_regexp))
+      write_component(i);  
+}
   printf("];\n") >> b_file;
 
 # Print the (internal) ports list

@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1996/08/16 14:26:07  peter
+## Fixed multi-output bug.
+## Made sure that u0 is ok.
+##
 ## Revision 1.5  1996/08/15 16:23:02  peter
 ## Now uses W in place of w for consistancy with time responses.
 ##
@@ -51,7 +55,9 @@ else
   PARAMS=$2;
 fi
 
-$MATRIX << EOF > dm2fr_m.log
+$MATRIX << EOF > dm2fr_m.log 2>mtt_error
+
+  $1_numpar;
 
   [nx,ny,nu,nz,nyz] = $1_def;
   $PARAMS
@@ -71,8 +77,8 @@ $MATRIX << EOF > dm2fr_m.log
     W=W';
   end;
 
-  [A,B,C,D,E] = $1_dm($1_numpar)
-  fr = dm2fr(A,B,C,D,E,W,u0)
+  [A,B,C,D,E] = $1_dm;
+  fr = dm2fr(A,B,C,D,E,W,u0);
   lw = log10(W);
   lmfr = log10(abs(fr));
   pfr = angle(fr)*180/pi;
@@ -105,4 +111,20 @@ $MATRIX << EOF > dm2fr_m.log
   write_matrix(nic, '$1_nifr');
 
 EOF
+
+# Test for errors and print if any
+err_length=$(wc -c <mtt_error)
+if [ $err_length != "0" ]
+then
+  echo MTT has failed with the following errors '...'
+  cat mtt_error
+  exit 1
+else
+  exit 0
+fi
+
+
+
+
+
 

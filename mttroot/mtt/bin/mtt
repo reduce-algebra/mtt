@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.365  2002/12/06 12:45:25  gawthrop
+## Simplified rule for sub.sh: both fig and dia go via cmp.txt now.
+##
 ## Revision 1.364  2002/12/03 23:28:44  geraint
 ## Added dependencies for bond graphs built with dia.
 ##
@@ -2704,10 +2707,6 @@ ifeq ($start_at_abg,yes)
 $1_sub.sh: $1_abg.m
 	abg2sub_m2sh $1
 else
-# include .dia as dependency to prevent this rule being used when .fig exists
-##%_sub.sh: %_cmp.txt %_abg.dia
-##	cmp2sub_txt2sh \$*
-
 %_sub.sh: %_cmp.txt
 	cmp2sub_txt2sh \$*
 endif

@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.32  2000/05/11 08:30:00  peterg
+## Old version -- about to try new parameterised version
+##
 ## Revision 1.31  2000/05/10 18:33:25  peterg
 ## Use smxa and smxax in place of smx
 ##
@@ -108,10 +111,16 @@
 
 # Tell user
 Sys=$1
-method=$2
+
+if [ -n "$2" ]; then
+  method=$2    
+else
+  method=implicit  
+fi
+
 echo  "Creating $1_ode2odes.m with $method integration method"
 
-if [ $method = "implicit" ]; then
+if [ "$method" = "implicit" ]; then
     ode=cse
     odeo=cseo
 else
@@ -125,35 +134,61 @@ Nu=`grep "MTTNu " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
 Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
  
 
-cat << EOF > $1_ode2odes.m
+#cat << EOF > $1_ode2odes.m
 # Program $1_ode2odes
-EOF
+#EOF
 
 # Do the globals
-sympar2global_txt2m $1 >> $1_ode2odes.m
+#sympar2global_txt2m $1 >> $1_ode2odes.m
+lang_header  $1 ode2odes m  'x,U,par,simpar' '[Y,X,t]' > $1_ode2odes.m
 
-# The rest of the program
-cat << EOF >> $1_ode2odes.m
-$1_simpar;			# Read in simulation parameters
-## $1_numpar;			# Read in parameters
-MTTilast = round(mttlast/mttdt); # Total number of steps
+cat >> $1_ode2odes.m <<EOF
+global MTT_data;
 
-#Initialise
-MTTt = 0.0;
+  if nargin<1 
+    x  =  $1_state; 
+  endif
+  if nargin<2
+    U =   $1_input(0);
+   endif
+  if nargin<3
+    par = $1_numpar; 
+  endif
+  if nargin<4
+    simpar = $1_simpar; 
+  endif
 
-[MTTu]  = zero_input($Nu);	# Zero the input
-[MTTx] = $1_state;	        # Read in initial state
-[MTTpar] = $1_numpar;	        # Read in parameters
+  ## Initialise
+  t = 0.0;
+  ilast = round(simpar.last/simpar.dt); # Total number of steps
 
-#[mttAA]  = zero_matrix($Nx);	# Zero the A matrix
-#[mttAAx] = zero_vector($Nx);	# Zero the AAx vector
+  [u]  = zero_input(1);		# Zero the input
 
-#if $Nx>0
-#  [MTTx] = $1_switch(MTTx);       # Switches
-#endif;
+  for it = 1:ilast		#Integration loop
+    [y] = $1_cseo(x,u,t,par);# Output 
+    [u] = $1_input(t,x,y,U);	# Input
+    if (t>=simpar.first)
+      mtt_write(t,x,y,$Nx,$Ny); # Write it out
+    endif
+    [dx] = $1_cse(x,u,t,par);	# State derivative
+    [AA] = $1_smxa(x,u,simpar.dt,par);	# (I-Adt) and (I-Adt)x
+    [AAx] = $1_smxax(x,u,simpar.dt,par); # (I-Adt) and (I-Adt)x
+    [open] = $1_switchopen(x);	# Open switches
+    [x] = mtt_implicit(x,dx,AA,AAx,simpar.dt,$Nx,open); # Implicit update
+    t = t + simpar.dt;
+  endfor;			# Integration loop
+
+  t = MTT_data(:,1);
+  Y = MTT_data(:,2);
+  X  = MTT_data(:,4);
+
+endfunction
 
 EOF
 
+exit
+
+### old stuff follows
 if [ "$method" = "euler" ]; then
 cat << EOF >> $1_ode2odes.m
 MTTddt = mttdt/mttstepfactor; # The small sample interval

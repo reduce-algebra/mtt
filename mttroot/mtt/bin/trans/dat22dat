@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1999/03/15 22:42:52  peterg
+## Strip comments (put in by Octave save function)
+##
 ## Revision 1.4  1999/03/15 21:55:36  peterg
 ## Does away with the # symbol in the file - uses _de to get Nx Ny
 ## instead
@@ -30,7 +33,7 @@ case $2 in
 	First=1; let Last=$First+$Ny
 	;;
     odes)
-	First=$Ny+2; let Last=$First+$Nx
+	let First=$Ny+2; let Last=$First+$Nx
 	;;
     *)
 	First=1; let Last=$Ny+1

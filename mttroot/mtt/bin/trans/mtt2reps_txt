@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  2000/04/04 13:09:51  peterg
+## *** empty log message ***
+##
 ## Revision 1.5  2000/01/19 17:26:12  peterg
 ## Now includes the representation title.
 ##
@@ -33,9 +36,11 @@
 representations=`grep '#SUMMARY' $MTTPATH/mtt | awk '{print $2'} | sort -u `
 
 for rep in $representations ; do
-    ## Title should be same for all languages -- extract from first version
-    title=`grep '#SUMMARY' $MTTPATH/mtt | grep " $rep[ \*]" | head -1 | \
-      awk '{for (i=3;i<NF;i++) print $i}'`
+    ## Title should be same for all languages -- but extract the first non-empty version
+      title=`grep '#SUMMARY' $MTTPATH/mtt | tr '\t' ' ' | grep "$rep[ *]" | \
+      awk  '{if (NF>2) {for (i=3;i<NF-1;i++) printf("%s ",$i); NF1=NF-1; printf("%s\n",$NF1)}}' |\
+      head -1`
+      
 
     language=`grep '#SUMMARY' $MTTPATH/mtt |\
       awk '
@@ -51,12 +56,6 @@ for rep in $representations ; do
       Title='('$title')'
       echo $rep $Title $language
      
-
-    #   awk '{
-    #     printf( "%s", $1)
-    #     for (i=2;i<=NF;i++) printf("\t%s", $i); 
-    #     printf("\n")
-    #   }'
 done
 
 

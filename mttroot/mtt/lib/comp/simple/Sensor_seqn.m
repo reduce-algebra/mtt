@@ -8,7 +8,7 @@ function LHS = Sensor_seqn (attribute,name)
   if strcmp(attribute,"external")
     LHS = sprintf("MTTy_%s", name);  
   elseif strcmp(attribute,"internal")
-    LHS = sprintf("%% NOT USED MTT_y_%s", name); 
+    LHS = sprintf("MTTy_%s", name); 
   else
     error(sprintf("attribute ""%s"" not appropriate for a \
     source"), attribute);

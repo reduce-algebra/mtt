@@ -1,4 +1,5 @@
-function [eqn,insigs,innames] = SS_seqn (Name, name, cr, arg, outsig, insigs,innames)
+function [eqn,insigs,innames] = SS_seqn (Name, name, cr, arg, outsig, \
+					 insigs,innames,is_port)
 
   ## usage:  [eqn,inbonds] = SS_seqn (Name, cr, arg, outbond, inbonds)
   ##
@@ -21,11 +22,11 @@ function [eqn,insigs,innames] = SS_seqn (Name, name, cr, arg, outsig, insigs,inn
   flow_attribute   = deblank(attrib_name(2,:));
 
   ## Default attributes
-  if strcmp(effort_attribute,"")
+  if strcmp(effort_attribute,"")||is_port
     effort_attribute = "external";
   end;
   
-  if strcmp(flow_attribute,"")
+  if strcmp(flow_attribute,"")||is_port
     flow_attribute = "external";
   end;
 
@@ -54,5 +55,4 @@ function [eqn,insigs,innames] = SS_seqn (Name, name, cr, arg, outsig, insigs,inn
    eqn = sprintf("%s := %s;", LHS, RHS);
  endif
  
-
 endfunction

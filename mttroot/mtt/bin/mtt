@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.183  1998/08/18 08:48:43  peterg
+## Sorted out problem with ifeq ($REPTYPE,data) block - added else.
+##
 ## Revision 1.182  1998/08/17 15:48:39  peterg
 ## Replaced SVD solver with LUD solver
 ##
@@ -1548,6 +1551,7 @@ endif
 #Raw bond graph: fig file to mfile
 $1_rbg.m: $1_abg.fig $1_lbl.txt
 	rbg_fig2m $1
+	lbl2component $1 | sh || exit 1 # Grab specified components now
 $1_cmp.m: $1_rbg.m
 $1_fig.fig: $1_rbg.m
 
@@ -1575,7 +1579,6 @@ endif
 #SUMMARY abg	acausal bond graph (m)
 #Raw bond graph to acausal bond graph: mfile
 $1_abg.m: $1_rbg.m $1_alias.m $1_sub.sh
-	lbl2component $1 | sh || exit 1
 	(sh $1_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
 	rbg2abg_m $info_switch $1
 

@@ -430,7 +430,7 @@ sub output_ibg {
 	$component =~ s/\#//g;
 	($type, $name) = split (/:/, $component);
 	if (! $name) {
-	    $component = "${component}:mtt${type}_${anon_id}";
+	    $component = "${component}:mtt${component}_${anon_id}";
 	}
 	$anon_id++;
 	$components{$id} = $component;
@@ -460,8 +460,17 @@ sub output_ibg {
 	$start_label = $bond_id_start_label{$dia_bond_id};
 	$end_label   = $bond_id_end_label  {$dia_bond_id};
 
-	$start_label =~ s/\#//g;
-	$end_label   =~ s/\#//g;
+	# treat label as a comment if not enclosed by [ ]
+	if ($start_label !~  /\[.*\]/) {
+	    $start_label = "[]";
+	}
+	if ($end_label !~ /\[.*\]/) {
+	    $end_label = "[]";
+	}
+
+	# ignore label if it is not enclosed by []
+#	$start_label =~ s/[^[]*\[\([^]]*\)\]/[$1]/;
+#	$end_label   =~ s/[^[]*\[\([^]]*\)\]/[$1]/;
 
 	if ($bond_id_arrow_on_start{$dia_bond_id}) {
 	    $head_label = $end_label;
@@ -570,6 +579,15 @@ sub set_dia_attribute_value {
 #    return $subnode->getAttributeNode("val")->getValue;
 }
 
+sub get_dia_attribute_string {
+    my ($attribute) = @_;
+    my ($str_elem, $string);
+    $str_elem = get_first_element_subnode($attribute);
+    $string = get_first_text_subnode($str_elem)->getData;
+    $string =~ s/\#//g;
+    return $string;
+}
+
 sub get_arrow_info {
     my ( $object_node, $id, $id_index )= @_;
     my($attribute,$attributes);
@@ -585,14 +603,11 @@ sub get_arrow_info {
     change_causality($id_index, $attribute, $change_flow_causality);
     $bond_id_flow_causality{$id} = defined($attribute) ? get_dia_attribute_value("dia:enum",$attribute)-1 : 1;
 
-#    $attribute = get_first_subnode_by_nodename_attribute(1,$object_node, "dia:attribute", "name", "start_label");
-#    $bond_id_start_label{$id} = defined($attribute) ? get_dia_attribute_value("dia:string") : "[]";
-    $bond_id_start_label{$id} = "[]"; # FIXME!
+    $attribute = get_first_subnode_by_nodename_attribute(1,$object_node, "dia:attribute", "name", "start_label");
+    $bond_id_start_label{$id} = defined($attribute) ? get_dia_attribute_string($attribute) : "[]";
 
-#    $attribute = get_first_subnode_by_nodename_attribute(1,$object_node, "dia:attribute", "name", "end_label");
-#    $bond_id_end_label{$id} = defined($attribute) ? get_dia_attribute_value("dia:string") : "[]";
-    $bond_id_end_label{$id} = "[]"; # FIXME!
-
+    $attribute = get_first_subnode_by_nodename_attribute(1,$object_node, "dia:attribute", "name", "end_label");
+    $bond_id_end_label{$id} = defined($attribute) ? get_dia_attribute_string($attribute) : "[]";
 }
 
 sub change_causality() {

@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.2  1996/11/21  15:57:28  peterg
+# Now runs mtt quietly.
+#
 # Revision 1.1  1996/08/18  19:59:00  peter
 # Initial revision
 #
@@ -25,7 +28,7 @@ BEGIN {
 {
   if (NF==2) {
     if( match("tex txt r m ps",$2)>0) {
-      printf("mtt -q %s %s %s\n ", system_name, $1, $2)
+      printf("mtt -q %s %s %s %s\n ", switches, system_name, $1, $2)
     } 
   }
 }

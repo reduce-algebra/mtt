@@ -19,6 +19,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.8  1996/08/12 20:19:52  peter
+## Arguments now passed via $1_args.m file
+##
 ## Revision 1.7  1996/08/11 19:49:27  peter
 ## Parameter passing (via $4) added.
 ##
@@ -252,8 +255,8 @@ $1_tf.tex: $1_def.r $1_tf.r $1_sympar.r $1_simp.r
 #Time responses
 $1_ir.dat: $1_dm.m $1_numpar.m $1_args.m
 	dm2ir_m2dat $1 '$4'
-$1_sr.dat: $1_dm.m $1_numpar.m $1_args.m
-	dm2sr_m2dat $1 '$4'
+$1_sr.m: $1_dm.m $1_numpar.m $1_args.m
+	dm2sr_m $1 '$4'
 
 #Frequency responses
 $1_fr.dat: $1_dm.m $1_numpar.m $1_args.m
@@ -264,6 +267,14 @@ $1_pkim.r: $1_tf.r $1_sympar.r
 	tf2pkim_r $1; tidy $1_pki.r
 $1_pkim.tex: $1_def.r $1_pkim.r $1_sympar.r
 	pkim_r2tex $1; latex_tidy $1_pkim.tex
+
+#Generic conversion of data files from m to dat format
+$1_$2.dat: $1_$2.m
+	m2dat $1_$2
+
+#Generic conversion of data files from dat to (gplot) gdat format
+$1_$2.gdat: $1_$2.dat
+	dat2gdat $1_$2
 
 #Generic conversion of Latex to latex document
 $1_$2.doc: $1_$2.tex
@@ -291,18 +302,18 @@ endif
 
 #Create PostScript version of dat file
 ifeq ('$2','ir')
-$1_$2.ps: $1_$2.dat
-	dat2ps $1_$2
+$1_$2.ps: $1_$2.gdat
+	gdat2ps $1_$2
 endif
 
 ifeq ('$2','sr')
-$1_$2.ps: $1_$2.dat
-	dat2ps $1_$2
+$1_$2.ps: $1_$2.gdat
+	gdat2ps $1_$2
 endif
 
 ifeq ('$2','fr')
-$1_$2.ps: $1_$2.dat
-	dat2ps $1_$2
+$1_$2.ps: $1_$2.gdat
+	gdat2ps $1_$2
 endif
 
 #Generic conversion of dvi to ps

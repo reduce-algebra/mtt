@@ -57,6 +57,16 @@ ldiv (const Matrix &a, const ColumnVector &b)
   return a.lssolve (b, info, rank);
 }
 
+#ifdef STANDALONE
+ColumnVector Fmtt_implicit (      ColumnVector	&x,
+			    const ColumnVector	&dx,
+			    const Matrix	&AA,
+			    const ColumnVector	&AAx,
+			    const double	&t,
+			    const int		&Nx,
+			    const ColumnVector	&openx)
+{
+#else // !STANDALONE
 DEFUN_DLD (mtt_implicit, args, ,
 	   "implicit integration method")
 {
@@ -68,7 +78,7 @@ DEFUN_DLD (mtt_implicit, args, ,
   const double		t	= args(4).double_value ();
   const int		Nx	= (int) (args(5).double_value ());
   const ColumnVector	openx	= args(6).column_vector_value ();
-#else
+#else // !OCTAVE_DEV
   static ColumnVector	x	= args(0).vector_value ();
   const ColumnVector	dx	= args(1).vector_value ();
   const Matrix		AA	= args(2).matrix_value ();
@@ -76,7 +86,8 @@ DEFUN_DLD (mtt_implicit, args, ,
   const double		t	= args(4).double_value ();
   const int		Nx	= (int) (args(5).double_value ());
   const ColumnVector	openx	= args(6).vector_value ();
-#endif
+#endif // OCTAVE_DEV
+#endif // STANDALONE
 
   register int i, n;
   register int col_old, col_new;
@@ -133,7 +144,9 @@ DEFUN_DLD (mtt_implicit, args, ,
 	}
     }
 
+#ifdef STANDALONE
+  return x;
+#else // !STANDALONE
   return octave_value (x);
+#endif // STANDALONE
 }
-
-

@@ -5,10 +5,10 @@
 MTTFLAGS	= -q -u -oct $(OPTS)
 
 # Adapt according to local set-up and mkoctfile
-CC		= g++
+CXX		= g++
 CXXFLAGS	= $(DEBUG) $(OPTIM) $(DEFINES) $(ARCHFLAGS) -fno-rtti -fno-exceptions -fno-implicit-templates
 
-DEBUG		= -v -pg -g
+DEBUG		= -g
 OPTIM		= -O3
 
 PREFIX		= /usr/local
@@ -38,7 +38,7 @@ all: $(SYS)_standalone.$(LANG)
 
 $(SYS)_standalone.exe: $(SYS)_ode2odes.cc $(SYS)_def.h $(SYS)_sympar.h
 	cp $(MTT_LIB)/cc/*.cc .
-	$(CC) *.cc -o $@ $(CXXFLAGS) $(INCLUDES) $(LIBOCTAVE) $(LIBKPATHSEA) $(LIBREADLINE) $(LIBBLAS) $(LIBF2C) $(LIBRARIES)
+	$(CXX) *.cc -o $@ $(CXXFLAGS) $(INCLUDES) $(LIBOCTAVE) $(LIBKPATHSEA) $(LIBREADLINE) $(LIBBLAS) $(LIBF2C) $(LIBRARIES)
 
 .PHONY: $(SYS)_standalone.clean
 

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.222  1999/12/23 10:03:42  peterg
+## Added $1_sympars.txt to numpar.m target
+##
 ## Revision 1.221  1999/12/22 05:15:51  peterg
 ## Set to version 4.0.
 ##
@@ -753,7 +756,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='4.0'
+version='4.0++'
 
 # MTT recursion level is zero unless explicitly set
 level=0
@@ -1801,6 +1804,7 @@ $1_sspar.tex: $1_sspar.r
 #SUMMARY rep*	report (txt)
 #SUMMARY rep	report (tex)
 #SUMMARY rep*	report (view)
+#SUMMARY rep*	report (html)
 
 
 ifeq ($documenttype,book)
@@ -1939,6 +1943,7 @@ $1_scse.tex: $1_scse.r  $1_sympar.r $1_simp.r
 #SUMMARY ode	ordinary differential equations (tex)
 #SUMMARY ode*	ordinary differential equations (view)
 #SUMMARY ode	ordinary differential equations (ps)
+#SUMMARY ode	ordinary differential equations (oct)
 #Ordinary differential equations
 ifeq ($dae_is_ode,0)
 $1_ode.r: $1_cse.r $1_def.r $1_sympar.r $1_subs.r
@@ -1953,6 +1958,9 @@ endif
 
 $1_ode.m: $1_def.m $1_ode.r $1_sympars.txt
 	mtt_r2m $1 ode m; matlab_tidy $1_ode.m
+
+$1_ode.oct: $1_def.r $1_ode.p $1_numpar.p $1_input.p $1_sympars.txt
+	mtt_p2oct $1 ode
 
 $1_odea.m: $1_ode.m
 	touch $1_odea.m

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1996/08/15 16:24:55  peter
+## Initial revision
+##
 ###############################################################
 
 
@@ -23,7 +26,7 @@ rm -f dae2daesol_m.log
 
 if [ "$2" = "" ]; 
 then
-  PARAMS='T=[0:0.1:10];x0=zeros(10,1),dx0=zeros(10,1)'
+  PARAMS='T=[0:0.1:10];x0=zeros(nx+nz,1);dx0=zeros(nx+nz,1);'
   echo Using default parameter $PARAMS
 else
   PARAMS=$2;
@@ -61,7 +64,7 @@ x = dassl('$1_dae', x0, dx0,  T);
 i=0;
 for tt=T'
   i=i+1;
-  y(i) = $1_daeo(x(i,:),tt);
+  y(i,:) = $1_daeo(x(i,:),tt)';
 end;
 
 write_matrix([T,y], '$1_daesol');

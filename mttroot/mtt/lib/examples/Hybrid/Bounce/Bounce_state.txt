@@ -5,9 +5,13 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/07/25 14:59:11  peterg
+## Initial revision
+##
 ###############################################################
 
 # Set the states
-MTTx(1) 	= 10.0;	# 3 (Bounce_intf)
-MTTx(2) 	= 0.0; 	# MTT_SWITCH (Bounce_ground)
-MTTx(3) 	= 0.0; 	# ball_mass (Bounce)
+mttx(1) 	= 10.0;	# 3 (Bounce_intf)
+mttx(2) 	= 0.0; 	# MTT_SWITCH (Bounce_ground)
+mttx(3) 	= 0.0; 	# ball_mass (Bounce)
+

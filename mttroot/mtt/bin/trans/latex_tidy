@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1996/08/19 14:35:51  peter
+## Prettyfied z dot.
+##
 ## Revision 1.1  1996/08/18 20:03:12  peter
 ## Initial revision
 ##
@@ -44,6 +47,12 @@ sed -e "s/\// \\\over /g" \
     -e "s/mttx4/x_4/g" \
     -e "s/mttx5/x_5/g" \
     -e "s/mttx6/x_6/g" \
+    -e "s/mttx7/x_7/g" \
+    -e "s/mttx8/x_8/g" \
+    -e "s/mttx9/x_9/g" \
+    -e "s/mttx10/x_{10}/g" \
+    -e "s/mttx11/x_{11}/g" \
+    -e "s/mttx12/x_{12}/g" \
     -e "s/mttui0/v_0/g" \
     -e "s/mttui1/v_1/g" \
     -e "s/mttui2/v_2/g" \

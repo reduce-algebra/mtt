@@ -16,6 +16,9 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.18  2003/09/07 20:41:19  geraint
+@comment  *** empty log message ***
+@comment
 @comment  Revision 1.17  2003/08/19 14:20:38  gawthrop
 @comment  Version 5.0 of MTT
 @comment  Remove xref errors (spurious spaces)
@@ -2962,7 +2965,7 @@ The following simple components are defined in MTT.
 @item R
          Standard one-port R
 @item C
-         Standard one-port I
+         Standard one-port C
 @item I
          Standard one-port I
 @item SS
@@ -2976,7 +2979,7 @@ The following simple components are defined in MTT.
 @item AF
         Flow amplifier
 @item CSW
-         Switched one-port I
+         Switched one-port C
 @item ISW
          Switched one-port I
 @end ftable
@@ -4625,6 +4628,9 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.18  2003/09/07 20:41:19  geraint
+# %% *** empty log message ***
+# %%
 # %% Revision 1.17  2003/08/19 14:20:38  gawthrop
 # %% Version 5.0 of MTT
 # %% Remove xref errors (spurious spaces)

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.14  2000/10/17 08:36:56  peterg
+## Included logic rep.
+##
 ## Revision 1.13  2000/10/15 09:27:13  peterg
 ## Better way of generating $infofile
 ##
@@ -93,10 +96,10 @@ case $rep in
 	    textfile=$1_$2.$lang
 	    infofile=mtt_list.$lang
 	    moreinfofile=mtt_list_numpar.$lang
-            awk '{if ($3=="MTT_SWITCH") printf("%s\n", $4)}' rep=$2 \
+            awk '{if ($3=="MTT_SWITCH") printf("%s_logic\n", $4)}' rep=$2 \
             <$1_struc.txt >$infofile
 	    cat $infofile $1_sympar.$lang> $moreinfofile  
-	    default='0.0'
+	    default='1.0'
 	;;
     *)
 	    echo Representation $rep not implemented

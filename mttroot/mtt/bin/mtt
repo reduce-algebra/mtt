@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.28  1996/09/13 18:44:11  peter
+## Added params dependencies.
+##
 ## Revision 1.27  1996/09/12 19:24:56  peter
 ## New numpar/params setup.
 ##
@@ -129,7 +132,7 @@ fi
 
 if [ "$1" = "hinfo" ] && [$2 = ""]; then
    echo Invoking $HTMLVIEW
-   (cd $MTTPATH/doc; $HTMLVIEW ./mtt.html)&
+   (cd $MTTPATH/doc; $HTMLVIEW ./mtt_toc.html)&
    exit
 fi
 
@@ -319,8 +322,7 @@ $1_numpar.m: $1_sympar.r
 $1_params.m: 
 	echo Creating $1_params.m
 	( \
-	echo "function u = $1_params"; \
-	echo "%% Paramaters file for system $1 ($1_params.m)"; \
+	echo "%% Parameter file for system $1 ($1_params.m)"; \
 	echo "%% This file provides the system params for simulation:";\
 	cat $MTTPATH/trans/m/rcs_header.txt; \
 	echo; \

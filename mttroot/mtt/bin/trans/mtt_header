@@ -12,6 +12,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.28  2001/02/17 03:48:17  geraint
+## Use assignment LHS to gather tmp variable names.
+## Prevents collection of long expressions, eg: tmp34*(tmp75
+##
 ## Revision 1.27  2001/02/14 06:06:34  geraint
 ## Removed octave_value_list wrappers from standalone.exe - speed improvements
 ##
@@ -132,11 +136,17 @@ Nyz=`mtt_getsize $system yz` # Zero outputs
 
 # get octave version
 octave_development=`octave --version | awk '{print $4}' | awk -F\. '{print $2}'`
-if [ $octave_development ]; then
-    vector_value=column_vector_value
-else
-    vector_value=vector_value
-fi
+case `$MATRIX --version | awk -F\. '{print $2}'` in
+    0) # stable
+	vector_value=vector_value
+	;;
+    1) # development
+	vector_value=column_vector_value
+	;;
+    *)
+	vector_value=column_vector_value
+	;;
+esac
 
 
 # Representation-specific stuff

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/11/10 09:16:41  peterg
+## Added structure rep
+##
 ## Revision 1.1  1998/07/22 09:14:42  peterg
 ## Initial revision
 ##
@@ -43,6 +46,7 @@ mtt $1 cbg ps 		        # The causal bond graph
 # mtt $1 ss tex 		# Steady state
 # mtt $1 dm tex			# Descriptor matrices (of linearised system)
 # mtt $1 sm tex			# State matrices (of linearised system)
+# mtt $1 tf tex			# Transfer function (of linearised system)
 # mtt $1 lmfr ps		# log modulus of frequency response (of linearised system)
 # mtt $1 simpar tex		# Simulation parameters
 # mtt $1 numpar tex		# Numerical simulation parameters

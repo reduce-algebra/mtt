@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.158  1998/07/03 09:06:39  peterg
+## Alias implemented for ports
+##
 ## Revision 1.157  1998/07/01 10:22:11  peterg
 ## Moved tidy stuff to end of preamble -- needed to make muti-plot copy
 ## correctely
@@ -755,7 +758,7 @@ if [ "$1" = "Clean" ] && [ "$2" = "" ]; then
   rm -f *_abg.m *_abg.ps *_args.*  *_cr.txt *_abg.tex
   rm -f *_sabg.fig *_sabg.ps *_head.fig *_bnd.fig 
   rm -f *_sympar.r *_sympar.c *_sympar.h *_sympar.txt? *_sympar.tex
-  rm -f *_rbg.* *_cmp.* *_fig.fig *_*cbg.* *_ese.* *_def.* 
+  rm -f *_rbg.* *_cmp.* *_fig.fig *_*cbg.* *_ese.* *_def.* *_alias.*
   rm -f *_sub.* *_type.sh
   rm -f *_dae*.* *_cse.* *_ode.*
   rm -f *_obs.* *_rfe.* *_ss.*
@@ -780,7 +783,7 @@ if [ "$2" = "Clean" ] && [ "$3" = "" ]; then
   rm -f $1_abg.m $1_abg.ps $1_args.*  $1_cr.txt $1_abg.tex
   rm -f $1_sabg.fig $1_sabg.ps $1_head.fig $1_bnd.fig 
   rm -f $1_sympar.r $1_sympar.c $1_sympar.h $1_sympar.txt? $1_sympar.tex
-  rm -f $1_rbg.* $1_cmp.* $1_fig.fig $1*_*cbg.* $1*_ese.* $1_def.* 
+  rm -f $1_rbg.* $1_cmp.* $1_fig.fig $1*_*cbg.* $1*_ese.* $1_def.* $1_alias.*
   rm -f $1_sub.* $1_type.sh
   rm -f $1_dae*.* $1_cse.* $1_ode.*  $1_obs.* $1_rfe.* $1_ss.*
   rm -f $1_dm.* $1_csm.* $1_tf.* $1_sr*.* $1_ir*.* $1_*fr.*

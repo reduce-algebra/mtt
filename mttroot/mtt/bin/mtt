@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.164  1998/07/17 19:45:58  peterg
+## Component aliases implemented.
+##
 ## Revision 1.163  1998/07/17 08:27:33  peterg
 ## Added find target
 ##
@@ -1659,6 +1662,13 @@ $1_sm.c: $1_def.r $1_sm.r $1_sympar.c
 		sm_r2c $1
 $1_sm.tex: $1_sm.r  $1_sympar.r $1_simp.r
 	sm_r2tex $1; latex_tidy $1_sm.tex
+
+#SUMMARY smx	state matrices with variable state x (r)
+#SUMMARY smx	state matrices with variable state x (m)
+$1_smx.r: $1_def.r $1_def.m $1_ode.r 
+		ode2smx_lang $1 r; tidy $1_smx.r
+$1_smx.m: $1_def.r $1_def.m $1_ode.r 
+		ode2smx_lang $1 m; matlab_tidy $1_smx.m
 
 #SUMMARY smc	controller form state matrices etc. - siso only (r)
 #SUMMARY smc	controller form state matrices etc. - siso only (tex)

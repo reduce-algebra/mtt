@@ -15,6 +15,11 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.38  2003/07/13 21:53:24  geraint
+## Updated to conform to latest Octave (tested with 2.1.49).
+## - the pathsearch library was merged into liboctave last year
+## - static_cast no longer seems to work between Matrix and ColumnVector
+##
 ## Revision 1.37  2002/09/19 08:08:15  gawthrop
 ## Updated documentation documentation
 ##
@@ -202,7 +207,7 @@ else
   	"
   
   # Setup ps viewer
-  export PSVIEW='gv'
+  export PSVIEW='ghostview'
   
   # Setup pdf viewer
   export PDFVIEW='acroread'

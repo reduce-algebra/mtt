@@ -1,0 +1,43 @@
+%% Label file for system iNMP (iNMP_lbl.txt)
+%SUMMARY iNMP Inverse simple non-minimum phase system
+%DESCRIPTION <Detailed description here>
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+
+% Argument aliases
+%ALIAS	$1	c_f
+%ALIAS	$2	c_s
+%ALIAS	$3	r_f
+%ALIAS	$4	r_s
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+% Component type AE
+	m		lin	-1
+	p		lin	1
+
+% Component type C
+	c_f		lin	effort,c_f
+	c_s		lin	effort,c_s
+
+% Component type R
+	r		lin	flow,r
+	r_f		lin	flow,r_f
+	r_s		lin	flow,r_s
+
+% Component type SS
+	e1	SS		external,internal
+	e2	SS		external,0

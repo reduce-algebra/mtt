@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.51  2000/08/01 12:25:24  peterg
+## Some changes to include files
+##
 ## Revision 1.50  2000/05/19 17:46:41  peterg
 ## New version of state with par argument
 ##
@@ -479,9 +482,9 @@ BEGIN{
           printf("%s THEN BEGIN\n", $0)
         }
         else { 
-          if ((match($1,"mtt_write")>0)&&(length(Stdin)>0)) {
-           sub(/mtt_write/, "if NOT eof THEN mtt_write");
-          }
+          #if ((match($1,"mtt_write")>0)&&(length(Stdin)>0)) {
+          # sub(/mtt_write/, "if NOT eof THEN mtt_write");
+          #}
           if ($1=="for"){
             if (($2=="it")&&(length(Stdin)>0)){
 	      printf("WHILE NOT eof DO BEGIN {Integration loop}\n")

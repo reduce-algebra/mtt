@@ -17,6 +17,10 @@ function eqn =  equation(name,cr,args,outbond,outcause,outport, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.4  1996/09/12 16:42:01  peter
+% %% Default now out side this function - need to be none for each
+% %% component.
+% %%
 % %% Revision 1.3  1996/09/12 12:03:58  peter
 % %% Added some error checking.
 % %% If no constitutive relationship, only add diagonal elementts to
@@ -48,7 +52,7 @@ end;
 LHS = varname(name, outbond, outcause);
 
 % Set up various strings to get correct syntax if some strings are empty
-if length(cr)==0
+if strcmp(cr,'')
   cause_name = '';
   port_name = '';
   lp = '';
@@ -62,7 +66,7 @@ else
   c_comma = ',';
 end
 
-if length(args)==0
+if strcmp(args,'')
   a_comma = '';
 else
   a_comma = ',';
@@ -77,9 +81,9 @@ RHS1 = sprintf('%s%s%s%s%s%s%s%s\n', ...
 RHS2 = '';
 for i=1:nports
   RHS2 = sprintf('%s\t%s', ...
-      RHS2, varname(name, inbonds(i), incauses(i)))
+      RHS2, varname(name, inbonds(i), incauses(i)));
   
-  if length(cr)>0 % add the causality & port info
+  if strcmp(cr,'')==0 % add the causality & port info
     RHS2 = sprintf('%s,%s,%1.0f', ...
 	RHS2, cause2name(incauses(i)), inports(i));
   end;

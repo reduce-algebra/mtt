@@ -38,8 +38,8 @@ rep_footer ()
     simpar)
 	cat <<EOF
   mttsimpar_map(0)	= (double) mttsimpar.first;
-  mttsimpar_map(1)	= (double) mttsimpar.dt;
-  mttsimpar_map(2)	= (double) mttsimpar.last;
+  mttsimpar_map(1)	= (double) mttsimpar.last;
+  mttsimpar_map(2)	= (double) mttsimpar.dt;
   mttsimpar_map(3)	= (double) mttsimpar.stepfactor;
   mttsimpar_map(4)	= (double) mttsimpar.wmin;
   mttsimpar_map(5)	= (double) mttsimpar.wmax;

@@ -9,6 +9,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.77  2002/05/08 16:03:32  geraint
+## Added mex support for ode2odes: mtt sys ode2odes mexglx.
+## This mex stuff seems to require octave2.1-headers.
+##
 ## Revision 1.76  2002/05/08 14:14:55  geraint
 ## Tidied up ode2odes code - reduced interweaving of STANDALONE/OCTAVEDLD sections
 ##
@@ -1002,8 +1006,8 @@ ${sys}_ode2odes (ColumnVector &state0, ColumnVector &numpar, ColumnVector &simpa
 {
   static double first, dt, last, stepfactor;
   first		= simpar (0);
-  dt		= simpar (1);
-  last		= simpar (2);
+  last		= simpar (1);
+  dt		= simpar (2);
   stepfactor	= simpar (3);
 
   static ColumnVector	dx (MTTNX, 0.0);
@@ -1157,6 +1161,8 @@ main (void)
   return 0;
 }
 #elif (CODEGENTARGET == OCTAVEDLD)
+#include <mtt_simpar.hh>
+
 DEFUN_DLD (${sys}_ode2odes, args, ,
 "Octave ode2odes representation of system with $method integration method\nUsage: mtt_data = ${sys}_ode2odes (state0, numpar, simpar)\n")
 {
@@ -1170,7 +1176,7 @@ DEFUN_DLD (${sys}_ode2odes, args, ,
   switch (nargin)
     {
     case 3:
-      simpar	= args(2).${vector_value} ();
+      simpar	= mtt_simpar (args(2).map_value ());
       numpar	= args(1).${vector_value} ();
       state0	= args(0).${vector_value} ();
       break;

@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.343  2002/05/10 14:07:16  geraint
+## Preserve .cc files.
+##
 ## Revision 1.342  2002/05/10 13:24:58  geraint
 ## Added initial support for building Simulink S-functions.
 ## Rates do not update properly yet.
@@ -2138,12 +2141,13 @@ $MAKE -S ${trace} $verbose $verbose_make -f  -  $target << EOF
 # MTT implicit rules
 ## .oct files
 $1_%.oct:  $1_%.cc $1_def.h $1_sympar.h $1_cr.h
-	echo Creating $1_\$*.oct; $MKOCTFILE -DCODEGENTARGET=OCTAVEDLD $1_\$*.cc
+	echo Creating $1_\$*.oct; $MKOCTFILE ${MTT_CXXINCS} -DCODEGENTARGET=OCTAVEDLD $1_\$*.cc
 
 .PRECIOUS: mtt_%.oct
+.PRECIOUS: $1_%.oct
 mtt_%.oct: mtt_%.cc
 	echo Compiling \$<
-	${MKOCTFILE} -DCODEGENTARGET=OCTAVEDLD $define_octave_dev \$<
+	${MKOCTFILE} ${MTT_CXXINCS} -DCODEGENTARGET=OCTAVEDLD $define_octave_dev \$<
 
 ## .mex files
 $1_%.mexglx: $1_%.cc $1_def.h $1_sympar.h $1_cr.h mtt_kpathsea.cc mtt_matlab_octave.cc mtt_matlab_octave.hh
@@ -2810,7 +2814,7 @@ $1_ode2odes.o: $1_ode2odes.cc $1_ode2odes_common.o $1_ode2odes_${integration_met
 $1_ode2odes.oct: $1_ode2odes.cc $1_ode2odes_common_oct.stamp $1_ode2odes_${integration_method}_oct.stamp $1_ode2odes_${algebraic_solver}.o
 	touch $1_ode2odes.m
 	echo Creating $1_ode2odes.oct
-	$MKOCTFILE -DCODEGENTARGET=OCTAVEDLD $1_ode2odes.cc mtt_${algebraic_solver}.cc mtt_Solver.cc mtt_AlgebraicSolver.cc
+	$MKOCTFILE ${MTT_CXXINCS} -DCODEGENTARGET=OCTAVEDLD $1_ode2odes.cc mtt_${algebraic_solver}.cc mtt_Solver.cc mtt_AlgebraicSolver.cc
 
 $1_ode2odes.mexglx: $1_ode2odes.cc $1_ode2odes_common.o $1_ode2odes_${integration_method}.o $1_ode2odes_${algebraic_solver}.o
 	touch $1_ode2odes.m

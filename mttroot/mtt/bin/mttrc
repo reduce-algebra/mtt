@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  1998/03/24 09:11:49  peterg
+## Compatible with .csh version
+##
 ## Revision 1.6  1998/03/13 11:53:29  peterg
 ## reduce --> reduce 64
 ##
@@ -54,10 +57,10 @@ export MTT_LIB=$MTTPATH/lib
 
 #Ask octave to tell me its path
 #export OCTAVE_LOAD_PATH=`mtt_octave_path`
-OCTAVE_LOAD_PATH=$OCTAVE_PATH
+OCTAVE_LOAD_PATH=`mtt_octave_path`
 
 #Setup octave
-export OCTAVE_PATH=$OCTAVE_LOAD_PATH\:$MATRIX_PATH
+export OCTAVE_PATH=\:.$OCTAVE_LOAD_PATH\:$MATRIX_PATH
 export MATRIX="octave --path $OCTAVE_PATH"
 
 #Setup matlab

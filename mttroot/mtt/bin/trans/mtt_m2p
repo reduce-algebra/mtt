@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.42  2000/04/18 11:11:44  peterg
+## mtt_parameters ---> mttpar
+## mtt_n_parameters ---> mttnpar
+##
 ## Revision 1.41  2000/04/18 10:13:43  peterg
 ## Getargs now after numpar file
 ##
@@ -187,11 +191,18 @@ Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
     state)
         echo "PROCEDURE $Sys_rep(VAR mttx : StateVector);"
         ;;
+    numpar)
+        echo "PROCEDURE $Sys_rep(VAR mttpar : ParameterVector);"
+        ;;
+    simpar)
+        echo "PROCEDURE $Sys_rep(VAR mttsimpar : SimulationParameters);"
+        ;;
     input)
         echo "PROCEDURE $Sys_rep(VAR mttu : InputVector;"
 	echo "                       mttt : REAL;"
 	echo "                       mttx : StateVector;"
-	echo "                       mtty : OutputVector);"
+	echo "                       mtty : OutputVector;"
+	echo "                       mttw : InputVector);"
 	;;
     ode)
 	echo "PROCEDURE $Sys_rep(VAR mttdx: StateVector;"
@@ -248,11 +259,16 @@ Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
 	echo "PROGRAM $Sys_rep;"
 	echo "CONST"
 	echo "    MTT_MaxParameters = 100;"
+	echo "    MTT_Npar = $Npar;"
+	echo "    MTT_Nx = $Nx;"
 	echo "TYPE"
 	echo "    StateVector  = ARRAY[1..$Nx] OF REAL;"
 	echo "    InputVector  = ARRAY[1..$Nu] OF REAL;"
 	echo "    OutputVector = ARRAY[1..$Ny] OF REAL;"
 	echo "    ParameterVector = ARRAY[1..$Npar] OF REAL;"
+	echo "    SimulationParameters = RECORD"
+	echo "    dt, first, input, last, stepfactor, wmax, wmin, wsteps: REAL"
+	echo "                           END;"
 	echo "    StateMatrix  = ARRAY[1..$Nx,1..$Nx] OF REAL;"
 	echo "    StateMatrixVector  = ARRAY[1..$Nxx] OF REAL;"
 	echo "    glnparray    = StateVector;"
@@ -263,19 +279,19 @@ Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
 	## echo "    IntegrationMethod = 1..4;"
 	echo ""
 	echo "VAR"
-        echo "    MTTt,mttLAST,mttDT,mttDDT   : REAL;"
-        echo "    MTTWMIN,mttWMAX             : REAL;"
-	echo "    mttx,mttdx,mttxx,mttAAx     : StateVector;"
-	echo "    mttu                        : InputVector;"
-	echo "    mtty                        : OutputVector;"
+	echo "    simpar                      : SimulationParameters;"
+        echo "    t                           : REAL;"
+	echo "    x,dx,AAx                    : StateVector;"
+	echo "    u                           : InputVector;"
+	echo "    y                           : OutputVector;"
+	echo "    par                         : ParameterVector;"
 	echo "    mttpar                      : ParameterVector;"
-	echo "    mttAA, mttE                 : StateMatrix;"
-	echo "    MTTi,MTTj,MTTit,MTTjt,MTTiLast: INTEGER;"
-	echo "    mttSTEPFACTOR,mttWSTEPS,mttSTEPS,mttINPUT : INTEGER;"
+	echo "    mttnpar                     : INTEGER;"
+	echo "    AA                          : StateMatrix;"
+	echo "    MTTi,MTTj,it,iLast: INTEGER;"
+	##echo "    mttSTEPFACTOR,mttWSTEPS,mttSTEPS,mttINPUT : INTEGER;"
 	## echo "    mttMETHOD : IntegrationMethod;"
-	echo "    MTTopen  : StateVector;"
-	echo "    mttpar  : ARRAY[1..MTT_MaxParameters] OF REAL;"
-	echo "    mttnpar  : INTEGER;"
+	echo "    open  : StateVector;"
 	echo ""
         ;;
     switchopen)
@@ -304,18 +320,23 @@ EOF
   space="[ $tab]*"
   spaces="[ $tab][ $tab]*"
   non_space="[^ ]*"
+  args="[a-zA-Z0-9,.]*"
 
 # Body	
-grep -v '^[ ]*function' < $Sys_rep.m  | sed "s/^$space%/#/" | sed "s/\([;)]$space\)%/\1#/" |\
+cat $Sys_rep.m |\
+grep -v '^[ ]*function'  |\
+grep -v '^[ ]*endfunction'  |\
+grep -v 'MTT_data'  |\
+sed "s/^$space%/#/" | sed "s/\([;)]$space\)%/\1#/" |\
 awk -F# '{printf("%s",$1) 
           if (NF>1) printf("{* %s *}", $2)
           printf("\n") 
          }' |\
-sed "s/$space\[\($non_space\)\]$spaces=$spaces\($fun_name\)(\([a-zA-Z0-9,]*\))/\2(\1,\3)/" |\
-sed "s/$space\[\($non_space\)\]$spaces=$spaces\($mttfun_name\)(\([a-zA-Z0-9,]*\))/\2(\1,\3)/" |\
-sed "s/$space\[\($non_space\)\]$spaces=$spaces\(zeros\)(\([a-zA-Z0-9,]*\))/\2(\1,\3)/" |\
+sed "s/$space\[\($non_space\)\]$spaces=$spaces\($fun_name\)(\($args\))/\2(\1,\3)/" |\
+sed "s/$space\[\($non_space\)\]$spaces=$spaces\($mttfun_name\)(\($args\))/\2(\1,\3)/" |\
+sed "s/$space\[\($non_space\)\]$spaces=$spaces\(zeros\)(\($args\))/\2(\1,\3)/" |\
 sed "s/$space\[\($non_space\)\]$spaces=$spaces\($fun_name\)/\2(\1)/" |\
-sed "s/$space\($non_space\)$spaces=$spaces\($fun_name\)(\([a-zA-Z0-9,]*\))/\2(\1,\3)/" |\
+sed "s/$space\($non_space\)$spaces=$spaces\($fun_name\)(\($args\))/\2(\1,\3)/" |\
 sed "s/$space\($non_space\)$spaces=$spaces\($fun_name\)/\2(\1)/"  |\
 awk '
 function printvar(Name,N) {
@@ -356,14 +377,6 @@ BEGIN{
     {
       if (doing_header==1){
         if (rep=="ode2odes"){
-          printf("VAR \n");
-          for (k=1;k<i;k++) printf("  %s,\n",global[k])
-          printf("%s : REAL;\n", global[i])
-          # printvar("x",Nx);
-          # printvar("u",Nu);
-          # printvar("y",Ny);
-          printvar("_t",Nt);
-
           printf("\n{%s $MTTPATH/trans/p/mtt_write.p}\n",inc)
           printf("{%s $MTTPATH/trans/p/sign.p}\n",inc)
           printf("{%s $MTTPATH/trans/p/mtt_euler.p}\n",inc)
@@ -384,7 +397,8 @@ BEGIN{
           if (Method=="implicit") {
             printf("{%s %s_cse.p}\n",inc,Sys)
             printf("{%s %s_cseo.p}\n",inc,Sys)
-            printf("\n{%s %s_smx.p}\n",inc,Sys);
+            printf("\n{%s %s_smxa.p}\n",inc,Sys);
+            printf("\n{%s %s_smxax.p}\n",inc,Sys);
           }
           printf("{%s %s_switchopen.p}\n\n",inc,Sys)
 
@@ -395,10 +409,18 @@ BEGIN{
         else{
           for (k=1;k<=j;k++) printf("%s\n", comment[k])
           printf("\n")
+          printf("VAR \n");
+          for (k=1;k<i;k++) printf("  %s,\n",global[k])
+          printf("%s : REAL;\n", global[i])
+          # printvar("x",Nx);
+          # printvar("u",Nu);
+          # printvar("y",Ny);
+          printvar("_t",Nt);
+
           printf("VAR mtt_i : INTEGER;\n");
-          if ( (rep=="smxa")||(rep=="smxax") ) {
-            printvar("_t",Nt);
-          }
+          #if ( (rep=="smxa")||(rep=="smxax") ) {
+          #  printvar("_t",Nt);
+          #}
           printf("\nBEGIN{%s}\n", Sys_rep)
           if (rep=="smxa"){
             printf("FOR mtt_i:= 1 to %i DO\n\tmtta[mtt_i] := 0;\n", Nx*Nx);
@@ -471,7 +493,11 @@ sed 's/(\([0-9]*,MTT[ijk0-9]\))/\[\1\]/g' |\
 sed 's/(\(MTT[ijk0-9],MTT[ijk0-9]\))/\[\1\]/g' |\
 sed 's/(\(MTT[ijk0-9,]*\))/\[\1\]/g'  |\
 sed 's/switcha(mttAA,/switcha(/g'   |\
-sed 's/switch(MTTx,/switch(/g'  \
+sed 's/switch(MTTx,/switch(/g'  |\
+sed 's/nargin<1/mttnpar<1/'  |\
+sed 's/if nargin<2 THEN//'  |\
+sed 's/nargin<3/mttnpar<1/' | \
+sed 's/if nargin<4/if mttnpar<1/'  \
 >> $Filename
 
 # p2c doesn't like mixed case filenames!

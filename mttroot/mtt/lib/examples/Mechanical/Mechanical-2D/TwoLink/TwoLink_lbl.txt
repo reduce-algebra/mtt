@@ -14,6 +14,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/07/27 10:45:22  peterg
+% %% Initial revision
+% %%
 % %% Revision 1.2  1996/12/05  12:39:49  peterg
 % %% Documentation
 % %%
@@ -35,18 +38,18 @@ rod1	none	l_1;l_1;j_1;m_1
 rod2	none	l_2;l_2;j_2;m_2
 
 %Zero velocity sources
-v_x	internal	0
-v_y	internal	0
+v_x	SS     internal,0
+v_y	SS     internal,0
 
 
 %Zero force/torque sources
-F_x	0	internal
-F_a	0	internal
-F_y	0	internal
+F_x	SS	   0,internal
+F_a	SS	   0,internal
+F_y	SS	   0,internal
 
 
 %Torque/velocity at joints
-f_a1	external external
-f_a2	external external
+f_a1	SS	 external,external
+f_a2	SS	 external,external
 
 

@@ -1,0 +1,32 @@
+#! /bin/sh
+
+### abg2cmp_fig2txt
+##  Creates list of components contained in _abg.fig
+## Copyright (C) 2002 by Peter J. Gawthrop
+
+  ###################################### 
+  ##### Model Transformation Tools #####
+  ######################################
+  
+  ###############################################################
+  ## Version control history
+  ###############################################################
+  ## $Log$
+  ##
+  ###############################################################
+
+system=$1
+infile=${system}_abg.fig
+outfile=${system}_cmp.txt
+
+echo Creating ${outfile}
+
+## Find names of all components
+grep -v '\[[0-9]*:[0-9]*\]' ${infile}  |\
+gawk '/:/ {print $NF}'  | \
+sed 's/\\001//' | \
+sort -u> ${outfile}
+
+## Create cmp.txt files beneath this one
+##mtt -q -u -l 1 ${system} sub sh # Create the list of subsystems
+##sh ${system}_sub.sh "abg2cmp_fig2txt " " " # Create the comp files

@@ -48,9 +48,15 @@ $(SYS).mdl: ${MTT_REP}/sfun_rep/mdl.tmpl
 	echo Creating $@
 	cat $^ | sed 's/<mtt_model_name>/$(SYS)/g' > $@
 
-README:: ${MTT_REP}/sfun_rep/README.tmpl
+README:: ${MTT_REP}/sfun_rep/README.tmpl README.CVS
 	echo Creating $@
 	cat $^ | sed 's/<mtt_model_name>/$(SYS)/g' > $@
+	rm -f README.CVS
+
+README.CVS:
+	echo Getting CVS status
+	cvs status ../$(SYS)_abg.fig > $@ 2>1
+	date >> $@
 
 $(SYS)_ae.c: $(SYS)_ae.m
 	echo Creating $@

@@ -6,6 +6,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.2  1998/10/01 19:20:33  peterg
+# %% Cahged switch function
+# %%
 # %% Revision 1.1  1998/07/25 18:35:02  peterg
 # %% Initial revision
 # %%
@@ -14,6 +17,4 @@
 # Set the inputs
 mttu(1) = 9.81;
 
-# Set the switches
-bounce_ground= mttx(1)<0;
 

@@ -161,8 +161,8 @@ function [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, A_u, A_w, w, Q, extr
 
     gset nokey
     gset nogrid
-    gset format x "%4.1f"
-    gset format y "%4.1f"
+    gset format x "%.1f"
+    gset format y "%.2f"
     gset term fig monochrome portrait fontsize 20 size 20 20 metric \
 	     thickness 4
     gset output "${sys}_nppp.fig"
@@ -175,6 +175,8 @@ function [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, A_u, A_w, w, Q, extr
     subplot(2,1,1); plot(t,y,'-', T_open, y_open,"^"); 
 
     oneplot;
+    gset term fig monochrome portrait fontsize 20 size 20 10 metric \
+	     thickness 4
     gset output "${sys}_nppp.basis.fig"
     title("");
     xlabel("Time (s)");

@@ -40,11 +40,15 @@ esac
 
 get_unit()
 {
-  factor=`units $2 $3 | head -1 | sed 's/\*//'`
-  if [ `echo $factor | wc -w` = "1" ]; then
-    echo $factor
+  if [ "$2" == "none" ]; then
+      echo 1
   else
-    echo $1_UNIT_ERROR unit $2 not compatible with domain ${domain}
+      factor=`units $2 $3 | head -1 | sed 's/\*//'`
+      if [ `echo $factor | wc -w` = "1" ]; then
+	  echo $factor
+      else
+	  echo $1_UNIT_ERROR unit $2 not compatible with domain ${domain}
+      fi
   fi
 }
 ## Check effort and flow for comptability + find factor

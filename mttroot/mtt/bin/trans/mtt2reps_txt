@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  2000/04/05 08:04:01  peterg
+## Minor reorganisation
+##
 ## Revision 1.7  2000/04/04 16:15:14  peterg
 ## Fixed awk prob - must be the same sep. for each field (?)
 ## So tr tab to space
@@ -58,7 +61,7 @@ for rep in $representations ; do
       sort -u | sed 's/[()]//g'` 
 
       Title='('$title')'
-      echo -e  $rep $Title '\t' $sep $language
+      echo -e  $rep $Title  $sep $language
      
 done
 

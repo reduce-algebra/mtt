@@ -4,7 +4,7 @@ function [bonds,components,n_vector_bonds] = \
       ibg2abg(name,bonds,infofile,errorfile)
 
   ## write useful quantity of data to log
-  struct_levels_to_print = 4;
+  struct_levels_to_print = 6;
 
   ################################
   ## create component structure ##
@@ -480,7 +480,7 @@ function [bonds,components,n_vector_bonds] = \
     n_comps = 0;
   endif
 
-  components = zeros(n_comps, max(n_vector_bonds));
+  components = zeros(n_comps+n_ports, max(n_vector_bonds));
 
   if (struct_contains(objects, "comp"))
     for [comp, comp_name] = objects.comp
@@ -493,40 +493,109 @@ function [bonds,components,n_vector_bonds] = \
  	  error(sprintf("Component %s has no ports", comp.type));
  	endif
       else
+	## must be a simple component:
+	## lib/comp/simple/comp_ports.m assigns port numbers
  	port_list = comp_ports(comp.type, comp.n_bonds)
       endif
       ## but do what with it?
+
+      counter = 0;
+
+      n_ports = size(port_list,1)
+      if ((n_ports == 1) | ...
+	  (strcmp(comp.type, "zero")) | (strcmp(comp.type, "one")))
+	## no ordering necessary
+	for [bond, bond_name] = comp
+	  if (index(bond_name, "bond") == 1)
+	    for [sub_bond, sub_bond_name] = bond
+	      if (index(sub_bond_name, "subbond") == 1)
+		components(comp.index, ++counter) = sub_bond.index
+	      endif
+	    endfor
+	  endif
+	endfor
+
+      else
+	## multiple ports, need to order them
+	for port = 1 : n_ports
+	  component_type = comp.type
+	  the_port_list = port_list
+	  the_port = port
+	  label = port_list(port,:)
+	  if (index (label, "[") == 1)
+	    label = mtt_strip_name(label)
+	  endif
+	  label = deblank(label)
+		    	  
+	  for [bond, bond_name] = comp
+	    if (index(bond_name, "bond") == 1)
+	      for [sub_bond, sub_bond_name] = bond
+
+		if (index(sub_bond_name, "subbond") == 1)
+		  sub_bond_label = sub_bond.label
+		  if (index (sub_bond_label, "[") == 1)
+		    sub_bond_label = mtt_strip_name(sub_bond_label)
+		  endif
+		  sub_bond_label = deblank(sub_bond_label)
+
+		  ## unalias sub_bond label
+		  if exist([comp.type, '_alias'])
+		    eval(sprintf("alias = %s_alias", comp.type))
+		    if isstruct(alias)
+		      while_counter = 0;
+		      while isfield(alias, sub_bond_label)
+			old_sub_bond_label = sub_bond_label;
+			sub_bond_label = eval(sprintf("alias.%s", sub_bond_label))
+			if strcmp(old_sub_bond_label, sub_bond_label)
+			  break;
+			endif
+		      endwhile
+		    endif
+		  endif
+		    
+		  if (strcmp(sub_bond_label, label))
+		    components(comp.index, ++counter) = sub_bond.index
+		  endif
+
+		endif
+	      endfor
+	    endif
+	  endfor
+	endfor
+
+      endif
     endfor
   endif
   disp("-- finished getting port_list --")
+  port_list
 
-  if (struct_contains(objects, "comp"))
-    for [comp, comp_name] = objects.comp
-      counter = 0;
-      for [bond, bond_name] = comp
- 	if (index(bond_name, "bond") == 1)
- 	  if (strcmp(bond.other_end_type, "SS"))
- 	    for [sub_bond, sub_bond_name] = bond
- 	      if (index(sub_bond_name, "subbond") == 1)
- 		components(comp.index, ++counter) = sub_bond.index
- 	      endif
- 	    endfor
- 	  endif
- 	endif
-      endfor
-      for [bond, bond_name] = comp
-  	if (index(bond_name, "bond") == 1)
- 	  if (!strcmp(bond.other_end_type, "SS"))
- 	    for [sub_bond, sub_bond_name] = bond
- 	      if (index(sub_bond_name, "subbond") == 1)
- 		components(comp.index, ++counter) = sub_bond.index
- 	      endif
- 	    endfor
- 	  endif
-  	endif
-      endfor
-    endfor
-  endif
+#   if (struct_contains(objects, "comp"))
+#     for [comp, comp_name] = objects.comp
+#       counter = 0;
+#       for [bond, bond_name] = comp
+#  	if (index(bond_name, "bond") == 1)
+# # 	  if (strcmp(bond.other_end_type, "SS"))
+#  	    for [sub_bond, sub_bond_name] = bond
+#  	      if (index(sub_bond_name, "subbond") == 1)
+#  		components(comp.index, ++counter) = sub_bond.index
+#  	      endif
+#  	    endfor
+# # 	  endif
+#  	endif
+#       endfor
+# #       for [bond, bond_name] = comp
+# #   	if (index(bond_name, "bond") == 1)
+# #  	  if (!strcmp(bond.other_end_type, "SS"))
+# #  	    for [sub_bond, sub_bond_name] = bond
+# #  	      if (index(sub_bond_name, "subbond") == 1)
+# #  		components(comp.index, ++counter) = sub_bond.index
+# #  	      endif
+# #  	    endfor
+# #  	  endif
+# #   	endif
+# #       endfor
+#     endfor
+#   endif
   
    if (struct_contains(objects, "port"))
      for [port, port_name] = objects.port

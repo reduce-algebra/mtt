@@ -1,7 +1,8 @@
 #ifndef PRESSUREDROP_HH
 #define PRESSUREDROP_HH
 
-#include <math.h>		// fabs, pow
+#include <cmath>		// fabs, pow
+#include <string>
 
 #include "constants.hh"
 #include "frictionfactor.hh"
@@ -9,7 +10,7 @@
 #include "sign.hh"
 
 inline double
-pressuredrop(const string fluid,
+pressuredrop(const std::string fluid,
 	     const double d,
 	     const double l,
 	     const double r,
@@ -26,7 +27,7 @@ pressuredrop(const string fluid,
 }
 
 inline double
-pressuredrop(const string fluid,
+pressuredrop(const std::string fluid,
 	     const double d,
 	     const double l,
 	     const double r,

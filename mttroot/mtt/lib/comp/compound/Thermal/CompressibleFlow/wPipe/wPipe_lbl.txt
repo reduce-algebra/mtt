@@ -28,6 +28,7 @@
 %ALIAS  $1		c_v
 %ALIAS  $2		density,ideal_gas,r
 
+%ALIAS	Density		CompressibleFlow/Density
 
 %% Label file for system wPipe (wPipe_lbl.txt)
 
@@ -36,6 +37,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1998/07/04 08:33:30  peterg
+% %% New-style SS
+% %%
 % %% Revision 1.1  1998/07/03 17:38:20  peterg
 % %% Initial revision
 % %%

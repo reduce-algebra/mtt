@@ -5,6 +5,9 @@ function [bonds,components] = rbg2abg(rbonds,rstrokes,rcomponents,rports,infofil
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.4  1996/08/24 18:00:33  peter
+% %% Fixed bug with finding ports.
+% %%
 % %% Revision 1.3  1996/08/09 08:26:35  peter
 % %% Cosmetic tidy up.
 % %%
@@ -26,7 +29,7 @@ end;
 % Xfig scaling factor
 scale = 1200.0;
 
-%Rotation matrix
+% Rotation matrix
 rot = [0 -1; 1 0];
 
 % Find number of strokes
@@ -65,22 +68,26 @@ for i = 1:n_ports
   near_bond = adjbond(rports(i,1:2),arrow_end,other_end);
   port_near_bond(i,:) = [near_bond, rports(i,3)];
 end;
-port_near_bond
 
 % Locate the components at the ends of each bond
 for i = 1:n_bonds
   comp_near_bond(i,:) = adjcomp(arrow_end(i,:),other_end(i,:),rcomponents);
 end;
-comp_near_bond
 
 % Produce a list of bonds on each component - sorted if explicit port numbers
-for i = 1:n_components
+for i = 1:n_components    
   [index,n] = getindex(comp_near_bond,i);
+    % Error message in case we need it!
+  port_error = sprintf(... 
+      'Component at (%1.3f,%1.3f) has inconsistent port numbers', ...
+      rcomponents(i,1)/scale, rcomponents(i,2)/scale);
 
   if index(1,1) ~= 0 % Then its a genuine component 
     one = ones(n,1);
-    bond_list = index(:,1); % either end of bond at component
-    
+    bond_list = index(:,1); %  bond at component
+    bond_end = index(:,2);  % which end of bond at component?
+
+
     % Default sort of bonds (ie no change)
     sort_index = [1:n]'; 
     
@@ -88,24 +95,33 @@ for i = 1:n_components
       % Are the component ports numbered? (either they all are or none are)
       k=0;
       for j = 1:n
-	[port_index,m] = getindex(port_near_bond(:,1:2),bond_list(j));
-	if m==1 % exactly one number on this bond
-	  if index(j,2)==port_near_bond(port_index,2) % same end
-	    k=k+1;
-	    port_number(k,1) = port_near_bond(port_index,3);
+	b = bond_list(j); e = bond_end(j);
+	% Find all ports on this bond
+	[port_indices,m] = getindex(port_near_bond(:,1),b);
+	% Now find the one at this end
+	for l=1:m
+	  port_index = port_indices(l);
+	  if port_near_bond(port_index,2)==e
+	    break;
 	  end;
 	end;
+	% and put the corresponding number in the list
+	k=k+1;
+	port_number(k,1) = port_near_bond(port_index,3);
       end;
 
-      % Must have a lable for each port or non at all
+	% Must have a lable for each port or non at all
       if k==n
-	[junk,sort_index]=sort(port_number);
+	[sorted,sort_index]=sort(port_number);
+	if sum(sorted==[1:n]')~=n % The there is something wrong
+	  mtt_info(port_error,fnum);
+	  mtt_info(sprintf('\t it must have ports from 1:%1.0f\n', n), fnum);
+	end;
       elseif k~=0
-	info = sprintf(... 
-	    'Component at (%1.3f,%1.3f) has inconsistent port numbers', ...
-	    rcomponents(i,1)/scale, rcomponents(i,2)/scale);
-	mtt_info(info,fnum);
+	mtt_info(port_error,fnum);
+	mtt_info(sprintf('\t it must have 0 or %1.0f ports\n', n), fnum);
       end;
+ 
     end;
   end;
 

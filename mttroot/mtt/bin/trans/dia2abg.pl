@@ -3,6 +3,7 @@
 #----------------------------------------------------------------------------
 # dia2abg.pl
 # Copyright (C) 2002; David Hoover.
+# Modified      2004  Geraint Bevan.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -26,8 +27,8 @@
 # Given a DIA diagram, the script has functions that perform the following
 # MTT (model transformation tools) functions:
 # 1. Write a _cmp.txt file containing component types:names
-# 2. Write a _abg.m file containing an acausal bond graph suitable for input
-#    to Octave.
+# 2. Write a _ibg.m file containing an acausal bond graph suitable for 
+#    processing by MTT.
 # 3. Modify a diagram by changing causality as desired.
 #############################################################################
 
@@ -74,12 +75,14 @@
 # value=arrow-oriented flow causality.
 
 # %mtt_bond_id_index provides a unique positive integer index for each
-# Dia bond ID.  The index is written to the abg.m file for mtt.
+# Dia bond ID.  The index is written to the ibg.m file for mtt.
 
-# The %component_label_data hash is a hash of arrays.
+# The %component_id_type, %component_id_name, %component_id_reps hashes
+# store the information from _cmp.m for each component
+#
+# key=component_id
+# value=component type, name or number of repetitions
 
-# key=column 1 of label file
-# value=list(order in label file, col1 of lbl file, col2 of lbl file, ...)
 #----------------------------------------------------------------------------
 
 #----------------------------MAIN PROGRAM------------------------------------
@@ -88,49 +91,41 @@ use Getopt::Long;
 use XML::DOM;
 
 my (%component_id_tag, %bond_id_start_id, %bond_id_end_id,
-    %component_label_data, $objects, %mtt_bond_id_index,
+    $objects, %mtt_bond_id_index,
     %bond_id_arrow_on_start, %bond_id_flow_causality, %bond_id_effort_causality,
     %bond_id_start_label,%bond_id_end_label);
 
-my (%component_id_type, %component_id_name, %component_id_reps, %component_id_anon);
+my (%component_id_type, %component_id_name, %component_id_reps);
 
 # Parse user options:
-my $diagram_name = '';
-my $dia_input_file = '';
-my $dia_output_file = '';
-my $label_file = '';
-my $component_list_file = '';
-my $debug = 0;
-my $create_component_list = 0;
-my $create_abg = 0;
-my $create_ibg = 0;
-my $abg_file = '';
-my $ibg_file = '';
-my $change_flow_causality = '';
-my $change_effort_causality = '';
-GetOptions ('diagram_name=s' => \$diagram_name,
-	    'dia_input_file=s' => \$dia_input_file,
-	    'dia_output_file=s' => \$dia_output_file,
-	    'label_file=s' => \$label_file,
-	    'component_list_file=s' => \$component_list_file,
-	    'debug' => \$debug,
-	    'create_component_list' => \$create_component_list,
-	    'create_abg' => \$create_abg,
-	    'create_ibg' => \$create_ibg,
-	    'abg_file=s' => \$abg_file,
-	    'ibg_file=s' => \$ibg_file,
-	    'change_flow_causality=s' => \$change_flow_causality,
-	    'change_effort_causality=s' => \$change_effort_causality,
+my $diagram_name		= '';
+my $dia_input_file		= '';
+my $dia_output_file		= '';
+my $component_list_file		= '';
+my $debug			= 0;
+my $create_component_list	= 0;
+my $create_ibg			= 0;
+my $ibg_file			= '';
+my $change_flow_causality	= '';
+my $change_effort_causality	= '';
+GetOptions ('diagram_name=s'		=> \$diagram_name,
+	    'dia_input_file=s'		=> \$dia_input_file,
+	    'dia_output_file=s'		=> \$dia_output_file,
+	    'component_list_file=s'	=> \$component_list_file,
+	    'debug'			=> \$debug,
+	    'create_component_list'	=> \$create_component_list,
+	    'create_ibg'		=> \$create_ibg,
+	    'ibg_file=s'		=> \$ibg_file,
+	    'change_flow_causality=s'	=> \$change_flow_causality,
+	    'change_effort_causality=s'	=> \$change_effort_causality,
 	    );
 
 die usage() if $diagram_name eq '';
 
 # Use defaults if necessary:
-$dia_input_file = $diagram_name . "_abg.dia" if ($dia_input_file eq '');
-$dia_output_file = $diagram_name . "_cbg.dia" if ($dia_output_file eq '');
-$label_file = $diagram_name . "_lbl.txt" if ($label_file eq '');
-$abg_file = $diagram_name . "_abg.m" if ($abg_file eq '');
-$ibg_file = $diagram_name . "_ibg.m" if ($ibg_file eq '');
+$dia_input_file      = $diagram_name . "_abg.dia" if ($dia_input_file      eq '');
+$dia_output_file     = $diagram_name . "_cbg.dia" if ($dia_output_file     eq '');
+$ibg_file            = $diagram_name . "_ibg.m"   if ($ibg_file            eq '');
 $component_list_file = $diagram_name . "_cmp.txt" if ($component_list_file eq '');
 
 # Start Parsing XML, and creating files:
@@ -147,29 +142,9 @@ get_bond_data($objects);
 
 create_component_list() if ($create_component_list);
 
-if ($create_abg) {
-    open (OUT,">$abg_file") ||
-	die "Cannot open $abg_file for writing.\n";
-
-    # Don't update the label file unless we are creating component list and abg simultaneously...
-    if ($create_component_list) {
-	print STDERR "WARNING: Label file may be stale.\n" 
-	#system("abg2lbl_fig2txt -c $component_list_file $diagram_name") &&
-	#system("abg2lbl_fig2txt -x $diagram_name") && die "abg2lbl_fig2txt failed.";
-    }
-
-    get_label_data();
-    output_abg();
-    output_bond_causality();
-    parse_aliases();
-    print OUT "endfunction\n";
-}
-
 if ($create_ibg) {
     open (OUT,">$ibg_file") ||
 	die "Cannot open $ibg_file for writing.\n";
-    # don't bother about creating cmp.m simultaneously
-    # don't need getting label data
     output_ibg();
     
 }   
@@ -205,59 +180,6 @@ sub create_component_list {
     close(RAW);
 }
 
-
-sub get_label_data {
-    my ($name,@line,$i);
-
-    print_debug("READING DATA FROM $label_file...\n");
-    open (LBL,$label_file) || die "Cannot open label file: $label_file\n";
-
-    $i=0;
-    while (<LBL>) {
-      chomp;
-      # Get rid of commented lines:
-      next if (/^(\s)*[%\#]/);
-      # Get rid of empty or whitespace-only lines:
-      next if (/^(\s)*$/);
-      # Get rid of leading/trailing whitespace:
-      s/^\s*(\S.+\S)\s*$/$1/;
-
-      print_debug("label: $_ \n");      
-
-      @line = split(/\s+/);
-      $name = shift(@line);
-
-      $component_label_data{$name} = [ ($i++,@line) ];
-  }
-    close(LBL);
-}
-
-sub parse_aliases {
-    my ($name,@line,$alias);
-
-    print OUT "# Aliases\n";
-    print OUT "# A double underscore __ represents a comma\n";
-
-    open (LBL,$label_file) || die "Cannot open label file: $label_file\n";
-
-    while (<LBL>) {
-      chomp;
-      # Get rid of everything except ALIAS lines:
-      next unless (s/^[%\#]ALIAS(.*)$/$1/);
-      # Get rid of leading/trailing whitespace:
-      s/^\s*(\S.+\S)\s*$/$1/;
-
-      @line = split(/\s+/);
-      die "Label file ALIAS entries must have 2 columns!\n" unless
-	  @line == 2;
-
-      print OUT "$diagram_name.alias.$line[1] = \"$line[0]\";\n";
-  }
-    close(LBL);
-    print OUT "## Port domain and units\n";
-    print OUT "## Explicit variable declarations\n";
-}
-
 sub get_objects_node {
     my ( $doc_node, $layer_name )= @_;
     my ($root,$layer_node,$objects);
@@ -274,21 +196,6 @@ sub get_objects_node {
     $objects = $layer_node->getElementsByTagName('dia:object');
 
     return $objects;
-}
-
-sub output_abg_header {
-    my ($date);
-    $date = `date`; chomp($date);
-
-    print OUT <<"EOF";
-function [${diagram_name}] =  ${diagram_name}_abg
-# This function is the acausal bond graph representation of $diagram_name
-# Generated by dia2abg.pl on $date
-# The file is in Octave format
-
-# Subsystems and Ports
-
-EOF
 }
 
 sub output_ibg_header {
@@ -315,139 +222,6 @@ sub output_ibg_footer {
     print OUT <<"EOF";
 endfunction
 EOF
-}
-
-sub output_component {
-    my ($NM,$type,$cr,$arg,$rep,$stat,$connections,$subsys_or_port) = @_;
-
-    $_=$NM; remove_brackets(); $NM = $_;
-
-    my $pretty_name = ($subsys_or_port eq "ports") ? "Port" : "Component";
-
-	print OUT <<"EOF";
-# $pretty_name $NM
-  ${diagram_name}.${subsys_or_port}.${NM}.type = "$type";
-  ${diagram_name}.${subsys_or_port}.${NM}.cr = "$cr";
-  ${diagram_name}.${subsys_or_port}.${NM}.arg = "$arg";
-  ${diagram_name}.${subsys_or_port}.${NM}.repetitions = $rep;
-  ${diagram_name}.${subsys_or_port}.${NM}.status = $stat;
-  ${diagram_name}.${subsys_or_port}.${NM}.connections = [$connections];
-    
-EOF
-}
-
-sub sort_components {
-    my ($type1, $str1, $subsys_or_port1,
-	$type2, $str2, $subsys_or_port2,
-	$retval);
-    
-    $type1 = $component_id_type{$a};
-    $type2 = $component_id_type{$b};
-
-    $str1 = $component_id_tag{$a};
-    $str2 = $component_id_tag{$b};
-
-    ($subsys_or_port1, $_) = id_to_name($a);
-    ($subsys_or_port2, $_) = id_to_name($b);
-
-    print "${str1}: ${subsys_or_port1}\n";
-    print "${str2}: ${subsys_or_port2}\n";
-
-    # 1 junctions go last
-    if (($type1 eq '1') and ($type2 ne '1')) {
-	$retval = +1;
-    } elsif (($type1 ne '1') and ($type2 eq '1')) {
-	$retval = -1;
-    # 0 junctions go before them
-    } elsif (($type1 eq '0') and ($type2 ne '0')) {
-	$retval = +1;
-    } elsif (($type1 ne '0') and ($type2 eq '0')) {
-	$retval = -1;
-    # ports go first
-    } elsif (($subsys_or_port1 ne 'ports') and
-	     ($subsys_or_port2 eq 'ports')) {
-	$retval = +1;
-    } elsif (($subsys_or_port1 eq 'ports') and
-	     ($subsys_or_port2 ne 'ports')) {
-	$retval = -1;
-    # sort by type:name
-    } else {
-	$retval = ($str1 cmp $str2);
-    }
-
-    return $retval;
-}
-
-sub output_abg {
-    my ($cr,$rep,$stat,$NM,$type,$arg,$bond_id,$start,$end,@clist,$connections,
-	$strlength,$subsys_or_port);
-
-    print_debug("WRITING OUTPUT TO STDIO...\n");
-    $stat = "-1";
-
-    output_abg_header();
-    
-    # order component id's alphabetically by (type:name)
-    my (@id_list);
-    @id_list = keys (%component_id_tag);
-    @id_list = sort sort_components @id_list;
-
-    foreach my $id (@id_list) {
-	($subsys_or_port,$_) = id_to_name($id);
-	remove_brackets(); $NM = $_;
-
-	$type = $component_id_type{$id};
-
-	$cr = "" unless defined($cr = $component_label_data{$NM}[1]);
-	$arg = "" unless defined($arg = $component_label_data{$NM}[2]);
-	$rep = $component_id_reps{$id};
-
-	@clist = ();
-	while (($bond_id,$start) = each(%bond_id_start_id)) {
-	    push(@clist, ($bond_id_arrow_on_start{$bond_id} ? -1 : 1) *
-		 $mtt_bond_id_index{$bond_id}) if $start eq $id;
-	}
-	while (($bond_id,$end) = each(%bond_id_end_id)) {
-	    
-	    push(@clist, ($bond_id_arrow_on_start{$bond_id} ? 1 : -1) *
-		 $mtt_bond_id_index{$bond_id}) if $end eq $id;
-	}
-	$connections = join(" ",@clist);
-
-	output_component($NM,$type,$cr,$arg,$rep,$stat,$connections,$subsys_or_port);
-    }
-    
-    # calculate string length of longest component name (for octave):
-    $strlength=0;
-    foreach my $id (@id_list) {
-	my $name = id_to_name($id);
-	$strlength = length($name) if length($name) > $strlength;
-    };
-
-    print OUT "# Ordered list of Port names\n";
-    my $i=1;
-    foreach my $id (@id_list) {
-	my ($subsys_or_port,$name) = id_to_name($id);
-	if ($subsys_or_port eq "ports") {
-	    $_ = $name; remove_brackets(); $name = $_;
-	    print OUT "  " . $diagram_name . ".portlist($i,:)" . ' = "'
-		. $name . " " x ($strlength - length($name)) . '";' . "\n";
-	    $i++;
-	}
-    }
-    print OUT "\n";
-
-    print OUT "# Ordered list of subsystem names\n";
-    $i=1;
-    foreach my $id (@id_list) {
-	my ($subsys_or_port,$name) = id_to_name($id);
-	if ($subsys_or_port eq "subsystems") {
-	    print OUT "  " . $diagram_name . ".subsystemlist($i,:)" . ' = "'
-		. $name . " " x ($strlength - length($name)) . '";' . "\n";
-	    $i++;
-	}
-    }
-    print OUT "\n";
 }
 
 sub output_ibg {
@@ -540,24 +314,6 @@ sub output_ibg {
     output_ibg_footer();
 }
 
-sub output_bond_causality {
-    my ($mtt_bond_id,$dia_bond_id,$mtt_flow_causality,$mtt_effort_causality,
-	%reverse_mtt_bond_id_index);
-
-    print OUT "# Bonds\n";
-    print OUT "  $diagram_name.bonds = [\n";
-
-    %reverse_mtt_bond_id_index = reverse(%mtt_bond_id_index);
-
-    while (($mtt_bond_id,$dia_bond_id) = each(%reverse_mtt_bond_id_index)) {
-	$mtt_flow_causality = $bond_id_flow_causality{$dia_bond_id};
-	$mtt_effort_causality = $bond_id_effort_causality{$dia_bond_id};
-
-	print OUT "      $mtt_effort_causality $mtt_flow_causality\n";
-    }
-    print OUT "      ];\n\n";
-}
-
 sub get_component_data {
     my ( $objects_node )= @_;
     my($obj,$id,$attr,$comp,$strattr,$str_elem,$string);
@@ -581,7 +337,7 @@ sub get_component_data {
 }
 
 sub parse_component_data {
-    my (%anon_index, $id, $component, $anonymous);
+    my (%anon_index, $id, $component);
 
     while (($id, $component) = each (%component_id_tag)) {
 	$_ = $component;
@@ -602,14 +358,10 @@ sub parse_component_data {
 		my $num = ++$anon_index{$type};
 		$name = "mtt${type}_${num}";
 	    }
-	    $anonymous = 1;
-	} else {
-	    $anonymous = 0;
 	}
 	$component_id_type{$id} = $type;
 	$component_id_name{$id} = $name;
 	$component_id_reps{$id} = $repetitions;
-	$component_id_anon{$id} = $anonymous;
     }
 }
 
@@ -786,24 +538,6 @@ sub id_cleaner {
     s/#?([^#]*)#?/$1/;
 }
 
-sub remove_brackets {
-    s/^\[([^\]]*)\]$/$1/;
-}
-
-# If 1 LHS argument is used, it returns component name.  If 2 are used, it return
-# "subsystem" or "port" depending on whether brackets are found in the name.
-sub id_to_name {
-    my ( $id )= @_;
-    my($type,$name);
-    
-    $type = $component_id_type{$id};
-    $name = $component_id_name{$id};
-
-    if(!defined($name)) { $name = $id };
-
-    return ( ($name =~ /^\[[^\]]*\]$/ ? "ports" : "subsystems" ),$name);
-}
-
 sub print_debug {
     print STDERR $_[0] if ($debug);
 }
@@ -814,12 +548,11 @@ sub usage {
 	"Usage: dia2abg.pl --diagram_name <diagram_name> [options]\n" .
 	"Options:\n" .
 	"\t--dia_input_file <dia_input_file>\n" .
-	"\t--label_file <label_file>\n" .
 	"\t--component_list_file\n" .
 	"\t--create_component_list\n" .
-	"\t--create_abg\n" .
+	"\t--create_ibg\n" .
 	"\t--debug\n" .
-	"\t--abg_file <abg_file>\n" .
+	"\t--ibg_file <ibg_file>\n" .
 	"\t--change_flow_causality <bond causality spec>\n" .
 	"\t--change_effort_causality <bond causality spec>\n" .
 	"\n" .

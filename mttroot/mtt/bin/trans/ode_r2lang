@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/06/21 10:40:58  peterg
+## Added fsolve error message.
+##
 ## Revision 1.1  1998/05/23 16:17:14  peterg
 ## Initial revision
 ##
@@ -22,6 +25,7 @@
 
 # Set up the language specific stuff
 language=$2
+
 case $language in
     m)
 	ext='m';
@@ -39,8 +43,16 @@ case $language in
 	Lb='[';
 	Rb=']';
 	;;
-    *)
-	echo Language $2 not supported - sorry; exit 1
+    java)
+	ext='java';
+	codegenerator='C'
+	Lc='/*';
+	Rc='*/';
+	Lb='[';
+	Rb=']';
+	;;
+       *)
+       echo Language $2 not supported - sorry; exit 1
 esac
 
 #Inform user
@@ -115,7 +127,7 @@ in "$1_sympar.r";
 EOF
 
 # Create the ode.$ext function
-lang_header $1 ode $ext 'mttx,t' mttdx > $1_ode.$ext
+lang_header $1 ode $ext 'mttx,mttu,t' mttdx > $1_ode.$ext
 
 # Algebraic bits
 $MATRIX -q  <<EOF  >> $1_ode.$ext
@@ -154,11 +166,17 @@ EOF
 
 cat <<EOF >> $1_ode.$ext
 
-% The differential equations
+$Lc The differential equations $Rc
 EOF
 
 sed 's/mtt_matrix/mttdx/' $1_ode.$ext.1 >> $1_ode.$ext
 
+# Java terminating }
+if [ "$language" = "java" ]; then
+cat <<EOF     >> $1_ode.$ext
+}
+EOF
+fi
 
 
 # Create the odea.$ext function
@@ -184,7 +202,7 @@ sed 's/mtt_matrix/mttyz/' $1_odea.$ext.1 >> $1_odea.$ext
 
 
 # Create the odeo.$ext function
-lang_header $1 odeo $ext 'mttx,t' mtty > $1_odeo.$ext
+lang_header $1 odeo $ext 'mttx,mttu,t' mtty > $1_odeo.$ext
 
 $MATRIX -q  <<EOF  >> $1_odeo.$ext
   %System structure
@@ -211,7 +229,6 @@ cat <<EOF >> $1_odeo.$ext
 % The output equations
 EOF
 sed 's/mtt_matrix/mtty/' $1_odeo.$ext.1 >> $1_odeo.$ext
-
 
 
 

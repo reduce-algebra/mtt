@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.54  2001/03/27 01:14:27  geraint
+## Improved determination of Octave version.
+##
 ## Revision 1.53  2001/03/21 03:24:59  geraint
 ## Calculate inputs before outputs (.cc).
 ##
@@ -320,14 +323,17 @@ case `$MATRIX --version | awk -F\. '{print $2}'` in
     0) # stable
 	vector_value=vector_value
 	feval_header=toplev.h
+	save_ascii_data_function=save_ascii_data
 	;;
     1) # development
 	vector_value=column_vector_value
 	feval_header=parse.h
+	save_ascii_data_function=save_ascii_data_for_plotting
 	;;
     *)
 	vector_value=column_vector_value
 	feval_header=parse.h
+	save_ascii_data_function=save_ascii_data_for_plotting
 	;;
 esac
 
@@ -651,7 +657,7 @@ mtt_write (const double &t,
   if (dump_data)
     {
        Matrix written_data = data.extract (0, 0, row-1, data.cols ()-1);
-       save_ascii_data_for_plotting (file, written_data, "MTT_data");
+       $save_ascii_data_function (file, written_data, "MTT_data");
        return;
     }
 
@@ -673,7 +679,7 @@ mtt_write (const double &t,
   if (nrows == row)
     {
 #ifdef STANDALONE
-      save_ascii_data_for_plotting (file, data, "MTT_data");
+      $save_ascii_data_function (file, data, "MTT_data");
 //    cout << data << endl;
 #else // ! STANDALONE
   set_global_value ("MTT_data", data);

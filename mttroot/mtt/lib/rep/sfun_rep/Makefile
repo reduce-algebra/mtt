@@ -50,13 +50,13 @@ $(MTT_SYS).mdl: ${MTT_REP}/sfun_rep/mdl.tmpl
 
 README:: ${MTT_REP}/sfun_rep/README.tmpl README.CVS
 	echo Creating $@
-	cat $^ | sed 's/<mtt_model_name>/$(MTT_SYS)/g' > $@
+	date > $@
+	cat $^ | sed 's/<mtt_model_name>/$(MTT_SYS)/g' >> $@
 	rm -f README.CVS
 
 README.CVS:
 	echo Getting CVS status
 	(cvs status ../$(MTT_SYS)_abg.fig || echo -e "\n$(MTT_SYS)_abg.fig is not under CVS\n") > $@ 2>1
-	date >> $@
 
 $(MTT_SYS)_ae.c: $(MTT_SYS)_ae.m
 	echo Creating $@

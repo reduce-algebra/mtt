@@ -15,6 +15,14 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1997/08/26 08:22:36  peterg
+## Changed
+## MTTY := MTTY + MTTEyx*MTTdX + MTTEyu*MTTdu;
+## to
+## MTTY := MTTY + MTTEyx*MTTEdX + MTTEyu*MTTdu;
+##
+## This sorts out the problem when dz appears in the output equation.
+##
 ## Revision 1.1  1997/08/26 08:20:18  peterg
 ## Initial revision
 ##
@@ -33,7 +41,7 @@ echo Creating $1_cse.r
 rm -f dae2cse_r.log
 
 # Use reduce to accomplish the transformation
-reduce >dae2cse_r.log << EOF
+$SYMBOLIC >dae2cse_r.log << EOF
 
 OFF Echo;
 OFF Nat;
@@ -49,6 +57,8 @@ in "$1_dae.r";
 IF MTTNz>0 THEN 
 BEGIN
 % Find MTTFx;
+write "% Find MTTFx;";
+
 matrix MTTFx(MTTNx,MTTNz);
 FOR j := 1:MTTNz DO
   BEGIN
@@ -58,6 +68,8 @@ FOR j := 1:MTTNz DO
   END;
 
 % Find MTTFy;
+write "% Find MTTFy;";
+
 matrix MTTFy(MTTNy,MTTNz);
 FOR j := 1:MTTNz DO
   BEGIN
@@ -67,8 +79,12 @@ FOR j := 1:MTTNz DO
   END;
 
 %Create G_x, G_u matrices 
+write "%Create G_x, G_u matrices ";
+
 
 % Find MTTGx;
+write "% Find MTTGx;";
+
 matrix MTTGx(MTTNz,MTTNx);
 FOR j := 1:MTTNx DO
   BEGIN
@@ -78,6 +94,8 @@ FOR j := 1:MTTNx DO
   END;
 
 % Find MTTGu;
+write "% Find MTTGu;";
+
 matrix MTTGu(MTTNz,MTTNu);
 FOR j := 1:MTTNu DO
   BEGIN
@@ -87,6 +105,8 @@ FOR j := 1:MTTNu DO
   END;
 
 %Create E matrices
+write "%Create E matrices";
+
 matrix MTTExx(MTTNx,MTTNx); MTTExx := MTTFx*MTTGx;
 matrix MTTExu(MTTNx,MTTNu); MTTExu := MTTFx*MTTGu;
 matrix MTTEyx(MTTNy,MTTNx); MTTEyx := MTTFy*MTTGx;
@@ -120,9 +140,14 @@ matrix MTTE(MTTNx,MTTNx);   MTTE := MTTI - MTTExx;
 MTTEdX := MTTdX; %Ie MTTEdX is MTTdX with the dz terms deleted ie EdX.
 MTTdX := MTTdXs;  %Restore the symbolic dX
 
+
 %%% This causes the matrix mismatch
 %%% MTTdXs and MTTdu need setting in _def.r file
 MTTY := MTTY + MTTEyx*MTTEdX + MTTEyu*MTTdu;
+%%%%%%MTTY := MTTY + MTTEyx*(MTTE^(-1))*MTTEdX;
+
+
+
 
 
 END; %%of MTTNz>0

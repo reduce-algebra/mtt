@@ -26,6 +26,12 @@ function cbg2fig(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.5  1997/05/16  07:33:45  peterg
+% %% Now checks to see if sub system is a simple component before
+% %% recursion.
+% %% 0 --> zero
+% %% 1 --> one
+% %%
 % %% Revision 1.4  1996/12/07  21:34:52  peterg
 % %% Tests for null string with strcmp
 % %% 
@@ -93,6 +99,9 @@ filenum = fopen(fig_name, 'a');
 eval(['[rbonds,rstrokes,rcomponents] = ', system_type, '_rbg;']);
 eval(['[bonds] = ', system_type, '_abg;']);
 
+% Original number of bonds
+[n_bonds,junk] = size(bonds);
+
 % Get the causal bonds
 eval(['[cbonds,status]=', full_name, '_cbg;']);
 
@@ -125,12 +134,13 @@ bond_vector = (arrow_end - other_end);
 unit_bond_vector = bond_vector./(length2d(bond_vector)*[1 1]);
 unit_stroke_vector = (rot*unit_bond_vector')';
   
-% Get indices of bonds with changed causality
-changed_e = bonds(:,1)~=cbonds(:,1);
-changed_f = bonds(:,2)~=cbonds(:,2);
-changed = changed_e|changed_f;
-index_e  = getindex(changed_e,1)';
-index_f  = getindex(changed_f,1)';
+% Get indices of bonds with changed causality -- but ignore the extra bonds
+% due to vector bond expansion
+changed_e = bonds(:,1)~=cbonds(1:n_bonds,1)
+changed_f = bonds(:,2)~=cbonds(1:n_bonds,2)
+changed = changed_e|changed_f
+index_e  = getindex(changed_e,1)'
+index_f  = getindex(changed_f,1)'
 index  = getindex(changed,1)';
 
 % Print the new strokes in fig format

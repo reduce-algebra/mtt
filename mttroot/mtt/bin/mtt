@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.179  1998/08/12 12:29:18  peterg
+## Put back some of the args stuff -- needed for plots.
+##
 ## Revision 1.178  1998/08/11 13:38:35  peterg
 ## Zapped the obsolete args stuff
 ##
@@ -1687,7 +1690,7 @@ $1_ode2odes.p : $1_ode2odes.m $1_def.r\
                 mtt_write.p mtt_update.p sign.p zeros.p
 	mtt_m2p $1_ode2odes.m
 
-$1_ode2odes.c: $1_ode2odes.p p2c.h
+$1_ode2odes.c: $1_ode2odes.p 
 	mtt_p2c $info_switch $1 ode2odes
 
 #SUMMARY obs	observer equations for CGPC (r)
@@ -2165,14 +2168,18 @@ $1_$2.vc: RCS
 # Copy Pascal utilities
 sign.p: 
 	echo Copying sign.p; cp $MTTPATH/trans/p/sign.p .
+svdcmp.p: 
+	echo Copying svdcmp.p; cp $MTTPATH/trans/p/svdcmp.p .
+svbksb.p: 
+	echo Copying svbksb.p; cp $MTTPATH/trans/p/svbksb.p .
 mtt_write.p: 
 	echo Copying mtt_write.p; cp $MTTPATH/trans/p/mtt_write.p .
-mtt_update.p: 
+mtt_update.p: mtt_solve.p
 	echo Copying mtt_update.p; cp $MTTPATH/trans/p/mtt_update.p .
+mtt_solve.p: svdcmp.p svbksb.p
+	echo Copying mtt_solve.p; cp $MTTPATH/trans/p/mtt_solve.p .
 zeros.p: 
 	echo Copying zeros.p; cp $MTTPATH/trans/p/zeros.p .
-p2c.h: 
-	echo Copying p2c.h; cp $MTTPATH/trans/c/p2c.h .
 
 # Copy c utilities
 dsvdcmp.c: dpythag.c nrutil.c nrutil.h

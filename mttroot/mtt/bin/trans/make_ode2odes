@@ -17,7 +17,7 @@ Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
  
 
 cat << EOF > $1_ode2odes.m
-function $1_ode2odes
+# Program $1_ode2odes
 EOF
 
 # Do the globals
@@ -28,16 +28,22 @@ cat << EOF >> $1_ode2odes.m
 
 $1_simpar;			# Read in simulation parameters
 $1_numpar;			# Read in parameters
-MTTx = $1_state;	        # Read in state
 
-iLast = round(Last/DT);         # Total number of steps
- 
+iLast = round(LAST/DT);         # Total number of steps
+
+#Initialise
 t = 0.0;
+MTTx = $1_state;	        # Read in initial state
+MTTu = $1_input(MTTx,t);        # Evaluate initial input
+MTTy = $1_odeo(MTTx,MTTu,t);    # Evaluate initial output
+mtt_write(t,MTTx,MTTy,$Nx,$Ny); # And write them
+
+#Integration loop
 for it = 1:iLast
     MTTu = $1_input(MTTx,t);
     MTTdx = $1_ode(MTTx,MTTu,t);
     for j = 1:$Nx
-      MTTx[j] = MTTx[j] + MTTdx[j]*DT;
+      MTTx(j) = MTTx(j) + MTTdx(j)*DT;
     end;
     MTTy = $1_odeo(MTTx,MTTu,t);
     t = t + DT;

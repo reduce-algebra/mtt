@@ -59,7 +59,7 @@ function [T,y,u,X,Iterations] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q,\
     T_ol = [0,dt];
     Delta_ol = dt;
   endif
-  t_last = 2*t(length(t));
+  t_last = t(length(t));
   T_cl = 0:Delta_ol:t_last-Delta_ol; # Closed-loop time vector
   T = 0:dt:t_last;		# Overall time vector
  

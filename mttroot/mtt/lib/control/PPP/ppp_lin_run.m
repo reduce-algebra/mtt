@@ -66,7 +66,7 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   if struct_contains(p_c,"Method")
     if strcmp(p_c.Method,"lq") 
       p_c.Q = eye(n_y);
-      p_c.R = (0.5^2)*eye(n_u);
+      p_c.R = (0.25^2)*eye(n_u);
       p_c.n_U = n_x;
     elseif strcmp(p_c.Method,"original");
       if !struct_contains(p_c,"A_w")
@@ -74,7 +74,7 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
       endif
       if !struct_contains(p_c,"A_u")
 	p_c.n_U = n_x;
-	a_u = 1.0;
+	a_u = 2.0;
 	p_c.A_u = laguerre_matrix(p_c.n_U,a_u)
       endif
     else
@@ -88,7 +88,7 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   
   if !struct_contains(p_o,"method")
     p_o.method = "continuous";
-##    p_o.method = "intermittent";
+    ##    p_o.method = "intermittent";
   endif
   
 
@@ -190,50 +190,49 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
     i
     tim=time;			# Timing
     if Simulate			# Exact simulation 
-      t_sim = [0:p_c.N]*dt;	# Simulation time points
+      t_sim = [1:p_c.N]*dt;	# Simulation time points
       [yi,ui,xsi] = ppp_ystar(A,B,C,D,x,p_c.A_u,U,t_sim); # Simulate
-      x = xsi(:,p_c.N+1);	# Current state (for next time)
-      y_now = yi(:,p_c.N+1);	# Current output
+      x = xsi(:,p_c.N);	# Current state (for next time)
+      y_now = yi(:,p_c.N);	# Current output
+      ti  = [(i-1)*p_c.N:i*p_c.N-1]*dt; 
     else			# The real thing
       to_rt(U');		# Send U
       data = from_rt(p_c.N);	# Receive data
-      [yi,ui] = convert_data(data); # And convert from integer format
+      [yi,ui,ti] = convert_data(data); # And convert from integer format
       y_now = yi(:,p_c.N);	# Current output
     endif
-
+    sample_time = (time-tim)/p_c.N
+    tim = time;
     ## Observer
     if strcmp(p_o.method, "intermittent")
       [x_est y_est e_est] = ppp_int_obs \
 	  (x_est,y_now,U,A,B,C,D,p_c.A_u,p_c.delta_ol,L);
     elseif strcmp(p_o.method, "continuous")
       Ui = U;			# U at sub intervals
-       for k = 1:p_c.N
-      [x_est y_est e_est] = ppp_int_obs \
-	  (x_est,yi(:,k+1),Ui,A,B,C,D,p_c.A_u,dt,L);
-      Ui = A_ud*Ui;
-      y_e = [y_e; y_est'];
-      e_e = [e_e; e_est];
+      for k = 1:p_c.N
+	[x_est y_est e_est] = ppp_int_obs \
+	    (x_est,yi(:,k),Ui,A,B,C,D,p_c.A_u,dt,L);
+	Ui = A_ud'*Ui;
+	y_e = [y_e; y_est'];
+	e_e = [e_e; e_est];
       endfor
     endif
     
     ##Control
-    ##U = K_w*w - K_x*x_est;
-    U = expm(p_c.A_u*(p_c.delta_ol))*U
+    U = K_w*w - K_x*x_est;
+
     ## Save data
-    ti  = [(i-1)*p_c.N:i*p_c.N-1]*dt; 
     t = [t;ti'];
-    y = [y;yi(:,1:p_c.N)'];
-    u = [u;ui(:,1:p_c.N)'];
-    sample_time = (time-tim)/p_c.N
+    y = [y;yi'];
+    u = [u;ui'];
 
     if strcmp(p_o.method, "intermittent")
       y_e = [y_e; y_est'];
       e_e = [e_e; e_est];
       t_e = [t_e; (i*p_c.N)*dt];
     endif
-    
 
-    dt
+    overrun = time-tim
   endfor			# Main loop
 
   if strcmp(p_o.method, "continuous")
@@ -248,22 +247,22 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   eval(sprintf("save -ascii %s t y u",filename));
 
 
-  ## Plot
-  gset nokey
-  title("");
-  boxed=0;
-  monochrome=1;
-  grid;
-  xlabel("t");
+#   ## Plot
+#   gset nokey
+#   title("");
+#   boxed=0;
+#   monochrome=1;
+#   grid;
+#   xlabel("t");
 
-  ylabel("y");
-  figure(1);plot(t,y, t_e,y_e,"+");
+#   ylabel("y");
+#   figure(1);plot(t,y, t_e,y_e,"+");
 
-  ylabel("u");
-  figure(2);plot(t,u);
+#   ylabel("u");
+#   figure(2);plot(t,u);
 
-  ylabel("e");
-  figure(3);plot(t_e,e_e);
+#   ylabel("e");
+#   figure(3);plot(t_e,e_e);
 
 
 endfunction

@@ -510,8 +510,39 @@ function [bonds,components,n_vector_bonds] = \
       counter = 0;
 
       n_ports = size(port_list,1)
-      if ((n_ports == 1) | ...
-	  (strcmp(comp.type, "zero")) | (strcmp(comp.type, "one")))
+      if (strcmp(comp.type, "zero")) | (strcmp(comp.type, "one"))
+	for port = 1 : n_ports
+	  component_type = comp.type
+	  the_port_list = port_list
+	  the_port = port
+	  label = port_list(port,:)
+	  if (index (label, "[") == 1)
+	    label = mtt_strip_name(label)
+	  endif
+	  label = deblank(label)
+	  
+	  for [bond, bond_name] = comp
+	    if (index(bond_name, "bond") == 1)
+	      for [sub_bond, sub_bond_name] = bond
+		
+		if (index(sub_bond_name, "subbond") == 1)
+		  sub_bond_label = sub_bond.label
+		  if (index (sub_bond_label, "[") == 1)
+		    sub_bond_label = mtt_strip_name(sub_bond_label)
+		  endif
+		  sub_bond_label = deblank(sub_bond_label)
+		  		  
+		  if (strcmp(sub_bond_label, label) | strcmp (sub_bond_label,"in"))
+		    components(comp.index, ++counter) = sub_bond.index
+		  endif
+		  
+		endif
+	      endfor
+	    endif
+	  endfor
+	endfor
+	
+      elseif (n_ports == 1)
 	## no ordering necessary
 	for [bond, bond_name] = comp
 	  if (index(bond_name, "bond") == 1)

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.98  1997/12/04 10:58:15  peterg
+## Tidied up switches
+##
 ## Revision 1.97  1997/12/04 10:44:33  peterg
 ## Changed $cc to $CC
 ##
@@ -591,10 +594,11 @@ if [ "$1" = "crcopy" ]; then
 fi
 
 # Save up the argument list in a file; but only if argument has changed
-ARGS=$4;
+ARGS=$4; _ARGS=_$4
 #DIFF doesn't like empty files - so put a blank if empty
 if [ -z "$ARGS" ]; then
   ARGS=' ';
+  _ARGS='';
 fi
 
 cat > $1_args.new <<EOF
@@ -1292,9 +1296,11 @@ $1_$2.ps : $1_$2.fig
 endif
 
 ifeq ($REPTYPE,data)
-#Create PostScript version of dat file
+#Create PostScript version of dat file 
+#  + another version with Args added to the name
 $1_$2.ps: $1_$2.gdat
 	gdat2ps $1_$2 '$ARGS'
+	cp -u $1_$2.ps $1_$2$_ARGS.ps        
 endif
 
 ifeq ($REPTYPE,tex)

@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/09/07 05:32:17  peterg
+% %% Initial revision
+% %%
 % %% Revision 1.1  1999/07/29 04:53:34  peterg
 % %% Initial revision
 % %%
@@ -17,6 +20,7 @@
 %ALIAS	in|out	port_1,port_2
 
 % Argument aliases
+%ALIAS $1 external
 
 %% Each line should be of one of the following forms:
 %	     a comment (ie starting with %)

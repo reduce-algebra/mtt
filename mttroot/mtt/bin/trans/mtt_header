@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.54  2002/07/11 13:00:23  geraint
+## Declared more function arguments to be "const" - improves compiler optimisation.
+##
 ## Revision 1.53  2002/06/10 23:22:16  geraint
 ## Fixed problem with Matlab fsolve failing because of "user function returned Inf or Nan" (fsolve.m, line 245).
 ##
@@ -522,10 +525,19 @@ fi
 get_sizes()
     {
     Nx=`mtt_getsize $system x` # States
+    Nz=`mtt_getsize $system z` # Non-states
     Nxx=`mtt_getsize $system xx` # States x States
     Nu=`mtt_getsize $system u` # Inputs 
     Ny=`mtt_getsize $system y` # Outputs 
     Nyz=`mtt_getsize $system yz` # Zero outputs
+
+    case ${rep} in
+	dm)
+	let Nx=Nx+2*Nz+Nyz # Matrices not usual size
+	;;
+	*)
+	
+    esac
     ##Npar=`wc -l $system\_sympar.txt | gawk '{print $1}'`
     }
 

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.216  1999/11/16 05:53:21  peterg
+## Added sensitivity (-s) switch
+##
 ## Revision 1.215  1999/11/15 22:45:31  peterg
 ## Reorganised integration method using -i switch
 ## Introduced -r (reset) switch
@@ -1153,7 +1156,7 @@ if [ "$1" = "compcopy" ]; then
     fi   
 
   # check that its not here already
-  file_exists=`ls $destination/"$name"_lbl.txt 2> /dev/null`
+  file_exists=`ls $destination/"$name"_abg.txt 2> /dev/null`
   if [ -n "$file_exists" ]; then
     if [ "$quiet" != "quiet" ]; then    
       echo Component $name exists already - no action taken
@@ -1426,20 +1429,19 @@ ifeq ("$sensitivity","sensitivity")
 ifeq ("$level","0")
 $1_abg.fig: $sys_abg.fig
 	abg2sensitivity_fig $sys
-else
-# If level>0, try and get subsystem files
+else # Either find the sensitivity model or fetch the model and create sensitivity model
 $1_abg.fig:
-	mtt -q -u $mtt_switches compcopy $1 || abg2sensitivity_fig $sys|| exit 1
+	mtt -q -u $mtt_switches compcopy $1 || abg2sensitivity_fig $sys
 endif
-else
+endif
+
+ifneq ("$sensitivity","sensitivity")
 ifneq ("$level","0")
+# If level>0, try and get subsystem files; creating if necessary
 $1_abg.fig:
 	mtt -q -u $mtt_switches compcopy $1
 endif
-
 endif
-
-
 
 # Create an arg file if it doesn't exist
 $1_args.m:

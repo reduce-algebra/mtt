@@ -9,6 +9,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.57  2001/04/01 03:38:54  geraint
+## Reset row to zero after write to file, ready for subsequent runs.
+## Eliminates SIGSEGV in Octave when _ode2odes called multiple times.
+##
 ## Revision 1.56  2001/03/30 15:13:58  gawthrop
 ## Rationalised simulation modes to each return mtt_data
 ##
@@ -662,7 +666,7 @@ mtt_write (const double &t,
   if (dump_data)
     {
        Matrix written_data = data.extract (0, 0, row-1, data.cols ()-1);
-       $save_ascii_data_function (file, written_data, "MTT_data");
+       $save_ascii_data_function (file, written_data, "mtt_data");
        return;
     }
 
@@ -684,7 +688,7 @@ mtt_write (const double &t,
   if (nrows == row)
     {
 #ifdef STANDALONE
-      $save_ascii_data_function (file, data, "MTT_data");
+      $save_ascii_data_function (file, data, "mtt_data");
 //    cout << data << endl;
 #else // ! STANDALONE
   set_global_value ("MTT_data", data);

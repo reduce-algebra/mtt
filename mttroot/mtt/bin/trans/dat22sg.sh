@@ -102,11 +102,11 @@ endfunction
     ncol = size(${vec}_names)(1);
 
     load ("${sys}_odes.dat2");
-    nrow = size(MTT_data)(1);
+    nrow = size(mtt_data)(1);
 
     # write Time
     for r = 1:nrow
-	write_cell (r-1,0,MTT_data(r,1));
+	write_cell (r-1,0,mtt_data(r,1));
     endfor
 
     if ("${vec}" == "y")
@@ -117,7 +117,7 @@ endfunction
 
     for r = 1:nrow
 	for c = 1:ncol
-	    write_cell (r-1,c,MTT_data(r,c+offset));
+	    write_cell (r-1,c,mtt_data(r,c+offset));
 	endfor
     endfor
 EOF
@@ -128,7 +128,7 @@ file=${sys}_odes.sg
 NX=`mtt_getsize ${sys} x`
 NY=`mtt_getsize ${sys} y`
 NTMP=`wc -l ${sys}_odes.dat2 | awk '{print $1}'`
-NROW=`expr ${NTMP} - 4`		# 4 comment lines in MTT_data
+NROW=`expr ${NTMP} - 4`		# 4 comment lines in mtt_data
 
 {
     write_project_header

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.2  1997/03/19  12:08:01  peterg
+# No longer writes out non-unique names - now done in rbg_fig2m
+#
 # Revision 1.1  1997/03/18  13:55:01  peterg
 # Initial revision
 #
@@ -59,12 +62,20 @@ sort -u> $1_unique_raw_list
 #diff $1_unique_raw_list  $1_raw_list | grep '>' | sed 's/>/	/'
 
 #Write out the outline lbl file
-grep -v  '\[[0-9]*\]'  $1_unique_raw_list | awk --field-separator ':' \
- '{if (($1 !~ "0")&&($1 !~ "1")) \
-    {if ($1 ~ "SS") \
-	print "% Component type", $1, "\n\t" $2 "\t\texternal\texternal";
+grep -v  '\[[0-9]*\]'  $1_unique_raw_list | \
+awk --field-separator ':' \
+ '{ \
+   if (($1 !~ "0")&&($1 !~ "1")) \
+    { if (Component !~ $1) print "\n% Component type", $1
+    if ($1 ~ "SS") \
+	print  "\t" $2 "\t\texternal\texternal";
 	else \
-	print "% Component type", $1, "\n\t" $2"\t\tlin\t\targ1,arg2"} \
+	print  "\t" $2"\t\tlin\tflow," $2} \
+   else {
+         if (Component !~ $1) print "\n% Component type", $1; \
+	 print  "\t" $2;
+	}
+        Component=$1\
  }' \
 >>$1_lbl.txt
 

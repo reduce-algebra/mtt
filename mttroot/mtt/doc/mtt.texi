@@ -16,6 +16,9 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.3  2001/07/13 03:02:38  geraint
+@comment  Added notes on #ICD, gnuplot.txt and odes.sg rep.
+@comment
 @comment  Revision 1.2  2001/07/03 22:59:10  gawthrop
 @comment  Fixed problems with argument passing for CRs
 @comment
@@ -408,6 +411,7 @@ Simulation
 * Simulation input::            
 * Simulation logic::            
 * Simulation initial state::    
+* Simulation code::             
 * Simulation output::           
 
 Steady-state solutions 
@@ -419,6 +423,8 @@ Simulation parameters
 
 * Euler integration::           
 * Implicit integration::        
+* Runge Kutta IV integration::  
+* Hybrd algebraic solver::      
 
 Simulation output
 
@@ -658,6 +664,7 @@ Administration
 Octave setup
 
 * .octaverc::                   
+* .oct file dependencies::      
 
 Paths
 
@@ -1163,6 +1170,9 @@ The available options are:
         quiet mode -- suppress MTT banner
 @item -A 
         solve algebraic equations symbolically
+@item -ae 
+        <hybrd> solve algebraic equations numerically
+ (this option requires -cc or -oct)
 @item -D 
         debug -- leave log files etc
 @item -I 
@@ -1171,6 +1181,8 @@ The available options are:
        start at abg.m representation
 @item -c 
         c-code generation
+@item -cc
+       C++ code generation
 @item -d 
         <dir>  use directory <dir>
 @item -dc 
@@ -1178,7 +1190,7 @@ The available options are:
 @item -dc 
        Maximise derivative (not integral) causality
 @item -i 
-       <implicit|euler>   Use implicit or euler integration
+       <implicit|euler|rk4>   Use implicit, euler or Runge Kutta IVintegration
 @item -o 
        ode is same as dae
 @item -oct 
@@ -1204,7 +1216,7 @@ The available options are:
 @item -u 
         untidy mode (leaves files in current dir)
 @item -v 
-        verbose mode
+        verbose mode (multiple uses increase the verbosity)
 @item -viewlevel 
        <N> View N levels of hierachy
 @item --version 
@@ -1858,6 +1870,8 @@ representations for the purposes of numerical simulation:
         computation.
 @item c
         @code{gcc} a c compiler.
+@item cc
+        @code{g++} a C++ front-end to gcc.
 @end ftable
 
 There are a number solution algorithms available:
@@ -1868,6 +1882,10 @@ explicit solution via the matrix exponential
 backward Euler integration (explicit)
 @item
 forward Euler integration (implicit)
+@item
+Runge Kutta IV integration (explicit, fixed step)
+@item
+Hybrd algebraic solver (MINPACK, Octave fsolve)
 @c  @item
 @c  LSODE (Hindmarsh's ODE solver as implemented in Octave)
 @c  @item
@@ -1907,6 +1925,7 @@ The steady-state solution of a system can also be
 * Simulation input::            
 * Simulation logic::            
 * Simulation initial state::    
+* Simulation code::             
 * Simulation output::           
 @end menu
 
@@ -1989,7 +2008,7 @@ moment this sets the following variables:
         The input index for frequency response
 @end itemize
 
-There are two integration algorithms
+There are a number of solution algorithms
 @itemize @bullet
 @item Euler
         basic Euler integration (@pxref{Euler integration}). This method
@@ -1997,6 +2016,12 @@ is simple, but not recommended for stiff systems.
 @item Implicit
         semi-implicit integration  (@pxref{Implicit integration}) - uses the smx representation to give
         stability.
+@item Runge Kutta IV
+        fixed step Runge Kutta fourth order integration (@pxref{Runge Kutta IV integration}).
+@item Hybrd
+        numerical algebraic equation solver
+        
+
 @c @item ImplicitS
 @c         Sparse semi-implicit integration  (@pxref{Sparse implicit integration})
 @c -- takes advantage of the sparsity of the A matrix.
@@ -2007,6 +2032,8 @@ is simple, but not recommended for stiff systems.
 @menu
 * Euler integration::           
 * Implicit integration::        
+* Runge Kutta IV integration::  
+* Hybrd algebraic solver::      
 @end menu
 
 @node Euler integration, Implicit integration, Simulation parameters, Simulation parameters
@@ -2037,7 +2064,7 @@ f(x,u) = Ax + Bu
 If the system is non linear, the linearised system matrix A should act
 as a guide to the choice of STEPFACTOR.
 
-@node Implicit integration,  , Euler integration, Simulation parameters
+@node Implicit integration, Runge Kutta IV integration, Euler integration, Simulation parameters
 @comment  node-name,  next,  previous,  up
 @subsection Implicit integration
 @cindex Implicit integration
@@ -2074,6 +2101,67 @@ given by:
 which reduces to the ordinary differential equation case when E(x)=I.
 
 The _smx representation includes the E matrix.
+
+@node Runge Kutta IV integration, Hybrd algebraic solver, Implicit integration, Simulation parameters
+@comment  node-name,  next,  previous,  up
+@subsection Runge Kutta IV integration
+Runge Kutta IV approximates the solution of the Ordinary Differential Equation
+
+@example
+dx/dt = f(x,t)
+@end example
+
+by
+
+@example
+x := x + (DT/6)*(k1 + 2*k2 + 2*k3 + k4)
+@end example
+
+where
+
+@example
+k1 := f(x,t)
+k2 := f(x+(1/2)*k1,t+(1/2)*DT)
+k3 := f(x+(1/2)*k2,t+(1/2)*DT)
+k4 := f(x+k3,t+DT)
+@end example
+
+The @strong{MTT} implementation of Runge-Kutta integration
+is a fourth order, fixed-step, explicit integration method.
+
+For some systems of equations, the increased accuracy of using a fourth order
+method can allow larger step-lengths to be used than would allowed by the
+ lower order Euler integration method.
+
+It should be noted that during the interemediate calculations (k1...k4),
+ the input vector @code{u} is not advanced w.r.t. time; the system inputs are
+assumed to be constant over the period of the integration step-length.
+
+@node Hybrd algebraic solver,  , Runge Kutta IV integration, Simulation parameters
+@comment  node-name,  next,  previous,  up
+@subsection Hybrd algebraic solver
+
+The hybrd algebraic solver of @uref{http://www.netlib.org/minpack/hybrd.f,MINPACK},
+which is used by Octave in the @code{fsolve} routine, may be used in conjunction
+with one of the other integration methods to solve semi-explicit, index 1, differential
+algebraic equations; these may be generated in @strong{MTT} models by use of 
+@code{unknown} SS Components @pxref{SS component labels}.
+
+This method requires that compiled simulation code is used; either -cc or -oct.
+To perform a simulation based on a model @code{sys},
+
+@example
+mtt -cc -ae hybrd -i euler sys odeso view
+@c XXX: should be daeso view?
+@end example
+
+@strong{MTT} will attempt to minimise the residual error at each integration time-step
+using the hybrd routine.
+
+This method of simulation is particularly well suited to stiff systems where very fast
+dynamics are of little interest. Care must be taken to ensure that an acceptable level
+of convergence is achieved by the solver for the system under investigation.
+@c XXX: tolerance option
 
 @c @node Sparse implicit integration,  , Implicit integration, Simulation parameters
 @c @comment  node-name,  next,  previous,  up
@@ -2160,7 +2248,7 @@ For example:
 bounce_ground_1_mtt_switch_logic	= bounce_intf_1_mtt3<0;
 @end example
 
-@node Simulation initial state, Simulation output, Simulation logic, Simulation
+@node Simulation initial state, Simulation code, Simulation logic, Simulation
 @comment  node-name,  next,  previous,  up
 @section Simulation initial state
 @cindex Simulation initial state
@@ -2197,7 +2285,29 @@ system_c_u	= (1e4/k_l)/kg;
 @c  sspar.r file.
 @c  @end itemize
 
-@node Simulation output,  , Simulation initial state, Simulation
+@node Simulation code, Simulation output, Simulation initial state, Simulation
+@comment  node-name,  next,  previous,  up
+@section Simulation code
+simulation code can be generated by @strong{MTT} in the form
+of the @code{ode2odes} transformation. This can be produced in a number
+of languages, including .m, .oct, C and C++ @pxref{Languages}.
+
+To generate simulation code in C:
+@example
+mtt -c [options] sys ode2odes c
+@end example
+
+Similarly, to generate C++ code:
+@example
+mtt -cc [options] sys ode2odes cc
+@end example
+
+To generate an executable based on the C++ representation:
+@example
+mtt -cc [options] sys ode2odes exe
+@end example
+
+@node Simulation output,  , Simulation code, Simulation
 @comment  node-name,  next,  previous,  up
 @section Simulation output
 @cindex Simulation output
@@ -4355,6 +4465,9 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.3  2001/07/13 03:02:38  geraint
+# %% Added notes on #ICD, gnuplot.txt and odes.sg rep.
+# %%
 # %% Revision 1.2  2001/07/03 22:59:10  gawthrop
 # %% Fixed problems with argument passing for CRs
 # %%
@@ -5743,15 +5856,14 @@ ZIB ( http://www.zib.de )
 @cindex  Octave setup
 
 Octave is available at various web sites including:
-@quotation
-
-@end quotation
+@uref{http://www.octave.org}
 
 @menu
 * .octaverc::                   
+* .oct file dependencies::      
 @end menu
 
-@node .octaverc,  , Octave setup, Octave setup
+@node .octaverc, .oct file dependencies, Octave setup, Octave setup
 @comment  node-name,  next,  previous,  up
 @subsection .octaverc
 @vindex  .octaverc
@@ -5767,6 +5879,22 @@ implicit_str_to_num_ok = 1;
 empty_list_elements_ok = 1;
 
 @end example
+
+@node .oct file dependencies,  , .octaverc, Octave setup
+@comment  node-name,  next,  previous,  up Additionally, it is necessary to
+@subsection .oct file dependencies
+Successful compilation of .oct code requires that Octave has been configured
+to use dynamically linked libraries and that the Octave library @code{liboctave}
+and the Octave modified version of @code{libkpathsea} are available on the
+ system.
+
+This can be acheived by compiling Octave from the source code, configured
+with the options @code{--enable-shared} and @code{--enable-dl}.
+
+Further information on configuring and installing Octave to handle dynamic
+libraries (DLDs) can be found in the
+@uref{http://www.octave.org/docs.html,Octave documentation}.
+
 
 @node Paths, File structure, Octave setup, Administration
 @comment  node-name,  next,  previous,  up

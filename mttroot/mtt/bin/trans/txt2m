@@ -15,6 +15,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.11  1998/08/14 10:43:44  peterg
+# %% Added ImplicitS - sparse integration
+# %%
 # %% Revision 1.10  1998/08/11 13:27:51  peterg
 # %% Lowercase mttLAST etc
 # %%
@@ -109,8 +112,8 @@ doublequote = "\042";
     RHS = tolower(RHS);
     sub(/["]*euler["]*/, 1, RHS);   
     sub(/["]*implicitl["]*/, 2, RHS);   
-    sub(/["]*implicit["]*/, 3, RHS);  
     sub(/["]*implicits["]*/, 4, RHS);  
+    sub(/["]*implicit["]*/, 3, RHS);  
     statement = sprintf("%s= %s",LHS,RHS);
     if ( (match(statement,";")==0)&&\
          ((match(statement,"if ")==0))&&\

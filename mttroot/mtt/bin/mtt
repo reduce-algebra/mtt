@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.134  1998/02/25 15:28:34  peterg
+## Added state.m rep.
+##
 ## Revision 1.133  1998/02/24 22:35:33  peterg
 ## Added -p (preserve) switch to cp in tidy mode.
 ##
@@ -1061,10 +1064,28 @@ $1_sympar.tex: $1_sympar.txt
 $1_simp.r:
 	echo Creating $1_simp.r
 	( \
-	echo "%% Reduce comands to simplify output for system $1 ($1_simp.r)"; \
+	echo "%% Reduce commands to simplify output for system $1 ($1_simp.r)"; \
 	cat $MTTPATH/trans/m/rcs_header.txt; \
 	echo 'END;'; \
         )> $1_simp.r
+
+#SUMMARY simpar	simulation information (txt)
+$1_simpar.txt:
+	echo Creating $1_simpar.txt
+	( \
+	echo "%% Simulation parameters for system $1 ($1_simpar.txt)"; \
+	cat $MTTPATH/trans/m/rcs_header.txt; \
+	echo 'LAST=10.0'; \
+	echo 'DT=0.1'; \
+	echo 'STEPFACTOR=1'; \
+        )> $1_simpar.txt
+
+#SUMMARY simpar	simulation information (m)
+$1_simpar.m: $1_simpar.txt
+	echo Creating $1_simpar.m
+	sed 's/txt/m/'<$1_simpar.txt >$1_simpar.m
+
+
 
 #SUMMARY numpar	numerical parameter declaration (txt) -- default
 $1_numpar.txt:
@@ -1524,8 +1545,8 @@ $1_odes.c: $1_ode.c $1_def.r $1_sympar.r
 $1_sms.c: $1_sm.c $1_def.r $1_sympar.r
 	sm2sms_r2c $1
 ifeq ($computation,octave)
-$1_odes.m: $1_ode.m $1_numpar.m $1_args.m $1_def.m $1_input.m
-	ode2odes_m $1 '$ARGS'
+$1_odes.m: $1_ode.m $1_numpar.m  $1_def.m $1_input.m $1_state.m $1_simpar.m
+	ode2odes_m $1 
 endif
 ifeq ($computation,c)
 $1_odes.m: $1_odes.c $1_ode.c $1_numpar.c $1_state.c $1_odes.h\

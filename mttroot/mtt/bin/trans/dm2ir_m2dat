@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1996/08/11 10:40:00  peter
+## Now handles e and NaN numbers.
+##
 ## Revision 1.1  1996/08/10 14:15:03  peter
 ## Initial revision
 ##
@@ -23,19 +26,32 @@
 
 echo Creating $1_ir.dat
 
+if [ "$2" = "" ]; 
+then
+  PARAMS='t=[0:0.1:10]'
+  echo Using default parameter $PARAMS
+else
+  PARAMS=$2;
+fi
+
+
 $MATRIX << EOF | awk '$1 !~ /[A-MO-Zb-cf-z]/ && NF>0 {print} '  >$1_ir.dat
 
-  tmax=2; tstep=tmax/100;
-  T = [0:tstep:tmax]';
+  $PARAMS;
+  [n,m]=size(t);
+  if m>n
+    t=t';
+  end;
+
   [A,B,C,D,E] = $1_dm($1_numpar);
-  y = dm2ir(A,B,C,D,E,T);
+  y = dm2ir(A,B,C,D,E,t);
 
   [Ny,Nu]=size(D);
   NN = Ny*Nu;
 
-  xy = [T y(:,1)];
+  xy = [t y(:,1)];
   for i=2:NN
-    xy = [xy T y(:,i)];
+    xy = [xy t y(:,i)];
   end;
 xy
 

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  2000/10/12 17:57:34  peterg
+## Fixed header typos
+##
 ## Revision 1.3  2000/10/12 15:11:30  peterg
 ## Added the update switch
 ##
@@ -84,7 +87,7 @@ if [ -z "$update" ]; then
   fi
   if [ -f "mtt_in_info" ]; then
     in_info=`cat mtt_in_info`
-    echo "The following variables are defined in $infofile, but do not exist:"
+    echo "The following variables exist, but are not defined in $textfile:"
     echo $in_info
     echo Use mtt $sys $rep $ext to update
   fi

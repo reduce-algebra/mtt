@@ -1,5 +1,8 @@
 %% Fixes for c-code generation
 
+%% Set PI explicitly here to avoid later conflict with cc headers
+LET PI = 3.1415$
+
 ON ROUNDED$ % No integer output
 
 %% Changes x^y to pow(x,y)
@@ -16,5 +19,6 @@ ON ROUNDED$ % No integer output
 
 OPERATOR fabs$
 FOR ALL x let abs(x) = fabs(x)$
+
 
 END$

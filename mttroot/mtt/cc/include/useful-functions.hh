@@ -1,4 +1,4 @@
-#define pi 3.14159 // Predefine pi
+//#define pi 3.14159 // Predefine pi
 
 #ifndef HAVE_USEFUL_FUNCTIONS_HH
 #define HAVE_USEFUL_FUNCTIONS_HH

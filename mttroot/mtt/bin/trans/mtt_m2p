@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.47  2000/05/16 18:56:03  peterg
+## Upgraded for new simulation approach - uses data files to input
+## parameters -- no more argv stuff
+##
 ## Revision 1.46  2000/05/16 11:59:01  peterg
 ## Updated for new data file parameter/state update
 ##
@@ -213,8 +217,7 @@ Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
         echo "PROCEDURE $Sys_rep(VAR mttu : InputVector;"
 	echo "                       mttt : REAL;"
 	echo "                       mttx : StateVector;"
-	echo "                       mtty : OutputVector;"
-	echo "                       mttw : InputVector);"
+	echo "                       mtty : OutputVector)"
 	;;
     ode)
 	echo "PROCEDURE $Sys_rep(VAR mttdx: StateVector;"

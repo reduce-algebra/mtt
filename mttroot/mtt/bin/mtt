@@ -19,6 +19,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.12  1996/08/15 16:47:47  peter
+## DAE solution (experimental) included.
+##
 ## Revision 1.11  1996/08/15 11:55:30  peter
 ## Checks for changed argument.
 ## Handles frequency response.
@@ -108,12 +111,36 @@ ARGS=$4;
 cat > $1_args.new <<EOF
 $ARGS
 EOF
-touch $1_args.m
+
 DIFF=$(diff -bq $1_args.m $1_args.new)
 
 if [ -n "$DIFF" ]; then
   mv $1_args.new $1_args.m
 fi
+
+# Classify the representation - needed for conversion route to postscript
+case $2 in
+	abg )
+		REPTYPE='bg' ;;
+	cbg )
+		REPTYPE='bg' ;;
+	odesol)
+		REPTYPE='data' ;;
+	daesol)
+		REPTYPE='data' ;;
+	sr)
+		REPTYPE='data' ;;
+	lmfr)
+		REPTYPE='data' ;;
+	lpfr)
+		REPTYPE='data' ;;
+	nyfr)
+		REPTYPE='data' ;;
+	nifr)
+		REPTYPE='data' ;;
+	*)
+		REPTYPE='tex' ;;
+esac
 
 # This is the main mtt programme
  
@@ -122,6 +149,9 @@ make -s  -f -  $1_$2.$3 << EOF
 # Cancel implicit rules I don't want
 %.dvi: %.tex
 
+# Create an arg file if it doesn't exist
+$1_args.m:
+	touch $1_args.m
 
 #Create acausal bond graph figure using xfig 
 $1_abg.fig:
@@ -131,7 +161,7 @@ $1_abg.fig:
 $1_lbl.txt:
 	echo Creating $1_lbl.txt
 	( \
-	echo "%% Label file ($1_lbl.txt)"; \
+	echo "%% Label file for $1 ($1_lbl.txt)"; \
 	echo "%% Each line should be of one of the following forms:"; \
 	echo "%	a comment (ie starting with %)"; \
 	echo "%	Component-name	CR_name	arg1,arg2,..argn"; \
@@ -142,7 +172,7 @@ $1_cr.r:
 $1_sympar.r:
 	echo Creating $1_sympar.r
 	( \
-	echo "%% Symbolic parameter file ($1_sympar.r)"; \
+	echo "%% Symbolic parameter file for $1 ($1_sympar.r)"; \
 	echo "%% Change the following line to reflect the number of variables"; \
 	echo "MTTNVar := 0;"; \
 	echo "IF MTTNVar>0 THEN MATRIX MTTVar(MTTNVar,1);"; \
@@ -152,14 +182,30 @@ $1_sympar.r:
 $1_simp.r:
 	echo Creating $1_simp.r
 	( \
-	echo "%% Reduce comands to simplify output ($1_simp.r)"; \
+	echo "%% Reduce comands to simplify output for $1 ($1_simp.r)"; \
         )> $1_simp.r
+
 $1_numpar.m: $1_sympar.r
 	mknumpar $1; matlab_tidy $1_numpar.m;
 
+$1_input.m:
+	echo Creating $1_input.m
+	( \
+	echo "function u = $1_input(t)"; \
+	echo "%% Input file for $1 ($1_input.m)"; \
+	echo "%% This file provides the system input for simulation:";\
+	echo; \
+	echo "% Set up system definitions"; \
+	echo "[nx,ny,nu,nz,nyz] = $1_def;"; \
+	echo "% Change the following lines as you wish"; \
+	echo "u = zeros(nu,1);"; \
+	echo "u(1) = 1;"; \
+        )> $1_input.m
+
 $1_sspar.r:
 	echo Creating $1_sspar.r
-	echo "%% Reduce steady-state parameter file ($1_sspar.r)" > $1_sspar.r
+	echo "%% Reduce steady-state parameter file for $1 ($1_sspar.r)" \
+	> $1_sspar.r
 
 #Raw bond graph: fig file to mfile
 $1_rbg.m: $1_abg.fig $1_lbl.txt
@@ -278,9 +324,9 @@ $1_tf.tex: $1_def.r $1_tf.r $1_sympar.r $1_simp.r
 #Time responses
 $1_sr.m: $1_dm.m $1_numpar.m $1_args.m $1_def.m
 	dm2sr_m $1 '$ARGS'
-$1_odesol.m: $1_ode.m $1_numpar.m $1_args.m $1_def.m
+$1_odesol.m: $1_ode.m $1_numpar.m $1_args.m $1_def.m $1_input.m
 	ode2odesol_m $1 '$ARGS'
-$1_daesol.m: $1_dae.m $1_numpar.m $1_args.m $1_def.m
+$1_daesol.m: $1_dae.m $1_numpar.m $1_args.m $1_def.m $1_input.m
 	dae2daesol_m $1 '$ARGS'
 
 #Frequency responses
@@ -319,19 +365,24 @@ $1_$2.dvi: $1_$2.doc
 	latex $1_$2.doc > /dev/null
 
 #Create PostScript version of fig files
-%.ps : %.fig
+ifeq ($REPTYPE,bg)
+$1_$2.ps : $1_$2.fig
 	echo Creating $1_$2.ps
 	fig2dev -Lps $1_$2.fig >$1_$2.ps
+endif
 
-
+ifeq ($REPTYPE,data)
 #Create PostScript version of dat file
-%.ps: %.gdat
+$1_$2.ps: $1_$2.gdat
 	gdat2ps $1_$2 '$ARGS'
+endif
 
+ifeq ($REPTYPE,tex)
 #Create PostScript version of dvi file
-%.ps: %.dvi
+$1_$2.ps: $1_$2.dvi
 	echo Creating $1_$2.ps
 	dvips -o $1_$2.ps $1_$2
+endif
 
 #View a ps file
 $1_$2.view: $1_$2.ps
@@ -339,7 +390,7 @@ $1_$2.view: $1_$2.ps
 	ghostview $1_$2.ps&
 
 #View a gdat file
-#%.view: %.gdat
+#$1_$2.view: $1_$2.gdat
 #	echo Creating view of $1_$2
 #	gdat2view $1_$2 '$ARGS'&
 	

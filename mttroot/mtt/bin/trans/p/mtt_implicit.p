@@ -10,8 +10,6 @@ VAR
    BB,xsub   : StateVector;
    AAsub     : StateMatrix;
    
-(*$I $MTTPATH/trans/p/mtt_solve.p *)
-
 BEGIN{mtt_implicit}
    ii := 0;
    FOR i := 1 TO  Nx DO {BB is (1-A*dt)*x +dx*dt}

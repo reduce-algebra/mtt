@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1997/06/13 09:42:25  peterg
+## Auto change of () to []
+##
 # Revision 1.4  1997/05/15  08:33:07  peterg
 # Declare state array (x).
 #
@@ -29,7 +32,8 @@
 #
 ###############################################################
 
-
+system=$1
+representation = $2
 
 # Inform user
 echo "Creating $1_numpar.c"
@@ -50,10 +54,11 @@ echo "$1_numpar()" >> $1_numpar.c
 echo '{' >> $1_numpar.c
 
 #Write out the variables in c format.
+sed 's/#C-CODE //'< $1_numpar.txt |\
 awk -F#  '{
   if (NF<2) print $1
   if (NF>1)  print $1 "/* " $2 " */"
-}' $1_numpar.txt | sed 's/(\([0-9]*\))/[\1]/'  >> $1_numpar.c
+}' | sed 's/(\([0-9]*\))/[\1]/'  >> $1_numpar.c
 
 echo '}'  >> $1_numpar.c
 

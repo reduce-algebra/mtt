@@ -20,6 +20,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1997/05/01 13:50:55  peterg
+## Replaced float by double.
+##
 # Revision 1.4  1997/05/01  13:44:19  peterg
 # Changed double to float.
 #
@@ -53,7 +56,7 @@ in "$1_def.r";
 MTTNVar := 0;
 
 %Read the symbolic parameters file
-in "$1_sympar.r";
+%%in "$1_sympar.r";
 
 %Read the reduce state-space equations   file
 in "$1_ode.r";
@@ -148,9 +151,12 @@ LOAD GENTRAN;
 GENTRANLANG!* := 'C;
 ON GENTRANSEG;
 MAXEXPPRINTLEN!* := 80;
+ON DOUBLE;
 
 % let it know that sign is a function
 GENTRAN DECLARE sign : function;
+GENTRAN DECLARE r_switch : function;
+GENTRAN DECLARE i_switch : function;
 
 GENTRANOUT "$1_ode.c2";
 %Do the translation

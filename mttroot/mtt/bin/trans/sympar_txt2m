@@ -11,7 +11,7 @@
 
 echo Creating $1_sympar.m
 
-lang_header -noglobal $1 sympar m "" sympar > $1_sympar.m
+lang_header -noglobals $1 sympar m "" sympar > $1_sympar.m
 
 awk '{
   printf("  sympar.%s \t= %i; # %s\n", $1, ++i, $2); 

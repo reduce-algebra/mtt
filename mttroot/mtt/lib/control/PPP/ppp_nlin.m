@@ -1,6 +1,6 @@
-function [U, U_all, Error, Y] = ppp_nlin (system_name,x_0,par_0,sim,us,w,free,extras)
+function [U, U_all, Error, Y, its] = ppp_nlin (system_name,x_0,par_0,sim,us,w,free,extras)
 
-  ## usage:  [U, U_all, Error, Y] = ppp_nlin (system_name,x_0,par_0,sim,us,w,free,extras)
+  ## usage:  [U, U_all, Error, Y,its ] = ppp_nlin (system_name,x_0,par_0,sim,us,w,free,extras)
   ##
   ## 
   
@@ -23,7 +23,7 @@ function [U, U_all, Error, Y] = ppp_nlin (system_name,x_0,par_0,sim,us,w,free,ex
   endif
     
   ##Optimise
-  [par,Par,Error,Y] = ppp_optimise(s_system_name,x_0,par_0,sim,us,w,free,extras);
+  [par,Par,Error,Y,its] = ppp_optimise(s_system_name,x_0,par_0,sim,us,w,free,extras);
   
   U = par(free(:,1));
   U_all = Par(free(:,1),:);

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.234  2000/04/04 16:14:08  peterg
+## Sorted mtt help
+##
 ## Revision 1.233  2000/03/16 10:16:11  peterg
 ## Clean no longer zaps the abg.m files
 ##
@@ -794,7 +797,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='4.1'
+version='4.1++'
 
 # MTT recursion level is zero unless explicitly set
 level=0
@@ -942,7 +945,7 @@ fi
 #Print what's going on if in verbose mode
 if [ -n "$Verbose" ]; then
     echo  Starting  mtt  $mtt_switches  $1 $2 $3 $4 at level $level 
-    echo  "        " current wd $PWD
+    echo  "        " current wd `pwd`
 fi
 
 #Check the principle paths
@@ -1392,8 +1395,9 @@ fi
 if [ "$tidy" = "tidy" ]; then
    mkdir -p MTT_work
    cp -p -u  Makefile *.* .* MTT_work  2>/dev/null
+   echo now in `pwd`
    cd MTT_work
-   
+   echo now in `pwd`
    if [ -z "$directory" ]; then
      Directory=''
    else

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.155  1998/06/24 07:43:42  peterg
+## Version 2.91 -- includes implicit integration (octave)
+##
 ## Revision 1.154  1998/06/17 14:14:09  peterg
 ## Removed struc.txt prerequisite for simpar.txt - switch version
 ##
@@ -947,7 +950,7 @@ fi
 # Tidy mode - operate in the directory MTT-work
 if [ "$tidy" = "tidy" ]; then
    mkdir -p MTT_work
-   cp -u -p  Makefile *.* MTT_work 2>/dev/null
+   cp -u -p  Makefile *.* .* MTT_work 2>/dev/null
    cd MTT_work
    
    if [ -z "$directory" ]; then

@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.35  2000/10/12 19:27:47  peterg
+  ## ## Now writes the aliased args
+  ## ##
   ## ## Revision 1.34  2000/09/01 08:42:44  peterg
   ## ## Cahged somes ends to end for etc for clarity
   ## ##
@@ -133,7 +136,8 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ##
   ## #############################################################
   
-  system_name, system_type, full_name,
+  disp("cbg2ese");
+  system_name, system_type, full_name, repetition
   
   pc = "%";
   
@@ -254,7 +258,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
     	  message = sprintf("\tfor component  %s (%s) within %s",\
 			    comp_name,subsystem.type,full_name);    
     	  if struct_contains(CBG,"alias")
-	    subsystem.cr = alias_args(subsystem.cr,CBG.alias,";",message,infofilenum)
+	    subsystem.cr = alias_args(subsystem.cr,CBG.alias,";",message,infofilenum,full_name)
     	  endif;
 	endif;
 	
@@ -395,9 +399,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	    	value_change=value-old_structure(which_index);
 	    	for k=1:value_change
 		  fprintf(structure_file, ...
-			  "%s\t%1.0f\t%s\t%s\t%1.0f\n", ...
+			  "%s\t%i\t%s\t%s_%s\t%i\n", ...
 			  structure_name(which_index,:), value-k+1, ...
-			  comp_name, full_name, repetition);
+			  comp_name, full_name_repetition, comp_name, repetition);
 	    	endfor;
  	      endfor;
  	    endif;

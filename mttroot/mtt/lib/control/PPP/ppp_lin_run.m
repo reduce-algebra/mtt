@@ -1,6 +1,6 @@
-function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,p_o)
+function [t,y,u,X_est,y_c,t_e,y_e,e_e,p_c,p_o] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,p_o)
 
-  ## usage: [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,p_o)
+  ## usage: [t,y,u,y_c,t_e,y_e,e_e,p_c,p_o] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,p_o)
   ##
   ## 
   ## Linear closed-loop PPP of lego system (and simulation)
@@ -33,12 +33,13 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
   ## System
   sys = mtt2sys(Name);		# Create system
   [A,B,C_0,D_0] = sys2ss(sys);	# SS form
+  [n_x, n_u, n_y] = abcddim(A,B,C_0,D_0);
 
   ## Extract matrices for controlled and constrained outputs.
   if !struct_contains(p_c,"I_0") # Indices for controlled outputs
     p_c.I_0 = 1:n_y
   endif
-  if !struct_contains(p_c,"I_1") # Indices for constarined outputs
+  if !struct_contains(p_c,"I_1") # Indices for constrained outputs
     p_c.I_1 = 1:n_y
   endif
 
@@ -66,7 +67,6 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
     x_0 = zeros(n_x,1);
   endif
   
-
   if !struct_contains(p_c,"delta_ol")
     p_c.delta_ol = 0.5;	# OL sample interval
   endif
@@ -192,6 +192,7 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
 
     ## Checks
     cl_poles = eig(A - B*k_x)
+    ol_poles = eig(A)
     t_max = 1/min(abs(cl_poles));
     t_min = 1/max(abs(cl_poles));
   endif
@@ -202,6 +203,7 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
   ## Short sample interval
   dt = p_c.delta_ol/p_c.N;
 
+p_o
   ## Observer design
   G = eye(n_x);		# State noise gain 
   sigma_x = eye(n_x);		# State noise variance
@@ -243,8 +245,9 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
     Ustar = cumsum(Ustar)*dt;
   endif
   
-  disp("Writing Ustar.h");
+  disp("Writing Ustar.h ...");
   ppp_ustar2h(Ustar); 
+  disp("done.");
 
 
   ## Control loop
@@ -253,6 +256,7 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
   u = [];
   t = [];
   y_e = [];
+  X_est = [];
   t_e = [];
   e_e = [];
   tick = time;
@@ -273,13 +277,12 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
 	##X = xsi(:,1);		# Wrong!!
       else			# The real thing
 	if strcmp(p_o.method, "remote")
-	  [t_i,y_i,X] = ppp_put_get_X(U); # Remote-state interface
-	  u_i = X(3);		# Integrated control is third state
+	  [t_i,y_i,u_i,X] = ppp_put_get_X(U); # Remote-state interface
 	else
 	  [t_i,y_i,u_i] = ppp_put_get(U); # Generic interface to real-time
 	endif
       endif
-
+      
       ## Observer
       if strcmp(p_o.method, "intermittent")
 	[x_est y_est y_new, e_est] = ppp_int_obs \
@@ -294,13 +297,20 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
 	  e_e = [e_e; e_est'];
 	endfor
       elseif strcmp(p_o.method, "remote")
-	## predict from remote state (with zero L)
-	[x_est y_est y_new e_est] = ppp_int_obs \
-	      (X,y_i,U,A,B,C,D,p_c.A_u,p_c.delta_ol,L);
+	## predict from remote state (with zero L)	
+	if (ControlType==2)	# Closed-loop
+# 	  [x_est y_est y_new e_est] = ppp_int_obs \
+# 	      (X,y_i,U,A,B,C,D,p_c.A_u,p_c.delta_ol,zeros(n_x,1));
+	  x_est = X; y_est=y_i; y_new=y_i; e_est=0;
+	else			# Open-loop
+	  [x_est y_est y_new e_est] = ppp_int_obs \
+	      (x_est,y_i,U,A,B,C,D,p_c.A_u,p_c.delta_ol,zeros(n_x,1));
+	endif
+	
       endif
       
       ##Control
-      if ( (p_c.Tau_u==[])&&(p_c.Tau_y==[]) )
+      if ( length(p_c.Tau_u)==0&&length(p_c.Tau_y)==0 )
 	U = K_w*w - K_x*x_est;
       else
 	## Input constraints 
@@ -316,7 +326,7 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
 	Gamma = [Gamma_u; Gamma_y];
 	gamma = [gamma_u; gamma_y];
 	
-	[u_qp,U] = ppp_qp \
+	[u_qp,U,n_active] = ppp_qp \
 	    (x_est,w,J_uu,J_ux,J_uw,Us0,Gamma,gamma,1e-6,1);
       endif
 
@@ -324,15 +334,17 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
       if Simulate
 	t = [t;ti'];
 	y = [y;yi'];
+	X_est = [X_est;x_est'];
 	y_c = [y_c;(C_c*xsi)'];
 	u = [u;ui'];
       else
 	t = [t;t_i];
 	y = [y;y_i'];
+	X_est = [X_est;x_est'];
 	u = [u;u_i'];
       endif
 
-      if strcmp(p_o.method, "intermittent")
+      if strcmp(p_o.method, "intermittent")||strcmp(p_o.method, "remote")
 	y_e = [y_e; y_new'];
 	e_e = [e_e; e_est'];
 	t_e = [t_e; t_i];
@@ -355,7 +367,7 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
   endif
   
   
-  sample_interval = (time-tick)/i
+  average_ol_sample_interval = (time-tick)/i
 
   ## Put data on file (so can use for identification)
   filename = sprintf("%s_ident_data.dat",Name);

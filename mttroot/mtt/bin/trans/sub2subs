@@ -1,0 +1,23 @@
+#!/bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: sub2subs
+# Generates a list of all subsystems associated with system $1
+
+# P.J.Gawthrop May 1997
+# Copyright (c) P.J.Gawthrop, 1997.
+
+
+# Recursively execute the subsystem files
+sh $1\_sub.sh "echo  " 
+sh $1\_sub.sh "sub2subs " 
+
+
+
+
+
+
+

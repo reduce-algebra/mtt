@@ -1,4 +1,4 @@
-function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,\
+function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcomponents,\
 				      port_coord,port_name,\
 				      infofile,errorfile)
 
@@ -7,6 +7,9 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,\
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.42  1999/08/25 21:45:03  peterg
+  ## ## Spurious start to vector 0 and 1
+  ## ##
   ## ## Revision 1.41  1999/08/19 21:12:33  peterg
   ## ## Tidied and started implementaation of vector junctions
   ## ##
@@ -252,10 +255,10 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,\
 #     endif
 #     n_vector
 
-    ## Create scalar versions of vector components
-    for new_comp=2:n_vector
-      i_vector++;
-    endfor
+#     ## Create scalar versions of vector components
+#     for new_comp=2:n_vector
+#       i_vector++;
+#     endfor
     
     ## There are n_comp_bonds bonds on this component with corresponding index
     [index,n_comp_bonds] = getindex(comp_near_bond,i);
@@ -416,7 +419,14 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,\
 
   bonds = causality;
 
+
+  ## Find number of bonds on each component BEFORE vectorisation
+  for i=1:n_components
+    n_vector_bonds(i) = length(nozeros(components(i,:)))
+  endfor
+  
   ## Now expand vector ports
+  disp("Expanding vector ports");
   [n_bonds,junk] = size(bonds);
   n_ports = length(port_bond);
   n_exp_ports=n_ports;
@@ -441,8 +451,8 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,\
 	if n_other_subports~=n_subports
 	  mtt_error(['Vector ports ', port_name_i, ' and ', other_port_name, 'are not compatible'],errorfile);
 	end
-      else 
-	mtt_error(['Vector port ', port_name_i, ' has no matching port'], errorfile);
+      else # No explicit matching vector port
+ 	mtt_error(['Vector port ', port_name_i, ' has no matching port'], errorfile);
       endif
       
       
@@ -509,13 +519,14 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,\
 
 
     ##Convert junction names   
-    if comp_type(1)=='0'
+    if comp_type(1)=='0'	# Zero junction
       comp_type = 'zero';
-    endif
-    
-
-    if comp_type(1)=='1'
+      isa_junction = 1;
+    elseif comp_type(1)=='1'	# One junction
       comp_type = 'one';
+      isa_junction = 1;
+    else
+      isa_junction = 0;
     endif
 
     ## Find the (unsorted) bond list on this component
@@ -629,6 +640,7 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,\
       endfor
     endif
   endfor
+
 endfunction
 
 

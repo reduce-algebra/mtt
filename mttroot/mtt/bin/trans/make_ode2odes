@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.83  2002/08/07 14:27:14  geraint
+## Changes to make "-i dassl" work again.
+##
 ## Revision 1.82  2002/07/24 14:00:12  geraint
 ## Corrected arguments passed to mtt_write when dumping data (sigint).
 ##
@@ -355,6 +358,9 @@ case "$method" in
 	odeo=odeo
 	algorithm="mtt_dassl(x,u,t,par,dx,ddt,MTTNX,MTTNYZ,open_switches)"
 	;;
+    "sorted_euler")
+	algorithm="mtt_euler(x,dx,ddt,$Nx,open_switches)"
+	;;
     "euler" | "rk4" | *)
 	ode=ode
 	odeo=odeo
@@ -397,7 +403,18 @@ global MTT_data
   mttj = 0;
     for it = 1:ilast		#Integration loop
     [u] = ${sys}_input(x,y,t,par);	# Input
+EOF
+if [ "$method" = "sorted_euler" ]; then
+cat <<EOF >> $filename
+    [dx,y] = ${sys}_sese(x,u,t,par); # Output
+EOF
+else
+cat <<EOF >> $filename
     [y] = ${sys}_$odeo(x,u,t,par);  # Output 
+
+EOF
+fi
+cat <<EOF >> $filename
     if mttj==0
      mtt_write(t,x,y,$Nx,$Ny,simpar.first);   # Write it out
     endif
@@ -410,6 +427,10 @@ cat << EOF >> $filename
     [k3] = ddt * ${sys}_${ode}(x+k2/2,u,t+ddt/2,par);
     [k4] = ddt * ${sys}_${ode}(x+k3,u,t+ddt,par);
     [dx] = [k1 + 2.0 * [k2 + k3] + k4] / (6.0 * ddt);
+EOF
+elif [ "$method" = "sorted_euler" ]; then
+cat <<EOF >> $filename
+    [dx,y] = ${sys}_sese(x,u,t,par); # State derivative and Output
 EOF
 else
 cat << EOF >> $filename

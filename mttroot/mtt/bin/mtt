@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.373  2003/04/17 20:07:32  geraint
+## Added rule to create _sese.m
+##
 ## Revision 1.372  2003/03/24 12:03:36  gawthrop
 ## Added -I switch to sese transformation
 ##
@@ -1462,6 +1465,10 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 sensitivity_switch='-s';
                 mtt_switches="$mtt_switches $1";
 		sensitivity=sensitivity ;;
+	-sort )
+                mtt_switches="$mtt_switches $1";
+		use_sorted_equations="yes";
+		integration_method="sorted_euler";;
 	-ss )
                 mtt_switches="$mtt_switches $1";
 		steadystate_computation=yes ;;
@@ -1635,6 +1642,7 @@ if [ -z "$1" ]; then
     echo '         -pdf generate pdf in place of ps'
     echo '         -r  reset time stamp on representation'
     echo '         -s  generate sensitivity BG (use mtt -s sSys rep lang)'
+    echo '         -sort use sorted equations (sese) and Euler integration (EXPERIMENTAL)'
     echo '         -ss use steady-state info to initialise simulations'
     echo '         -stdin read input data from standard input for  simulations'
     echo '         -sub <subsystem> operate on this subsystem'
@@ -2987,9 +2995,15 @@ else
 endif
 endif
 ifneq ($integration_method,implicit)
+ifeq ($integration_method,sorted_euler)
+$1_ode2odes.m : $1_def.r $1_sympars.txt\
+		$1_simpar.m $1_numpar.m $1_state.m $1_input.m \
+		$1_sese.m $1_logic.m
+else
 $1_ode2odes.m : $1_def.r $1_sympars.txt\
 		$1_simpar.m $1_numpar.m $1_state.m $1_input.m \
 		$1_ode.m $1_odeo.m  $1_logic.m
+endif
 ifeq ($using_oct,yes)
 	echo "*** Warning: Shouldn't be here! Creating dummy $1_ode2odes.m"
 	touch $1_ode2odes.m # Create a dummy which wont' be used
@@ -2997,7 +3011,6 @@ ifeq ($using_oct,yes)
 else
 	make_ode2odes $1 m $integration_method $algebraic_solver
 endif
-
 endif
 
 #SUMMARY ode2odes Simulation function (m)

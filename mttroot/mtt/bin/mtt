@@ -15,6 +15,11 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.246  2000/05/21 18:00:11  peterg
+## Make manual if not already done.
+## Released 4.2 version
+## (Train Durham -- Glasgow).
+##
 ## Revision 1.245  2000/05/19 17:50:10  peterg
 ## Changes to state rep - now has parameter
 ##
@@ -2221,7 +2226,7 @@ $1_csm.tex: $1_csm.r  $1_sympar.r $1_simp.r
 #SUMMARY scsm	sensitivity constrained-state matrices (view)
 #SUMMARY scsm	sensitivity constrained-state matrices (ps)
 #Linearised system: sensitivity constrained-state matrices
-$1_scsm.r: $1_scse.r $1_def.r $1_cr.r $1_sympar.r
+$1_scsm.r: $1_scse.r $1_def.r $1_cr.r $1_sympar.r $1_sspar.r
 	cse2csm_r $1 scsm; tidy $1_scsm.r
 $1_scsm.m: $1_def.r $1_scsm.r $1_sympars.txt
 		csm_r2m $1 scsm;  matlab_tidy $1_scsm.m

@@ -22,11 +22,34 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
     Name = deblank(names(n_name,:));
   endif
 
+  if nargin<6
+    p_c.N = 50;
+  endif
+
+  if nargin<7
+    p_o.sigma = 1e-1;
+  endif
+
   ## System
   sys = mtt2sys(Name);		# Create system
-  [A,B,C,D] = sys2ss(sys);	# SS form
+  [A,B,C_0,D_0] = sys2ss(sys);	# SS form
+
+  ## Extract matrices for controlled and constrained outputs.
+  if !struct_contains(p_c,"I_0") # Indices for controlled outputs
+    p_c.I_0 = 1:n_y
+  endif
+  if !struct_contains(p_c,"I_1") # Indices for constarined outputs
+    p_c.I_1 = 1:n_y
+  endif
+
+  C = C_0(p_c.I_0,:)
+  C_c = C_0(p_c.I_1,:);
+  D = D_0(p_c.I_0,:)
+  D_c = D_0(p_c.I_1,:);
   [n_x, n_u, n_y] = abcddim(A,B,C,D); # Dimensions
-  
+  [n_x, n_u, n_y_c] = abcddim(A,B,C_c,D_c); # Dimensions
+
+
   if nargin<2
     Simulate = 1;
   endif
@@ -43,13 +66,6 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
     x_0 = zeros(n_x,1);
   endif
   
-  if nargin<6
-    p_c.N = 50;
-  endif
-
-  if nargin<7
-    p_o.sigma = 1e-1;
-  endif
 
   if !struct_contains(p_c,"delta_ol")
     p_c.delta_ol = 0.5;	# OL sample interval
@@ -136,7 +152,6 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   endif
   
 
-
   ## Check w.
   [n_w,m_w] = size(w);
   if ( (n_w!=n_y) || (m_w!=1) )
@@ -176,15 +191,13 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
     endif
 
     ## Checks
-    [ol_zeros, ol_poles] = sys2zp(sys)
     cl_poles = eig(A - B*k_x)
     t_max = 1/min(abs(cl_poles))
     t_min = 1/max(abs(cl_poles))
   endif
-
+  
   ## Initial control U
   U = zeros(p_c.n_U,1)	
-
 
   ## Short sample interval
   dt = p_c.delta_ol/p_c.N;
@@ -281,7 +294,7 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
 	
 	## Output constraints
 	[Gamma_y,gamma_y] = \
-	    ppp_output_constraints(A,B,C,D,x_est,p_c.A_u,\
+	    ppp_output_constraints(A,B,C_c,D_c,x_est,p_c.A_u,\
 				   p_c.Tau_y,p_c.Min_y,p_c.Max_y);
 	
 	## Composite constraints - t=0

@@ -6,6 +6,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/12/28 17:09:55  peterg
+## To RCS
+##
 ###############################################################
 
 ## Reduce steady-state parameter file (Reactor_sspar.r)
@@ -49,10 +52,13 @@ u1 = f_s;
 u2 = q_s;
 
 ## Load up the states
-mttx(1) = x1;
-mttx(2) = x2;
-mttx(3) = x3;
+## Removed by MTT on Thu Dec 28 18:46:20 GMT 2000: mttx(1) = x1;
+## Removed by MTT on Thu Dec 28 18:46:20 GMT 2000: mttx(2) = x2;
+## Removed by MTT on Thu Dec 28 18:46:20 GMT 2000: mttx(3) = x3;
 
 
 
 
+reactor_h_r	= x3; # Added by MTT on Thu Dec 28 18:46:25 GMT 2000
+reactor_m_a	= x1; # Added by MTT on Thu Dec 28 18:46:25 GMT 2000
+reactor_m_b	= x2; # Added by MTT on Thu Dec 28 18:46:25 GMT 2000

@@ -13,9 +13,9 @@
 #echo "Creating $1_sympar.txt"
 
 # Separation characters
-SEPS='=*;+/()-^'
+SEPS='^=*;+/()-'
 # Replace by ,
-REPS=',,,,,,,,,'
+REPS='[,*]'
 
 SystemName=$2
 UseLabelFile=$3

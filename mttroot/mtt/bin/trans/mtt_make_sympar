@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  2001/04/13 07:14:12  geraint
+## Implemented lower level lbl.txt recognition of #NOT[V|P]AR
+##
 ## Revision 1.6  2001/04/10 12:54:50  gawthrop
 ## Minor fixes for sensitivity versions
 ##
@@ -42,7 +45,7 @@ echo Creating $filename
 
 # Create list of all sympars including those that are aliased
 sh $1_type.sh 'echo ' ' ' ' ' |\
-awk '{print "abg2sympar_m2txt " $1, $2}' |\
+awk '{printf("abg2sympar_m2txt %s %s\n ", $1, $2)}' |\
 sh | sort -u > mtt_all_sympar.txt
 
 # Sort the aliased list

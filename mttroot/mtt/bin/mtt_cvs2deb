@@ -1,0 +1,42 @@
+#! /bin/sh
+
+# Script to create a .deb package from the current cvs sources.
+
+# should be root for some of these commands
+if [ ! `whoami` = "root" ]; then
+    echo root password required
+    exec su -p -c "$0 $*"
+    exit 1	# if here, su failed
+fi
+
+if [ $# -gt 0 ]; then
+    version=$1
+    text="New release."
+else 
+    current_version=`mtt --version | gawk '{print $3}'`
+    date=`date --iso-8601 | sed 's/\-/./g'`
+    version="$current_version.$date"
+    text="Snapshot of sources from CVS."
+fi
+
+topdir=`pwd`
+tmpdir=`mktemp -d mtt_cvs2deb.tmp.XXXXXXXXXX`
+if [ ! -d $tmpdir ]; then
+    echo "error: cannot create temporary directory - aborting!"
+    exit 1
+fi
+cd $tmpdir
+cvs -z3 -d:pserver:anonymous@cvs.mtt.sf.net:/cvsroot/mtt co mttroot
+cd mttroot
+tar -czf mtt-${version}.tar.gz mtt/
+cd mtt
+echo "A \"cannot create diff\" error in the next few lines is probably harmless"
+uupdate -u mtt-${version}.tar.gz
+cd ../mtt-${version}/debian
+dch -v ${version} ${text}
+cd ..
+dpkg-buildpackage -rfakeroot
+cd ..
+cp mtt*.deb $topdir/
+cd $topdir
+rm -r $tmpdir

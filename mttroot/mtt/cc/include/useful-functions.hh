@@ -109,3 +109,4 @@ zeros (const int r, const int c)
 
 
 #endif /* HAVE_USEFUL_FUNCTIONS_HH */
+

@@ -57,7 +57,7 @@ install-doc: clean-doc.sh
 clean.sh: FORCE
 	@echo '#! /bin/sh'						>>clean.sh
 	@echo '# This file is auto-generated - do not edit'		>>clean.sh
-	@echo 'rm -f  $(PROGDIR)/mtt'					>>clean.sh
+	@echo 'rm -f  $(PROGDIR)/mtt $(PROGDIR)/xmtt'			>>clean.sh
 	@echo 'rm -fr $(INSTDIR)'					>>clean.sh
 
 clean-conf.sh: FORCE

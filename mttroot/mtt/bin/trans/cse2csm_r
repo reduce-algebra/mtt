@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  2000/04/07 19:11:59  peterg
+## reduce --> $SYMBOLIC
+##
 ## Revision 1.6  2000/04/06 11:27:56  peterg
 ## Removed the in _cr.r
 ##
@@ -66,6 +69,8 @@ OFF Nat;
 % Get rid of the old mttx and u - now use mkid instead
 clear MTTx, MTTu;
 
+IF (MTTNx>0) THEN
+BEGIN
 % Find MTTA : the A matrix
 matrix MTTA(MTTNx,MTTNx);
 
@@ -76,7 +81,10 @@ matrix MTTA(MTTNx,MTTNx);
     FOR i := 1:MTTNx DO
       MTTA(i,j) := df(MTTEdx(i,1), xj, 1);
     END;
+END;
 
+IF (MTTNx>0) AND (MTTNu>0) THEN
+BEGIN
 % Find MTTB : the B matrix
 matrix MTTB(MTTNx,MTTNu);
 
@@ -87,7 +95,10 @@ matrix MTTB(MTTNx,MTTNu);
     FOR i := 1:MTTNx DO
       MTTB(i,j) := df(MTTEdx(i,1), uj, 1);
     END;
+END;
 
+IF (MTTNx>0) AND (MTTNy>0) THEN
+BEGIN
 % Find MTTC : the C matrix
 matrix MTTC(MTTNy,MTTNx);
 
@@ -98,6 +109,10 @@ matrix MTTC(MTTNy,MTTNx);
       xj := mkid(MTTx,j);
       MTTC(i,j) := df(MTTY(i,1), xj, 1);
     END;
+END;
+
+IF (MTTNy>0) AND (MTTNu>0) THEN
+BEGIN
 
 % Find MTTD : the D matrix
 matrix MTTD(MTTNy,MTTNu);
@@ -109,6 +124,7 @@ matrix MTTD(MTTNy,MTTNu);
       uj := mkid(MTTu,j);
       MTTD(i,j) := df(MTTY(i,1), uj, 1);
     END;
+END;
 
 %Substitute the ss values
 in "$1_sspar.r";
@@ -172,3 +188,6 @@ EOF
 
 # Now invoke the standard error handling.
 mtt_error_r cse2csm_r.log
+
+
+

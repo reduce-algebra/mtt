@@ -1,17 +1,67 @@
-%%% Sensitivity RS component CR
-in "lin.cr";
-in "slin.cr";
+%% CR file for sFMR
+%% Just for flow input definition of r, ie must use with flow,r;k_s
+in "$MTT_CRS/r/slin.cr";
+
+OPERATOR sRS;
+
+% Ordinary RS port
+% R component
+FOR ALL gain_cause,r,rs,out_cause,inp,sinp,in_cause,temp,stemp
+LET sRS(gain_cause,r,rs,out_cause,1,
+	inp,in_cause,1,
+	temp,effort,2,
+	sinp,in_cause,3,
+	stemp,effort,4
+	) 
+        = lin(gain_cause,r,temp_cause,1,
+               inp,in_cause,1);
+% Entropy flow 
+FOR ALL gain_cause,r,rs,out_cause,inp,sinp,in_cause,temp,stemp
+LET sRS(gain_cause,r,rs,out_cause,2,
+	inp,in_cause,1,
+	temp,effort,2,
+	sinp,in_cause,3,
+	stemp,effort,4
+	) 
+        = lin(gain_cause,r,temp_cause,1,
+               inp,in_cause,1)/temp;
+
+% Sensitivity ports
+FOR ALL gain_cause,r,rs,out_cause,inp,sinp,in_cause,temp,stemp
+LET sRS(gain_cause,r,rs,out_cause,3,
+	inp,in_cause,1,
+	temp,effort,2,
+	sinp,in_cause,3,
+	stemp,effort,4
+	) 
+        = slin(gain_cause,r,rs,temp_cause,2,
+               inp,in_cause,1,
+               sinp,in_cause,2
+        );
 
 %% Sensitivity entropy flow
-FOR ALL e_r,f_r,de_r,df_r,Temp,dTemp LET
-sRS(flow,6,
-	e_r,effort,1,
-	f_r,flow,2,
-	de_r,effort,3,
-	df_r,flow,4,
-	Temp,effort,5,
-	dTemp,effort,6
-	) = ((e_r*df_r + de_r*f_r)*Temp - e_r*f_r*dTemp)/(Temp^2);
+%% - flow in
+FOR ALL gain_cause,r,rs,out_cause,inp,sinp,in_cause,temp,stemp
+LET sRS(gain_cause,r,rs,out_cause,4,
+	inp,flow,1,
+	temp,effort,2,
+	sinp,flow,3,
+	stemp,effort,4
+	) 
+        = 2*inp*sinp*r/temp
+        + (inp^2)*rs/temp
+        - (inp^2)*r*temps/(temp^2);
 
+%% - effort in
+FOR ALL gain_cause,r,rs,out_cause,inp,sinp,in_cause,temp,stemp
+LET sRS(gain_cause,r,rs,out_cause,4,
+	inp,effort,1,
+	temp,effort,2,
+	sinp,effort,3,
+	stemp,effort,4
+	) 
+        = 2*inp*sinp/(r*temp)
+        - (inp^2)*rs/((r^2)*temp)
+        - (inp^2)*stemp/(r*temp^2);
 
 END;

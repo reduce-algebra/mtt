@@ -11,6 +11,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  1998/07/08 08:24:26  peterg
+## Added -I option -- if set prints out the indormation messages
+##
 ## Revision 1.8  1998/02/19 08:57:02  peterg
 ## Fixed mtt-info bug -- confused filename with number
 ##
@@ -103,12 +106,14 @@ echo Creating $1_abg.m
 $MATRIX > rbg2abg_m.log  2>mtt_error.txt << EOF
   name = '$1'
   infofile = 'mtt_info.txt';
+  errorfile = 'mtt_error.txt';
 
   %Convert from the fig version of the bonds to a structured version
   [rbonds,rstrokes,rcomponents,port_coord,port_name,port_list] = $1_rbg;
   [n_ports, junk] = size(port_list);
  
-  [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coord,port_name,infofile);
+  [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coord,port_name,\
+                               infofile,errorfile);
 
   %Write the function m-file for the causal bond graph
   filename = '$1_abg.m';
@@ -124,11 +129,17 @@ $MATRIX > rbg2abg_m.log  2>mtt_error.txt << EOF
 
 EOF
 
+
 if [ "$info" = "info" ]; then
   cat mtt_info.txt    
 fi
 
-mtt_error mtt_error.txt
+if mtt_error mtt_error.txt
+then
+    exit 0
+else
+    exit 1
+fi
 
 
 

@@ -1,5 +1,5 @@
 function [bonds,status] = AE_cause(bonds);
-% AE_cause - Causality for Flow amplifier component
+% AE_cause - Causality for effort amplifier component
 % 
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %     %%%%% Model Transformation Tools %%%%%
@@ -8,11 +8,18 @@ function [bonds,status] = AE_cause(bonds);
 % Matlab function  AE_cause
 % [bonds,status] = AE_cause(bonds)
 
+%SUMMARY AE: effort amplifier
+%DESCRIPTION Port[1]: amplifier effort input e_1 (f_1=0)
+%DESCRIPTION Port[2]: amplifier effort output e_2 
+
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/08/30 19:05:21  peter
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 

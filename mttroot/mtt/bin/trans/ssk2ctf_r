@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/02/09 13:54:34  peterg
+## Initial revision
+##
 ###############################################################
 
 
@@ -53,8 +56,8 @@ OUT "$1_ctf.r";
 %Write out the matrices.
 
 write "%  - Compensator TF";
-MTT_Matrix := MTTGc$
-MTT_Matrix_name := "MTTGc"$
+MTT_Matrix := MTTcTF$
+MTT_Matrix_name := "MTTcTF"$
 MTT_Matrix_n := MTTNu$
 MTT_Matrix_m := MTTNy$
 Reduce_Matrix()$

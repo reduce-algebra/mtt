@@ -15,22 +15,21 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.1  1997/04/16  11:37:22  peterg
+# Initial revision
+#
 ###############################################################
-
-
-
-
-
 
 
 #Write out the variables in matlab global format
 awk '
 BEGIN{
+  var = "foobar";
   print "global ..."
 }
-{i++; print tolower($1), "..."}
+{i++; print tolower($1), "..."; var = $1}
 END{
-  print ";"
+  print var ";" # Repeat the last variable to avoid the trailing ...
 }' $1_sympar.txt
 
 # Now invoke the standard error handling.

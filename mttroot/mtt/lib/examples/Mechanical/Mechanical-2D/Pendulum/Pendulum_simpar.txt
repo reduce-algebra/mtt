@@ -6,6 +6,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1999/02/22 10:08:05  peterg
+## method to Euler
+##
 ## Revision 1.1  1998/07/27 11:29:13  peterg
 ## Initial revision
 ##
@@ -15,4 +18,3 @@
 LAST=10.0;			# Last time in simulation
 DT=0.1;				# Print interval
 STEPFACTOR=10;			# Integration steps per print interval
-METHOD=Euler;		# Integration method;

@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.18  2000/08/24 17:11:40  peterg
+## Now optimises as well as segmenting - uses the SCOPE package
+##
 ## Revision 1.17  2000/05/20 15:23:56  peterg
 ## Paramererised version of sm etc etc (using -parameter switch)
 ##
@@ -105,6 +108,7 @@ Nx=`grep "MTTNx " <$1_def.r | awk '{print $3}' | sed 's/;//'`
 #Set up gentran
 cat <<EOF >mtt_setreduce.r
 % Set up the code generator
+
 % Load the general translator package
 LOAD GENTRAN;
 LOAD SCOPE;
@@ -116,13 +120,8 @@ MAXEXPPRINTLEN!* := 80;
 TEMPVARNUM!* := 1;
 TEMPVARNAME!* := 'mtt_s;
 
-% Output control
-ON DIV;
-ON EXP;
-
 % Matrix output function
 in"$MTTPATH/trans/lang_matrix.r";
-
 
 %Read the reduce definitions file
 in "$1_def.r";
@@ -133,7 +132,23 @@ in "$1_$rep.r";
 %Read the substitution file
 in "$1_subs.r";
 
+%%% The following is a bug fix  from ZIB to fix 
+%%% segmentation violation problem
+symbolic procedure maxtype type;
+% ------------------------------------------------------------------- ;
+% A type may be a pair (l u) wher l is the minimum type for a variable;
+% and  u is the maximum type. This procedure returns the maximum type.;
+% ------------------------------------------------------------------- ;
+   if atom type
+   then type
+   else if pairp cdr type then cadr type else car type;
 
+% This fix handles the case that the type is a list with ONE entry.
+% Should never happen ?? W.N.
+%%%%%% End of bug fix
+
+
+END;
 EOF
 
 #Inform user
@@ -178,7 +193,7 @@ EOF
 
   if [ "$rep" = "ode" ]; then
   # Use reduce to accomplish the transformation
-$SYMBOLIC  > mtt_r2m.log <<EOF
+$SYMBOLIC  >> mtt_r2m.log <<EOF
   %Set up the code generator
   in"mtt_setreduce.r";
       
@@ -196,7 +211,7 @@ EOF
   else
 ## cse representation
 
-$SYMBOLIC  > mtt_r2m.log <<EOF
+$SYMBOLIC  >> mtt_r2m.log <<EOF
   %Set up the code generator
   in"mtt_setreduce.r";
       
@@ -268,7 +283,7 @@ fi
 
 for Symbol in $Symbols; do
   rm -f $outfile.1
-
+echo Doing $Symbol
 
 if  [ "$rep" = "sm" ]||[ "$rep" = "ssm" ]||[ "$rep" = "csm" ]||[ "$rep" = "obs" ]; then
       case $Symbol in
@@ -323,11 +338,10 @@ fi
 
     rm -f mtt_zero.m
 
- $SYMBOLIC  << EOF >mtt_r2m.log
-
+ $SYMBOLIC  << EOF >>mtt_r2m.log
+    write "Doing ", "$Symbol";
     %Set up the code generator
     in"mtt_setreduce.r";
-    
    OUT "mtt_zero.m";
      write  "mtt$Symbol = zeros(", $N, ",", $M , ");" ;
   SHUT  "mtt_zero.m";
@@ -338,6 +352,7 @@ fi
     mtt_matrix_m := $M;
     lang_matrix();
     GENTRANSHUT "$outfile.1";
+END;
 EOF
 
 
@@ -346,6 +361,8 @@ cat mtt_zero.m >> $outfile.pas
 
 sed "s/mtt_matrix/mtt$Symbol/" < $outfile.1 |\
 grep -v '=0\.0;'  >> $outfile.pas
+
+echo Done $Symbol
 
 done
 
@@ -357,9 +374,11 @@ fi
 
 rm -f $outfile.pas  
 rm -f mtt_zero.m
-rm -f $outfile.1  
+#rm -f $outfile.1  
   
 
+# Now invoke the standard error handling.
+mtt_error_r mtt_r2m.log
 
 
 

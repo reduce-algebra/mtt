@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.15  2000/11/29 21:06:16  peterg
+## Removed Npar creation - not needed??
+##
 ## Revision 1.14  2000/11/27 11:51:43  peterg
 ## Added zero matrices in matlab code
 ##
@@ -259,7 +262,7 @@ fi
 function zero_matrices(){
 ## Set matrices to zero
 echo
-echo '## Set matrices to zero'
+ ## echo '## Set matrices to zero'
 for name in $zeromatrices; do
     case $name in
 	a)

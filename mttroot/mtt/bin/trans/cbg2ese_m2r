@@ -16,6 +16,9 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.15  1998/07/08 14:43:12  peterg
+## Restored inforfile
+##
 ## Revision 1.14  1998/07/08 08:26:26  peterg
 ## Added -I option -- if set prints out the information messages
 ##
@@ -67,6 +70,10 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
   case $1 in
 	-I )
                 info=info;;
+	-partition )
+                partition=yes;
+                blurb='with partitioning';
+		;;
 	*)
 		echo "$1 is an invalid argument - ignoring" ;;
   esac
@@ -91,7 +98,7 @@ rm -f mtt_error.txt
 rm -f $1_ese.r $1_*_ese.r 
 
 #Inform user
-echo Creating $eqnfile
+echo Creating $eqnfile $blurb
 echo Creating $deffile
 echo Creating $structurefile
 
@@ -115,13 +122,12 @@ full_name_repetition = '';
 
 % Structure matrix [states,nonstates,inputs,outputs,zero_outputs]
 
-structure = zeros(1,6);
+structure = zeros(1,7);  # Initialise structure vector
 
 structure = cbg2ese(system_name, system_type, system_cr, ...
                      system_args, full_name, full_name_repetition, ...
                      1, structure, structurefilenum, infofilenum);
 makedef(structure,deffilenum);
-  
 EOF
 
 
@@ -129,13 +135,69 @@ if [ "$info" = "info" ]; then
   cat $infofile
 fi
 
-# Create the composite ese file
-cat $1_ese.r $1_*_ese.r  > $1_ese.tmp 2>> /dev/null
+if [ -z "$partition" ]; then
+  # Don't partition
+  # Create the composite ese file
+  cat $1_ese.r $1_*_ese.r  > $1_ese.tmp 2>> /dev/null
 
-mv $1_ese.tmp $1_ese.r
+  mv $1_ese.tmp $1_ese.r
 
-# Zap the sub ese files
-rm -f $1_*_ese.r
+  # Zap the sub ese files
+  rm -f $1_*_ese.r
+else # Partition the system
+  # Find subsystems
+  subsystems=`mtt_get_subsystems $1`
+
+  # Top level  
+# The top-level definition file
+Nx=`mtt_getsize -external $1 x`
+Nz=`mtt_getsize -external $1 z`
+Ny=`mtt_getsize -external $1 y`
+Nu=`mtt_getsize -external $1 u`
+Nui=`mtt_getsize -external $1 ui`
+Nuc=`mtt_getsize -internal $1 u`
+
+echo Ny $Ny Nu $Nu Nx $Nx Nui $Nui Nuc $Nuc
+
+## Definitions file
+octave -q <<EOF
+  deffile = '$1_def.r';
+  deffilenum = fopen(deffile,'w');
+
+  ## Set up the structure vector
+  structure = zeros(1,7);  
+  structure(1) = $Nx; # States
+  structure(2) = $Nz; # Non-states
+  structure(3) = $Nu; # Inputs
+  structure(4) = $Ny; # Outputs
+  structure(5) = 0;   # Zero outputs
+  structure(6) = $Nui; #Internal inputs 
+  structure(7) = $Nuc; # Connecting inputs
+
+  makedef(structure,deffilenum);  #Create definitions
+EOF
+
+  ## Extra bits for the ese file to define connections
+  for subsystem in $subsystems; do
+    echo Doing $subsystem
+    Ny=`mtt_getsize -internal $subsystem"_1" y`
+    Nu=`mtt_getsize -internal $subsystem"_1" u`
+    echo Ny $Ny Nu $Nu Nx $Nx
+
+    echo MATRIX "MTT_"$subsystem"_uc("$Nu",1);"  >> $1_def.r
+    echo %Subsystem input connections for $subsystem  >> $1_ese.r
+    octave -q <<EOF                            >> $1_ese.r
+    for i=1:$Nu
+      printf("MTT_%s_uc(%i,1) := %s_1_MTTu%i;\n", "$subsystem", i, "$subsystem", i);
+    endfor;
+EOF
+done
+
+fi
+
+echo "END;" >> $1_ese.r
+echo "END;" >> $1_def.r
+
 
 # Sort the struc file
 mv $structurefile junk
@@ -143,6 +205,4 @@ sort -k 1,1 -k 2,2n junk >$structurefile
 
 # Now invoke the standard error handling.
 mtt_error mtt_error.txt
-
-
 

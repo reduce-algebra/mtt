@@ -44,7 +44,7 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   endif
   
   if nargin<6
-    p_c.N = 5;
+    p_c.N = 10;
   endif
 
   if nargin<7
@@ -52,11 +52,11 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   endif
 
   if !struct_contains(p_c,"delta_ol")
-    p_c.delta_ol = 0.5;	# OL sample interval
+    p_c.delta_ol = 1.0;	# OL sample interval
   endif
   
   if !struct_contains(p_c,"T")
-    p_c.T = 5.0;			# Last time point.
+    p_c.T = 10.0;			# Last time point.
   endif
   
   if !struct_contains(p_c,"Method")
@@ -154,8 +154,10 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   dt = p_c.delta_ol/p_c.N;
 
   ## Write the include file for the real-time function
+  ## Use double length to allow for overuns
   disp("Writing Ustar.h");
-  ppp_ustar2h(ppp_ustar (p_c.A_u, n_u, [0:dt:p_c.delta_ol], 0,0)); 
+  overrun = 2;
+  ppp_ustar2h(ppp_ustar (p_c.A_u, n_u, [0:dt:overrun*p_c.delta_ol], 0,0)); 
 
 
   ## Control loop
@@ -168,10 +170,11 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   tick = time;
   for i=1:I
     i
+    tim=time;			# Timing
     if Simulate			# Exact simulation 
       t_sim = [0:p_c.N]*dt;	# Simulation time points
       [yi,ui,xsi] = ppp_ystar(A,B,C,D,x,p_c.A_u,U,t_sim); # Simulate
-      x = xsi(:,p_c.N+1);	# Current state
+      x = xsi(:,p_c.N+1);	# Current state (for next time)
       y_now = yi(:,p_c.N+1);	# Current output
     else			# The real thing
       to_rt(U');		# Send U
@@ -194,6 +197,8 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
     y_e = [y_e; y_est'];
     t_e = [t_e; (i*p_c.N)*dt];
     e_e = [e_e; e_est];
+    sample_time = (time-tim)/p_c.N
+    dt
   endfor			# Main loop
   
   sample_interval = (time-tick)/(I*p_c.N)

@@ -15,6 +15,11 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.32  2002/05/07 23:50:34  geraint
+## Preliminary support for Matlab dynamically linked shared objects:
+## invoke with: mtt -cc sys rep mexglx
+## ode2odes support is not yet included.
+##
 ## Revision 1.31  2002/05/02 20:12:45  geraint
 ## Added -Wl,--rpath to MTT_CXXLIBS. Sets the runtime linker path so that the
 ## sys-admin does not have to ldconfig the octave directory for -cc to work.
@@ -154,7 +159,7 @@ else
   export MTT_EXAMPLES=$MTT_LIB/examples
   export MTT_REP=$MTT_LIB/rep
   
-  export PATH=$PATH\:$MTTPATH\:$MTTPATH/trans\:$MTT_CC
+  export PATH=$PATH\:$MTTPATH\:$MTTPATH/trans\:$MTT_CC\:$MTT_REP
   
   #Setup octave
   export MATRIX_PATH=$MTTPATH/trans/m//

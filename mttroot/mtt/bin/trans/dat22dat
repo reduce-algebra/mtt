@@ -1,18 +1,45 @@
 #! /bin/sh
 
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: dat22dat
+# Splits the data file into output and state bits
+
+# Copyright (c) P.J.Gawthrop 1999
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+# Find Nx and Ny
+Nx=`grep "MTTNx " <$1_def.r | awk '{print $3}' | sed 's/;//'`
+Ny=`grep "MTTNy " <$1_def.r | awk '{print $3}' | sed 's/;//'`
+
+echo $Nx $Ny
 case $2 in
     odeso)
-	i=1;
+	First=1; let Last=$First+$Ny
 	;;
     odes)
-	i=2;
+	First=$Ny+2; let Last=$First+$Nx
 	;;
     *)
-	i=1;
+	First=1; let Last=$Ny+1
         ;;
 esac
 
+echo $First $Last
 echo Creating $1_$2.dat
 
-awk  -F# '{print $i}' i=$i <$1_odes.dat2 > $1_$2.dat
+awk '{
+    for (i=First;i<=Last;i++)
+	printf("%s ", $i);
+    printf("\n"); 
+}' First=$First Last=$Last <$1_odes.dat2  > $1_$2.dat
 

@@ -5,6 +5,10 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.32  1998/07/02 15:12:05  peterg
+% %% Added hard error reporting
+% %% Added error when two unlabled bonds point in.
+% %%
 % %% Revision 1.31  1998/07/02 14:30:50  peterg
 % %% Corrected various bugs - including resettting n_ports to correct value
 % %%
@@ -480,52 +484,52 @@ for i = 1:n_components
     k=0;
   end;
     
-  %Either all ports or no ports should be labelled - write error
-  %message if this is not so
-  if (k~=0)&(k~=n_comp_bonds)
-    mtt_info(['Component ', comp_name, ' (', comp_type, ') has wrong number of labels'], fnum); 
-    mtt_info(sprintf("\tit has %1.0f labels but should have 0 or \
-    %1.0f",k,n_comp_bonds), fnum);
-    portnames=""; 
-    for kk=1:k 
-      portnames=sprintf("%s %s",portnames, unsorted_port_list(kk,:));
-    end;
-    mtt_error(portnames,fnum);
-  end;
+#  %Either all ports or no ports should be labelled - write error
+#  %message if this is not so
+#  if (k~=0)&(k~=n_comp_bonds)
+#    mtt_info(['Component ', comp_name, ' (', comp_type, ') has wrong number of labels'], fnum); 
+#    mtt_info(sprintf("\tit has %1.0f labels but should have 0 or \
+#    %1.0f",k,n_comp_bonds), fnum);
+#    portnames=""; 
+#    for kk=1:k 
+#      portnames=sprintf("%s %s",portnames, unsorted_port_list(kk,:));
+#    end;
+#    mtt_error(portnames,fnum);
+#  end;
   
   %Compute the number of labeled ports
   [n_unsorted_ports,m_unsorted_ports] = size(unsorted_port_list);
   if m_unsorted_ports==0
     n_unsorted_ports = 0;
   end;
-  n_unsorted_ports,n_comp_bonds
-  % One port defaults:
-  if (n_comp_bonds==1)&(n_unsorted_ports==0)
-    %if (direction(1)<0) & ~strcmp(comp_type,'SS') % Wrong way for default
-    % mtt_error(['One-port ', comp_name, ' (', comp_type, ') has the sign pointing the wrong way '], fnum);
-    %end;
-    unsorted_port_list = port_list;
-  end;
+#  n_unsorted_ports,n_comp_bonds
+#  % One port defaults:
+#  if (n_comp_bonds==1)&(n_unsorted_ports==0)
+#    %if (direction(1)<0) & ~strcmp(comp_type,'SS') % Wrong way for default
+#    % mtt_error(['One-port ', comp_name, ' (', comp_type, ') has the sign pointing the wrong way '], fnum);
+#    %end;
+#    unsorted_port_list = port_list;
+#  end;
   
-  %Two port defaults
-  if (n_comp_bonds==2)&(n_unsorted_ports==0)
-    if direction(1)==direction(2) % Wrong way for default
-      % mtt_error(['Two-port ', comp_name, ' (', comp_type, ') does not have through-pointing arrows'], fnum);
-    end;
-    if direction(1)==1 %in
-      % mtt_info([comp_name, ' in'],fnum);
-      unsorted_port_list = ['[in]';'[out]'];
-    else %reverse the order
-      % mtt_info([comp_name, ' out'],fnum);
-      unsorted_port_list = ['[out]';'[in]'];
-    end;
-  end;
+#  %Two port defaults
+#  if (n_comp_bonds==2)&(n_unsorted_ports==0)
+#    if direction(1)==direction(2) % Wrong way for default
+#      % mtt_error(['Two-port ', comp_name, ' (', comp_type, ') does not have through-pointing arrows'], fnum);
+#    end;
+#    if direction(1)==1 %in
+#      % mtt_info([comp_name, ' in'],fnum);
+#      unsorted_port_list = ['[in]';'[out]'];
+#    else %reverse the order
+#      % mtt_info([comp_name, ' out'],fnum);
+#      unsorted_port_list = ['[out]';'[in]'];
+#    end;
+#  end;
   
-  % Recompute the number of unsorted ports
-  [n_unsorted_ports,m_unsorted_ports] = size(unsorted_port_list);
-  if m_unsorted_ports==0
-    n_unsorted_ports = 0;
-  end;
+#  % Recompute the number of unsorted ports
+#  [n_unsorted_ports,m_unsorted_ports] = size(unsorted_port_list);
+#  if m_unsorted_ports==0
+#    n_unsorted_ports = 0;
+#  end;
   
   % Junctions or no lables(order of ports unimportant)
   if strcmp(comp_type,'zero')|strcmp(comp_type,'one')
@@ -562,8 +566,6 @@ for j = 1:n_comp_bonds
     end;
   end;
 end;
-
-
 
 fclose(fnum);
 

@@ -55,7 +55,7 @@ distclean: clean clean-cc clean-conf clean-doc
 
 install: build clean.sh clean-conf.sh
 	@install -d $(INSTDIR) $(CONFDIR) $(PROGDIR)
-	@install -d $(INSTDIR)/bin $(INSTDIR)/cc $(INSTDIR)/lib
+	@cp -a $(INSTDIR)/bin $(INSTDIR)/cc $(INSTDIR)/lib
 	@install bin/mttrc $(CONFDIR)/mtt.conf
 	@install mtt.sh $(PROGDIR)/mtt
 	@install bin/xmtt $(PROGDIR)

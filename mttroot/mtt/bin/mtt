@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.79  1997/05/19 16:44:12  peterg
+## Many changes to get rep.html mode working properly.
+##
 # Revision 1.78  1997/05/19  13:17:50  peterg
 # Explicit inclusion of mtt.sty in .doc files -- latex2html prefers this
 #
@@ -278,9 +281,6 @@
 ##
 ###############################################################
 
-#Useful strings
-bs='\0134'
-
 # MTT recursion level is zero unless explicitly set
 level=0
 
@@ -402,9 +402,13 @@ if [ "$1" = "clean" ] && [ "$2" = "" ]; then
   rm -f *_dae*.* *_cse.* *_ode.*
   rm -f *_obs.* *_rfe.* *_ss.*
   rm -f *_dm.* *_csm.* *_sm.* *_tf.* *_sr*.* *_ir*.* *_*fr.*
-  rm -f  *_numpar.m *_numpar.c
+  rm -f  *_numpar.m *_numpar.c *_input.m *_input.c *_switch.c *_switch.txt
   rm -f *_sm*.*
   rm -f *_struc.* 
+  rm -f *_odes.c *_odes.dat *_odes.gdat *_odes.m *_odes.ps
+  rm -f *_odeso.dat *_odeso.gdat *_odeso.m *_odeso.ps
+  rm -f *_*.doc *_*.idx *_*.ind *_*.ilg *_*.dvi *_*.aux *_*.lof *_*.toc
+  rm -f *_rep.tex
   rm -f  *_unique_raw_list *_raw_list
   rm -f mtt_error.txt mtt_info.txt a.out 
   exit
@@ -421,9 +425,13 @@ if [ "$2" = "clean" ] && [ "$3" = "" ]; then
   rm -f $1_sub.* $1_type.sh
   rm -f $1_dae*.* $1_cse.* $1_ode.*  $1_obs.* $1_rfe.* $1_ss.*
   rm -f $1_dm.* $1_csm.* $1_sm.* $1_tf.* $1_sr*.* $1_ir*.* $1_*fr.*
-  rm -f $1_numpar.m $1_numpar.c
+  rm -f  $1_numpar.m $1_numpar.c $1_input.m $1_input.c $1_switch.c $1_switch.txt
   rm -f $1_sm*.*
   rm -f $1_struc.*
+  rm -f $1_odes.c $1_odes.dat $1_odes.gdat $1_odes.m $1_odes.ps
+  rm -f $1_odeso.dat $1_odeso.gdat $1_odeso.m $1_odeso.ps
+  rm -f $1_*.doc $1_*.idx $1_*.ind $1_*.ilg $1_*.dvi $1_*.aux $1_*.lof $1_*.toc
+  rm -f $1_rep.tex
   rm -f $1_unique_raw_list $1_raw_list
   rm -f mtt_error.txt mtt_info.txt a.out 
   exit
@@ -724,14 +732,7 @@ endif
 
 #SUMMARY desc Verbal description of system (tex)
 $1_desc.tex:
-	echo Creating $1_desc.tex
-	( \
-	echo "%% Verbal description file for system $1 ($1_desc.tex)" ;\
-	echo "The acausal bond graph of system $bs""textbf{$1} is" ;\
-	echo "displayed in Figure $bs""Ref{$1_abg} and its label" ;\
-	echo "file is listed in Section $bs""Ref{sec:$1_lbl}." ;\
-	echo "The subsystems are listed in Section $bs""Ref{sec:$1""_sub}." ;\
-	) > $1_desc.tex
+	makedesc $1
 
 #SUMMARY odes ODE simulation header file (h)
 $1_odes.h: 
@@ -1162,15 +1163,16 @@ mtt.sty:
 	echo Copying mtt.sty to here
 	cp $MTTPATH/trans/mtt.sty .
 $1_$2.doc: $1_$2.tex
-	makedoc $1 $2
+	makedoc "$mtt_switches" "$1" "$2" "$3" "$4"
 
 #Generic conversion of LaTeX doc to dvi
 $1_$2.dvi: $1_$2.doc
 	echo Creating $1_$2.dvi
-	latex $1_$2.doc > /dev/null
-	makeindex $1_$2.idx > /dev/null
-	latex $1_$2.doc > /dev/null
-
+	latex $1_$2.doc > /dev/null; \
+	makeindex $1_$2.idx &> /dev/null; 
+	latex $1_$2.doc > /dev/null; \
+	latex $1_$2.doc > /dev/null; \
+        touch $1_$2.dvi 
 
 #Create PostScript version of fig files
 ifeq ($REPTYPE,bg)

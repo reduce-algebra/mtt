@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.14  2002/05/09 15:52:09  gawthrop
+## Now uses current cr file is its newer than abg.m
+##
 ## Revision 1.13  2002/04/28 18:41:26  geraint
 ## Fixed [ 549658 ] awk should be gawk.
 ## Replaced calls to awk with call to gawk.
@@ -85,7 +88,7 @@ abgfile=$1_abg.m
 crfile=$1_cr.r
 CRFILE=$1_cr.r
 
-if [ "$crfile" -nt "$abgfile" ]; then
+if [ -f "$crfile" ]; then
     echo "Using    $crfile"
 else
     # Inform user

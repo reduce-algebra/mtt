@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.254  2000/08/29 09:59:47  peterg
+## Version 4.5 -- includes code optimisation using the "Scope" package in reduce
+##
 ## Revision 1.253  2000/08/24 08:53:35  peterg
 ## New makesubs to create a .subs.r file with output switches to simplify output.
 ##
@@ -980,6 +983,8 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-oct )
                 mtt_switches="$mtt_switches $1";
                 m='oct';;
+	-opt )  mtt_switches="$mtt_switches $1";
+                optimise='-optimise';;
         --version)                
                   echo 'MTT version' $version; exit;;
         --versions)                
@@ -1050,6 +1055,7 @@ if [ -z "$1" ]; then
     echo '         -i euler      Use Euler integration'
     echo '         -o ode is same as dae'
     echo '         -oct use oct files in place of m files where appropriate'
+    echo '         -opt optimise code generation'
     echo '         -p  print environment variables'
     echo '         -r  reset time stamp on representation'
     echo '         -s  try to generate sensitivity BG (experimental)'
@@ -2033,7 +2039,7 @@ $1_cse.r: $1_dae.r $1_def.r $1_sympar.r $1_subs.r
 #$1_cse.m: $1_def.r $1_cse.r $1_sympar.r  $1_subs.r 
 #	cse_r2m $1; matlab_tidy $1_cse.m
 $1_cse.m: $1_def.m $1_cse.r $1_sympars.txt
-	mtt_r2m -parameters  $1 cse;  matlab_tidy $1_cse.m; matlab_tidy $1_cseo.m; 
+	mtt_r2m $optimise -parameters  $1 cse;  matlab_tidy $1_cse.m; matlab_tidy $1_cseo.m; 
 $1_cseo.m: $1_cse.m
 	touch $1_cseo.m
 $1_cse.tex: $1_cse.r  $1_sympar.r $1_simp.r
@@ -2050,7 +2056,7 @@ $1_scse.r: $1_cse.r $1_def.r
 #$1_cse.m: $1_def.r $1_cse.r $1_sympar.r  $1_subs.r 
 #	cse_r2m $1; matlab_tidy $1_cse.m
 $1_scse.m: $1_def.m $1_scse.r $1_sympars.txt
-	mtt_r2m  -parameters $1 scse;  
+	mtt_r2m $optimise  -parameters $1 scse;  
 	matlab_tidy $1_scse.m; matlab_tidy $1_scseo.m; 
 
 $1_scse.tex: $1_scse.r  $1_sympar.r $1_simp.r
@@ -2076,7 +2082,7 @@ $1_ode.r: $1_dae.r
 endif
 
 $1_ode.m: $1_def.m $1_ode.r  $1_subs.r $1_sympars.txt
-	mtt_r2m -parameters $1 ode m; matlab_tidy $1_ode.m
+	mtt_r2m $optimise -parameters $1 ode m; matlab_tidy $1_ode.m
 
 $1_ode.oct: $1_def.r $1_ode.p $1_sympars.txt
 	mtt_p2oct $1 ode
@@ -2182,7 +2188,7 @@ endif
 $1_obs.r: $1_ode.r $1_def.r $1_obspar.r $1_subs.r
 	ode2obs_r $1; tidy $1_obs.r
 $1_obs.m: $1_def.r $1_sympars.txt $1_obs.r $1_obspar.r $1_numpar.m
-	mtt_r2m  -parameters $1 obs
+	mtt_r2m $optimise  -parameters $1 obs
 $1_obs.tex: $1_obs.r  $1_sympar.r $1_simp.r
 	obs_r2tex $1; latex_tidy $1_obs.tex
 
@@ -2220,7 +2226,7 @@ $1_ss.tex: $1_def.r $1_ss.r $1_simp.r
 $1_dm.r: $1_dae.r $1_def.r $1_cr.r  $1_ss.r $1_sympar.r
 	dae2dm_r $1; tidy $1_dm.r
 $1_dm.m: $1_def.r $1_dm.r $1_sympars.txt
-		mtt_r2m -parameters $1 dm
+		mtt_r2m $optimise -parameters $1 dm
 $1_dm.tex: $1_dm.r $1_sympar.r $1_simp.r 
 	dm_r2tex $1; latex_tidy $1_dm.tex
 
@@ -2235,7 +2241,7 @@ $1_dm.tex: $1_dm.r $1_sympar.r $1_simp.r
 $1_csm.r: $1_cse.r $1_def.r $1_cr.r $1_sspar.r
 	cse2csm_r $1 csm; tidy $1_csm.r
 $1_csm.m: $1_def.r $1_csm.r $1_sympars.txt
-		mtt_r2m  -parameters $1 csm;  matlab_tidy $1_csm.m
+		mtt_r2m $optimise  -parameters $1 csm;  matlab_tidy $1_csm.m
 $1_csm.tex: $1_csm.r  $1_sympar.r $1_simp.r
 	csm_r2tex $1 csm; latex_tidy $1_csm.tex
 #SUMMARY scsm	sensitivity constrained-state matrices (r)
@@ -2262,7 +2268,7 @@ $1_scsm.tex: $1_scsm.r  $1_sympar.r $1_simp.r
 $1_sm.r: $1_csm.r $1_def.r $1_cr.r $1_ss.r $1_sympar.r
 	csm2sm_r $1 sm; tidy $1_sm.r
 $1_sm.m: $1_def.r $1_sm.r $1_sympars.txt 
-		mtt_r2m  -parameters $1 sm
+		mtt_r2m $optimise  -parameters $1 sm
 $1_sm.icad:  $1_sm.m $1_numpar.m
 		sm_m2icad $1
 $1_sm.c: $1_def.r $1_sm.r $1_sympar.c
@@ -2279,7 +2285,7 @@ $1_sm.tex: $1_sm.r  $1_sympar.r $1_simp.r
 $1_ssm.r: $1_scsm.r $1_def.r $1_cr.r $1_ss.r $1_sympar.r
 	csm2sm_r $1 ssm; tidy $1_ssm.r
 $1_ssm.m: $1_def.r $1_ssm.r $1_sympars.txt 
-		mtt_r2m -parameters $1 ssm
+		mtt_r2m $optimise -parameters $1 ssm
 $1_ssm.tex: $1_ssm.r  $1_sympar.r $1_simp.r
 	sm_r2tex $1 ssm; latex_tidy $1_ssm.tex
 
@@ -2291,13 +2297,13 @@ $1_smx.r: $1_def.r $1_def.m $1_ode.r $1_subs.r
 		ode2smx_lang $1 r; tidy $1_smx.r
 
 $1_smx.m: $1_def.r $1_def.m $1_cse.r $1_sympars.txt $1_subs.r
-		cse2smx_lang -parameters $1 smx m
+		cse2smx_lang $optimise -parameters $1 smx m
 
 $1_smxa.m: $1_def.r $1_def.m $1_cse.r $1_sympars.txt $1_subs.r
-		cse2smx_lang -parameters $matrix_smxa $1 smxa m
+		cse2smx_lang $optimise -parameters $matrix_smxa $1 smxa m
 
 $1_smxax.m: $1_def.r $1_def.m $1_cse.r $1_sympars.txt $1_subs.r
-		cse2smx_lang -parameters $1 smxax m
+		cse2smx_lang $optimise -parameters $1 smxax m
 
 #SUMMARY smc	controller form state matrices etc. - siso only (r)
 #SUMMARY smc	controller form state matrices etc. - siso only (tex)

@@ -9,60 +9,28 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1997/02/04 18:50:07  peterg
+## Initial revision
+##
 ## Revision 1.2  1996/08/20 08:26:06  peter
 ## Version control header added.
 ##
 ###############################################################
 
-# Bourne shell script: matlab_tidy
-# Tidies up Matlab format files
+# Bourne shell script: c_tidy
+# Tidies up C format files
 # P.J.Gawthrop 14 June 1990 13 Nov 1990, 19 Nov 93, April 1994, Dec 1994, 
 # June 1995
 # Copyright (c) P.J.Gawthrop, 1990, 1994, 1995.
 
-#rm junk
+# Remove blank lines
 cat $1 | \
-tr "[A-Z]" "[a-z]" | \
-sed -e "s/      //" \
-    -e "s/      //" \
-    -e "s/\$\$//" \
-    -e "s/\.\.;;/../" \
-    -e "s/\$/;/g" \
-    -e "s/;;;//g" \
-    -e "s/;;/;/g" \
-    -e "s/\.;/./g" \
-    -e "s/,;/,/g" \
-    -e "s/\*\*/^/g" \
-    -e "s/nocr /nocr/g" \
-    -e "s/nocr\\nl/nocr/g" \
-    -e "s/;;/;/g" \
-    -e "s/:=/=/g" \
-    -e "s/ e  /e/g" \
-    -e "s/*;/* .../g" \
-    -e "s/+;/+ .../g" \
-    -e "s/     . //g" \
-    -e "s/^;$//g" \
-    -e "s/mttx0/X_0/g" \
-    -e "s/mttu0/u_0/g" \
-    -e "s/mtty0/y_0/g" \
-    -e "s/mttdx/dX/g" \
-    -e "s/mttx/X/g" \
-    -e "s/mttu/u/g" \
-    -e "s/mtty/y/g" \
-    -e "s/mtta/A/g" \
-    -e "s/mttb/B/g" \
-    -e "s/mttc/C/g" \
-    -e "s/mttd/D/g" \
-    -e "s/mtte/E/g" \
-    -e "s/mtttf/G/g" \
-    -e "s/mttpar/MTTPAR/g"  \
-    -e "s/\.\.\\$/../g"  \
-    -e "s/\\$/;/g"  \
-    -e "s/inv(mtte)\*/mtte\\\/g"\
-    -e "s/\\$//" |\
 tr -s '\012' '\012'\
 >junk
 mv junk $1
+
+
+
 
 
 

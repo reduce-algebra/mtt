@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.229  2000/03/15 19:39:40  peterg
+## Replaced sub creation cmp2sub_m2sh by abg2sub_m2sh
+##
 ## Revision 1.228  2000/03/07 10:54:14  peterg
 ## Added  $1_lbl.txt to sympar.txt
 ##
@@ -1044,8 +1047,6 @@ if [ -n "$start_at_abg" ]; then
   if [ -f "$1_abg.m" ]; then
     if [ "$quiet" != "quiet" ]; then
         echo Starting from $1_abg.m
-	touch $1_subs.sh
-	touch $1_cr.r
     fi
   else
     echo $1_abg.m does not exist
@@ -1522,8 +1523,8 @@ $1_alias.m: $1_alias.txt
 	alias_txt2m $1
 
 #SUMMARY cr	constitutive relationship for each subsystem (txt)
-$1_cr.txt: $1_sub.sh
-	lbl2cr_txt2txt $1
+$1_cr.txt: $1_abg.m $1_sub.sh
+	abg2cr_m2txt $1
  
 	if [ "$level" = "0" ]; then \
 	  mv $1_cr.txt MTT_cr.txt; \
@@ -1842,7 +1843,8 @@ endif
 #Raw bond graph to acausal bond graph: mfile
 
 ifneq ($start_at_abg,yes)
-$1_abg.m: $1_rbg.m $1_alias.m $1_sub.sh
+$1_abg.m: $1_rbg.m $1_alias.m 
+	abg2sub_m2sh $1
 	(sh $1_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
 	rbg2abg_m $info_switch $1
 endif

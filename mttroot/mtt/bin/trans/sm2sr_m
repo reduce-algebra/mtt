@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1996/08/11 19:48:04  peter
+## Parameter passing added.
+##
 ## Revision 1.3  1996/08/11 10:38:30  peter
 ## Minor debugging changes.
 ##
@@ -38,15 +41,16 @@ else
   PARAMS=$2;
 fi
 
+PARAMS="$PARAMS ;"
+echo $PARAMS
 
 $MATRIX << EOF  | awk '$1 !~ /[A-MO-Zb-cf-z]/ && NF>0 {print} '  >$1_sr.dat
 
-  $PARAMS;
+  $PARAMS
   [n,m]=size(t);
   if m>n
     t=t';
   end;
-
 
   [A,B,C,D,E] = $1_dm($1_numpar);
   y = dm2sr(A,B,C,D,E,t);

@@ -29,8 +29,12 @@ set system "$system"
 # Arguments to mtt
 set args "-q"
 
+# Default the again command
+set mtt "mtt warranty"
+
 # The top level menu
-button .mtt -text "$title ($dirname)" -command "exec mtt warranty &"
+button .mtt -text "$title \n Directory: $dirname \n NO WARRANTY (press for details)" -command "exec mtt warranty &"
+#button .again -text "Again" -command "exec $mtt &"
 menubutton .man -text "Manual" -menu .man.man
 menubutton .util  -text "Utilities" -menu .util.util
 menubutton .opt  -text "Options" -menu .opt.opt
@@ -39,7 +43,8 @@ menubutton .rep -text "Representations (major)" -menu .rep.rep
 menubutton .repall -text "Representations (all)" -menu .repall.repall
 menubutton .exam -text "Examples" -menu .exam.exam
 button .mtt_quit -text "Quit" -command exit
-pack .mtt .exam .rep  .repall .sys  .util .opt  .man .mtt_quit
+pack .mtt  .exam .rep  .repall .sys  .util .opt  .man .mtt_quit
+
  
 menu .man.man
 .man.man add command -label "Browser (html)" -command "exec mtt -q hinfo &"
@@ -88,6 +93,10 @@ menu .repall.repall
 EOF
 
 reps_txt2tk <$MTTPATH/REPS 
+
+
+
+
 
 
 

@@ -19,6 +19,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.13  1996/08/16 08:24:31  peter
+## Correctly chooses how to make a ps file using $REPTYPE.
+##
 ## Revision 1.12  1996/08/15 16:47:47  peter
 ## DAE solution (experimental) included.
 ##
@@ -241,6 +244,7 @@ $1_sum.tex: $1_abg.pl
 $1_ese.r: $1_cbg.m
 	   cbg2ese_m2r $1
 $1_def.r: $1_ese.r
+	touch $1_ese.r
 $1_def.m: $1_def.r
 	def_r2m $1; matlab_tidy $1_def.m;
 
@@ -384,15 +388,20 @@ $1_$2.ps: $1_$2.dvi
 	dvips -o $1_$2.ps $1_$2
 endif
 
-#View a ps file
+#Default view
 $1_$2.view: $1_$2.ps
 	echo Creating view of $1_$2
 	ghostview $1_$2.ps&
 
+#View a ps file
+$1_$2.pview: $1_$2.ps
+	echo Creating view of $1_$2
+	ghostview $1_$2.ps&
+
 #View a gdat file
-#$1_$2.view: $1_$2.gdat
-#	echo Creating view of $1_$2
-#	gdat2view $1_$2 '$ARGS'&
+$1_$2.dview: $1_$2.gdat
+	echo Creating view of $1_$2
+	gdat2view $1_$2 '$ARGS'&
 	
 
 #Report generation

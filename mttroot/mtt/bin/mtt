@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.256  2000/09/02 14:24:06  peterg
+## -sub switch introduced - works up to dae.r
+##
 ## Revision 1.255  2000/08/30 11:43:04  peterg
 ## Put in the -opt switch for code optimisation
 ##
@@ -1600,7 +1603,7 @@ Subsystem_dae=$Subsystem"_dae"
 Subsystem_subs=$Subsystem"_subs"
 Subsystem_cr=$Subsystem"_cr"
 
-echo Target is $target, Subsystem is $Subsystem
+#echo Target is $target, Subsystem is $Subsystem
 $MAKE -S $verbose  -f  -  $target << EOF
 
 # Cancel implicit rules I don't want
@@ -1681,6 +1684,8 @@ $1_cr.r: $1_cr.txt
 	cr_txt2r $1
 # Cheat a bit and use the top level cr file for the subsystem as well
 ifneq ($sub,)
+$Subsystem_cr.r: $1_cr.r
+	echo Creating $Subsystem_cr.r "(copying $1_cr.r)"
 	cp $1_cr.r $Subsystem_cr.r
 endif
 #SUMMARY cr	constitutive relationship for each subsystem (tex)
@@ -2046,14 +2051,18 @@ $1_def.m: $1_def.r
 #Differential-algebraic equations
 $Subsystem_rdae.r: $Subsystem_ese.r $Subsystem_def.r
 	ese2rdae_r $partition $Subsystem; tidy $1_rdae.r
-$1_dae.r: $Subsystem_rdae.r $Subsystem_def.r $Subsystem_subs.r $1_cr.r
+$1_dae.r: $Subsystem_rdae.r $Subsystem_def.r $Subsystem_subs.r $Subsystem_cr.r
+ifneq ($partition,)
+	echo Doing subsystems
+	mtt_make_subsystems $1 dae r
+endif
 	rdae2dae_r $partition $Subsystem; tidy $Subsystem_dae.r
-$1_dae.m: $1_def.r $1_dae.r  $1_sympars.txt 
+$1_dae.m: $1_def.r $1_dae.r  $1_sympars.txt
 	dae_r2m $1; matlab_tidy $1_dae.m; matlab_tidy $1_daeo.m
 $1_dae.c: $1_def.r $1_dae.r  $1_sympar.r
 	dae_r2c $1; c_tidy $1_dae.c
-$1_dae.tex:	$1_dae.r $1_simp.r
-	dae_r2tex $partition $1; latex_tidy $1.tex
+$1_dae.tex: $1_dae.r $1_simp.r
+	dae_r2tex $partition $1; latex_tidy $1_dae.tex
 
 #SUMMARY cse	constrained-state equations (r)
 #SUMMARY cse*	constrained-state equations (m)

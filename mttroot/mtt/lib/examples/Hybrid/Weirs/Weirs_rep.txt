@@ -7,6 +7,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1999/03/02 22:04:11  peterg
+## Initial revision
+##
 ###############################################################
 
 mtt Weirs abg tex			# The system description
@@ -15,6 +18,7 @@ mtt Weirs abg tex			# The system description
 mtt Weirs struc tex	        # The system structure
 ## mtt Weirs dae tex	        # The system dae
 mtt Weirs ode tex	        # The system ode 
+mtt Weirs switch tex	        # The system switches 
 ## mtt Weirs sspar tex		# Steady-state parameters
 ## mtt Weirs ss tex 		# Steady state
 ## mtt Weirs dm tex		# Descriptor matrices (of linearised system)

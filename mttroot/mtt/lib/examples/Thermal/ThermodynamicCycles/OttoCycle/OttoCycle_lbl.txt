@@ -6,6 +6,9 @@
 %DESCRIPTION o Isentropic expansion
 %DESCRIPTION o Cooling at constant volume
   
+%VAR P_0
+%VAR T_0
+%VAR V_0
 
 %% Label file for system OttoCycle (OttoCycle_lbl.txt)
 
@@ -14,6 +17,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1998/07/21 15:15:27  peterg
+% %% Documentation + new format
+% %%
 % %% Revision 1.1  1998/07/21 15:12:21  peterg
 % %% Initial revision
 % %%
@@ -27,7 +33,7 @@
 
 
 % Component type Cycle
-	cycle	
+	cycle	none	ideal_gas;c_v;gamma_g;m_g	
 
 % Component type SS
 	Heat	SS	internal,external

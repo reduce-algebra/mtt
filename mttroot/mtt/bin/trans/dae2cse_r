@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1998/03/03 09:02:46  peterg
+## Replaced MTTEyx*MTTEdX + MTTEyu*MTTdu; term
+##
 ## Revision 1.2  1997/08/26 08:22:36  peterg
 ## Changed
 ## MTTY := MTTY + MTTEyx*MTTdX + MTTEyu*MTTdu;
@@ -49,7 +52,8 @@ ON NERO;
 
 in "$1_def.r";
 MTTdxs := MTTdX;  %Save the symbolic form of dX
-in "$1_sympar.r";
+
+in "$1_subs.r";
 in "$1_dae.r";
 
 
@@ -141,10 +145,12 @@ MTTEdX := MTTdX; %Ie MTTEdX is MTTdX with the dz terms deleted ie EdX.
 MTTdX := MTTdXs;  %Restore the symbolic dX
 
 
+
+MTTY := MTTY + MTTEyx*MTTEdX;
 %%% This causes the matrix mismatch
 %%% MTTdXs and MTTdu need setting in _def.r file
-MTTY := MTTY + MTTEyx*MTTEdX + MTTEyu*MTTdu;
-%%%%%%MTTY := MTTY + MTTEyx*(MTTE^(-1))*MTTEdX;
+%%MTTY := MTTY +  MTTEyu*MTTdu;
+MTTY := MTTY + MTTEyx*(MTTE^(-1))*MTTEdX;
 
 
 
@@ -152,12 +158,37 @@ MTTY := MTTY + MTTEyx*MTTEdX + MTTEyu*MTTdu;
 
 END; %%of MTTNz>0
 
-
 IF MTTNz=0 THEN 
 BEGIN
   MTTEdX := MTTdX;
   MTTE   := MTTI;
 END;
+
+%IF MTTNyz>0 THEN 
+%BEGIN
+%  %%%% Try and solve algebraic loops!!
+%
+%  %Create list of the relevant equations 
+%  MTT_eqns := {};
+%  FOR i := 1:MTTNyz DO
+%    MTT_eqns := append(MTT_eqns,{MTTyz(i,1)});
+%
+%  %Create list of the relevant unknowns
+%  MTT_unknowns := {};
+%  FOR i := 1:MTTNyz DO
+%    MTT_unknowns := append(MTT_unknowns,{MTTUi(i,1)});
+%
+%  %Solve the algebraic equations symbolically
+%  MTT_sol := solve(MTT_eqns,MTT_unknowns);
+%
+%  %Substitute back into the equations
+%  FOR i := 1:MTTNyz DO
+%  BEGIN
+%    MTT_sol_i := first(MTT_sol); MTT_sol := rest(MTT_sol);
+%    set(lhs(MTT_sol_i),rhs(MTT_sol_i));
+%  END;
+%
+%END; % IF MTTNyz>0
 
 %%Create the _cse.r file
 OUT "$1_cse.r";
@@ -196,6 +227,13 @@ BEGIN
   MTTEyx := MTTEyx;
 %%%%%  MTTdU := MTTdU;
 END;
+
+IF MTTNyz>0 THEN
+  BEGIN
+  write "matrix MTTYz(", MTTNyz, ",1)";
+   MTTYz := MTTYz;
+  END;
+
 
 write ";END;";
 

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.290  2000/12/05 09:59:37  peterg
+## Generates $1_cr.h - allows inclusion of c functions for crs
+##
 ## Revision 1.289  2000/12/05 09:01:52  peterg
 ## Changed == to =
 ##
@@ -972,7 +975,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='4.8'
+version='4.9'
 
 # MTT recursion level is zero unless explicitly set
 level=0
@@ -1902,54 +1905,6 @@ $1_cr.tex: $1_cr.r
 $1_sympar.txt: $1_type.sh $1_abg.m $1_aliased.txt
 	mtt_make_sympar $1
 
-
-# Lbl to sympar conversion
-# ifeq ($switches,0)
-# $1_sympar.txt: $1_sub.sh $1_abg.m 
-# 	abg2sympar_m2txt $1
- 
-# 	if [ "$level" = "0" ]; then \
-# 	  mv $1_sympar.txt MTT_sympar.txt; \
-# 	else \
-# 	  cat $1_sympar.txt >> MTT_sympar.txt; \
-# 	fi
- 
-# 	sh $1_sub.sh "rm -f " '_sympar.txt' # Delete sympar files
-# 	sh $1_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' sympar txt' # and recreate them
- 
-# 	if [ "$level" = "0" ]; then \
-# 	  sort_sympar <MTT_sympar.txt> $1_sympar.txt; \
-# 	fi
-# endif
-# ifeq ($switches,1)
-# $1_sympar.txt: $1_sub.sh $1_abg.m
-# 	abg2sympar_m2txt $1
- 
-# 	if [ "$level" = "0" ]; then \
-# 	  mv $1_sympar.txt MTT_sympar.txt; \
-# 	else \
-# 	  cat $1_sympar.txt >> MTT_sympar.txt; \
-# 	fi
- 
-# 	sh $1_sub.sh "rm -f " '_sympar.txt' # Delete sympar files
-# 	sh $1_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' sympar txt' # and recreate them
- 
-# 	if [ "$level" = "0" ]; then \
-# 	  sort_sympar <MTT_sympar.txt  > $1_sympar.txt1; \
-# 	  struc2switch_txt $1; \
-# 	  echo "Appending switch declarations"; \
-# 	  cat $1_sympar.txt1 $1_switch.txt> $1_sympar.txt; \
-# 	fi
-
-# endif
-
-
-# ## Old version -- just looks on top level
-# ## $1_sympar.r: $1_lbl.txt $1_params.r
-# ## 	lbl2sympar_txt2r $1
-# ## 	echo "IN \"$1_params.r\";" >> $1_sympar.r
-# ## 	echo 'END;' >> $1_sympar.r
-
 #SUMMARY sympar	symbolic parameters (r)
 $1_sympar.r: $1_sympar.txt
 	sympar_txt2r $1
@@ -2103,41 +2058,6 @@ $1_numpar.m:  $1_numpar.txt $1_sympars.txt
 $1_numpar.c:  $1_numpar.txt $1_sympar.c
 	txt2c $1 numpar
 
-#SUMMARY input	numerical input declaration  -- default (txt)
-#'ifeq ($steadystate_computation,yes)
-#$1_input.txt: 
-#	mtt -q $mtt_switches $1 ss r
-#	mtt -q $mtt_switches $1 struc txt
-#	mtt -q $mtt_switches $1 switch txt
-#	struc2input_txt2txt -ss $1
-#$1_state.txt:
-#	mtt -q $mtt_switches $1 ss r
-#	mtt -q $mtt_switches $1 struc txt
-#	struc2state_txt2txt -ss $1
-#else
-#$1_input.txt: 
-#	mtt -q $mtt_switches $1 struc txt
-#	mtt -q $mtt_switches $1 switch txt
-#	struc2input_txt2txt $1
-#$1_state.txt: 
-#	mtt -q $mtt_switches $1 struc txt
-#	struc2state_txt2txt $1
-#endif
-
-
-#ifeq ($switches,0)
-#$1_input.txt: 
-#	mtt $mtt_switches $1 struc txt; 
-#	mtt $mtt_switches $1 ss r; 
-#	struc2input_txt2txt $1
-#endif
-#ifeq ($switches,1)
-#$1_input.txt: 
-#	mtt $mtt_switches -q -u $1 struc txt; 
-#	mtt $mtt_switches $1 ss r; 
-#	mtt $mtt_switches -q -u $1 switch txt; 	
-#	struc2input_txt2txt -s $1
-#endif
 
 
 #SUMMARY input	numerical input declaration (m) 
@@ -2157,23 +2077,6 @@ $1_logic.m:  $1_logic.txt $1_switch.txt
 #SUMMARY state	state declaration (m) 
 $1_state.m:  $1_state.txt $1_sympars.txt
 	mtt_txt2m $1 state
-
-#SUMMARY state	state declaration (c) 
-#$1_state.c:  $1_state.txt $1_sympar.txt
-#	txt2c $1 state
-
-#SUMMARY input	numerical input declaration (c) 
-#ifeq ($switches,0)
-#$1_input.c:  $1_input.txt $1_sympar.c
-#	input_txt2c $1
-#endif
-#
-#ifeq ($switches,1)
-#$1_switch.c: $1_struc.txt
-#	struc2switch_txt2c $1
-#$1_input.c:  $1_input.txt $1_sympar.c $1_switch.c
-#	input_txt2c -s $1
-#endif
 
 #SUMMARY desc Verbal description of system (tex)
 $1_desc.tex:
@@ -2418,17 +2321,9 @@ $1_ode.m: $1_def.r $1_ode.r
 $1_odeo.m: $1_def.r $1_odeo.r
 	mtt_r2m $1 odeo m
 
-#$1_ode.oct: $1_def.r $1_ode.p $1_sympars.txt
-#	mtt_p2oct $1 ode
-
-#$1_odeo.oct: $1_def.r $1_odeo.p $1_sympars.txt
-#	mtt_p2oct $1 odeo
-
 $1_odea.m: $1_ode.m
 	touch $1_odea.m
 
-#$1_ode.c: $1_def.r $1_ode.r $1_sympar.r $1_sympar.c
-#	ode_r2c $1 
 $1_ode.tex: $1_ode.r  $1_sympar.r $1_simp.r
 	ode_r2tex $1; latex_tidy $1_ode.tex
 
@@ -2995,26 +2890,6 @@ $1_$2.$ps : $1_$2.fig
 	multi_command2 "fig2dev -L$eps" $1 $2.fig $2.$ps | sh
 endif
 
-#ifeq ($REPTYPE,data)
-#ifeq ($PLOTTYPE,multiple)
-#ifneq ($_ARGS,)
-#$1_$2.fig: $1_$2.gdat
-#	gdat2fig $1_$2 '$ARGS'
-#	echo Creating $1_$2$__ARGS.$ps
-#	cp $1_$2.$ps $1_$2$__ARGS.$ps
-#else
-#$1_$2.fig: $1_$2.gdat
-#	gdat2fig $1_$2
-#endif
-#else
-#$1_$2.$ps: $1_$2.gdat
-#	gdat2ps $1_$2  '$ARGS'
-#endif
-#$1_$2.$ps: $1_$2.fig
-#	echo Creating $1_$2.$ps
-#	fig2dev -L$eps $1_$2.fig> $1_$2.$ps
-#
-#endif
 
 ifeq ($REPTYPE,tex)
 #Generic conversion of LaTeX doc to dvi or pdf
@@ -3072,11 +2947,6 @@ $1_$2.dview: $1_$2.gdat
 $1_$2.tview: $1_$2.dvi
 	echo Creating view of $1_$2
 	$DVIVIEW $1_$2.dvi&
-
-#Generate pdf
-#$1_$2.pdf: $1_$2.ps
-#	echo Creating $1_$2.pdf
-#	ps2pdf $1_$2.ps $1_$2.pdf
 
 #Report generation
 $1_rep.make: $1_rep.txt

@@ -23,6 +23,12 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.37  2000/11/12 16:45:57  peterg
+  ## ## Close ese file before recursive call of cbg2ese -- reopen when
+  ## ## finished.
+  ## ## THis prevents a new file being opened for each subsystem which fails
+  ## ## when > 1K files opened
+  ## ##
   ## ## Revision 1.36  2000/10/13 10:54:47  peterg
   ## ## Now writes out a unique name for each state etc
   ## ##
@@ -139,8 +145,8 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ##
   ## #############################################################
   
-  disp("cbg2ese");
-  system_name, system_type, full_name, repetition
+  ## disp("cbg2ese");
+  ## system_name, system_type, full_name, repetition
   
   pc = "%";
   
@@ -178,7 +184,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   
   ## Setup files
   ese_name = [full_name_repetition, "_ese.r"];
-  ese_file = fopen(ese_name, "w"); # open file (first time)
+  ese_file = fopen(ese_name, "w") # open file (first time)
   
   fprintf(ese_file, "\n%s%s Equation file for system %s (file %s)\n", ...
 	  pc, pc, full_name_repetition, ese_name);
@@ -247,13 +253,13 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 				# Convert from arrow orientated to component orientated causality
     	comp_bonds = CBG.bonds(bond_list,:).*direction;
 	
-    	disp(["---- ", field, " ---"]);    
+    	## disp(["---- ", field, " ---"]);    
     	
 	if AliasingArguments	# Alias the args list if appropriate
     	  message = sprintf("\tfor component  %s (%s) within %s",\
 			    comp_name,subsystem.type,full_name);    
     	  if struct_contains(CBG,"alias")
-	    subsystem.arg = alias_args(subsystem.arg,CBG.alias,";",message,infofilenum,full_name)
+	    subsystem.arg = alias_args(subsystem.arg,CBG.alias,";",message,infofilenum,full_name);
     	  endif;
 	endif;
 	
@@ -261,7 +267,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
     	  message = sprintf("\tfor component  %s (%s) within %s",\
 			    comp_name,subsystem.type,full_name);    
     	  if struct_contains(CBG,"alias")
-	    subsystem.cr = alias_args(subsystem.cr,CBG.alias,";",message,infofilenum,full_name)
+	    subsystem.cr = alias_args(subsystem.cr,CBG.alias,";",message,infofilenum,full_name);
     	  endif;
 	endif;
 	
@@ -317,7 +323,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	  
 	  ## Invoke the appropriate equation-generating procedure
 	  name_r = full_name_repetition;
-	  eqn_name = [subsystem.type, "_eqn"]
+	  eqn_name = [subsystem.type, "_eqn"];
 	  
 	  if exist(eqn_name)~=2 ## Try a compound component
             fclose(ese_file);	# Close but reopen later
@@ -328,7 +334,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 				k, structure,  structure_file, infofilenum);
 	    
 	    disp("---POP---");
-	    ese_file = fopen(ese_name, "a"); # open file (again)
+	    ese_file = fopen(ese_name, "a") # open file (again)
 
 	    ## Link up the bonds
 	    fprintf(ese_file, ...

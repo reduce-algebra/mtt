@@ -12,6 +12,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.35  1999/07/25 22:19:45  peterg
+## Fixed bug with false objects when compound objects present.
+## -- Reset object to 0 after processing text.
+##
 ## Revision 1.34  1999/02/17 06:23:49  peterg
 ## Bugs arising from Fig 3.2 fixed
 ##
@@ -229,7 +233,7 @@ function process_lbl() {
       args = $3;
       label[i_label,1] = name; 
       label[i_label,2] = CR;
-      label[i_label,3] = args
+      label[i_label,3] = args;
 	}
 }
 
@@ -629,14 +633,14 @@ END {
   j = 0;
 
 
-# Do the port components, in order of appearance, first
+# Do the port components, in order of appearance, first.
   for (i = 1; i <= i_label; i++) {
     name = label[i,1];
     if (match(name,port_regexp))
       write_component(i);
   }
 
-# Now do the ordinary components (in no particular order)
+# Now do the ordinary components, in order of appearance, last.
   for (i = 1; i <= i_label; i++) {
     name = label[i,1];
     if (!match(name,port_regexp))

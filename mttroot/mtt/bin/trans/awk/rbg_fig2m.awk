@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.26  1998/04/04 07:29:26  peterg
+## SS now only port component
+##
 ## Revision 1.25  1998/04/03 15:07:20  peterg
 ## Now correctly write 0/1 port names
 ##
@@ -577,7 +580,6 @@ END {
   for (i = 1; i <= i_port_component; i++) {
     name = sprintf("[%s]", port_labels[i]);
     port_type = comp_type[port_labels[i]];
-print i, port_labels[i], name, port_type
     cr   = "MTT_port";
     arg  = i;
 

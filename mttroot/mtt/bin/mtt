@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.75  1997/05/15  09:15:54  peterg
+# Included switch.c in dependancy list for _input.c (when -s switch set)
+#
 # Revision 1.74  1997/05/13  16:58:02  peterg
 # Added -s switch to get mtt to search for (Bond Graph) switches
 #
@@ -678,9 +681,14 @@ $1_numpar.c:  $1_numpar.txt $1_sympar.c
 	numpar_txt2c $1
 
 #SUMMARY input	numerical input declaration (txt) -- default
+ifeq ($switches,0)
 $1_input.txt: 
 	mtt $1 struc txt; struc2input_txt2txt $1
-
+endif
+ifeq ($switches,1)
+$1_input.txt: 
+	mtt -q $1 struc txt; mtt -q $1 switch txt; struc2input_txt2txt -s $1
+endif
 #SUMMARY input	numerical input declaration (m) 
 $1_input.m:  $1_input.txt $1_sympar.txt
 	input_txt2m $1

@@ -1,0 +1,278 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: mtt_r2m
+# Reduce to octave conversion
+# Based on obsolete ode_r2m  and ode_r2lang
+# P.J.Gawthrop 14 June 1991, 12 Jan 1994, April 1994, Jan 95, May 1998
+# July 1998
+# Copyright (c) P.J.Gawthrop 1991, 1994, 1995, 1996, 1998
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+# Set up the language specific stuff
+rep=$2
+ext='m';
+codegenerator='PASCAL'
+Lc='#';
+Rc='#';
+Lb='(';
+Rb=')';
+
+outfile=$1"_"$rep.$ext
+
+rm -f $outfile.*
+
+#Set up gentran
+cat <<EOF >mtt_setreduce.r
+% Set up the code generator
+% Load the general translator package
+LOAD GENTRAN;
+GENTRANLANG!* := '$codegenerator;
+ON GENTRANSEG;
+MAXEXPPRINTLEN!* := 80;
+TEMPVARNUM!* := 1;
+TEMPVARNAME!* := 'mtt_temp;
+
+% Matrix output function
+in"$MTTPATH/trans/lang_matrix.r";
+
+
+%Read the reduce definitions file
+in "$1_def.r";
+
+%Read the reduce  $REP   file
+in "$1_$rep.r";
+
+%Read the parameter file
+in "$1_sympar.r";
+
+EOF
+
+#Inform user
+echo Creating $outfile
+
+
+
+# Remove the old log file
+rm -f mtt_r2lang.log
+
+#Remove the temporary files
+rm -f $1_$rep.$ext.1
+
+#Header
+lang_header $1 $rep $ext 'mttx,mttu,t' mttdx > $1_$rep.$ext
+
+if [ "$rep" = "ode" ]; then
+  echo Creating $1_odea.$ext
+  echo Creating $1_odeo.$ext
+  rm -f $1_odeo.$ext.1;
+  rm -f $1_odea.$ext.1;
+
+  #Header
+  lang_header $1 $rep $ext 'mttx,mttu,t' mttdx > $1_$rep.$ext
+
+  # Use reduce to accomplish the transformation
+  $SYMBOLIC >mtt_r2lang.log << EOF
+    
+  %Set up the code generator
+  in"mtt_setreduce.r";
+      
+  % The body of the ode function
+    GENTRANOUT "$1_ode.$ext.1";
+    mtt_matrix := MTTdX$
+    mtt_matrix_n := MTTNx$
+    mtt_matrix_m := 1$
+    mtt_matrix_name := 'MTTdX$
+    lang_matrix(); 
+    GENTRANSHUT "$1_ode.$ext.1";
+    
+      % The algebraic equations (if any)
+    GENTRANOUT "$1_odea.$ext.1";
+    mtt_matrix := MTTYz$
+    mtt_matrix_n := MTTNYz$
+    mtt_matrix_m := 1$
+    mtt_matrix_name := MTTYz$
+    lang_matrix(); 
+    GENTRANSHUT "$1_odea.$ext.1";
+      
+      
+      % Now do the y = g(x,t) function.
+      % The body of the odeo function
+    GENTRANOUT "$1_odeo.$ext.1";
+    mtt_matrix := MTTy$
+    mtt_matrix_n := MTTNy$
+    mtt_matrix_m := 1$
+    mtt_matrix_name := MTTy$
+    lang_matrix(); 
+    GENTRANSHUT "$1_odeo.$ext.1";
+      
+EOF
+  
+  # Algebraic bits
+  $MATRIX -q  <<EOF  >> $1_ode.$ext
+    %System structure
+    [nx,ny,nu,nz,nyz] = $1_def;
+  if nyz>0
+    printf("global mttxx mttt;\n");
+    printf("mttxx = mttx; mttt=t;\n");
+  
+    printf("$Lc====== Extract the internal input variables ======$Rc\n");
+    for i = 1:nyz
+      printf("  mttui$Lb%i$Rb = mttx$Lb%i$Rb;\n",i,i+nx);
+    end;
+    printf("\n");
+  
+    printf("[mttui,info] = fsolve('$1_odea',mttui);\n");
+    printf("if (info!=1)\n"); 
+    printf("  error('fsolve has not converged')\n");
+    printf("end\n");
+    printf("\n");
+  
+    printf("$Lc====== Set up the internal input variables ======$Rc\n");
+    for i = 1:nyz
+      printf("  mttui%i = mttui$Lb%i$Rb;\n",i,i);
+    end;
+    printf("\n");
+  
+    printf("$Lc====== Put internal input variables at end of state derivative ======$Rc\n");
+    for i = 1:nyz
+      printf(" mttdx$Lb%i$Rb = mttui%i;\n",i+nx,i);
+    end;
+    printf("\n");
+  end;
+  
+EOF
+  
+  cat <<EOF >> $outfile.O
+  
+  $Lc The differential equations $Rc
+EOF
+  
+  sed 's/mtt_matrix/mttdx/' $1_ode.$ext.1 >> $1_ode.$ext
+  
+  
+  # Create the odea.$ext function
+  lang_header $1 odea $ext 'mttui' mttyz 'global mttxx mttt; mttx = mttxx; t=mttt;' > $1_odea.$ext
+  
+  $MATRIX -q  <<EOF  >> $1_odea.$ext
+    %System structure
+    [nx,ny,nu,nz,nyz] = $1_def;
+  if nyz>0
+    printf("$Lc====== Set up the internal input variables ======$Rc\n");
+    for i = 1:nyz
+      printf("  mttui%i = mttui$Lb%i$Rb;\n",i,i);
+    end;
+    printf("\n");
+  end;
+EOF
+  
+  cat <<EOF >> $1_odea.$ext
+  
+  % The algebraic equations
+EOF
+  sed 's/mtt_matrix/mttyz/' $1_odea.$ext.1 >> $1_odea.$ext
+  
+  
+  # Create the odeo.$ext function
+  lang_header $1 odeo $ext 'mttx,mttu,t' mtty > $1_odeo.$ext
+  
+$MATRIX -q  <<EOF  >> $1_odeo.$ext
+    %System structure
+    [nx,ny,nu,nz,nyz] = $1_def;
+  if nyz>0
+    printf("$Lc====== Extract the internal input variables ======$Rc\n");
+    for i = 1:nyz
+      printf("  mttui$Lb%i$Rb = mttx$Lb%i$Rb;\n",i,i+nx);
+    end;
+    printf("\n");
+  
+    printf("$Lc====== Set up the internal input variables ======$Rc\n");
+    for i = 1:nyz
+      printf("  mttui%i = mttui$Lb%i$Rb;\n",i,i);
+    end;
+    printf("\n");
+  end;
+  
+EOF
+  
+  
+  cat <<EOF >> $1_odeo.$ext
+  
+  % The output equations
+EOF
+sed 's/mtt_matrix/mtty/' $1_odeo.$ext.1 >> $1_odeo.$ext
+
+# Convert from Pascal syntax to Octave syntax
+  mv $1_odeo.m mtt_junk; mtt_p2m<mtt_junk > $1_odeo.m
+  mv $1_odea.m mtt_junk; mtt_p2m<mtt_junk > $1_odea.m
+fi
+  
+if [ "$rep" = "sm" ]; then
+
+  #Header
+  lang_header $1 $rep $ext 'mttx,mttu' [mtta,mttb,mttc,mttd] > $1_$rep.$ext
+
+  
+Symbols='a b c d'
+for Symbol in $Symbols; do
+  rm -f $outfile.1
+  case $Symbol in
+    a)
+	N=MTTNx; M=MTTNx
+	;;
+    b)
+	N=MTTNx; M=MTTNu
+	;;
+    c)
+	N=MTTNy; M=MTTNx
+	;;
+    d)
+	N=MTTNy; M=MTTNu
+	;;
+    *)
+	
+esac
+
+    $SYMBOLIC  << EOF >mtt_r2m.log
+
+    %Set up the code generator
+    in"mtt_setreduce.r";
+
+    out "$outfile.2";
+     write "mtt$Symbol = zeros(", $N, ",", $M, ");";
+    shut "$outfile.2";
+
+    GENTRANOUT "$outfile.1";
+    mtt_matrix := MTT$Symbol;
+    mtt_matrix_n := $N;
+    mtt_matrix_m := $M;
+    lang_matrix();
+    GENTRANSHUT "$outfile.1";
+EOF
+
+echo "% $Symbol matrix" >$outfile.$Symbol
+cat "$outfile.2" >> $outfile.$Symbol
+sed "s/mtt_matrix/mtt$Symbol/" < $outfile.1 |\
+grep -v '=0\.0;' >> $outfile.$Symbol
+
+done
+
+rm -f $outfile.[12]
+fi
+
+# Convert from Pascal syntax to Octave syntax
+cat $outfile.?  | mtt_p2m >> $outfile
+rm -f $outfile.?  
+  
+  
+  

@@ -1,0 +1,30 @@
+%% Label file for system Rate (Rate_lbl.txt)
+%SUMMARY Rate
+%DESCRIPTION 
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS	in	conc
+%ALIAS	out	thermal
+
+% Argument aliases
+%ALIAS	$1	k,q,h,n
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+	r	 Rate	k,q,h,n
+
+% Component type SS
+	[conc]		SS		external,external
+	[thermal]	SS		external,external

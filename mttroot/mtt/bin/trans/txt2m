@@ -15,6 +15,12 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.7  1998/07/30 09:32:33  peterg
+# %% Replaces:
+# %% 	euler by 1
+# %% 	implicitl by 1
+# %% 	implicit  by 3
+# %%
 # %% Revision 1.6  1998/07/27 18:59:11  peterg
 # %% Added WMIN etc
 # %%
@@ -71,22 +77,30 @@ fi
 
 
 #Write out the variables in m format.
-awk -F#  '{
+cat  $1_$2.txt |\
+awk -F#  'BEGIN{
+quote = "\047";
+doublequote = "\042";
+}
+{
   N=split($1,a,"=");
   if (N==2) {
     LHS = a[1];
     RHS = tolower(a[2]);
-    sub(/"*euler"*/, 1, RHS);   
-    sub(/"*implicitl"*/, 2, RHS);   
-    sub(/"*implicit"*/, 3, RHS);  
+    gsub(quote, doublequote, RHS);
+    sub(/["]*euler["]*/, 1, RHS);   
+    sub(/["]*implicitl["]*/, 2, RHS);   
+    sub(/["]*implicit["]*/, 3, RHS);  
     statement = sprintf("%s=%s",LHS,RHS);
+    if (match(statement,";")==0)
+      statement = sprintf("%s;", statement);
   }
   else
     statement = $1;
 
   if (NF<2) print statement
   if (NF>1)  print statement " # " $2
-}' $1_$2.txt  | sed\
+}' | sed\
      -e 's/\[\([0-9]*\)\]/(\1)/g' \
      -e 's/\([^a-zA-Z]\)t\([^a-zA-Z]\)/\1mttt\2/g' \
      -e 's/LAST/mttLAST/g' \
@@ -99,8 +113,7 @@ awk -F#  '{
      -e 's/x(/mttx(/g' \
      -e 's/u(/mttu(/g' \
      -e 's/mttmtt/mtt/g' \
-
-#>> $1_$2m
+>> $1_$2.m
 
 
 

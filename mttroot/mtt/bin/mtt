@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.258  2000/09/11 08:17:28  peterg
+## Extended _simp.r to incude default switches
+##
 ## Revision 1.257  2000/09/02 15:53:53  peterg
 ## Now does partitioning up to dae.view
 ##
@@ -2732,6 +2735,10 @@ $1_rep.tex: $1_rep.txt $1_reps_made
 $1_abg.tex: $1_sub.sh
 	abg2tex $1
 
+#SUMMARY tf Transfer function (mml)
+$1_$2.mml: $1_$2.r
+	mtt_r2mml $1 $2
+
 
 # Version control system - uses RCS
 RCS:
@@ -2740,40 +2747,6 @@ RCS:
 $1_$2.vc: RCS 
 	echo Version control on $1_$2.$VCext
 	ci -I $1_$2.$VCext </dev/tty  ; co -l $1_$2.$VCext 
-
-# Copy Pascal utilities
-## sign.p: 
-## 	echo Copying sign.p; cp $MTTPATH/trans/p/sign.p .
-## mtt_ludcmp.p: 
-## 	echo Copying mtt_ludcmp.p; cp $MTTPATH/trans/p/mtt_ludcmp.p .
-## mtt_lubksb.p: 
-## 	echo Copying mtt_lubksb.p; cp $MTTPATH/trans/p/mtt_lubksb.p .
-## mtt_sparse.p: 
-## 	echo Copying mtt_sparse.p; cp $MTTPATH/trans/p/mtt_sparse.p .
-## mtt_write.p: 
-## 	echo Copying mtt_write.p; cp $MTTPATH/trans/p/mtt_write.p .
-## mtt_implicit.p: mtt_solve_lud.p 
-## 	echo Copying mtt_implicit.p; cp $MTTPATH/trans/p/mtt_implicit.p .
-## mtt_euler.p: 
-## 	echo Copying mtt_euler.p; cp $MTTPATH/trans/p/mtt_euler.p .
-## mtt_solve_lud.p: mtt_ludcmp.p mtt_lubksb.p
-## 	echo Copying mtt_solve_lud.p; cp $MTTPATH/trans/p/mtt_solve_lud.p .
-## zero_vector.p: 
-## 	echo Copying zero_vector.p; cp $MTTPATH/trans/p/zero_vector.p .
-## zero_matrix.p: 
-## 	echo Copying zero_matrix.p; cp $MTTPATH/trans/p/zero_matrix.p .
-## 
-# Copy c utilities
-##dsvdcmp.c: dpythag.c nrutil.c nrutil.h
-##	echo Copying dsvdcmp.c; cp $MTTPATH/trans/c/dsvdcmp.c .
-##dpythag.c: 
-##	echo Copying dpythag.c; cp $MTTPATH/trans/c/dpythag.c .
-##nrutil.c: 
-##	echo Copying nrutil.c; cp $MTTPATH/trans/c/nrutil.c .
-##nrutil.h: 
-##	echo Copying nrutil.h; cp $MTTPATH/trans/c/nrutil.h .
-##sign.c:
-##	echo Copying sign.c; cp $MTTPATH/trans/c/sign.c .
 
 EOF
 # Remember the exit status of make

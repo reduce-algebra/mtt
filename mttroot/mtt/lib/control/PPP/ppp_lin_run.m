@@ -148,7 +148,8 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
   
   if !struct_contains(p_o,"method")
     ##p_o.method = "continuous";
-    p_o.method = "intermittent";
+    ##p_o.method = "intermittent";
+    p_o.method = "remote";
   endif
   
 
@@ -224,6 +225,9 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
       L = zeros(n_x,n_y);
       obs_poles = eig(Ad);
     endif
+  elseif strcmp(p_o.method, "remote")
+    L = zeros(n_x,n_y);
+    obs_poles = [];
   else
     error(sprintf("Observer method ""%s"" unknown", p_o.method));
   endif
@@ -267,7 +271,12 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
 	y_i = yi(1);	# Current output
 	t_i = ti(1);
       else			# The real thing
-	[t_i,y_i,u_i] = ppp_put_get(U); # Generic interface to real-time
+	if strcmp(p_o.method, "remote")
+	  [t_i,y_i,X] = ppp_put_get_X(U); # Remote-state interface
+	  u_i = X(3);		# Integrated control is third state
+	else
+	  [t_i,y_i,u_i] = ppp_put_get(U); # Generic interface to real-time
+	endif
       endif
 
       ## Observer
@@ -283,6 +292,10 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
 	  y_e = [y_e; y_new'];
 	  e_e = [e_e; e_est'];
 	endfor
+      elseif strcmp(p_o.method, "remote")
+	## predict from remote state (with zero L)
+	[x_est y_est y_new e_est] = ppp_int_obs \
+	      (X,y_i,U,A,B,C,D,p_c.A_u,p_c.delta_ol,L);
       endif
       
       ##Control

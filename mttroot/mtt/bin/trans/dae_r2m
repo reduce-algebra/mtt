@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1996/08/16 13:10:53  peter
+## Fixed bug Ny changed to Nx in redidual loop.
+##
 ## Revision 1.2  1996/08/16 08:57:34  peter
 ## Reads $1_input.
 ##
@@ -85,6 +88,12 @@ BEGIN
   FOR i := 1:MTTNz DO
   BEGIN
     write "MTTz", i, " = MTTx(", MTTNx+ i, ");";
+  END;
+
+   write "% Set up the internal inputs";
+  FOR i := 1:MTTNz DO
+  BEGIN
+    write "MTTui", i, " = MTTx(", MTTNx+MTTz+i, ");";
   END;
   
   write "% Set up the Input variables";

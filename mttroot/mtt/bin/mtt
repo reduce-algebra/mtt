@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.233  2000/03/16 10:16:11  peterg
+## Clean no longer zaps the abg.m files
+##
 ## Revision 1.232  2000/03/16 09:43:35  peterg
 ## Put in $mtt_switches in mtt comand line when creating _state.txt and
 ## _input.txt
@@ -2103,7 +2106,7 @@ $1_dm.tex: $1_dm.r $1_sympar.r $1_simp.r
 #SUMMARY csm	constrained-state matrices (m)
 #SUMMARY csm	constrained-state matrices (tex)
 #SUMMARY csm	constrained-state matrices (view)
-#SUMMARY csm	constrained-state matrices (ps)
+#SUMMARY csm    constrained-state matrices (ps)
 #Linearised system: constrained-state matrices
 $1_csm.r: $1_cse.r $1_def.r $1_cr.r $1_sspar.r
 	cse2csm_r $1 csm; tidy $1_csm.r
@@ -2243,7 +2246,7 @@ $1_pkim.r: $1_tf.r $1_sympar.r
 $1_pkim.tex: $1_def.r $1_pkim.r $1_simp.r
 	pkim_r2tex $1; latex_tidy $1_pkim.tex
 
-#SUMMARY ctf	controller transfer function (r)
+#SUMMARY ctf    controller transfer function (r)
 #SUMMARY ctf	controller transfer function (m)
 #SUMMARY ctf	controller transfer function (tex)
 #SUMMARY ctf	controller transfer function (view)
@@ -2289,12 +2292,12 @@ $1_ctf.tex: $1_def.r $1_ctf.r $1_sympar.r $1_simp.r
 #SUMMARY odeso	ode solution - output (ps)
 #SUMMARY odeso*	ode solution - output (view)
 
-#SUMMARY daes	dae solution - state (m)
+#SUMMARY daes   dae solution - state (m)
 #SUMMARY daes	dae solution - state (dat)
 #SUMMARY daes	dae solution - state (ps)
 #SUMMARY daes	dae solution - state (view)
 
-#SUMMARY daeso	dae solution - output (m)
+#SUMMARY daeso  dae solution - output (m)
 #SUMMARY daeso	dae solution - output (dat)
 #SUMMARY daeso	dae solution - output (ps)
 #SUMMARY daeso	dae solution - output (view)

@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.12  1998/07/04 11:09:46  peterg
+## Cleaned up - assumes new lbl style for SS
+##
 ## Revision 1.11  1998/05/13 12:39:23  peterg
 ## Added `unknown' to list od names to avoid
 ##
@@ -86,7 +89,7 @@ symbols = "";
 	   && (match(arg[i],"\\$")==0) \
 	   && (length(arg[i])>0) \
 	   && (matches(symbols,arg[i]) ==0) ) {
-	 print arg[i];
+	 print arg[i] "\t" name;
 	  }
     }
   }

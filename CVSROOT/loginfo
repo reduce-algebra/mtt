@@ -26,8 +26,8 @@
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
 
 # Lines to mail changes
-CVSROOT $CVSROOT/CVSROOT/syncmail %{sVv} mtt@gawthrop.net mtt-cvs@lists.sourceforge.net
-mttroot $CVSROOT/CVSROOT/syncmail %{sVv} mtt@gawthrop.net mtt-cvs@lists.sourceforge.net
-DEFAULT $CVSROOT/CVSROOT/syncmail %{sVv} mtt@gawthrop.net mtt-cvs@lists.sourceforge.net
+CVSROOT $CVSROOT/CVSROOT/syncmail %{sVv} mtt@gawthrop.net
+
+DEFAULT $CVSROOT/CVSROOT/syncmail %{sVv} mtt-cvs@lists.sourceforge.net mtt@gawthrop.net
 
 

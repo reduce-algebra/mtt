@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.22  2000/12/04 12:19:12  peterg
+## Changed $() to `` and $() to expr for sh compatibility -- geraint
+##
 ## Revision 1.21  2000/12/04 08:52:40  peterg
 ## Zapped () in functions for sh compatibility
 ##
@@ -537,6 +540,8 @@ function write_DLD_header
 #include "useful-functions.hh"
 #include "${system}_def.h"
 #include "${system}_sympar.h"
+
+#include "${system}_cr.h"
 
 DEFUN_DLD (${system}_${rep}, args, ,
 "Usage: [$output] = ${system}_${rep}($args)

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.160  1998/07/04 11:38:51  peterg
+## Version 3.0-- (Seascale)
+##
 ## Revision 1.159  1998/07/04 11:37:43  peterg
 ## Aliases implemented for parameters + lots of associated goodies
 ## New-style lbl files - no more SS nonsense.
@@ -578,6 +581,9 @@ tidy=tidy;
 # Default not verbose
 verbose=' -s'
 
+# Default no info
+info_switch=''
+
 #Initialise list
 mtt_switches='';
 
@@ -609,7 +615,11 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 		debug=debug ;;
 	-v )
                 mtt_switches="$mtt_switches $1";
+		info_switch='-I';
 		verbose=' -w ' ;;
+	-I )
+                mtt_switches="$mtt_switches $1";
+		info_switch='-I' ;;
 	-t )
 		tidy=tidy ;;
 	-T )
@@ -675,6 +685,7 @@ if [ -z "$1" ]; then
     echo '       mtt <system_name> <representation> <language> <parameters>'
     echo 'Options: -q  quiet mode -- suppress MTT banner'
     echo '         -v  verbose mode'
+    echo '         -I  prints more information'
     echo '         -p  print environment variables'
     echo '         -c  c-code generation'
     echo '         -o  ode and dae are the same'
@@ -1428,7 +1439,7 @@ endif
 #Raw bond graph to acausal bond graph: mfile
 $1_abg.m: $1_rbg.m $1_alias.m $1_sub.sh 
 	sh $1_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m'
-	rbg2abg_m $1
+	rbg2abg_m $info_switch $1
 
 
 #SUMMARY cbg	causal bond graph (m)
@@ -1451,7 +1462,7 @@ $1_cbg.fig: $1_cbg.m $1_rbg.m $1_fig.fig $1_type.sh
 #SUMMARY struc	structure - list of inputs, outputs and states (view)
 #Elementary system equations + definitions
 $1_ese.r: $1_cbg.m
-	   cbg2ese_m2r $1; ese_tidy $1
+	   cbg2ese_m2r $info_switch $1; ese_tidy $1
 $1_def.r: $1_ese.r
 	touch $1_def.r
 $1_struc.txt: $1_ese.r

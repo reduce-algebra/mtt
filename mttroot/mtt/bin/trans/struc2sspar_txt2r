@@ -25,7 +25,7 @@ echo  >> $1_sspar.r
 echo "% Steady-state states" >> $1_sspar.r
 awk '{
   if ($1=="state") 
-    print "MTTX" $2 " := \t0; \% " $4 " (" $3 ")"
+    print "MTTX" $2 " := \t0; % " $4 " (" $3 ")"
 }' \
  $1_struc.txt >> $1_sspar.r
 
@@ -33,7 +33,7 @@ awk '{
 echo "% Steady-state inputs" >> $1_sspar.r
 awk '{
   if ($1=="input") 
-    print "MTTU" $2 " := \t0; \% " $4 " (" $3 ")"
+    print "MTTU" $2 " := \t0; % " $4 " (" $3 ")"
 }' \
  $1_struc.txt >> $1_sspar.r
 

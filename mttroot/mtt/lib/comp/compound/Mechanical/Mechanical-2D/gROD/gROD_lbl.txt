@@ -11,13 +11,16 @@
 %ALIAS in|Tip_a		xTip_a,angularTip_a,yTip_a 	
 %ALIAS out|Tip_b	xTip_b,angularTip_b,yTip_b 	
 
-%ALIAS x_a	xTip_a # Force/velocity at tip a in x direction
-%ALIAS y_a	yTip_a # Force/velocity at tip a in y direction
-%ALIAS alpha_a	angularTip_a # Torque/angular velocity at tip a
+%ALIAS in|Tip_a		xTip_a,angularTip_a,yTip_a 	
+%ALIAS out|Tip_b	xTip_b,angularTip_b,yTip_b 	
 
-%ALIAS x_b	xTip_b # Force/velocity at tip b in x direction
-%ALIAS y_b	yTip_b # Force/velocity at tip b in y direction
-%ALIAS alpha_b	angularTip_b # Torque/angular velocity at tip b
+%ALIAS x_a		xTip_a # Force/velocity at tip a in x direction
+%ALIAS y_a		yTip_a # Force/velocity at tip a in y direction
+%ALIAS alpha_a|a_a	angularTip_a # Torque/angular velocity at tip a
+
+%ALIAS x_b		xTip_b # Force/velocity at tip b in x direction
+%ALIAS y_b		yTip_b # Force/velocity at tip b in y direction
+%ALIAS alpha_b|a_b	angularTip_b # Torque/angular velocity at tip b
 
 %ALIAS INTF	General/INTF # The flow integration component.
 
@@ -28,6 +31,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1998/11/25 13:55:42  peterg
+% %% Added missig attribute field m*g,internal
+% %%
 % %% Revision 1.1  1998/11/25 10:48:34  peterg
 % %% Initial revision
 % %%

@@ -1,0 +1,72 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: mknumpar
+# Creates the deafault numerical parameters file for the system
+
+# Copyright (c) P.J.Gawthrop 1996
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+# Inform user
+echo Creating $1_numpar.m
+echo Creating $1_parconv.m
+
+# Remove the old log file
+rm -f mknumpar.log
+
+# Use reduce to accomplish the transformation
+reduce >mknumpar.log << EOF
+
+%Set up the number of argument variables to zero in case the user has forgotten
+MTTNVar := 0;
+
+%Read the symbolic parameters file
+IN "$1_sympar.r";
+
+OUT "$1_numpar.m";
+
+write "function numpar = $1_numpar;";
+
+IF MTTNvar>0 THEN
+BEGIN
+  FOR i := 1:MTTNvar DO
+  BEGIN
+    write "numpar(",i , ") = 1;		% ", MTTVar(i,1);
+  END;
+END;
+
+SHUT "$1_numpar.m";
+
+OUT "$1_parconv.m";
+
+write "[ ...";
+
+IF MTTNvar>0 THEN
+BEGIN
+  FOR i := 1:MTTNvar DO
+  BEGIN
+    write MTTVar(i,1), ", ...";
+  END;
+END;
+
+write "] = $1_parconv(numpar);";
+
+IF MTTNvar>0 THEN
+BEGIN
+  FOR i := 1:MTTNvar DO
+  BEGIN
+    write MTTVar(i,1), " = numpar(", i, ");";
+  END;
+END;
+
+SHUT "$1_parconv.m";
+

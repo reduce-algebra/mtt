@@ -28,6 +28,9 @@ function [par,Par,Error,Y,iterations] = \
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.3  2001/04/05 11:50:12  gawthrop
+  ## Tidied up documentation + verbose mode
+  ##
   ## Revision 1.2  2001/04/04 08:36:25  gawthrop
   ## Restuctured to be more logical.
   ## Data is now in columns to be compatible with MTT.
@@ -55,6 +58,9 @@ function [par,Par,Error,Y,iterations] = \
   
 
   [n_data,n_y] = size(y_0);
+  if n_data<n_y
+    error("ppp_optimise: y_0 should be in columns, not rows")
+  endif
 
   n_th = length(i_s);
   error_old = inf;
@@ -92,6 +98,16 @@ function [par,Par,Error,Y,iterations] = \
     iterations = iterations + 1; # Increment iteration counter
 
     [y,y_par] = eval(sim_command); # Simulate
+    [N_data,N_y] = size(y);
+
+    if (N_y!=n_y)
+      mess = sprintf("n_y (%i) in data not same as n_y (%i) in model", n_y,N_y);
+      error(mess);
+    endif
+    
+    ## Use the last part of the simulation to compare with data
+    y = y(1+N_data-n_data:N_data,:);
+    y_par = y_par(1+N_data-n_data:N_data,:);
 
     ##Evaluate error, cost derivative J and cost second derivative JJ
     error = 0; 

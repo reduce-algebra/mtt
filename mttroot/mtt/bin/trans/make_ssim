@@ -16,8 +16,14 @@ cat >> ${outfile} <<EOF
   ## Pass input as a global
   global MTT_input MTT_input_index MTT_input_last
 
+  if nargin>4  
+    [n,m] = size(index);
+    if (n>m)       # Make sure its a row vector
+      index = index';
+    endif
+  endif
+
   [nx2,ny2] = ${sys}_def;
-  ny = ny2/2;
   y_par = [];
   MTT_input = u;
   [MTT_input_last,m] = size(u);
@@ -25,7 +31,8 @@ cat >> ${outfile} <<EOF
   if nargin<5			# No index given
     MTT_input_index = 0;
     [mtt_data] = ${sys}_ode2odes(x0,par,simpar);
-    y = mtt_data(:,2:2:1+2*ny);
+    y = mtt_data(:,2:2:1+ny2);
+    x = mtt_data(:,3+ny2:2:2+ny2+nx2);
     ypar = [];
   else				# Compute sensitivities as well
     for i=index
@@ -34,9 +41,10 @@ cat >> ${outfile} <<EOF
       p(i) = 1;          # Set sensitivity index to 1
       [mtt_data] = ${sys}_ode2odes(x0,p,simpar);
       if (i==index(1))
-	y = mtt_data(:,2:2:1+2*ny);
+	y = mtt_data(:,2:2:1+ny2);
       endif
-      y_par = [y_par, mtt_data(:,3:2:2+2*ny)];
+      y_par = [y_par, mtt_data(:,3:2:2+ny2)];
+      x = [];
     endfor
   endif
 

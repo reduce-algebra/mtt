@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.32  2001/05/24 07:42:12  gawthrop
+## Included and updated the missing tf_r2m
+##
 ## Revision 1.31  2001/04/03 14:49:42  gawthrop
 ## Revised to incorporate new ssim (sensitivity simulation)
 ## representation (m only just now).
@@ -288,7 +291,7 @@ case $rep in
 	states=no;
         inputs=no;
 	parameters=no;
-        output='y,y_par'
+        output='y,y_par,x'
         args='x0,par,simpar,u,index'
 	;;
     tf)

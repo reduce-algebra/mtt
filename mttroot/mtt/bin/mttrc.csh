@@ -1,5 +1,5 @@
 #!/bin/csh
-## Automatically generated from bashrc on Tue Apr 10 14:02:38 BST 2001 - DO NOT EDIT
+## Automatically generated from bashrc on Wed May  9 09:02:08 BST 2001 - DO NOT EDIT
 #! /bin/sh
 
      ###################################### 
@@ -17,6 +17,15 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.22  2001/04/12 03:08:00  geraint
+## Improved sh->csh conversion, reduces environment namespace pollution.
+##
+## Revision 1.21  2001/04/10 13:56:13  gawthrop
+## Uses standard mkoctfile
+##
+## Revision 1.20  2001/04/10 13:08:19  gawthrop
+## Smoother translation to .cs using sh2csh
+##
 ## Revision 1.19  2001/03/30 15:13:49  gawthrop
 ## Rationalised simulation modes to each return mtt_data
 ##
@@ -41,7 +50,6 @@
 ## Stripped the mtt- from paths
 ##
 ## Revision 1.16  2000/12/27 15:16:44  peterg
-## If then else format
 ##
 ## Revision 1.15  2000/12/27 14:57:43  peterg
 ## Now takes the base path as an argument
@@ -75,7 +83,7 @@
 ## reduce --> reduce 64
 ##
 ## Revision 1.5  1998/01/16 08:55:01  peterg
-## MAKE make
+## MAKE=make
 ##
 ## Revision 1.4  1998/01/06 09:14:51  peterg
 ## Added latex2html to setup
@@ -89,12 +97,9 @@
 #
 ###############################################################
 
-## When using csh, replace $1 by the mtt base path, eg /usr/share/mtt/latest
+## When using csh, replace /home/peterg/Development/mttroot/mtt by the mtt base path, eg /usr/share/mtt/latest
 setenv MTT_BASE /home/peterg/Development/mttroot/mtt
 
-#if [ -z "$MTT_BASE" ]; then
-#  echo mttrc requires one argument: eg mttrc /usr/share/mtt/latest
-#else
   echo Setting paths with base $MTT_BASE
   # The following line sets up the make to use -- gmake is the standard 
   # but you may wish to use lsmake for parallelism
@@ -159,47 +164,47 @@ setenv MTT_BASE /home/peterg/Development/mttroot/mtt
   setenv ASCENDLIBRARY $MTTPATH/ascend/lib
   
   # Oct file generation - use version with no optimisation.
-  setenv MKOCTFILE $MTT_LIB/octave/mkoctfile
+  #setenv MKOCTFILE $MTT_LIB/octave/mkoctfile # This for no optimisation
+    setenv MKOCTFILE mkoctfile
 
   # ode2odes.exe stuff
 
     # local system
 
-    setenv PLAT "i686-pc-linux-gnu"
-#    PREFIX "/usr/local"
-    setenv PREFIX "/usr"
-    setenv GCCVERS "2.95.2"
-    setenv SRCOCTAVE "/cvs/octave"
+set PLAT="i686-pc-linux-gnu"
+#    PREFIX="/usr/local"
+set PREFIX="/usr"
+set GCCVERS="2.95.2"
+set SRCOCTAVE="/cvs/octave"
 
-#    PLAT "mips-sgi-irix6.5"
-#    PREFIX "/usr/people/bevangp/GNU"
-#    GCCVERS "2.95.2"
-#    SRCOCTAVE "${PREFIX}/../build/octave-2.1.33"
+#    PLAT="mips-sgi-irix6.5"
+#    PREFIX="/usr/people/bevangp/GNU"
+#    GCCVERS="2.95.2"
+#    SRCOCTAVE="${PREFIX}/../build/octave-2.1.33"
 
     # include paths
 
-    setenv IOCTAVE "-I${PREFIX}/include/octave"
+set IOCTAVE="-I${PREFIX}/include/octave"
 
     # library paths
 
-#    LOCTAVE "-L${PREFIX}/lib/octave -loctave -lcruft -loctinterp"
-    setenv LOCTAVE "-L${PREFIX}/lib/octave -loctave -lcruft -loctinterp"
-    setenv LKPATHSEA "-L${SRCOCTAVE}/kpathsea -lkpathsea"
-    setenv LREADLINE " -L${SRCOCTAVE}/readline -lreadline"
-    setenv LSYSTEM "-ldl -lm -lncurses"
-    setenv LF2C "-L${PREFIX}/lib/gcc-lib/${PLAT}/${GCCVERS} -lg2c"
+#    LOCTAVE="-L${PREFIX}/lib/octave -loctave -lcruft -loctinterp"
+set LOCTAVE="-L${PREFIX}/lib/octave -loctave -lcruft -loctinterp"
+set LKPATHSEA="-L${SRCOCTAVE}/kpathsea -lkpathsea"
+set LREADLINE=" -L${SRCOCTAVE}/readline -lreadline"
+set LSYSTEM="-ldl -lm -lncurses"
+set LF2C="-L${PREFIX}/lib/gcc-lib/${PLAT}/${GCCVERS} -lg2c"
 
     # compiler options
 
-    setenv DEBUG "-g"
-    setenv OPTIM "-O3"
-    setenv FLAGS "-fno-rtti -fno-exceptions -fno-implicit-templates"
+set DEBUG="-g"
+set OPTIM="-O3"
+set FLAGS="-fno-rtti -fno-exceptions -fno-implicit-templates"
 
-    # setenved variables
+    # exported variables
 
     setenv MTT_CXX "g++"
     setenv MTT_CXXFLAGS "${DEBUG} ${OPTIM} ${FLAGS}"
     setenv MTT_CXXLIBS "${LOCTAVE} ${LKPATHSEA} ${LREADLINE} ${LF2C} ${LSYSTEM}"
     setenv MTT_CXXINCS "-I. ${IOCTAVE}"
     setenv MTT_LDFLAGS " "
-#fi

@@ -1,11 +1,13 @@
-function Ustar = ppp_ustar (A_u,n_u,tau,order)
+function Ustar = ppp_ustar (A_u,n_u,tau,order,packed)
 
-  ## usage:  Us = ppp_ustar(A_u,n_u,tau)
+  ## usage:  Us = ppp_ustar(A_u,n_u,tau,order,packed)
   ##
   ## Computes the U* matrix at time tau in terms of A_u
   ## n_u : Number of system inputs
   ## If tau is a vector, computes U* at each tau and puts into a row vector:
+  ## If packed==1
   ##     Ustar = [Ustar(tau_1) Ustar(tau_2) ...]
+  ## else Ustar = [Ustar(tau_1); Ustar(tau_2) ...]
   ## Copyright (C) 1999 by Peter J. Gawthrop
   ## 	$Id$	
 
@@ -19,6 +21,10 @@ function Ustar = ppp_ustar (A_u,n_u,tau,order)
   
   if nargin<4
     order = 0;
+  endif
+  
+  if nargin<5
+    packed=1;
   endif
   
 
@@ -39,9 +45,19 @@ function Ustar = ppp_ustar (A_u,n_u,tau,order)
       A_i = ppp_extract(A_u,i);
       Ak = A_i^order;
       eA = expm(A_i*t);
-      ustar = [ustar; zeros(1,(i-1)*N), (Ak*eA*u_0)', zeros(1,(n_u-i)*N)];
+      if (packed==1)
+	ustar = [ustar; zeros(1,(i-1)*N), (Ak*eA*u_0)', \
+		 zeros(1,(n_u-i)*N)];
+      else
+	ustar = [ustar, (Ak*eA*u_0)'];
+      endif
     endfor
-    Ustar = [Ustar ustar];
+
+    if (packed==1)
+      Ustar = [Ustar ustar];
+    else
+      Ustar = [Ustar; ustar];
+    endif
   endfor
 
 

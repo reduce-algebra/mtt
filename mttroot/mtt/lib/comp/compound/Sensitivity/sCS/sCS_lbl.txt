@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2000/12/28 10:31:35  peterg
+% %% Put under RCS
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -27,7 +30,7 @@
 % ---- Component labels ----
 
 % Component type C
-	c		lin	effort,c;c_s
+	c		slin	effort,c;c_s
 
 % Component type SS
 	[in]	 SS	external,external

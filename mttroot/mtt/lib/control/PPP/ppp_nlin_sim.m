@@ -1,4 +1,4 @@
-function [y,x,u,t,U,U_c,U_l] = ppp_nlin_sim (system_name,A_u,tau,t_ol,N_ol,w,extras)
+function [y,x,u,t,UU,UU_c,UU_l] = ppp_nlin_sim (system_name,i_ppp,i_par,A_u,w_s,N_ol,extras)
 
   ## usage:  [y,x,u,t,U,U_c,U_l] = ppp_nlin_sim (system_name,A_u,tau,t_ol,N,w)
   ##
@@ -22,28 +22,35 @@ function [y,x,u,t,U,U_c,U_l] = ppp_nlin_sim (system_name,A_u,tau,t_ol,N_ol,w,ext
   ## Names
   s_system_name = sprintf("s%s", system_name);
 
-  ## System details 
+  ## System details -- defines simulation within ol interval
   par = eval(sprintf("%s_numpar;", system_name));
-  x_0 = eval(sprintf("%s_state;", system_name))
+  simpar = eval(sprintf("%s_simpar;", system_name))
+  x_0 = eval(sprintf("%s_state(par);", system_name))
   [n_x,n_y,n_u] = eval(sprintf("%s_def;", system_name));
 
-  ## Sensitivity system details
+  ## Sensitivity system details -- defines moving horizon simulation
+  simpars = eval(sprintf("%s_simpar;", s_system_name))
   sympars = eval(sprintf("%s_sympar;", s_system_name));
   pars = eval(sprintf("%s_numpar;", s_system_name));
 
   ## Times
-  n_tau = length(tau);
-  dtau = tau(2)-tau(1);		# Optimisation sample time
-  Tau = [0:dtau:tau(n_tau)+eps]; # Time  in the moving axes
-  n_Tau = length(Tau);
-  dt = t_ol(2)-t_ol(1);
-  n_t = length(t_ol);
-  T_ol = t_ol(n_t)+dt
-  
+  ## -- within opt horizon
+  n_Tau = round(simpars.last/simpars.dt)
+  dtau = simpars.dt
+  Tau = [0:n_Tau-1]'*dtau;
+  [n_tau,n_w] = size(w_s);
+  tau = Tau(n_Tau-n_tau+1:n_Tau);
+  w = w_s(length(w_s));		# Final value of setpoint
+
+  ## -- within ol interval
+  n_t = round(simpar.last/simpar.dt)
+  dt = simpar.dt;
+  t_ol = [0:n_t-1]'*dt;
+  T_ol = n_t*dt;
 
   ## Weight and moving-horizon setpoint
-  weight = [zeros(n_y,n_Tau-n_tau), ones(n_y,n_tau)]; 
-  ws = w*ones(1,n_tau);
+#   weight = [zeros(n_y,n_Tau-n_tau), ones(n_y,n_tau)]; 
+#   w_s = w*ones(n_tau,1);
 
   ## Create input basis functions
   [n_U,junk] = size(A_u);
@@ -53,7 +60,7 @@ function [y,x,u,t,U,U_c,U_l] = ppp_nlin_sim (system_name,A_u,tau,t_ol,N_ol,w,ext
   u_star_i = ones(n_U,1);
   u_star_tau = [];
   for i = 1:n_Tau
-    u_star_tau = [u_star_tau, u_star_i];
+    u_star_tau = [u_star_tau; u_star_i'];
     u_star_i = eA*u_star_i;
   endfor
 
@@ -62,7 +69,7 @@ function [y,x,u,t,U,U_c,U_l] = ppp_nlin_sim (system_name,A_u,tau,t_ol,N_ol,w,ext
   u_star_i = ones(n_U,1);
   u_star_t = [];
   for i = 1:n_t
-    u_star_t = [u_star_t, u_star_i];
+    u_star_t = [u_star_t; u_star_i'];
     u_star_i = eA*u_star_i;
   endfor
   
@@ -70,6 +77,9 @@ function [y,x,u,t,U,U_c,U_l] = ppp_nlin_sim (system_name,A_u,tau,t_ol,N_ol,w,ext
     title("U*(tau)")
     xlabel("tau");
     plot(Tau,u_star_tau)
+    title("U*(t)")
+    xlabel("t_ol");
+    plot(t_ol,u_star_t)
   endif
   
 
@@ -84,27 +94,11 @@ function [y,x,u,t,U,U_c,U_l] = ppp_nlin_sim (system_name,A_u,tau,t_ol,N_ol,w,ext
     error(sprintf("n_U (%i) must be less than or equal to n_u (%i)", \
 		  n_U, n_u));
   endif
-		  
-  ## Indices of U and sensitivities
-  FREE = "[";
-  free_name = "ppp";
-  for i=1:n_U
-    FREE = sprintf("%ssympars.%s_%i sympars.%s_%is", FREE, free_name, \
-		   i, free_name, i);
-    if i<n_U
-      symbol = "; ";
-    else
-      symbol = "];";
-    endif
-    FREE = sprintf("%s%s", FREE, symbol);
-  endfor
-FREE
-  free = eval(FREE);
-
+  
   ## Compute linear gains 
   [A,B,C,D] = eval(sprintf("%s_sm(par);", system_name));
   B = B(:,1); D = D(:,1);
-  [k_x,k_w,K_x,K_w] = ppp_lin(A,B,C,D,A_u,0,tau);
+  [k_x,k_w,K_x,K_w] = ppp_lin(A,B,C,D,A_u,0,tau');
 
   ## Main simulation loop
   y = [];
@@ -127,9 +121,9 @@ FREE
   endif
 
   ## Reverse time to get "previous" U
-   U = expm(-A_u*T_ol)*U;
+  U = expm(-A_u*T_ol)*U;
 
-  for i = 1:N_ol
+  for i = 1:N_ol		# Main loop 
     ## Compute initial U from linear case
     U_l = K_w*w - K_x*x_0;
 
@@ -149,54 +143,47 @@ FREE
     else
       error(sprintf("extras.U_next = \"%s\" is invalid", extras.U_next));
     endif
-    ## Put initial value of U into the parameter vector
-    pars(free(:,1)) = U;
+    pars(i_ppp(:,1)) = U;	# Put initial value of U into the parameter vector
 
-    ## Compute U
+    ## Compute U by optimisation
     tick = time;
     if extras.max_iterations>0
-      [U, U_all, Error, Y] = ppp_nlin(s_system_name,x_0s,u_star_tau,tau,pars,free,ws,extras);
+      [U, U_all, Error, Y] = ppp_nlin(system_name,x_0s,pars,simpars,u_star_tau,w_s,i_ppp,extras);
+      pars(i_ppp(:,1)) = U;	# Put final value of U into the parameter vector
     else
       Error = [];
     endif
     opt_time = time-tick;  
     printf("Optimisation %i took %i iterations and %2.2f sec\n", i, \
 	   length(Error), opt_time);
-#     title(sprintf("Moving horizon trajectories: Interval %i",i));
-#     grid;
-#     plot(tau,Y)
-  
+    ##title(sprintf("Moving horizon trajectories: Interval %i",i));
+    ##grid;
+    ##plot(tau,Y)
+    
     ## Generate control
+    u_ol = u_star_t*U;		# Not used - just for show
 
-    u_ol = U'*u_star_t(1:n_U,:);
-
-    ## Simulate system 
+    ## Simulate system over one ol interval
     ## (Assumes that first gain parameter is one)
-    U_ol = [u_ol; zeros(n_u-1,n_t)]; # Generate the vector input
-    [y_ol,x_ol] = eval(sprintf("%s_sim(x_0, U_ol, t_ol, par);", system_name));
+    ##U = [u_ol zeros(n_t,n_u-1)]; # Generate the vector input
+    [y_ol,y_s,x_ol] = eval(sprintf("%s_ssim(x_0s, pars, simpar, u_star_t);", s_system_name));
+    
+    x_0  = x_ol(n_t+1,:)';	# Extract state for next time
+    y_ol = y_ol(1:n_t,:);	# Avoid extra points due to rounding error 
+    x_ol = x_ol(1:n_t,:);	# Avoid extra points due to rounding error 
 
-    ## Extract state for next time
-    x_0  = x_ol(:,n_t);
 
-    y = [y y_ol(:,1:n_t)];
-    x = [x x_ol(:,1:n_t)];
-    u = [u u_ol(:,1:n_t)];
+    y = [y; y_ol];
+    x = [x; x_ol];
+    u = [u; u_ol];
 
-    UU = [UU, U];
-    UU_l = [UU_l, U_l];
-    UU_c = [UU_c, U_c];
+    UU = [UU; U'];
+    UU_l = [UU_l; U_l'];
+    UU_c = [UU_c; U_c'];
 
-    t = [t, t_ol(:,1:n_t)+t_last*ones(1,n_t) ];
-    t_last = t_last + t_ol(n_t); 
+    t = [t; t_ol+t_last*ones(n_t,1) ];
+    t_last = t_last + T_ol; 
   endfor
 
-  ## Rename returned matrices
-  U = UU;
-  U_l = UU_l;
-  U_c = UU_c;
 endfunction
-
-
-
-
 

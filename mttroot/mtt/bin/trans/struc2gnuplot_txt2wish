@@ -1,4 +1,5 @@
 #! /bin/sh
+# -*-tcl-*-
 
 sys=$1
 
@@ -21,78 +22,90 @@ exec wish "\$0" "\$@"
 wm title . "MTT Viewer: ${sys}"
 set parameter ""
 set windownum 0
+set view outputs
 
 # menu bar
 canvas .menubar
 
-menubutton .menubar.file -text "File" -menu .menubar.file.menu
+menubutton .menubar.file -text "File" -underline 0 -menu .menubar.file.menu
 menu .menubar.file.menu
-.menubar.file.menu add command -label "Open  (Gnuplot plot file)"    -command open_plotfile
-.menubar.file.menu add command -label "Save  (Gnuplot plot file)"    -command save_plotfile
+.menubar.file.menu add command -label "Open  (Gnuplot plot file)" -underline 0   -command open_plotfile
+.menubar.file.menu add command -label "Save  (Gnuplot plot file)" -underline 0   -command save_plotfile
 .menubar.file.menu add separator
-.menubar.file.menu add command -label "Print (PostScript file)"	     -command print_postscript
+.menubar.file.menu add command -label "Print (PostScript file)"   -underline 0   -command print_postscript
 .menubar.file.menu add separator
-.menubar.file.menu add command -label "Quit"			     -command exit
+.menubar.file.menu add command -label "Quit"			  -underline 0   -command exit
 
-menubutton .menubar.edit -text "Edit" -menu .menubar.edit.menu
+menubutton .menubar.edit -text "Edit" -underline 0 -menu .menubar.edit.menu
 menu .menubar.edit.menu
-.menubar.edit.menu add cascade -label "Axes" -menu .menubar.edit.menu.axes
-.menubar.edit.menu add cascade -label "Grid" -menu .menubar.edit.menu.grid
-.menubar.edit.menu add cascade -label "Key"  -menu .menubar.edit.menu.key
+.menubar.edit.menu add cascade -label "Axes" -underline 0 -menu .menubar.edit.menu.axes
+.menubar.edit.menu add cascade -label "Grid" -underline 0 -menu .menubar.edit.menu.grid
+.menubar.edit.menu add cascade -label "Key"  -underline 0 -menu .menubar.edit.menu.key
 
 menu .menubar.edit.menu.axes
-.menubar.edit.menu.axes add command -label "Cartesian" -command { puts "set nopolar ; replot" }
-.menubar.edit.menu.axes add command -label "Polar"     -command { puts "set   polar ; replot" }
+.menubar.edit.menu.axes add command -label "Cartesian" -underline 0 -command { puts "set nopolar ; replot" }
+.menubar.edit.menu.axes add command -label "Polar"     -underline 0 -command { puts "set   polar ; replot" }
 
 menu .menubar.edit.menu.grid
-.menubar.edit.menu.grid add command -label "Show Grid" -command { puts "set   grid ; replot" }
-.menubar.edit.menu.grid add command -label "Hide Grid" -command { puts "set nogrid ; replot" }
+.menubar.edit.menu.grid add command -label "Show Grid" -underline 0 -command { puts "set   grid  ; replot" }
+.menubar.edit.menu.grid add command -label "Hide Grid" -underline 0 -command { puts "set nogrid  ; replot" }
 
 menu .menubar.edit.menu.key
-.menubar.edit.menu.key add command -label "Show Key"   -command { puts "set   key ; replot" }
-.menubar.edit.menu.key add command -label "Hide Key"   -command { puts "set nokey ; replot" }
+.menubar.edit.menu.key add command -label "Show Key"   -underline 0 -command { puts "set   key   ; replot" }
+.menubar.edit.menu.key add command -label "Hide Key"   -underline 0 -command { puts "set nokey   ; replot" }
 
-button .menubar.xmtt  -text "xMTT" -relief flat		 -command { exec xmtt }
-button .menubar.quit  -text "Quit" -relief flat		 -command exit 
+menubutton .menubar.tool -text "Tools" -underline 0 -menu .menubar.tool.menu
+menu .menubar.tool.menu
+.menubar.tool.menu add cascade -label "Sort List" -underline 0 -menu .menubar.tool.menu.sort
+.menubar.tool.menu add command -label "X-MTT"     -underline 0 -command { exec xmtt & }
+
+menu .menubar.tool.menu.sort
+.menubar.tool.menu.sort add command -label "Left to Right" -underline 0 -command {
+    set sortorder "normal"
+    set xl [sort_list \$xl \$sortorder ]
+    set yl [sort_list \$yl \$sortorder ]
+}
+.menubar.tool.menu.sort add command -label "Right to Left" -underline 0 -command {
+    set sortorder "reverse"
+    set xl [sort_list \$xl \$sortorder]
+    set yl [sort_list \$yl \$sortorder]
+}
+
+button .menubar.quit  -text "Quit" -relief flat -command exit 
 
 pack .menubar.file    -expand false -fill x -side left
 pack .menubar.edit    -expand false -fill x -side left
-pack .menubar.xmtt    -expand false -fill x -side left
+pack .menubar.tool    -expand false -fill x -side left
 pack .menubar.quit    -expand false -fill x -side right
 
 # status bar
 canvas .statusbar
 
-radiobutton .statusbar.states  -text "States"      -value states  -variable view      -relief solid -command { raise .cx }
-radiobutton .statusbar.outputs -text "Outputs"     -value outputs -variable view      -relief solid -command { raise .cy }
+radiobutton .statusbar.states  -text "States"      -value states  -variable view -command { .parameters.list configure -listvar xl }
+radiobutton .statusbar.outputs -text "Outputs"     -value outputs -variable view -command { .parameters.list configure -listvar yl }
 
 tk_optionMenu .statusbar.plot  plottype "Single Plot" "Multi Plot" "New Window"
+checkbutton .statusbar.sort -text "Toggle Sort" -relief flat -indicatoron false -onvalue "reverse" -offvalue "normal" -variable sortorder -command {    
+    set xl [sort_list \$xl \$sortorder ]
+    set yl [sort_list \$yl \$sortorder ]
+}
 
 pack .statusbar.states  -expand false -fill x -side left
 pack .statusbar.outputs -expand false -fill x -side left
 pack .statusbar.plot    -expand false -fill x -side right
+pack .statusbar.sort	-expand false -fill x -side right
 
-## states canvas
-canvas		.cx
-listbox		.cx.l
-scrollbar	.cx.sy	-orient v
-checkbutton    	.cx.t	-text		"States"	-relief flat
-
-## outputs canvas
-canvas		.cy
-listbox		.cy.l
-scrollbar	.cy.sy	-orient v
-checkbutton    	.cy.t	-text		"Outputs"	-relief flat
+## parameter list canvas
+canvas		.parameters
+listbox		.parameters.list -background oldlace -foreground black
+scrollbar	.parameters.yscrollbar	-orient v
 
 ## configure scrollbars
-.cx.sy configure -command ".cx.l yview"
-.cy.sy configure -command ".cy.l yview"
-.cx.l configure -yscrollcommand ".cx.sy set"
-.cy.l configure -yscrollcommand ".cy.sy set"
+.parameters.yscrollbar configure -command ".parameters.list yview"
+.parameters.list configure -yscrollcommand ".parameters.yscrollbar set"
 
 ## bind lists
-bind .cx.l <<ListboxSelect>> { set parameter [ .cx.l get anchor ] ; plot \$parameter }
-bind .cy.l <<ListboxSelect>> { set parameter [ .cy.l get anchor ] ; plot \$parameter }
+bind .parameters.list <<ListboxSelect>> { set parameter [ .parameters.list get anchor ] ; plot \$parameter }
 
 proc "reverse_name" "name" {
     set delim "_"
@@ -139,26 +152,13 @@ gawk '
 }' ${struc} >> ${out}
 
 cat <<EOF >> ${out}
-.cx.l configure -listvar xl
-.cy.l configure -listvar yl
+.parameters.list configure -listvar yl
 
-.cx.t configure -command { set xl [sort_list \$xl \$xsortorder] } -indicatoron false -onvalue "reverse" -offvalue "normal" -variable xsortorder
-.cy.t configure -command { set yl [sort_list \$yl \$ysortorder] } -indicatoron false -onvalue "reverse" -offvalue "normal" -variable ysortorder
-
-pack .menubar	      -expand false -fill x -side top
-pack .statusbar	      -expand false -fill x -side bottom
-
-pack .cx.t -expand false -fill x -side top
-pack .cy.t -expand false -fill x -side top
-
-pack .cx.sy -expand false -fill y -side right
-pack .cy.sy -expand false -fill y -side right
-
-pack .cx.l -expand true -fill both -side left
-pack .cy.l -expand true -fill both -side left
-
-pack .cx -expand true -fill both
-place .cy -in .cx -relx 0 -rely 0 -relwidth 1 -relheight 1 -anchor nw -bordermode outside
+pack .menubar			-expand false -fill x    -side top
+pack .statusbar			-expand false -fill x    -side bottom
+pack .parameters.yscrollbar	-expand false -fill y    -side right
+pack .parameters.list		-expand true  -fill both -side left
+pack .parameters		-expand true  -fill both
 
 ## map names to column numbers
 EOF

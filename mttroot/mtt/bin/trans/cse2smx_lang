@@ -4,20 +4,46 @@
      ##### Model Transformation Tools #####
      ######################################
 
-# Bourne shell script: cse2csm_r
-# Constrained-state equation to linear constrained-state matrices conversion
+# Bourne shell script: cse2smx_r
+# Constrained-state equation to state matrices with x vector
+# Used for implicit integration
 # Copyright (C) 2000 by Peter J. Gawthrop
 ## Modified from eailier version
 
 # Language
-if [ -n "$2" ]; then
-    lang=$2
+if [ -n "$3" ]; then
+    lang=$3
 else
-    lang="r"
+    lang="m"
 fi
 
+## Representation
+if [ -z $2 ]; then
+    rep=smx;
+else
+    rep=$2
+fi
+
+case $rep in
+    smx)
+	nrep=0;
+        out='[mtta,mttax]';
+	;;
+    smxa)
+	nrep=1;
+        out='mtta';
+	;;
+    smxax)
+	nrep=2
+        out='mttax';
+	;;
+    *) echo Representation $2 not recognised;
+       exit;;
+esac
+
+
 # Inform user
-echo Creating $1_smx.$lang
+echo Creating $1_$rep.$lang
 #echo Creating $1_smxx.$lang
 #echo Creating $1_smxtx.$lang
 
@@ -26,7 +52,7 @@ rm -f cse2smx_r.log
 rm -f $1_smx.$lang
 rm -f $1_smxx.$lang
 rm -f $1_smxtx.$lang
-rm -f $1_smx.body
+rm -f $1_$rep.body
 
 # Use reduce to accomplish the transformation
 reduce << EOF  >cse2smx_lang.log
@@ -56,7 +82,7 @@ in"$MTTPATH/trans/lang_matrix.r";
 
 %Set up output according to the language.
  OFF NAT;
- GENTRANOUT "$1_smx.body";
+ GENTRANOUT "$1_$rep.body";
 
 % Set up output according to the language.
     IF (lang = r) THEN 
@@ -78,71 +104,35 @@ in"$MTTPATH/trans/lang_matrix.r";
       a_ij := df(MTTEdx(i,1), xj, 1);
       aa_ij := MTTE(i,j) - mttt*a_ij;
       IF (aa_ij NEQ 0) THEN
-%%%        GENTRAN mtta(i,j) ::=: aa_ij;
-        GENTRAN mtta(ij) ::=: aa_ij;
+        IF ($nrep EQ 0) THEN
+        BEGIN
+          %% Write a and  with full indexing
+          GENTRAN mtta(i,j) ::=: aa_ij;
+        END;
+        IF ($nrep EQ 1) THEN
+        BEGIN
+          %% Write a  with vector indexing
+          GENTRAN mtta(ij) ::=: aa_ij;
+        END;
         mttAAx_i := mttAAx_i + aa_ij*xj;
       END;
       IF (mttAAx_i NEQ 0) THEN
-        GENTRAN mttax(i) ::=: mttAAx_i;
+        IF (($nrep EQ 0) OR ($nrep EQ 2)) THEN
+          GENTRAN mttax(i) ::=: mttAAx_i;
   END;
 
 %Shut the  output according to the language.
- GENTRANSHUT "$1_smx.body";
-
-
+ GENTRANSHUT "$1_$rep.body";
 EOF
 
 if [ "$lang" = "m" ]; then
-  lang_header $1 smx m 'mttx,mttu,mttt,mttpar' '[mtta,mttax]' > $1_smx.m
+  lang_header $1 rep m 'mttx,mttu,mttt,mttpar' $out > $1_$rep.m
 
-  echo '#====== Start of code ======#' >> $1_smx.m
+  echo '#====== Start of code ======#' >> $1_$rep.m
 
-  cat $1_smx.body | mtt_p2m >> $1_smx.m
-
-  ## Now do the separate files 
-  ## smxa
-  echo Creating $1_smxa.$lang
-  lang_header $1 smxa m 'mttx,mttu,mttt,mttpar' '[mtta]' > $1_smxa.m
-
-  echo '#====== Start of code ======#' >> $1_smxa.m
-
-  ## This needs more work
-  cat $1_smx.body | grep 'mtta\[' | mtt_p2m >> $1_smxa.m
-
-  ## smxax
-  echo Creating $1_smxax.$lang
-  lang_header $1 smxax m 'mttx,mttu,mttt,mttpar' '[mttax]' > $1_smxax.m
-
-  echo '#====== Start of code ======#' >> $1_smxax.m
-
-  ## This needs more work
-  cat $1_smx.body |\
-  awk '{
-    if (match($1,"mtt")) {
-      printing=0
-      if (match($1,"mttax\\["))
-        printing=1;
-     }
-    if (printing) print $0 
-  }' | mtt_p2m >> $1_smxax.m
-
-
-
-  #rm -f $1_smx.body
-
-#  mv $1_smxx.$lang  mtt_junk
-#  lang_header $1 smxx m 'mttx,mttu,mttxx,mttdt' '[mttax]' > $1_smxx.m
-#  cat mtt_junk | mtt_p2m >> $1_smxx.m
-#  rm -f mtt_junk
-#
-#  mv $1_smxtx.$lang  mtt_junk
-#  lang_header $1 smxtx m 'mttx,mttu,mttxx,mttdt' '[mttax]' > $1_smxtx.m
-#  cat mtt_junk | mtt_p2m >> $1_smxtx.m
-#  rm -f mtt_junk
-#
-#
+  cat $1_$rep.body | mtt_p2m >> $1_$rep.m
 fi
-
+ 
 # Now invoke the standard error handling.
 mtt_error_r cse2smx_lang.log
 

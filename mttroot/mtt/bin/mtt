@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.120  1998/02/05 16:06:53  peterg
+## Removed debugging lines.
+## Auto parts in books.
+##
 ## Revision 1.119  1998/02/05 15:04:25  peterg
 ## Fixed problem with book in tidy mode.
 ##
@@ -756,6 +760,7 @@ if [ "$tidy" = "tidy" ]; then
    Directory=$directory/MTT_work
      mtt -u -q  $mtt_switches -S $Directory  $1 $2 $3 $4
    if [ "$3" != "view" ]; then
+     echo Copying "  " $1_$2.$3
      cp -f $1_$2.$3 ..
    fi
 

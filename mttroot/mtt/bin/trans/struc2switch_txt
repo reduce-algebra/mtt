@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.1  1997/05/13  16:58:59  peterg
+# Initial revision
+#
 ###############################################################
 
 
@@ -26,12 +29,13 @@ rm -f $1_switch.txt
 # This is the main transformation using gawk
 gawk '
 { 
-   if ($1=="state") {i++; if ($3=="MTT_Switch")  print $4};
+   if ($1=="state") {i++; if ($3=="MTT_SWITCH")  print $4};
+}
+END{
 }
 ' < $1_struc.txt| sort >> $1_switch.txt
 
-echo Creating  $1_switch.eh
-
+wc -l $1_switch.txt | awk '{print $1 " switches found"}'
 
 
 

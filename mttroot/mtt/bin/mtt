@@ -14,6 +14,11 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.68  1997/05/01  08:39:20  peterg
+# params.c and params.m not used any more.
+# _numpar.txt is the common base from which _numpar.c and numpar.m is
+# generated.
+#
 # Revision 1.67  1997/04/23  07:26:49  peterg
 # Added -o switch -- ode and dae are the same
 # Added switches to default menu
@@ -450,6 +455,10 @@ case $2 in
 		REPTYPE='data' ;;
 	odeso)
 		REPTYPE='data' ;;
+	sms)
+		REPTYPE='data' ;;
+	smso)
+		REPTYPE='data' ;;
 	odess)
 		REPTYPE='data' ;;
 	odesso)
@@ -633,6 +642,19 @@ $1_numpar.c:  $1_numpar.txt $1_sympar.c
 	echo '#define LAST 10.0 /* Last time */'; \
 	echo '#define STEPFACTOR 1000 /* Integration steps per time step */'; \
         )> $1_odes.h
+
+#SUMMARY smss SM simulation header file (h)
+ $1_sms.h: 
+	echo Creating $1_sms.h
+	( \
+	echo '/*'; \
+	echo "%% Parameter file for system $1 ($1_sms.h)"; \
+	echo "%% This file provides the params for simulation:";\
+	echo '*/'; \
+	echo '#define DT 0.1 /* Time step (for printing) */'; \
+	echo '#define LAST 10.0 /* Last time */'; \
+	echo '#define STEPFACTOR 1 /* Integration steps per time step */'; \
+        )> $1_sms.h
 
 #SUMMARY params	symbolic parameter setting (r)
  $1_params.r: 
@@ -884,6 +906,8 @@ $1_sm.r: $1_csm.r $1_def.r $1_cr.r $1_ss.r $1_sympar.r
 	csm2sm_r $1; tidy $1_sm.r
 $1_sm.m: $1_def.r $1_sm.r 
 		sm_r2m $1;  matlab_tidy $1_sm.m
+$1_sm.c: $1_def.r $1_sm.r $1_sympar.c
+		sm_r2c $1
 $1_sm.tex: $1_sm.r  $1_sympar.r $1_simp.r
 	sm_r2tex $1; latex_tidy $1_sm.tex
 
@@ -924,7 +948,8 @@ $1_tf.tex: $1_def.r $1_tf.r $1_sympar.r $1_simp.r
 #SUMMARY odes	ode solution - state (dat)
 #SUMMARY odes	ode solution - state (ps)
 #SUMMARY odes	ode solution - state (view)
-#SUMMARY odes	ode solution - state & output(c)
+
+#SUMMARY sms	ode (in state matrix form) solution - state & output(c)
 
 #SUMMARY odeso	ode solution - output (m)
 #SUMMARY odeso	ode solution - output (dat)
@@ -952,6 +977,8 @@ $1_sro.m: $1_sr.m
 	touch $1_sro.m
 $1_odes.c: $1_ode.c $1_def.r $1_sympar.r
 	ode2odes_r2c $1
+$1_sms.c: $1_sm.c $1_def.r $1_sympar.r
+	sm2sms_r2c $1
 ifeq ($computation,octave)
 $1_odes.m: $1_ode.m $1_numpar.m $1_params.m $1_args.m $1_def.m $1_input.m
 	ode2odes_m $1 '$ARGS'
@@ -965,9 +992,21 @@ $1_odes.m: $1_odes.c $1_ode.c $1_numpar.c $1_odes.h\
 	echo 'Compiling ...'
 	gcc $1_odes.c $1_ode.c $1_numpar.c  $1_input.c -lm
 	echo 'Running  ...'; ./a.out; echo 'Done.'
+
+$1_sms.m: $1_sms.c $1_sm.c $1_numpar.c $1_sms.h\
+         $1_sympar.c $1_sympar.h\
+         $1_numpar.c $1_input.c svdcmp.c
+	echo Creating $1_sms.m
+	echo Creating $1_smso.m
+	echo 'Compiling ...'
+	gcc $1_sms.c $1_sm.c $1_numpar.c  $1_input.c -lm
+	echo 'Running  ...'; ./a.out; echo 'Done.'
+
 endif
 $1_odeso.m: $1_odes.m
 	touch $1_odeso.m
+$1_smso.m: $1_sms.m
+	touch $1_smso.m
 $1_daes.m: $1_dae.m $1_numpar.m $1_params.m $1_args.m $1_def.m $1_input.m
 	dae2daes_m $1 '$ARGS'
 $1_daeso.m: $1_daes.m

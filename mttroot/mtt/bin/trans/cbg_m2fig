@@ -18,6 +18,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.7  1996/11/09  19:04:34  peterg
+# Removed cp $1_$1_cbg.fig $1_cbg.fig.
+#
 ## Revision 1.6  1996/11/06 15:58:46  peterg
 ## Changed Matrix to RMATRIX
 ##
@@ -45,10 +48,11 @@ rm -f mtt_info.txt
 
 # The following sets up the fig header file for the system
 # and each sub system.
-(ls $1_*_cbg.m \
-| sed 's/\(.*_\)\(.*_\)cbg.m/cp \2fig.fig \1\2cbg.fig/' \
-| sh ) 2>mtt_error.txt
+# (ls $1_*_cbg.m \
+# | sed 's/\(.*_\)\(.*_\)cbg.m/cp \2fig.fig \1\2cbg.fig/' \
+#| sh ) 2>mtt_error.txt
 
+sh $1_type.sh 'cp ' '_fig.fig ' '_cbg.fig'> mtt_error.txt
 
 #Inform user
 echo Creating $1_cbg.fig

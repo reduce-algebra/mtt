@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.362  2002/09/19 08:12:53  gawthrop
+## Merged version after documentation update
+##
 ## Revision 1.361  2002/09/16 08:08:00  geraint
 ## Merged changes from global-optimisation branch.
 ##
@@ -2327,6 +2330,10 @@ endif
 $1_args.m:
 	touch $1_args.m
 
+#Create list of components
+$1_cmp.txt: $1_abg.fig
+	abg2cmp_fig2txt $1 
+
 #Create skeleton files (with titles) if not already there
 #SUMMARY lbl*	label file (txt)
 #SUMMARY lbl	label file (txt)
@@ -2334,8 +2341,8 @@ $1_args.m:
 #SUMMARY lbl	label file (view)
 #SUMMARY lbl*	label file (tex)
 #SUMMARY lbl	label file (tex)
-$1_lbl.txt: $1_abg.fig
-	abg2lbl_fig2txt $1 $sensitivity
+$1_lbl.txt: $1_cmp.txt
+	cmp2lbl_txt $1 $sensitivity
 	touch $1_lbl.txt
 
 $1_lbl.tex: $1_lbl.txt

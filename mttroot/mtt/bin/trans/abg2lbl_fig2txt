@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1998/02/23 16:20:33  peterg
+## Summary line just contains the model name
+##
 ## Revision 1.3  1997/05/09 14:21:35  peterg
 ## Default to flow,component_name
 ##
@@ -66,19 +69,33 @@ sort -u> $1_unique_raw_list
 
 #Write out the outline lbl file
 grep -v  '\[[0-9]*\]'  $1_unique_raw_list | \
-awk --field-separator ':' \
- '{ \
-   if (($1 !~ "0")&&($1 !~ "1")) \
+awk --field-separator ':' '
+ { 
+   if (($1 !~ "0")&&($1 !~ "1")) 
     { if (Component !~ $1) print "\n% Component type", $1
-    if ($1 ~ "SS") \
+
+      if ($1 ~ "SS") 
 	print  "\t" $2 "\t\texternal\texternal";
-	else \
-	print  "\t" $2"\t\tlin\tflow," $2} \
+
+      if ($1 ~ "R") 
+	print  "\t" $2"\t\tlin\tflow," $2;
+
+      if ($1 ~ "I") 
+	print  "\t" $2"\t\tlin\tflow," $2;
+
+      if ($1 ~ "C") 
+	print  "\t" $2"\t\tlin\teffort," $2;
+
+      if ($1 ~ "TF") 
+	print  "\t" $2"\t\tlin\tflow," $2;
+
+      if ($1 ~ "GY") 
+	print  "\t" $2"\t\tlin\tflow," $2;
+    }
    else {
-         if (Component !~ $1) print "\n% Component type", $1; \
+         if (Component !~ $1) print "\n% Component type", $1; 
 	 print  "\t" $2;
 	}
-        Component=$1\
- }' \
->>$1_lbl.txt
+        Component=$1
+ }' >>$1_lbl.txt
 

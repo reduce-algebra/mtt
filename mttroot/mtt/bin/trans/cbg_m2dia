@@ -1,0 +1,90 @@
+#! /bin/sh
+
+### cbg_m2dia
+##
+## Creates cbg.dia from:
+## abg.dia, ibg.m, connections.dat, cbg.m
+##
+## Copyright (C) 2004 by Geraint Paul Bevan
+
+  ###################################### 
+  ##### Model Transformation Tools #####
+  ######################################
+
+set -e
+
+sys=$1
+name=$2
+
+## need to fix MTT to create connections.dat using make
+## in the meantime:
+mtt -q ${sys} connections dat
+
+dia=${sys}_abg.dia
+if [ ! -f ${dia} ]; then
+    # probably not a dia model
+    exit;
+fi
+
+echo Creating ${name}_cbg.dia -- component type ${sys}
+
+con=${sys}_connections.dat
+out=${name}_cbg.dia
+
+${MATRIX:-octave} -q <<EOF > cbg_m2dia_spec.txt
+ibg	= ${sys}_ibg;
+cbg	= ${name}_cbg;
+
+## get connections data: ${sys}_connections
+## structure with two cell arrays: head and tail 
+## the index of each array element is the bond index
+## the value of each array element is a component name
+load -ascii ${sys}_connections.dat;
+con	= ${sys}_connections;
+
+nibgbonds = length (fieldnames (ibg.bonds));
+ncbgbonds = length (con.head);
+
+## map cbg data to connection data
+for [bond, bond_name] = ibg.bonds
+
+  head = bond.head.component;
+  tail = bond.tail.component;
+
+  i = index (head, ':');
+  head = substr (head, i+1, length(head)-i);
+
+  i = index (tail, ':');
+  tail = substr (tail, i+1, length(tail)-i);
+
+  ## index of bond in diagram
+  idia = str2num (strrep (bond_name, "bond", ""));
+
+  ## find index of bond in cbg
+  e(idia) = f(idia) = 0;
+  for i = 1 : ncbgbonds
+    if (strcmp (con.head{i}, deblank (head)) && ...
+	strcmp (con.tail{i}, deblank (tail)))
+      e (idia) = cbg.bonds (i, 1); # effort
+      f (idia) = cbg.bonds (i, 2); # flow
+   endif
+  endfor
+endfor
+
+espec	= "--change_effort_causality ";
+fspec	= "--change_flow_causality   ";
+for i = 1 : nibgbonds
+  espec = sprintf ("%s%d:%d;", espec, i, e(i));
+  fspec = sprintf ("%s%d:%d;", fspec, i, f(i));
+endfor
+disp (espec)
+disp (fspec)
+EOF
+
+spec=`cat cbg_m2dia_spec.txt`
+
+/usr/local/src/mtt/mttroot/mtt/bin/trans/dia2abg.pl \
+    --diagram_name    $sys	\
+    --dia_input_file  $dia	\
+    --dia_output_file $out	\
+    $spec

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.242  2000/05/18 20:12:02  peterg
+## Version 4.2
+##
 ## Revision 1.241  2000/05/16 11:42:14  peterg
 ## Addded /usr/lib/libp2c.a  to gcc
 ##
@@ -1673,6 +1676,11 @@ $1_logic.txt:
 	cat $MTTPATH/trans/rcs_header.sh; \
 	echo ;\
 	)> $1_logic.txt
+
+#SUMMARY logic	Dynamic switch logic (tex)
+#SUMMARY logic	Dynamic switch logic (view)
+$1_logic.tex: $1_logic.txt
+	txt2tex $1 logic txt
 
 
 #SUMMARY switch	Dynamic switch information (txt)

@@ -20,6 +20,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  1997/05/10 09:54:34  peterg
+## Moved _input call to after the inner integration loop.
+##
 ## Revision 1.8  1997/05/10 08:12:23  peterg
 ## Put second argument into _input.
 ##
@@ -195,11 +198,12 @@ write "    for (k=1; k<=STEPFACTOR; k++)"$
 write "    {"$
 write "      for (i=1; i<=MTTNX; i++)"$
 write "        x[i] = x[i] + dx[i]*dt;"$
+
+write "      /* Set up system inputs */"$
+write "      $1_input(time,itime);"$
 write "      $1_ode();"$
 write "    }"$
 
-write "    /* Set up system inputs */"$
-write "    $1_input(time,itime);"$
 
 write "      time = time + DT;"$
 write "      itime = itime + 1;"$

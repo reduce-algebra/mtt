@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  2004/08/26 16:11:48  geraint
+## Fixed ignore() and pipe so that subsystems are included in reports again.
+##
 ## Revision 1.6  2004/02/11 10:10:04  gawthrop
 ## Includes a _pic.fig file (schematic) if such exists
 ##
@@ -118,7 +121,8 @@ fi
 mtt -q -u  $pdf $1 abg ps
 cat <<EOF  >> $filename
 
-   \fig{`pwd`/$1_abg}{$1_abg.ps}{0.9}{System \textbf{$1}: acausal bond graph}
+%%   \fig{`pwd`/$1_labg}{$1_abg}{0.9}{System \textbf{$1}: acausal bond graph}
+   \tfig{`pwd`/$1_labg}{$1_abg}{0.9}{System \textbf{$1}: acausal bond graph}
 
 EOF
 

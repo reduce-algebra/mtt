@@ -12,6 +12,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.9  2003/05/08 18:43:02  gawthrop
+% %% Generate pdf from ps (using hyperref package for links etc)
+% %%
 % %% Revision 1.8  2000/12/01 14:15:16  peterg
 % %% Removed hyperref stuff to mtt_pdf.sty
 % %%
@@ -75,3 +78,7 @@
 
 % Page refs as well.
 \newcommand{\Ref}[1]{\ref{#1} (on page \pageref{#1})}
+
+%% Latex in figures etc
+\newcommand{\B}[1]{\text{\sffamily\textbf{#1}}}
+\newcommand{\BB}[2]{$\B{#1}$:$\mathbf{#2}$}

@@ -3,7 +3,7 @@
 %%\usepackage{mtt} % Common stuff (Needs to be explicit now)
 
 %Postscript figures 
-\usepackage{graphicx}
+\usepackage{graphicx,color}
 
 % Figure definition
 \newcommand{\fig}[4]{
@@ -16,6 +16,18 @@
       \label{fig:#2}
     \end{center}
   \end{figure}
+  }
+
+  \newcommand{\tfig}[4]{
+    \begin{figure}[htbp]
+      \begin{center}
+        \fbox{
+          \resizebox{#3\linewidth}{!}{\input{#1}}
+        }
+        \caption{#4}
+        \label{fig:#2}
+      \end{center}
+    \end{figure}
   }
 
 

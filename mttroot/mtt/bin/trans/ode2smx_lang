@@ -14,6 +14,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  1998/08/27 06:48:20  peterg
+## Changed mttxx to mttx - in implicit integration smx is called once
+## with x in the linearisation the same as x in the current state
+##
 ## Revision 1.6  1998/08/26 18:25:45  peterg
 ## SMX now generates both A and Ax
 ##
@@ -62,6 +66,8 @@ lang := $lang;
 in "$1_def.r";
 in "$1_ode.r";
 
+clear mttx; % Dont need this now - use mkid instead
+
 OFF Echo;
 
 % Load the general translator package
@@ -75,20 +81,6 @@ TEMPVARNAME!* := 'mtt_t;
 % Matrix output function
 in"$MTTPATH/trans/lang_matrix.r";
 
-
-%Procedure to write out the result according to the language used.
-PROCEDURE WriteElement(name, i, j, element);
-BEGIN
-  IF (element NEQ 0) THEN
-  BEGIN
-    IF (lang = r) THEN 
-      write name, "(", i, ",", j, ") := ", element;
-
-    IF (lang = m) THEN 
-      GENTRAN foo :=: element;
-
-  END
-END;
 
 %Set up output according to the language.
  OFF NAT;
@@ -107,21 +99,21 @@ END;
   FOR i := 1:MTTNx DO
   BEGIN
     mttAAx_i := 0;
-    xi := MTTX(i,1);
+%%    xi := mkid(mttx,i);
     FOR j := 1:MTTNx DO
     BEGIN
-      xj := MTTX(j,1);
+      xj := mkid(mttx,j);
       a_ij := df(MTTdx(i,1), xj, 1);
-      a_ji := df(MTTdx(j,1), xi, 1);
+%%      a_ji := df(MTTdx(j,1), xi, 1);
       IF i=j THEN
       BEGIN
         aa_ij := 1 - mttdt*a_ij;
-        aa_ji := aa_ij;
+%%        aa_ji := aa_ij;
       END
       ELSE
       BEGIN
         aa_ij := -mttdt*a_ij;
-        aa_ji := -mttdt*a_ji;
+%%        aa_ji := -mttdt*a_ji;
       END;
       IF (aa_ij NEQ 0) THEN
         GENTRAN mtta(i,j) ::=: aa_ij;

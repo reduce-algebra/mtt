@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  2000/05/22 12:34:07  peterg
+## Added MTT_REP
+##
 ## Revision 1.4  1998/07/30 17:30:41  peterg
 ## Added some more paths
 ##
@@ -56,7 +59,7 @@ mtt_check_var "$MTT_COMPONENTS" "MTT_CRS" "$print" "MTT"
 mtt_check_var "$MTT_COMPONENTS" "MTT_COMPONENTS" "$print" "MTT"
 mtt_check_var "$MTT_COMPONENTS" "MTT_EXAMPLES" "$print" "MTT"
 mtt_check_var "$MTT_LIB" "MTT_LIB" "$print" "MTT"
-mtt_check_var "$MTT_REP" "$MTT_REP" "$print" "MTT"
+mtt_check_var "$MTT_REP" "MTT_REP" "$print" "MTT"
 mtt_check_var "$MATRIX" "MATRIX" "$print" "MTT"
 mtt_check_var "$SYMBOLIC" "SYMBOLIC" "$print" "MTT"
 mtt_check_var "$FIG" "FIG" "$print" "MTT"

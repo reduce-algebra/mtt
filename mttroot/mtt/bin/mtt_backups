@@ -1,6 +1,11 @@
 #!/bin/sh
 # Does a backup with date of all mtt components
+# $Log$
 
+if [ -z "$1" ]; then
+   echo "Usage: mtt_backups [-v|-d]"
+   exit    
+fi
 mtt_backup $1
 mtt_backup $1 lib
 mtt_backup $1 doc

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.198  1998/11/20 16:12:30  peterg
+## Now copies aliased systems BEFORE generating rgb etc.
+##
 ## Revision 1.197  1998/11/20 09:00:45  peterg
 ## Number of changes to underlying tools
 ##
@@ -676,7 +679,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='3.3'
+version='3.4'
 
 # MTT recursion level is zero unless explicitly set
 level=0
@@ -751,7 +754,7 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 		level=$2; shift ;;
 	-A )
                 mtt_switches="$mtt_switches $1";
-                Solving='Solving';;
+                Solve='-A';;
 	-abg )
                 mtt_switches="$mtt_switches $1";
                 start_at_abg='yes';;
@@ -1718,8 +1721,8 @@ $1_dae.tex:	$1_dae.r $1_simp.r
 #SUMMARY cse	constrained-state equations (view)
 #SUMMARY cse	constrained-state equations (ps)
 #Constrained-state equations
-$1_cse.r: $1_dae.r $1_def.r $1_sympar.r
-	dae2cse_r $1 "$Solving" ; tidy $1_cse.r
+$1_cse.r: $1_dae.r $1_def.r $1_sympar.r 
+	dae2cse_r $Solve $1; tidy $1_cse.r $1_subs.r
 $1_cse.m: $1_def.r $1_cse.r $1_sympar.r 
 	cse_r2m $1; matlab_tidy $1_cse.m
 $1_cse.tex: $1_cse.r  $1_sympar.r $1_simp.r
@@ -1733,7 +1736,7 @@ $1_cse.tex: $1_cse.r  $1_sympar.r $1_simp.r
 #SUMMARY ode	ordinary differential equations (ps)
 #Ordinary differential equations
 ifeq ($dae_is_ode,0)
-$1_ode.r: $1_cse.r $1_def.r $1_sympar.r
+$1_ode.r: $1_cse.r $1_def.r $1_sympar.r $1_subs.r
 	cse2ode_r $1; tidy $1_ode.r
 endif
 ifeq ($dae_is_ode,1)
@@ -1877,7 +1880,7 @@ $1_sm.tex: $1_sm.r  $1_sympar.r $1_simp.r
 #SUMMARY smx	state matrices with variable state x (m)
 #SUMMARY smxx	Sparse computation of Ax (m)
 #SUMMARY smxtx	Sparse computation of ATx (m)
-$1_smx.r: $1_def.r $1_def.m $1_ode.r 
+$1_smx.r: $1_def.r $1_def.m $1_ode.r $1_subs.r
 		ode2smx_lang $1 r; tidy $1_smx.r
 $1_smx.m: $1_def.r $1_def.m $1_ode.r $1_sympars.txt
 		ode2smx_lang $1 m;
@@ -2165,7 +2168,7 @@ $1_$2.doc: $1_$2.tex
 
 #Generic conversion of LaTeX doc to dvi
 $1_$2.dvi: $1_$2.doc
-	doc2dvi $1_$2
+	doc2dvi $1_$2 "$documenttype"
 
 #Create PostScript version of fig files
 ifeq ($REPTYPE,bg)

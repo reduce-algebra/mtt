@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.21  2001/04/10 13:56:13  gawthrop
+## Uses standard mkoctfile
+##
 ## Revision 1.20  2001/04/10 13:08:19  gawthrop
 ## Smoother translation to .cs using sh2csh
 ##
@@ -167,11 +170,11 @@ else
 
     # local system
 
-    export PLAT="i686-pc-linux-gnu"
+    PLAT="i686-pc-linux-gnu"
 #    PREFIX="/usr/local"
-    export PREFIX="/usr"
-    export GCCVERS="2.95.2"
-    export SRCOCTAVE="/cvs/octave"
+    PREFIX="/usr"
+    GCCVERS="2.95.2"
+    SRCOCTAVE="/cvs/octave"
 
 #    PLAT="mips-sgi-irix6.5"
 #    PREFIX="/usr/people/bevangp/GNU"
@@ -180,22 +183,22 @@ else
 
     # include paths
 
-    export IOCTAVE="-I${PREFIX}/include/octave"
+    IOCTAVE="-I${PREFIX}/include/octave"
 
     # library paths
 
 #    LOCTAVE="-L${PREFIX}/lib/octave -loctave -lcruft -loctinterp"
-    export LOCTAVE="-L${PREFIX}/lib/octave -loctave -lcruft -loctinterp"
-    export LKPATHSEA="-L${SRCOCTAVE}/kpathsea -lkpathsea"
-    export LREADLINE=" -L${SRCOCTAVE}/readline -lreadline"
-    export LSYSTEM="-ldl -lm -lncurses"
-    export LF2C="-L${PREFIX}/lib/gcc-lib/${PLAT}/${GCCVERS} -lg2c"
+    LOCTAVE="-L${PREFIX}/lib/octave -loctave -lcruft -loctinterp"
+    LKPATHSEA="-L${SRCOCTAVE}/kpathsea -lkpathsea"
+    LREADLINE=" -L${SRCOCTAVE}/readline -lreadline"
+    LSYSTEM="-ldl -lm -lncurses"
+    LF2C="-L${PREFIX}/lib/gcc-lib/${PLAT}/${GCCVERS} -lg2c"
 
     # compiler options
 
-    export DEBUG="-g"
-    export OPTIM="-O3"
-    export FLAGS="-fno-rtti -fno-exceptions -fno-implicit-templates"
+    DEBUG="-g"
+    OPTIM="-O3"
+    FLAGS="-fno-rtti -fno-exceptions -fno-implicit-templates"
 
     # exported variables
 

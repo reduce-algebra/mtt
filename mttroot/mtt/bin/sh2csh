@@ -4,6 +4,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1999/03/11 04:12:26  peterg
+## Put in heading.
+##
 ## Revision 1.1  1999/03/11 04:02:45  peterg
 ## Initial revision
 ##
@@ -19,7 +22,15 @@ cat<<EOF >$1.csh
 ## Automatically generated from bashrc on $date - DO NOT EDIT
 EOF
 
-cat $1 | sed 's/export/setenv/' | sed 's/=/ /'   >>$1.csh
+# grep -v lines need to be replaced with proper if...then conversion
+cat $1 |\
+ sed 's/export[ \t]*\([A-Za-z0-9_]*\)=/setenv\ \1\ /' |\
+ sed 's/^\([\ \t]*\)\([A-Za-z0-9_]*\)=/set\ \2=/' |\
+ grep -v "if \[ -z " |\
+ grep -v "echo mttrc requires one argument: eg mttrc /usr/share/mtt/latest" |\
+ grep -v "else" |\
+ grep -v -e "^fi" \
+>>$1.csh
 
 
 echo done.

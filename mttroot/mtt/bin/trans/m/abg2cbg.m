@@ -17,6 +17,9 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.29  1998/07/10 09:01:42  peterg
+% %% Added error + info file in new form
+% %%
 % %% Revision 1.28  1998/07/08 09:23:42  peterg
 % %% Undid the previous change -- needs more thought.
 % %%
@@ -233,9 +236,9 @@ if ~at_top_level
     for j = 1:n_port_bonds
       jj = port_bond_index(j);
       for k = 1:2
-	if bonds(jj,k)==0 % only copy if not already set
+#	if bonds(jj,k)==0 % only copy if not already set
 	bonds(jj,k) = port_bonds(j,k);
-	end;
+#	end;
       end;
       status(1:n_ports) = port_status;
     end
@@ -259,7 +262,7 @@ while( ci_index>0)
   while done~=old_done
    % disp(sprintf('Causality is %3.0f%s complete.', done, pc));
     old_done = done;
-  
+done,ci_index  
     for i = n_port_bonds+1:n_components % Miss out the ports 
       if status(i) ~= 0 % only do this if causality not yet complete
 
@@ -333,8 +336,8 @@ while( ci_index>0)
 	end;
 
       else % its a simple component -- or explicit causality defined
-	% disp(['---', name, ' (', cause_name, ') ---']);
-	% comp_bonds_in = comp_bonds;
+#	disp(['---', name, ' (', cause_name, ') ---']);
+#	comp_bonds_in = comp_bonds
 
 	% Convert from arrow orientated to component orientated causality
 	comp_bonds = comp_bonds.*direction;
@@ -345,7 +348,7 @@ while( ci_index>0)
         % and convert from component orientated to arrow orientated causality
         comp_bonds = comp_bonds.*direction; 
        
-       % comp_bonds_out = comp_bonds;
+#       comp_bonds_out = comp_bonds
       end;
       
       % Update the full bonds list
@@ -359,7 +362,7 @@ while( ci_index>0)
   end;
   
   % Set causality of a C or I which is not already set
-  [ci_index,prefered] = getdynamic(status,system_type);
+  [ci_index,prefered] = getdynamic(status,system_type)
   if ci_index>0
     disp('Set causality of a C or I which is not already set')
     ci_bond_index = nozeros(components(ci_index,:)); # Get all bonds
@@ -377,7 +380,7 @@ if at_top_level
   mtt_info(sprintf('Final causality of %s is %3.0f%s complete.', ...
       full_name, final_done, pc), infofile);
 
-  if final_done<=100
+  if final_done<100
 	  mtt_error(sprintf("Unable to complete causality"),errorfile);
   end;
  

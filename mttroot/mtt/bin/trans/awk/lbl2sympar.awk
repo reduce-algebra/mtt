@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  1998/03/26 13:03:23  peterg
+## Changed SS field fudge.
+##
 ## Revision 1.9  1998/02/16 16:09:57  peterg
 ## And taken it out again!
 ##
@@ -64,7 +67,7 @@ BEGIN {
 sys_name = ARGV[1];
 comment = "%";
 arg_delimiter = ",";
-not_an_arg = "effort flow state internal external zero 0 1";
+not_an_arg = "effort flow state internal external zero unknown 0 1";
 SS_parameter = "internal external zero 0 1";
 numeric = "[0-9-]";
 symbol_count = 0;

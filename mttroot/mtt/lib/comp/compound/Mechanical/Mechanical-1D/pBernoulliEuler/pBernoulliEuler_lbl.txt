@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/05/16 21:08:13  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -36,11 +39,11 @@
 	dk		lin	state,dk
 
 % Component type SS
-	[y_in]	SS			external,external
-	[y_out]	SS			external,external
+	[y_in]		SS		external,external
+	[y_out]		SS		external,external
 	[theta_in]	SS		external,external
 	[theta_out]	SS		external,external
-	[torque]	SS		external,external
+	[patch]		SS		external,external
 
 % Component type TF
 	dz		lin	effort,dz

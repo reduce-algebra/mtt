@@ -1,4 +1,4 @@
-function structure =  SS_eqn(name,bond_number,bonds,direction,cr,args, ...
+function structure =  SS_eqn(name,Bond_number,Bonds,Direction,cr,args, ...
     structure,filenum);
 
 % Set up globals to count the component inputs and outputs. This relies on
@@ -28,6 +28,10 @@ global at_top_level
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.20  1998/07/08 14:42:52  peterg
+% %% Removed the annoying info message - it causes problems with big
+% %% systems
+% %%
 % %% Revision 1.19  1998/07/08 11:33:54  peterg
 % %% Replace mtt_info by mtt_error when appropriate
 % %%
@@ -127,124 +131,111 @@ if strcmp(flow_attribute,'')
   flow_attribute = 'external';
 end;
 
-
 inputs = structure(3);
 outputs = structure(4);
 zero_outputs = structure(5);
 unknown_inputs = structure(6);
-
-% Is it a named port? (Name begins with [)
-Named_Port = (name(1)=='[');
-
-if Named_Port
-  % Strip the [
-  name = name(2:length(name));
-end;
-
-if Named_Port&&~at_top_level % It's a named port
-
-% Note: we don't have numbered ports now, so the correct indices are deduced
-% by incrementing the two globals: local_u_index and local_y_index
-% $$$   % Convert string to number
-% $$$   % port_number = abs(flow_attribute)-abs('0');
-% $$$   % port_number = str2num(flow_attribute);
-
-% $$$   %Compute port number
-% $$$   str_port_number = flow_attribute;
-% $$$   N_string = length(str_port_number);
-% $$$   port_number=0;
-% $$$   for i=1:N_string
-% $$$     port_number = 10*port_number + abs(str_port_number(i))-abs('0');
-% $$$   end;
-
-  % Effort 
-  if bonds(1,1)==-1 % Source
-    local_u_index = local_u_index + 1;
-    fprintf(filenum, '%s := %s_MTTu%d;\n', ...
-        varname(name, bond_number,1), name, local_u_index);
-  else % Sensor
-    local_y_index = local_y_index + 1;
-    fprintf(filenum, '%s_MTTy%d := %s;\n', ...
-        name, local_y_index, varname(name, bond_number,1));
-  end;
-  % Flow 
-  if bonds(1,2)==1 % Source
-    local_u_index = local_u_index + 1;
-    fprintf(filenum, '%s := %s_MTTu%d;\n', ...
-        varname(name, bond_number,-1), name, local_u_index);
-  else % Sensor
-    local_y_index = local_y_index + 1;
-    fprintf(filenum, '%s_MTTy%d := %s;\n', ...
-        name, local_y_index, varname(name, bond_number,-1));
-  end;  
-  return
-end;
-
-% Now do SS which are not ports.
-% Effort
-if strcmp(effort_attribute, 'external')
-  if bonds(1,1)==-1 % Source
-    inputs = inputs+1;
-    fprintf(filenum, '%s := MTTu(%d,1);\n', ...
-	varname(name, bond_number,1),inputs);
-  else % Sensor
-    outputs = outputs+1;
-    fprintf(filenum, 'MTTy(%d,1) := %s;\n', ...
-	outputs, varname(name, bond_number,1));
-  end;
-elseif strcmp(effort_attribute, 'unknown') % Unknown input
-  unknown_inputs = unknown_inputs + 1;
-  fprintf(filenum, '%s := MTTUi%d;\n', ...
-      varname(name, bond_number,1), unknown_inputs);
-elseif strcmp(effort_attribute, 'internal')
-  % Do nothing
-else 
-  if bonds(1,1)==-1 % Named or unknown source
-    fprintf(filenum, '%s := %s;\n', ...
-	varname(name, bond_number,1), effort_attribute);
-  else % Sensor
-    if strcmp(effort_attribute, 'zero') %Zero output
-      zero_outputs = zero_outputs + 1;
-      fprintf(filenum, 'MTTyz%d := %s;\n', ...
-	  zero_outputs, varname(name, bond_number,1));
-    else
-      mtt_error([effort_attribute, ' not appropriate for an output ']);
-    end;
-  end;
-end;
   
-% Flow
-if strcmp(flow_attribute, 'external')
-  if bonds(1,2)==1 % Source
-    inputs = inputs+1;
-    fprintf(filenum, '%s := MTTu(%d,1);\n', varname(name, bond_number,-1),inputs);
-  else % Sensor
-    outputs = outputs+1;
-    fprintf(filenum, 'MTTy(%d,1) := %s;\n', outputs, ...
-	varname(name, bond_number,-1));
-  end;
-elseif strcmp(flow_attribute, 'unknown') % Unknown input
-  unknown_inputs = unknown_inputs + 1;
-  fprintf(filenum, '%s := MTTUi%d;\n', ...
-      varname(name, bond_number,-1), unknown_inputs);
-elseif strcmp(flow_attribute, 'internal')
-  % Do nothing
-else % Named constant
-  if bonds(1,2)==1 % Source
-    fprintf(filenum, '%s := %s;\n', ...
-	varname(name, bond_number,-1), flow_attribute);
-  else % Sensor
-    if strcmp(flow_attribute, 'zero') %Zero output
-      zero_outputs = zero_outputs + 1;
-      fprintf(filenum, 'MTTyz%d := %s;\n', ...
-	  zero_outputs, varname(name, bond_number,-1));
-    else
-      mtt_error([flow_attribute, ' not appropriate for an output ']);
+n_bonds = length(Bond_number)	# Multi port?
+for i=1:n_bonds			# Loop over all the bonds
+  bond_number = Bond_number(i);
+  bonds = Bonds(i,:);
+  direction = Direction(i,:);
+  
+  Named_Port = name(1)=="[";	
+  
+  if Named_Port	# Is it a named port?	
+    sname = name(2:length(name)); #Strip the [
+  end;			
+  
+  if Named_Port&&~at_top_level % It's a named port
+    % Effort 
+    if bonds(1,1)==-1 % Source
+      local_u_index = local_u_index + 1
+      fprintf(filenum, "%s := %s_MTTu%d;\n", ...
+              varname(sname, bond_number,1), sname, local_u_index);
+    else % Sensor
+      local_y_index = local_y_index + 1
+      fprintf(filenum, "%s_MTTy%d := %s;\n", ...
+              sname, local_y_index, varname(sname, bond_number,1));
+    end;
+    % Flow 
+    if bonds(1,2)==1 % Source
+      local_u_index = local_u_index + 1
+      fprintf(filenum, "%s := %s_MTTu%d;\n", ...
+              varname(sname, bond_number,-1), sname, local_u_index);
+    else % Sensor
+      local_y_index = local_y_index + 1
+      fprintf(filenum, "%s_MTTy%d := %s;\n", ...
+              sname, local_y_index, varname(sname, bond_number,-1));
+    end;  
+  else				# Now do SS which are not ports
+    % Effort
+    if strcmp(effort_attribute, "external")
+      if bonds(1,1)==-1 % Source
+	inputs = inputs+1;
+	fprintf(filenum, "%s := MTTu(%d,1);\n", ...
+		varname(name, bond_number,1),inputs);
+      else % Sensor
+	outputs = outputs+1;
+	fprintf(filenum, "MTTy(%d,1) := %s;\n", ...
+		outputs, varname(name, bond_number,1));
+      end;
+    elseif strcmp(effort_attribute, "unknown") % Unknown input
+      unknown_inputs = unknown_inputs + 1;
+      fprintf(filenum, "%s := MTTUi%d;\n", ...
+	      varname(name, bond_number,1), unknown_inputs);
+    elseif strcmp(effort_attribute, "internal")
+      % Do nothing
+    else 
+      if bonds(1,1)==-1 % Named or unknown source
+	fprintf(filenum, "%s := %s;\n", ...
+		varname(name, bond_number,1), effort_attribute);
+      else % Sensor
+	if strcmp(effort_attribute, "zero") %Zero output
+	  zero_outputs = zero_outputs + 1;
+	  fprintf(filenum, "MTTyz%d := %s;\n", ...
+		  zero_outputs, varname(name, bond_number,1));
+	else
+	  mtt_error([effort_attribute, " not appropriate for an output "]);
+	end;
+      end;
+    end;
+    
+    % Flow
+    if strcmp(flow_attribute, "external")
+      if bonds(1,2)==1 % Source
+	inputs = inputs+1;
+	fprintf(filenum, "%s := MTTu(%d,1);\n", varname(name, bond_number,-1),inputs);
+      else % Sensor
+	outputs = outputs+1;
+	fprintf(filenum, "MTTy(%d,1) := %s;\n", outputs, ...
+		varname(name, bond_number,-1));
+      end;
+    elseif strcmp(flow_attribute, "unknown") % Unknown input
+      unknown_inputs = unknown_inputs + 1;
+      fprintf(filenum, "%s := MTTUi%d;\n", ...
+	      varname(name, bond_number,-1), unknown_inputs);
+    elseif strcmp(flow_attribute, "internal")
+      % Do nothing
+    else % Named constant
+      if bonds(1,2)==1 % Source
+	fprintf(filenum, "%s := %s;\n", ...
+		varname(name, bond_number,-1), flow_attribute);
+      else % Sensor
+	if strcmp(flow_attribute, "zero") %Zero output
+	  zero_outputs = zero_outputs + 1;
+	  fprintf(filenum, "MTTyz%d := %s;\n", ...
+		  zero_outputs, varname(name, bond_number,-1));
+	else
+	  mtt_error([flow_attribute, " not appropriate for an output "]);
+	end;
+      end;
     end;
   end;
+  structure(3) = inputs;
+  structure(4) = outputs;
+  structure(5) = zero_outputs;
+  structure(6) = unknown_inputs;
+  
 end;
-
-structure(3) = inputs;
-structure(4) = outputs;
-structure(5) = zero_outputs;
-structure(6) = unknown_inputs;

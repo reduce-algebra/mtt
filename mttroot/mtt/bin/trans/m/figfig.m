@@ -1,18 +1,22 @@
-function figfig(filename,language,boxed)
-  ## Usage: figfig(filename[,language,boxed])
+function figfig(filename,language,boxed,monochrome)
+  ## Usage: figfig(filename[,language,boxed,monochrome])
   ## Puts octave figure into fig file (filename.fig)
   ## If second argument, converts to filename.language using fig2dev
   ## eg:
   ##    figfig("foo");
   ##    figfig("foo","eps");
   ##    figfig("foo","pdf");
-  ## Boxed=1 gives a box aroundd the figure
+  ## Boxed=1 gives a box around the figure
+  ## Monochrome=1 gives a monchrome plot
 
   ###############################################################
   ## Version control history
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.5  2001/05/10 19:08:35  gawthrop
+  ## Cosmetic improvements
+  ##
   ## Revision 1.4  2001/05/08 15:18:12  gawthrop
   ## Added trig and hyperbolic functions to argument exclusion list
   ##
@@ -30,11 +34,23 @@ function figfig(filename,language,boxed)
     boxed=1;
   endif
   
+  if nargin<4
+    monochrome=0;
+  else
+    monochrome=1;
+  endif
+  
+  
   figfilename = sprintf("%s.fig",filename);
   
   eval(sprintf("gset output \"%s\" ",figfilename));
 
-  gset term fig color portrait fontsize 16 size 20 10 metric
+  if (monochrome==1)
+    gset term fig monochrome portrait fontsize 16 size 20 10 metric
+  else
+    gset term fig color portrait fontsize 16 size 20 10 metric
+  endif
+  
   replot;
   gset term x11
   gset output 

@@ -7,6 +7,9 @@ function tex = pol2root2tex(pol,name,f)
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.2  2001/05/10 19:08:35  gawthrop
+  ## Cosmetic improvements
+  ##
   ## Revision 1.1  2001/05/10 11:44:40  gawthrop
   ## Useful conversion functions
   ##
@@ -51,13 +54,13 @@ function tex = pol2root2tex(pol,name,f)
     endif
 
     if complex
-      complex=0
+      complex=0;
     else
       if abs(imag(r(i)))<1e-5
 	ff = sprintf("%%s (%s %%s %s)",name, f);
 	tex = sprintf(ff, tex, r_plusminus, abs(r(i)));
       else
-	ff = sprintf("%%s (%s %%s %s \\pm j %s)", name, f, f)
+	ff = sprintf("%%s (%s %%s %s \\pm j %s)", name, f, f);
 	tex = sprintf(ff, tex, r_plusminus, abs(real(r(i))), imag(r(i)));
 	complex=1;
       endif

@@ -2,8 +2,7 @@
 #define FRICTIONFACTOR_HH
 
 #include <iostream>
-#include <math.h>
-#include <string>
+#include <cmath>
 
 #include "constants.hh"		// ReL, ReT
 #include "fade.hh"

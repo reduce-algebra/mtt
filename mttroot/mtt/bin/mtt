@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.30  1996/10/01 14:08:05  peterg
+## Replaced $() by ``
+## Replaced make with gmake
+##
 # Revision 1.29  1996/10/01  11:04:05  peter
 # Changed name of html document.
 #
@@ -173,7 +177,7 @@ if [ "$1" = "clean" ] && [ "$2" = "" ]; then
   echo 'Removing all generated files for all systems'
   rm -f *.log  mtt_info.txt warning.txt
   rm -f *_abg.m *_args.*
-  rm -f *_rbg.* *_cmp.* *_fig.fig *_*cbg.* *_ese.* *_def.*
+  rm -f *_rbg.* *_cmp.* *_fig.fig *_*cbg.* *_ese.* *_def.* *_sub.sh
   rm -f *_dae*.* *_cse.* *_ode*.* *_obs.* *_rfe.* *_ss.*
   rm -f *_dm.* *_csm.* *_sm.* *_tf.* *_sr*.* *_ir*.* *_*fr.*
   rm -f *_rep.* *_numpar.m
@@ -186,7 +190,7 @@ if [ "$2" = "clean" ] && [ "$3" = "" ]; then
   echo 'Removing all generated files for system ' $1
   rm -f *.log  mtt_info.txt warning.txt
   rm -f $1_abg.m $1_args.* 
-  rm -f $1_rbg.* $1_cmp.* $1_fig.fig $1*_*cbg.* $1*_ese.* $1_def.*
+  rm -f $1_rbg.* $1_cmp.* $1_fig.fig $1*_*cbg.* $1*_ese.* $1_def.* $1_sub.sh
   rm -f $1_dae*.* $1_cse.* $1_ode*.* $1_obs.* $1_rfe.* $1_ss.*
   rm -f $1_dm.* $1_csm.* $1_sm.* $1_tf.* $1_sr*.* $1_ir*.* $1_*fr.*
   rm -f $1_rep.* $1_numpar.m
@@ -372,18 +376,26 @@ $1_rbg.m: $1_abg.fig $1_lbl.txt
 $1_cmp.m: $1_rbg.m
 $1_fig.fig: $1_rbg.m
 
+#Subsystem creation commands
+$1_sub.sh: $1_cmp.m
+	cmp2sub_m2sh $1
+
 # Lbl to sympar conversion
 $1_sympar.r: $1_lbl.txt
 	lbl2sympar_txt2r $1
 
 #Raw bond graph to acausal bond graph: mfile
-$1_abg.m: $1_rbg.m
+$1_abg.m: $1_rbg.m $1_sub.sh
+
+	echo Creating subsystem abg files for system $1 ...
+	sh < $1_sub.sh
+	echo Finished creating subsystem abg files for system $1
+	echo
 	rbg2abg_m $1	
 
 #Causal bond graph: mfile to fig conversion
 $1_cbg.fig: $1_cbg.m $1_rbg.m $1_fig.fig
 	cbg_m2fig $1
-
 
 #Acausal bond graph to causal bond graph: mfile
 $1_cbg.m: $1_abg.m

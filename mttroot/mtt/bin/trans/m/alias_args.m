@@ -5,6 +5,9 @@ function args = alias_args(args,alias,delim,message,FileID)
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1998/08/11 14:09:05  peterg
+## Replaced incorrect length(args>0) with !isempty(args)
+##
 ## Revision 1.2  1998/07/27 10:24:20  peterg
 ## Included , in the the list of seperators (SEPS)
 ## This makes it substitute for bits of args separated by commas.
@@ -28,7 +31,7 @@ function args = alias_args(args,alias,delim,message,FileID)
 		    new_arg, message],FileID);
           arg = new_arg;
         end
-        SEPS = ",+-*/";
+        SEPS = ",+-*/()";
         for j = 1:length(SEPS)
 	  if length(findstr(arg,SEPS(j)))>0
 	    arg = alias_args(arg,alias,SEPS(j),message,FileID);

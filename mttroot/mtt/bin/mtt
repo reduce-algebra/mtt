@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.178  1998/08/11 13:38:35  peterg
+## Zapped the obsolete args stuff
+##
 ## Revision 1.177  1998/07/30 17:32:44  peterg
 ## VERSION 3.0
 ##
@@ -1109,24 +1112,25 @@ case $2 in
 		REPTYPE='tex' ;;
 esac
 
-## # Save up the argument list in a file; but only if argument has changed
-## ARGS=$4; _ARGS=-$4; __ARGS=`echo $_ARGS | tr ',' '-'`
-## 
-## #DIFF doesn't like empty files - so put a blank if empty
-## if [ -z "$ARGS" ]; then
-##   ARGS=' ';
-##   _ARGS='';
-## fi
-## 
-## cat > $1_args.new <<EOF
-## $ARGS
-## EOF
-## 
-## DIFF=`diff -bq $1_args.m $1_args.new 2>/dev/null`
-## 
-## if [ -n "$DIFF" ]; then
-##   mv $1_args.new $1_args.m
-## fi
+
+# Save up the argument list in a file; but only if argument has changed
+ARGS=$4; _ARGS=-$4; __ARGS=`echo $_ARGS | tr ',' '-'`
+
+#DIFF doesn't like empty files - so put a blank if empty
+if [ -z "$ARGS" ]; then
+  ARGS=' ';
+  _ARGS='';
+fi
+
+cat > $1_args.new <<EOF
+$ARGS
+EOF
+
+DIFF=`diff -bq $1_args.m $1_args.new 2>/dev/null`
+
+if [ -n "$DIFF" ]; then
+  mv $1_args.new $1_args.m
+fi
 
 # Tidy mode - operate in the directory MTT-work
 if [ "$tidy" = "tidy" ]; then
@@ -1151,6 +1155,7 @@ if [ "$tidy" = "tidy" ]; then
 
    if [ "$3" != "view" ]; then
     if [ "$3" != "hview" ]; then
+
       echo Copying  $1_$2.$3
       cp -u -p $1_$2.$3 ..
 
@@ -1771,7 +1776,7 @@ $1_sm.tex: $1_sm.r  $1_sympar.r $1_simp.r
 #SUMMARY smx	state matrices with variable state x (m)
 $1_smx.r: $1_def.r $1_def.m $1_ode.r 
 		ode2smx_lang $1 r; tidy $1_smx.r
-$1_smx.m: $1_def.r $1_def.m $1_ode.r 
+$1_smx.m: $1_def.r $1_def.m $1_ode.r $1_sympars.txt
 		ode2smx_lang $1 m;
 
 #SUMMARY smc	controller form state matrices etc. - siso only (r)
@@ -2037,7 +2042,7 @@ $1_odes.dat: $1_odes.dat2
 	dat22dat $1 odes
 
 #Generic conversion of data files from dat to (gplot) gdat format 
-$1_$2.gdat: $1_$2.dat $1_args.m $1_struc.txt
+$1_$2.gdat: $1_$2.dat $1_struc.txt  $1_args.m
 	dat2gdat $1 $2 $4
 
 #Generic conversion of Latex to latex document
@@ -2062,13 +2067,15 @@ endif
 ifeq ($REPTYPE,data)
 #Create PostScript version of dat file 
 #  + another version with Args added to the name if its appropriate
-$1_$2.ps: $1_$2.gdat
-	gdat2ps $1_$2 '$ARGS';
-
 ifeq ($PLOTTYPE,multiple)
 ifneq ($_ARGS,)
+$1_$2.ps: $1_$2.gdat
+	gdat2ps $1_$2 '$ARGS'
 	echo Creating $1_$2$__ARGS.ps
-	cp  $1_$2.ps $1_$2$__ARGS.ps
+	cp $1_$2.ps $1_$2$__ARGS.ps
+else
+$1_$2.ps: $1_$2.gdat
+	gdat2ps $1_$2 '$ARGS'
 endif
 endif
 
@@ -2133,7 +2140,7 @@ $1_$2.pdf: $1_$2.ps
 	ps2pdf $1_$2.ps $1_$2.pdf
 
 #Report generation
-$1_rep.make: $1_rep.txt $1_args.m
+$1_rep.make: $1_rep.txt
 	rep_txt2make $1 "$mtt_switches"
 
 reps_made:

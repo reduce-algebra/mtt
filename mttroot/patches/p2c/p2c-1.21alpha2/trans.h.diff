@@ -1,0 +1,22 @@
+*** p2c-1.22/src/trans.h	Tue Mar 16 09:28:21 1999
+--- p2c-1.22-dev/src/trans.h	Tue Jan 30 17:25:33 2001
+*************** extern int sizeof_char, sizeof_short, si
+*** 1133,1138 ****
+--- 1133,1139 ----
+  extern short size_t_long;
+  extern int setbits, defaultsetsize, seek_base, integerwidth, realwidth;
+  extern short quoteincludes, expandincludes, collectnest;
++ extern const int buffersize;
+  extern int phystabsize, intabsize, linewidth, maxlinewidth;
+  extern int majorspace, minorspace, declspace, functionspace, minfuncspace;
+  extern int casespacing, caselimit;
+*************** struct rcstruct {
+*** 1351,1356 ****
+--- 1352,1358 ----
+      'I', 'R', "MINSPACINGTHRESH",(anyptr) &minspacingthresh, -1,
+  
+  /* LINE BREAKING */
++     'I', 'R', "BUFFERSIZE",	(anyptr) &buffersize,	300,
+      'I', 'R', "LINEWIDTH",       (anyptr) &linewidth,        78,
+      'I', 'R', "MAXLINEWIDTH",    (anyptr) &maxlinewidth,     90,
+      'R', 'V', "OVERWIDEPENALTY",       (anyptr) &overwidepenalty,         2500,

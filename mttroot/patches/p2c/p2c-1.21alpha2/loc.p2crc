@@ -1,0 +1,12 @@
+
+# Store public p2crc commands local to your system here, so that
+# you can grab a new version of sys.p2crc without losing your changes.
+
+BufferSize=1000000.
+
+LineWidth=1000000.
+MaxLineWidth=1000000.
+
+OverWidePenalty=0.
+OverWideExtraPenalty=0.
+

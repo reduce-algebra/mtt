@@ -1,0 +1,63 @@
+*** p2c-1.22/src/lex.c	Tue Mar 16 09:28:20 1999
+--- p2c-1.22-dev/src/lex.c	Tue Jan 30 16:57:23 2001
+*************** Static int skipflag;
+*** 38,44 ****
+  Static char modulenotation;
+  Static short inputkind;
+  Static Strlist *instrlist;
+! Static char inbuf[300];
+  Static char *oldinfname, *oldctxname;
+  Static Strlist *endnotelist;
+  
+--- 38,44 ----
+  Static char modulenotation;
+  Static short inputkind;
+  Static Strlist *instrlist;
+! Static char *inbuf;
+  Static char *oldinfname, *oldctxname;
+  Static Strlist *endnotelist;
+  
+*************** void init_lex()
+*** 411,416 ****
+--- 411,417 ----
+      inputkind = INP_FILE;
+      inf_lnum = 0;
+      inf_ltotal = 0;
++     inbuf = ALLOC(buffersize, char, strings); /* strings ? */
+      *inbuf = 0;
+      inbufptr = inbuf;
+      keepingstrlist = NULL;
+*************** void getline()
+*** 1055,1061 ****
+          case INP_INCFILE:
+              inf_lnum++;
+  	    inf_ltotal++;
+!             if (fgets(inbuf, 300, inf)) {
+                  cp = inbuf + strlen(inbuf);
+                  if (*inbuf && cp[-1] == '\n')
+                      cp[-1] = 0;
+--- 1056,1062 ----
+          case INP_INCFILE:
+              inf_lnum++;
+  	    inf_ltotal++;
+!             if (fgets(inbuf, buffersize, inf)) {
+                  cp = inbuf + strlen(inbuf);
+                  if (*inbuf && cp[-1] == '\n')
+                      cp[-1] = 0;
+*************** int p2c_only, starparen;
+*** 1889,1895 ****
+      }
+      if (!isalpha(*cp))
+          return 0;
+!     while ((isalnum(*cp) || *cp == '_') && cp2 < namebuf+300)
+          *cp2++ = toupper(*cp++);
+      if (cp[0] == '+' && cp[1] == '+' &&
+  	cp == inbufptr+1 && toupper(cp[-1]) == 'C')
+--- 1890,1896 ----
+      }
+      if (!isalpha(*cp))
+          return 0;
+!     while ((isalnum(*cp) || *cp == '_') && cp2 < namebuf+buffersize)
+          *cp2++ = toupper(*cp++);
+      if (cp[0] == '+' && cp[1] == '+' &&
+  	cp == inbufptr+1 && toupper(cp[-1]) == 'C')

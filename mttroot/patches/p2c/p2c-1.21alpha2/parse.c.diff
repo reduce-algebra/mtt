@@ -1,0 +1,19 @@
+*** p2c-1.22/src/parse.c	Tue Mar 16 09:28:20 1999
+--- p2c-1.22-dev/src/parse.c	Tue Jan 30 16:30:40 2001
+*************** int p_search(fname, ext, need)
+*** 5477,5483 ****
+  char *fname, *ext;
+  int need;
+  {
+!     char infnbuf[300];
+      FILE *fp;
+      Meaning *mod;
+      int savesysprog, savecopysource;
+--- 5477,5483 ----
+  char *fname, *ext;
+  int need;
+  {
+!     char infnbuf[buffersize];
+      FILE *fp;
+      Meaning *mod;
+      int savesysprog, savecopysource;

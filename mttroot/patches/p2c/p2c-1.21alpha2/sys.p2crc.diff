@@ -1,0 +1,13 @@
+*** p2c-1.22/src/sys.p2crc	Tue Mar 16 09:28:20 1999
+--- p2c-1.22-dev/src/sys.p2crc	Tue Jan 30 17:01:14 2001
+*************** MinSpacingThresh                # If spe
+*** 455,460 ****
+--- 455,462 ----
+  
+  # LINE BREAKING
+  
++ BufferSize			# Maximum input line length; default=300.
++ 
+  LineWidth                       # Target max output line width; default=78.
+  
+  MaxLineWidth                    # Absolute max output line width; default=90.

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  2000/10/12 19:24:55  peterg
+## Corrected output message
+##
 ## Revision 1.4  2000/10/12 17:57:34  peterg
 ## Fixed header typos
 ##
@@ -38,10 +41,32 @@ if [ -z "$2" ]; then
   exit
 fi
 
-ext=txt
-textfile=$1_$2.$ext
-infofile=$1_sympar.$ext
-default='1.0'
+rm -f mtt_empty
+touch mtt_empty
+
+case $rep in
+    numpar)
+	    ext=txt
+	    textfile=$1_$2.$ext
+	    infofile=$1_sympar.$ext
+	    moreinfofile=$infofile
+	    default='1.0'
+	;;
+    state|input)
+	    ext=txt
+	    textfile=$1_$2.$ext
+	    infofile=mtt_list.$ext
+	    moreinfofile=mtt_list_numpar.$ext
+	    grep "$rep" <$1_struc.txt |\
+	    awk '{printf("%s_%s_%s\n", $4, $5, $3)}' \
+             > $infofile 
+	    cat $infofile $1_sympar.$ext> $moreinfofile  
+	    default='1.0'
+	;;
+    *)
+	    echo Representation $rep not implemented
+	    exit
+esac
 
 if [ -f "$textfile" ]; then
   # Inform User
@@ -57,6 +82,7 @@ rm -f mtt_in_text mtt_in_info
 # Strip files
 strip_comments <$textfile >mtt_text
 strip_comments <$infofile >mtt_info
+strip_comments <$moreinfofile >mtt_moreinfo
 
 # Use awk to check file
 awk '{
@@ -65,17 +91,22 @@ awk '{
     split($0,a,"=");
     text[a[1]] = a[2];
   }
-  if (FILENAME=="mtt_info") info[$1] = default;
+  if (FILENAME=="mtt_info"){
+     info[$1] = default;
+  }
+  if (FILENAME=="mtt_moreinfo"){
+     moreinfo[$1] = default;
+  }
   }
 END{
   # for (iname in info) print iname
   for (tname in text) {
-    if (!(tname in info)) print tname >> "mtt_in_text"
+    if (!(tname in moreinfo)) print tname >> "mtt_in_text"
   }
   for (iname in info) {
     if (!(iname in text)) print iname >> "mtt_in_info"
   }
-  }'  default=$default mtt_text mtt_info
+  }'  default=$default mtt_text mtt_info mtt_moreinfo
 
 
 if [ -z "$update" ]; then

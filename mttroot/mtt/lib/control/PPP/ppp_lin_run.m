@@ -94,7 +94,7 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
 
   ## Check w.
   [n_w,m_w] = size(w);
-  if ( (n_w<>n_y) || (m_w<>1) )
+  if ( (n_w!=n_y) || (m_w!=1) )
     error(sprintf("ppp_lin_run: w must a column vector with %i elements",n_y));
   endif
   
@@ -127,7 +127,7 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
 
     ##Sanity check A_u
     [p_c.n_U,M_u] = size(p_c.A_u);
-    if (p_c.n_U<>M_u)
+    if (p_c.n_U!=M_u)
       error("A_u must be square");
     endif
     

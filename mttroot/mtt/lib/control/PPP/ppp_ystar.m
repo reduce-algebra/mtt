@@ -47,7 +47,7 @@ function [ys,us,xs,xu,AA] = ppp_ystar (A,B,C,D,x_0,A_u,U,tau)
   endif
   
   [n_x0,m_x0] = size(x_0);
-  if n_x0<>n_x
+  if n_x0!=n_x
     error(sprintf("x_0 must be a column with length %i", n_x));
   endif
   

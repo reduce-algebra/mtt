@@ -1,6 +1,12 @@
 #! /bin/sh
 # $Id$
 # $Log$
+# Revision 1.7  2001/01/09 15:43:50  geraint
+# Warn gcc that variables may be unused.
+#
+# Revision 1.6  2001/01/08 05:47:56  geraint
+# Restrict scope of variables to file (static)
+#
 # Revision 1.5  2000/12/05 12:44:55  peterg
 # Changed $() to ``
 #
@@ -37,7 +43,7 @@ OUT=${SYS}_sympar.h
 
 declare_sys_param ()
 {
-cat ${IN} | awk '{printf ("double %s;\t// %s\n", $1, $2)}'
+cat ${IN} | awk '{printf ("static double %s MTT_UNUSED;\t// %s\n", $1, $2)}'
 }
 
 declare_temp_vars ()
@@ -48,13 +54,24 @@ do
     i=0
     while [ ${i} -le ${NUM_OF_TMP_VAR} ]
     do
-	echo "double ${name}${i};"
+	echo "static double ${name}${i} MTT_UNUSED;"
 	i=`expr ${i} + 1`
     done
 done
 }
 
 echo Creating ${OUT}
-declare_sys_param	>  ${OUT}
+cat <<EOF > ${OUT}
+#ifndef MTT_UNUSED
+#ifdef __GNUC__
+#define MTT_UNUSED __attribute__ ((__unused__))
+#else
+#define MTT_UNUSED
+#endif
+#endif
+
+EOF
+
+declare_sys_param	>> ${OUT}
 declare_temp_vars	>> ${OUT}
 

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.13  2000/10/15 09:27:13  peterg
+## Better way of generating $infofile
+##
 ## Revision 1.12  2000/10/14 16:11:00  peterg
 ## Made all variables, states etc lower case
 ##
@@ -57,6 +60,7 @@
 sys=$1 # System name
 rep=$2 # System representation
 update=$3 # Update or not
+date=`date`
 
 if [ -z "$2" ]; then
   echo Usage mtt_update system representation [update]    
@@ -68,20 +72,30 @@ touch mtt_empty
 
 case $rep in
     numpar)
-	    ext=txt
-	    textfile=$1_$2.$ext
-	    infofile=$1_sympar.$ext
+	    lang=txt
+	    textfile=$1_$2.$lang
+	    infofile=$1_sympar.$lang
 	    moreinfofile=$infofile
 	    default='1.0'
 	;;
     state|input)
-	    ext=txt
-	    textfile=$1_$2.$ext
-	    infofile=mtt_list.$ext
-	    moreinfofile=mtt_list_numpar.$ext
+	    lang=txt
+	    textfile=$1_$2.$lang
+	    infofile=mtt_list.$lang
+	    moreinfofile=mtt_list_numpar.$lang
             awk '{if ($1==rep) printf("%s\n", $4)}' rep=$2 \
             <$1_struc.txt >$infofile
-	    cat $infofile $1_sympar.$ext> $moreinfofile  
+	    cat $infofile $1_sympar.$lang> $moreinfofile  
+	    default='0.0'
+         ;;
+    logic) 
+	    lang=txt
+	    textfile=$1_$2.$lang
+	    infofile=mtt_list.$lang
+	    moreinfofile=mtt_list_numpar.$lang
+            awk '{if ($3=="MTT_SWITCH") printf("%s\n", $4)}' rep=$2 \
+            <$1_struc.txt >$infofile
+	    cat $infofile $1_sympar.$lang> $moreinfofile  
 	    default='0.0'
 	;;
     *)
@@ -89,23 +103,18 @@ case $rep in
 	    exit
 esac
 
+# Create a string containing the variables
 if [ -f "$textfile" ]; then
   # Inform User
   echo Checking $textfile
 else
-  case $rep in
-    numpar)
-           sympar2numpar_txt2txt $1
-	;;
-    state)
-	   struc2state_txt2txt $1
-	;;
-    input)
-	   struc2input_txt2txt $1
-	;;
-    *)
-	
-esac
+  echo Creating $textfile
+  mtt_header $sys $rep $lang > $textfile 
+  info=`cut -f1 $infofile | sort`
+  for new in $info; do
+    echo $new $default  |\
+    awk '{printf("%s\t= %s; # Default\n",$1,$2)}' >> $textfile
+  done
   exit    
 fi
 
@@ -146,12 +155,12 @@ if [ -z "$update" ]; then
   if [ -f "mtt_in_text" ]; then
     echo "The following variables are defined in $textfile, but do not exist:"
     sort mtt_in_text | awk '{printf("\t%s\n",$1)}'
-    echo Use mtt $sys $rep $ext to update
+    echo Use mtt $sys $rep $lang to update
   fi
   if [ -f "mtt_in_info" ]; then
     echo "The following variables exist, but are not defined in $textfile:"
     sort mtt_in_info | awk '{printf("\t%s\n",$1)}'
-    echo Use mtt $sys $rep $ext to update
+    echo Use mtt $sys $rep $lang to update
   fi
   exit    
 fi
@@ -170,7 +179,7 @@ if [ -f "mtt_in_text" ]; then
 	    answered=yes
  	    for old in $in_text; do
               echo Commenting out $old
-	      sed "s/\(.*$old.*=\)/## Removed by MTT on `date`: \1/"\
+	      sed "s/\(.*$old.*=\)/## Removed by MTT on $date: \1/I"\
                <$textfile > mtt_tmp
               mv mtt_tmp $textfile
               changed=yes
@@ -186,7 +195,6 @@ fi
 
 answered=''
 if [ -f "mtt_in_info" ]; then
-  in_info=`sort mtt_in_info`
   echo "The following variables exist, but are not defined in $textfile:"
   sort mtt_in_info | awk '{printf("\t%s\n",$1)}'
 
@@ -196,9 +204,12 @@ if [ -f "mtt_in_info" ]; then
     case $answer in
 	y)
 	    answered=yes
+            in_info=`sort mtt_in_info`
  	    for new in $in_info; do
                 echo Adding $new
-		echo "$new = $default; # Added by MTT on `date`" >> $textfile
+                echo $new $default  |\
+                awk '{printf("%s\t= %s; # Added by MTT on %s\n",$1,$2,strftime())}'\
+                >> $textfile
                 changed=yes
 	    done
 	    ;;

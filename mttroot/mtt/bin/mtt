@@ -19,6 +19,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.9  1996/08/14 09:16:08  peter
+## Step response now goes through  m, dat and gdat conversions
+##
 ## Revision 1.8  1996/08/12 20:19:52  peter
 ## Arguments now passed via $1_args.m file
 ##
@@ -100,11 +103,15 @@ EOF
 
 # This is the main mtt programme
  
-make  -s -f -  $1_$2.$3 << EOF
+make -s  -f -  $1_$2.$3 << EOF
+
+# Cancel implicit rules I don't want
+%.dvi: %.tex
+%.ps: %.dvi
 
 #Create acausal bond graph figure using xfig 
 $1_abg.fig:
-	$FIG $1_abg.fig &
+	$FIG $1_abg.fig 
 
 #Create empty files (with titles) if not already there
 $1_lbl.txt:
@@ -198,7 +205,7 @@ $1_cse.tex: $1_cse.r  $1_sympar.r
 $1_ode.r: $1_cse.r $1_def.r $1_sympar.r
 	cse2ode_r $1; tidy $1_ode.r
 $1_ode.m: $1_def.r $1_ode.r $1_sympar.r
-	ode_r2m $1; matlab_tidy $1_ode.m
+	ode_r2m $1; matlab_tidy $1_ode.m; matlab_tidy $1_odeo.m
 $1_ode.tex: $1_ode.r  $1_sympar.r $1_simp.r
 	ode_r2tex $1; latex_tidy $1_ode.tex
 
@@ -257,6 +264,8 @@ $1_ir.dat: $1_dm.m $1_numpar.m $1_args.m
 	dm2ir_m2dat $1 '$4'
 $1_sr.m: $1_dm.m $1_numpar.m $1_args.m
 	dm2sr_m $1 '$4'
+$1_odesol.m: $1_ode.m $1_numpar.m $1_args.m
+	ode2odesol_m $1 '$4'
 
 #Frequency responses
 $1_fr.dat: $1_dm.m $1_numpar.m $1_args.m
@@ -269,70 +278,39 @@ $1_pkim.tex: $1_def.r $1_pkim.r $1_sympar.r
 	pkim_r2tex $1; latex_tidy $1_pkim.tex
 
 #Generic conversion of data files from m to dat format
-$1_$2.dat: $1_$2.m
+%.dat: %.m
 	m2dat $1_$2
 
 #Generic conversion of data files from dat to (gplot) gdat format
-$1_$2.gdat: $1_$2.dat
+%.gdat: %.dat
 	dat2gdat $1_$2
 
 #Generic conversion of Latex to latex document
-$1_$2.doc: $1_$2.tex
+%.doc: %.tex
 	showtex $1 $2
 
 #Generic conversion of LaTeX doc to dvi
-$1_$2.dvi: $1_$2.doc
+%.dvi: %.doc
 	echo Creating $1_$2.dvi
 	latex $1_$2.doc > /dev/null
 
+#Create PostScript version of fig files
+%.ps : %.fig
+	echo Creating $1_$2.ps
+	fig2dev -Lps $1_$2.fig >$1_$2.ps
 
-#Create PostScript version of abg fig file
-ifeq ('$2','abg')
-$1_abg.ps: $1_abg.fig
-	echo Creating $1_abg.ps
-	fig2dev -Lps $1_abg.fig >$1_abg.ps
-endif
-
-#Create PostScript version of cbg fig file
-ifeq ('$2','cbg')
-$1_cbg.ps: $1_cbg.fig
-	echo Creating $1_cbg.ps
-	fig2dev -Lps $1_cbg.fig >$1_cbg.ps
-endif
+#Create PostScript version of dvi file
+%.ps: %.dvi
+	echo Creating $1_$2.ps
+	dvips -o $1_$2.ps $1_$2
 
 #Create PostScript version of dat file
-ifeq ('$2','ir')
-$1_$2.ps: $1_$2.gdat
+%.ps: %.gdat
 	gdat2ps $1_$2
-endif
 
-ifeq ('$2','sr')
-$1_$2.ps: $1_$2.gdat
-	gdat2ps $1_$2
-endif
-
-ifeq ('$2','fr')
-$1_$2.ps: $1_$2.gdat
-	gdat2ps $1_$2
-endif
-
-#Generic conversion of dvi to ps
-ifneq ('$2','abg')
-ifneq ('$2','cbg')
-ifneq ('$2','ir')
-ifneq ('$2','sr')
-ifneq ('$2','fr')
-$1_$2.ps: $1_$2.dvi
-	echo Creating $1_$2.ps
-	dvips -o $1_$2.ps $1_$2.dvi 2> /dev/null
-endif
-endif
-endif
-endif
-endif
 
 #View a ps file
-$1_$2.view: $1_$2.ps
+%.view: %.ps
 	echo Creating view of $1_$2
 	ghostview $1_$2.ps&
 
@@ -354,16 +332,5 @@ $1_rep.ps: $1_rep.dvi
 $1_rep.html: $1_rep.dvi
 	echo Creating $1_rep.html 
 	latex2html $1_rep.tex
-
-# Clean up all intermediate files
-$1_clean.: 
-	echo Cleaning up system $1
-	rm -f  *.log *.old *.met *.dvi *.aux *.f2bd
-	rm -f  $1_abg.pl $1_cbg.pl  $1_ese.r $1_def.r \
-	$1_tf.r  \
-	$1_dae.r \
-	$1_cse.r $1_dm.r $1_csm.r \
-	$1_*_rep.tex \
-        $1_rbg.m $1_abg.m $1_cbg.m $1_cbg.fig $1_cbg?.fig
 
 EOF

@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.14  1998/07/25 10:00:48  peterg
+## *** empty log message ***
+##
 ## Revision 1.13  1997/06/13 12:52:18  peterg
 ## Removed extra ; from $PARAMS
 ##
@@ -80,7 +83,7 @@ $MATRIX << EOF > sm2sr_m.log 2>mtt_error.txt
   [nx,ny,nu,nz,nyz] = $1_def;
   t=0;	%Just in case it appears in the parameter list.
 
-  T=[0:DT:LAST]'
+  T=[0:mttDT:mttLAST]'
 
   if exist('u0')==0
     u0 = ones(nu,1);

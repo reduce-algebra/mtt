@@ -17,6 +17,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.383  2004/08/01 19:50:07  geraint
+## Moved rules for ibg.m and abg.m so that -ibg can be used with dia models.
+## Need to create cmp.m files before this combination will work.
+##
 ## Revision 1.382  2003/09/23 20:53:49  geraint
 ## Updated version number (5.0).
 ##
@@ -2836,7 +2840,7 @@ else
 	@echo "EXPERIMENTAL: Creating \$@"
 	rbg2ibg_m $info_switch \$*
 
-%_abg.m: %_ibg.m %_cmp.m %_lbl.txt %_alias.m %_sub.sh %_icd.m
+%_abg.m: %_ibg.m %_cmp.m %_alias.m %_sub.sh %_icd.m
 	@echo "EXPERIMENTAL: Creating \$@"
 	(sh \$*_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
 	ibg2abg_m $info_switch \$*

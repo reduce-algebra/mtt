@@ -13,6 +13,8 @@
 %ALIAS	Th_out  Thermal_out
 %ALIAS	Hy_out  Hydraulic_out
 
+%ALIAS	Work	Shaft
+
 %ALIAS  $1		c_p
 %ALIAS  $2		ideal_gas,r
 %ALIAS  $3		alpha
@@ -25,6 +27,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.5  1998/07/03 14:43:24  peterg
+% %% Added parameter aliases
+% %%
 % %% Revision 1.4  1998/07/02 19:46:19  peterg
 % %% New aliases
 % %%
@@ -62,5 +67,4 @@
 
 % Component type TF
 	k_p		lin	flow,k_p
-
 

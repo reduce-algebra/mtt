@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1996/08/15 11:56:38  peter
+## Initial revision
+##
 ###############################################################
 
 echo Creating $1_odesol.m
@@ -22,7 +25,7 @@ rm -f ode2odesol_m.log
 
 if [ "$2" = "" ]; 
 then
-  PARAMS='t=[0:0.1:10]; x0=zeros(6,1);'
+  PARAMS='T=[0:0.1:10]; x0=zeros(10,1);u=1'
   echo Using default parameter $PARAMS
 else
   PARAMS=$2;
@@ -34,36 +37,33 @@ PARAMS="$PARAMS ;"
 $MATRIX << EOF > ode2odesol_m.log
 
   [nx,ny,nu,nz,nyz] = $1_def;
+  t=0;	%Just in case it appears in the parameter list.
+
   $PARAMS
 
   %Defaults
-  if exist('t')==0
-    t=[0:0.1:10]
-  end;
-
-  if exist('u0')==0
-    u0 = ones(nu,1);
+  if exist('T')==0
+    T=[0:0.1:10]
   end;
 
   if exist('x0')==0
     x0 = zeros(nx,1);
   end;
 
-  [n,m]=size(t);
+  [n,m]=size(T);
   if m>n
-    t=t';
+    T=T';
   end;
 
-x = lsode('$1_ode', x0, t);
+x = lsode('$1_ode', x0, T);
 
 i=0;
-for tt=t'
+for tt=T'
   i=i+1;
-  y(i) = $1_odeo(x(i,:),t);
+  y(i) = $1_odeo(x(i,:),tt);
 end;
 
-
-write_matrix([t,y], '$1_odesol');
+write_matrix([T,y], '$1_odesol');
 
 EOF
 

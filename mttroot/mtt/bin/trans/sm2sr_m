@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  1996/08/15 11:54:32  peter
+## Now has optional initial condition.
+##
 ## Revision 1.6  1996/08/14 09:15:02  peter
 ## Now encapsulates the data into an m file
 ## Name changed
@@ -42,7 +45,7 @@ rm -f dm2sr_m.log
 
 if [ "$2" = "" ]; 
 then
-  PARAMS='t=[0:0.1:10];u0=ones(nu,1);x0=zeros(nx,1);'
+  PARAMS='T=[0:0.1:10];u0=ones(nu,1);x0=zeros(nx,1);'
   echo Using default parameter $PARAMS
 else
   PARAMS=$2;
@@ -53,11 +56,13 @@ PARAMS="$PARAMS ;"
 $MATRIX << EOF > dm2sr_m.log
 
   [nx,ny,nu,nz,nyz] = $1_def;
+  t=0;	%Just in case it appears in the parameter list.
+
   $PARAMS
 
   %Defaults
-  if exist('t')==0
-    t=[0:0.1:10]
+  if exist('T')==0
+    T=[0:0.1:10]
   end;
 
   if exist('u0')==0
@@ -69,15 +74,15 @@ $MATRIX << EOF > dm2sr_m.log
   end;
 
 
-  [n,m]=size(t);
+  [n,m]=size(T);
   if m>n
-    t=t';
+    T=T';
   end;
 
   [A,B,C,D,E] = $1_dm($1_numpar);
-  y = dm2sr(A,B,C,D,E,t,u0,x0);
+  y = dm2sr(A,B,C,D,E,T,u0,x0);
 
-  write_matrix([t y], '$1_sr');
+  write_matrix([T y], '$1_sr');
 
 EOF
 

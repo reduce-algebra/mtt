@@ -5,7 +5,7 @@
 ColumnVector Fmtt_implicit (      ColumnVector	&x,
 				  ColumnVector	&dx,
 			          Matrix	&AA,
-			    const ColumnVector	&AAx,
+				  ColumnVector	&AAx,
 			    const double	&t,
 			    const int		&Nx,
 			    const ColumnVector	&openx)
@@ -39,10 +39,11 @@ DEFUN_DLD (mtt_implicit, args, ,
     {
       if (0 != openx (row))
 	{
+	  AAx (row) = 0.0;
           dx (row) = 0.0;
 	  for (col = 0; col < Nx; col++)
 	    {
-	      AA (row,col) = AA (col,row) = 0.0;
+	      AA (row,col) = 0.0;
 	    }
 	}
     }

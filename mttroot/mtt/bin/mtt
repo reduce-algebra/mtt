@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.143  1998/03/22 21:14:03  peterg
+## Added obspar.r representation
+## Help now case insensitive
+##
 ## Revision 1.142  1998/03/20 15:09:26  peterg
 ## Changed order of prerequisites for _dae.r to put _rdae.r first.
 ##
@@ -1454,11 +1458,11 @@ $1_rfe.tex: $1_rfe.r  $1_sympar.r  $1_simp.r
 #SUMMARY ss	steady-state equations (view)
 #SUMMARY ss	steady-state equations (ps)
 #Steady-states
-$1_ss.r: $1_def.r $1_sspar.r $1_sympar.r $1_cr.r $1_cse.r
+$1_ss.r: $1_def.r $1_sspar.r $1_cr.r $1_cse.r
 	sspar2ss_r $1; tidy $1_ss.r
-$1_ss.m: $1_def.r $1_sympar.r $1_ss.r  $1_numpar.m
+$1_ss.m: $1_def.r  $1_ss.r  $1_numpar.m
 	ss_r2m $1; matlab_tidy $1_ss.m
-$1_ss.tex: $1_def.r $1_ss.r  $1_sympar.r $1_simp.r
+$1_ss.tex: $1_def.r $1_ss.r $1_simp.r
 	ss_r2tex $1; latex_tidy $1_ss.tex 
 
 

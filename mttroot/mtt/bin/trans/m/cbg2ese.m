@@ -12,6 +12,9 @@ function structure = cbg2ese(system_name, system_type, full_name, infofile)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1996/08/18 20:08:02  peter
+% %% Included additional structure: structure(5) = zero_outputs.
+% %%
 % %% Revision 1.2  1996/08/08 18:08:11  peter
 % %% Sorted out file naming sceme
 % %%
@@ -72,7 +75,7 @@ filenum = fopen(ese_name, 'w');
     direction = sign(comp)'*[1 1];
     % Convert from arrow orientated to component orientated causality
     comp_bonds = bonds(bond_list,:).*direction;
-    eval([ '[comp_type,comp_name,cr,args] = ', cmp_name, '(i);' ]);
+    eval([ '[comp_type,comp_name,cr,args,repetitions] = ', cmp_name, '(i);' ]);
     % change name of 0 and 1 components -- matlab doesn't like numbers here
     if strcmp(comp_type,'0')
       comp_type = 'zero';
@@ -80,13 +83,49 @@ filenum = fopen(ese_name, 'w');
     if strcmp(comp_type,'1')
       comp_type = 'one';
     end;
-    % Invoke the appropriate equation-generating procedure
-    eqn_name = [comp_type, '_eqn']
-    if exist(eqn_name)~=2 % Try a compound component
-      cbg2ese(comp_name, comp_type, full_name, infofile);
-    else % its a simple component
-      eval(['structure = ', ...
-	    eqn_name, '(bond_list,comp_bonds,direction,cr,args,structure,filenum);' ]);
+
+    ports = length(bond_list);
+    if repetitions>1
+      port_pairs = ports/2;
+      if round(port_pairs)~=port_pairs;
+	mtt_info(['Repeated component ', comp_name, ...
+	      ' has an odd number of ports - ignoring repetitions']);
+	repetitions = 1;
+      end;
+    end;
+    
+    if repetitions>1
+      odd_bonds = bond_list(1:2:ports-1);
+      even_bonds = bond_list(2:2:ports);
+      next_bond = max(max(abs(components)))+1;
+    end;
+    
+    for k = 1:repetitions
+      if repetitions>1
+	if k==1
+	  bond_list(1:2:ports-1) = odd_bonds;
+	else
+	  bond_list(1:2:ports-1) = bond_list(2:2:ports);
+	end;
+	
+	if k==repetitions
+	  bond_list(2:2:ports) = even_bonds;
+	else
+	  new_bonds = [next_bond:next_bond+port_pairs-1];
+	  next_bond = next_bond+port_pairs;
+	  bond_list(2:2:ports) = new_bonds;
+	end;
+      end;
+	
+      % Invoke the appropriate equation-generating procedure
+      eqn_name = [comp_type, '_eqn']
+      if exist(eqn_name)~=2 % Try a compound component
+	cbg2ese(comp_name, comp_type, full_name, infofile);
+      else % its a simple component
+	eval(['structure = ', ...
+	      eqn_name, ...
+	      '(bond_list,comp_bonds,direction,cr,args,structure,filenum);' ]);
+      end;
     end;
   end;
 

@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.81  2002/07/11 13:00:23  geraint
+## Declared more function arguments to be "const" - improves compiler optimisation.
+##
 ## Revision 1.80  2002/05/22 09:35:49  geraint
 ## Added insertor variable to stop sh-mode font-lock from getting hopelessly confused by embedded C++.
 ##
@@ -1124,7 +1127,7 @@ void set_signal_handlers (void);
 void dump_data (std::ostream &file)
 {
   ColumnVector null (0);
-  mtt_write (0.0, null, null, 0, true, file);
+  mtt_write (0.0, null, null, 0, 0, true, file);
 }
 
 void handle_signal (int signum)

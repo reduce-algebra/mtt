@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.31  2000/05/10 18:33:25  peterg
+## Use smxa and smxax in place of smx
+##
 ## Revision 1.30  2000/04/18 11:24:19  peterg
 ## Removed _numpar.
 ##
@@ -140,7 +143,7 @@ MTTt = 0.0;
 
 [MTTu]  = zero_input($Nu);	# Zero the input
 [MTTx] = $1_state;	        # Read in initial state
-[MTTpar] = $1_numpar;	        # Read in initial state
+[MTTpar] = $1_numpar;	        # Read in parameters
 
 #[mttAA]  = zero_matrix($Nx);	# Zero the A matrix
 #[mttAAx] = zero_vector($Nx);	# Zero the AAx vector

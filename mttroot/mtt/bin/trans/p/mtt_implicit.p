@@ -1,12 +1,13 @@
-PROCEDURE mtt_implicit(VAR xnew,x,dx : StateVector;
-		       VAR AA	     : StateMatrix;
-		       VAR AAx	     : StateVector;
-			   dt	     : REAL;
-			   Nx	     : INTEGER;
-		       VAR   open    : StateVector);
+PROCEDURE mtt_implicit(VAR xnew	: StateVector;
+			   x,dx	: StateVector;
+			   AA	: StateMatrix;
+			   AAx	: StateVector;
+			   dt	: REAL;
+			   Nx	: INTEGER;
+			   open	: StateVector);
 
 VAR
-   i,ii,j,jj : INTEGER;
+   i,ii,j,jj,Nxsub : INTEGER;
    BB,xsub   : StateVector;
    AAsub     : StateMatrix;
    
@@ -27,16 +28,20 @@ BEGIN{mtt_implicit}
       END;
    END;
 
-   Nx := ii; {New size}
-   mtt_solve(xsub,AAsub,BB,Nx); {Solve AAx=BB}
+   Nxsub := ii; {New size}
+   mtt_solve(xsub,AAsub,BB,Nxsub); {Solve AAx=BB}
 
    ii := 0;
    FOR i := 1 TO Nx DO
-      IF open[i]<0.5 THEN
       BEGIN
-	 ii := ii+1;
-	 xnew[i] := xsub[ii];
-      END ELSE
+	 IF open[i]<0.5 THEN
+	 BEGIN
+	    ii := ii+1; 
+	    xnew[i] := xsub[ii];
+	 END
+	 ELSE
 	 xnew[i] := 0.0;
+	 writeln(i,ii);
+      END;
 END;{mtt_implicit}			  
 

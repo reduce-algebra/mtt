@@ -12,6 +12,9 @@ function structure = cbg2ese(system_name, system_type, full_name, infofile)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1996/08/08 18:08:11  peter
+% %% Sorted out file naming sceme
+% %%
 % %% Revision 1.1  1996/08/08 15:53:23  peter
 % %% Initial revision
 % %%
@@ -59,8 +62,8 @@ filenum = fopen(ese_name, 'w');
   % Find number of components
   [n_components,columns] = size(components);
   
-  %Structure matrix [states,nonstates,inputs,outputs]
-  structure = zeros(1,4);
+  %Structure matrix [states,nonstates,inputs,outputs,zero_outputs]
+  structure = zeros(1,5);
 
 
   for i = 1:n_components

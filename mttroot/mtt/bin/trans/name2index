@@ -1,0 +1,32 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: name2index
+
+# Converts names to array index
+
+# Copyright (c) P.J.Gawthrop, 1997.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+awk '
+{
+  name_index[$4"_"$3]=$2;
+}
+END{
+  N=split(names,Names,",");
+  for (i=1; i<=N; i++) {
+    printf("%i,",name_index[Names[i]]) ;
+  }
+  printf("\n");
+}'  names=$2 < $1_struc.txt
+
+  

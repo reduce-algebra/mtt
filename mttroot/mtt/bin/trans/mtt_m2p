@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.61  2000/11/10 14:46:53  peterg
+## More fixes to avoid interpering variables as funs - basicly all
+## functions now have at least ()
+##
 ## Revision 1.60  2000/11/10 09:38:30  peterg
 ## Got rid of sys_name functions with no ()
 ##
@@ -563,6 +567,7 @@ END{
         printf("END{%s};\n", Sys_rep)
 }' Sys=$Sys sys=$sys Sys_rep=$Sys_rep rep=$rep \
    Nx=$Nx Nu=$Nu Ny=$Ny Method=$Method Stdin=$Stdin |\
+sed 's/\\$//'    |\
 sed 's/(\([ijk0-9,]*\))/\[\1\]/g'    |\
 sed 's/(\(MTT[ijk0-9],[0-9]*\))/\[\1\]/g' |\
 sed 's/(\([0-9]*,MTT[ijk0-9]\))/\[\1\]/g' |\

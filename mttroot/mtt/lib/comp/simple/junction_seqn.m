@@ -25,7 +25,7 @@ function [eqn,insigs,innames] = junction_seqn (jun_type,Name, outsig, \
 
 
   ## LHS 
-  eqn = sprintf("%s(%i,%i) :=", Name, abs(outsig(1)), cause2index(outsig(2)));
+  eqn = sprintf("%s :=", varname(Name, abs(outsig(1)), outsig(2)));
 
   ## Find the input bond of the same causality as junction
   one = ones(N,1);
@@ -35,7 +35,7 @@ function [eqn,insigs,innames] = junction_seqn (jun_type,Name, outsig, \
   if same_type
     insig = insigs(inport,:);
     inname = innames(inport,:);
-    eqn = sprintf("%s\n\t%s(%i,%i)", eqn, Name, abs(insigs(inport,1)),cause2index(i_jun_type));
+    eqn = sprintf("%s\n\t%s", eqn, varname(Name, abs(insigs(inport,1)),i_jun_type));
   else
     insig=[];
     inname="";
@@ -45,8 +45,8 @@ function [eqn,insigs,innames] = junction_seqn (jun_type,Name, outsig, \
       if i!=inport
 	in_dir = sign(insigs(i,1));
 	plusminus = sign2name(-in_dir*out_dir);
-	eqn = sprintf("%s\n\t%s%s(%i,%i)", eqn, plusminus, Name, \
-		      abs(insigs(i,1)), cause2index(-i_jun_type));
+	eqn = sprintf("%s\n\t%s%s", eqn, plusminus, varname(Name, \
+		      abs(insigs(i,1)), -i_jun_type));
 	insig = [insig; insigs(i,:)];
 	inname = [inname; innames(i,:)];
       endif

@@ -5,6 +5,10 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.22  1997/09/18 19:49:37  peterg
+% %% Added test for uniquness of bonds on a component -- if non-unique
+% %% implies same component at both ends of a bond.
+% %%
 % %% Revision 1.21  1997/09/16  15:14:14  peterg
 % %% Added warning if a component has no bonds.
 % %%
@@ -399,7 +403,7 @@ for i = 1:n_components
   %Two port defaults
   if (n_comp_bonds==2)&(n_unsorted_ports==0)
     if direction(1)==direction(2) % Wrong way for default
-      mtt_info(['Two-port ', comp_name, ' (', comp_type, ') does not have through-pointing arrows'], infofile);
+      % mtt_info(['Two-port ', comp_name, ' (', comp_type, ') does not have through-pointing arrows'], infofile);
     end;
     if direction(1)==1 %in
       % mtt_info([comp_name, ' in'],infofile);

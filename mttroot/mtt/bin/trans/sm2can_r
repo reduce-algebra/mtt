@@ -1,0 +1,97 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: csm2sm_r
+# Constrained-state equation to linear constrained-state matrices conversion
+# P.J.Gawthrop  6th September 1991, May 1994
+# Copyright (c) P.J.Gawthrop, 1991, 1994, 1996
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+## Revision 1.2  1996/08/25 10:11:32  peter
+## Added END in output file.
+## Error handling.
+##
+## Revision 1.1  1996/08/19 15:06:16  peter
+## Initial revision
+##
+###############################################################
+
+# Inform user
+echo Creating $1_sm.r
+
+# Remove the old log file
+rm -f csm2sm_r.log
+
+# Use reduce to accomplish the transformation
+reduce >csm2sm_r.log << EOF
+
+in "$1_def.r";
+in "$1_csm.r";
+in "$1_cr.r";
+in "$1_sympar.r";
+
+OFF Echo;
+OFF Nat;
+
+% Find MTTA and MTTB : the A and B matrices
+
+MTTinvE := MTTE^(-1);
+MTTA := MTTinvE*MTTA;
+MTTB := MTTinvE*MTTB;
+
+
+%Create the output file
+OUT "$1_sm.r";
+
+%Write out the matrices.
+IF MTTNx>0 THEN
+BEGIN
+  write "matrix MTTA(", MTTNx, ",", MTTNx, ");";
+  FOR i := 1:MTTNx DO
+   FOR j := 1:MTTNx DO IF MTTA(i,j) NEQ 0 THEN
+      write "MTTA(", i, ",", j, ") := ", MTTA(i,j);
+END;
+
+IF MTTNx>0 THEN
+IF MTTNu>0 THEN
+BEGIN
+  write "matrix MTTB(", MTTNx, ",", MTTNu, ");";
+  FOR i := 1:MTTNx DO
+   FOR j := 1:MTTNu DO IF MTTB(i,j) NEQ 0 THEN
+      write "MTTB(", i, ",", j, ") := ", MTTB(i,j);
+END;
+
+%Write it out
+IF MTTNy>0 THEN
+IF MTTNx>0 THEN
+BEGIN
+  write "matrix MTTC(", MTTNy, ",", MTTNx, ");";
+  FOR i := 1:MTTNy DO
+    FOR j := 1:MTTNx DO IF MTTC(i,j) NEQ 0 THEN
+      write "MTTC(", i, ",", j, ") := ", MTTC(i,j);
+END;
+
+IF MTTNy>0 THEN IF MTTNu>0 THEN 
+BEGIN
+  write "matrix MTTD(", MTTNy, ",", MTTNu, ");";
+  FOR i := 1:MTTNy DO
+    FOR j := 1:MTTNu DO IF MTTD(i,j) NEQ 0 THEN
+      write "MTTD(", i, ",", j, ") := ", MTTD(i,j);
+END;
+
+write "END;";
+
+SHUT "$1_sm.r";
+quit;
+
+EOF
+
+# Now invoke the standard error handling.
+mtt_error_r csm2sm_r.log

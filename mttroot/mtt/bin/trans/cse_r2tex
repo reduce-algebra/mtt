@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.2  1996/11/12  09:11:20  peterg
+# Removed all the hoorrible name changes
+#
 # Revision 1.1  1996/11/05  09:19:28  peterg
 # Initial revision
 #
@@ -31,7 +34,10 @@ reduce >cse_r2tex.log << EOF
 %Read the definitions file
 in "$1_def.r";
 
-%Read thesimplification file
+%Read the parameter file
+in "$1_params.r";
+
+%Read the simplification file
 in "$1_simp.r";
 
 %Read the constrained-state equations file

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.214  1999/11/14 21:27:11  peterg
+## *** empty log message ***
+##
 ## Revision 1.213  1999/09/02 23:24:40  peterg
 ## Now explicitly generates executable _ode2odes.out file
 ## Which takes command line arguments
@@ -737,6 +740,7 @@ computation=octave
 
 #By default, the dae and ode representations are different
 dae_is_ode=0
+
 #By default, the ode and cse reps are different
 ode_is_cse=0
 
@@ -752,6 +756,9 @@ tidy=tidy;
 # Default not verbose
 verbose=' -s'
 
+# Default integration method
+integration_method=implicit;
+
 # Default no info
 info_switch=''
 
@@ -765,6 +772,10 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-q )
                 mtt_switches="$mtt_switches $1";
 		quiet=quiet;;  
+	-r )
+                mtt_switches="$mtt_switches $1";
+		reset=reset;;  
+
 	-p )
                 mtt_switches="$mtt_switches $1";
 		print='-p';;
@@ -774,9 +785,22 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-o )
                 mtt_switches="$mtt_switches $1";
 		dae_is_ode=1 ;;
-	-cse )
+	-i )
                 mtt_switches="$mtt_switches $1";
-		ode_is_cse=1 ;;
+                shift;
+                case $1 in
+		    euler)
+			integration_method=euler;
+                        mtt_switches="$mtt_switches euler";
+			;;
+		    implicit)
+			integration_method=implicit;
+                        mtt_switches="$mtt_switches implicit";
+			;;
+		    *)
+			echo $1 is an unknown integration method - use euler or implicit;
+                        exit;;
+		esac;;
 	-ss )
                 mtt_switches="$mtt_switches $1";
 		steadystate_computation=yes ;;
@@ -879,9 +903,11 @@ if [ -z "$1" ]; then
     echo '         -c  c-code generation'
     echo '         -d  <dir>  use directory <dir>'
     echo '         -dc Maximise derivative (not integral) causality'
-    echo '         -o  ode and dae are the same'
-    echo '         -cse  ode is computed in cse form'
+    echo '         -dc Maximise derivative (not integral) causality'
+    echo '         -i implicit   Use implicit integration'
+    echo '         -i euler      Use Euler integration'
     echo '         -p  print environment variables'
+    echo '         -r  reset time stamp on representation
     echo '         -ss use steady-state info to initialise simulations'
     echo '         -t  tidy mode (default)'
     echo '         -u  untidy mode (leaves files in current dir)'
@@ -1304,9 +1330,7 @@ if [ "$tidy" = "tidy" ]; then
    fi
 
   # Copy back form working directory
-   if [ "$3" != "view" ]; then
-    if [ "$3" != "hview" ]; then
-
+   if [ "$3" != "view" ] && [ "$3" != "hview" ] && [ -z "$reset" ]; then
       if [ "$3" = "html" ]; then
 	  echo Moving $1_$2
           mv $1_$2 ..
@@ -1319,7 +1343,6 @@ if [ "$tidy" = "tidy" ]; then
         cp  $1_$2$__ARGS.ps ..
       fi
     fi
-  fi
 
    # Remove the MTT_work directory if very tidy
    if [ "$verytidy" = "verytidy" ]; then
@@ -1350,7 +1373,28 @@ if [ -f "$2_rep.make" ]; then
     exit
 fi
 
+## Check for pre version 4.0 integration method specification.
+if [ $level = "0" ]; then
+  if [ -f "$1_simpar.txt" ]; then
+    method_line=`grep -i METHOD  $1_simpar.txt`
+    if [ -n "`echo $method_line | grep -i euler`" ]; then
+      echo Obsolete $1_simpar.txt contains: $method_line
+      echo "    please use mtt -i euler in future"
+      mtt_switches="$mtt_switches -i euler";
+    elif [ -n "`echo $method_line | grep -i implicit`" ]; then
+      echo Obsolete $1_simpar.txt contains: $method_line
+      echo "    please use mtt -i implicit in future"
+      mtt_switches="$mtt_switches -i implicit";
+    fi
+  fi
+fi
 
+if [ -n "$reset" ]; then
+echo $reset
+  echo Resetting $1_$2.$3;
+  touch $1_$2.$3;
+  exit;    
+fi
 ################################
 # This is the main mtt programme
 ################################
@@ -1551,7 +1595,6 @@ $1_simpar.txt:
 	echo 'LAST        = 10.0;       # Last time in simulation'; \
 	echo 'DT          = 0.1;        # Print interval'; \
 	echo 'STEPFACTOR  = 1;          # Integration steps per print interval'; \
-	echo 'METHOD      = Implicit;   # Integration method'; \
 	echo 'WMIN        = -1;         # Minimum frequency = 10^WMIN'; \
 	echo 'WMAX        = 2;          # Maximum frequency = 10^WMAX'; \
 	echo 'WSTEPS      = 100;        # Number of frequency steps'; \
@@ -1810,8 +1853,12 @@ $1_dae.tex:	$1_dae.r $1_simp.r
 #Constrained-state equations
 $1_cse.r: $1_dae.r $1_def.r $1_sympar.r $1_subs.r 
 	dae2cse_r $Solve $1; tidy $1_cse.r $1_subs.r
-$1_cse.m: $1_def.r $1_cse.r $1_sympar.r  $1_subs.r 
-	cse_r2m $1; matlab_tidy $1_cse.m
+
+#$1_cse.m: $1_def.r $1_cse.r $1_sympar.r  $1_subs.r 
+#	cse_r2m $1; matlab_tidy $1_cse.m
+$1_cse.m: $1_def.m $1_cse.r $1_sympars.txt
+	mtt_r2m $1 cse;  matlab_tidy $1_cse.m; matlab_tidy $1_cseo.m; 
+
 $1_cse.tex: $1_cse.r  $1_sympar.r $1_simp.r
 	cse_r2tex $1; latex_tidy $1_cse.tex
 
@@ -1833,16 +1880,8 @@ $1_ode.r: $1_dae.r
 	cp $1_dae.r  $1_ode.r
 endif
 
-ifeq ($ode_is_cse,1)
-$1_ode.m: $1_def.m $1_cse.r $1_sympars.txt
-	mtt_r2m $1 cse;  matlab_tidy $1_cse.m; 
-	cp -v $1_cse.m $1_ode.m;
-	cp -v $1_cseo.m $1_odeo.m;
-endif
-ifeq ($ode_is_cse,0)
 $1_ode.m: $1_def.m $1_ode.r $1_sympars.txt
 	mtt_r2m $1 ode m; matlab_tidy $1_ode.m
-endif
 
 $1_odea.m: $1_ode.m
 	touch $1_odea.m
@@ -1853,8 +1892,20 @@ $1_odeo.m: $1_ode.m
 $1_ode.tex: $1_ode.r  $1_sympar.r $1_simp.r
 	ode_r2tex $1; latex_tidy $1_ode.tex
 
-$1_ode2odes.m : $1_def.r $1_sympars.txt
-	make_ode2odes $1
+# The main simulation programme
+ifeq ($integration_method,implicit)
+$1_ode2odes.m : $1_def.r $1_sympars.txt $1_smx.m\
+                $1_simpar.m $1_numpar.m $1_state.m $1_input.m \
+                $1_cse.m $1_cseo.m  $1_switchopen.m
+	make_ode2odes $1 $integration_method
+endif
+ifeq ($integration_method,euler)
+$1_ode2odes.m : $1_def.r $1_sympars.txt\
+                $1_simpar.m $1_numpar.m $1_state.m $1_input.m \
+                $1_ode.m $1_odeo.m  $1_switchopen.m
+	make_ode2odes $1 $integration_method
+endif
+
 
 #Conversion of m to p to c
 #SUMMARY ode	ordinary differential equations (c)
@@ -1873,14 +1924,27 @@ $1_ode.p : $1_def.r $1_ode.m
 	mtt_m2p $1_ode.m
 $1_odeo.p : $1_def.r $1_odeo.m
 	mtt_m2p $1_odeo.m
+$1_cse.p : $1_def.r $1_cse.m
+	mtt_m2p $1_cse.m
+$1_cseo.p : $1_def.r $1_cseo.m
+	mtt_m2p $1_cseo.m
 $1_smx.p : $1_def.r $1_smx.m
 	mtt_m2p $1_smx.m
 $1_switchopen.p : $1_def.r $1_switchopen.m
 	mtt_m2p $1_switchopen.m
+
+ifeq ($integration_method,implicit)
 $1_ode2odes.p : $1_ode2odes.m $1_def.r $1_smx.p\
                 $1_simpar.p $1_numpar.p $1_state.p $1_input.p \
+                $1_cse.p $1_cseo.p  $1_switchopen.p
+	mtt_m2p $1_ode2odes.m $integration_method
+endif
+ifeq ($integration_method,euler)
+$1_ode2odes.p : $1_ode2odes.m $1_def.r\
+                $1_simpar.p $1_numpar.p $1_state.p $1_input.p \
                 $1_ode.p $1_odeo.p  $1_switchopen.p
-	mtt_m2p $1_ode2odes.m
+	mtt_m2p $1_ode2odes.m $integration_method
+endif
 
 $1_ode2odes.c: $1_ode2odes.p 
 	mtt_p2c $info_switch $1 ode2odes

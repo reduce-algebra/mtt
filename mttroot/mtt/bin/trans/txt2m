@@ -15,6 +15,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.6  1998/07/27 18:59:11  peterg
+# %% Added WMIN etc
+# %%
 # %% Revision 1.5  1998/07/26 11:54:20  peterg
 # %% Added  mtt to variables
 # %%
@@ -69,20 +72,35 @@ fi
 
 #Write out the variables in m format.
 awk -F#  '{
-  if (NF<2) print $1
-  if (NF>1)  print $1 "# " $2
-}' $1_$2.txt  | \
-sed 's/\[\([0-9]*\)\]/(\1)/g' |\
-sed 's/\([^a-zA-Z]\)t\([^a-zA-Z]\)/\1mttt\2/g' |\
-sed 's/LAST/mttLAST/g' |\
-sed 's/DT/mttDT/g' |\
-sed 's/STEPFACTOR/mttSTEPFACTOR/g' |\
-sed 's/METHOD/mttMETHOD/g' |\
-sed 's/WMIN/mttWMIN/g' |\
-sed 's/WMAX/mttWMAX/g' |\
-sed 's/WSTEPS/mttWSTEPS/g' |\
-sed 's/x(/mttx(/g' | sed 's/u(/mttu(/g'  |\
-sed 's/mttmtt/mtt/g' >> $1_$2.m
+  N=split($1,a,"=");
+  if (N==2) {
+    LHS = a[1];
+    RHS = tolower(a[2]);
+    sub(/"*euler"*/, 1, RHS);   
+    sub(/"*implicitl"*/, 2, RHS);   
+    sub(/"*implicit"*/, 3, RHS);  
+    statement = sprintf("%s=%s",LHS,RHS);
+  }
+  else
+    statement = $1;
+
+  if (NF<2) print statement
+  if (NF>1)  print statement " # " $2
+}' $1_$2.txt  | sed\
+     -e 's/\[\([0-9]*\)\]/(\1)/g' \
+     -e 's/\([^a-zA-Z]\)t\([^a-zA-Z]\)/\1mttt\2/g' \
+     -e 's/LAST/mttLAST/g' \
+     -e 's/DT/mttDT/g' \
+     -e 's/STEPFACTOR/mttSTEPFACTOR/g' \
+     -e 's/METHOD/mttMETHOD/g' \
+     -e 's/WMIN/mttWMIN/g' \
+     -e 's/WMAX/mttWMAX/g' \
+     -e 's/WSTEPS/mttWSTEPS/g' \
+     -e 's/x(/mttx(/g' \
+     -e 's/u(/mttu(/g' \
+     -e 's/mttmtt/mtt/g' \
+
+#>> $1_$2m
 
 
 

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  1998/08/27 07:06:25  peterg
+## Just genrate xj once.
+##
 ## Revision 1.8  1998/08/27 07:04:44  peterg
 ## Cleared out mttx array ans use mkid instead.
 ##
@@ -68,6 +71,7 @@ lang := $lang;
 
 in "$1_def.r";
 in "$1_ode.r";
+in "$1_cr.r";
 
 clear mttx; % Dont need this now - use mkid instead
 

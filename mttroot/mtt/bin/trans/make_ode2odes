@@ -9,6 +9,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.28  1999/12/08 05:56:52  peterg
+## Reordered the writing of the input and output.
+## Note that last value now discarded.
+##
 ## Revision 1.27  1999/11/15 22:47:53  peterg
 ## Generates method-specific code.
 ##
@@ -150,7 +154,7 @@ fi
 
 cat << EOF >> $1_ode2odes.m
 for MTTit = 1:MTTilast		#Integration loop
-  [MTTy] = $1_$odeo(MTTx,MTTu,MTTt);     # Output 
+  [MTTy] = $1_$odeo(MTTx,MTTu,MTTt,MTTpar);     # Output 
   [MTTu] = $1_input(MTTt,MTTx,MTTy);	# Input
   mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny);    # Write it out
 
@@ -161,7 +165,7 @@ if [ "$method" = "euler" ]; then
 cat << EOF >> $1_ode2odes.m
 #    if mttmethod==1		# Euler
       for MTTjt = 1:mttstepfactor
-	[MTTdx] = $1_$ode(MTTx,MTTu,MTTt); # State derivative
+	[MTTdx] = $1_$ode(MTTx,MTTu,MTTt,MTTpar); # State derivative
         [MTTopen] = $1_switchopen(MTTx);        # Open switches
 	[MTTx] = mtt_euler(MTTx,MTTdx,MTTddt,$Nx,MTTopen); # Euler update
 	MTTt = MTTt + MTTddt;

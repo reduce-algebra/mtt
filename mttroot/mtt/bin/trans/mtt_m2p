@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.50  2000/05/19 17:46:41  peterg
+## New version of state with par argument
+##
 ## Revision 1.49  2000/05/18 09:45:45  peterg
 ## Fixed missing ;
 ##
@@ -304,7 +307,7 @@ Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
 	echo ""
 	echo "VAR"
 	echo "    simpar                      : SimulationParameters;"
-        echo "    t                           : REAL;"
+        echo "    t,ddt                       : REAL;"
 	echo "    x,dx,AAx                    : StateVector;"
 	echo "    u                           : InputVector;"
 	echo "    y                           : OutputVector;"
@@ -407,9 +410,9 @@ BEGIN{
           printf("{%s $MTTPATH/trans/p/mtt_par_update.p}\n",inc)
           printf("{%s $MTTPATH/trans/p/sign.p}\n",inc)
           printf("{%s $MTTPATH/trans/p/mtt_euler.p}\n",inc)
-          printf("{%s $MTTPATH/trans/p/mtt_solve.p}\n",inc)
+          #printf("{%s $MTTPATH/trans/p/mtt_solve.p}\n",inc)
           printf("{%s $MTTPATH/trans/p/mtt_implicit.p}\n",inc)
-          # printf("{%s $MTTPATH/trans/p/zero_matrix.p}\n",inc)
+          #printf("{%s $MTTPATH/trans/p/zero_matrix.p}\n",inc)
           printf("{%s $MTTPATH/trans/p/zero_input.p}\n",inc)
           printf("{%s $MTTPATH/trans/p/zero_state.p}\n",inc)
           printf("{%s %s_simpar.p}\n",inc,Sys) 
@@ -417,6 +420,7 @@ BEGIN{
           # printf("{%s $MTTPATH/trans/p/mtt_getargs.p}\n",inc)
           printf("{%s %s_state.p}\n",inc,Sys)
           printf("{%s %s_input.p}\n",inc,Sys)
+
           if (Method=="euler") {
             printf("{%s %s_ode.p}\n",inc,Sys)
             printf("{%s %s_odeo.p}\n",inc,Sys)

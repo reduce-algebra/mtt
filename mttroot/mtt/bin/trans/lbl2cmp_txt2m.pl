@@ -234,7 +234,7 @@ sub sort_components ()
     my ($name, $class, $i, $j, $target);
 
     $i = 0;
-    foreach $target ("port", "component", "1junction", "0junction") {
+    foreach $target ("port", "component", "0junction", "1junction") {
 	# get targets in lbl
 	for ($j = 1; $j < scalar @component_name_lbl_index; $j++) {
 	    $name  = $component_name_lbl_index[$j];

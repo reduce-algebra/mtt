@@ -12,8 +12,10 @@ VAR
    i,j	 : INTEGER;
    AA	 : StateMatrix;
    BB,Ax : StateVector;
+   rsq	 : REAL;
    
 (*$I mtt_solve.p *)
+(*$I mtt_sparse.p *)
    
 BEGIN{mtt_update}
    IF Method=1 THEN {Euler}
@@ -42,9 +44,19 @@ BEGIN{mtt_update}
 	 {Solve the equation AAx = B}
 	 mtt_solve(xnew,AA,BB,Nx,Small);
       END
-      ELSE
-	 Writeln("Method >2 is not defined");
+      ELSE IF (METHOD=4) THEN {Sparse CG implicit}
+      BEGIN
+	 mtt_asub(x,Ax,Nx); {Sparse computation of (1-A*dt)*x}
+	 FOR i := 1 TO  Nx DO
+	    BB[i] := Ax[i]+ DT*dx[i];
+	 mtt_sparse(BB,Nx,xnew,rsq); {Sparse CG solution
+				  - using prev. xnew as starter}
+      END
+         ELSE
+	 Writeln("Method >4 is not defined");
    
 END{mtt_update};
+
+
 
 

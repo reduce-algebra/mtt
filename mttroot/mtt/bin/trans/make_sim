@@ -31,7 +31,7 @@ cat >> ${outfile} <<EOF
   if nargout>2
     ## Create time vector
     [N,M] = size(y);
-    t = simpar.dt*[0:N-1]';
+    t = mtt_data(:,1);
   endif;
 
 endfunction

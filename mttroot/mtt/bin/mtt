@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.387  2004/08/11 07:44:18  geraint
+## Included cmp.m as a prerequisite for abg.m
+##
 ## Revision 1.386  2004/08/05 00:02:57  geraint
 ## Uses lbl2cmp_txt2m.pl to generate _cmp.m.
 ##
@@ -2258,8 +2261,10 @@ if [ "$tidy" = "tidy" ]; then
           echo Copying  $1_$2$__ARGS.$ps
           cp  $1_$2$__ARGS.$ps ..
         else
-          echo Copying  $1$subsystem"_"$2.$lang
-          cp  -p -u $1$subsystem"_"$2.$lang ..
+	    if [ -f $1$subsystem"_"$2.$lang ]; then
+		echo Copying  $1$subsystem"_"$2.$lang
+		cp  -p -u $1$subsystem"_"$2.$lang ..
+	    fi
         fi
       fi
     fi
@@ -2295,16 +2300,18 @@ if [ -f "$2_rep.make" ]; then
    #if [ -f "$filename" ]; then
    #   echo $filename exists
    #else
-     if [ -n "$Verbose" ]; then
-      echo make -s -f $2_rep.make "MTT_SYS=$1" "MTT_LANG=$3" "MTT_ARG=$4" "MTT_OPTS=$mtt_switches" 
-     fi
-      make -s -f $2_rep.make "MTT_SYS=$1" "MTT_LANG=$3" "MTT_ARG=$4" "MTT_OPTS=$mtt_switches"
-      if [ -n "$4" ]; then
-         echo Copying  $1_$2$__ARGS.$ps
-         cp  $1_$2$__ARGS.$ps ..
-      fi
+   if [ ! -f "$2_rep.make.ignore" ]; then
+       if [ -n "$Verbose" ]; then
+	   echo make -s -f $2_rep.make "MTT_SYS=$1" "MTT_LANG=$3" "MTT_ARG=$4" "MTT_OPTS=$mtt_switches" 
+       fi
+       make -s -f $2_rep.make "MTT_SYS=$1" "MTT_LANG=$3" "MTT_ARG=$4" "MTT_OPTS=$mtt_switches"
+       if [ -n "$4" ]; then
+	   echo Copying  $1_$2$__ARGS.$ps
+	   cp  $1_$2$__ARGS.$ps ..
+       fi
    #fi
-    exit
+       exit
+   fi
 fi
 
 ## Check for pre version 4.0 integration method specification.

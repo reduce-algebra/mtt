@@ -1,0 +1,35 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: dir2paths
+# Finds paths of all valid MTT examples
+
+# P.J.Gawthrop Mar 98
+# Copyright (c) P.J.Gawthrop, 1998.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+dotdot=$2 # Set to ../ if we are in MTT_work
+
+
+# Create paths for all valid examples - ie dir name is system name
+find $dotdot$1 -name '*_abg.fig' -print | sort |\
+  awk '{
+   N=split($1,name,"/"); 
+   printf("%s", name[1]);
+   for (i=2;i<N;i++) printf("/%s", name[i]); 
+   printf(" %s %s\n", name[N-1], name[N]);
+  }' |\
+  awk '{
+  correctname=sprintf("%s_abg.fig", $2);
+  if ($3==correctname) print  $1,$2
+  }'

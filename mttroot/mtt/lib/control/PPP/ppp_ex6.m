@@ -28,8 +28,8 @@ function [name,T,y,u,J] = ppp_ex6 (ReturnName)
 
   ## Constrain  input 1 at time tau=0
   Tau = 0;
-  Max = 1;
-  Min = -Max;
+  Max = [1;inf]
+  Min = [-inf;-inf];
   Order = 0;
   i_u = 1;
   

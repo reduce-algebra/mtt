@@ -553,8 +553,8 @@ sub get_component_data {
 }
 
 sub parse_component_data {
-    my ($anon_index, $id, $component, $anonymous);
-    $anon_index = 0;
+    my (%anon_index, $id, $component, $anonymous);
+
     while (($id, $component) = each (%component_id_tag)) {
 	$_ = $component;
 	id_cleaner();
@@ -567,9 +567,14 @@ sub parse_component_data {
 	my ($type, $name) = split (/:/, $type_name);
 	if (! $name) {
 	    $type = $type_name;
-	    $name = "mtt${type}_${anon_index}";
+	    if (! defined ($anon_index{$type})) {
+		$anon_index{$type} = 1;
+	    } else {
+		$anon_index{$type}++;
+	    }
+	    my $num = $anon_index{$type};
+	    $name = "mtt${type}_${num}";
 	    $anonymous = 1;
-	    $anon_index++;
 	} else {
 	    $anonymous = 0;
 	}

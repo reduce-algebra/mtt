@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.339  2002/05/08 21:32:26  geraint
+## Tidied up $1_ode2odes_*.* targets and renamed dummies as *.stamp.
+##
 ## Revision 1.338  2002/05/08 16:03:32  geraint
 ## Added mex support for ode2odes: mtt sys ode2odes mexglx.
 ## This mex stuff seems to require octave2.1-headers.
@@ -2122,11 +2125,11 @@ mtt_%.oct: mtt_%.cc
 	${MKOCTFILE} -DCODEGENTARGET=OCTAVEDLD $define_octave_dev \$<
 
 ## .mex files
-$1_%.mexglx: $1_%.cc $1_def.h $1_sympar.h $1_cr.h
+$1_%.mexglx: $1_%.cc $1_def.h $1_sympar.h $1_cr.h mtt_kpathsea.cc mtt_matlab_octave.cc mtt_matlab_octave.hh
 	echo Creating $1_\$*.mexglx
 	${MTT_CXX} -shared -o $1_\$*.mexglx $1_\$*.cc \
 	${MTT_MATLAB_FLAGS} -DCODEGENTARGET=MATLABMEX \
-	${MTT_CXXINCS} ${MTT_CXXLIBS} ${MTT_CXXFLAGS} ${MTT_LIB}/cc/mtt_kpathsea.cc ${MTT_LIB}/cc/mtt_matlab_octave.cc
+	${MTT_CXXINCS} ${MTT_CXXLIBS} ${MTT_CXXFLAGS} mtt_kpathsea.cc mtt_matlab_octave.cc
 
 ## .cc files
 .PRECIOUS: %.cc # Don't let mtt delete them

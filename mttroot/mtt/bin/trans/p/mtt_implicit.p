@@ -11,6 +11,8 @@ VAR
    BB,xsub   : StateVector;
    AAsub     : StateMatrix;
    
+(*$I $MTTPATH/trans/p/mtt_solve.p *)
+
 BEGIN{mtt_implicit}
    ii := 0;
    FOR i := 1 TO  Nx DO {BB is (1-A*dt)*x +dx*dt}
@@ -41,7 +43,6 @@ BEGIN{mtt_implicit}
 	 END
 	 ELSE
 	 xnew[i] := 0.0;
-	 writeln(i,ii);
       END;
 END;{mtt_implicit}			  
 

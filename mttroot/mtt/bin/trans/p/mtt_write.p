@@ -16,6 +16,9 @@ PROCEDURE mtt_write(t	  : REAL;
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1999/03/15 21:57:38  peterg
+## Removed the # symbol
+##
 ## Revision 1.4  1998/11/26 13:31:30  peterg
 ## Put missing space after 2nd t
 ##
@@ -32,18 +35,20 @@ PROCEDURE mtt_write(t	  : REAL;
 
 
 *}
+
+CONST TAB=9;
  
 VAR
    i : INTEGER;
    
 BEGIN
-   write(t," ");
+   write(t,chr(TAB));
    FOR i := 1 TO ny DO
-      write(y[i]," ");
+      write(y[i],chr(TAB));
 
-   write(t," ");
+   write(t,chr(TAB));
    FOR i := 1 TO nx DO
-      write(x[i]," ");
+      write(x[i],chr(TAB));
    writeln;
 END;
    

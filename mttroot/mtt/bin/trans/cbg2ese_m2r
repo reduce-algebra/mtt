@@ -16,6 +16,9 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.18  2000/09/15 08:09:42  peterg
+## Removed another debugging line
+##
 ## Revision 1.17  2000/09/15 08:06:17  peterg
 ## Removed debug lines
 ##
@@ -99,6 +102,7 @@ rm -f cbg2ese_m.log
 # Remove the info and error files
 rm -f mtt_info.txt
 rm -f mtt_error.txt
+rm -f mtt_aliased.txt
 
 # Remove relevent ese files
 rm -f $1_ese.r $1_*_ese.r 
@@ -124,7 +128,6 @@ system_cr = '';
 system_args = '';
 full_name = '';
 full_name_repetition = '';
-
 
 % Structure matrix [states,nonstates,inputs,outputs,zero_outputs]
 
@@ -206,6 +209,9 @@ fi
 echo "END;" >> $1_ese.r
 echo "END;" >> $1_def.r
 
+# Create the _alised file
+echo Creating $1_aliased.txt
+mv mtt_aliased.txt $1_aliased.txt
 
 # Sort the struc file
 mv $structurefile junk

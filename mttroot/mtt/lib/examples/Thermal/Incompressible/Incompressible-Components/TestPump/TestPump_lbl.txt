@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.4  1998/11/20 08:31:24  peterg
+% %% Fixed alias error
+% %%
 % %% Revision 1.3  1998/11/20 08:28:41  peterg
 % %% Tidied
 % %%
@@ -23,7 +26,7 @@
 %	Component-name	CR_name	arg1,arg2,..argn
 %	blank
 
-%ALIAS Pump IncompressibleFlow/Pump
+%ALIAS lPump IncompressibleFlow/lPump
 
 
 % Component type lPump

@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.53  2002/06/10 23:22:16  geraint
+## Fixed problem with Matlab fsolve failing because of "user function returned Inf or Nan" (fsolve.m, line 245).
+##
 ## Revision 1.52  2002/05/27 14:52:15  geraint
 ## Parameters in sfun reps are now declared using sympar.h at the top of the
 ## sfun*.c file instead of in individual functions. This causes the optimisation
@@ -734,7 +737,7 @@ get_arg_specific_stuff ()
 	    arg_init="(MTTNY,0.0)"
 	    ;;
 	mttt)
-	    arg_type="const double"
+	    arg_type="double"
 	    arg_init=""
 	    ;;
 	nil)
@@ -832,7 +835,7 @@ EOF
 	    fi
 	    w=`get_field ${args} ${i}`
 	    get_arg_specific_stuff ${w}
-	    printf "\t${arg_type}\t&${w}${comma}\n"
+	    printf "\tconst ${arg_type}\t&${w}${comma}\n"
 	done
     fi
     get_arg_specific_stuff ${output}
@@ -870,11 +873,11 @@ map_oct_inputs ()
 	w=`get_field ${s} ${i}`		# argument name
 	get_arg_specific_stuff ${w}
 	case ${arg_type} in
-	    "const double")
-		printf "  ${arg_type}\t${w}\t= args(${j}).double_value ();\n"
+	    "double")
+		printf "  const ${arg_type}\t${w}\t= args(${j}).double_value ();\n"
 		;;
 	    ColumnVector | Matrix | *)
-		printf "  ${arg_type}\t${w}\t= args(${j}).%s ();\n" ${vector_value}
+		printf "  const ${arg_type}\t${w}\t= args(${j}).%s ();\n" ${vector_value}
 		;;
 	esac
     done

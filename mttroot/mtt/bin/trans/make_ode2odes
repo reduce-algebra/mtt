@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.80  2002/05/22 09:35:49  geraint
+## Added insertor variable to stop sh-mode font-lock from getting hopelessly confused by embedded C++.
+##
 ## Revision 1.79  2002/05/20 13:42:31  gawthrop
 ## Uses simpar.first for first printed output
 ##
@@ -480,22 +483,22 @@ cat <<EOF  > $filename
 #if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
 
 extern ColumnVector ${sys}_ae (
-	ColumnVector &x,
-	ColumnVector &u,
+	const ColumnVector &x,
+	const ColumnVector &u,
 	const double &t,
-	ColumnVector &par);
+	const ColumnVector &par);
 
 extern ColumnVector ${sys}_input (
-	ColumnVector &x,
-	ColumnVector &y,
+	const ColumnVector &x,
+	const ColumnVector &y,
 	const double &t,
-	ColumnVector &par);
+	const ColumnVector &par);
 
 extern ColumnVector ${sys}_logic (
-	ColumnVector &x,
-	ColumnVector &u,
+	const ColumnVector &x,
+	const ColumnVector &u,
 	const double &t,
-	ColumnVector &par);
+	const ColumnVector &par);
 
 extern ColumnVector ${sys}_numpar (
 	void);
@@ -504,19 +507,19 @@ extern ColumnVector ${sys}_simpar (
      	void);
 
 extern ColumnVector ${sys}_state (
-	ColumnVector &par);
+	const ColumnVector &par);
 
 extern ColumnVector ${sys}_${ode} (
-	ColumnVector &x,
-	ColumnVector &u,
+	const ColumnVector &x,
+	const ColumnVector &u,
 	const double &t,
-	ColumnVector &par);
+	const ColumnVector &par);
 
 extern ColumnVector ${sys}_${odeo} (
-	ColumnVector &x,
-	ColumnVector &u,
+	const ColumnVector &x,
+	const ColumnVector &u,
 	const double &t,
-	ColumnVector &par);
+	const ColumnVector &par);
 
 EOF
 case "$method" in
@@ -532,16 +535,16 @@ extern ColumnVector Fmtt_implicit (
 	const ColumnVector &open_switches);
 
 extern Matrix ${sys}_smxa (
-	ColumnVector &x,
-	ColumnVector &u,
+	const ColumnVector &x,
+	const ColumnVector &u,
 	const double &t,
-	ColumnVector &par);
+	const ColumnVector &par);
 
 extern ColumnVector ${sys}_smxax (
-	ColumnVector &x,
-	ColumnVector &u,
+	const ColumnVector &x,
+	const ColumnVector &u,
 	const double &t,
-	ColumnVector &par);
+	const ColumnVector &par);
  
 EOF
     ;;
@@ -577,10 +580,10 @@ cat <<EOF >> $filename
 #endif // ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
 
 ColumnVector
-mtt_ae (ColumnVector &x,
-	ColumnVector &u,
+mtt_ae (const ColumnVector &x,
+	const ColumnVector &u,
 	const double &t,
-	ColumnVector &par)
+	const ColumnVector &par)
 {
 #if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
     return ${sys}_ae(x,u,t,par);
@@ -596,10 +599,10 @@ mtt_ae (ColumnVector &x,
 }
 
 inline ColumnVector
-mtt_input (ColumnVector &x,
-	   ColumnVector &y,
+mtt_input (const ColumnVector &x,
+	   const ColumnVector &y,
 	   const double &t,
-	   ColumnVector &par)
+	   const ColumnVector &par)
 {
   static MTT::${algebraic_solver} ae(MTTNPAR,MTTNU,MTTNX,MTTNY,MTTNYZ);
   static ColumnVector u  (MTTNU);
@@ -626,10 +629,10 @@ mtt_input (ColumnVector &x,
 }
 
 inline ColumnVector
-mtt_logic (ColumnVector &x,
-	   ColumnVector &u,
+mtt_logic (const ColumnVector &x,
+	   const ColumnVector &u,
 	   const double &t,
-	   ColumnVector &par)
+	   const ColumnVector &par)
 {
 #if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
   return ${sys}_logic (x, u, t, par);
@@ -669,7 +672,7 @@ mtt_simpar (void)
 }
 
 inline ColumnVector
-mtt_state (ColumnVector &par)
+mtt_state (const ColumnVector &par)
 {
 #if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
   return ${sys}_state (par);
@@ -682,10 +685,10 @@ mtt_state (ColumnVector &par)
 }
 
 inline ColumnVector
-mtt_rate (ColumnVector &x,
-	  ColumnVector &u,
+mtt_rate (const ColumnVector &x,
+	  const ColumnVector &u,
 	  const double &t,
-	  ColumnVector &par)
+	  const ColumnVector &par)
 {
 #if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
   return ${sys}_${ode} (x, u, t, par);
@@ -701,10 +704,10 @@ mtt_rate (ColumnVector &x,
 }
 
 inline ColumnVector
-mtt_output (ColumnVector &x,
-	     ColumnVector &u,
-	     const double &t,
-	     ColumnVector &par)
+mtt_output (const ColumnVector &x,
+	    const ColumnVector &u,
+	    const double &t,
+	    const ColumnVector &par)
 {
 #if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
   return ${sys}_${odeo} (x, u, t, par);
@@ -749,10 +752,10 @@ mtt_implicit (ColumnVector &x,
 }
 
 inline Matrix
-mtt_smxa (ColumnVector &x,
-	  ColumnVector &u,
+mtt_smxa (const ColumnVector &x,
+	  const ColumnVector &u,
 	  const double &t,
-	  ColumnVector &par)
+	  const ColumnVector &par)
 {
 #if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
   return ${sys}_smxa (x, u, t, par);
@@ -768,10 +771,10 @@ mtt_smxa (ColumnVector &x,
 }
 
 inline ColumnVector
-mtt_smxax (ColumnVector &x,
-	   ColumnVector &u,
+mtt_smxax (const ColumnVector &x,
+	   const ColumnVector &u,
 	   const double &t,
-	   ColumnVector &par)
+	   const ColumnVector &par)
 {
 #if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
   return ${sys}_smxax (x, u, t, par);
@@ -945,8 +948,8 @@ cat <<EOF >> $filename
 
 inline void
 mtt_write (const double &t,
-	   ColumnVector &x,
-	   ColumnVector &y,
+	   const ColumnVector &x,
+	   const ColumnVector &y,
            const double &first,
 	   const int &nrows,
 	   const bool dump_data = false,
@@ -1014,7 +1017,9 @@ mtt_write (const double &t,
 }
 
 void
-${sys}_ode2odes (ColumnVector &state0, ColumnVector &numpar, ColumnVector &simpar)
+${sys}_ode2odes (const ColumnVector &state0,
+		 const ColumnVector &numpar,
+		 const ColumnVector &simpar)
 {
   static double first, dt, last, stepfactor;
   first		= simpar (0);

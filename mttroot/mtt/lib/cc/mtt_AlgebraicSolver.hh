@@ -40,10 +40,10 @@ namespace MTT
 
 
 extern ColumnVector
-mtt_ae(ColumnVector	&x,
-       ColumnVector	&u,
-       const double	&t,
-       ColumnVector	&par);
+mtt_ae(const ColumnVector	&x,
+       const ColumnVector	&u,
+       const double		&t,
+       const ColumnVector	&par);
 
 
 #endif // MTT_ALGEBRAICSOLVER

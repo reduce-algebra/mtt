@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.14  1999/12/08 02:06:00  peterg
+## Now incudes csm rep.
+##
 ## Revision 1.13  1999/11/23 00:59:14  peterg
 ## Now does ssm.m
 ##
@@ -199,7 +202,8 @@ rm -f mtt_odeo mtt_ode #mtt_odee
  rm -f    $1_odeo.p
 fi
   
-if [ "$rep" = "sm" ]||[ "$rep" = "ssm" ]||[ "$rep" = "dm" ]||[ "$rep" = "csm" ]; then
+if [ "$rep" = "sm" ]||[ "$rep" = "ssm" ]||[ "$rep" = "dm" ]||\
+   [ "$rep" = "csm" ]||[ "$rep" = "obs" ]; then
 
 if  [ "$rep" = "sm" ]||[ "$rep" = "ssm" ]; then
    #Header
@@ -213,11 +217,24 @@ if [ "$rep" = "dm" ]||[ "$rep" = "csm" ]; then
   Symbols='a b c d e'    
 fi
 
+if [ "$rep" = "obs" ]; then
+  # Is the system affine (look in the _obs.r file
+  affine=`grep 'affine :=' $1_obs.r | awk '{print $3}' | sed 's/;//'`
+  echo 'affine = ' $affine
+   #Header 
+if [ "$affine" = "1" ]; then
+    lang_header $1 obs m mttx [mttobs_o,mttobs_h] >  $outfile.p
+else
+    lang_header $1 obs m mttx,mttu mttyy > $outfile.p
+fi
+  Symbols='obs_o obs_h'    
+fi
+
 for Symbol in $Symbols; do
   rm -f $outfile.1
 
 
-if  [ "$rep" = "sm" ]||[ "$rep" = "ssm" ]||[ "$rep" = "csm" ]; then
+if  [ "$rep" = "sm" ]||[ "$rep" = "ssm" ]||[ "$rep" = "csm" ]||[ "$rep" = "obs" ]; then
       case $Symbol in
     a)
 	N=MTTNx; M=MTTNx
@@ -233,6 +250,12 @@ if  [ "$rep" = "sm" ]||[ "$rep" = "ssm" ]||[ "$rep" = "csm" ]; then
 	;;
     e)
 	N=MTTNx; M=MTTNx
+	;;
+    obs_o)
+	N=MTTNyy; M=1
+	;;
+    obs_h)
+	N=MTTNyy; M=MTTNuu
 	;;
     *)
 	

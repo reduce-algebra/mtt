@@ -36,6 +36,7 @@ menubutton .menubar.edit -text "Edit" -underline 0 -menu .menubar.edit.menu
 menu .menubar.edit.menu
 .menubar.edit.menu add cascade -label "Axes"         -underline 0 -menu .menubar.edit.menu.axes
 .menubar.edit.menu add cascade -label "Contour (3D)" -underline 0 -menu .menubar.edit.menu.contour
+.menubar.edit.menu add cascade -label "Data style"   -underline 0 -menu .menubar.edit.menu.datastyle
 .menubar.edit.menu add cascade -label "Grid"         -underline 0 -menu .menubar.edit.menu.grid
 .menubar.edit.menu add cascade -label "Key"          -underline 0 -menu .menubar.edit.menu.key
 .menubar.edit.menu add cascade -label "Timestamp"    -underline 0 -menu .menubar.edit.menu.time
@@ -58,6 +59,11 @@ menu .menubar.edit.menu.contour
 menu .menubar.edit.menu.contour.surface
 .menubar.edit.menu.contour.surface add command -label "Show Surface" -underline 0 -command { do_cmd "set   surface ; replot" }
 .menubar.edit.menu.contour.surface add command -label "Hide Surface" -underline 0 -command { do_cmd "set nosurface ; replot" }
+
+menu .menubar.edit.menu.datastyle
+.menubar.edit.menu.datastyle add command -label "Dots"    -underline 0 -command { do_cmd "set data style dots   ; replot" }
+.menubar.edit.menu.datastyle add command -label "Lines"   -underline 0 -command { do_cmd "set data style lines  ; replot" }
+.menubar.edit.menu.datastyle add command -label "Points"  -underline 0 -command { do_cmd "set data style points ; replot" }
 
 menu .menubar.edit.menu.grid
 .menubar.edit.menu.grid add cascade -label "Show Grid" -underline 0 -menu .menubar.edit.menu.grid.show
@@ -555,6 +561,7 @@ set xcolumn 1 ; set xtitle "Time"
 set ycolumn 1 ; set ytitle "Time"
 set zcolumn 1 ; set ztitle "Time"
 
+do_cmd "set mouse"
 do_cmd "set timestamp"
 do_cmd "set grid"
 do_cmd "set nopolar"

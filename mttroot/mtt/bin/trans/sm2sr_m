@@ -16,6 +16,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.11  1996/08/24  14:02:39  peter
+# Included glabal parameter passing.
+# Proper error handling.
+#
 ## Revision 1.10  1996/08/19 15:34:14  peter
 ## Now based on state - not descriptor matrices.
 ##
@@ -66,7 +70,7 @@ fi
 
 PARAMS="$PARAMS ;"
 
-$MATRIX << EOF > sm2sr_m.log 2>mtt_error
+$MATRIX << EOF > sm2sr_m.log 2>mtt_error.txt
 
   % Read in the numeric system parameters
   $1_numpar;
@@ -107,14 +111,6 @@ $MATRIX << EOF > sm2sr_m.log 2>mtt_error
 
 EOF
 
-err_length=$(wc -c <mtt_error)
+# Now invoke the standard error handling.
+mtt_error mtt_error.txt
 
-# Test for errors and print if any
-if [ $err_length != "0" ]
-then
-  echo MTT has failed with the following errors '...'
-  cat mtt_error
-  exit 1
-else
-  exit 0
-fi

@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.26  2002/10/28 23:31:21  gawthrop
+## Added additional term to MTTEdx to account for zdot terms on
+## Right-Hand Side state equations
+##
 ## Revision 1.25  2002/09/18 19:46:48  geraint
 ## Refined test to reduce shell loop overhead for unnecessary E matrix.
 ## Removed unnecessary attempt to optimise cse.
@@ -481,14 +485,12 @@ write "END;";
 SHUT "$1_csex.r2";
 
 %Write out the  output equations
-IF MTTNy>0 THEN
-BEGIN
 OUT "$1_cseo.r2";
 write "%File: $1_cseo.r";
-in ("$1_cseo_write.r");
+IF MTTNy>0 THEN
+   in ("$1_cseo_write.r");
 write "END;";
 SHUT "$1_cseo.r2";
-END;
 quit;
 EOF
 

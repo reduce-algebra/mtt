@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1998/07/27 08:29:44  peterg
+## Include a comment field in the aliases
+##
 ## Revision 1.4  1998/07/17 19:46:44  peterg
 ## Included component alias.
 ##
@@ -65,7 +68,7 @@ EOF
         printf("\\item [Port %s] represents actual port ",$2)
       }
       printf("\\textbf{%s}",$3)
-      if (match($4,"[\#\%]")==1) printf("-- ");
+      if (match($4,"[\#\%]")==1) printf(" -- ");
       for (i=5;i<=NF;i++) printf(" %s", $i)
       printf("\n");
      }

@@ -40,7 +40,8 @@ function [u,U,iterations] = ppp_qp (x,W,J_uu,J_ux,J_uw,Us0,Gamma,gamma,mu)
 
 
   if length(gamma)>0		# Constraints exist: do the QP algorithm
-    [U,iterations] = qp_mu(J_uu,(J_ux*x - J_uw*W),Gamma,gamma,mu); # QP solution for weights U	
+    ## QP solution for weights U	
+    [U,iterations] = qp_mu(J_uu,(J_ux*x - J_uw*W),Gamma,gamma,mu);
 
     ##U = qp(J_uu,(J_ux*x - J_uw*W),Gamma,gamma); # QP solution for weights U
     ##U = pd_lcp04(J_uu,(J_ux*x - J_uw*W),Gamma,gamma); # QP solution for weights U

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.221  1999/12/22 05:15:51  peterg
+## Set to version 4.0.
+##
 ## Revision 1.220  1999/12/17 03:17:57  peterg
 ## reps_made is now $1_reps_made - stops clash between two reps per directory
 ##
@@ -969,7 +972,7 @@ fi
 if [ "$1" = "manual" ] && [$2 = ""]; then
   mtt_check_var "$PSVIEW" PSVIEW
   echo Invoking $PSVIEW
-  $PSVIEW  $MTTPATH/doc/mtt.ps &
+  $PSVIEW  $MTTPATH/doc/mtt.ps.gz &
   exit
 fi
 
@@ -1668,7 +1671,7 @@ $1_numpar.txt:
 	sympar2numpar_txt2txt $1
 
 #SUMMARY numpar	numerical parameter declaration (m) 
-$1_numpar.m:  $1_numpar.txt
+$1_numpar.m:  $1_numpar.txt $1_sympars.txt
 	txt2m $1 numpar
 
 #SUMMARY numpar	numerical parameter declaration (c) 

@@ -18,6 +18,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.33  2004/08/29 03:17:02  geraint
+## Vectorise sesx and sesy.
+##
 ## Revision 1.32  2003/04/17 20:07:33  geraint
 ## Added rule to create _sese.m
 ##
@@ -163,7 +166,7 @@ rm -f mtt_r2m.log
 
 #Header
 case $rep in
-    ae|csex|cseo|ode|odeo|sese|sesx|sesy)
+    ae|csex|cseo|ode|odeo|sae|sese|sesx|sesy)
     vectorise=yes
        ;;
     *)
@@ -174,7 +177,8 @@ esac
 #Convert from the (optimised) r file
 echo >> mtt_junk
 echo '## Code' >> mtt_junk
-strip_comments<$1_$2.r | tr [A-Z] [a-z] |\
+strip_comments<$1_$2.r |\
+tr [A-Z] [a-z] |\
 grep -vi 'MATRIX ' |\
 grep -vi 'END;' |\
 grep -vi 'clear mtt' |\

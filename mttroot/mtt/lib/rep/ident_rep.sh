@@ -4,6 +4,8 @@
 ## DIY representation "ident" for mtt
 # Copyright (C) 2002 by Peter J. Gawthrop
 
+ps=ps
+
 sys=$1
 rep=ident
 lang=$2
@@ -42,32 +44,38 @@ check_new_options() {
 ## Make the _ident.m file
 make_ident() {
 filename=${sys}_${rep}.m
+date=`date`
 echo Creating ${filename}
 
 cat > ${filename} <<EOF    
-function [y,u,t] = ${sys}_ident (last, ppp_names, par_names, A_u, A_w, w, Q, extras)
+function [epar,Y] = ${sys}_ident (y,u,t,par_names,Q,extras)
 
-  ## usage:  [y,u,t] = ${sys}_ident (last, ppp_names, par_names, A_u, A_w, w, Q, extras)
+  ## usage:  [epar,Y] = ${sys}_ident (y,u,t,par_names,Q,extras)
   ##
   ## last      last time in run
   ## ppp_names Column vector of names of ppp params
   ## par_names Column vector of names of estimated params
   ## extras    Structure containing additional info
+  ##
+  ## Created by MTT on ${date}
+ 
+  ## Sensitivity system name
+  system_name = "s${sys}"
 
   ##Sanity check
-  if nargin<2
-    printf("Usage: [y,u,t] = ${sys}_ident(N, ppp_names[, par_names, extras])\n");
+  if nargin<3
+    printf("Usage: [y,u,t] = ${sys}_ident(y,u,t,par_names,Q,extras);");
     return
   endif
 
-  if nargin<4
+  if nargin<6
     ## Set up optional parameters
     extras.criterion = 1e-3;
     extras.emulate_timing = 0;
-    extras.max_iterations = 15;
-    extras.simulate = 1;
-    extras.v =  1e-6;
-    extras.verbose = 0;
+    extras.max_iterations = 10;
+    extras.simulate = 2;
+    extras.v =  1e-2;
+    extras.verbose = 1;
     extras.visual = 1;
   endif
   
@@ -77,200 +85,126 @@ function [y,u,t] = ${sys}_ident (last, ppp_names, par_names, A_u, A_w, w, Q, ext
   simpar  = ${sys}_simpar;
   sympars  = s${sys}_sympar;
   simpars  = s${sys}_simpar;
-  t_ol = simpar.last;
-    
-  ## Number of intervals needed
-  N = ceil(last/t_ol);
 
-  ## Setpoints
-  if extras.verbose
-    printf("Open-loop interval %3.2f \n", simpar.last);
-    printf(" -- using info in ${sys}_simpar.txt\n");
-    printf("PPP optimisation from %3.2f to %3.2f\n", simpars.first, simpars.last);
-    printf(" -- using info in s${sys}_simpar.txt\n");
-  endif
+  ## Parameter indices
+  i_par = ppp_indices (par_names,sympar,sympars);
+
+  ## Initial model state
+  x_0 = zeros(2*n_x,1);
+
+  ## Initial model parameters
+  par_0 = s${sys}_numpar;
+
+  ## Reset simulation parameters
+  [n_data,m_data] = size(y);
+  dt = t(2)-t(1);
+  simpars.last = (n_data-1)*dt;
+  simpars.dt = dt;
+
+  ## Identification
+  [epar,Par,Error,Y,iterations,x] = ppp_optimise(system_name,x_0,par_0,simpars,u,y,i_par,Q,extras);
   
-  t_horizon = [simpars.first+simpars.dt:simpars.dt:simpars.last]';
-  w_s = ones(length(t_horizon)-1,1)*w';
+  ## Do some plots
+  figure(1);
+  title("Comparison of data");
+  xlabel("t");
+  ylabel("y");
+  [N,M] = size(Y);
+  plot(t,Y(:,M),"1;Estimated;", t,y,"3;Actual;");
+  figfig("${sys}_ident_comparison");
 
-  ## Setup the indices of the adjustable stuff
-  if nargin<2
-    i_ppp = []
-  else
-    i_ppp = ppp_indices (ppp_names,sympar,sympars); # Parameters
-  endif
-
-  n_ppp = length(i_ppp(:,1));
-
-  if nargin<3
-    i_par = []
-  else
-    i_par = ppp_indices (par_names,sympar,sympars); # Parameters
-  endif
-  
-    ## Do some simulations to check things out
-    ## System itself
-    par = ${sys}_numpar;
-    x_0_ol = ${sys}_state(par);
-    [y_ol,x_ol, t_ol] =  ${sys}_sim(x_0_ol, par, simpar, ones(1,n_u));
-    simpar_OL = simpar;
-    simpar_OL.last = simpars.last;
-    [y_OL,x_OL, t_OL] =  ${sys}_sim(x_0_ol, par, simpar_OL, ones(1,n_u));
-
-    pars = s${sys}_numpar;
-    x_0_ppp = s${sys}_state(pars);
-    [y_ppp,y_par,x_ppp, t_ppp] =  s${sys}_ssim(x_0_ppp, pars, simpars, ones(1,n_u));
-
-    simpar_PPP = simpars;
-    simpar_PPP.first = simpar.first;
-    [y_PPP,y_par,x_PPP, t_PPP] =  s${sys}_ssim(x_0_ppp, pars, simpar_PPP, ones(1,n_u));
-
-    ## Basis functions
-    Us = ppp_ustar(A_u,1,t_OL',0,0)';
-
-
-  if extras.visual		#Show some graphs
-    figure(2); 	
-    grid; title("Outputs of ${sys}_sim and s${sys}_ssim");
-    plot(t_ol,y_ol, '*', t_ppp, y_ppp, '+', t_OL, y_OL, t_PPP, y_PPP);
-
-
-    figure(3); 	
-    grid; title("Basis functions");
-    plot(t_OL, Us);
-
-  endif
-
-
-
-  ## Do it
-  [y,u,t,P,U,t_open,t_ppp,t_est,its_ppp,its_est] \
-      = ppp_nlin_run ("${sys}",i_ppp,i_par,A_u,w_s,N,Q,extras);
-
-  ## Compute values at ends of ol intervals
-  T_open = cumsum(t_open);
-  T_open = T_open(1:length(T_open)-1); # Last point not in t
-  j=[];
-  for i = 1:length(T_open)
-    j = [j; find(T_open(i)*ones(size(t))==t)];
+  ## Create a table of the parameters
+  [n_par,m_par] = size(i_par);
+  fid = fopen("${sys}_ident_par.tex", "w");
+  fprintf(fid,"\\\\begin{table}[htbp]\\n");
+  fprintf(fid," \\\\centering\\n");
+  fprintf(fid," \\\\begin{tabular}{|l|l|}\\n");
+  fprintf(fid,"  \\\\hline\\n");
+  fprintf(fid,"  Name & Value \\\\\\\\ \\n");
+  fprintf(fid,"  \\\\hline\\n");
+  for i = 1:n_par
+    fprintf(fid,"$%s$ & %4.2f \\\\\\\\ \\n", par_names(i,:), epar(i_par(i,1)));
   endfor
-  y_open = y(j,:);
-  u_open = u(j,:);
-
-  ## Plots
-
-    gset nokey
-    gset nogrid
-    #eval(sprintf("gset xtics %g", simpar.last));
-    #gset noytics
-    gset format x "%.1f"
-    gset format y "%.2f"
-    gset term fig monochrome portrait fontsize 20 size 20 20 metric \
-	     thickness 4
-    gset output "${sys}_ident.fig"
-
-    title("");
-    xlabel("Time (s)");
-    ylabel("u");
-    subplot(2,1,2); plot(t,u,'-',  T_open, u_open,"+");
-    #subplot(2,1,2); plot(t,u);   
-    ylabel("y");
-    subplot(2,1,1); plot(t,y,'-',  T_open, y_open,"+"); 
-    #subplot(2,1,1); plot(t,y); 
-    oneplot;
-    gset term fig monochrome portrait fontsize 20 size 20 10 metric \
-	     thickness 4
-    gset output "${sys}_ident.basis.fig"
-    title("");
-    xlabel("Time (s)");
-    ylabel("Basis functions");
-    plot(t_OL, Us);
-
-
-    ## Create plot against time
-    TTT = [ [0;T_open] [T_open; last] ]';
-    TT = TTT(:);
-
-    [n,m] = size(P);
-    if m>0
-      P = P(1:n-1,:);  # Loose last point
-      PP = [];
-      for j=1:m
-        pp = [P(:,j) P(:,j)]';
-        PP = [PP pp(:)];
-      endfor
-
-      oneplot;
-      gset output "${sys}_ident.par.fig"
-      title("");
-      xlabel("Time (s)");
-      ylabel("Parameters");
-      plot(TT,PP);
-    endif
-
-    [n,m] = size(U);
-    if m>0    oneplot;
-      gset output "${sys}_ident.U.fig"
-      title("");
-      xlabel("Time (s)");
-      ylabel("U");
-      [n,m] = size(U);
-      U = U(1:n-1,:);  # Loose last point
-      UU = [];
-      for j=1:m
-        uu = [U(:,j) U(:,j)]';
-        UU = [UU uu(:)];
-      endfor
-      plot(TT,UU);
-    endif
+  fprintf(fid,"  \\\\hline\\n");
+  fprintf(fid,"\\\\end{tabular}\\n");
+  fprintf(fid,"\\\\caption{Estimated Parameters}\\n");
+  fprintf(fid,"\\\\end{table}\\n");
+  fclose(fid);
 
 endfunction
-
 EOF
 }
 
 make_ident_numpar() {
 echo Creating ${ident_numpar_file}
 cat > ${sys}_ident_numpar.m <<EOF
-function [last, ppp_names, par_names, A_u, A_w, w, Q, extras] = ${sys}_ident_numpar 
+function [y,u,t,par_names,Q,extras] = ${sys}_ident_numpar;
 
-## usage:  [last, ppp_names, par_names, A_u, A_w, w, Q, extras] = ${sys}_ident_numpar ()
-##
-## 
+  ## usage: [y,u,t,par_names,Q,extras] = ${sys}_ident_numpar;
+  ## Edit for your own requirements
+  ## Created by MTT on ${date}
 
-  ## Last time of run
-  last = 10;
+    
+  ## This section sets up the data source
+  ## simulate = 0  Real data (you supply ${sys}_ident_data.dat)
+  ## simulate = 1  Real data input, simulated output
+  ## simulate = 2  Unit step input, simulated output
+  simulate = 2;
+  
 
-  ## Specify basis functions
-  A_w = zeros(1,1);
-  n_ppp = ${nu};
-  A_u = ppp_aug(A_w,laguerre_matrix(n_ppp-1,2.0));
+  ## System info
+  [n_x,n_y,n_u,n_z,n_yz] = ${sys}_def;
+  simpars = s${sys}_simpar;
 
- 
-  ## Names of ppp parameters
-  ppp_names = "";
-  for i=1:n_ppp
-    name = sprintf("ppp_%i", i);
-    ppp_names = [ppp_names; name];
+  ## Access or create data
+  if (simulate<2)		# Get the real data
+    if (exist("${sys}_ident_data.dat")==2)
+      printf("Loading ${sys}_ident_data.dat\n");
+      load ${sys}_ident_data.dat
+    else
+      printf("Please create a loadable file ${sys}_ident_data.dat containing y,u and t\n");
+      return
+    endif
+  else 
+    switch simulate
+      case 2			# Step simulation
+	t = [0:simpars.dt:simpars.last]';
+	u = ones(size(t));
+      otherwise
+	error(sprintf("simulate = %i not implemented", simulate));
+    endswitch
+  endif
+  
+  if (simulate>0)
+    par = ${sys}_numpar();
+    x_0 = ${sys}_state(par);
+    dt = t(2)-t(1);
+    simpars.dt = dt;
+    simpars.last = t(length(t));
+    y =  ${sys}_sim(zeros(n_x,1), par, simpars, u);
+  endif
+
+  ## Default parameter names - Put in your own here
+  sympar = ${sys}_sympar;	# Symbolic params as structure
+  par_names = struct_elements (sympar);	# Symbolic params as strings
+  [n,m] = size(par_names);	# Size the string list
+
+  ## Sort by index
+  for [i,name] = sympar
+    par_names(i,:) = sprintf("%s%s",name, blanks(m-length(name)));
   endfor
-
-  ## Estimated parameters
-  par_names = [];
-
-  ## Weights
-  Q = ones(${ny},1);
-
-  ## Setpoint
-  w = zeros(${ny},1); w(1) = 1;
-
-  ## Set up optional parameters
-  extras.criterion = 1e-3;
+  
+  ## Output weighting vector
+  Q = ones(n_y,1);
+  
+  ## Extra parameters
+  extras.criterion = 1e-5;
   extras.emulate_timing = 0;
-  extras.max_iterations = 15;
-  extras.simulate = 1;
-  extras.v =  1e-6;
-  extras.verbose = 0;
-  extras.visual = 0;
+  extras.max_iterations = 10;
+  extras.simulate = simulate;
+  extras.v =  1e-2;
+  extras.verbose = 1;
+  extras.visual = 1;
 
 endfunction
 EOF
@@ -283,11 +217,18 @@ echo Creating ${dat2_file}
 
 ## Use octave to generate the data
 octave -q <<EOF
-  [last, ppp_names, par_names, A_u, A_w, w, Q, extras] = ${sys}_ident_numpar;
-  [y,u,t] = ${sys}_ident(last, ppp_names, par_names, A_u, A_w, w, Q, extras);
-  data = [t,y,u];
+  [y,u,t,par_names,Q,extras] = ${sys}_ident_numpar;
+  [epar,Y] = ${sys}_ident (y,u,t,par_names,Q,extras);
+  [N,M] = size(Y);
+  y_est = Y(:,M);
+  data = [t,y_est,u];
   save -ascii ${dat2_file} data
 EOF
+
+## Tidy up the latex stuff - convert foo_123 to foo_{123}
+cat ${sys}_ident_par.tex > mtt_junk
+sed  -e "s/_\([a-z0-9,]*\)/_{\1}/g" < mtt_junk >${sys}_ident_par.tex
+rm mtt_junk
 }
 
 case ${lang} in
@@ -299,9 +240,8 @@ case ${lang} in
         ## Make the code
         make_ident;
 	;;
-    dat2|fig|basis.fig|par.fig|U.fig)
+    dat2)
         ## The dat2 language (output data) & fig file
-        rm ${sys}_ident*.fig
 	make_dat2; 
 	;;
     gdat)
@@ -309,11 +249,18 @@ case ${lang} in
 	dat22dat ${sys} ${rep} 
         dat2gdat ${sys} ${rep}
 	;;
-    ps|basis.ps|par.ps|U.ps)
+    fig)
+        gdat2fig ${sys}_${rep}
+	;;
+    ps)
         figs=`ls ${sys}_ident*.fig | sed -e 's/\.fig//'`
-        echo $figs
 	for fig in ${figs}; do
             fig2dev -Leps ${fig}.fig > ${fig}.ps
+	done
+	texs=`ls ${sys}_ident*.tex | sed -e 's/\.tex//'`
+	for tex in ${texs}; do
+          makedoc "" "${sys}" "ident_par" "tex" "" "" "$ps"
+          doc2$ps ${sys}_ident_par "$documenttype"
 	done
 	;;
     view)

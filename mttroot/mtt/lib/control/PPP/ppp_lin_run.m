@@ -44,7 +44,7 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   endif
   
   if nargin<6
-    p_c.N = 10;
+    p_c.N = 25;
   endif
 
   if nargin<7
@@ -52,7 +52,7 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   endif
 
   if !struct_contains(p_c,"delta_ol")
-    p_c.delta_ol = 1.0;	# OL sample interval
+    p_c.delta_ol = 0.5;	# OL sample interval
   endif
   
   if !struct_contains(p_c,"T")
@@ -64,7 +64,7 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   endif
   
   if !struct_contains(p_c,"Method")
-    p_c.Method = "lq";
+    p_c.Method = "original";
   endif
 
   if struct_contains(p_c,"Method")
@@ -81,7 +81,7 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
 	a_u = 2.0;
 	p_c.A_u = laguerre_matrix(p_c.n_U,a_u);
 	if p_c.augment		# Put in constant term
-	  A_u = ppp_aug(0,A_u);
+	  p_c.A_u = ppp_aug(0,p_c.A_u);
 	endif
       endif
     else
@@ -193,54 +193,66 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   t_e = [];
   e_e = [];
   tick = time;
-  for i=1:I
-    i
-    tim=time;			# Timing
-    if Simulate			# Exact simulation 
-      t_sim = [1:p_c.N]*dt;	# Simulation time points
-      [yi,ui,xsi] = ppp_ystar(A,B,C,D,x,p_c.A_u,U,t_sim); # Simulate
-      x = xsi(:,p_c.N);	# Current state (for next time)
-      y_now = yi(:,p_c.N);	# Current output
-      ti  = [(i-1)*p_c.N:i*p_c.N-1]*dt; 
-    else			# The real thing
-      to_rt(U');		# Send U
-      data = from_rt(p_c.N);	# Receive data
-      [yi,ui,ti] = convert_data(data); # And convert from integer format
-      y_now = yi(:,p_c.N);	# Current output
-    endif
-    sample_time = (time-tim)/p_c.N
-    tim = time;
-    ## Observer
-    if strcmp(p_o.method, "intermittent")
-      [x_est y_est e_est] = ppp_int_obs \
-	  (x_est,y_now,U,A,B,C,D,p_c.A_u,p_c.delta_ol,L);
-    elseif strcmp(p_o.method, "continuous")
-      Ui = U;			# U at sub intervals
-      for k = 1:p_c.N
+  i=0;
+  for j=1:20
+    for k=1:I
+      i++;
+      tim=time;			# Timing
+      if Simulate			# Exact simulation 
+	t_sim = [1:p_c.N]*dt;	# Simulation time points
+	[yi,ui,xsi] = ppp_ystar(A,B,C,D,x,p_c.A_u,U,t_sim); # Simulate
+	x = xsi(:,p_c.N);	# Current state (for next time)
+	y_i = yi(:,p_c.N);	# Current output
+	ti  = [(i-1)*p_c.N:i*p_c.N-1]*dt; 
+      else			# The real thing
+				#       to_rt(U');		# Send U
+				#       data = from_rt(p_c.N);	# Receive data
+				#       [yi,ui,ti] = convert_data(data); # And convert from integer format
+	[t_i,y_i,u_i] = ppp_put_get(U); # Generic interface to real-time
+				#      y_i = yi(:,p_c.N);	# Current output
+      endif
+      sample_time = (time-tim)/p_c.N;
+      tim = time;
+      ## Observer
+      if strcmp(p_o.method, "intermittent")
 	[x_est y_est e_est] = ppp_int_obs \
-	    (x_est,yi(:,k),Ui,A,B,C,D,p_c.A_u,dt,L);
-	Ui = A_ud'*Ui;
+	    (x_est,y_i,U,A,B,C,D,p_c.A_u,p_c.delta_ol,L);
+      elseif strcmp(p_o.method, "continuous")
+	Ui = U;			# U at sub intervals
+	for k = 1:p_c.N
+	  [x_est y_est e_est] = ppp_int_obs \
+	      (x_est,yi(:,k),Ui,A,B,C,D,p_c.A_u,dt,L);
+	  Ui = A_ud'*Ui;
+	  y_e = [y_e; y_est'];
+	  e_e = [e_e; e_est];
+	endfor
+      endif
+      
+      ##Control
+      U = K_w*w - K_x*x_est;
+
+      ## Save data
+      if Simulate
+	t = [t;ti'];
+	y = [y;yi'];
+	u = [u;ui'];
+      else
+	t = [t;t_i];
+	y = [y;y_i];
+	u = [u;u_i];
+      endif
+      
+
+      if strcmp(p_o.method, "intermittent")
 	y_e = [y_e; y_est'];
 	e_e = [e_e; e_est];
-      endfor
-    endif
-    
-    ##Control
-    U = K_w*w - K_x*x_est;
+	t_e = [t_e; (i*p_c.N)*dt];
+      endif
 
-    ## Save data
-    t = [t;ti'];
-    y = [y;yi'];
-    u = [u;ui'];
-
-    if strcmp(p_o.method, "intermittent")
-      y_e = [y_e; y_est'];
-      e_e = [e_e; e_est];
-      t_e = [t_e; (i*p_c.N)*dt];
-    endif
-
-    overrun = time-tim
-  endfor			# Main loop
+      overrun = time-tim;
+    endfor			# Main loop
+    w = -w
+  endfor 			# Outer loop
 
   if strcmp(p_o.method, "continuous")
     t_e = t;
@@ -252,24 +264,5 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   ## Put data on file (so can use for identification)
   filename = sprintf("%s_ident_data.dat",Name);
   eval(sprintf("save -ascii %s t y u",filename));
-
-
-#   ## Plot
-#   gset nokey
-#   title("");
-#   boxed=0;
-#   monochrome=1;
-#   grid;
-#   xlabel("t");
-
-#   ylabel("y");
-#   figure(1);plot(t,y, t_e,y_e,"+");
-
-#   ylabel("u");
-#   figure(2);plot(t,u);
-
-#   ylabel("e");
-#   figure(3);plot(t_e,e_e);
-
 
 endfunction

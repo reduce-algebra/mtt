@@ -1,0 +1,34 @@
+%% Label file for system sRCr (sRCr_lbl.txt)
+%SUMMARY sRCr Sensitivity of output of RC circuit wrt value of r
+%DESCRIPTION Uses the sR and sC components and vector bonds
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+
+% Argument aliases
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+% Component type sSe
+	e1	
+
+% Component type sDe
+	e2
+
+% Component type sC
+	c	 lin;lin	effort,c;0
+
+% Component type sR
+	r	 lin;lin	flow,r;1

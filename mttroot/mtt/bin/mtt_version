@@ -1,0 +1,28 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: mtt_version
+# Prints out version of a GNU-style tool
+
+# P.J.Gawthrop May 1998
+# Copyright (c) P.J.Gawthrop 1998
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+echo $1: `$1 --version | head -1`
+
+
+
+
+
+
+
+

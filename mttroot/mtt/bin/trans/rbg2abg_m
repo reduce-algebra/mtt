@@ -11,6 +11,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.13  2000/03/16 12:53:26  peterg
+## Added copy of the %VAR declarations
+## Put in the endfunction statement
+##
 ## Revision 1.12  1998/07/28 19:07:48  peterg
 ## Writes out N_ports as well as n_ports
 ##
@@ -127,7 +131,8 @@ $MATRIX > rbg2abg_m.log  2>mtt_error.txt << EOF
     N_ports = N_ports+n_sub;
   end;
  
-
+ 
+  rbonds = rbonds(:,1:6);  # Strip  the directional information
   [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coord,port_name,\
                                infofile,errorfile);
 

@@ -7,6 +7,9 @@ function write_matrix(matrix,name);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/08/14 08:21:27  peter
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -23,7 +26,10 @@ fprintf(filename, 'm = [\n');
 [N,M] = size(matrix);
 for i = 1:N,
   for j = 1:M
-    fprintf(filename, '\t%g', matrix(i,j));
+    fprintf(filename, '%g', matrix(i,j));
+    if j<M
+      fprintf(filename, '\t');
+    end
   end;
   fprintf(filename, '\n');
 end;

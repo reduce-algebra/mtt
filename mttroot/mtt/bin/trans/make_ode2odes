@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.37  2000/08/01 12:25:06  peterg
+## Now includes euler
+##
 ## Revision 1.36  2000/05/19 17:48:16  peterg
 ## Argument to state
 ##
@@ -138,7 +141,7 @@ Nu=`mtt_getsize $Sys u` # Inputs
 Ny=`mtt_getsize $Sys y` # Inputs  
 
 if [ "$method" = "implicit" ]; then
-    ode=cse
+    ode=csex
     odeo=cseo
     algorithm="mtt_implicit(x,dx,AA,AAx,ddt,$Nx,open_switches)"
 else
@@ -176,8 +179,12 @@ global MTT_data;
   ddt = simpar.dt/simpar.stepfactor;
   ilast = round(simpar.last/ddt)+1; # Total number of steps
 
-## Following remove due to p2c bug
-##  [u]  = zero_input(1);		# Zero the input
+## Following removed due to p2c bug
+##  [u]  = zero_input($Nu);		# Zero the input
+  for MTTi=1:$Nu
+    u(MTTi) = 0;
+  endfor;
+
   mttj = 0;
     for it = 1:ilast		#Integration loop
     [y] = $1_$odeo(x,u,t,par);# Output 

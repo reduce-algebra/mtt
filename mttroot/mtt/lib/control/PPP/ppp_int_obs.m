@@ -1,4 +1,4 @@
-function [x_new,y_new] = ppp_int_obs (x,y,U,A,B,C,D,A_u,delta,L)
+function [x_new,y_new,error] = ppp_int_obs (x,y,U,A,B,C,D,A_u,delta,L)
 
   ## usage: x_new = ppp_int_obs (x,y,U,A,B,C,D,A_u,delta,L)
   ##
@@ -22,6 +22,7 @@ function [x_new,y_new] = ppp_int_obs (x,y,U,A,B,C,D,A_u,delta,L)
   [y_p,us,x_p] = ppp_ystar (A,B,C,D,x,A_u,U,delta);
 
   ## Corrector
-  x_new = x_p - L*(y_p-y);
+  error = (y_p-y);
+  x_new = x_p - L*error;
   y_new = C*x_new;
 endfunction

@@ -6,11 +6,17 @@
 
 # Bourne shell script: mttrc - sets up paths etc for mtt
 # Usage: mttrc 
-# This version sets up octave as the matrix engine except for the three
-# recursive transformations (abg2cbg, cbg2ese,cbg2fig) which use matlab
-# Hopfully, a new release of Octave will fix this.
 
-# Copyright (c) P.J.Gawthrop 1996.
+# Copyright (c) P.J.Gawthrop 1996,1977.
+
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
 
 #Edit the following line to show the location of mtt
 MTTPATH=~/mtt_new/mtt

@@ -17,6 +17,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1998/07/22 12:01:17  peterg
+% %% Aliased ports and parameters.
+% %%
 % %% Revision 1.2  1996/12/04  16:01:42  peterg
 % %% Documantation added.
 % %%
@@ -36,11 +39,17 @@ k_m	lin	flow,$1
 % Electrical components
 %Inductance
 l_a	lin	effort,$2
+
 %Resistance
 r_a	lin	flow,$3
 
 % Mechanical components
 %Inertia
 j_m	lin	flow,$4
+
 %Friction
 b_m	lin	flow,$5
+
+% Ports
+	[Electrical]	SS	external,external
+	[Mecahnical]	SS	external,external

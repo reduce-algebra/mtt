@@ -2,12 +2,8 @@ function cbg2fig(system_name, ...
                  system_type, full_name, ...
                  stroke_length, stroke_thickness, stroke_colour, ...
                  comp_font, comp_colour_u, comp_colour_o)
- 
-% $$$ cbg2fig(system_name, ...
-% $$$                  system_type, full_name, ...
-% $$$                  stroke_length, stroke_thickness, stroke_colour, ...
-% $$$                  comp_font, comp_colour_u, comp_colour_o)
- 
+% cbg2fig - converts causal bg to figure
+%
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %     %%%%% Model Transformation Tools %%%%%
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -16,7 +12,12 @@ function cbg2fig(system_name, ...
 % Causal bond graph:  mfile format to fig file format
 % The resultant fig file is the original _abg.fig with
 % additional causal strokes superimposed.
-%
+% cbg2fig(system_name, ...
+%                  system_type, full_name, ...
+%                  stroke_length, stroke_thickness, stroke_colour, ...
+%                  comp_font, comp_colour_u, comp_colour_o)
+ 
+
 % P.J.Gawthrop May 1996
 % Copyright (c) P.J.Gawthrop, 1996.
 
@@ -25,6 +26,10 @@ function cbg2fig(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1996/08/08  15:52:28  peter
+% %% Recursive version.
+% %% Fails due to octave bug - reported.
+% %%
 % %% Revision 1.2  1996/08/05 20:15:39  peter
 % %% Prepared for recursive version.
 % %%
@@ -58,8 +63,11 @@ if nargin<9
   comp_colour_o = 4; %Red
 end;
 
+% Create a back slash '\' character.
+bs = setstr(92);
+
 % Create the (full) system name
-if length(full_name)==0
+if strcmp(full_name,'')
   full_name = system_name;
   system_type = system_name;
 else
@@ -67,8 +75,9 @@ else
 end;
 
 full_name_type = [full_name, '_', system_type];
-fig_name = [full_name_type, '_cbg.fig'];
-
+% $$$ fig_name = [full_name_type, '_cbg.fig'];
+fig_name = [full_name, '_cbg.fig']
+ 
 % Return if cbg file doesn't exist
 if exist(fig_name)~=2
   return
@@ -82,7 +91,7 @@ eval(['[rbonds,rstrokes,rcomponents] = ', system_type, '_rbg;']);
 eval(['[bonds] = ', system_type, '_abg;']);
 
 % Get the causal bonds
-eval(['[cbonds,status]=', full_name_type, '_cbg;']);
+eval(['[cbonds,status]=', full_name, '_cbg;']);
 
 % Check sizes
 [N_components,Columns] = size(rcomponents);
@@ -187,7 +196,7 @@ for i = 1:N_components
   %Now print the component in fig format
   eval(['[comp_type,comp_name] = ', system_type, '_cmp(i);']);
 
-  Terminator = '\\001';   
+  Terminator = [bs, '001'];   
   for j = 1:length(fig_params)
     fprintf(filenum, '%1.0f ', fig_params(j));
   end;

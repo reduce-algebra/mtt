@@ -16,6 +16,9 @@ PROCEDURE mtt_write(t	  : REAL;
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/07/25 14:04:14  peterg
+## Changed format
+##
 ## Revision 1.1  1998/07/25 09:47:25  peterg
 ## Initial revision
 ##
@@ -28,14 +31,14 @@ VAR
    i : INTEGER;
    
 BEGIN
-   write(t);
+   write(t," ");
    FOR i := 1 TO ny DO
-      write(y[i]);
+      write(y[i]," ");
    write(" # ");
 
    write(t);
    FOR i := 1 TO nx DO
-      write(x[i]);
+      write(x[i]," ");
    writeln;
 END;
    

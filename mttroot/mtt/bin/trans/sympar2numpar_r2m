@@ -14,6 +14,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1996/08/12 20:20:59  peter
+## Explicit parameters via out put list.
+## Parameter conversion stuff deleted.
+##
 ## Revision 1.2  1996/08/11 10:41:52  peter
 ## Fixed various bugs.
 ##
@@ -24,7 +28,6 @@
 
 # Inform user
 echo Creating $1_numpar.m
-echo Creating $1_parconv.m
 
 # Remove the old log file
 rm -f mknumpar.log

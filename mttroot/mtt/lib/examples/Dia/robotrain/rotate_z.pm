@@ -70,23 +70,12 @@ sub rotate_z_R (@) {
     if ($#args == 18-1)
     {
 	my ($component,
-	    $out_causality,
-	    $out_port,
-	    $x1,
-	    $causality1,
-	    $port1,
-	    $y1,
-	    $causality2,
-	    $port2,
-	    $x2,
-	    $causality3,
-	    $port3,
-	    $y2,
-	    $causality4,
-	    $port4,
-	    $psi,
-	    $causality5,
-	    $port5) = @args;
+	    $out_causality, $out_port,
+	    $x1, $causality1, $port1,
+	    $y1, $causality2, $port2,
+	    $x2, $causality3, $port3,
+	    $y2, $causality4, $port4,
+	    $psi, $causality5, $port5) = @args;
 
 	# [ x2 ]   [ +cos(psi) +sin(psi) 0 ] [ x1 ]
 	# [ y2 ] = [ -sin(psi) +cos(psi) 0 ] [ y1 ]

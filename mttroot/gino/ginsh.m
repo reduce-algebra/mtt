@@ -21,12 +21,10 @@ function go_out = ginsh (go_in)
   ##    along with this program; if not, write to the Free Software
   ##    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
-
-  command = sprintf("echo ""%s;"" | ginsh ", go_in); 
-  go_out = system(command);
-
-  ## Strip trailing NL
-  go_out = substr(go_out,1,length(go_out)-1);
+  command = sprintf("echo '%s;' | ginsh ", go_in); # sh command
+  go_out = system(command);	# execute it
   
-
+  if (length(go_out)>0)		# Strip trailing NL
+    go_out = substr(go_out,1,length(go_out)-1);
+  endif
 endfunction

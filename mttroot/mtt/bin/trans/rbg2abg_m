@@ -11,6 +11,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  1998/07/25 16:14:44  peterg
+## *** empty log message ***
+##
 ## Revision 1.10  1998/07/08 15:34:56  peterg
 ## Sorted out error exit status
 ##
@@ -115,6 +118,13 @@ $MATRIX > rbg2abg_m.log  2>mtt_error.txt << EOF
   [rbonds,rstrokes,rcomponents,port_coord,port_name,port_list] = $1_rbg;
   [n_ports, junk] = size(port_list);
  
+  N_ports = 0;
+  for i=1:n_ports		# Count the true number of ports.
+    [subport,n_sub] = split_port(port_list(i,:), ',');
+    N_ports = N_ports+n_sub;
+  end;
+ 
+
   [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coord,port_name,\
                                infofile,errorfile);
 
@@ -122,13 +132,14 @@ $MATRIX > rbg2abg_m.log  2>mtt_error.txt << EOF
   filename = '$1_abg.m';
   filenum = fopen(filename,'w');
   c = '%';
-  fprintf(filenum, 'function [bonds,components,n_ports] = $1_abg\n');
+  fprintf(filenum, 'function [bonds,components,n_ports,N_ports] = $1_abg\n');
   fprintf(filenum, '%s [bonds,components,n_ports] = $1_abg\n', c);
   fprintf(filenum, '%s Acausal bond graph created by MTT on %s\n\n', ...
                      c, date);
   mat2mfile(bonds, 'bonds', filenum);
   mat2mfile(components, 'components', filenum);
   fprintf(filenum, 'n_ports = %1.0f;\n', n_ports);
+  fprintf(filenum, 'N_ports = %1.0f;\n', N_ports);
 
 EOF
 

@@ -14,6 +14,12 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/03/07 12:51:20  peterg
+## This is the new version of ese2dae - it does not do the CRs at this
+## stage to give reduce an easier time.
+##
+## rese2ese_r does the constitutive relationship bit
+##
 ## Revision 1.1  1998/03/07 12:49:31  peterg
 ## Initial revision
 ##
@@ -71,15 +77,16 @@ crname=$topname"_cr.r"
 paramname=$topname"_params.r"
 daename=$sysname"_rdae.r"
 esename=$sysname"_ese.r"
+logname=$sysname"_rdae.log"
 
 # Inform user
 echo Creating $daename
 
 # Remove the old log file
-rm -f ese2dae_r.log
+rm -f $logname
 
 # Use symbolic algebra to accomplish the transformation
-$SYMBOLIC >ese2dae_r.log  << EOF
+$SYMBOLIC >$logname  << EOF
 
 %Read the formatting function
 in "$MTTPATH/trans/reduce_matrix.r";
@@ -134,5 +141,5 @@ quit;
 EOF
 
 # Now invoke the standard error handling.
-mtt_error_r ese2dae_r.log
+mtt_error_r $logname
 

@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1999/07/26 06:07:19  peterg
+## Reinstated removal of the odeo.p file
+##
 ## Revision 1.7  1999/03/16 00:38:06  peterg
 ## Done some more tidying up
 ##
@@ -41,6 +44,7 @@
 ###############################################################
 
 
+
 # Set up the language specific stuff
 rep=$2
 ext='m';
@@ -51,6 +55,9 @@ Lb='(';
 Rb=')';
 
 outfile=$1"_"$rep
+
+## Find som constants
+Nx=`grep "MTTNx " <$1_def.r | awk '{print $3}' | sed 's/;//'`
 
 #Set up gentran
 cat <<EOF >mtt_setreduce.r
@@ -85,7 +92,7 @@ rm -f mtt_r2m.log
 
 #Remove the temporary files
 
-if [ "$rep" = "ode" ]; then
+if [ "$rep" = "ode" ]||[ "$rep" = "cse" ]; then
   #echo Creating $1_odea.$ext
   outfileo=$outfile"o"
   echo Creating $outfileo.m
@@ -93,10 +100,30 @@ if [ "$rep" = "ode" ]; then
   #rm -f $1_odea.$ext.1;
 
   #Header
-  lang_header $1 $rep $ext 'mttx,mttu,t' mttdx > $1_ode.p
-  lang_header $1 odeo $ext 'mttx,mttu,t' mtty  > $1_odeo.p
+  lang_header $1 $rep $ext 'mttx,mttu,t' mttdx > $1_$2.p
+  lang_header $1 $2o $ext 'mttx,mttu,t' mtty  > $1_$2o.p
 
-rm -f mtt_ode mtt_odeo
+  rm -f mtt_ode mtt_odeo
+
+  # Use reduce to accomplish the transformation
+$SYMBOLIC  > mtt_r2m.log <<EOF
+  %Set up the code generator
+  in"mtt_setreduce.r";
+      
+    
+    % The body of the odeo function
+     GENTRANOUT "mtt_odeo";
+     mtt_matrix := MTTy$
+     mtt_matrix_n := MTTNy$
+     mtt_matrix_m := 1$
+     lang_matrix(); 
+     GENTRANSHUT "mtt_odeo";
+
+END;;
+
+EOF
+
+  if [ "$rep" = "ode" ]; then
   # Use reduce to accomplish the transformation
 $SYMBOLIC  > mtt_r2m.log <<EOF
   %Set up the code generator
@@ -110,109 +137,53 @@ $SYMBOLIC  > mtt_r2m.log <<EOF
     lang_matrix();
     GENTRANSHUT "mtt_ode";
     
- 
-      % The body of the odeo function
-     GENTRANOUT "mtt_odeo";
-     mtt_matrix := MTTy$
-     mtt_matrix_n := MTTNy$
-     mtt_matrix_m := 1$
-     lang_matrix(); 
-     GENTRANSHUT "mtt_odeo";
+END;;
+
+EOF
+  else
+## cse represnetation
+echo doing cse
+$SYMBOLIC  > mtt_r2m.log <<EOF
+  %Set up the code generator
+  in"mtt_setreduce.r";
+      
+  % The body of the cse function
+    GENTRANOUT "mtt_ode";
+    mtt_matrix := MTTEdX$
+    mtt_matrix_n := MTTNx$
+    mtt_matrix_m := 1$
+    lang_matrix();
+    GENTRANSHUT "mtt_ode";
+    
+    GENTRANOUT "mtt_odee";
+    mtt_matrix := MTTE$
+    mtt_matrix_n := MTTNx$
+    mtt_matrix_m := MTTNx$
+    lang_matrix();
+    GENTRANSHUT "mtt_odee";
 
 END;;
 
-
 EOF
 
-     
-#  cat $1_odeo.$ext.1
+  fi
 
-##  # Algebraic bits
-##  $MATRIX -q  <<EOF  >> $1_ode.$ext
-##    %System structure
-##    [nx,ny,nu,nz,nyz] = $1_def;
-##  if nyz>0
-##    printf("global mttxx mttt;\n");
-##    printf("mttxx = mttx; mttt=t;\n");
-##  
-##    printf("$Lc====== Extract the internal input variables ======$Rc\n");
-##    for i = 1:nyz
-##      printf("  mttui$Lb%i$Rb = mttx$Lb%i$Rb;\n",i,i+nx);
-##    end;
-##    printf("\n");
-##  
-##    printf("[mttui,info] = fsolve('$1_odea',mttui);\n");
-##    printf("if (info!=1)\n"); 
-##    printf("  error('fsolve has not converged')\n");
-##    printf("end\n");
-##    printf("\n");
-##  
-##    printf("$Lc====== Set up the internal input variables ======$Rc\n");
-##    for i = 1:nyz
-##      printf("  mttui%i = mttui$Lb%i$Rb;\n",i,i);
-##    end;
-##    printf("\n");
-##  
-##    printf("$Lc====== Put internal input variables at end of state derivative ======$Rc\n");
-##    for i = 1:nyz
-##      printf(" mttdx$Lb%i$Rb = mttui%i;\n",i+nx,i);
-##    end;
-##    printf("\n");
-##  end;
-##  
-##EOF
-##  
-  
-  
-##  # Create the odea.$ext function
-##  lang_header $1 odea $ext 'mttui' mttyz 'global mttxx mttt; mttx = mttxx; t=mttt;' > $1_odea.$ext
-##  
-##  $MATRIX -q  <<EOF  >> $1_odea.$ext
-##    %System structure
-##    [nx,ny,nu,nz,nyz] = $1_def;
-##  if nyz>0
-##    printf("$Lc====== Set up the internal input variables ======$Rc\n");
-##    for i = 1:nyz
-##      printf("  mttui%i = mttui$Lb%i$Rb;\n",i,i);
-##    end;
-##    printf("\n");
-##  end;
-##EOF
-##  
-##  cat <<EOF >> $1_odea.$ext
-##  
-##  % The algebraic equations
-##EOF
-##  sed 's/mtt_matrix/mttyz/' $1_odea.$ext.1 >> $1_odea.$ext
-  
-  
-  # Create the odeo function
-  
-##$MATRIX -q  <<EOF  >> $1_odeo.p
-##    %System structure
-##    [nx,ny,nu,nz,nyz] = $1_def;
-##  if nyz>0
-##    printf("$Lc====== Extract the internal input variables ======$Rc\n");
-##    for i = 1:nyz
-##      printf("  mttui$Lb%i$Rb = mttx$Lb%i$Rb;\n",i,i+nx);
-##    end;
-##    printf("\n");
-##  
-##    printf("$Lc====== Set up the internal input variables ======$Rc\n");
-##    for i = 1:nyz
-##      printf("  mttui%i = mttui$Lb%i$Rb;\n",i,i);
-##    end;
-##    printf("\n");
-##  end;
-##EOF
+touch mtt_odee
+sed 's/mtt_matrix/mttdx/' <mtt_ode  >> $1_$2.p
+sed 's/mtt_matrix/mtte/'  <mtt_odee >> $1_$2.p
+sed 's/mtt_matrix/mtty/'  <mtt_odeo >> $1_$2o.p
 
-sed 's/mtt_matrix/mttdx/' <mtt_ode  >> $1_ode.p
-sed 's/mtt_matrix/mtty/'  <mtt_odeo >> $1_odeo.p
+if [ "$rep" = "cse" ]; then
+cat <<EOF >>$1_$2.p
 
-rm -f mtt_odeo mtt_ode
+   ## Solve E dx = dxe;;
+   mtt_solve(mttdx,mttE,mttdx,$Nx);; 
+EOF
+fi
+rm -f mtt_odeo mtt_ode mtt_odee
 
 # Convert from Pascal syntax to Octave syntax 
- mtt_p2m<$1_odeo.p > $1_odeo.m 
+ mtt_p2m<$1_$2o.p > $1_$2o.m 
 
  rm -f    $1_odeo.p
 fi

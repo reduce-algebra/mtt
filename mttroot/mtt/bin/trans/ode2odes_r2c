@@ -20,6 +20,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.17  1998/05/15 07:47:23  peterg
+## Includes sign.c by default
+##
 ## Revision 1.16  1998/05/14 08:25:52  peterg
 ## Corrected time skew.
 ##
@@ -126,6 +129,7 @@ write "#define MTTNY2 ", MTTNy+2 $
 write "#define MTTNU2 ", MTTNu+2 $
 
 write "#include <stdio.h>"$
+write "#include <math.h>"$
 write "#include ""sign.c"" "$
 write "#include ""$1_simpar.h"" "$
 write "#include ""$1_ode.c"" "$

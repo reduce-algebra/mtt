@@ -14,6 +14,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.14  2002/08/30 15:39:04  geraint
+## Read fix_c.r before ese.r and explicitly overload ** operator with pow().
+## These changes are required for the Codemist version of Reduce.
+##
 ## Revision 1.13  2002/06/28 10:13:40  geraint
 ## Includes fix_c.r in ese2rdae and def2write_r to eliminate occurrances of x**y.
 ##
@@ -127,6 +131,10 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 partition=yes;
                 blurb='with partitioning';
 		;;
+      -sort )
+	  	sort=sort;
+		blurb1='using sorted equations';
+		;;
 	*)
 		echo "$1 is an invalid argument - ignoring";
                 exit ;;
@@ -150,7 +158,13 @@ crname=$topname"_cr.r"
 subsname=$topname"_subs.r"
 paramname=$topname"_params.r"
 daename=$sysname"_rdae.r"
-esename=$sysname"_ese.r"
+
+if [ -n "$sort" ]; then
+    esename=$sysname"_sese.r"
+else
+    esename=$sysname"_ese.r"
+fi
+
 logname=ese2rdae.log
 
 if [ -n "${load_cr}" ]; then
@@ -159,7 +173,7 @@ if [ -n "${load_cr}" ]; then
 fi
 
 # Inform user
-echo Creating $daename $blurb $blurb2 $blurb3
+echo Creating $daename $blurb $blurb1 $blurb2 $blurb3
 
 # Remove the old log file
 rm -f $logname

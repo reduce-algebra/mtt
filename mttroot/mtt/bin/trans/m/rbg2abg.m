@@ -5,6 +5,10 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.13  1997/08/04 12:50:39  peterg
+% %% Many bug fixes to the named port version + tied up the logic and
+% %% supporting comments.
+% %%
 % %% Revision 1.12  1997/08/02 19:37:53  peterg
 % %% Now uses named ports.
 % %%
@@ -172,46 +176,49 @@ for i = 1:n_components
 	if m==1
 	  k=k+1;
 	  unsorted_port_list(k,:) = port_name(port_index,:);
-	  end;
+	end;
       end;
-     
-      %Either all or non ports should be labelled - write error
-      %message if this is not so
-      if (k~=0)&(k~=n_comp_ports)
-        mtt_info(['Component ', comp_name, ' (', comp_type, ') has wrong number of labels'], infofile); 
-        mtt_info(sprintf("\tit has %1.0f labels but should have 0 or %1.0f",k,n_comp_ports), infofile); 
-      end;
+    else % just use that provided by the component
+      unsorted_port_list = port_list;
+      k = n_comp_ports;
+    end;
 
-      [n_unsorted_ports,m_unsorted_ports] = size(unsorted_port_list);
-      if m_unsorted_ports<2
-        n_unsorted_ports = 0;
-      end;
+    %Either all or non ports should be labelled - write error
+    %message if this is not so
+    if (k~=0)&(k~=n_comp_ports)
+      mtt_info(['Component ', comp_name, ' (', comp_type, ') has wrong number of labels'], infofile); 
+      mtt_info(sprintf("\tit has %1.0f labels but should have 0 or %1.0f",k,n_comp_ports), infofile); 
+    end;
 
-      unsorted_port_list
+    [n_unsorted_ports,m_unsorted_ports] = size(unsorted_port_list);
+    if m_unsorted_ports<2
+      n_unsorted_ports = 0;
+    end;
+
+    unsorted_port_list
 
 
-      % One port defaults:
-      if n_comp_ports==1
-        if n_unsorted_ports==0
-          unsorted_port_list(1,:) = port_list(1,:);
-        end; 
-      end;
-      
-      % Junctions (order of ports unimportant)
-      if (comp_type=='zero')|(comp_type=='one')
-        for j = 1:n_comp_ports
-          components(i,j) = signed_bond_list(j);
-        end
-      else %Order of ports is important
-      %Write out the signed bond list in the correct order
-        for j = 1:n_comp_ports
-          name_k = unsorted_port_list(j,:);
-          k = name_in_list(name_k, port_list)
-          if k==0
-            mtt_info(['Component ', comp_name, ' (', comp_type, ') has an unrecognised port: ', name_k], infofile); 
-          else
+    % One port defaults:
+    if n_comp_ports==1
+      if n_unsorted_ports==0
+        unsorted_port_list(1,:) = port_list(1,:);
+      end; 
+    end;
+    
+    % Junctions (order of ports unimportant)
+    if (comp_type=='zero')|(comp_type=='one')
+      for j = 1:n_comp_ports
+        components(i,j) = signed_bond_list(j);
+      end
+    else %Order of ports is important
+    %Write out the signed bond list in the correct order
+      for j = 1:n_comp_ports
+        name_k = unsorted_port_list(j,:);
+        k = name_in_list(name_k, port_list)
+        if k==0
+          mtt_info(['Component ', comp_name, ' (', comp_type, ') has an unrecognised port: ', name_k], infofile); 
+        else
           components(i,j) = signed_bond_list(k);     
-          end;
         end;
       end;
     end;

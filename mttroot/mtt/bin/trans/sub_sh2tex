@@ -14,6 +14,11 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  2004/02/10 10:13:05  gawthrop
+## Handles #SUMMARY correctely
+## Refined count of subsystems within fig file (avoilds ports with same
+## name as system
+##
 ## Revision 1.2  2004/02/10 09:51:07  gawthrop
 ## Updated obsolete path name.
 ##
@@ -47,11 +52,11 @@
 
 #Useful strings
 quote="'";
-listtype="itemize"
+listtype="enumerate"
 
-# Maximum list depth - maybe I should learn sh arithmetic!!
-# Just go to two levels
-maxlevel='0+1+1'; 
+# Maximum list depth 
+# Just go to 3 levels
+maxlevel=3; 
 
 #Look for a command line argument
 labels=''; arg='';
@@ -71,11 +76,11 @@ filename=$2
 
 
 if [ -z "$3" ]; then
-    level=0;
+    let level=0;
 else
-    level=$4;
+    let level=$4;
 fi
-
+echo "level: $level"
 #Top-level commands
 if [ -z "$2" ]; then
   filename="$1_sub.tex"
@@ -124,7 +129,7 @@ if [ "$level" != "$maxlevel" ]; then
 	    \begin{$listtype}
 EOF
 	# Recursively generate the subsystems
-        level1="$level+1"
+        let level1="$level+1"
 	sh $system\_sub.sh "sub_sh2tex $arg " " $filename $system $level1" 
 	cat <<EOF >> $filename
 	    \end{$listtype}

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.279  2000/11/08 09:51:52  peterg
+## Started incorporating Geraints CC/oct conversions
+##
 ## Revision 1.278  2000/11/07 16:39:21  peterg
 ## *** empty log message ***
 ##
@@ -1065,7 +1068,9 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 shift;;
 	-oct )
                 mtt_switches="$mtt_switches $1";
-                m='oct';;
+                using_oct=yes;
+                m=oct
+                ;;
 	-opt )  mtt_switches="$mtt_switches $1";
                 optimise='-optimise';;
 	-partition ) mtt_switches="$mtt_switches $1";
@@ -1270,6 +1275,15 @@ if [ "$1" = "Clean" ] && [ "$2" = "" ]; then
   rm -f  *_unique_raw_list *_raw_list
   rm -f mtt_error.txt mtt_info.txt *_ode2odes.out 
   rm -f *_*_write.r *_simpar.m *_simpar.p
+  rm -f *_cseo.oct *_input.oct *_simpar.oct *_smxax.oct
+  rm -f *_csex.oct *_numpar.oct *_smxa.oct *_state.oct 
+  rm -f *_ode.oct *_odeo.oct
+  rm -f *_cseo.cc *_input.cc *_simpar.cc *_smxax.cc
+  rm -f *_csex.cc *_numpar.cc *_smxa.cc *_state.cc 
+  rm -f *_ode.cc *_odeo.cc
+  rm -f *_logic.m *_logic.cc *_logic.oct
+  rm -f *_state.m *_state.cc *_state.oct
+  rm -f *_ode2odes.* *.dat2
   rm -fR *_rep MTT_work
   exit
 fi
@@ -1295,6 +1309,15 @@ if [ "$2" = "Clean" ] && [ "$3" = "" ]; then
   rm -f $1_unique_raw_list $1_raw_list
   rm -f mtt_error.txt mtt_info.txt $1_ode2odes.out 
   rm -f $1_*_write.r $1_simpar.m $1_simpar.p
+  rm -f $1_cseo.oct $1_input.oct $1_simpar.oct $1_smxax.oct
+  rm -f $1_csex.oct $1_numpar.oct $1_smxa.oct $1_state.oct 
+  rm -f $1_ode.oct $1_odeo.oct
+  rm -f $1_cseo.cc $1_input.cc $1_simpar.cc $1_smxax.cc
+  rm -f $1_csex.cc $1_numpar.cc $1_smxa.cc $1_state.cc 
+  rm -f $1_ode.cc $1_odeo.cc
+  rm -f $1_logic.m $1_logic.cc $1_logic.oct 
+  rm -f $1_state.m $1_state.cc $1_state.oct
+  rm -f $1_ode2odes.* $1.dat2
   rm -fR $1_rep MTT_work
   exit
 fi
@@ -1712,21 +1735,16 @@ $MAKE -S $verbose  -f  -  $target << EOF
 
 # MTT implicit rules
 ## .oct files
+ifneq ($2,ode2odes)
 %.oct:  %.cc $1_def.h $1_sympar.h
 	echo Creating $1_$2.oct; mkoctfile  $< 
+endif
 
 ## .cc files
-#%.cc:  %.p
-#	mtt_p2cc  $< 
+ifneq ($2,ode2odes)
 %.cc:  %.m
 	mtt_m2cc.sh  $1 $2 cat 
-
-#Suffix rules
-## .m files
-##.SUFFIXES : .r .m
-##.r.m:   $1_$2.r $1.def $1.sympar
-##	mtt_r2m  $1 $2 
-
+endif
 
 # Generates code to write reduce code
 $1_ode_write.r: $1_def.m
@@ -1956,7 +1974,7 @@ $1_simpar.txt:
 	)> $1_simpar.txt
 
 #SUMMARY simpar	simulation information (m)
-$1_simpar.m: $1_simpar.txt
+$1_simpar.m: $1_simpar.txt $1_def.r $1_sympar.txt
 	mtt_txt2m $1 simpar
 
 
@@ -1992,6 +2010,7 @@ endif
 
 #SUMMARY logic	Dynamic switch logic (txt)
 $1_logic.txt : FORCE
+	mtt -q $1 def r
 	mtt -q $1 struc txt
 	mtt -q $1 sympar txt
 ifeq ($target,$1_logic.txt)
@@ -2308,16 +2327,48 @@ $1_ode.tex: $1_ode.r  $1_sympar.r $1_simp.r
 
 # The main simulation programme
 ifeq ($integration_method,implicit)
-$1_ode2odes.m : $1_def.r $1_sympars.txt $1_smxa.$m $1_smxax.$m\
-		$1_simpar.m $1_numpar.m $1_state.m $1_input.m \
-		$1_csex.$m $1_cseo.$m  $1_logic.m
-	make_ode2odes $1 $integration_method
+$1_ode2odes.m : $1_def.r $1_sympars.txt \
+                $1_smxa.m $1_smxax.m\
+                $1_simpar.m $1_numpar.m $1_state.m $1_input.m \
+                $1_csex.m $1_cseo.m  $1_logic.m
+ifeq ($using_oct,yes)
+	mtt $mtt_switches -q -u $1 smxa oct
+	mtt $mtt_switches -q -u $1 smxax oct
+	mtt $mtt_switches -q -u $1 simpar oct
+	mtt $mtt_switches -q -u $1 numpar oct
+	mtt $mtt_switches -q -u $1 state oct
+	mtt $mtt_switches -q -u $1 input oct
+	mtt $mtt_switches -q -u $1 csex oct
+	mtt $mtt_switches -q -u $1 cseo oct
+	mtt $mtt_switches -q -u $1 logic oct
+	make_ode2odes $1 cc $integration_method
+	echo Creating $1_ode2odes.oct
+	mkoctfile $1_ode2odes.cc
+	touch $1_ode2odes.m # Create a dummy which wont' be used
+else
+	make_ode2odes $1 m $integration_method
+endif
 endif
 ifeq ($integration_method,euler)
 $1_ode2odes.m : $1_def.r $1_sympars.txt\
 		$1_simpar.m $1_numpar.m $1_state.m $1_input.m \
-		$1_ode.$m $1_odeo.$m  $1_logic.m
-	make_ode2odes $1 $integration_method
+		$1_ode.m $1_odeo.m  $1_logic.m
+ifeq ($using_oct,yes)
+	mtt $mtt_switches -q -u $1 simpar oct
+	mtt $mtt_switches -q -u $1 numpar oct
+	mtt $mtt_switches -q -u $1 state oct
+	mtt $mtt_switches -q -u $1 input oct
+	mtt $mtt_switches -q -u $1 ode oct
+	mtt $mtt_switches -q -u $1 odeo oct
+	mtt $mtt_switches -q -u $1 logic oct
+	make_ode2odes $1 cc $integration_method
+	echo Creating $1_ode2odes.oct
+	mkoctfile $1_ode2odes.cc
+	touch $1_ode2odes.m # Create a dummy which wont' be used
+else
+	make_ode2odes $1 m $integration_method
+endif
+
 endif
 
 
@@ -2377,7 +2428,7 @@ $1_ode2odes.c: $1_ode2odes.p
 #SUMMARY sim Octave simulation function (m)
 
 ifeq ($computation,octave)
-$1_sim.m: $1_def.r $1_sympar.txt $1_cse.$m $1_cseo.$m $1_smxa.$m $1_smxax.$m $1_numpar.m $1_state.m
+$1_sim.m: $1_def.r $1_sympar.txt $1_cse.m $1_cseo.m $1_smxa.m $1_smxax.m $1_numpar.m $1_state.m
 	mtt_make_sim $1 $integration_method $computation 
 endif
 
@@ -2665,8 +2716,7 @@ $1_sms.c: $1_sm.c $1_def.r $1_sympar.r
 	sm2sms_r2c $1
 
 ifeq ($computation,octave)
-$1_odes.dat2: $1_ode2odes.m $1_ode.m $1_odeo.m $1_numpar.m $1_logic.m  \
-	     $1_def.m $1_input.m $1_state.m $1_simpar.m
+$1_odes.dat2: $1_ode2odes.m
 	time octave_ode2odes $1
 endif
 
@@ -2690,14 +2740,14 @@ $1_odes.dat2: $1_sim.exe
 endif
 
 
-$1_odeso.m: $1_odes.m
-	touch $1_odeso.m
-$1_smso.m: $1_sms.m
-	touch $1_smso.m
-$1_daes.m: $1_dae.m $1_numpar.m  $1_def.m $1_input.m $1_simpar.m
-	dae2daes_m $1 '$ARGS'
-$1_daeso.m: $1_daes.m
-	touch $1_daeso.m
+#$1_odeso.m: $1_odes.m
+#	touch $1_odeso.m
+#$1_smso.m: $1_sms.m
+#	touch $1_smso.m
+#$1_daes.m: $1_dae.m $1_numpar.m  $1_def.m $1_input.m $1_simpar.m
+#	dae2daes_m $1 '$ARGS'
+#$1_daeso.m: $1_daes.m
+#	touch $1_daeso.m
 
 
 #Conversion of data files from dat to sdat format
@@ -2831,8 +2881,10 @@ $1_$2.ps: $1_$2.gdat
 	gdat2ps $1_$2  '$ARGS'
 endif
 $1_$2.ps: $1_$2.fig
+	echo Creating $1_$2.ps
 	fig2dev -Leps $1_$2.fig> $1_$2.ps
 $1_$2.pdf: $1_$2.fig
+	echo Creating $1_$2.pdf
 	fig2dev -Lpdf $1_$2.fig> $1_$2.pdf
 
 endif
@@ -2951,5 +3003,3 @@ if [ "$make_status" != "0" ]; then
     echo Exiting MTT with error $make_status
     exit 1
 fi
-
-

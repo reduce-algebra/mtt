@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.2  1996/08/25  09:53:35  peter
+# Error handling added.
+#
 ## Revision 1.1  1996/08/18 20:03:51  peter
 ## Initial revision
 ##
@@ -31,7 +34,7 @@ reduce >dae2dm_r.log << EOF
 in "$1_def.r";
 in "$1_dae.r";
 in "$1_cr.r";
-in "$1_sympar.r";
+%%in "$1_sympar.r";
 
 OFF Echo;
 OFF Nat;
@@ -244,8 +247,30 @@ BEGIN
     END;
 END;
 
+%Zap the dz terms (not a nice way)
+MTTdz1 := 0;
+MTTdz2 := 0;
+MTTdz3 := 0;
+MTTdz4 := 0;
+MTTdz5 := 0;
+MTTdz6 := 0;
+MTTdz7 := 0;
+MTTdz8 := 0;
+MTTdz9 := 0;
+MTTdz10 := 0;
+MTTdz11 := 0;
+MTTdz12 := 0;
+MTTdz13 := 0;
+MTTdz14 := 0;
+MTTdz15 := 0;
+MTTdz16 := 0;
+MTTdz17 := 0;
+MTTdz18 := 0;
+MTTdz19 := 0;
+
+
 %Substitute the ss values
-in "$1_ss.r";
+in "$1_sspar.r";
 
 %Create the output file
 OUT "$1_dm.r";

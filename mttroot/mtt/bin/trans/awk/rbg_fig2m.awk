@@ -13,6 +13,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.31  1998/04/16 13:18:13  peterg
+## Now ignores spurious ports (in lbl but not Figure \ref{) but gives
+## warning
+##
 ## Revision 1.30  1998/04/12 15:01:17  peterg
 ## Converted to uniform port notation - always use []
 ##
@@ -181,7 +185,6 @@ function write_component(i) {
     name = label[i,1];
     cr   = label[i,2];
     arg  = label[i,3];
-    
     if (length(x[name])==0) {
         # print error - its in lbl but not fig file
         printf(warning_l, name);
@@ -524,7 +527,7 @@ BEGIN {
   c_file = sprintf("%s_cmp.m", sys_name);
   fig_file = sprintf("%s_fig.fig", sys_name);
   cmp_file = sprintf("%s_cmp.fig", sys_name);
-  bnd_file = sprintf("%s_bnd.fig", sys_name);
+  bnd_file = sprintf("%s_bnd.fig", sys_name); 
   head_file = sprintf("%s_head.fig", sys_name);
 
   warning_f = "WARNING %s \t in fig file but not lbl file  - using\n";
@@ -570,10 +573,9 @@ BEGIN {
 }
 {
 # Start of .fig file?
-  if ( (NF>0) && (match("#FIG", $1) > 0) ) {
+  if ($1=="#FIG") {
     isa_fig_file=1;
   }
-
   if (isa_fig_file==0) {
     process_lbl()    
       }

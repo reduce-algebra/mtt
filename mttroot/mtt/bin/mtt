@@ -6,7 +6,7 @@
 
 # Bourne shell script: mtt
 
-# P.J.Gawthrop Oct 1989, Dec 1989, 1990, 1991, Oct 1993, Dec 1993, Jan 1994, Dec 95
+# P.J.Gawthrop Oct 1989, Dec 1989, 1990, 1991, Oct 1993, Dec 1993, Jan 1994, Dec 95, Nov 1996.
 # Copyright (c) P.J.Gawthrop, 1989, 1990, 1991, 1993, 1994, 1995, 1996.
 
 ###############################################################
@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.42  1996/11/11  17:23:03  peterg
+# Added numpar.m requirement to all .m targets
+#
 ## Revision 1.41  1996/11/11 17:18:32  peterg
 ## VERSION 2.1
 ##
@@ -169,7 +172,7 @@ if [ "$quiet" != "quiet" ]; then
   echo
 fi
 
-if [ "$1" = "" ]; then
+if [ -z "$1" ]; then
   echo 'Usage: mtt help'
   echo '       mtt info'
   echo '       mtt info topic'
@@ -274,7 +277,7 @@ if [ "$1" = "copy" ]; then
     fi
   else
     path_name=$3
-    if [ "$path_name" = "" ]; then
+    if [ -z "$path_name" ]; then
       path_name=$MTTPATH/lib/examples
     fi
     echo Copying system $2 to here
@@ -283,11 +286,10 @@ if [ "$1" = "copy" ]; then
   exit
 fi
 
-
 # Save up the argument list in a file; but only if argument has changed
 ARGS=$4;
 #DIFF doesn't like empty files - so put a blank if empty
-if [ -z $ARGS ]; then
+if [ -z "$ARGS" ]; then
   ARGS=' ';
 fi
 
@@ -371,7 +373,6 @@ fi
 
 
 # This is the main mtt programme
- 
 gmake -s  -f -  $1_$2.$3 << EOF
 
 # Cancel implicit rules I don't want

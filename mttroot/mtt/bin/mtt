@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.153  1998/05/28 09:36:38  peterg
+## --version and --versions switch
+##
 ## Revision 1.152  1998/05/24 15:43:10  peterg
 ## Added symbolic solution of alg. equations (-A)
 ##
@@ -1121,7 +1124,7 @@ $1_sympar.txt: $1_sub.sh
 	fi
 endif
 ifeq ($switches,1)
-$1_sympar.txt: $1_sub.sh $1_struc.txt
+$1_sympar.txt: $1_sub.sh 
 	lbl2sympar_txt2txt $1
  
 	if [ "$level" = "0" ]; then \

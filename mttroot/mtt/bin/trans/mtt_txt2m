@@ -15,6 +15,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.3  2000/05/11 16:09:24  peterg
+# %% Put in simpar.first parameter
+# %%
 # %% Revision 1.2  2000/05/11 12:16:46  peterg
 # %% New version of simpar - with record
 # %%
@@ -172,7 +175,7 @@ doublequote = "\042";
 if [ "$2" = "numpar" ]; then
     awk '{
        printf("  MTTpar(%i) \t= %s;\n",++i, tolower($1));
-     }'< $1_sympar.txt  >>$1_numpar.m
+     }'< $1_sympars.txt  >>$1_numpar.m
 fi
 
 

@@ -13,6 +13,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  1996/08/25 09:22:55  peter
+## # Print errors, if any.
+## mtt_error error.txt
+##
 ## Revision 1.6  1996/08/24 14:36:01  peter
 ## Error handling included.
 ##
@@ -116,7 +120,7 @@ EOF
 
 cat mtt_info.txt
 
-cp $1_$1_cbg.m $1_cbg.m 
+cp $1_$1_cbg.m $1_cbg.m 2>> mtt_error.txt 
 
 # Print errors, if any.
-mtt_error error.txt
+mtt_error mtt_error.txt

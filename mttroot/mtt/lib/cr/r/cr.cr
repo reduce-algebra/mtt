@@ -8,6 +8,9 @@
 %DESCRIPTION             mtt_f=mtt_e/r
 
 % $Log$
+% Revision 1.1  2000/10/03 18:34:00  peterg
+% Initial revision
+%
 
 %Copyright (C) 2000 by Peter J. Gawthrop
 
@@ -17,7 +20,7 @@ operator cr;
 % We need four versions so that state does not need to be explicitly
 % mentioned.
 % At the moment, assume only one solution (in fact the first is
-chosen)
+% chosen)
 
 % Flow input
 FOR ALL mtt_cr, input, out_cause

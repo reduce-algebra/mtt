@@ -21,7 +21,15 @@ exec wish "\$0" "\$@"
 ## main window
 wm title . "MTT Viewer: ${sys}"
 
-button .print -text "Print" -command print
+set parameter ""
+button .print -text "Print" -command { 
+    global parameter;
+    if {"\$parameter"==""} {
+	tk_dialog ".mtt_Print_Error" "Print Error" "Select a parameter!" "" "0" "Try Again"
+    } else {
+	print \$parameter
+    }
+}
 button .quit  -text "Quit"  -command exit
 
 ## states canvas
@@ -43,8 +51,8 @@ checkbutton    	.cy.t	-text		"Outputs"
 .cy.l configure -yscrollcommand ".cy.sy set"
 
 ## bind lists
-bind .cx.l <<ListboxSelect>> { plot [ .cx.l get anchor ] }
-bind .cy.l <<ListboxSelect>> { plot [ .cy.l get anchor ] }
+bind .cx.l <<ListboxSelect>> { set parameter [ .cx.l get anchor ] ; plot \$parameter }
+bind .cy.l <<ListboxSelect>> { set parameter [ .cy.l get anchor ] ; plot \$parameter }
 
 proc "reverse_name" "name" {
     set delim "_"
@@ -148,12 +156,23 @@ proc "plot_var" "title column" {
 }
 
 ## print output
-proc "print" "" {
-    exec echo set term postscript > ${tmp}.print
-    exec echo set output \"../${sys}_gnuplot.ps\" >> ${tmp}.print
-    exec grep -v pause ${tmp} >> ${tmp}.print
-    exec gnuplot ${tmp}.print
-    puts "Graph printed to ${sys}_gnuplot.ps"
+proc "print" "parameter" {
+    set filename [tk_getSaveFile\
+	-initialdir ".."\
+	-initialfile "\$parameter.ps"\
+	-defaultextension ".ps"\
+	-filetypes {
+	    {{Postscript} {.ps}}
+	    {{All files} {*}}
+	}
+    ]
+    if {\$filename != ""} {
+	exec echo set term postscript > ${tmp}.print
+	exec echo set output \"\$filename\" >> ${tmp}.print
+	exec grep -v pause ${tmp} >> ${tmp}.print
+	exec gnuplot ${tmp}.print
+	puts "Graph printed to \$filename"
+    }
 }
 
 EOF

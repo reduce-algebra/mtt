@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.36  2000/10/13 10:54:47  peterg
+  ## ## Now writes out a unique name for each state etc
+  ## ##
   ## ## Revision 1.35  2000/10/12 19:27:47  peterg
   ## ## Now writes the aliased args
   ## ##
@@ -175,7 +178,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   
   ## Setup files
   ese_name = [full_name_repetition, "_ese.r"];
-  ese_file = fopen(ese_name, "w");
+  ese_file = fopen(ese_name, "w"); # open file (first time)
   
   fprintf(ese_file, "\n%s%s Equation file for system %s (file %s)\n", ...
 	  pc, pc, full_name_repetition, ese_name);
@@ -317,11 +320,16 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	  eqn_name = [subsystem.type, "_eqn"]
 	  
 	  if exist(eqn_name)~=2 ## Try a compound component
+            fclose(ese_file);	# Close but reopen later
+
 	    disp("---PUSH---"); bond_list, comp_name, subsystem.type
 	    structure = cbg2ese(comp_name, subsystem.type, subsystem.cr, subsystem.arg, ...
 				full_name, full_name_repetition, ...
 				k, structure,  structure_file, infofilenum);
 	    
+	    disp("---POP---");
+	    ese_file = fopen(ese_name, "a"); # open file (again)
+
 	    ## Link up the bonds
 	    fprintf(ese_file, ...
 		    "\n\t%s Equations linking up subsystem %s (%s)\n\n", ...
@@ -361,7 +369,6 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	      end;	
 	    end;
 	    
-	    disp("---POP---");
 	  else # its a simple component
 	    fprintf(ese_file, "\n\t%s Equations for component %s (%s), repetition %d\n\n", ...
 		    pc, comp_name, subsystem.type,k);
@@ -410,8 +417,8 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
       endfor			# [subsystem,comp_name] = CBG_field
     endif			# struct_contains(CBG,field)
   endfor			# i=1:2
-  ## Close the files
-  fclose(ese_file);
+
+  fclose(ese_file);		# Close
   
 endfunction
 

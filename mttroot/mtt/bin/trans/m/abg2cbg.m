@@ -19,6 +19,10 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 # ###############################################################
 # ## $Id$
 # ## $Log$
+# ## Revision 1.41  1998/11/20 10:52:28  peterg
+# ## Copies port bonds if the port bonds ARE set
+# ## -- replaces Copies port bonds if the component bonds are NOT set
+# ##
 # ## Revision 1.40  1998/09/02 11:47:09  peterg
 # ## Now uses explicit ordered list of ports instead of port.index.
 # ## Note that subsystems are still treated in arbitrary order.
@@ -310,27 +314,34 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
   total = 2*n_bonds;
   done = sum(sum(abs(ABG.bonds)))/total*100;
 
-
   fields=["ports";"subsystems"];	# Do for both ports and subsystems -
 				# ports first
   for i=1:2
     field=deblank(fields(i,:));
     if struct_contains(ABG,field);
       eval(["ABG_field = ABG.",field, ";"]);
-field,ABG_field
+      field,ABG_field
+      
+      sum_ok = 0; n_comp = 0;
+      for [subsystem,name] = ABG_field# Find % status = 0 (causally complete)
+    	eval(["ok = (ABG_field.",name,".status==0);"]);
+	sum_ok = sum_ok + ok; n_comp ++;
+      endfor;
+      Done = sum_ok/n_comp*100
       
 # Outer while loop sets preferred causality
       ci_index=1;
 
-      for [subsystem,name] = ABG_field# Set new status field to -1
-    	eval(["ABG_field.",name,".status=-1;"]);
-      endfor;
+#      for [subsystem,name] = ABG_field# Set new status field to -1
+#    	eval(["ABG_field.",name,".status=-1;"]);
+#      endfor;
       
       while( ci_index>0)
     	old_done = inf;
+    	old_Done = inf;
 	
-    	while done!=old_done	# Inner loop propagates causality
-	  old_done = done;
+    	while Done!=old_Done	# Inner loop propagates causality
+	  old_Done = Done;
 	  for [subsystem,name] = ABG_field
 name,subsystem
       	    if subsystem.status != 0 # only do this if causality not yet complete
@@ -403,7 +414,14 @@ name,subsystem
 	      eval(["ABG_field.",name,".status = subsystem.status;"]);
     	    end;
 	  end;
-	  
+
+	  sum_ok = 0; n_comp = 0;
+	  for [subsystem,name] = ABG_field# Find % status = 0 (causally complete)
+    	    eval(["ok = (ABG_field.",name,".status==0);"]);
+	    sum_ok = sum_ok + ok; n_comp ++;
+	  endfor;
+
+	  Done = sum_ok/n_comp*100
 	  done = sum(sum(abs(ABG.bonds)))/total*100
 				#disp(sprintf("Causality is #3.0f#s complete.", done, pc), infofile));
 	  
@@ -433,9 +451,9 @@ name,subsystem
   
   if at_top_level
     mtt_info(sprintf("Final causality of %s is %3.0f%s complete.", ...
-		     full_name, done, pc), infofile);
+		     full_name, Done, pc), infofile);
     
-    if done<100
+    if Done<100
       mtt_error(sprintf("Unable to complete causality"),errorfile);
     end;
   endif				# at_top_level

@@ -20,6 +20,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.2  1997/01/21  22:57:17  peterg
+# Various bug fixes.
+#
 ## Revision 1.1  1997/01/21 10:52:23  peterg
 ## Initial revision
 ##
@@ -29,7 +32,7 @@
 echo Creating $1_ode.c
 
 # Remove the old  files
-rm -f $1_ode.c1 $1_ode.c2 $1_ode.c3 $1_ode.c
+rm -f  $1_ode.c1 $1_ode.c2 $1_ode.c
 
 # Remove the old log file
 rm -f ode_r2c.log
@@ -56,6 +59,7 @@ PRECISION 16; %Compatible with Matlab
 
 ON NERO;        % Suppress zero elements
 
+
 %Generate the Header part
 OUT "$1_ode.c1";
 
@@ -78,51 +82,37 @@ write "  "$
 write "{"$
 
 write "/* Declare standard arrays */"$
-write "  extern float y[", MTTNy+1, "]; /* $1_ode output */"$
-write "  extern float dx[", MTTNx+1, "]; /* $1_ode state derivative */"$ 
-write "  extern float x[", MTTNx+1, "]; /* $1_ode state */"$ 
-write "  extern float u[", MTTNu+1, "]; /* $1_ode input */"$
-
-%External (global) variable list
-write "/* External (global) variable list */ "$
-IF MTTNvar>0 THEN
-BEGIN
-  FOR i := 1:MTTNvar DO
-    IF numberp(MTTVar(i,1)) 
-      THEN 
-      BEGIN
-      % Do nowt
-      END
-      ELSE
-      BEGIN
-         write "extern float ", MTTVar(i,1), ";"$
-      END$
-END$
+write "  extern double y[", MTTNy+1, "]; /* $1_ode output */"$
+write "  extern double dx[", MTTNx+1, "]; /* $1_ode state derivative */"$ 
+write "  extern double x[", MTTNx+1, "]; /* $1_ode state */"$ 
+write "  extern double u[", MTTNu+1, "]; /* $1_ode input */"$
 
 %Declare the dummy variables t0--t9
 write "/* Dummy variable list */ "$
-write "  float t0;"$
+write "  double t0;"$
 FOR i := 1:9 DO
 BEGIN
-  write "  float t", i, ";"$
+  write "  double t", i, ";"$
 END$
 
 %Declarations$
 write "/* State variable list */ "$
 FOR i := 1:MTTNx DO
 BEGIN
-  write "  float mttx", i, ";"$
+  write "  double mttx", i, ";"$
 END$
 
 write "/* Input variable list */ "$
 FOR i := 1:MTTNu DO
 BEGIN
-  write "  float mttu", i, ";"$
+  write "  double mttu", i, ";"$
 END$
 
 write "/* Counter */ "$
 write "  int i;"$
 
+write "/* Parameter  list */ "$
+write "#include ", """$1_sympar.c"""$
 
 write "  "$
 write "    /*====== Set up the state variables ======*/"$
@@ -145,7 +135,7 @@ END$
 write "  "$
 write "    /*====== Compute the state derivative and output ======*/"$
 
-SHUT "$1_ode.c1";
+SHUT $1_ode.c1
 
 % Load the general translator package
 LOAD GENTRAN;
@@ -181,7 +171,7 @@ GENTRANSHUT "$1_ode.c2";
 
 EOF
 
-echo '};' > $1_ode.c3
+echo '}' > $1_ode.c3
 cat $1_ode.c1 $1_ode.c2 $1_ode.c3> $1_ode.c
 
 

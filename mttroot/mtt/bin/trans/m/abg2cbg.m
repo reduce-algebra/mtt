@@ -17,6 +17,11 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.23  1998/04/04 10:46:37  peterg
+% %% Coerces port bonds to have smae direction as the imposing bonds
+% %% _cbg now generates the (coerced) components as welll as the (coerced)
+% %% causality.
+% %%
 % %% Revision 1.22  1997/08/19 10:21:09  peterg
 % %% Only copy port cuaslity info if not already set within the
 % %% subsystem. I thought I'd done this already ....
@@ -167,8 +172,8 @@ end;
 port_bond_direction
 
 % Coerce the port (SS:[]) component bonds to have the same direction as
-% of the bonds in the encapsulating system 
-if n_ports>0
+% of the bonds in the encapsulating system -- but not at top level
+if (n_ports>0)&&(~at_top_level)
   port_bond_index = abs(components(1:n_ports,1)) % relevant bond numbers
   for i=1:n_ports
     % Is the direction different?
@@ -261,10 +266,6 @@ while( ci_index>0)
         % Bonds on this component (arrow-orientated) -- these become the
         % port bonds on the ith component of this subsystem.
 	
-	% a bug in octave 1.92 (??) prevents this from working -- replace by
-	% a loop -- but check on V2.0
-      	% comp_bonds = bonds(bond_list,:)
-	
 	comp_bonds=[];
 	for kk = 1:n_bonds
 	  comp_bonds(kk,:) = bonds(bond_list(kk),:);
@@ -294,7 +295,7 @@ while( ci_index>0)
 	  end;
 	end;
 
-      else % its a simple component
+      else % its a simple component -- or explicit causality defined
 	disp(['---', name, ' (', cause_name, ') ---']);
 	comp_bonds_in = comp_bonds
 

@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  1996/08/24  14:23:00  peter
+## Global parameter passing.
+## Proper error handling.
+#
 ## Revision 1.6  1996/08/16 14:26:07  peter
 ## Fixed multi-output bug.
 ## Made sure that u0 is ok.
@@ -112,16 +116,8 @@ $MATRIX << EOF > dm2fr_m.log 2>mtt_error
 
 EOF
 
-# Test for errors and print if any
-err_length=$(wc -c <mtt_error)
-if [ $err_length != "0" ]
-then
-  echo MTT has failed with the following errors '...'
-  cat mtt_error
-  exit 1
-else
-  exit 0
-fi
+# Now invoke the standard error handling.
+mtt_error_r dae2dm_r.log
 
 
 

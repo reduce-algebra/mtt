@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.316  2001/07/22 19:24:03  geraint
+## Multiple '-v' increases verbosity.
+##
 ## Revision 1.315  2001/07/13 04:54:04  geraint
 ## Branch merge: numerical-algebraic-solution back to main.
 ##
@@ -1253,6 +1256,9 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 		info_switch='-I' ;;
 	-t )
 		tidy=tidy ;;
+	-trace )
+                mtt_switches="$mtt_switches $1";
+		trace='-n' ;;
 	-T )
 		tidy=tidy;
                 verytidy=verytidy ;;
@@ -1377,6 +1383,7 @@ if [ -z "$1" ]; then
     echo '         -stdin read input data from standard input for  simulations'
     echo '         -sub <subsystem> operate on this subsystem'
     echo '         -t  tidy mode (default)'
+    echo '         -trace  Just indicate what mtt will do - but do not do it'
     echo '         -u  untidy mode (leaves files in current dir)'
     echo '         -v  verbose mode (multiple uses of -v increase the verbosity level)'
     echo '         -viewlevel <N> View N levels of hierachy'
@@ -1977,9 +1984,13 @@ esac
 # This is the main mtt programme
 ################################
 
-
 #echo Target is $target, Subsystem is $Subsystem, options are $mtt_switches
-$MAKE -S $verbose $verbose_make -f  -  $target << EOF
+##<<<<<<< mtt
+##$MAKE  -S ${trace} ${verbose}  -f  -  ${target} << EOF
+##=======
+##$MAKE -S $verbose $verbose_make -f  -  $target << EOF
+##>>>>>>> 1.316
+$MAKE -S ${trace} $verbose $verbose_make -f  -  $target << EOF
 
 # Cancel implicit rules I don't want
 %.dvi: %.tex
@@ -2071,10 +2082,10 @@ $1_modpar.r: $1_modpar.txt $1_struc.txt
 $1_alias.m: $1_alias.txt
 	alias_txt2m $1
 
-##SUMMARY ICD	interface definition for system (c)
-##SUMMARY ICD	interface definition for system (cc)
-##SUMMARY ICD	interface definition for system (m)
-##SUMMARY ICD	interface definition for system (txt)
+##SUMMARY icd	interface definition for system (c)
+##SUMMARY icd	interface definition for system (cc)
+##SUMMARY icd	interface definition for system (m)
+##SUMMARY icd	interface definition for system (txt)
 
 $1_ICD.c: $1_ICD.txt
 	ICD_txt2lang.sh $1 c
@@ -2091,11 +2102,11 @@ $1_ICD.txt: $1_icd.txt2
 $1_icd.txt2: $1_ese.r
 	touch $1_icd.txt2
 
-#SUMMARY ICD	interface definitions for each subsystem (m)
+#SUMMARY icd	interface definitions for each subsystem (m)
 $1_icd.m: $1_icd.txt
 	icd_txt2m.sh $1
 
-#SUMMARY ICD	interface definitions for each subsystem (txt)
+#SUMMARY icd	interface definitions for each subsystem (txt)
 $1_icd.txt: $1_lbl.txt
 	lbl2icd_txt2txt.sh $1
 
@@ -2277,10 +2288,16 @@ endif
 
 # Dummy target
 FORCE:
+##$1_ode2odes_common.m    : $1_input.m   $1_logic.m   $1_numpar.m   $1_simpar.m   $1_state.m
+##	@echo > /dev/null
 
+##<<<<<<< mtt
+##$1_ode2odes_common.cc   : $1_input.cc  $1_logic.cc  $1_numpar.cc  $1_simpar.cc  $1_state.cc
+##=======
 $1_ode2odes_common.m    : $1_ae.m   $1_input.m   $1_logic.m   $1_numpar.m   $1_simpar.m   $1_state.m
 	@echo > /dev/null
 $1_ode2odes_common.cc   : $1_ae.cc  $1_input.cc  $1_logic.cc  $1_numpar.cc  $1_simpar.cc  $1_state.cc
+##>>>>>>> 1.316
 	@echo > /dev/null
 $1_ode2odes_common.o    : $1_ae.o   $1_input.o   $1_logic.o   $1_numpar.o   $1_simpar.o   $1_state.o
 	@echo "Creating $1_ode2odes_common.o"
@@ -2428,6 +2445,7 @@ $1_cbg.m: $1_abg.m
 	abg2cbg_m  $info_switch $causality_switch $1
 
 $1_type.sh: $1_cbg.m
+	touch $1_type.sh
 
 #SUMMARY cbg*	causal bond graph (fig)
 #SUMMARY cbg*	causal bond graph (ps)
@@ -2863,7 +2881,7 @@ $1_smx.r: $1_def.r $1_def.m $1_ode.r $1_subs.r
 $1_smx.m: $1_def.r $1_def.m $1_cse.r $1_sympars.txt $1_subs.r
 		cse2smx_lang $fixcc $optimise -parameters $1 smx m
 
-$1_smxa.m: $1_def.r $1_def.m $1_cse.r $1_sympars.txt $1_subs.r
+$1_smxa.m: $1_def.r $1_def.m $1_cse.r  $1_sympars.txt $1_subs.r
 		cse2smx_lang $fixcc $optimise -parameters $matrix_smxa $1 smxa m
 
 $1_smxax.m: $1_def.r $1_def.m $1_cse.r $1_sympars.txt $1_subs.r

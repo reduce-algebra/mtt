@@ -1,5 +1,7 @@
 %SUMMARY Comb: Combustion chamber model
 %DESCRIPTION 
+%ALIAS	In Th_in,Hy_in
+%ALIAS	Out Th_out,Hy_out
 %% Label file for system Comb (Comb_lbl.txt)
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -7,6 +9,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/05/19 09:11:29  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:
@@ -22,7 +27,6 @@
 	[Heat]		external	external
 	[Th_in]		external	external
 	[Th_out]	external	external
-	zero		internal	0
 	P		external	0
 	T		external	0
 

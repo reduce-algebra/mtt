@@ -4,6 +4,8 @@
 %DESCRIPTION Parameter 3: alpha = (n-1)/n, n coefficient of polytropic
 %DESCRIPTION expansion.
 %DESCRIPTION Parameter 4: k_p pump constant: mass flow = k_p*shaft speed
+%ALIAS	In  Th_in,Hy_in
+%ALIAS	Out Th_out,Hy_out
 
 %% Label file for system Pump (Pump_lbl.txt)
 
@@ -12,6 +14,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/04/07 15:23:30  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:

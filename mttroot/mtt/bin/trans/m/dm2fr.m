@@ -10,6 +10,9 @@ function  fr = dm2fr(A,B,C,D,E,W,u0)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1996/08/15 10:24:28  peter
+% %% Includes u0 argument.
+% %%
 % %% Revision 1.1  1996/08/10 14:11:28  peter
 % %% Initial revision
 % %%
@@ -26,11 +29,15 @@ end;
 
 fr = zeros(N,Ny);
 i = 0;
-for w = W
+for w = W'
   i = i+1;
   FR = C*( (E*j*w - A) \ B ) + D;
   fr(i,:) = FR';
 end;
+
+
+
+
 
 
 

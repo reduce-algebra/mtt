@@ -1,0 +1,158 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: rdae2dae_r
+# Reduce equations to raw differential-algebraic equation conversion
+# P.J.Gawthrop  8th May 1991, May 1994, June 1996
+# Copyright (c) P.J.Gawthrop, 1991, 1994, 1996
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+## Revision 1.3  1998/03/07 12:57:19  peterg
+## Fixed logname bug
+##
+## Revision 1.2  1998/03/07 12:51:20  peterg
+## This is the new version of ese2dae - it does not do the CRs at this
+## stage to give reduce an easier time.
+##
+## rese2ese_r does the constitutive relationship bit
+##
+## Revision 1.1  1998/03/07 12:49:31  peterg
+## Initial revision
+##
+## Revision 1.12  1998/01/31 16:22:59  peterg
+## Added IF MTTNx>0 THEN and IF MTTNy>0 THEN before the relevant
+## assignements of MTTdX and MTTY to themselves.
+##
+## Revision 1.11  1997/09/18 09:45:08  peterg
+## Canged the comment about linux reduce -- reduce reads this for some
+## reason.
+##
+## Revision 1.10  1997/09/15 14:21:18  peterg
+## Reads ese file twice to avoid a bug in Linux reduce !!!???
+##
+## Revision 1.9  1997/08/30 09:59:31  peterg
+## Changed mehtod of writing out mtty to avoid a strange segmentation violation.
+## Now uses MTTY := MTTY; approach.
+##
+## Revision 1.8  1997/04/23 09:31:20  peterg
+## Now reads in the (top level) def file in the generated reduce code.
+##
+# Revision 1.7  1997/04/23  09:23:15  peterg
+# Two argument version in preparation for heirarchical version
+#
+# Revision 1.6  1996/11/21  15:47:48  peterg
+# Now inputs _params.r not _sympar.r
+#
+## Revision 1.5  1996/11/02 10:17:35  peterg
+## Removed default constitutive relationship input.
+##
+# Revision 1.4  1996/09/12  12:10:05  peter
+# Now reads the default constitutive relationship file.
+#
+## Revision 1.3  1996/08/25 09:43:26  peter
+## General error handling.
+##
+## Revision 1.2  1996/08/25 08:31:28  peter
+## Error handling added.
+##
+###############################################################
+
+#Create the top-level system name
+topname=$1
+
+#Create the system names
+if [ -z "$2" ]; 
+    then
+	sysname=$topname;
+    else
+	sysname=$1_$2;
+fi
+
+defname=$topname"_def.r"
+crname=$topname"_cr.r"
+subsname=$topname"_subs.r"
+rdaename=$sysname"_rdae.r"
+daename=$sysname"_dae.r"
+logname="rdae2dae.log"
+
+# Inform user
+echo Creating $daename
+
+# Remove the old log file
+rm -f $logname
+
+# Use symbolic algebra to accomplish the transformation
+$SYMBOLIC >$logname  << EOF
+
+%Read the formatting function
+in "$MTTPATH/trans/reduce_matrix.r";
+
+% CRs
+in "$crname";
+
+% Raw dae
+in "$rdaename";
+
+% Substitution
+in "$subsname";
+
+OFF Echo;
+OFF Nat;
+
+%Create the output file
+OUT "$daename";
+
+write "in ""$defname""";
+
+% State
+MTT_Matrix := MTTdX$ 
+MTT_Matrix_name := "MTTdX"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := 1$
+Reduce_Matrix()$
+
+% Nonstate
+MTT_Matrix := MTTZ$ 
+MTT_Matrix_name := "MTTZ"$
+MTT_Matrix_n := MTTNz$
+MTT_Matrix_m := 1$
+Reduce_Matrix()$
+
+% Output
+MTT_Matrix := MTTy$ 
+MTT_Matrix_name := "MTTy"$
+MTT_Matrix_n := MTTNy$
+MTT_Matrix_m := 1$
+Reduce_Matrix()$
+
+% Zero outputs
+MTT_Matrix := MTTYz$ 
+MTT_Matrix_name := "MTTYz"$
+MTT_Matrix_n := MTTNyz$
+MTT_Matrix_m := 1$
+Reduce_Matrix()$
+
+% Connecting inputs
+MTT_Matrix := MTTuc$ 
+MTT_Matrix_name := "MTTuc"$
+MTT_Matrix_n := MTTNuc$
+MTT_Matrix_m := 1$
+Reduce_Matrix()$
+
+
+write ";END;";
+SHUT "$daename";
+quit;
+
+EOF
+
+# Now invoke the standard error handling.
+mtt_error_r $logname
+

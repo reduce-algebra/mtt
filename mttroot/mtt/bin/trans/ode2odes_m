@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.12  1998/02/25 18:02:39  peterg
+## Removed the argument passing stuff .
+## Replaced by the simpar.m method.
+##
 ## Revision 1.11  1997/08/29 07:56:54  peterg
 ## Minor updates
 ##
@@ -71,18 +75,24 @@ rm -f mtt_error.txt
 
 
 $MATRIX << EOF > ode2odes_m.log 2>mtt_error.txt
+  %System structure
+  [nx,ny,nu,nz,nyz] = $1_def;
 
   %Read in parameters
   $1_numpar; 
  
   %Read in state
-  x = $1_state
+  x = $1_state;
 
+  %Set the initial output
+  if ny>0
+    y = $1_odeo(x,0);
+  end; 
+ 
   %Read in simulation parameters
-  $1_simpar
-  T = [0:DT:LAST]
+  $1_simpar;
+  T = [0:DT:LAST];
 
-  [nx,ny,nu,nz,nyz] = $1_def;
   t=0;	%Just in case it appears in the parameter list.
 
 
@@ -106,33 +116,32 @@ if nx>0
 
 %Euler integration
 %  x = x0;
-  X=[];
+  X=[]; Y=[];
   dt = (T(2)-T(1))/STEPFACTOR;
 
   for t=T'
-    X = [X x];
+    X = [X; x'];
+    Y = [Y; y'];
     ts = t;
     for i=1:STEPFACTOR
       dx = $1_ode(x,ts);
       ts = ts + dt;
       x = x + dx*dt;
+      if ny>0
+        y = $1_odeo(x,ts);
+      end;
     end;
   end;
 
-  X = X';
   write_matrix([T,X], '$1_odes');
 else
   X = zeros(size(T));
 end;
 
 if ny>0
-  i=0;
-  for tt=T'
-    i=i+1;
-    y(i,:) = $1_odeo(X(i,:),tt)';
-  end;
-  write_matrix([T,y], '$1_odeso');
+  write_matrix([T,Y], '$1_odeso');
 end;
+
 
 EOF
 

@@ -1,5 +1,5 @@
 function args_out = subs_arg(args,Args, ...
-    default,full_name,comp_type,comp_name,infofile)
+    default,full_name,comp_type,comp_name,fileID)
 % subs_arg - substitutes arguments into args from Args
 % FS defaults to `;'.
 % 
@@ -17,6 +17,9 @@ function args_out = subs_arg(args,Args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.4  1996/12/10 16:04:11  peterg
+% %% Changed file handling on mtt_info.
+% %%
 % %% Revision 1.3  1996/12/07  18:19:39  peterg
 % %% Replaces null argument by a default and tells user.
 % %%
@@ -55,16 +58,18 @@ if strcmp(args,'')==0
 	ch = str2ch(args,args_count);
       end;
       arg_out = args2arg(Args,i);
-      
+
       % Test for empty argument -- replace by default and tell user
-      format = 'Argument %1.0f of component %s(%s) of system %s is undefined - \n replacing by %s';
+      message = 'Argument %1.0f of component %s(%s) of system %s is undefined - \n replacing by %s';
       if strcmp(arg_out,'')
-	info = sprintf(format, ...
+	info = sprintf(message, ...
 	    i, comp_name, comp_type, full_name, default);
-	mtt_info(info,infofile);
 	arg_out = default;
+      else
+	info = sprintf("Replacing $%i \t by %s for component %s (%s) \
+	within %s", i, arg_out, comp_name, comp_type, full_name);
       end;
- 
+      mtt_info(info,fileID);
       args_out = [args_out, arg_out];
     end;
   end;

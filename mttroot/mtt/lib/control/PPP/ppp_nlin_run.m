@@ -60,7 +60,7 @@ function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run(system_n
   x_0 = eval(sprintf("%s_state(par);", system_name));
   x_0_model = x_0;
   [n_x,n_y,n_u] = eval(sprintf("%s_def;", system_name));
-
+  [n_par,m_par] = size(i_par);
   if nargin<8
     Q = ones(n_y,1);
   endif
@@ -70,6 +70,8 @@ function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run(system_n
   pars = eval(sprintf("%s_numpar;", s_system_name));
   x_0s = eval(sprintf("%s_state(pars);", s_system_name));
   x_0_models = x_0s;
+
+  p = []; # Initialise saved parameters
 
   ## Times
   ## -- within opt horizon
@@ -87,10 +89,8 @@ function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run(system_n
   u = [];
   t = [];
 
-  p = [];
 
   t_last = 0;
-  UU = [];
   UU_l =[];
   UU_c =[];
   
@@ -104,6 +104,9 @@ function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run(system_n
   ## Initial U is zero
   [n_U,junk] = size(A_u);
   U = zeros(n_U,1);
+
+  ## Initialise saved U
+  UU = [];
 
   ## Create input basis functions
   u_star_tau = ppp_ustar(A_u,1,Tau',0,0,n_u-n_U);
@@ -125,6 +128,14 @@ function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run(system_n
   
   for i = 0:N_ol		# Main loop 
     printf("%i",i);
+    UU = [UU; U'];		# Save control U
+    
+    if n_par>0
+      par_est = pars(i_par(:,1));
+      p = [p; par_est'];		# Save up the estimated parameters
+    endif
+    
+
     if (extras.simulate==1)
       [y_ol,u_ol] = ppp_RT_sim(U); # Simulate
     else
@@ -147,9 +158,6 @@ function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run(system_n
 
       ## Tune parameters/states
       if (estimating_parameters==1)
-	## Save up the estimated parameters
-	par_est = pars(i_par(:,1));
-	p = [p; par_est'];
 
 	## Set up according to interval length
 	if (T_ol>T_ol_0) ## Truncate data
@@ -245,7 +253,6 @@ function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run(system_n
       y_ol = y_ol(1:n_ol,:);
       y = [y; y_ol];
       u = [u; u_ol];
-      UU = [UU; U'];
       t = [t; t_ol+t_last*ones(n_ol,1) ];
       t_last = t_last + T_ol;
 

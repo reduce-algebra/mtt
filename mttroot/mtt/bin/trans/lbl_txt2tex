@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  2000/12/28 12:32:06  peterg
+## Put under RCS
+##
 ## Revision 1.9  2000/11/16 13:11:06  peterg
 ## Included PAR and UNITS declarations
 ##
@@ -82,7 +85,7 @@ EOF
           printf("\\item [Port %s] represents actual port ",a[i])
         }
         printf("\\textbf{%s}",$3)
-        if (match($4,"[\#\%]")==1) printf(" -- ");
+        if (match($4,"[#%]")==1) printf(" -- ");
         for (j=5;j<=NF;j++) printf(" %s", $j)
         printf("\n");
         }

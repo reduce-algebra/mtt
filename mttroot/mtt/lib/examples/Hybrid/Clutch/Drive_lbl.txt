@@ -1,0 +1,29 @@
+%SUMMARY Drive: The clutch/shaft drive subsystem
+%DESCRIPTION <Detailed description here>
+%% Label file for system Drive (Drive_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type CSW
+	clutch		lin	effort,epsilon
+
+% Component type R
+%	r_d		lin	flow,r_d
+
+% Component type SS
+	v1		0	external
+	v2		0	external
+
+

@@ -1,0 +1,30 @@
+%SUMMARY Clutch: Simple model of a clutch system (Hybrid)
+%DESCRIPTION Uses CSW component to model the clutch/flexi shaft
+%% Label file for system Clutch (Clutch_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type DC
+	motor		lin	k_m;l_a;r_a;j_m;b_m
+
+% Component type Drive
+	drive	
+
+% Component type Load
+	load	
+
+% Component type SS
+	e		external	internal
+

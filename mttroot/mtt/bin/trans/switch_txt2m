@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  1999/08/02 12:44:21  peterg
+## zero_vector --> zero_state.
+##
 ## Revision 1.8  1999/04/20 00:55:40  peterg
 ## Changed <= to < in switchopen.m
 ## Removed switch.m generation - redundant
@@ -66,6 +69,14 @@ echo Creating  $1_switchopen.m
 
 #Write some file headers
 lang_header $1 switchopen m 'mttx' '[open]' > $1_switchopen.m
+
+## Add the switching logic
+cat  >> $1_switchopen.m <<EOF
+
+## User defined logic (from $1_logic.m)
+
+EOF
+cat $1_logic.txt >> $1_switchopen.m
 
 # Set states to zero
 awk '{

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.27  1998/04/04 10:54:58  peterg
+## Remove a debugging print statement
+##
 ## Revision 1.26  1998/04/04 07:29:26  peterg
 ## SS now only port component
 ##
@@ -217,7 +220,7 @@ function process_text() {
     print str
   }
 
-# A port component is SS,0 or 1 followed by : followed by a port string
+# A port component is an SS  followed by a port string
   isa_port_component = 0;
   if (match(str, delimiter)) {
     split(str,a,delimiter);
@@ -252,8 +255,7 @@ function process_text() {
     y_port[i_port_component] = y_coord;
     info_port[i_port_component] = fig_info();
     port_labels[i_port_component] = port_label;
-    comp_type[port_label] = type;
-  }
+      }
 
 # Do the plain components
   if (isa_plain_component) {
@@ -579,7 +581,7 @@ END {
 # Do the port components, in order of appearance, first
   for (i = 1; i <= i_port_component; i++) {
     name = sprintf("[%s]", port_labels[i]);
-    port_type = comp_type[port_labels[i]];
+    port_type = "SS";
     cr   = "MTT_port";
     arg  = i;
 

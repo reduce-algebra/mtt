@@ -7,8 +7,12 @@ PROCEDURE svbksb(u: glmpbynp; w: glnparray; v: glnpbynp;
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.1  1998/08/12 11:09:02  peterg
+% % Initial revision
+% %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  }
+
 
 (* Programs using SVBKSB must define the types
 TYPE

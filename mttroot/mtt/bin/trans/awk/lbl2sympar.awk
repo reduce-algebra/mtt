@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1998/02/16 12:08:38  peterg
+## Put back the matrix declaration
+##
 # Revision 1.7  1997/03/18  17:25:24  peterg
 # Now just generates names - formatting removed.
 #
@@ -93,7 +96,7 @@ END {
 #  printf("MTTNVar := %1.0f;\n", symbol_count);
 
   if (symbol_count>0) {
-   printf("MATRIX MTTVar(MTTNVar,1);\n");
+   #printf("MATRIX MTTVar(MTTNVar,1);\n");
     split(symbols,symbol);
     for (i = 1; i <= symbol_count; i++) {
 #      printf("MTTVar(%1.0f,1) \t := %s\n", i, symbol[i]);

@@ -16,6 +16,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.308  2001/04/25 22:17:45  geraint
+## Fixed icd.txt2 dependency.
+##
 ## Revision 1.307  2001/04/15 21:15:41  geraint
 ## Added interface definition rep: _ICD.(txt|c|cc|m).
 ##
@@ -68,7 +71,7 @@
 ## Implemented Runge-Kutta IV fixed-step method (-i rk4).
 ##
 ## Revision 1.293.2.6  2001/03/03 06:50:38  geraint
-## Added #SUMMARY lines for ode2odes.
+## Added summary lines for ode2odes.
 ##
 ## Revision 1.293.2.5  2001/03/03 00:27:14  geraint
 ## Fixed ar options to work with GNU ar. Allow mtt to create dependencies for mtt_%.cc when making mtt_%.oct.

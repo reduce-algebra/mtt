@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1996/08/20 08:21:24  peter
+## *** empty log message ***
+##
 ## Revision 1.5  1996/08/16 14:27:25  peter
 ## Make a dummy function when no parameters (MTTNVar=0).
 ##
@@ -50,26 +53,18 @@ IN "$1_sympar.r";
 
 OUT "$1_numpar.m";
 
+write "% Script $1_numpar;";
+write "% Created by MTT";
 
 IF MTTNvar>0 THEN
 BEGIN
-  write "function [ ...;;";
+  write "global ...;;";
   FOR i := 1:MTTNvar DO
   BEGIN
-     IF i<MTTNvar THEN write MTTVar(i,1), ",..."
-                  ELSE write MTTVar(i,1), "] = $1_numpar;;";
+     IF i<MTTNvar THEN write MTTVar(i,1), " ..."
+                  ELSE write MTTVar(i,1), ";";
   END
 END; 
-
-if MTTNVar=0 THEN
-  write "function foo=$1_numpar;;";
-
-
-write "% function [par_list] = $1_numpar;";
-write "% Created by MTT";
-
-%% Write RCS stuff
-
 
 
 IF MTTNvar>0 THEN
@@ -82,7 +77,6 @@ END;
 
 if MTTNVar=0 THEN
   write "foo=0";
-
 
 SHUT "$1_numpar.m";
 

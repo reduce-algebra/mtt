@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1996/08/18 12:03:49  peter
+## Initial revision
+##
 ###############################################################
 
 #Inform user
@@ -49,11 +52,11 @@ BEGIN
   IF MTTNvar>0 THEN
   BEGIN
     write "% Read in the parameters";
-    write "[ ...;;";
+    write "global ...;;";
     FOR i := 1:MTTNvar DO
     BEGIN
-       IF i<MTTNvar THEN write MTTVar(i,1), ",..."
-                    ELSE write MTTVar(i,1), "] = $1_numpar"
+       IF i<MTTNvar THEN write MTTVar(i,1), " ..."
+                    ELSE write MTTVar(i,1), ";"
     END;
   END;
   
@@ -120,7 +123,6 @@ OFF period$
 MTTy := MTTy;
 
 SHUT "$1_odeo.m";
-
 
 
 

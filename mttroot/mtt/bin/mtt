@@ -14,6 +14,11 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.101  1997/12/06 18:54:53  peterg
+## Now tidies up after itself.
+## Major modifications to do a rep on a directory -- creates a book with
+## each example as a chapter.
+##
 ## Revision 1.100  1997/12/06 12:14:39  peterg
 ## Put a conditional around the PS data rep to check for set arguments.
 ##
@@ -627,6 +632,7 @@ if [ -n "$DIFF" ]; then
 fi
 
 # Classify the representation - needed for conversion route to postscript
+PLOTTYPE='single';
 case $2 in
 	abg )
 		REPTYPE='bg' ;;
@@ -635,21 +641,21 @@ case $2 in
 	cbg )
 		REPTYPE='bg' ;;
 	odes)
-		REPTYPE='data' ;;
+		REPTYPE='data'; PLOTTYPE='multiple' ;;
 	odeso)
-		REPTYPE='data' ;;
+		REPTYPE='data'; PLOTTYPE='multiple' ;;
 	sms)
-		REPTYPE='data' ;;
+		REPTYPE='data'; PLOTTYPE='multiple' ;;
 	smso)
-		REPTYPE='data' ;;
+		REPTYPE='data'; PLOTTYPE='multiple' ;;
 	odess)
 		REPTYPE='data' ;;
 	odesso)
 		REPTYPE='data' ;;
 	daes)
-		REPTYPE='data' ;;
+		REPTYPE='data'; PLOTTYPE='multiple' ;;
 	daeso)
-		REPTYPE='data' ;;
+		REPTYPE='data'; PLOTTYPE='multiple' ;;
 	ir)
 		REPTYPE='data' ;;
 	iro)
@@ -700,13 +706,19 @@ if [ "$3" = "vc" ]; then
   esac
 fi
 
-# See if we are making a book -- ie representation rep on a directory
+
 if [ "$2" = "rep" ]; then
-     book=`file $1 | awk '{print $2}' | grep directory`
-     if [ -n "$book" ]; then
-	book=book
+     documenttype=article
+      # See if we are making a book -- ie representation rep on a directory
+     isdirectory=`file $1 | awk '{print $2}' | grep directory`
+     if [ -n "$isdirectory" ]; then
+	documenttype=book
      fi
+else
+     documenttype=section
 fi
+
+echo documenttype $documenttype
 
 ################################
 # This is the main mtt programme
@@ -919,7 +931,7 @@ $1_sspar.r:
 #SUMMARY rep	report (view)
 
 
-ifeq ($book,book)
+ifeq ($documenttype,book)
 $1_rep.txt:
 	dir2rep $1;
 else
@@ -1312,13 +1324,13 @@ mtt.sty:
 	echo Copying mtt.sty to here
 	cp $MTTPATH/trans/mtt.sty .
 $1_$2.doc: $1_$2.tex
-	makedoc "$mtt_switches" "$1" "$2" "$3" "$4" "$book"
+	makedoc "$mtt_switches" "$1" "$2" "$3" "$4" "$documenttype"
 
 #Generic conversion of LaTeX doc to dvi
 $1_$2.dvi: $1_$2.doc
 	echo Creating $1_$2.dvi
-	latex $1_$2.doc > /dev/null; \
-	latex $1_$2.doc > /dev/null; 
+	latex $1_$2.doc  > /dev/null; 
+	latex $1_$2.doc  > /dev/null; 
 
 #Create PostScript version of fig files
 ifeq ($REPTYPE,bg)
@@ -1328,17 +1340,15 @@ $1_$2.ps : $1_$2.fig
 endif
 
 ifeq ($REPTYPE,data)
+#Create PostScript version of dat file 
+#  + another version with Args added to the name if its appropriate
+$1_$2.ps: $1_$2.gdat
+	gdat2ps $1_$2 '$ARGS';echo $PLOTTYPE;
 
+ifeq ($PLOTTYPE,multiple)
 ifdef $ARGS
-#Create PostScript version of dat file 
-#  + another version with Args added to the name
-$1_$2.ps: $1_$2.gdat
-	gdat2ps $1_$2 '$ARGS'
 	cp  $1_$2.ps $1_$2$_ARGS.ps        
-else
-#Create PostScript version of dat file 
-$1_$2.ps: $1_$2.gdat
-	gdat2ps $1_$2 '$ARGS'
+endif
 endif
 
 endif
@@ -1404,7 +1414,7 @@ make_reps:
 	rep_txt2sh $1; touch $1_rep.txt
 
 $1_rep.tex: $1_rep.txt make_reps
-	rep_txt2tex $1 "$book" "$directory";
+	rep_txt2tex $1 "$documenttype" "$directory";
 
 #SUMMARY abg Acausal bond graph report (tex)
 $1_abg.tex: $1_sub.sh
@@ -1436,4 +1446,4 @@ EOF
   rm -f  *_unique_raw_list *_raw_list
   rm -f mtt_error.txt mtt_info.txt a.out 
   rm -f *.log  mtt_info.txt warning.txt
-  rm -f *_*.idx *_*.ind *_*.ilg *_*.dvi *_*.aux *_*.lof *_*.toc
+  rm -f *_*.idx *_*.ind *_*.ilg  *_*.aux *_*.lof *_*.toc

@@ -10,13 +10,11 @@
 # P.J.Gawthrop May 1997
 # Copyright (c) P.J.Gawthrop, 1997.
 
-
-
 # echo the name of the subsystems one level down
 sh $1\_sub.sh "echo  " 
 
-# Create the corresponding subsystems
-sh $1\_sub.sh "mtt -q  " " sub sh >\dev\null"
+# Create the corresponding subsystems --  quietly!
+(sh $1\_sub.sh "mtt -q   " " sub sh") >/dev/null
 
 # Recursively execute the subsystem files
 sh $1\_sub.sh "sub2subs " 

@@ -73,18 +73,19 @@ function [name,T,y,u,ys,us,ysu,usu,J] = ppp_ex17 (ReturnName)
   title("Constained and unconstrained y*");
   xlabel("t");
   grid;
-  plot(T,ys,T,ysu)
+  figure(1);
+  plot(T,ys,"-;y* (constrained);", T,ysu,"--;y* (unconstrained);")
 
   ## Non-linear - closed-loop
-  delta_ol = 0.1;
+  delta_ol = 0.1; mu = 1e-4;
   [T,y,u,J] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, \
 			  Tau_u,Min_u,Max_u,Order_u, \
-			  Tau_y,Min_y,Max_y,Order_y,W,x_0,delta_ol);
+			  Tau_y,Min_y,Max_y,Order_y,W,x_0,delta_ol,mu);
 
-  title("y,y*,u and u*");
+  title("y and u");
   xlabel("t");
   grid;
-  plot(T,y,T,u,T,ysu,T,usu);
+  plot(T,y,"1;y (constrained);", T,u,"2;u (constrained);");
 
 endfunction
 

@@ -1,6 +1,6 @@
 function [ol_poles,cl_poles,ol_zeros,cl_zeros,k_x,k_w,K_x,K_w,cond_uu] =  ppp_lin_plot (A,B,C,D,A_u,A_w,t,Q,W,x_0)
 
-  ## usage:   [ol_poles,cl_poles,ol_zeros,cl_zeros,k_x,k_w,K_x,K_w] = ppp_lin_plot (A,B,C,D,A_u,A_w,t,Q,W,x_0)
+  ## usage:   [ol_poles,cl_poles,ol_zeros,cl_zeros,k_x,k_w,K_x,K_w,cond_uu] = ppp_lin_plot (A,B,C,D,A_u,A_w,t,Q,W,x_0)
   ##
   ## Linear PPP (Predictive pole-placement) computation with plotting
   ## INPUTS:
@@ -40,7 +40,7 @@ function [ol_poles,cl_poles,ol_zeros,cl_zeros,k_x,k_w,K_x,K_w,cond_uu] =  ppp_li
 
   ## Default Q
   if nargin<8
-    Q = ones(n_y,1);
+    Q = ones(n_y,1)
   endif
 
   ## Default W

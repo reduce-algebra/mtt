@@ -83,7 +83,7 @@ function [name,T,y,u,ys,us,J] = ppp_ex19 (ReturnName,n_extra,T_extra)
   title("Constrained and unconstrained y*");
   xlabel("t");
   grid;
-  plot(T,ys,T,ysu)
+  plot(T,ys,"-;y* (constrained);", T,ysu,"--;y* (unconstrained);");
 
   ## Non-linear - closed-loop
   disp("Closed-loop simulation");
@@ -91,10 +91,11 @@ function [name,T,y,u,ys,us,J] = ppp_ex19 (ReturnName,n_extra,T_extra)
 			   Tau_u,Min_u,Max_u,Order_u, \
 			   Tau_y,Min_y,Max_y,Order_y,W,x_0);
 
-  title("y,y*,u and u*");
+  title("y and u");
   xlabel("t");
   grid;
-  plot(T1,y,T,ys,T1,u,T,us);
+  plot(T,y,"1;y (constrained);", T,u,"2;u (constrained);");
+
 endfunction
 
 

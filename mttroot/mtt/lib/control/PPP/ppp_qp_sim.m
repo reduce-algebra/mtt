@@ -47,7 +47,7 @@ function [T,y,u,X,Iterations] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max
   gamma = [gamma_u; gamma_y];
 
   ## Design the controller
-  disp("Designing controller");
+  ## disp("Designing controller");
   [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww] = ppp_lin (A,B,C,D,A_u,A_w,t,Q);
 
   ## Set up various time vectors
@@ -87,7 +87,7 @@ function [T,y,u,X,Iterations] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max
   J = [];
   tick= time;
   i = 0;
-  disp("Simulating ...");
+  ## disp("Simulating ...");
   for t=T_cl			# Outer loop at Delta_ol
     ##disp(sprintf("Time %g", t));
     ## Output constraints
@@ -124,7 +124,7 @@ function [T,y,u,X,Iterations] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max
   Iterations = [Iterations iterations]; # Save iteration count
 
   tock = time;
-  Elapsed_Time = tock-tick
+  Elapsed_Time = tock-tick;
   y = C*X + D*u;		# System output
 
   T = 0:dt:t+Delta_ol;		# Overall time vector

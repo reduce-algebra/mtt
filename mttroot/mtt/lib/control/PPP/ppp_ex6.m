@@ -38,7 +38,7 @@ function [name,T,y,u,J] = ppp_ex6 (ReturnName)
   x_0 = 0;
 
   ## Linear
-  [ol_poles,cl_poles,ol_zeros,cl_zeros,k_x,k_w] = ppp_lin_plot (A,B,C,D,A_u,A_w,t);
+  ppp_lin_plot (A,B,C,D,A_u,A_w,t);
   
   ## Non-linear
   movie = 0;
@@ -47,7 +47,7 @@ function [name,T,y,u,J] = ppp_ex6 (ReturnName)
   title("y,u_1,u_2");
   xlabel("t");
   grid;
-  plot(T,y,T,u);
+  plot(T,y,"-;y;", T,u(1,:),"--;u_1;", T,u(2,:),".-;u_2;");
 
 endfunction
 

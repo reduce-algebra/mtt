@@ -42,20 +42,22 @@ function  [name,T,y,u,ye,ue,J] = ppp_ex15 (ReturnName)
   Delta_ol = 0.5		# Intermittent time
 
   disp("Intermittent control simulation");
-  [T,y,u,J] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, \
+  [T,y,u] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, \
 			  [],[],[],[], \
 			  [],[],[],[],W,x_0,Delta_ol);
-
+size(T)
   ## Exact closed-loop
   disp("Exact closed-loop");
-  [k_x,k_w] = ppp_lin (A,B,C,D,A_u,A_w,t,Q);
+  [k_x,k_w] = ppp_lin (A,B,C,D,A_u,A_w,t,Q)
   [ye,Xe] = ppp_sm2sr(A-B*k_x, B, C, D, T, k_w*W, x_0); # Compute Closed-loop control
-  ue = k_w*ones(size(T))*W - k_x*Xe';
+
+  ue = k_w*ones(size(T))*W - k_x*Xe;
 
 
   title("y and u, exact and intermittent");
   xlabel("t");
   grid;
-  plot(T,y,T,u,T,ye,T,ue);
+  plot(T,y,"1;y (intermittent);", T,u,"2;u (intermittent);",\
+       T,ye,"3;y (exact);", T,ue,"4;u (exact);");
 
 endfunction

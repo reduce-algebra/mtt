@@ -33,11 +33,11 @@ function [name,T,y,u,ys,us,J] = ppp_ex11 (ReturnName)
   Q = ones(n_y,1);;
   
 
-  ## Constaints
+  ## Constraints
   Gamma = [];
   gamma = [];
 
-  ## Constaints - u
+  ## Constraints - u
   Tau_u = [0:0.5:2];
   one = ones(size(Tau_u));
   limit = 1.5;
@@ -76,10 +76,11 @@ function [name,T,y,u,ys,us,J] = ppp_ex11 (ReturnName)
   [uu,Uu] = ppp_qp (x_0,W,J_uu,J_ux,J_uw,Us0,[],[]);
   [ysu,usu] = ppp_ystar (A,B,C,D,x_0,A_u,Uu,T);
 
-  title("Constained and unconstrained y*");
+  title("Constrained and unconstrained y*");
   xlabel("t");
   grid;
-  plot(T,ys,T,ysu)
+  figure(1);
+  plot(T,ys,"-;y*: constrained;", T,ysu, "--;y*: unconstrained;")
 
   ## Non-linear - closed-loop
     disp("Computing constrained closed-loop response");
@@ -87,16 +88,17 @@ function [name,T,y,u,ys,us,J] = ppp_ex11 (ReturnName)
 			  Tau_u,Min_u,Max_u,Order_u, \
 			  Tau_y,Min_y,Max_y,Order_y,W,x_0);
 
-  title("y,y*,u and u*");
+  title("Constrained closed-loop response");
   xlabel("t");
   grid;
-  plot(T,y,T,u,T,ys,T,us);
+  figure(2);
+  plot(T,y,"-;y;", T,u,"--;u;");
 
-  ## Compute derivatives.
-  dt = t(2)-t(1);
-  du = diff(u)/dt;
-  dus = diff(us)/dt;
-  T1 = T(1:length(T)-1);
+#   ## Compute derivatives.
+#   dt = t(2)-t(1);
+#   du = diff(u)/dt;
+#   dus = diff(us)/dt;
+#   T1 = T(1:length(T)-1);
   ##plot(T1,du,T1,dus);
 endfunction
 

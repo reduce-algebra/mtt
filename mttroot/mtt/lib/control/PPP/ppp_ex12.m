@@ -22,7 +22,7 @@ function [name,T,y,u,ys,us,J,T1,du,dus] = ppp_ex12 (ReturnName)
        0];
   C = [0 -0.5  1];
   D = 0;
-  [n_x,n_u,n_y] = abcddim(A,B,C,D)
+  [n_x,n_u,n_y] = abcddim(A,B,C,D);
 
   ## Controller
   t = [4:0.02:5];		# Time horizon
@@ -56,7 +56,7 @@ function [name,T,y,u,ys,us,J,T1,du,dus] = ppp_ex12 (ReturnName)
   title("y,y*,u and u*");
   xlabel("t");
   grid;
-  plot(T,y,T,u,T,ys,T,us);
+  plot(T,y,"1;y;", T,u,"2;u;", T,ys,"3;y*;", T,us,"4;u*;");
 
   ## Compute derivatives.
   dt = t(2)-t(1);

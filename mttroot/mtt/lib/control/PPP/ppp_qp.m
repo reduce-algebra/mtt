@@ -47,6 +47,7 @@ function [u,U,iterations] = ppp_qp (x,W,J_uu,J_ux,J_uw,Us0,Gamma,gamma,mu)
     u = Us0*U;			# Control signal
   else			# Do the unconstrained solution
     ## Compute the open-loop gains
+    iterations = 0;
     K_w = J_uu\J_uw;
     K_x = J_uu\J_ux;
 

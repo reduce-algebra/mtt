@@ -1,6 +1,9 @@
 ## Figures.m
 ## Makes figures for the rc_PPP exasmple.
 ## $Log$
+## Revision 1.3  2000/08/12 10:39:33  peterg
+## Levenberg-Marquardt version
+##
 ## Revision 1.2  2000/05/21 06:39:23  peterg
 ## Parameterised _sm
 ##
@@ -73,7 +76,7 @@ extras.U_initial = "zero";
 extras.U_next = "continuation";
 extras.criterion = 1e-5;
 extras.max_iterations = 10;
-extras.alpha = 0;
+extras.v = 0;
 extras.verbose = 0;
 
 ##  -- with no optimisation using linear PPP with continuation
@@ -81,7 +84,7 @@ disp("Linear PPP at time zero with continuation trajectories")
 extras.U_initial = "linear";
 extras.U_next = "continuation";
 extras.criterion = 1e-5;
-extras.alpha = 0;
+extras.v = 0;
 extras.max_iterations = 0;
 [y_c,x,u_c,t,U,U_c,U_l] = ppp_nlin_sim (system_name,A_u,tau,t_ol,N,w,extras);
 
@@ -91,16 +94,17 @@ extras.U_initial = "linear";
 extras.U_next = "linear";
 extras.criterion = 1e-5;
 extras.max_iterations = 0;
-extras.alpha = 0;
+extras.v = 0;
 [y_l,x,u_l,t,U,U_c,U_l] = ppp_nlin_sim (system_name,A_u,tau,t_ol,N,w,extras);
 
 ##  -- with optimisation using nonlinear PPP with continuation
 disp("Nonlinear PPP");
 extras.U_initial = "zero";
 extras.U_next = "continuation";
-extras.alpha = 0.0001;
-extras.criterion = 1e-6;
-extras.max_iterations = 1000;
+extras.v = 1e-5;
+extras.criterion = 1e-5;
+extras.max_iterations = 100;
+extras.verbose = 0;
 [y,x,u,t,U,U_c,U_l] = ppp_nlin_sim (system_name,A_u,tau,t_ol,N,w,extras);
 
 
@@ -139,3 +143,4 @@ tu =  [t' u'];
 gplot ty_c title "Continuation", ty_l title "Linear", ty title "Optimisation"
 psfig("rcPPP_nppp");
  
+

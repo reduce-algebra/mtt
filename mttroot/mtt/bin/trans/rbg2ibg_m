@@ -33,23 +33,23 @@ echo Creating ${ibg}
 
 # Use matrix manipulation to accomplish the transformation
 ${MATRIX} > ${log} 2> ${err} <<EOF
-	name = '$1'
-	infofile = fopen('mtt_info.txt', 'w');
-	errorfile = fopen('mtt_error.txt', 'w');
-
-	## Interpret the connections from the fig version
-	[rbonds,rstrokes,rcomponents,port_coord,port_name,port_list] = $1_rbg;
-	[n_ports, junk] = size(port_list);
-
-	## Strip the directional information
-	rbonds = rbonds(:,1:6);
-
-	[bonds] = \
-	    rbg2ibg(name,rbonds,rstrokes,rcomponents,port_coord,port_name, \
-		    infofile,errorfile);
-
-	## Write the intermediate bond graph m-file
-	write_ibg(name,bonds);
+  name = '$1'
+  infofile = fopen('mtt_info.txt', 'w');
+  errorfile = fopen('mtt_error.txt', 'w');
+  
+  ## Interpret the connections from the fig version
+  [rbonds,rstrokes,rcomponents,port_coord,port_name,port_list] = $1_rbg;
+  [n_ports, junk] = size(port_list);
+  
+  ## Strip the directional information
+  rbonds = rbonds(:,1:6);
+  
+  [bonds] = \
+      rbg2ibg(name,rbonds,rstrokes,rcomponents,port_coord,port_name, \
+	      infofile,errorfile);
+  
+  ## Write the intermediate bond graph m-file
+  write_ibg(name,bonds);
 EOF
 
 # Errors and info

@@ -4,12 +4,12 @@ function write_ibg(system_name,bonds);
   
   fid = fopen([system_name,"_ibg.m"], "w");
   [nbonds, junk] = size(struct_elements(bonds));
-  format_hc = "  %s.bonds.b%i.head.component\t= \"%s\";\n";
-  format_tc = "  %s.bonds.b%i.tail.component\t= \"%s\";\n";
-  format_hp = "  %s.bonds.b%i.head.ports\t= \"%s\";\n";
-  format_tp = "  %s.bonds.b%i.tail.ports\t= \"%s\";\n";
-  format_ce = "  %s.bonds.b%i.causality.effort\t= \"%s\";\n";
-  format_cf = "  %s.bonds.b%i.causality.flow\t= \"%s\";\n";
+  format_hc = "  %s.bonds.bond%i.head.component\t= \"%s\";\n";
+  format_tc = "  %s.bonds.bond%i.tail.component\t= \"%s\";\n";
+  format_hp = "  %s.bonds.bond%i.head.ports\t= \"%s\";\n";
+  format_tp = "  %s.bonds.bond%i.tail.ports\t= \"%s\";\n";
+  format_ce = "  %s.bonds.bond%i.causality.effort\t= \"%s\";\n";
+  format_cf = "  %s.bonds.bond%i.causality.flow\t= \"%s\";\n";
 
   fprintf(fid, "## -*-octave-*-\n\n");
   fprintf(fid, "function [%s] = %s_ibg\n\n", system_name, system_name);

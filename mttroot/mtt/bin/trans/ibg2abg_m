@@ -24,7 +24,7 @@ sys=$1
 lbl_file=${sys}_lbl.txt
 abg_file=${sys}_abg.m
 err=mtt_error.txt
-log=ibg2abg_m.log
+log=ibg2abg_m_${sys}.log
 
 # Remove the old log file
 rm -f ibg2abg_m.log

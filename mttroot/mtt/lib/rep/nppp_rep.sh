@@ -8,9 +8,38 @@ sys=$1
 rep=nppp
 lang=$2
 mtt_parameters=$3
-parameters=$4
+rep_parameters=$4
 
+## Some names
 target=${sys}_${rep}.${lang}
+def_file=${sys}_def.r
+dat2_file=${sys}_nppp.dat2
+dat2s_file=${sys}_nppps.dat2
+nppp_numpar_file=${sys}_nppp_numpar.m
+
+## Get system information
+if [ -f "${def_file}" ]; then
+ echo Using ${def_file}
+else
+  mtt -q ${sys} def r
+fi
+
+ny=`mtt_getsize $1 y`
+nu=`mtt_getsize $1 u`
+
+## Help documentation
+help_short() {
+cat<<EOF
+Nonlinear predictive pole placement
+EOF
+}
+
+help_long() {
+cat<<EOF
+Details go here
+EOF
+}
+
 
 ## Make the _nppp.m file
 make_nppp() {
@@ -18,9 +47,9 @@ filename=${sys}_${rep}.m
 echo Creating ${filename}
 
 cat > ${filename} <<EOF    
-function [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, extras)
+function [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, A_u, A_w, w, Q, extras)
 
-  ## usage:  [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, extras)
+  ## usage:  [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, A_u, A_w, w, Q, extras)
   ##
   ## last      last time in run
   ## ppp_names Column vector of names of ppp params
@@ -32,8 +61,6 @@ function [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, extras)
     printf("Usage: [y,u,t] = ${sys}_nppp(N, ppp_names[, par_names, extras])\n");
     return
   endif
-
-    
 
   if nargin<4
     ## Set up optional parameters
@@ -66,7 +93,6 @@ function [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, extras)
   endif
   
   t_horizon = [simpars.first+simpars.dt:simpars.dt:simpars.last]';
-  w = zeros(n_y,1); w(1) = 1
   w_s = ones(size(t_horizon))*w';
 
   ## Setup the indices of the adjustable stuff
@@ -84,12 +110,6 @@ function [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, extras)
     i_par = ppp_indices (par_names,sympar,sympars); # Parameters
   endif
   
-  ## Specify basis functions
-  A_w = zeros(1,1);
-  A_u = ppp_aug(A_w,laguerre_matrix(n_ppp-1,2.0));
-
-  ## Weights
-    Q = [1;0]
 
   if extras.visual		# Do some simulations
     ## System itself
@@ -164,6 +184,53 @@ endfunction
 EOF
 }
 
+make_nppp_numpar() {
+echo Creating ${nppp_numpar_file}
+cat > ${sys}_nppp_numpar.m <<EOF
+function [last, ppp_names, par_names, A_u, A_w, w, Q, extras] = ${sys}_nppp_numpar 
+
+## usage:  [last, ppp_names, par_names, A_u, A_w, w, Q, extras] = ${sys}_nppp_numpar ()
+##
+## 
+
+  ## Last time of run
+  last = 10;
+
+  ## Specify basis functions
+  A_w = zeros(1,1);
+  n_ppp = ${nu};
+  A_u = ppp_aug(A_w,laguerre_matrix(n_ppp-1,2.0));
+
+ 
+  ## Names of ppp parameters
+  ppp_names = "";
+  for i=1:n_ppp
+    name = sprintf("ppp_%i", i);
+    ppp_names = [ppp_names; name];
+  endfor
+
+  ## Estimated parameters
+  par_names = [];
+
+  ## Weights
+  Q = ones(${ny},1);
+
+  ## Setpoint
+  w = zeros(${ny},1); w(1) = 1;
+
+  ## Set up optional parameters
+  extras.criterion = 1e-3;
+  extras.emulate_timing = 0;
+  extras.max_iterations = 15;
+  extras.simulate = 1;
+  extras.v =  1e-6;
+  extras.verbose = 0;
+  extras.visual = 0;
+
+endfunction
+EOF
+}
+
 make_model() {
     
 echo "Making sensitivity simulation for system ${sys} (lang ${lang})"
@@ -197,8 +264,65 @@ mtt -q ${mtt_parameters} -stdin  -s s${sys} def m
 
 }
 
-## Make the code
-#
-#make_model;
-make_nppp;
+make_dat2() {
+
+## Inform user
+echo Creating ${dat2_file}
+
+## Use octave to generate the data
+octave -q <<EOF
+  [last, ppp_names, par_names, A_u, A_w, w, Q, extras] = ${sys}_nppp_numpar;
+  [y,u,t] = ${sys}_nppp(last, ppp_names, par_names, A_u, A_w, w, Q, extras);
+  data = [t,y,u];
+  save -ascii ${dat2_file} data
+EOF
+}
+
+case ${lang} in
+    help_short)
+        help_short
+        ;;
+    help_long)
+        help_long
+        ;;
+    numpar.m)
+        ## Make the numpar stuff
+        make_nppp_numpar;
+	;;
+    m)
+        ## Make the code
+        make_nppp;
+	;;
+    dat2)
+	## The dat2 language (output data)
+	if [ -f "${dat2_file}" ]; then
+	  if [ "${dat2_file}" -ot "${nppp_numpar_file}" ]; then
+	    make_dat2; 
+	  else 
+	    echo Using ${dat2_file}
+	  fi
+	else
+	  make_dat2;    
+        fi
+	;;
+    gdat)
+        cp ${dat2_file} ${dat2s_file} 
+	dat22dat ${sys} ${rep} 
+        dat2gdat ${sys} ${rep}
+	;;
+    fig)
+	gdat2fig ${sys}_${rep}
+	;;
+    ps)
+	fig2dev -Leps ${sys}_${rep}.fig > ${sys}_${rep}.ps
+	;;
+
+    view)
+	
+	;;
+    *)
+	echo Language ${lang} not supported by nppp representation
+        exit 3
+esac
+
 

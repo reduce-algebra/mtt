@@ -4,81 +4,97 @@
 
 #Copyright (C) 2000,2001,2002 by Peter J. Gawthrop
 
-all: $(SYS)_nppp.$(LANG)
+model_reps = ${SYS}_sympar.m ${SYS}_simpar.m ${SYS}_state.m\
+             ${SYS}_numpar.m ${SYS}_input.m ${SYS}_ode2odes.m\
+             ${SYS}_sim.m ${SYS}_def.m
 
-$(SYS)_nppp.view: $(SYS)_nppp.ps
-	echo Viewing $(SYS)_nppp.ps; ghostview $(SYS)_nppp.ps&
+sensitivity_reps = s${SYS}_sympar.m s${SYS}_simpar.m s${SYS}_state.m\
+                   s${SYS}_numpar.m s${SYS}_input.m s${SYS}_ode2odes.m\
+                   s${SYS}_ssim.m s${SYS}_def.m
 
-$(SYS)_nppp.ps: $(SYS)_ode2odes.out s$(SYS)_ode2odes.out \
-                $(SYS)_sim.m s$(SYS)_sim.m \
-                $(SYS)_state.m $(SYS)_sympar.m $(SYS)_numpar.m  \
-                s$(SYS)_state.m s$(SYS)_sympar.m s$(SYS)_numpar.m \
-                $(SYS)_sm.m $(SYS)_def.m  s$(SYS)_def.m \
-                $(SYS)_simpar.m s$(SYS)_simpar.m
-	octave $(SYS)_nppp.m
+all: ${SYS}_nppp.${LANG}
 
-$(SYS)_ode2odes.out: 
-	echo Starting creation of $(SYS)_ode2odes.out '....'
-	mtt -q -stdin $(SYS) ode2odes out
+${SYS}_nppp.help_short:
+	nppp_rep.sh ${SYS} help_short
 
-s$(SYS)_ode2odes.out:
-	echo Starting creation of s$(SYS)_ode2odes.out '....'
-	mtt  -q -stdin -s s$(SYS) ode2odes out
+${SYS}_nppp.help_long:
+	nppp_rep.sh ${SYS} help_long
 
-$(SYS)_sim.m:
-	echo Starting creation of $(SYS)_sim '....'
-	mtt -q $(SYS) sim m
+${SYS}_nppp.view: ${SYS}_nppp.ps
+	echo Viewing ${SYS}_nppp.ps; ghostview ${SYS}_nppp.ps&
 
-s$(SYS)_sim.m:
-	echo Starting creation of s$(SYS)_sim. '....'
-	mtt -q  -s s$(SYS) sim m
+${SYS}_nppp.ps: ${SYS}_nppp.fig
+	nppp_rep.sh ${SYS} ps
 
-$(SYS)_state.m:
-	echo Starting creation of $(SYS)_state. '....'
-	mtt -q $(SYS) state m
+${SYS}_nppp.fig: ${SYS}_nppp.gdat
+	nppp_rep.sh ${SYS} fig
 
-$(SYS)_sympar.m :
-	echo Starting creation of $(SYS)_sympar.m '....'
-	mtt -q $(SYS) sympar m 
+${SYS}_nppp.gdat: ${SYS}_nppp.dat2
+	nppp_rep.sh ${SYS} gdat
 
-$(SYS)_numpar.m:
-	echo Starting creation of $(SYS)_numpar. '....'
-	mtt -q $(SYS) numpar m
+${SYS}_nppp.dat2: ${SYS}_nppp.m ${SYS}_nppp_numpar.m \
+                  ${model_reps} ${sensitivity_reps} ${SYS}_def.r
+	nppp_rep.sh ${SYS} dat2
 
-$(SYS)_simpar.m:
-	echo Starting creation of $(SYS)_simpar. '....'
-	mtt -q $(SYS) simpar m
+${SYS}_nppp.m: 
+	nppp_rep.sh ${SYS} m
 
-s$(SYS)_state.m:
-	echo Starting creation of s$(SYS)_state. '....'
-	mtt -q -s s$(SYS) state m
+${SYS}_nppp_numpar.m:
+	nppp_rep.sh ${SYS} numpar.m
 
-s$(SYS)_sympar.m :
-	echo Starting creation of s$(SYS)_sympar.m '....'
-	mtt -q -s s$(SYS) sympar m 
+## System model reps
+${SYS}_sympar.m:
+	mtt ${OPTS} -q -stdin ${SYS} sympar m
 
-s$(SYS)_numpar.m:
-	echo Starting creation of s$(SYS)_numpar. '....'
-	mtt -q -s s$(SYS) numpar m
+${SYS}_simpar.m:
+	mtt ${OPTS} -q -stdin ${SYS} simpar m
 
-s$(SYS)_simpar.m:
-	echo Starting creation of s$(SYS)_simpar. '....'
-	mtt -q -s s$(SYS) simpar m
+${SYS}_state.m:
+	mtt ${OPTS} -q -stdin ${SYS} state m
 
-$(SYS)_sm.m:
-	echo Starting creation of $(SYS)_sm. '....'
-	mtt -q $(SYS) sm m
+${SYS}_numpar.m:
+	mtt ${OPTS} -q -stdin ${SYS} numpar m
 
-$(SYS)_def.m:
-	echo Starting creation of $(SYS)_def. '....'
-	mtt -q $(SYS) def m
+${SYS}_input.m:
+	mtt ${OPTS} -q -stdin ${SYS} input m
 
-s$(SYS)_def.m:
-	echo Starting creation of s$(SYS)_def. '....'
-	mtt -q -s s$(SYS) def m
+${SYS}_ode2odes.m:
+	mtt ${OPTS} -q -stdin ${SYS} ode2odes m
+
+${SYS}_sim.m:
+	mtt ${OPTS} -q -stdin ${SYS} sim m
+
+${SYS}_def.m:
+	mtt ${OPTS} -q -stdin ${SYS} def m
+
+${SYS}_def.r:
+	mtt ${OPTS} -q -stdin ${SYS} def r
 
 
+## Sensitivity model reps
+s${SYS}_sympar.m:
+	mtt -q -stdin ${OPTS} -s s${SYS} sympar m
 
+s${SYS}_simpar.m:
+	mtt -q -stdin ${OPTS} -s s${SYS} simpar m
+
+s${SYS}_state.m:
+	mtt -q -stdin ${OPTS} -s s${SYS} state m
+
+s${SYS}_numpar.m:
+	mtt -q -stdin ${OPTS} -s s${SYS} numpar m
+
+s${SYS}_input.m:
+	mtt -q -stdin ${OPTS} -s s${SYS} input m
+
+s${SYS}_ode2odes.m:
+	mtt -q -stdin ${OPTS} -s s${SYS} ode2odes m
+
+s${SYS}_ssim.m:
+	mtt -q -stdin ${OPTS} -s s${SYS} ssim m
+
+s${SYS}_def.m:
+	mtt -q -stdin ${OPTS} -s s${SYS} def m
 
 
 

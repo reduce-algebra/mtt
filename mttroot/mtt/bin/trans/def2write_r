@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/10/10 09:07:32  peterg
+## Initial revision
+##
 ###############################################################
 
 
@@ -32,10 +35,30 @@ Npar=`wc -l $sys\_sympar.txt | awk '{print $1}'`
 
 # Set up representation-specific stuff
 case $rep in
+    cse)
+        matrices='EdX E'
+        ns="$Nx $Nx"
+        ms="1 $Nx"
+	;;
+    cseo)
+        matrices='Y'
+        ns="$Ny"
+        ms="1"
+	;;
     ode)
-        matrices='dX Y Yz'
-        ns="$Nx $Ny $Nyz"
-        ms="1 1 1"
+        matrices='dX'
+        ns="$Nx"
+        ms="1"
+	;;
+    odeo)
+        matrices='Y Yz'
+        ns="$Ny $Nyz"
+        ms="1 1"
+	;;
+    sm)
+        matrices='A B C D'
+        ns="$Nx $Nx $Ny $Ny"
+        ms="$Nx $Nu $Nx $Nu"
 	;;
     *)
         echo def2write_r: representation $rep not recognised
@@ -48,13 +71,13 @@ echo 'optimize'                      >>$1_$2_write.r
 for matrix in $matrices; do
     n=`first "$ns"`; ns=`rest "$ns"` 
     m=`first "$ms"`; ms=`rest "$ms"`
-
     is=`n2m 1 $n`; 
     js=`n2m 1 $m`; 
     for i in $is; do
       for j in $js; do
         name=`echo MTT$matrix'('$i','$j')'`
-        echo '  '$name ':=:' $name',' >>$1_$2_write.r
+        echo '  '$comma$name ':=:' $name >>$1_$2_write.r
+        comma=', '
       done
     done
 done

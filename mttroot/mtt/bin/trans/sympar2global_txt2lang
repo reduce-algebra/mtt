@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/06/15 15:24:33  peterg
+## Initial revision
+##
 ###############################################################
 
 # Set up language stuff.
@@ -23,12 +26,14 @@ language=$2
 
 case $language in
     m)
-	ext='m'
 	Lc='#';
 	Rc='#';
 	;;
     c)
-	ext='c'
+	Lc='/*';
+	Rc='*/';
+	;;
+    java)
 	Lc='/*';
 	Rc='*/';
 	;;
@@ -52,7 +57,7 @@ BEGIN{
 {i++; print tolower($1), "..."; var = $1}
 END{
   print var ";" # Repeat the last variable to avoid the trailing ...
-}' $1_sympar.txt
+}' $1_sympars.txt
 
 fi
 
@@ -61,6 +66,16 @@ if [ "$language" = "c" ]; then
       i++; print "extern double", tolower($1) ";";
     }' $1_sympar.txt
  fi
+
+if [ "$language" = "java" ]; then
+cat <<EOF
+  $1_numpar p;
+  private p = new $1_numpar();
+EOF
+    awk '{
+      i++; print "  float " tolower($1) " = p." tolower($1) ";";
+    }' $1_sympar.txt
+fi
 
 
 echo

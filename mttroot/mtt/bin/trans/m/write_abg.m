@@ -1,10 +1,13 @@
-function write_abg(system_name,bonds,connections);
+function write_abg(system_name,bonds,connections,n_vector_bonds);
 
 ###############################################################
 ## Version control history
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1998/09/02 11:35:20  peterg
+## Removed port.index field
+##
 ## Revision 1.5  1998/09/02 10:30:30  peterg
 ## Now writes out list of ports ans list of subsystems.
 ## These ordereded lists determine the order of processing of ports ans
@@ -45,46 +48,71 @@ function write_abg(system_name,bonds,connections);
   i_port=0; SubsystemList = ""; PortList ="";
   for i=1:N
     eval(["[comp_type, name, cr, arg, repetitions] = ", system_name, "_cmp(i);"]);
+    c = nozeros(connections(i,:));# Connections to this component
+    m = length(c);		# Number of connections
 
-    if index(name,"[")==0	# Not a port
-      SubsystemList = [SubsystemList; name];
-      fprintf(fid,"\n# Component %s\n", name);
-      fprintf(fid,Sformat,system_name,name,"type",comp_type);
-      fprintf(fid,Sformat,system_name,name,"cr",cr);
-      fprintf(fid,Sformat,system_name,name,"arg",arg);
-      fprintf(fid,Iformat,system_name,name,"repetitions",repetitions);
-
-      c = nozeros(connections(i,:));# Connections to this component
-      m = length(c);		# Number of connections
-
-      fprintf(fid,Cformat,system_name,name);
-      for j=1:m
-      	fprintf(fid,"%i ", c(j));
-      endfor;
-      fprintf(fid,"];\n");
+    ## Vectorise junctions?
+    n_bonds = n_vector_bonds(i);
+    if strcmp(comp_type,"0")||strcmp(comp_type,"1")
+            n_extra = m/n_bonds;
+	    m_extra = n_bonds;
     else
+      n_extra = 1;
+      m_extra = m;
+    endif
+      
+    if index(name,"[")==0	# Not a port
+      for i_extra = 1:n_extra;
+
+	if i_extra>1		# Extras
+	  new_name = sprintf("%sv%i", name,i_extra);
+	else
+	  new_name = name;
+	endif
+	
+	SubsystemList = [SubsystemList; new_name];
+	fprintf(fid,"\n# Component %s\n", new_name);
+	fprintf(fid,Sformat,system_name,new_name,"type",comp_type);
+	fprintf(fid,Sformat,system_name,new_name,"cr",cr);
+	fprintf(fid,Sformat,system_name,new_name,"arg",arg);
+	fprintf(fid,Iformat,system_name,new_name,"repetitions",repetitions);
+	fprintf(fid,Iformat,system_name,new_name,"status",-1);
+	
+	##Connections
+	fprintf(fid,Cformat,system_name,new_name);
+	for j=1:m_extra
+	  k = j+(i_extra-1)*m_extra;
+      	  fprintf(fid,"%i ", c(k) );
+	endfor;
+	fprintf(fid,"];\n");
+      endfor
+    else			# Its a port
       name=name(2:length(name)-1); # Strip []
-      ch=name(1);			# First char of name
+      ch=name(1);		# First char of name
       if (ch>="0")&&(ch<="9")	# Its a numeral
       	name=["mttp",name];	# prefix by mttp
       endif;
-    
-      PortList = [PortList; name];
-      fprintf(fid,"\n# Port %s\n", name); 
-#      fprintf(fid,PIformat,system_name,name,"index",++i_port);
-      fprintf(fid,PSformat,system_name,name,"type",comp_type);
-      fprintf(fid,PSformat,system_name,name,"cr",cr);
-      fprintf(fid,PSformat,system_name,name,"arg",arg);
-      fprintf(fid,PIformat,system_name,name,"repetitions",repetitions);
 
-      c = nozeros(connections(i,:));# Connections to this component
-      m = length(c);		# Number of connections
+      for i_port=1:m
+	if m>1			# Index the port name
+	  name_i = sprintf("%s_%i",name,i_port);
+	else
+	  name_i = name;	# Leave it alone
+	endif;
 
-      fprintf(fid,PCformat,system_name,name);
-      for j=1:m
-      	fprintf(fid,"%i ", c(j));
+	PortList = [PortList; name_i]; # Update port list
+	
+	fprintf(fid,"\n# Port %s\n", name_i); 
+	fprintf(fid,PSformat,system_name,name_i,"type",comp_type);
+	fprintf(fid,PSformat,system_name,name_i,"cr",cr);
+	fprintf(fid,PSformat,system_name,name_i,"arg",arg);
+	fprintf(fid,PIformat,system_name,name_i,"repetitions",repetitions);
+	fprintf(fid,PIformat,system_name,name_i,"status",-1);
+	
+	fprintf(fid,PCformat,system_name,name_i);
+      	fprintf(fid,"%i ", c(i_port));
+	fprintf(fid,"];\n");
       endfor;
-      fprintf(fid,"];\n");
     endif;
   endfor;
 

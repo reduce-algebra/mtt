@@ -16,6 +16,9 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.10  2002/07/22 10:45:22  geraint
+@comment  Fixed gnuplot rep so that it correctly re-runs the simulation if input files have changed.
+@comment
 @comment  Revision 1.9  2002/07/05 13:29:34  geraint
 @comment  Added notes about generating dynamically linked functions for Octave and Matlab.
 @comment
@@ -1089,6 +1092,13 @@ package such as Octave (@pxref{Octave}).
 Following Chapter 3 of the book, algebraic loops appear as under-causal
 components in the bond graph. It is up to the modeler to indicate how these loops
 are to be resolved by adding appropriate SS elements.
+
+In particular if zero junction is undercausal an SS:loop component (with
+effort output indicated by a causal stroke) with the following label
+file entry:
+@example
+  loop SS unknown,zero
+@end example
 
 For more information, refer to:
 ``Metamodelling: Bond Graphs and Dynamic Systems'' by Peter Gawthrop and
@@ -4571,6 +4581,9 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.10  2002/07/22 10:45:22  geraint
+# %% Fixed gnuplot rep so that it correctly re-runs the simulation if input files have changed.
+# %%
 # %% Revision 1.9  2002/07/05 13:29:34  geraint
 # %% Added notes about generating dynamically linked functions for Octave and Matlab.
 # %%

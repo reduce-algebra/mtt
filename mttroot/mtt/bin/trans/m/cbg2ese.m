@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.45  2002/05/22 09:15:03  gawthrop
+  ## ## Non-repetitive components no longer use _1 in names
+  ## ##
   ## ## Revision 1.44  2001/11/11 18:12:30  geraint
   ## ## Moved fflush(structure_file) out of loop.
   ## ##
@@ -401,62 +404,63 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	    
 	    u_index = 0; y_index = 0; ## Count the inputs and outputs
 	    for port_number=1:length(bond_list)
-              port_bond_number = bond_list(port_number);
-	      this_bond_effort_unit = \
-		  deblank(bond_effort_unit(port_bond_number,:));
-	      this_bond_flow_unit = \
-		  deblank(bond_flow_unit(port_bond_number,:));
+	      repetition,port_number
+              port_bond_number = bond_list(port_number)
+# 	      this_bond_effort_unit = \
+# 		  deblank(bond_effort_unit(port_bond_number,:))
+# 	      this_bond_flow_unit = \
+# 		  deblank(bond_flow_unit(port_bond_number,:));
 
-	      ## Extract the unit/domain stuff
-              this_port_name = subABG.portlist(port_number,:);
+# 	      ## Extract the unit/domain stuff
+#               this_port_name = subABG.portlist(port_number,:);
               
-              eval(sprintf("this_port = subABG.ports.%s;", \
-			   this_port_name));
-	      if struct_contains(this_port,"units")
-                eval(["effort_unit = \
-		    subABG.ports.",this_port_name,".units.effort;"]);
-                eval(["flow_unit = \
-		    subABG.ports.",this_port_name,".units.flow;"]);
-	      else
-		effort_unit = "none";
-		flow_unit = "none";
-	      endif
+#               eval(sprintf("this_port = subABG.ports.%s;", \
+# 			   this_port_name));
+# 	      if struct_contains(this_port,"units")
+#                 eval(["effort_unit = \
+# 		    subABG.ports.",this_port_name,".units.effort;"]);
+#                 eval(["flow_unit = \
+# 		    subABG.ports.",this_port_name,".units.flow;"]);
+# 	      else
+# 		effort_unit = "none";
+# 		flow_unit = "none";
+# 	      endif
 
-	      ## and check consistency
-              ## Efforts
-	      if strcmp(this_bond_effort_unit,"null") # set
-		bond_effort_unit = \
-		    [bond_effort_unit(1:port_bond_number-1,:)
-		     effort_unit
-		     bond_effort_unit(port_bond_number+1:n_bonds,:)
-		     ]
-	      elseif (!strcmp(this_bond_effort_unit,"none") && !strcmp(effort_unit,"none")) # check
-		mtt_info(sprintf(unit_info,full_name, effort_unit, \
-				 this_bond_effort_unit), infofilenum);
-		if !strcmp(this_bond_effort_unit,effort_unit)
-		  error_string = sprintf(unit_error, full_name,\
-					 effort_unit, \
-					 this_bond_effort_unit);
-		  mtt_error(error_string);
-		endif
-	      endif
-	      ## Flows
-	      if strcmp(this_bond_flow_unit,"null") # set
-		bond_flow_unit = \
-		    [bond_flow_unit(1:port_bond_number-1,:)
-		     flow_unit
-		     bond_flow_unit(port_bond_number+1:n_bonds,:)
-		     ]
-	      elseif (!strcmp(this_bond_flow_unit,"none") && !strcmp(flow_unit,"none")) # check
-		mtt_info(sprintf(unit_info,full_name, flow_unit, \
-				 this_bond_flow_unit), infofilenum);
-		if !strcmp(this_bond_flow_unit,flow_unit)
-		  error_string = sprintf(unit_error, full_name,\
-					 flow_unit, \
-					 this_bond_flow_unit);
-		  mtt_error(error_string);
-		endif
-	      endif
+# 	      ## and check consistency
+#               ## Efforts
+# 	      if strcmp(this_bond_effort_unit,"null") # set
+# 		bond_effort_unit = \
+# 		    [bond_effort_unit(1:port_bond_number-1,:)
+# 		     effort_unit
+# 		     bond_effort_unit(port_bond_number+1:n_bonds,:)
+# 		     ]
+# 	      elseif (!strcmp(this_bond_effort_unit,"none") && !strcmp(effort_unit,"none")) # check
+# 		mtt_info(sprintf(unit_info,full_name, effort_unit, \
+# 				 this_bond_effort_unit), infofilenum);
+# 		if !strcmp(this_bond_effort_unit,effort_unit)
+# 		  error_string = sprintf(unit_error, full_name,\
+# 					 effort_unit, \
+# 					 this_bond_effort_unit);
+# 		  mtt_error(error_string);
+# 		endif
+# 	      endif
+# 	      ## Flows
+# 	      if strcmp(this_bond_flow_unit,"null") # set
+# 		bond_flow_unit = \
+# 		    [bond_flow_unit(1:port_bond_number-1,:)
+# 		     flow_unit
+# 		     bond_flow_unit(port_bond_number+1:n_bonds,:)
+# 		     ]
+# 	      elseif (!strcmp(this_bond_flow_unit,"none") && !strcmp(flow_unit,"none")) # check
+# 		mtt_info(sprintf(unit_info,full_name, flow_unit, \
+# 				 this_bond_flow_unit), infofilenum);
+# 		if !strcmp(this_bond_flow_unit,flow_unit)
+# 		  error_string = sprintf(unit_error, full_name,\
+# 					 flow_unit, \
+# 					 this_bond_flow_unit);
+# 		  mtt_error(error_string);
+# 		endif
+# 	      endif
 	      
 
 	      ## Effort

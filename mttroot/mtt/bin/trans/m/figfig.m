@@ -14,6 +14,9 @@ function figfig(filename,language,boxed,monochrome)
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.6  2001/05/24 07:44:36  gawthrop
+  ## Minor updates ..
+  ##
   ## Revision 1.5  2001/05/10 19:08:35  gawthrop
   ## Cosmetic improvements
   ##
@@ -46,9 +49,9 @@ function figfig(filename,language,boxed,monochrome)
   eval(sprintf("gset output \"%s\" ",figfilename));
 
   if (monochrome==1)
-    gset term fig monochrome portrait fontsize 16 size 20 10 metric
+    gset term fig monochrome portrait fontsize 16 size 20 10 metric thickness 3
   else
-    gset term fig color portrait fontsize 16 size 20 10 metric
+    gset term fig color portrait fontsize 16 size 20 10 metric thickness 3
   endif
   
   replot;
@@ -65,7 +68,7 @@ function figfig(filename,language,boxed,monochrome)
   endif
   
 
-  if nargin>1			# Do a ps file
+  if nargin>1			# Do a file in another langueage
     psfilename = sprintf("%s.%s",filename,language);
     convert = sprintf("fig2dev -L%s %s > %s", language, figfilename, psfilename);
     system(convert);

@@ -1,12 +1,26 @@
 %% Label file for system sEMTF (sEMTF_lbl.txt)
 %SUMMARY sEMTF Effort modulated TF - sensitivity version
-%DESCRIPTION 
+%DESCRIPTION It is assumed that no sensitivity parameter is associated
+%DESCRIPTION with this component.
+%DESCRIPTION This is a built out of EMTFs and the 4 port AE3 component
+%DESCRIPTION There is one argument alias - the transformer (flow) gain 
+%DESCRIPTION There are two CR aliases: one for the EMTF and one for
+%DESCRIPTION the AE3
+%DESCRIPTION Examples:
+%DESCRIPTION   lin;slin  n
+%DESCRIPTION   lsin;slsin l
+%DESCRIPTION   lcos;slcos l
+
+
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2002/04/17 18:50:35  gawthrop
+% %% Sensitivity EMTF components
+% %%
 % %% Revision 1.1  2000/12/28 17:29:10  peterg
 % %% To RCS
 % %%

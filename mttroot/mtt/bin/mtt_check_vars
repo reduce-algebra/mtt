@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.2  1997/12/04  10:41:49  peterg
+# Added -p argument to print environment variables
+#
 ## Revision 1.1  1997/07/27 13:12:03  peterg
 ## Initial revision
 ##
@@ -31,17 +34,25 @@ while [ -n "`echo $1 | grep '-'`" ]; do
   shift
 done
 
+# Octave
+#mtt_check_var "$OCTAVE_PATH" "OCTAVE_PATH" "$print" "Octave"
 
-mtt_check_var "$MAKE" "MAKE" "$print"
-mtt_check_var "$MTTPATH" "MTTPATH" "$print"
-mtt_check_var "$MATRIX" "MATRIX" "$print"
-mtt_check_var "$RMATRIX" "RMATRIX" "$print"
-mtt_check_var "$SYMBOLIC" "SYMBOLIC" "$print"
-mtt_check_var "$FIG" "FIG" "$print"
-mtt_check_var "$PSVIEW" "PSVIEW" "$print"
-mtt_check_var "$HTMLVIEW" "HTMLVIEW" "$print"
-mtt_check_var "$DVIVIEW" "DVIVIEW" "$print"
-mtt_check_var "$CC" "CC" "$print"
+# LaTeX
+#mtt_check_var "$TEXFORMATS" "TEXFORMATS" "$print" "LaTeX"
+#mtt_check_var "$TEXINPUTS" "TEXINPUTS" "$print" "LaTeX"
+#mtt_check_var "$TEXFONTS" "TEXFONTS" "$print" "LaTeX"
+
+# MTT variables
+mtt_check_var "$MAKE" "MAKE" "$print" "MTT"
+mtt_check_var "$MTTPATH" "MTTPATH" "$print" "MTT"
+mtt_check_var "$MATRIX" "MATRIX" "$print" "MTT"
+mtt_check_var "$SYMBOLIC" "SYMBOLIC" "$print" "MTT"
+mtt_check_var "$FIG" "FIG" "$print" "MTT"
+mtt_check_var "$PSVIEW" "PSVIEW" "$print" "MTT"
+mtt_check_var "$HTMLVIEW" "HTMLVIEW" "$print" "MTT"
+mtt_check_var "$DVIVIEW" "DVIVIEW" "$print" "MTT"
+mtt_check_var "$CC" "CC" "$print" "MTT"
+mtt_check_var "$LATEX2HTML" "LATEX2HTML" "$print" "MTT"
 
 
 

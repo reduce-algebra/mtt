@@ -5,6 +5,9 @@ function [bonds,components] = rbg2abg(rbonds,rstrokes,rcomponents,rports,infofil
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.6  1996/08/25 08:27:14  peter
+% %% Now checks ports correctely - I hope.
+% %%
 % %% Revision 1.5  1996/08/24 19:21:26  peter
 % %% More specific error messages.
 % %%
@@ -30,7 +33,7 @@ else
 end;
 
 % Xfig scaling factor
-scale = 1200.0;
+scale = 1200.0/2.54546;
 
 % Rotation matrix
 rot = [0 -1; 1 0];
@@ -67,74 +70,77 @@ arrow_vector = ( which_end.*other_end_2 + (one-which_end).*other_end_1 ) - ...
     arrow_end;
  
 % Locate the bond end nearest to each port
+% col 1 of port_near_bond contains a signed bond number (+ for arrow end)
+% col 2  of port_near_bond contains the corresponding port number
 for i = 1:n_ports
   near_bond = adjbond(rports(i,1:2),arrow_end,other_end);
-  port_near_bond(i,:) = [near_bond, rports(i,3)];
+  signed_bond = near_bond(1)*sign(1.5-near_bond(2))
+  port_near_bond(i,:) = [signed_bond, rports(i,3)];
 end;
 
 % Locate the components at the ends of each bond
+% col 1 of comp_near_bond contain the component nearest to the arrow end
+% col 2 of comp_near_bond contain the component nearest to the other end
 for i = 1:n_bonds
   comp_near_bond(i,:) = adjcomp(arrow_end(i,:),other_end(i,:),rcomponents);
 end;
 
 % Produce a list of bonds on each component - sorted if explicit port numbers
 for i = 1:n_components    
+  
+  % There are n bonds on this component with corresponding index
   [index,n] = getindex(comp_near_bond,i);
-    % Error message in case we need it!
+  
+  % Error message in case we need it!
   port_error = sprintf(... 
       'Component at (%1.3f,%1.3f) has inconsistent port numbers', ...
       rcomponents(i,1)/scale, rcomponents(i,2)/scale);
 
   if index(1,1) ~= 0 % Then its a genuine component 
+    
+    % Create the signed list of bonds on this component
     one = ones(n,1);
     bond_list = index(:,1); %  bond at component
     bond_end = index(:,2);  % which end of bond at component?
-
+    direction = -sign(bond_end-1.5*one);
+    signed_bond_list = bond_list.*direction;
 
     % Default sort of bonds (ie no change)
     sort_index = [1:n]'; 
     
-    if n_ports>0
-      % Are the component ports numbered? (either they all are or none are)
-      k=0;
+    if n_ports>0 % then there are some numbered ports 
+      % so find those associated with the bonds on this component.
+      k=0; port_number=[];
       for j = 1:n
-	b = bond_list(j); e = bond_end(j);
-	% Find all ports on this bond
-	[port_indices,m] = getindex(port_near_bond(:,1),b);
-	% Now find the one at this end  - if any
-	port_index = 0;
-	for l=1:m
-	  if port_near_bond(port_indices(l),2)==e
-	    port_index = port_indices(l);
-	    break;
-	  end;
-	end;
-	if port_index>0
-	  % and put the corresponding number in the list
+	b = signed_bond_list(j); 
+	% Find the port on component end of bond (if any)
+	[port_index,m] = getindex(port_near_bond(:,1),b);
+	if m==1
 	  k=k+1;
-	  port_number(k,1) = port_near_bond(port_index,3);
-	end;
+	  port_number(k,1) = port_near_bond(port_index,2);
+	  end;
       end;
 
-	% Must have a lable for each port or non at all
-      if k==n
+      % Must have a lable for each port or non at all
+      if k==n % Then a full set of port numbers
 	[sorted,sort_index]=sort(port_number);
-	if sum(sorted==[1:n]')~=n % The there is something wrong
+	
+	%Check that all the numbers (1..n) are there
+	if sum(sorted==[1:n]')~=n % There is something wrong
 	  mtt_info(port_error,fnum);
-	  mtt_info(sprintf('\t it must have ports from 1:%1.0f\n', n), fnum);
+	  mtt_info(sprintf('\t it must have ports from 1:%1.0f\n', n), ...
+	      fnum);
 	end;
-      elseif k~=0
-	mtt_info(port_error,fnum);
-	mtt_info(sprintf('\t it must have 0 or %1.0f ports\n', n), fnum);
+      else
+	if k~=0
+	  mtt_info(port_error,fnum);
+	  mtt_info(sprintf('\t it must have 0 or %1.0f ports\n', n), fnum);
+	end;
       end;
- 
+      
     end;
   end;
-
-  % direction is 1 if arrow at component else -1
-  direction = -sign(index(:,2)-1.5*one);
-  signed_bond_list = bond_list.*direction;
-  
+    
   % Write out bond list sorted by port number (if any)
   for j = 1:length(sort_index)
     jj = sort_index(j);

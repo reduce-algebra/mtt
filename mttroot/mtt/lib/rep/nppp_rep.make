@@ -2,7 +2,7 @@
 # Makefile for representation nppp
 # File nppp_rep.make
 
-#Copyright (C) 2000 by Peter J. Gawthrop
+#Copyright (C) 2000,2001 by Peter J. Gawthrop
 
 all: $(SYS)_nppp.$(LANG)
 

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.12  2001/05/08 15:18:10  gawthrop
+## Added trig and hyperbolic functions to argument exclusion list
+##
 ## Revision 1.11  2000/09/19 11:14:30  peterg
 ## Now writes the first component type header correctely
 ##
@@ -123,7 +126,12 @@ awk --field-separator ':' '
       alias[++i] = s_arg;
       s_arg = sprintf(";%s",s_arg);
       Component = substr(Component,2);
+      lin = "slin"
     }
+   else {
+      lin = "lin"
+    }
+  
  }
 
     ## Table of components
@@ -135,12 +143,13 @@ awk --field-separator ':' '
     cr["De"] = "SS";  arg["De"] = "external";
     cr["Df"] = "SS";  arg["Df"] = "external";
 
-    cr["R"] = "lin";  arg["R"]  = sprintf("flow,%s%s", $2, s_arg);
-    cr["C"] = "lin";  arg["C"]  = sprintf("effort,%s%s", $2, s_arg);
-    cr["I"] = "lin";  arg["I"]  = sprintf("flow,%s%s", $2, s_arg);
+    cr["R"] = lin;  arg["R"]  = sprintf("flow,%s%s", $2, s_arg);
+    cr["C"] = lin;  arg["C"]  = sprintf("effort,%s%s", $2, s_arg);
+    cr["I"] = lin;  arg["I"]  = sprintf("flow,%s%s", $2, s_arg);
 
-    cr["CS"] = "lin";  arg["CS"]  = sprintf("effort,%s;x_0%s", $2, s_arg);
-    cr["IS"] = "lin";  arg["IS"]  = sprintf("flow,%s;x_0%s", $2, s_arg);
+    cr["CS"] = "lin";  arg["CS"]  = sprintf("effort,%s;%s_x0%s", $2, $2, s_arg);
+    cr["IS"] = "lin";  arg["IS"]  = sprintf("flow,%s;%s_x0%s", $2, $2, s_arg);
+    cr["INTFS"] = "lin";  arg["INTFS"]  = sprintf("%s_x0%s", $2, s_arg);
 
     cr["TF"] = "lin";  arg["TF"]  = sprintf("flow,%s%s", $2, s_arg);
     cr["GY"] = "lin";  arg["GY"]  = sprintf("flow,%s%s", $2, s_arg);

@@ -1,6 +1,6 @@
-function [y,x,u,t,UU,UU_c,UU_l] = ppp_nlin_sim (system_name,i_ppp,i_par,A_u,w_s,N_ol,extras)
+function [y,x,u,t,p,UU,UU_c,UU_l,t_ppp,t_est] = ppp_nlin_sim (system_name,i_ppp,i_par,A_u,w_s,N_ol,extras)
 
-  ## usage:  [y,x,u,t,U,U_c,U_l] = ppp_nlin_sim (system_name,A_u,tau,t_ol,N,w)
+  ## usage: [y,x,u,t,p,UU,UU_c,UU_l,t_ppp,t_est] = ppp_nlin_sim (system_name,i_ppp,i_par,A_u,w_s,N_ol,extras) 
   ##
   ## 
   
@@ -15,6 +15,7 @@ function [y,x,u,t,UU,UU_c,UU_l] = ppp_nlin_sim (system_name,i_ppp,i_par,A_u,w_s,
     extras.max_iterations = 10;
     extras.v = 0.1;
     extras.verbose = 0;
+    extras.estimate = 1;
   endif
   
   
@@ -30,7 +31,6 @@ function [y,x,u,t,UU,UU_c,UU_l] = ppp_nlin_sim (system_name,i_ppp,i_par,A_u,w_s,
 
   ## Sensitivity system details -- defines moving horizon simulation
   simpars = eval(sprintf("%s_simpar;", s_system_name));
-  sympars = eval(sprintf("%s_sympar;", s_system_name));
   pars = eval(sprintf("%s_numpar;", s_system_name));
 
   ## Times
@@ -101,11 +101,17 @@ function [y,x,u,t,UU,UU_c,UU_l] = ppp_nlin_sim (system_name,i_ppp,i_par,A_u,w_s,
   x = [];
   u = [];
   t = [];
+
+  p = [];
+
   t_last = 0;
   UU = [];
   UU_l =[];
   UU_c =[];
   
+  t_ppp = [];
+  t_est = [];
+
   x_0s = zeros(2*n_x,1);
 
   if  strcmp(extras.U_initial,"linear")
@@ -149,21 +155,32 @@ function [y,x,u,t,UU,UU_c,UU_l] = ppp_nlin_sim (system_name,i_ppp,i_par,A_u,w_s,
     else
       Error = [];
     endif
-    opt_time = time-tick;  
-    printf("Optimisation %i took %i iterations and %2.2f sec\n", i, \
-	   length(Error), opt_time);
+    ppp_time = time-tick;  
+    t_ppp = [t_ppp;ppp_time];
     
     ## Generate control
     u_ol = u_star_t*U;		# Not used - just for show
 
     ## Simulate system over one ol interval
-    [y_ol,ys_ol,x_ol] = eval(sprintf("%s_ssim(x_0s, pars, simpar, u_star_t);", s_system_name));
+    par(i_ppp(:,3)) = pars(i_ppp(:,1)); # Update the simulation ppp weights
+    [y_ol,x_ol] = eval(sprintf("%s_sim(x_0, par, simpar, u_star_t);", system_name));
+
+
+    ## Tune parameters/states
+    if (extras.estimate==1)
+      tick = time;
+      par_est = pars(i_par(:,1));
+      p = [p; par_est'];
+      pars = ppp_optimise(s_system_name,x_0s,pars,simpar,u_star_t,y_ol,i_par,extras);
+      est_time = time-tick;  
+      t_est = [t_est;est_time];
+    endif
 
     x_0  = x_ol(n_t+1,:)';	# Extract state for next time
     y_ol = y_ol(1:n_t,:);	# Avoid extra points due to rounding error 
     x_ol = x_ol(1:n_t,:);	# Avoid extra points due to rounding error 
-
-
+    
+    
     y = [y; y_ol];
     x = [x; x_ol];
     u = [u; u_ol];
@@ -174,7 +191,8 @@ function [y,x,u,t,UU,UU_c,UU_l] = ppp_nlin_sim (system_name,i_ppp,i_par,A_u,w_s,
 
     t = [t; t_ol+t_last*ones(n_t,1) ];
     t_last = t_last + T_ol; 
+
+
   endfor
 
 endfunction
-

@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.403  2004/09/07 20:38:44  geraint
+## Applies CRs before creating sese.make to avoid Circular dependencies.
+##
 ## Revision 1.402  2004/09/03 08:35:27  geraint
 ## Copies Perl CRs to an mtt subdirectory (=> mtt:: workspace).
 ##
@@ -2298,6 +2301,14 @@ fi
 
 # Tidy mode - operate in the directory MTT-work
 if [[ "$tidy" = "tidy" && "$level" = "0" ]]; then
+    # make sure that a system exists in this directory
+    if [ "${sys}_${rep}.${lang}" != "${sys}_abg.dia" ] && [ "${sys}_${rep}.${lang}" != "${sys}_abg.fig" ]; then
+	nabgs=`ls ${sys}_abg.* 2>/dev/null | wc -l`
+	if [ $nabgs -eq 0 ]; then
+	    echo "MTT Error: System $sys does not exist"
+	    exit -1;
+	fi
+    fi
    mkdir -p MTT_work
    valid_files=`ls | grep -v '^MTT'`
    ##cp -p -u  Makefile Make *.* .* MTT_work  2>/dev/null

@@ -1,0 +1,60 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: abg2lbl_fig2txt
+#
+# Acausal bond graph to causal bond graph: mfile format
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+# P.J.Gawthrop March 1997
+# Copyright (c) P.J.Gawthrop, 1997
+
+infofile='mtt_info.txt'
+typefile="$1_type.sh"
+
+# Remove the old log file
+rm -f abg2lbl_fig2txt.log
+rm -f $1_cbg.m
+rm -f $typefile
+rm -f $infofile
+
+
+#Inform user
+echo Creating $1_lbl.txt
+
+	( \
+	echo "%SUMMARY $1: <brief description here>"; \
+	echo "%DESCRIPTION <Detailed description here>"; \
+	echo "%% Label file for system $1 ($1_lbl.txt)"; \
+	cat $MTTPATH/trans/m/rcs_header.txt; \
+	echo "%% Each line should be of one of the following forms:"; \
+	echo "%	a comment (ie starting with %)"; \
+	echo "%	Component-name	CR_name	arg1,arg2,..argn"; \
+	echo "%	blank"; \
+	echo; \
+        echo \
+        )> $1_lbl.txt
+
+awk '/:/ {print $NF}' $1_abg.fig | \
+sed 's/\\001//' | \
+sort | \
+tee $1_raw_list | \
+sort -u> $1_unique_raw_list
+
+grep -v  '\[[0-9]*\]'  $1_raw_list | awk --field-separator ':' \
+ '{if ($1 ~ "SS") \
+	print "% Component type", $1, "\n\t" $2 "\t\texternal\texternal";
+	else \
+	print "% Component type", $1, "\n\t" $2 "\t\tlin\t\targ1,arg2" }' \
+>>$1_lbl.txt
+

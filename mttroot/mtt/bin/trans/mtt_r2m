@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/07/27 20:26:44  peterg
+## Put in correct N and M values for dm rep
+##
 ## Revision 1.1  1998/07/27 16:30:26  peterg
 ## Initial revision
 ##
@@ -44,7 +47,7 @@ GENTRANLANG!* := '$codegenerator;
 ON GENTRANSEG;
 MAXEXPPRINTLEN!* := 80;
 TEMPVARNUM!* := 1;
-TEMPVARNAME!* := 'mtt_temp;
+TEMPVARNAME!* := 'mtt_;
 
 % Matrix output function
 in"$MTTPATH/trans/lang_matrix.r";
@@ -73,10 +76,10 @@ rm -f mtt_r2lang.log
 rm -f $outfile.*
 
 if [ "$rep" = "ode" ]; then
-  echo Creating $1_odea.$ext
+  #echo Creating $1_odea.$ext
   echo Creating $1_odeo.$ext
   rm -f $1_odeo.$ext.1;
-  rm -f $1_odea.$ext.1;
+  #rm -f $1_odea.$ext.1;
 
   #Header
   lang_header $1 $rep $ext 'mttx,mttu,t' mttdx > $outfile.1
@@ -117,43 +120,43 @@ if [ "$rep" = "ode" ]; then
     GENTRANSHUT "$1_odeo.$ext.1";
       
 EOF
-  cat $1_odeo.$ext.1
+#  cat $1_odeo.$ext.1
 
-  # Algebraic bits
-  $MATRIX -q  <<EOF  >> $1_ode.$ext
-    %System structure
-    [nx,ny,nu,nz,nyz] = $1_def;
-  if nyz>0
-    printf("global mttxx mttt;\n");
-    printf("mttxx = mttx; mttt=t;\n");
-  
-    printf("$Lc====== Extract the internal input variables ======$Rc\n");
-    for i = 1:nyz
-      printf("  mttui$Lb%i$Rb = mttx$Lb%i$Rb;\n",i,i+nx);
-    end;
-    printf("\n");
-  
-    printf("[mttui,info] = fsolve('$1_odea',mttui);\n");
-    printf("if (info!=1)\n"); 
-    printf("  error('fsolve has not converged')\n");
-    printf("end\n");
-    printf("\n");
-  
-    printf("$Lc====== Set up the internal input variables ======$Rc\n");
-    for i = 1:nyz
-      printf("  mttui%i = mttui$Lb%i$Rb;\n",i,i);
-    end;
-    printf("\n");
-  
-    printf("$Lc====== Put internal input variables at end of state derivative ======$Rc\n");
-    for i = 1:nyz
-      printf(" mttdx$Lb%i$Rb = mttui%i;\n",i+nx,i);
-    end;
-    printf("\n");
-  end;
-  
-EOF
-  
+##  # Algebraic bits
+##  $MATRIX -q  <<EOF  >> $1_ode.$ext
+##    %System structure
+##    [nx,ny,nu,nz,nyz] = $1_def;
+##  if nyz>0
+##    printf("global mttxx mttt;\n");
+##    printf("mttxx = mttx; mttt=t;\n");
+##  
+##    printf("$Lc====== Extract the internal input variables ======$Rc\n");
+##    for i = 1:nyz
+##      printf("  mttui$Lb%i$Rb = mttx$Lb%i$Rb;\n",i,i+nx);
+##    end;
+##    printf("\n");
+##  
+##    printf("[mttui,info] = fsolve('$1_odea',mttui);\n");
+##    printf("if (info!=1)\n"); 
+##    printf("  error('fsolve has not converged')\n");
+##    printf("end\n");
+##    printf("\n");
+##  
+##    printf("$Lc====== Set up the internal input variables ======$Rc\n");
+##    for i = 1:nyz
+##      printf("  mttui%i = mttui$Lb%i$Rb;\n",i,i);
+##    end;
+##    printf("\n");
+##  
+##    printf("$Lc====== Put internal input variables at end of state derivative ======$Rc\n");
+##    for i = 1:nyz
+##      printf(" mttdx$Lb%i$Rb = mttui%i;\n",i+nx,i);
+##    end;
+##    printf("\n");
+##  end;
+##  
+##EOF
+##  
   cat <<EOF >> $outfile.2
   
   $Lc The differential equations $Rc
@@ -162,26 +165,26 @@ EOF
   sed 's/mtt_matrix/mttdx/' $outfile.3 > $outfile.4
   rm -f $outfile.3
   
-  # Create the odea.$ext function
-  lang_header $1 odea $ext 'mttui' mttyz 'global mttxx mttt; mttx = mttxx; t=mttt;' > $1_odea.$ext
-  
-  $MATRIX -q  <<EOF  >> $1_odea.$ext
-    %System structure
-    [nx,ny,nu,nz,nyz] = $1_def;
-  if nyz>0
-    printf("$Lc====== Set up the internal input variables ======$Rc\n");
-    for i = 1:nyz
-      printf("  mttui%i = mttui$Lb%i$Rb;\n",i,i);
-    end;
-    printf("\n");
-  end;
-EOF
-  
-  cat <<EOF >> $1_odea.$ext
-  
-  % The algebraic equations
-EOF
-  sed 's/mtt_matrix/mttyz/' $1_odea.$ext.1 >> $1_odea.$ext
+##  # Create the odea.$ext function
+##  lang_header $1 odea $ext 'mttui' mttyz 'global mttxx mttt; mttx = mttxx; t=mttt;' > $1_odea.$ext
+##  
+##  $MATRIX -q  <<EOF  >> $1_odea.$ext
+##    %System structure
+##    [nx,ny,nu,nz,nyz] = $1_def;
+##  if nyz>0
+##    printf("$Lc====== Set up the internal input variables ======$Rc\n");
+##    for i = 1:nyz
+##      printf("  mttui%i = mttui$Lb%i$Rb;\n",i,i);
+##    end;
+##    printf("\n");
+##  end;
+##EOF
+##  
+##  cat <<EOF >> $1_odea.$ext
+##  
+##  % The algebraic equations
+##EOF
+##  sed 's/mtt_matrix/mttyz/' $1_odea.$ext.1 >> $1_odea.$ext
   
   
   # Create the odeo.$ext function
@@ -215,7 +218,7 @@ sed 's/mtt_matrix/mtty/' $1_odeo.$ext.1 >> $1_odeo.$ext
 
 # Convert from Pascal syntax to Octave syntax
   mv $1_odeo.m mtt_junk; mtt_p2m<mtt_junk > $1_odeo.m
-  mv $1_odea.m mtt_junk; mtt_p2m<mtt_junk > $1_odea.m
+#  mv $1_odea.m mtt_junk; mtt_p2m<mtt_junk > $1_odea.m
 fi
   
 if [ "$rep" = "sm" ]||[ "$rep" = "dm" ]; then

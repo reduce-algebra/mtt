@@ -78,12 +78,7 @@ while (<STDIN>) {
     display_subexpressions () if ($debug);
     
     for ($i = 0; $i <= $#expressions; $i++) {
-	my $result = process_expression ();
-
-	if ($result) {
-	    $prefixes[$i] = "";
-	    $expressions[$i] = "$result";
-	}
+	process_expression ();
     }
     
     display_subexpressions () if ($debug);
@@ -136,16 +131,33 @@ sub process_expression() {
 	return;
     }
 
-    # call cr(arg1,arg2,...)
+    # call cr(arg1,arg2,...) User-defined CR in the model directory
     if (-e "$cr.pm") {
-	no strict 'refs';		# allow symbolic references
 	my $expr = $expressions[$i];
 	eval "require $cr";
 	$cr->import (@_[1 .. $#_]);    
-	&$cr ($expr);
+	no strict 'refs';		# allow symbolic references
+	my $substitution = &$cr ($expr);
 	use strict 'refs';
+	if ($substitution) {
+	    $prefixes[$i] = "";
+	    $expressions[$i] = "$substitution";
+	}
     }
-
+    # call cr(arg1,arg2,...) Standard CR in the mtt namespace
+    if (-e "mtt/$cr.pm") {
+	my $expr = $expressions[$i];
+	my $mttcr = "mtt::$cr";
+	eval "require 'mtt/$cr.pm'";
+	$mttcr->import (@_[1 .. $#_]);
+	no strict 'refs';		# allow symbolic references
+	my $substitution = &$cr ($expr);
+	use strict 'refs';
+	if ($substitution) {
+	    $prefixes[$i] = "";
+	    $expressions[$i] = "$substitution";
+	}
+    }
 }
 #-------------------------------------------------------------------------------
 sub display_subexpressions() {

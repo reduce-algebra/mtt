@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.237  2000/04/07 19:10:24  peterg
+## New smxa and smxax reps
+##
 ## Revision 1.236  2000/04/06 10:55:36  peterg
 ## Removed debug lines
 ##
@@ -1945,8 +1948,8 @@ $1_cse.tex: $1_cse.r  $1_sympar.r $1_simp.r
 	cse_r2tex $1; latex_tidy $1_cse.tex
 
 ## Implicit oct rules
-$1_%.oct: $1_def.r $1_%.p $1_sympars.txt
-	mtt_p2oct $1 $2
+%.oct:  %.p
+	mtt_p2oct  $< 
 
 #SUMMARY scse	sensitivity constrained-state equations (r)
 #SUMMARY scse	sensitivity constrained-state equations (tex)
@@ -2067,6 +2070,11 @@ endif
 
 $1_ode2odes.c: $1_ode2odes.p 
 	mtt_p2c $info_switch $1 ode2odes
+
+#SUMMARY sim Octave simulation function (m)
+$1_sim.m: $1_def.r $1_cse.$m $1_cseo.$m $1_smxa.$m $1_smxax.$m 
+	mtt_make_sim $1; cp -v $1_cse.$m $1_cseo.$m $1_smxa.$m $1_smxax.$m ..
+
 
 #SUMMARY obs	observer equations for CGPC (r)
 #SUMMARY obs*	observer equations for CGPC (m)

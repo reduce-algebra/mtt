@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.40  2000/04/07 19:09:04  peterg
+## New smxa and smxax reps
+##
 ## Revision 1.39  2000/04/07 13:38:13  peterg
 ## New mtt_getsize to replace bc
 ##
@@ -316,7 +319,6 @@ function printvar(Name,N) {
   if (N<1) return;
   width = 10;
   kk = 0; 
-  printf("VAR\n");
   for (k=1;k<=N;k++) {
     printf("mtt%s%i", Name, k);
     if (k==N)
@@ -331,7 +333,7 @@ BEGIN{
   comment_regexp = "{"
   doing_header = 0
   doing_globals = 0
-  Nt = 99
+  Nt = 9
   inc ="$I"
 }
 {
@@ -367,9 +369,9 @@ BEGIN{
           # printf("{%s $MTTPATH/trans/p/zero_matrix.p}\n",inc)
           printf("{%s $MTTPATH/trans/p/zero_input.p}\n",inc)
           printf("{%s $MTTPATH/trans/p/zero_state.p}\n",inc)
-          printf("{%s $MTTPATH/trans/p/mtt_getargs.p}\n",inc)
           printf("{%s %s_simpar.p}\n",inc,Sys) 
           printf("{%s %s_numpar.p}\n",inc,Sys)
+          printf("{%s $MTTPATH/trans/p/mtt_getargs.p}\n",inc)
           printf("{%s %s_state.p}\n",inc,Sys)
           printf("{%s %s_input.p}\n",inc,Sys)
           if (Method=="euler") {
@@ -390,13 +392,16 @@ BEGIN{
         else{
           for (k=1;k<=j;k++) printf("%s\n", comment[k])
           printf("\n")
-          printf("VAR mmtti : INTEGER;");
+          printf("VAR mtt_i : INTEGER;\n");
+          if ( (rep=="smxa")||(rep=="smxax") ) {
+            printvar("_t",Nt);
+          }
           printf("\nBEGIN{%s}\n", Sys_rep)
           if (rep=="smxa"){
-            printf("FOR mmtti:= 1 to %i DO\n\tmtta[mmtti] := 0;\n", Nx*Nx);
+            printf("FOR mtt_i:= 1 to %i DO\n\tmtta[mtt_i] := 0;\n", Nx*Nx);
           }
           if (rep=="smxax"){
-            printf("FOR mmtti:= 1 to %i DO\n\tmttax[mmtti] := 0;\n", Nx);
+            printf("FOR mtt_i:= 1 to %i DO\n\tmttax[mtt_i] := 0;\n", Nx);
           }
        }
         doing_header = 0;

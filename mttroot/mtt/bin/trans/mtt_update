@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  2000/10/13 11:07:00  peterg
+## Added initialisation for state and input
+##
 ## Revision 1.10  2000/10/13 10:56:07  peterg
 ## Now uses the full name from the struc file - no need to recreate.
 ##
@@ -108,9 +111,9 @@ fi
 rm -f mtt_in_text mtt_in_info
 
 # Strip files
-strip_comments <$textfile >mtt_text
-strip_comments <$infofile >mtt_info
-strip_comments <$moreinfofile >mtt_moreinfo
+strip_comments <$textfile | tr 'A-Z' 'a-z' >mtt_text
+strip_comments <$infofile | tr 'A-Z' 'a-z' >mtt_info
+strip_comments <$moreinfofile  | tr 'A-Z' 'a-z' >mtt_moreinfo
 
 # Use awk to check file
 awk '{

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.19  2001/03/30 15:13:49  gawthrop
+## Rationalised simulation modes to each return mtt_data
+##
 ## Revision 1.18  2001/03/19 02:28:52  geraint
 ## Branch merge: merging-ode2odes-exe back to MAIN.
 ##
@@ -84,7 +87,8 @@
 #
 ###############################################################
 
-MTT_BASE=$1
+## When using csh, replace $1 by the mtt base path, eg /usr/share/mtt/latest
+export MTT_BASE=$1
 
 if [ -z "$MTT_BASE" ]; then
   echo mttrc requires one argument: eg mttrc /usr/share/mtt/latest
@@ -159,11 +163,11 @@ else
 
     # local system
 
-    PLAT="i686-pc-linux-gnu"
+    export PLAT="i686-pc-linux-gnu"
 #    PREFIX="/usr/local"
-    PREFIX="/usr"
-    GCCVERS="2.95.2"
-    SRCOCTAVE="/cvs/octave"
+    export PREFIX="/usr"
+    export GCCVERS="2.95.2"
+    export SRCOCTAVE="/cvs/octave"
 
 #    PLAT="mips-sgi-irix6.5"
 #    PREFIX="/usr/people/bevangp/GNU"
@@ -172,22 +176,22 @@ else
 
     # include paths
 
-    IOCTAVE="-I${PREFIX}/include/octave"
+    export IOCTAVE="-I${PREFIX}/include/octave"
 
     # library paths
 
 #    LOCTAVE="-L${PREFIX}/lib/octave -loctave -lcruft -loctinterp"
-    LOCTAVE="-L${PREFIX}/lib/octave -loctave -lcruft -loctinterp"
-    LKPATHSEA="-L${SRCOCTAVE}/kpathsea -lkpathsea"
-    LREADLINE=" -L${SRCOCTAVE}/readline -lreadline"
-    LSYSTEM="-ldl -lm -lncurses"
-    LF2C="-L${PREFIX}/lib/gcc-lib/${PLAT}/${GCCVERS} -lg2c"
+    export LOCTAVE="-L${PREFIX}/lib/octave -loctave -lcruft -loctinterp"
+    export LKPATHSEA="-L${SRCOCTAVE}/kpathsea -lkpathsea"
+    export LREADLINE=" -L${SRCOCTAVE}/readline -lreadline"
+    export LSYSTEM="-ldl -lm -lncurses"
+    export LF2C="-L${PREFIX}/lib/gcc-lib/${PLAT}/${GCCVERS} -lg2c"
 
     # compiler options
 
-    DEBUG="-g"
-    OPTIM="-O3"
-    FLAGS="-fno-rtti -fno-exceptions -fno-implicit-templates"
+    export DEBUG="-g"
+    export OPTIM="-O3"
+    export FLAGS="-fno-rtti -fno-exceptions -fno-implicit-templates"
 
     # exported variables
 

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.161  1998/07/08 11:21:32  peterg
+## Added -I switch
+##
 ## Revision 1.160  1998/07/04 11:38:51  peterg
 ## Version 3.0-- (Seascale)
 ##
@@ -982,9 +985,7 @@ case $2 in
 		REPTYPE='bg' ;;
 	cbg )
 		REPTYPE='bg' ;;
-	lbl )
-		REPTYPE='txt' ;;
-	input )
+    	input )
 		REPTYPE='txt' ;;
 	numpar )
 		REPTYPE='txt' ;;
@@ -1062,6 +1063,13 @@ if [ "$tidy" = "tidy" ]; then
    fi
 
      mtt -u -q  $mtt_switches -S "$Directory"  $1 $2 $3 $4
+     mtt_status=$?
+
+   # Exit on failure
+   if [ "mtt_status" != "0" ]; then
+     echo Exiting mtt with status $mtt_status
+     exit 1
+   fi
 
    if [ "$3" != "view" ]; then
     if [ "$3" != "hview" ]; then
@@ -1092,7 +1100,7 @@ fi
 # This is the main mtt programme
 ################################
 
-$MAKE $verbose  -f -  $1_$2.$3 << EOF
+$MAKE -S $verbose  -f  -  $1_$2.$3 << EOF
 
 # Cancel implicit rules I don't want
 %.dvi: %.tex
@@ -1108,10 +1116,13 @@ endif
 $1_args.m:
 	touch $1_args.m
 
-#Create empty files (with titles) if not already there
+#Create skeleton files (with titles) if not already there
 #SUMMARY lbl	label file (txt)
 $1_lbl.txt:
 	abg2lbl_fig2txt $1
+
+$1_lbl.tex: $1_lbl.txt
+	lbl_txt2tex $1
 
 #SUMMARY alias  name aliases for each subsystem (txt)
 $1_alias.txt: $1_lbl.txt
@@ -1997,6 +2008,8 @@ sign.c:
 	echo Copying sign.c; cp $MTTPATH/trans/c/sign.c .
 
 EOF
+# Remember the exit status of make
+make_status=$?
 
 # Tidy up.
 # echo Removing log files and other garbage
@@ -2014,3 +2027,6 @@ else
   mv -f *.log LOGFILES
 fi
 
+if [ "$make_status" != "0" ]; then
+    exit 2
+fi

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.26  1999/02/16 21:43:54  peterg
+## Revises smx generation.
+##
 ## Revision 1.25  1999/02/16 04:38:09  peterg
 ## Now forces creation of _smx file if METHOD=IMPLICIT in simpar.txt
 ##
@@ -264,12 +267,12 @@ BEGIN{
           printvar("y",Ny);
           printvar("_t",Nt);
 
-          printf("{%s mtt_write.p}\n",inc)
-          printf("\n{%s sign.p}\n",inc)
-          printf("{%s mtt_euler.p}\n",inc)
-          printf("{%s mtt_implicit.p}\n",inc)
-          printf("{%s zero_matrix.p}\n",inc)
-          printf("{%s zero_vector.p}\n",inc)
+          printf("\n{%s $MTTPATH/trans/p/mtt_write.p}\n",inc)
+          printf("{%s $MTTPATH/trans/p/sign.p}\n",inc)
+          printf("{%s $MTTPATH/trans/p/mtt_euler.p}\n",inc)
+          printf("{%s $MTTPATH/trans/p/mtt_implicit.p}\n",inc)
+          printf("{%s $MTTPATH/trans/p/zero_matrix.p}\n",inc)
+          printf("{%s $MTTPATH/trans/p/zero_vector.p}\n",inc)
           printf("{%s %s_simpar.p}\n",inc,Sys) 
           printf("{%s %s_numpar.p}\n",inc,Sys)
           printf("{%s %s_state.p}\n",inc,Sys)

@@ -24,8 +24,8 @@ cat >> ${outfile} <<EOF
 
   for i=index
     MTT_input_index = 0;
-    p = par;
-    p(i) = 1;
+    p = par;           # Reset parameters
+    p(i) = 1;          # Set sensitivity index to 1
     [mtt_data] = ${sys}_ode2odes(x0,p,simpar);
     if (i==index(1))
       y = mtt_data(:,2:1+ny);

@@ -12,6 +12,9 @@ function figfig(filename,language)
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.2  2000/12/27 16:06:02  peterg
+  ## *** empty log message ***
+  ##
   ## Revision 1.1  2000/11/03 10:43:10  peterg
   ## Initial revision
   ###############################################################
@@ -34,7 +37,7 @@ function figfig(filename,language)
 
   if nargin>1			# Do a ps file
     psfilename = sprintf("%s.%s",filename,language);
-    convert = sprintf("fig2dev -L%s %s > %s", language, figfilename, psfilename)
+    convert = sprintf("fig2dev -L%s %s > %s", language, figfilename, psfilename);
     system(convert);
   endif
   

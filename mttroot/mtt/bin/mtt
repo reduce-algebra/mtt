@@ -9,12 +9,16 @@
 # P.J.Gawthrop Oct 1989, Dec 1989, 1990, 1991, Oct 1993, Dec 1993, Jan 1994, Dec 95, Nov 1996.
 # Copyright (c) P.J.Gawthrop, 1989, 1990, 1991, 1993, 1994, 1995, 1996, 1997,1998,1999
 # Copyright (C) 2000 by Peter J. Gawthrop
+# Copyright (C) 2001 by Peter J. Gawthrop
 
 ###############################################################
 ## Version control history
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.302  2001/04/06 05:24:30  geraint
+## -stdin for .cc reps.
+##
 ## Revision 1.301  2001/04/05 03:46:12  geraint
 ## Added mtt_prepend.sh, -p preserves time attribute of base file
 ## - eliminates error in dependencies due to update of ese.r by modpar.r.

@@ -22,7 +22,7 @@ case ${domain} in
 	;;
     rotational)
 	base_effort='newton*m'
-	base_flow='radians/s'
+	base_flow='radian/s'
 	;;
     fluid)
 	base_effort='Pa'

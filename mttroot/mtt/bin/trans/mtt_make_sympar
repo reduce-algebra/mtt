@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  2000/11/03 14:57:06  peterg
+## Corrected regexp notvar
+##
 ## Revision 1.4  2000/11/02 18:53:46  peterg
 ## Added NOPAR words to unwanted list.
 ##
@@ -85,10 +88,3 @@ END{
         printf("\n")
 
 }' < mtt_sympar.txt >$filename
-
-
-
-
-
-
-

@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.23  2000/12/05 09:47:50  peterg
+## Include crs as c files
+##
 ## Revision 1.22  2000/12/04 12:19:12  peterg
 ## Changed $() to `` and $() to expr for sh compatibility -- geraint
 ##
@@ -321,7 +324,7 @@ rm -f mtt_dummies
 for dummy in $dummies; do
     grep "${dummy}[0-9]* " < ${fun_name}.m |\
     awk '{ 
-          # if (match(dummy,$1)==1)
+          if (match($1,dummy)==1)
              print $1
          }' dummy=$dummy >> mtt_dummies
 done

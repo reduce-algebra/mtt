@@ -5,6 +5,9 @@ function [bonds,components] = rbg2abg(rbonds,rstrokes,rcomponents,rports,infofil
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.8  1996/12/04 21:52:39  peterg
+% %% Now uses fopen.
+% %%
 % %% Revision 1.7  1996/11/01 18:01:57  peterg
 % %% Rationalised port ordering.
 % %% Fixed port bug.
@@ -117,7 +120,7 @@ for i = 1:n_components
       k=0; port_number=[];
       for j = 1:n
 	b = signed_bond_list(j); 
-	% Find the port on component end of bond (if any)
+	% Find the port label on component end of bond (if any)
 	[port_index,m] = getindex(port_near_bond(:,1),b);
 	if m==1
 	  k=k+1;
@@ -132,14 +135,14 @@ for i = 1:n_components
 	%Check that all the numbers (1..n) are there
 	if sum(sorted==[1:n]')~=n % There is something wrong
 	  mtt_info(port_error,fnum);
-	  mtt_info(sprintf('\t it must have ports from 1:%1.0f\n', n), ...
+	  mtt_info(sprintf('\t it must have consecutive ports labels from 1:%1.0f\n', n), ...
 	      fnum);
 	end;
       else
 	if k~=0
 	  mtt_info(port_error,fnum);
 	  mtt_info(sprintf('\t it must have 0 or %1.0f ports\n', n), fnum);
-	  port_str = sprintf('\t the ports are: ');
+	  port_str = sprintf('\t the port labels are: ');
 	  for kk=1:k
 	    port_str=sprintf('%s %1.0f', port_str, port_number(kk));
 	  end;

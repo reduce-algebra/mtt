@@ -14,20 +14,20 @@ case $2 in
     zero)
 	  strip_comments <$1_sympar.txt  |\
           awk '{
-          i++; printf(" %s = 0.0;\n", tolower($1));
-          }'
+          i++; printf("  %s %s = 0.0;\n", decl, tolower($1));
+          }' decl=$3
 	;;
     set)
 	  strip_comments <$1_sympar.txt  |\
          awk '{
-           i++; printf("  mttpar(%i) \t= %s;\n", i, tolower($1));
-         }'
+           i++; printf("  %s mttpar(%i) \t= %s;\n", decl, i, tolower($1));
+         }' decl=$3
         ;;
     *)
          strip_comments <$1_sympar.txt  |\
          awk '{
-           i++; printf("  %s \t= mttpar(%i);\n", tolower($1), i);
-         }'
+           i++; printf("  %s %s \t= mttpar(%i);\n", decl, tolower($1), i);
+         }' decl=$3
 	;;
 esac
 

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  2001/04/10 12:54:50  gawthrop
+## Minor fixes for sensitivity versions
+##
 ## Revision 1.5  2000/11/03 14:57:06  peterg
 ## Corrected regexp notvar
 ##
@@ -49,7 +52,7 @@ mtt_strip_args < $1_aliased.txt | sort -u  > mtt_aliased_sort.txt
 cat  mtt_aliased_sort.txt> mtt_unwanted.txt
 
 notvar="[%|#]NOT[V|P]AR";
-grep $notvar $1_lbl.txt | awk '{printf("%s\t%s\n", $2,sys)'} sys=$1 >>mtt_unwanted.txt
+sh $1_type.sh 'strip_notvars.sh ' ' ' ' mtt_unwanted.txt'
 
 sort -u mtt_unwanted.txt > mtt_unwanted_sort.txt
 

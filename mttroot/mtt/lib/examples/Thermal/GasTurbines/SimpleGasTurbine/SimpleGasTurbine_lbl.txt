@@ -6,6 +6,24 @@
 %DESCRIPTION Saravanamutto. However, unlike those examples, the system is
 %DESCRIPTION written with dynamics in mind.
 
+%ALIAS	Comb	CompressibleFlow/Comb
+%ALIAS	Pump	CompressibleFlow/Pump
+
+%VAR t_2;
+%VAR t_3;
+%VAR t_4;
+%VAR p_2;
+%VAR p_3;
+%VAR p_4;
+%VAR mdot;
+%VAR gamma_0;
+%VAR q_0;
+%VAR w_0;
+%VAR omega_0;
+%VAR r_p;
+%VAR c_p;
+%VAR mom_0;
+
 %% Label file for system SimpleGasTurbine (SimpleGasTurbine_lbl.txt)
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -13,6 +31,10 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1998/07/03 14:54:45  peterg
+% %% k_p --> k
+% %% k_t --> k
+% %%
 % %% Revision 1.2  1998/07/03 14:53:38  peterg
 % %% Renames tank to comb to be consistent.
 % %%
@@ -33,27 +55,21 @@
 	j_s		lin		flow,j_s
 
 % Component type Pump
-	p1		none		c_v;ideal_gas,r;alpha;effort,k
+	comp		none		c_v;density,ideal_gas,r;alpha;effort,k
+	turb		none		c_v;density,ideal_gas,r;alpha;effort,k
 
 
 % Component type SS
-	Work		0		external
-	Heat		0		external
-	Speed		0		external
-	T3		external	external
-
-
-% Component type Turb
-	t1		none		c_v;ideal_gas,r;alpha;effort,k
+	Work		SS	0,external
+	Heat		SS	0,external
+	Speed		SS	0,external
+	T3		SS	external,external
 
 % Component type In
 	in
 
 % Component type Out
 	out
-
-%  Component type Dummy -- create some global variables.
-	Dummy	none t_2;t_3;t_4;p_2;p_3;p_4;mdot;gamma;q_0;w_0;omega_0;r_p;c_p;mom_0
 
 
 

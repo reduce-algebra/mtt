@@ -16,6 +16,9 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.4  2001/07/23 03:25:02  geraint
+@comment  Added notes on -ae hybrd, rk4, ode2odes.cc, .oct dependencies.
+@comment
 @comment  Revision 1.3  2001/07/13 03:02:38  geraint
 @comment  Added notes on #ICD, gnuplot.txt and odes.sg rep.
 @comment
@@ -4465,6 +4468,9 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.4  2001/07/23 03:25:02  geraint
+# %% Added notes on -ae hybrd, rk4, ode2odes.cc, .oct dependencies.
+# %%
 # %% Revision 1.3  2001/07/13 03:02:38  geraint
 # %% Added notes on #ICD, gnuplot.txt and odes.sg rep.
 # %%
@@ -5989,14 +5995,14 @@ listed directories is a subdirectory of @file{/usr/local}. The directory
 @code{mtt} is pointed to by $MTTPATH (@pxref{$MTTPATH}).
 
 @vtable @file
-@item mtt
+@item mtt/bin
         This is the home directory for @strong{MTT}. @strong{MTT}  itself lives
         here along with @file{mttrc}.
-@item mtt/trans
+@item mtt/bin/trans
         The transformations executed by @strong{MTT}.
-@item mtt/trans/m
+@item mtt/bin/trans/m
         The  @code{m-files} associated with the transformations.
-@item mtt/trans/awk
+@item mtt/bin/trans/awk
         The  @code{awk} scripts associated with the transformations.
 @item mtt/lib
         The place for components, examples and CRs which will be updated.

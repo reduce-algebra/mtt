@@ -20,6 +20,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.4  1997/05/01  13:43:44  peterg
+# Changed double to float.
+#
 # Revision 1.3  1997/05/01  11:15:33  peterg
 # Back under RCS
 #
@@ -79,10 +82,10 @@ write "#include ""$1_sympar.h"" "$
 
 
 write "/* Declare standard arrays */"$
-write "float y[", MTTNy+1, "]; /* $1_ode output */"$
-write "float dx[", MTTNx+1, "]; /* $1_ode state derivative */"$ 
-write "float x[", MTTNx+1, "]; /* $1_ode state */"$ 
-write "float u[", MTTNu+1, "]; /* $1_ode input */"$
+write "double y[", MTTNy+1, "]; /* $1_ode output */"$
+write "double dx[", MTTNx+1, "]; /* $1_ode state derivative */"$ 
+write "double x[", MTTNx+1, "]; /* $1_ode state */"$ 
+write "double u[", MTTNu+1, "]; /* $1_ode input */"$
 
 
 write "/* Files */ "$
@@ -95,8 +98,8 @@ write "{"$
 
 
 write "/* Counters etc*/ "$
-write "  float time;"$
-write "  float dt;"$
+write "  double time;"$
+write "  double dt;"$
 write "  int i;"$
 write "  int k;"$
 

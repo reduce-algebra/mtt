@@ -20,6 +20,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.12  1997/05/15  08:39:56  peterg
+# Don't initialise states - now done in numpar file.
+#
 # Revision 1.11  1997/05/12  16:00:54  peterg
 # Removed itime again.,
 #
@@ -184,16 +187,16 @@ write "  {"$
 
 %Write to output to file
 write "/* Write to output file */"$
-write "    fprintf(fpso, ""%5.4f "",time);"$
+write "    fprintf(fpso, ""%5.4g "",time);"$
 write "    for (i=1; i<=MTTNY; i++)"$
-write "      fprintf(fpso, ""%5.4f "", y[i]);"$
+write "      fprintf(fpso, ""%5.4g "", y[i]);"$
 write "    fprintf(fpso, ""\n"");"$
 
 %Write to state to file
 write "/* Write to state file */"$
-write "    fprintf(fps, ""%5.4f "",time);"$
+write "    fprintf(fps, ""%5.4g "",time);"$
 write "    for (i=1; i<=MTTNX; i++)"$
-write "      fprintf(fps, ""%5.4f "", x[i]);"$
+write "      fprintf(fps, ""%5.4g "", x[i]);"$
 write "    fprintf(fps, ""\n"");"$
 
 
@@ -215,16 +218,16 @@ write "  }"$
 %Write to files
 %Write to output to file
 write "/* Write to output file */"$
-write "    fprintf(fpso, ""%5.4f "",time);"$
+write "    fprintf(fpso, ""%5.4g "",time);"$
 write "    for (i=1; i<=MTTNY; i++)"$
-write "      fprintf(fpso, ""%5.4f "", y[i]);"$
+write "      fprintf(fpso, ""%5.4g "", y[i]);"$
 write "    fprintf(fpso, ""\n"");"$
 
 %Write to state to file
 write "/* Write to state file */"$
-write "    fprintf(fps, ""%5.4f "",time);"$
+write "    fprintf(fps, ""%5.4g "",time);"$
 write "    for (i=1; i<=MTTNX; i++)"$
-write "      fprintf(fps, ""%5.4f "", x[i]);"$
+write "      fprintf(fps, ""%5.4g "", x[i]);"$
 write "    fprintf(fps, ""\n"");"$
 
 

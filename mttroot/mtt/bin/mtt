@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.379  2003/08/06 10:33:42  gawthrop
+## User now warned not to use -c which is unsupported.
+##
 ## Revision 1.378  2003/08/04 09:15:09  gawthrop
 ## -ss switch reinstated
 ##
@@ -2146,6 +2149,7 @@ fi
 ## Arguments
 ARGS=$4; _ARGS=-$4; __ARGS=`echo $_ARGS | tr ',' '-'`
 __ARGS="${MTT_SWITCHES}${__ARGS}"
+__ARGS=`echo ${__ARGS} | sed -e 's/-q//g' -e 's/-u//g'`
 
 # Save up the argument list in a file; but only if argument has changed
 #DIFF doesn't like empty files - so put a blank if empty

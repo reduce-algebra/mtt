@@ -49,14 +49,15 @@ BEGIN {
    ## Implicit declarations from the arg list
   if (match($1,"arg")>0) {
     args=substr($3,2,length($3)-3);
-    print args
+    if (length(args)>0)
+      printf("%s\t%s\n", args,system_name)
   }
 }' system_name=$2 |\
 grep -v '^\$' | mtt_strip_args |\
-sort -u > $1_sympar.txt 2>mtt_error.txt
+sort -u #> $1_sympar.txt 2>mtt_error.txt
 
 # Now invoke the standard error handling.
-mtt_error mtt_error.txt
+#mtt_error mtt_error.txt
 
 
 

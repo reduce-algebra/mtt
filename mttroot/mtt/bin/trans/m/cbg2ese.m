@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.50  2003/05/08 18:47:50  gawthrop
+  ## ## Fixed __ bug when using * representations
+  ## ##
   ## ## Revision 1.49  2003/03/13 15:19:04  gawthrop
   ## ## Now uses __ to delimit subsystems in names.
   ## ##
@@ -547,7 +550,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 			  "%s\t%i\t%s\t%s%s%s\t%i\t%s\n", ...
 			  structure_name(which_index,:), value-k+1, ...
 			  comp_name, full_name_repetition, sub_delim, comp_name, \
-			  repetition, cause2name(-comp_bonds(1)));
+			  repetition, cause2name(-comp_bonds(k,1)));
 	    	endfor;
  	      endfor;
  	    endif;

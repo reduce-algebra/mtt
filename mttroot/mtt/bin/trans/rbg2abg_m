@@ -11,6 +11,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1996/08/24 17:57:41  peter
+## Removed `touch mtt_info.txt'
+##
 ## Revision 1.3  1996/08/24 14:58:56  peter
 ## Fixed missprint - mtt_err --> mtt_error
 ##
@@ -74,7 +77,7 @@ rm -f $1_abg.m
 echo Creating $1_abg.m
 
 # Use matrix manipulation to accomplish the transformation
-$MATRIX > rbg2abg_m.log  2>mtt_error << EOF
+$MATRIX > rbg2abg_m.log  2>mtt_error.txt << EOF
 
   infofile = 'mtt_info.txt';
   %Convert from the fig version of the bonds to a structured version
@@ -96,16 +99,8 @@ EOF
 
 cat mtt_info.txt
 
-# Test for errors and print if any
-err_length=$(wc -c <mtt_error)
-if [ $err_length != "0" ]
-then
-  echo MTT has failed with the following errors '...'
-  cat mtt_error
-  exit 1
-else
-  exit 0
-fi
+mtt_error mtt_error.txt
+
 
 
 

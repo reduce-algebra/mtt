@@ -1,7 +1,10 @@
 #! /bin/sh
+## Chages the Pascal output from gentran to octave form
+# Copyright (C) 2000 by Peter J. Gawthrop
 
-sed 's/begin / /' |\
-sed 's/end / /' |\
+sed 's/begin$//' |\
+sed 's/end$//' |\
+sed 's/end;$/;/' |\
 sed 's/\[\([0-9,]*\)\]/(\1)/g' |\
 sed 's/:=/ = /' |\
 sed 's/\*\*/\^/g' |\

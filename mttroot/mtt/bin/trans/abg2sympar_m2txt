@@ -68,11 +68,19 @@ BEGIN {
       printf("%s\t%s\n", args,system_name)
 ##  }
 }' system_name=$SystemName |\
-grep -v '^\$' | mtt_strip_args |\
-sort -u #> $1_sympar.txt 2>mtt_error.txt
+grep -v '^\$' | mtt_strip_args | sort -u > mtt_stripped_args
 
-# Now invoke the standard error handling.
-#mtt_error mtt_error.txt
 
+## Now get the explicit declarations
+if [ -n "$UseLabelFile" ]; then ## Take input from lbl.txt
+    ext=_lbl.txt
+else
+    ext=_abg.m
+fi
+
+sh $1_type.sh "strip_pars.sh " "$ext " " " | sort -u > mtt_explicit_args
+
+## And write sorted list
+cat  mtt_explicit_args mtt_stripped_args 
 
 

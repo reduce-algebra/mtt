@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1996/10/20 19:19:50  peterg
+## Initial revision
+##
 ###############################################################
 
 
@@ -26,19 +29,23 @@ echo					>> $1_sub.sh
 
 # Get a list of all components for the _cmp file
 awk '/comp_type = / {print substr($3,2,length($3)-3)}' $1_cmp.m |\
-sort -u > tmp1
+sort -u > mtt_tmp1
 
 # Get a list of all simple components
 ls $MTTPATH/comp/simple |\
   awk '/_cause.m/{split($1,a,"_");print(a[1])}' |\
   sed  's/^zero$/0/' |\
   sed  's/^one$/1/' |\
-  sort -u >tmp2
+  sort -u >mtt_tmp2
 
 # Print the non-standard components
-comm tmp1 tmp2 |\
+comm mtt_tmp1 mtt_tmp2 |\
   awk 'BEGIN{FS="\t"}{if (length($1)>0) print "mtt", $1, "abg m"}' \
   >>$1_sub.sh
+
+# Clean up mtt_tmp files
+rm -f mtt_tmp1 mtt_tmp2
+
 
 
 

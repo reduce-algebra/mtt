@@ -17,7 +17,7 @@ sys_rep="$1_$2"
 begin="BEGIN{$sys_rep}"
 
 # Inform user
-echo "Creating $1_$2.pas"
+# echo "Creating $1_$2.pas"
 
 # Find system constants
 Nx=`mtt_getsize $1 x`
@@ -93,7 +93,7 @@ awk 'BEGIN{writing=0}
   if (match($1,begin)==1) writing=1;
 }' begin=$begin   < $1_$2.p  >>$1_$2.pas
 
-echo "Creating $1_$2.C"
+#echo "Creating $1_$2.C"
 p2c -o $1_$2.C $1_$2.pas > mtt_p2C.log 2>> mtt_p2C.log
 
 

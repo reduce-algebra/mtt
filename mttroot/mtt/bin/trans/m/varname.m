@@ -15,6 +15,9 @@ function name = varname(name,index,causality);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  2000/12/27 16:06:15  peterg
+% %% *** empty log message ***
+% %%
 % %% Revision 1.1  1996/08/27 08:08:44  peterg
 % %% Initial revision
 % %%
@@ -25,4 +28,4 @@ function name = varname(name,index,causality);
 %name =sprintf('%s%1.0f_%s', bond_name, index, cause2name(causality));
 
 bond_name = [name,'('];
-name =sprintf('%s(%1.0f,%1.0f)', name, index, cause2num(causality));
+name =sprintf('%s(%1.0f,%1.0f)', name, abs(index), cause2num(causality));

@@ -12,6 +12,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1997/05/19 16:48:10  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -42,11 +45,11 @@
         \begin{figure}[htbp]
           \centerline{
              \shadowbox{
-                \epsfig{file=#2.ps,width=#1\textwidth}
+                \epsfig{file=#1.ps,width=#2\textwidth}
               }
             }
             \caption{#3}
-            \label{#2}
+            \label{#1}
        \end{figure}
        }
 
@@ -54,10 +57,10 @@
  \newcommand{\rfig}[3]{
         \begin{figure}[htbp]
           \centerline{
-            \epsfig{file=#2.ps,width=#1\textheight,angle=90}
+            \epsfig{file=#1.ps,width=#2\textheight,angle=90}
                  }
             \caption{#3}
-            \label{#2}
+            \label{#1}
        \end{figure}
        }
 

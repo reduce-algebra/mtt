@@ -10,6 +10,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1997/09/11 09:55:25  peterg
+% %% Added documentation
+% %%
 % %% Revision 1.2  1997/09/11 08:37:29  peterg
 % %% Added description
 % %%
@@ -37,11 +40,11 @@
 	rod		none	l;l;j;m
 
 % Component type SS
-	aL		0		internal
-	aR		0		internal
-	gravity		external	internal
-	hL		external	0
-	hR		external	0
-	xC		0		internal
-	xL		0		internal
-	xR		0		internal
+	aL		SS	0,internal
+	aR		SS	0,internal
+	gravity		SS	external,internal
+	hL		SS	external,0
+	hR		SS	external,0
+	xC		SS	0,internal
+	xL		SS	0,internal
+	xR		SS	0,internal

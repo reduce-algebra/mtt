@@ -1,4 +1,4 @@
-function figfig(filename,language,boxed,monochrome)
+function figfig(filename,language,boxed,monochrome,key)
   ## Usage: figfig(filename[,language,boxed,monochrome])
   ## Puts octave figure into fig file (filename.fig)
   ## If second argument, converts to filename.language using fig2dev
@@ -8,12 +8,16 @@ function figfig(filename,language,boxed,monochrome)
   ##    figfig("foo","pdf");
   ## Boxed=1 gives a box around the figure
   ## Monochrome=1 gives a monchrome plot
+  ## key=1 gives the key legend
 
   ###############################################################
   ## Version control history
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.10  2003/08/19 13:13:28  gawthrop
+  ## No legend
+  ##
   ## Revision 1.9  2002/09/12 08:39:27  gawthrop
   ## Removed spurious text
   ##
@@ -43,13 +47,15 @@ function figfig(filename,language,boxed,monochrome)
   ###############################################################
 
   if nargin<3
-    boxed=1;
+    boxed=0;
   endif
   
   if nargin<4
     monochrome=0;
-  else
-    monochrome=1;
+  endif
+  
+  if nargin<5
+    key=0;
   endif
   
   
@@ -57,13 +63,15 @@ function figfig(filename,language,boxed,monochrome)
   
   eval(sprintf("gset output \"%s\" ",figfilename));
 
-  gset nokey			# No legend
+  if key!=1
+    gset nokey			# No legend
+  endif
+  
   if (monochrome==1)
     gset term fig monochrome portrait fontsize 16 size 20 10 metric thickness 3
   else
     gset term fig color portrait fontsize 16 size 20 10 metric thickness 3
   endif
-  
   replot;
   gset term x11
   gset output
@@ -78,9 +86,11 @@ function figfig(filename,language,boxed,monochrome)
   
 
   if nargin>1			# Do a file in another langueage
+    sleep(1);
     psfilename = sprintf("%s.%s",filename,language);
     convert = sprintf("fig2dev -L%s %s > %s", language, figfilename, psfilename);
     system(convert);
   endif
-  
+
+  gset key			# Put it back
 endfunction

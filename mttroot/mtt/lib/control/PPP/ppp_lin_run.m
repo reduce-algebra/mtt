@@ -87,8 +87,10 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   if struct_contains(p_c,"Method")
     if strcmp(p_c.Method,"lq")
       p_c.Q = eye(n_y);
-      p_c.R = (0.1^2)*eye(n_u);
       p_c.n_U = n_x;
+      if !struct_contains(p_c,"R")
+	p_c.R = (0.1^2)*eye(n_u);
+      endif
     elseif strcmp(p_c.Method,"original");
       if !struct_contains(p_c,"A_w")
 	p_c.A_w = 0;

@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.14  2000/11/09 10:29:21  peterg
+## open --> mtt_open
+##
 ## Revision 1.13  2000/11/09 10:19:12  peterg
 ## Explicitly write out the open switches ....
 ##
@@ -100,14 +103,15 @@ awk '{
   }
   else{
   printf("\n#== Switch: %s ==#\n",$1)
-  printf("if (%s_logic==0.0) \n", $1);
-  printf("  mttopen(%s) = 1;\n", $2);
-  printf("end;\n");
-  printf("if (%s_logic<0.0)\n",$1);
-  printf("  if (%s<0.0)\n",$1);
-  printf("    mttopen(%s) = 1;\n", $2);
-  printf("  end;\n");
-  printf("end;\n");
+   printf("mttopen(%s) = (abs(%s_logic)<0.5)||((%s_logic<0.0)&&(%s<0.0));\n", $2, $1, $1, $1);
+#   printf("if (%s_logic==0.0) \n", $1);
+#   printf("  mttopen(%s) = 1;\n", $2);
+#   printf("end;\n");
+#   printf("if (%s_logic<0.0)\n",$1);
+#   printf("  if (%s<0.0)\n",$1);
+#   printf("    mttopen(%s) = 1;\n", $2);
+#   printf("  end;\n");
+#   printf("end;\n");
 
   }
 }' Nx=$Nx < $1_switch.txt #>> $1_switchopen.m

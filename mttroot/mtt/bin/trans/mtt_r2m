@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1998/08/13 12:43:19  peterg
+## Cahnged tmp variable to mtt_1 etc
+##
 ## Revision 1.2  1998/07/27 20:26:44  peterg
 ## Put in correct N and M values for dm rep
 ##
@@ -47,7 +50,7 @@ GENTRANLANG!* := '$codegenerator;
 ON GENTRANSEG;
 MAXEXPPRINTLEN!* := 80;
 TEMPVARNUM!* := 1;
-TEMPVARNAME!* := 'mtt_;
+TEMPVARNAME!* := 'mtt_t;
 
 % Matrix output function
 in"$MTTPATH/trans/lang_matrix.r";

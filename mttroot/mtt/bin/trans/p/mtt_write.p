@@ -16,6 +16,9 @@ PROCEDURE mtt_write(t	  : REAL;
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1998/11/26 13:31:30  peterg
+## Put missing space after 2nd t
+##
 ## Revision 1.3  1998/07/25 20:41:38  peterg
 ## Spaces between numbers
 ##
@@ -37,7 +40,6 @@ BEGIN
    write(t," ");
    FOR i := 1 TO ny DO
       write(y[i]," ");
-   write(" # ");
 
    write(t," ");
    FOR i := 1 TO nx DO

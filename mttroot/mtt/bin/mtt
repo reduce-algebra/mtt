@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.141  1998/03/11 10:45:19  peterg
+## Added rclean - recursive clean
+##
 ## Revision 1.140  1998/03/09 10:23:30  peterg
 ## PS view now runs as a background process.
 ##
@@ -1348,7 +1351,7 @@ $1_def.m: $1_def.r
 #Differential-algebraic equations
 $1_rdae.r: $1_ese.r $1_def.r
 	ese2rdae_r $1; tidy $1_rdae.r
-$1_dae.r: $1_cr.r $1_rdae.r $1_def.r $1_subs.r
+$1_dae.r: $1_rdae.r $1_def.r $1_subs.r $1_cr.r
 	rdae2dae_r $1; tidy $1_dae.r
 $1_dae.m: $1_def.r $1_dae.r  $1_sympar.r 
 	dae_r2m $1; matlab_tidy $1_dae.m; matlab_tidy $1_daeo.m

@@ -139,8 +139,8 @@ function [bonds,components,n_vector_bonds] = \
 	## get labelled ports
 	for [bond, bond_name] = comp
 	  if (index(bond_name, "bond") == 1)
-	    if (! exist("bond.label"))
-	      bond.label = "[]";
+	    if (! isfield (bond, "label"))
+	      bond.label = "[]"
 	    endif
 	    if (! strcmp(bond.label, "[]"))
 	      n_named_ports += 1;
@@ -152,6 +152,8 @@ function [bonds,components,n_vector_bonds] = \
 	
 	## attach labels to unlabelled ports
 	if (n_named_ports == 0)
+	  mtt_info(sprintf("Defaulting all ports on junction %s to 'in'", \
+			   comp_name), infofile);
 	  for [bond, bond_name] = comp
 	    if (index(bond_name, "bond") == 1)
 	      bond.label = "in";
@@ -167,9 +169,9 @@ function [bonds,components,n_vector_bonds] = \
 	    endif
 	    eval(sprintf("comp.%s = bond;", bond_name));
 	  endfor
-	elseif (n_named_ports != bond.n_bonds)
+	elseif (n_named_ports != comp.n_bonds)
 	  mtt_error(sprintf("Junction must have 0,1 or %i port labels", \
-			    n_bonds), errorfile);
+			    comp.n_bonds), errorfile);
 	endif
 	
       else

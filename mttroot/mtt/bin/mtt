@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.247  2000/07/13 07:21:12  peterg
+## Interface to Octave Control Systems Toolbox (OCST) - mtt2sys.m
+##
 ## Revision 1.246  2000/05/21 18:00:11  peterg
 ## Make manual if not already done.
 ## Released 4.2 version
@@ -836,7 +839,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='4.2'
+version='4.3'
 
 # MTT recursion level is zero unless explicitly set
 level=0

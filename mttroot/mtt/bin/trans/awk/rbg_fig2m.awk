@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.24  1998/04/03 14:02:50  peterg
+## Added 0 and 1 to list of possible ports
+##
 ## Revision 1.23  1998/02/01 18:37:41  peterg
 ## Don't print irritating warnings about ports listed in lbl files.
 ##
@@ -215,6 +218,7 @@ function process_text() {
     isa_port_component = (match(a[1], port_component_regexp))&&
       (match(a[2], port_regexp)>0)
       }
+
 # It must also be specified at depth 0
   isa_port_component = isa_port_component && (depth==0);
 
@@ -235,12 +239,14 @@ function process_text() {
 # Do the port components
   if (isa_port_component) {
     i_port_component++;
-    # Port number is the bit between the []
+    type = a[1];
+    # Port name is the bit between the []
     port_label  = substr(a[2],2,length(a[2])-2);
     x_port[i_port_component] = x_coord;
     y_port[i_port_component] = y_coord;
     info_port[i_port_component] = fig_info();
     port_labels[i_port_component] = port_label;
+    comp_type[port_label] = type;
   }
 
 # Do the plain components
@@ -566,8 +572,9 @@ END {
 
 # Do the port components, in order of appearance, first
   for (i = 1; i <= i_port_component; i++) {
-    port_type = "SS";
     name = sprintf("[%s]", port_labels[i]);
+    port_type = comp_type[port_labels[i]];
+print i, port_labels[i], name, port_type
     cr   = "MTT_port";
     arg  = i;
 

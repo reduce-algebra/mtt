@@ -16,6 +16,9 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.13  2002/12/13 10:07:07  gawthrop
+@comment  Added example in sh section of DIY reps
+@comment
 @comment  Revision 1.12  2002/09/19 08:09:31  gawthrop
 @comment  Updated documentation documentation
 @comment
@@ -1213,15 +1216,27 @@ matrices describing the system rc.
 @node Options, Utilities, Command line interface, User interface
 @comment  node-name,  next,  previous,  up
 @section Options
-@cindex Options
+@cindex options
+@cindex alias options
 
 @strong{MTT} has a number of optional switches to control its
 operation. These are invoked immediately after `mtt' on the command
 line; for example:
 @example
-mtt -o -s -c syst cbg view
+mtt -o -ss -cc syst cbg view
 @end example
-invokes the @code{-o}, @code{-s}, and @code{-c} options.
+invokes the @code{-o}, @code{-ss}, and @code{-cc} options.
+
+If you wish to use an option  all the time, use the
+alias function appropriate to the shell you are using. For example,
+using bash:
+@example
+alias mtt='mtt -o -ss -cc'
+@end example
+Means that the previous example can be executed using
+@example
+mtt syst cbg view
+@end example
 
 The available options are:
 @vtable @code
@@ -4595,6 +4610,9 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.13  2002/12/13 10:07:07  gawthrop
+# %% Added example in sh section of DIY reps
+# %%
 # %% Revision 1.12  2002/09/19 08:09:31  gawthrop
 # %% Updated documentation documentation
 # %%

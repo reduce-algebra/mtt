@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/07/22 09:14:42  peterg
+## Initial revision
+##
 ###############################################################
 
 
@@ -31,11 +34,14 @@ cat $MTTPATH/trans/rcs_header.sh >> $1_rep.txt
 
 cat <<EOF >> $1_rep.txt
 mtt $1 abg tex			# The system description
-
+mtt $1 cbg ps 		        # The causal bond graph
 # Uncomment the following lines or add others
+# mtt $1 struc tex	        # The system structure
+# mtt $1 dae tex	        # The system dae
 # mtt $1 ode tex	        # The system ode 
 # mtt $1 sspar tex		# Steady-state parameters
 # mtt $1 ss tex 		# Steady state
+# mtt $1 dm tex			# Descriptor matrices (of linearised system)
 # mtt $1 sm tex			# State matrices (of linearised system)
 # mtt $1 lmfr ps		# log modulus of frequency response (of linearised system)
 # mtt $1 simpar tex		# Simulation parameters

@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.88  2004/08/29 13:15:28  geraint
+## Uses sys_sae instead of sys_ae if sorted equations are being used.
+##
 ## Revision 1.87  2004/08/29 01:46:56  geraint
 ## Added rules to create ode2odes for sorted system: sesx and sesy.
 ##
@@ -373,6 +376,7 @@ Ny=`mtt_getsize $sys y` # Outputs
 
 case "$method" in
     "implicit")
+	ae=ae
 	ode=csex
 	odeo=cseo
 	algorithm="mtt_implicit(x,dx,AA,AAx,ddt,$Nx,open_switches)"
@@ -385,10 +389,12 @@ case "$method" in
 		odeo=sesy
 		;;
 	    "seqn")		# shouldn't be here unless mtt has changed
+		ae=ae
 		ode=sese
 		odeo=sese
 		;;
 	    "no" | *)	
+		ae=ae
 		ode=ode
 		odeo=odeo
 		;;
@@ -406,10 +412,12 @@ case "$method" in
 		odeo=sesy
 		;;
 	    "seqn")		# shouldn't be here unless mtt has changed
+		ae=ae
 		ode=sese
 		odeo=sese
 		;;
 	    "no" | *)	
+		ae=ae
 		ode=ode
 		odeo=odeo
 		;;

@@ -19,6 +19,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.16  1996/08/18 19:58:36  peter
+## Report generation included.
+##
 ## Revision 1.15  1996/08/18 12:01:01  peter
 ## Unified format of time responses.
 ##
@@ -109,11 +112,20 @@ EOF
   exit
 fi
 
-if [ "$1" = "clean" ] && [$2 = ""]; then
+# Clean up after MTT
+if [ "$1" = "clean" ] && [ "$2" = "" ]; then
   echo 'Removing log, dat, gdat, doc, dvi and ps files'
   rm -f *.log *.dat *.gdat *.doc *.dvi *.ps 
   exit
 fi
+
+# Invoke explicit requests for modification
+if [ "$2" = "abg" ] && [ "$3" = "fig" ]; then
+  echo Editing $1_$2.$3
+  $FIG $1_$2.$3 &
+  exit
+fi
+
 
 # Save up the argument list in a file; but only if argument has changed
 ARGS=$4;

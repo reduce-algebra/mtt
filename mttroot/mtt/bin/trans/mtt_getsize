@@ -4,7 +4,7 @@
      ##### Model Transformation Tools #####
      ######################################
 
-# Bourne shell script: p2C
+# Bourne shell script: mtt_getsize
 
 # Gets array sizes for the def.r file
 # P.J.Gawthrop Feb 2000
@@ -12,6 +12,24 @@
 
     #$Id$	
 
+while [ -n "`echo $1 | grep '^-'`" ]; do
+  case $1 in
+	-internal )
+                internal=yes;
+		;;
+	*)
+		echo "$1 is an invalid argument - ignoring";
+                exit ;;
+  esac
+  shift
+done
+
+if [ -n "$internal" ]; then
+    grep "MTT$2[^(]" $1_ese.r | wc -l
+    exit
+fi
+
+## The original version for external sizes.
 if [ "$2" = "xx" ]; then
   n=`mtt_getsize $1 x`
   N=`echo "$n * $n" | bc` 

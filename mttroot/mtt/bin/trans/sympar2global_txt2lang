@@ -1,0 +1,71 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: sympar2global_txt2lang
+
+# Symbolic parameters to default paramers in computer language
+# P.J.Gawthrop March 1997
+# Copyright (c) P.J.Gawthrop, 1997.
+
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+# Set up language stuff.
+language=$2
+
+case $language in
+    m)
+	ext='m'
+	Lc='#';
+	Rc='#';
+	;;
+    c)
+	ext='c'
+	Lc='/*';
+	Rc='*/';
+	;;
+    *)
+	echo Language $2 not supported - sorry; exit 1
+esac
+
+cat <<EOF
+
+$Lc====== Set up the global variables ======$Rc
+EOF
+# Matlab bit
+#Write out the variables in matlab global format
+if [ "$language" = "m" ]; then
+
+awk '
+BEGIN{
+  var = "foobar";
+  print "global ..."
+}
+{i++; print tolower($1), "..."; var = $1}
+END{
+  print var ";" # Repeat the last variable to avoid the trailing ...
+}' $1_sympar.txt
+
+fi
+
+if [ "$language" = "c" ]; then
+    awk '{
+      i++; print "extern double", tolower($1) ";";
+    }' $1_sympar.txt
+ fi
+
+
+echo
+
+# Now invoke the standard error handling.
+# mtt_error mtt_error.txt
+
+

@@ -19,6 +19,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.4  1996/08/10 09:19:48  peter
+## Put in help, info and warranty stuff.
+##
 ## Revision 1.3  1996/08/09 15:13:13  peter
 ## Generic viewing of any representation via ps files implemented.
 ##
@@ -231,12 +234,19 @@ $1_tf.tex: $1_def.r $1_tf.r $1_sympar.r $1_simp.r
 	tf_r2tex $1; latex_tidy $1_tf.tex
 
 
+#Time responses
+$1_ir.dat: $1_dm.m
+	dm2ir_m2dat $1
+
+#Frequency responses
+$1_fr.dat: $1_dm.m
+	dm2fr_m2dat $1
+
 #Partially-known system indentification structure matrices
 $1_pkim.r: $1_tf.r $1_sympar.r 
 	tf2pkim_r $1; tidy $1_pki.r
 $1_pkim.tex: $1_def.r $1_pkim.r $1_sympar.r
 	pkim_r2tex $1; latex_tidy $1_pkim.tex
-
 
 #Generic conversion of Latex to latex document
 $1_$2.doc: $1_$2.tex
@@ -246,6 +256,7 @@ $1_$2.doc: $1_$2.tex
 $1_$2.dvi: $1_$2.doc
 	echo Creating $1_$2.dvi
 	latex $1_$2.doc > /dev/null
+
 
 #Create PostScript version of abg fig file
 ifeq ('$2','abg')
@@ -261,12 +272,26 @@ $1_cbg.ps: $1_cbg.fig
 	fig2dev -Lps $1_cbg.fig >$1_cbg.ps
 endif
 
+#Create PostScript version of dat file
+ifeq ('$2','ir')
+$1_$2.ps: $1_$2.dat
+	dat2ps $1_$2
+endif
+ifeq ('$2','fr')
+$1_$2.ps: $1_$2.dat
+	dat2ps $1_$2
+endif
+
 #Generic conversion of dvi to ps
 ifneq ('$2','abg')
 ifneq ('$2','cbg')
+ifneq ('$2','ir')
+ifneq ('$2','fr')
 $1_$2.ps: $1_$2.dvi
 	echo Creating $1_$2.ps
 	dvips -o $1_$2.ps $1_$2.dvi 2> /dev/null
+endif
+endif
 endif
 endif
 

@@ -13,6 +13,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  2002/04/28 18:41:27  geraint
+## Fixed [ 549658 ] awk should be gawk.
+## Replaced calls to awk with call to gawk.
+##
 ## Revision 1.9  2001/07/27 23:29:10  geraint
 ## Optimises only when requested (-opt).
 ##
@@ -122,12 +126,78 @@ case $rep in
         exit
 esac
 
+
+mtt_fix_integers ()
+{
+    gawk -F":=" -v RS="$" -v ORS="$\n" '
+(NF == 1) {
+	print $0
+}
+(NF > 1) {
+	lhs=$1 ;
+	rhs=$2" " ;
+	rhs1 = gensub ( /([^A-Za-z_0-9\.\+])([0-9]+)([^\.0-9])/ , "\\1\\2.0\\3" , "g", rhs );
+	rhs2 = gensub ( /([^e]\+)([0-9]+)([^\.0-9])/ , "\\1\\2.0\\3" , "g", rhs1 );
+	printf "%s:=%s$\n", lhs, rhs2 ;
+    }'
+}
+
+mtt_optimise ()
+{
+    sys="$1"
+    lhs="$2"
+    rhs="$3"
+    
+    crr="${sys}_cr.r"
+    dae="${sys}_dae.r"
+    tmp="mtt_optimise.tmp"
+    tmp2="mtt_optimise2.tmp"
+    tmp3="mtt_optimise3.tmp"
+    
+    {
+	cat <<EOF
+off echo$
+load scope$
+on double$
+on noconvert$
+on rounded$
+off int$
+off nat$
+
+out "$tmp2"$
+EOF
+    } > $tmp
+    
+    echo "optimize" >> $tmp
+    grep -i -e "^$lhs" $dae |\
+	sed -e 's/;/\ INAME\ mtt_tmp/g' |\
+	sed -e 's/:=/:=/g' >> $tmp
+    {
+	cat <<EOF
+
+shut "$tmp2"$
+EOF
+    } >> $tmp
+ 
+    ${SYMBOLIC:-reduce} < $tmp >> def2write_r1.log 2>> def2write_r2.log
+    cat $tmp2 | gawk -v RS=';' '($2 == ":=") {print $0}' > $tmp3
+    cat $tmp3 | mtt_fix_integers
+    rm -f $tmp $tmp2 $tmp3
+    return
+}
+
+
+# Remove log files
+rm -f def2write_r1.log def2write_r2.log
+
 # Write out the code
-echo 'off echo$'                    >$1_$2_write.r
+echo "" > $1_$2_write.r
 
 if [ ${opt:-""} = "-optimise" ]; then
-    echo 'load scope$'
+    echo 'off nat$'
+#    echo 'on echo$'
 else
+    echo 'off echo$'
     echo 'load gentran$'
 fi >> $1_$2_write.r
 
@@ -139,10 +209,8 @@ for matrix in $matrices; do
     for i in $is; do
       for j in $js; do
 	if [ ${opt:-""} = "-optimise" ]; then
-       	    echo 'optimize'
 	    name=`echo MTT$matrix'('$i','$j')'`
-	    echo '  '$comma$name ':=:' $name
-	    echo 'INAME mtt_tmp$'
+	    mtt_optimise $1 "$comma$name" "$name"
 	    comma=''
 	else
 	    echo 'write'
@@ -152,4 +220,4 @@ for matrix in $matrices; do
       done
     done
 done
-echo 'END$'                           >>$1_$2_write.r
+echo ';END;'                           >>$1_$2_write.r

@@ -14,6 +14,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  2002/04/28 18:41:26  geraint
+## Fixed [ 549658 ] awk should be gawk.
+## Replaced calls to awk with call to gawk.
+##
 ## Revision 1.2  2000/11/13 21:40:26  peterg
 ## Sorted out the non-gnu
 ##
@@ -45,19 +49,31 @@ mtt_version tr
 ## Non standards
 echo Doing the non-GNU components
 
+print_version ()
+{
+    program=${1:-"Error: unknown program"}
+    shift;
+    version=$*
+    if [[ ${version:-""} ]]; then
+	echo is OK and has version $version.
+    else
+	echo $program does not exist.
+    fi
+}
+
 echo Trying xfig ...
 xfig -help 2> mtt_junk; version=`grep Xfig mtt_junk`
-echo is OK and has version $version
+print_version xfig $version
 
 echo Trying fig2dev ...
 fig2dev -h > mtt_junk; version=`grep -i patchlevel mtt_junk`
-echo is OK and has version $version
+print_version fig2dev $version
 
 echo Trying reduce ...
-reduce >mtt_junk <<EOF
+reduce >mtt_junk 2>1 <<EOF
 bye;
 EOF
 version=`grep  REDUCE mtt_junk`
-echo is OK and has version $version
+print_version reduce $version
 
 

@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.33  2000/09/01 08:05:32  peterg
+  ## ## Reformatted with out changing function
+  ## ##
   ## ## Revision 1.32  1998/11/16 13:01:19  peterg
   ## ## Fixed problem with repetitions>1 due to new data structures -- now
   ## ## computes initial next_bond correctly
@@ -395,9 +398,8 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	    	endfor;
  	      endfor;
  	    endif;
-	    
-	  end;
-    	end;
+	  endif
+	endfor
       endfor			# [subsystem,comp_name] = CBG_field
     endif			# struct_contains(CBG,field)
   endfor			# i=1:2

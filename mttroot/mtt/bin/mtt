@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.82  1997/06/13  08:59:03  peterg
+# Set to version 2.4
+#
 ## Revision 1.81  1997/05/22 10:11:04  peterg
 ## Fixed dat2gdat bug (with parameters)
 ##
@@ -346,6 +349,7 @@ if [ -z "$1" ]; then
   echo 'Options: -q  quiet mode'
   echo '         -c  c-code generation'
   echo '         -o  ode and dae are the same'
+  echo '         -s  use switch (ISW and CSW) components'
  exit
 fi
 
@@ -375,7 +379,8 @@ fi
 
 if [ "$1" = "warranty" ] && [$2 = ""]; then
   cat << EOF
-Copyright (C) 1989, 1990, 1991, 1992, 1993, 1994, 1995,1996 Peter J. Gawthrop
+Copyright (C) 1989, 1990, 1991, 1992, 1993, 
+              1994, 1995, 1996, 1997 Peter J. Gawthrop
 This is free software with ABSOLUTELY NO WARRANTY.
 
 This program is free software; you can redistribute it and/or modify
@@ -567,12 +572,12 @@ if [ "$3" = "vc" ]; then
 	simp )
 		VC='ok'
 		VCext='r' ;;
-	params )
+	numpar )
 		VC='ok'
-		VCext='m' ;;
+		VCext='txt' ;;
 	input )
 		VC='ok'
-		VCext='m' ;;
+		VCext='txt' ;;
 	sspar )
 		VC='ok'
 		VCext='r' ;;
@@ -794,9 +799,8 @@ $1_rep.txt:
 	( \
 	echo "%% Outline report file for system $1 ($1_rep.txt)"; \
 	cat $MTTPATH/trans/m/rcs_header.txt; \
-	echo "abg ps"; \
-	echo "lbl txt"; \
-	echo "cbg ps"; \
+	echo "abg tex"; \
+	echo "struc tex"; \
 	echo "dae tex"; \
 	)> $1_rep.txt
 
@@ -1049,11 +1053,11 @@ $1_tf.tex: $1_def.r $1_tf.r $1_sympar.r $1_simp.r
 #SUMMARY daeso	dae solution - output (view)
 
 #Time responses
-$1_ir.m: $1_sm.m $1_numpar.m $1_params.m $1_args.m $1_def.m
+$1_ir.m: $1_sm.m $1_numpar.m $1_args.m $1_def.m
 	sm2ir_m $1 '$ARGS'
 $1_iro.m: $1_ir.m
 	touch $1_iro.m
-$1_sr.m: $1_sm.m $1_numpar.m $1_params.m $1_args.m $1_def.m
+$1_sr.m: $1_sm.m $1_numpar.m $1_args.m $1_def.m
 	sm2sr_m $1 '$ARGS'
 $1_sro.m: $1_sr.m
 	touch $1_sro.m
@@ -1062,7 +1066,7 @@ $1_odes.c: $1_ode.c $1_def.r $1_sympar.r
 $1_sms.c: $1_sm.c $1_def.r $1_sympar.r
 	sm2sms_r2c $1
 ifeq ($computation,octave)
-$1_odes.m: $1_ode.m $1_numpar.m $1_params.m $1_args.m $1_def.m $1_input.m
+$1_odes.m: $1_ode.m $1_numpar.m $1_args.m $1_def.m $1_input.m
 	ode2odes_m $1 '$ARGS'
 endif
 ifeq ($computation,c)
@@ -1090,7 +1094,7 @@ $1_odeso.m: $1_odes.m
 	touch $1_odeso.m
 $1_smso.m: $1_sms.m
 	touch $1_smso.m
-$1_daes.m: $1_dae.m $1_numpar.m $1_params.m $1_args.m $1_def.m $1_input.m
+$1_daes.m: $1_dae.m $1_numpar.m $1_args.m $1_def.m $1_input.m
 	dae2daes_m $1 '$ARGS'
 $1_daeso.m: $1_daes.m
 	touch $1_daeso.m
@@ -1106,7 +1110,7 @@ $1_daeso.m: $1_daes.m
 #SUMMARY odesso	ode numerical steady-states - outputs (view)
 
 #Numerical steady states
-$1_odess.m: $1_ode.m $1_numpar.m $1_params.m $1_args.m $1_def.m $1_input.m
+$1_odess.m: $1_ode.m $1_numpar.m $1_args.m $1_def.m $1_input.m
 	ode2odess_m $1 '$ARGS'
 $1_odesso.m: $1_odess.m
 	touch $1_odesso.m
@@ -1139,7 +1143,7 @@ $1_odesso.m: $1_odess.m
 
 
 #Frequency responses
-$1_fr.m: $1_dm.m $1_numpar.m $1_params.m $1_args.m $1_def.m
+$1_fr.m: $1_dm.m $1_numpar.m $1_args.m $1_def.m
 	dm2fr_m $1 '$ARGS'
 $1_lmfr.m: $1_fr.m
 	touch $1_lmfr.m

@@ -5,8 +5,11 @@ MTTFLAGS	= $(OPTS)
 
 all: $(SYS)_gnuplot.$(LANG)
 
-$(SYS)_gnuplot.view: $(SYS)_gnuplot.txt $(SYS)_odes.dat2
-	gnuplot $(SYS)_gnuplot.txt
+$(SYS)_gnuplot.view: $(SYS)_gnuplot.wish $(SYS)_odes.dat2
+	$(SYS)_gnuplot.wish
+
+$(SYS)_gnuplot.wish: $(SYS)_struc.txt
+	$(MTTPATH)/trans/struc2gnuplot_txt2wish $(SYS)
 
 $(SYS)_gnuplot.txt: $(SYS)_struc.txt $(MTTPATH)/trans/struc2gnuplot_txt.exe
 	$(MTTPATH)/trans/struc2gnuplot_txt.exe $(SYS) < $(SYS)_struc.txt > $(SYS)_gnuplot.txt

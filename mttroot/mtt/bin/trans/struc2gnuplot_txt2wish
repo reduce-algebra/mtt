@@ -1,0 +1,120 @@
+#! /bin/sh
+
+sys=$1
+
+out=${sys}_gnuplot.wish
+tmp=${sys}_gnuplot.tmp
+
+struc=${sys}_struc.txt
+dat2=${sys}_odes.dat2
+
+Nx=`mtt_getsize ${sys} x`
+Ny=`mtt_getsize ${sys} y`
+
+
+## write header
+cat <<EOF > ${out}
+#!/bin/sh
+# Next line replaces shell with wish\\
+exec wish "${out}" "$@"
+
+## main window
+wm title . "MTT Viewer: ${sys}"
+
+button .print -text "Print" -command print
+button .quit  -text "Quit"  -command exit
+
+## states canvas
+canvas		.cx
+listbox		.cx.l
+scrollbar	.cx.s
+label		.cx.t	-text		"States"
+
+## outputs canvas
+canvas		.cy
+listbox		.cy.l
+scrollbar	.cy.s
+label		.cy.t	-text		"Outputs"
+
+## configure scrollbars
+.cx.s configure -command ".cx.l yview"
+.cy.s configure -command ".cy.l yview"
+.cx configure -yscrollcommand ".cx.s set" -scrollregion "0 0 20 ${Nx}"
+.cy configure -yscrollcommand ".cy.s set" -scrollregion "0 0 20 ${Ny}"
+
+## bind lists
+bind .cx.l <<ListboxSelect>> { plot [ .cx.l get anchor ] }
+bind .cy.l <<ListboxSelect>> { plot [ .cy.l get anchor ] }
+
+EOF
+
+## create states and outputs lists
+awk '
+($1 == "state") {
+    printf ".cx.l insert end state:%s\n", $4
+}
+($1 == "output") {
+    printf ".cy.l insert end output:%s\n", $4
+}' ${struc} >> ${out}
+
+cat <<EOF >> ${out}
+
+pack .cx.t -expand false -fill x -side top
+pack .cy.t -expand false -fill x -side top
+
+pack .cx.l -expand true -fill both -side left
+pack .cy.l -expand true -fill both -side left
+
+pack .cx.s -expand false -fill y -side right
+pack .cy.s -expand false -fill y -side right
+
+pack .cx -expand true -fill both
+#pack .cy -expand true -fill both
+radiobutton .states  -text "States"  -textvariable showx -command { .outputs deselect ; raise .cx }
+radiobutton .outputs -text "Outputs" -textvariable showy -command { .states  deselect ; raise .cy }
+place .cy -in .cx -relx 0 -rely 0 -relwidth 1 -relheight 1 -anchor nw -bordermode outside
+
+pack .quit  -expand false -fill x -side right
+pack .print -expand false -fill x -side right
+pack .states .outputs -side right
+
+
+## map names to column numbers
+EOF
+
+awk '
+BEGIN {
+    print "proc \"plot\" \"title\" {";
+}
+($1 == "state") {
+    printf "if (\"%s\"==\"state:%s\") { plot_var \"%s\" %d }\n", Title, $4, $4, $2+2+Ny;
+}
+($1 == "output") {
+    printf "if (\"%s\"==\"output:%s\") { plot_var \"%s\" %d }\n", Title, $4, $4, $2+1;
+}    
+END {
+    print  "}"
+}
+' Title=\$title Ny=${Ny} ${struc} >> ${out}
+
+
+cat <<EOF >> ${out}
+
+## call gnuplot
+proc "plot_var" "title column" {
+    exec echo plot \"${dat2}\" using 1:\$column title \"\$title\" > ${tmp}
+    exec echo pause -1 >> ${tmp}
+    exec gnuplot -title "\$title" ${tmp} &
+}
+
+## print output
+proc "print" "" {
+    exec echo set term postscript > ${tmp}.print
+    exec echo set output \\\"../${sys}_gnuplot.ps\\\" >> ${tmp}.print
+    exec grep -v pause ${tmp} >> ${tmp}.print
+    exec gnuplot ${tmp}.print
+    puts "Graph printed to ${sys}_gnuplot.ps"
+}
+
+EOF
+chmod +x ${out}

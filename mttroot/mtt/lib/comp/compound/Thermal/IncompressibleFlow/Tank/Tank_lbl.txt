@@ -1,13 +1,16 @@
 %% Label file for system Tank (Tank_lbl.txt)
 %SUMMARY Tank: Tank of hot incompressible liquid
 %DESCRIPTION c is the pressure constant: P=(rho*V)/c
-%DESCRIPTION Typical lable: tank  none  rho;c_p;c
+%DESCRIPTION Typical lable: tank  Tank  rho;c_p;c
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/11/20 08:57:19  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 

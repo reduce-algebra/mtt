@@ -5,6 +5,8 @@ function [t,y,y_theta] = mtt_simulate(system_name,theta);
   ## The order of components in theta is determined in system_numpar.txt:
   ## Copyright (C) 1999 by Peter J. Gawthrop
 
+  ## 	$Id$	
+
   ## Simulate using mtt-generated function
   y_theta = [];
    for i=1:length(theta)

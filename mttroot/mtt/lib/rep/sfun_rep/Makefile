@@ -2,10 +2,10 @@
 
 all: $(SYS)_sfun.mexglx
 
-$(SYS)_sfun.mexglx: $(SYS)_sfun.c sfun_debug.h $(SYS)_def.h $(SYS)_sympar.h $(SYS)_numpar.c $(SYS)_ode.c $(SYS)_odeo.c $(SYS)_state.c $(SYS)_sfun_ae.mexglx $(SYS)_sfun_input.mexglx $(SYS)_sfun_interface.mexglx
+$(SYS)_sfun.mexglx: $(SYS)_sfun.c sfun_debug.h $(SYS)_def.h $(SYS)_sympar.h $(SYS)_numpar.c $(SYS)_ode.c $(SYS)_odeo.c $(SYS)_state.c $(SYS)_sfun_ae.mexglx $(SYS)_sfun_input.mexglx $(SYS)_sfun_interface.mexglx $(SYS).mdl
 	echo Creating $@
 	mex $(SYS)_sfun.c
-	cp *_sfun*mexglx ..
+	cp *_sfun*mexglx $(SYS).mdl ..
 
 $(SYS)_sfun.c:: ${MTT_REP}/sfun_rep/sfun.c.tmpl
 	echo Creating $@

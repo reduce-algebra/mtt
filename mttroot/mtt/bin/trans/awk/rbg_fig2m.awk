@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.23  1998/02/01 18:37:41  peterg
+## Don't print irritating warnings about ports listed in lbl files.
+##
 # Revision 1.22  1997/08/09  14:42:39  peterg
 # Added underscore to port regexp
 #
@@ -205,11 +208,11 @@ function process_text() {
     print str
   }
 
-# A port component is SS followed by : followed by a port string
+# A port component is SS,0 or 1 followed by : followed by a port string
   isa_port_component = 0;
   if (match(str, delimiter)) {
     split(str,a,delimiter);
-    isa_port_component = (exact_match(a[1], "SS"))&&
+    isa_port_component = (match(a[1], port_component_regexp))&&
       (match(a[2], port_regexp)>0)
       }
 # It must also be specified at depth 0
@@ -498,6 +501,7 @@ BEGIN {
   port_regexp = "^\[[a-zA-Z0-9_,]*\]";
   nonport_regexp = "[a-zA-Z]";
   PORT_regexp = "^PORT .*=";  
+  port_component_regexp = "SS|0|1";
   isa_fig_file = 0;
   min_line_length = 10;
   object = 0;

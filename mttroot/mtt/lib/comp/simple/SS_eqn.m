@@ -7,6 +7,7 @@ function structure =  SS_eqn(name,bond_number,bonds,direction,cr,args, ...
 % which is only used for named SS components.
 global local_u_index
 global local_y_index
+global at_top_level
 
 % SS_eqn - equations for SS component
 % 
@@ -27,6 +28,9 @@ global local_y_index
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.15  1997/12/16 19:16:07  peterg
+% %% Added unknown input to the effort part.
+% %%
 % %% Revision 1.14  1997/12/16 18:25:19  peterg
 % %% Added unknown_input attribure to flow -- effort still needs doing
 % %%
@@ -104,7 +108,7 @@ outputs = structure(4);
 zero_outputs = structure(5);
 unknown_inputs = structure(6);
 
-if strcmp(effort_attribute, 'MTT_port') % Its a named port
+if strcmp(effort_attribute, 'MTT_port')&&~at_top_level % It's a named port
 
 % Note: we don't have numbered ports now, so the correct indices are deduced
 % by incrementing the two globals: local_u_index and local_y_index

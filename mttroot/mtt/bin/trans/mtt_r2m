@@ -18,6 +18,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.32  2003/04/17 20:07:33  geraint
+## Added rule to create _sese.m
+##
 ## Revision 1.31  2002/09/16 08:08:00  geraint
 ## Merged changes from global-optimisation branch.
 ##
@@ -160,7 +163,7 @@ rm -f mtt_r2m.log
 
 #Header
 case $rep in
-    ae|csex|cseo|ode|odeo|sese)
+    ae|csex|cseo|ode|odeo|sese|sesx|sesy)
     vectorise=yes
        ;;
     *)

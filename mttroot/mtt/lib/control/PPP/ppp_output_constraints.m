@@ -25,7 +25,7 @@ function [Gamma,gamma] = ppp_output_constraints (A,B,C,D,x_0,A_u,Tau,Min,Max,Ord
     Order=zeros(n_y,n_tau);
   endif
   
-  ## Stack up constraints for each input
+  ## Stack up constraints for each output
   Gamma=[];
   gamma=[];
   for i_y=1:n_y

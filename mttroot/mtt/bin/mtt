@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.187  1998/08/25 20:06:56  peterg
+## New data structure for abg.m and cbg.m
+##
 ## Revision 1.186  1998/08/18 10:49:05  peterg
 ## VERSION 3.1 release
 ##
@@ -1706,17 +1709,13 @@ $1_odeo.p : $1_def.r $1_odeo.m
 	mtt_m2p $1_odeo.m
 $1_smx.p : $1_def.r $1_smx.m
 	mtt_m2p $1_smx.m
-$1_smxx.p : $1_def.r $1_smxx.m
-	mtt_m2p $1_smxx.m
-$1_smxtx.p : $1_def.r $1_smxtx.m
-	mtt_m2p $1_smxtx.m
 $1_switch.p : $1_def.r $1_switch.m
 	mtt_m2p $1_switch.m
 $1_ode2odes.p : $1_ode2odes.m $1_def.r\
                 $1_simpar.p $1_numpar.p $1_state.p $1_input.p \
                 $1_ode.p $1_odeo.p  $1_switch.p \
-                $1_smx.p $1_smxx.p $1_smxtx.p  \
-                mtt_write.p mtt_update.p sign.p zero_matrix.p zero_vector.p
+                $1_smx.p mtt_implicit.p mtt_euler.p  \
+                mtt_write.p  sign.p zero_matrix.p zero_vector.p
 	mtt_m2p $1_ode2odes.m
 
 $1_ode2odes.c: $1_ode2odes.p 
@@ -2217,8 +2216,10 @@ mtt_sparse.p:
 	echo Copying mtt_sparse.p; cp $MTTPATH/trans/p/mtt_sparse.p .
 mtt_write.p: 
 	echo Copying mtt_write.p; cp $MTTPATH/trans/p/mtt_write.p .
-mtt_update.p: mtt_solve_lud.p mtt_sparse.p
-	echo Copying mtt_update.p; cp $MTTPATH/trans/p/mtt_update.p .
+mtt_implicit.p: mtt_solve_lud.p 
+	echo Copying mtt_implicit.p; cp $MTTPATH/trans/p/mtt_implicit.p .
+mtt_euler.p: 
+	echo Copying mtt_euler.p; cp $MTTPATH/trans/p/mtt_euler.p .
 mtt_solve_lud.p: mtt_ludcmp.p mtt_lubksb.p
 	echo Copying mtt_solve_lud.p; cp $MTTPATH/trans/p/mtt_solve_lud.p .
 zero_vector.p: 

@@ -15,6 +15,10 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.8  1998/07/30 12:52:38  peterg
+# %% Adds ; to end of statements
+# %% Translates ' to " before removal
+# %%
 # %% Revision 1.7  1998/07/30 09:32:33  peterg
 # %% Replaces:
 # %% 	euler by 1
@@ -102,7 +106,7 @@ doublequote = "\042";
   if (NF>1)  print statement " # " $2
 }' | sed\
      -e 's/\[\([0-9]*\)\]/(\1)/g' \
-     -e 's/\([^a-zA-Z]\)t\([^a-zA-Z]\)/\1mttt\2/g' \
+     -e 's/\([^a-zA-Z_]\)t\([^a-zA-Z_]\)/\1mttt\2/g' \
      -e 's/LAST/mttLAST/g' \
      -e 's/DT/mttDT/g' \
      -e 's/STEPFACTOR/mttSTEPFACTOR/g' \

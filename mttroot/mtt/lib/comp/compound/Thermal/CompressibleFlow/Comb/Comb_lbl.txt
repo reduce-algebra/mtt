@@ -9,6 +9,10 @@
 %ALIAS	Th_out  Thermal_out
 %ALIAS	Hy_out  Hydraulic_out
 
+%ALIAS	$1	m
+%ALIAS	$2	v
+%ALIAS	$3	r
+
 %% Label file for system Comb (Comb_lbl.txt)
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -16,6 +20,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.4  1998/07/02 19:46:34  peterg
+% %% New aliases
+% %%
 % %% Revision 1.3  1998/07/02 10:54:42  peterg
 % %% Lower case in out
 % %%
@@ -44,5 +51,5 @@
 	T		external	0
 
 % Component type hPipe
-	pipe	none	m_c;v_c;r
+	pipe	none	m;v;r
 

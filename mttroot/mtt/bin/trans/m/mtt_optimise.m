@@ -55,7 +55,7 @@ function [theta,Theta,Error,Y,iterations] = mtt_optimise (system_name,y_s,theta_
   Error = [];
   Y = [];
   iterations = 0;
-  while (abs(error_old-error)>criterion)&&(iterations<max_iterations)
+  while (abs(error_old-error)>criterion)&&(abs(error)>criterion)&&(iterations<max_iterations)
     iterations = iterations + 1;
     error_old_old = error_old;
     error_old = error;
@@ -90,7 +90,7 @@ function [theta,Theta,Error,Y,iterations] = mtt_optimise (system_name,y_s,theta_
     endif
 
     ## Update the estimate if we are not done yet.
-    if (abs(error_old-error)>criterion)&&(iterations<max_iterations)
+    if (abs(error_old-error)>criterion)&&(abs(error)>criterion)&&(iterations<max_iterations)
       if error>(error_old+criterion) # Reduce step size and try again
         factor = 10;
 	disp(sprintf("%2.2f*step",alpha));

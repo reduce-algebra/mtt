@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1999/10/19 00:34:10  peterg
+## *** empty log message ***
+##
 ## Revision 1.3  1999/08/18 06:17:55  peterg
 ## Modular form
 ##
@@ -33,9 +36,9 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	            echo xmtt -update
 		    exit;;
 	-update )    echo Creating representation list for mtt;
-		mtt2reps_txt> $MTTPATH/REPS;
-		echo Creating examples list for mtt;
-		mtt -q help examples> $MTTPATH/EXAMPLES;;
+		     mtt2reps_txt> $MTTPATH/REPS;
+		     echo Creating examples list for mtt;
+		     mtt -q help examples> $MTTPATH/EXAMPLES;;
         -example )    examples='examples';; 
 	*)
 		echo "$1 is an invalid argument - ignoring" ;;
@@ -50,8 +53,9 @@ if [ -n "$examples" ]; then
     exit
 fi
 
-# Use wish
-mtt_make_menu | wish -name xmtt
+## Create the menu
+mtt_make_menu > .xmtt_menu
 
-
-
+## Use tk shell (wish)
+name=`basename $PWD`
+wish .xmtt_menu  -name $name

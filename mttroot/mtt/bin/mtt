@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.266  2000/09/19 07:47:38  peterg
+## fig2dev back to eps - ps produces a4 style output.
+##
 ## Revision 1.265  2000/09/19 07:45:28  peterg
 ## Version 4.7
 ##
@@ -897,7 +900,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='4.7++'
+version='4.7.1'
 
 # MTT recursion level is zero unless explicitly set
 level=0
@@ -2410,7 +2413,7 @@ $1_smc.m: $1_def.r $1_smc.r $1_numpar.m
 #SUMMARY smo*	observer form state matrices etc. - siso only (view)
 #SUMMARY smo	observer form state matrices etc. - siso only (ps)
 #Linearised system: observer form state matrices etc.
-$1_smo.r: $1_sm.r $1_def.r $1_smc.r 
+$1_smo.r: $1_sm.r $1_def.r $1_tf.r 
 	sm2smo_r $1; tidy $1_smo.r
 $1_smo.tex: $1_smo.r  $1_simp.r
 	smo_r2tex $1; latex_tidy $1_smo.tex

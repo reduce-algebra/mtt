@@ -79,7 +79,6 @@ proc "reverse_sort" "list" {
 }
 
 proc "sort_list" "list sortorder" {
-    puts "sortorder: \$sortorder"
     if ("\$sortorder"=="normal") {
 	return [lsort -ascii \$list]
     }
@@ -118,14 +117,21 @@ pack .cy.l -expand true -fill both -side left
 pack .cx -expand true -fill both
 place .cy -in .cx -relx 0 -rely 0 -relwidth 1 -relheight 1 -anchor nw -bordermode outside
 
-radiobutton .states  -text "States"  -value states  -variable view -command { raise .cx } -relief solid
-radiobutton .outputs -text "Outputs" -value outputs -variable view -command { raise .cy } -relief solid
+radiobutton .states  -text "States"      -value states  -variable view      -relief solid -command { raise .cx }
+radiobutton .outputs -text "Outputs"     -value outputs -variable view      -relief solid -command { raise .cy }
+
+#menubutton .plottype -text "Plot type" -menu .plottype.plottype
+
+#menu .plottype.plottype
+tk_optionMenu .plottype plottype "Single Plot"\
+                                 "Multi Plot "\
+                                 "New Window "
 
 pack .states .outputs -side left
 
 pack .quit   -expand false -fill x -side right
 pack .print  -expand false -fill x -side right
-
+pack .plottype   -expand false -fill x -side top
 
 ## map names to column numbers
 EOF
@@ -150,10 +156,16 @@ cat <<EOF >> ${out}
 
 ## call gnuplot
 proc "plot_var" "title column" {
-    exec echo set grid\; > ${tmp}
-    exec echo plot \"${dat2}\" using 1:\$column title \"\$title\" with lines\; >> ${tmp}
-    exec echo exit\; >> ${tmp}
-    exec gnuplot -geometry 400x300 -persist -title "\$title" ${tmp} &
+    puts "set grid"
+    puts "set term X11"
+    global plottype
+    if {"\$plottype" == "Multi Plot "} {
+	puts "replot '${dat2}' using 1:\$column title '\$title' with lines"
+    } elseif {"\$plottype" == "New Window "} {
+	puts "! echo \"plot '${dat2}' using 1:\$column title '\$title' with lines\" | gnuplot -geometry 400x300 -persist"
+    } else {
+	puts "plot '${dat2}' using 1:\$column title '\$title' with lines"
+    }
 }
 
 ## print output
@@ -168,11 +180,10 @@ proc "print" "parameter" {
 	}
     ]
     if {\$filename != ""} {
-	exec echo set term postscript > ${tmp}.print
-	exec echo set output \"\$filename\" >> ${tmp}.print
-	exec grep -v pause ${tmp} >> ${tmp}.print
-	exec gnuplot ${tmp}.print
-	puts "Graph printed to \$filename"
+	puts "set term postscript"
+	puts "set output \"\$filename\""
+	puts "replot"
+	tk_dialog ".printed" "Graph Printed!" "PostScript saved as \$filename" "" "0" "Close"
     }
 }
 

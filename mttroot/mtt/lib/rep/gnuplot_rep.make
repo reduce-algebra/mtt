@@ -6,7 +6,7 @@ MTTFLAGS	= $(OPTS)
 all: $(SYS)_gnuplot.$(LANG)
 
 $(SYS)_gnuplot.view: $(SYS)_gnuplot.wish $(SYS)_odes.dat2
-	sh $(SYS)_gnuplot.wish
+	sh $(SYS)_gnuplot.wish | gnuplot -geometry 400x300
 
 $(SYS)_gnuplot.wish: $(SYS)_struc.txt
 	$(MTTPATH)/trans/struc2gnuplot_txt2wish $(SYS)

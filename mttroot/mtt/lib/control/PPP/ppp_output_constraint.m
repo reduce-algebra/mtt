@@ -48,9 +48,10 @@ function [Gamma,gamma] = ppp_output_constraint (A,B,C,D,x_0,A_u,Tau,Min,Max,Orde
 
   ## Compute Gamma 
   Gamma = [];
+  zero_x = zeros(size(x_0));
   for i=1:n_U
     U = zeros(n_U,1); U(i,1) = 1; # Set up U_i
-    y_i = ppp_ystar (A,B,C,D,x_0,A_u,U,Tau); # Compute y* for ith input for each tau
+    y_i = ppp_ystar (A,B,C,D,zero_x,A_u,U,Tau); # Compute y* for ith input for each tau
     y_i = y_i(i_y,:); # Pluck out output i_y
     ## Gamma = [Gamma [-y_i';y_i']]; # Put in parts for Min and max
     Gamma_i = [];
@@ -64,14 +65,14 @@ function [Gamma,gamma] = ppp_output_constraint (A,B,C,D,x_0,A_u,Tau,Min,Max,Orde
   endfor
 
   ## Compute gamma
-  ##  gamma = [-Min';Max'];
-
+  zero_U = zeros(size(U));
+  y_x = ppp_ystar (A,B,C,D,x_0,A_u,zero_U,Tau);	# Output if U is zero
   gamma = [];
   if (Min>-inf)
-    gamma = [gamma; -Min'];
+    gamma = [gamma; -(Min-y_x)'];
   endif
   if (Max<inf)
-    gamma = [gamma; Max'];
+    gamma = [gamma; (Max-y_x)'];
   endif
   
 endfunction

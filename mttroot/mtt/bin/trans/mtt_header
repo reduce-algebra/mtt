@@ -12,6 +12,19 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.28  2001/01/17 21:16:15  geraint
+## uncomment parameter assignments in .m reps
+##
+## Revision 1.27  2001/01/14 23:51:26  geraint
+## declare parameters as variables instead of constants
+##
+## Revision 1.26  2001/01/07 21:22:47  geraint
+## Compatibility with Octave 2.1.x
+## vector_value ---> column_vector_value
+##
+## Revision 1.25  2000/12/05 12:05:26  peterg
+## Changed to () form
+##
 ## Revision 1.24  2000/12/05 10:04:52  peterg
 ## Fixed dummy variable bug
 ##
@@ -110,6 +123,15 @@ Nu=`mtt_getsize $system u` # Inputs
 Ny=`mtt_getsize $system y` # Outputs 
 Nyz=`mtt_getsize $system yz` # Zero outputs
 ##Npar=`wc -l $system\_sympar.txt | awk '{print $1}'`
+
+# get octave version
+octave_development=`octave --version | awk '{print $4}' | awk -F\. '{print $2}'`
+if [ $octave_development ]; then
+    vector_value=column_vector_value
+else
+    vector_value=vector_value
+fi
+
 
 # Representation-specific stuff
 
@@ -251,7 +273,7 @@ case $language in
 	noglobals=true; # Fudge to make mtt_m2p work
         start='## BEGIN Code'
         finish='## END Code'
-        var_declaration=$Lc
+        var_declaration=
         declarestates=no
         declareinputs=no
 	declareswitches=no
@@ -380,7 +402,7 @@ cat <<EOF
 
 $Lc Parameters $Rc
 EOF
-sympar2par_txt2m ${system} ""  "$constant_declaration" "$minusone"
+sympar2par_txt2m ${system} ""  "$var_declaration" "$minusone"
 fi
 
 # States
@@ -578,7 +600,7 @@ map_DLD_inputs ()
 		printf "  ${arg_type}\t${w}\t= args(${j}).double_value ();\n"
 		;;
 	    ColumnVector | Matrix | *)
-		printf "  ${arg_type}\t${w}\t= args(${j}).vector_value ();\n"
+		printf "  ${arg_type}\t${w}\t= args(${j}).%s ();\n" ${vector_value}
 		;;
 	esac
     done

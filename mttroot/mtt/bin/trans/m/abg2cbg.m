@@ -15,6 +15,9 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1996/08/05 18:53:21  peter
+% %% Fixed bug passing causality from subsystems.
+% %%
 % %% Revision 1.2  1996/08/05 15:41:41  peter
 % %% Now recursively does causality on subsystems.
 % %%
@@ -166,8 +169,8 @@ if n>0
   end;
 end;
 
-full_name
-write_cbg(full_name,bonds,status);
+file_name = [full_name, '_', system_type]
+write_cbg(file_name,bonds,status);
 
 % Return the port bonds
 for i = 1:n_ports

@@ -15,6 +15,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.5  1998/07/26 11:54:20  peterg
+# %% Added  mtt to variables
+# %%
 # %% Revision 1.4  1998/07/26 09:50:12  peterg
 # %% More forgiving of txt sytax.
 # %%
@@ -58,6 +61,9 @@ if [ "$representation" != "simpar" ]; then
     sympar2global_txt2m $1 >> $1_$2.m
 else
     echo "% Script file  $1_$2.m" > $1_$2.m
+    echo '% Dummy globals' >>  $1_$2.m
+    echo 'global ...' >>  $1_$2.m
+    echo 'mtt_dummy_global;' >>  $1_$2.m
 fi
 
 
@@ -67,10 +73,14 @@ awk -F#  '{
   if (NF>1)  print $1 "# " $2
 }' $1_$2.txt  | \
 sed 's/\[\([0-9]*\)\]/(\1)/g' |\
+sed 's/\([^a-zA-Z]\)t\([^a-zA-Z]\)/\1mttt\2/g' |\
 sed 's/LAST/mttLAST/g' |\
 sed 's/DT/mttDT/g' |\
 sed 's/STEPFACTOR/mttSTEPFACTOR/g' |\
 sed 's/METHOD/mttMETHOD/g' |\
+sed 's/WMIN/mttWMIN/g' |\
+sed 's/WMAX/mttWMAX/g' |\
+sed 's/WSTEPS/mttWSTEPS/g' |\
 sed 's/x(/mttx(/g' | sed 's/u(/mttu(/g'  |\
 sed 's/mttmtt/mtt/g' >> $1_$2.m
 

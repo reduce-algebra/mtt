@@ -16,6 +16,9 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.10  1997/04/15 09:18:26  peterg
+## Added structure file
+##
 # Revision 1.9  1996/12/07  18:21:25  peterg
 # Now uses fopen + file number
 #
@@ -81,7 +84,7 @@ full_name_repetition = '';
 
 % Structure matrix [states,nonstates,inputs,outputs,zero_outputs]
 
-structure = zeros(1,5);
+structure = zeros(1,6);
 
 structure = cbg2ese(system_name, system_type, system_cr, ...
                      system_args, full_name, full_name_repetition, ...

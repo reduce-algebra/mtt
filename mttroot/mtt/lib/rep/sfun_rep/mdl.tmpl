@@ -1,10 +1,10 @@
 Model {
-  Name			  "generic"
+  Name			  "<mtt_model_name>"
   Version		  4.00
   SampleTimeColors	  off
-  LibraryLinkDisplay	  "none"
+  LibraryLinkDisplay	  "all"
   WideLines		  off
-  ShowLineDimensions	  off
+  ShowLineDimensions	  on
   ShowPortDataTypes	  off
   ShowStorageClass	  off
   ExecutionOrder	  off
@@ -27,8 +27,8 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "geraint"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Mon May 20 15:53:00 2002"
-  ModelVersionFormat	  "1.%<AutoIncrement:4>"
+  LastModifiedDate	  "Thu May 23 16:35:42 2002"
+  ModelVersionFormat	  "1.%<AutoIncrement:13>"
   ConfigurationManager	  "None"
   SimParamPage		  "Solver"
   StartTime		  "0.0"
@@ -154,8 +154,8 @@ Model {
     FontAngle		    "normal"
   }
   System {
-    Name		    "generic"
-    Location		    [40, 379, 681, 493]
+    Name		    "<mtt_model_name>"
+    Location		    [51, 441, 346, 574]
     Open		    on
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
@@ -167,108 +167,186 @@ Model {
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
     Block {
-      BlockType		      "S-Function"
-      Name		      "MTT Model Inputs"
+      BlockType		      Inport
+      Name		      "In1"
+      Position		      [25, 43, 55, 57]
+      Port		      "1"
+      LatchInput	      off
+      DataType		      "double"
+      SignalType	      "real"
+      Interpolate	      on
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "MTT Model\n<mtt_model_name>"
       Ports		      [1, 1]
-      Position		      [30, 39, 205, 71]
+      Position		      [100, 20, 140, 80]
+      ForegroundColor	      "blue"
       BackgroundColor	      "lightBlue"
-      DropShadow	      on
-      FunctionName	      "<mtt_model_name>_sfun_input"
-      PortCounts	      "[]"
-      SFunctionModules	      "''"
-      Port {
-	PortNumber		1
-	Name			"MTT  Model Inputs: MTTU"
-	TestPoint		off
-	LinearAnalysisOutput	off
-	LinearAnalysisInput	off
-	RTWStorageClass		"Auto"
+      ShowPortLabels	      on
+      TreatAsAtomicUnit	      off
+      RTWSystemCode	      "Auto"
+      RTWFcnNameOpts	      "Auto"
+      RTWFileNameOpts	      "Auto"
+      System {
+	Name			"MTT Model\n<mtt_model_name>"
+	Location		[45, 448, 1008, 720]
+	Open			off
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"usletter"
+	PaperUnits		"inches"
+	ZoomFactor		"100"
+	Block {
+	  BlockType		  Inport
+	  Name			  "In1"
+	  Position		  [590, 203, 620, 217]
+	  Port			  "1"
+	  LatchInput		  off
+	  DataType		  "double"
+	  SignalType		  "real"
+	  Interpolate		  on
+	}
+	Block {
+	  BlockType		  "S-Function"
+	  Name			  "MTT Model Inputs"
+	  Ports			  [1, 1]
+	  Position		  [390, 59, 565, 91]
+	  BackgroundColor	  "lightBlue"
+	  DropShadow		  on
+	  FunctionName		  "<mtt_model_name>_sfun_input"
+	  PortCounts		  "[]"
+	  SFunctionModules	  "''"
+	  Port {
+	    PortNumber		    1
+	    Name		    "MTT  Model Inputs: MTTU"
+	    TestPoint		    off
+	    LinearAnalysisOutput    off
+	    LinearAnalysisInput	    off
+	    RTWStorageClass	    "Auto"
+	  }
+	}
+	Block {
+	  BlockType		  "S-Function"
+	  Name			  "MTT Plant Model"
+	  Ports			  [1, 2]
+	  Position		  [65, 61, 250, 199]
+	  BackgroundColor	  "lightBlue"
+	  DropShadow		  on
+	  FunctionName		  "<mtt_model_name>_sfun"
+	  PortCounts		  "[]"
+	  SFunctionModules	  "''"
+	  Port {
+	    PortNumber		    1
+	    Name		    "MTT Model States: MTTX"
+	    TestPoint		    off
+	    LinearAnalysisOutput    off
+	    LinearAnalysisInput	    off
+	    RTWStorageClass	    "Auto"
+	  }
+	  Port {
+	    PortNumber		    2
+	    Name		    "MTT Model Outputs: MTTY"
+	    TestPoint		    off
+	    LinearAnalysisOutput    off
+	    LinearAnalysisInput	    off
+	    RTWStorageClass	    "Auto"
+	  }
+	}
+	Block {
+	  BlockType		  "S-Function"
+	  Name			  "S-Function"
+	  Ports			  [4, 2]
+	  Position		  [710, 47, 840, 238]
+	  BackgroundColor	  "lightBlue"
+	  DropShadow		  on
+	  FunctionName		  "<mtt_model_name>_sfun_interface"
+	  PortCounts		  "[]"
+	  SFunctionModules	  "''"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "Out1"
+	  Position		  [905, 183, 935, 197]
+	  Port			  "1"
+	  OutputWhenDisabled	  "held"
+	  InitialOutput		  "[]"
+	}
+	Line {
+	  Name			  "MTT Model States: MTTX"
+	  Labels		  [2, 0]
+	  SrcBlock		  "MTT Plant Model"
+	  SrcPort		  1
+	  Points		  [0, 0; 105, 0]
+	  Branch {
+	    Points		    [0, -20]
+	    DstBlock		    "MTT Model Inputs"
+	    DstPort		    1
+	  }
+	  Branch {
+	    Points		    [0, 25]
+	    DstBlock		    "S-Function"
+	    DstPort		    2
+	  }
+	}
+	Line {
+	  Name			  "MTT Model Outputs: MTTY"
+	  Labels		  [1, 0]
+	  SrcBlock		  "MTT Plant Model"
+	  SrcPort		  2
+	  DstBlock		  "S-Function"
+	  DstPort		  3
+	}
+	Line {
+	  Name			  "MTT  Model Inputs: MTTU"
+	  Labels		  [1, 0]
+	  SrcBlock		  "MTT Model Inputs"
+	  SrcPort		  1
+	  DstBlock		  "S-Function"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "S-Function"
+	  SrcPort		  1
+	  Points		  [30, 0; 0, -70; -850, 0; 0, 105]
+	  DstBlock		  "MTT Plant Model"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "In1"
+	  SrcPort		  1
+	  DstBlock		  "S-Function"
+	  DstPort		  4
+	}
+	Line {
+	  SrcBlock		  "S-Function"
+	  SrcPort		  2
+	  DstBlock		  "Out1"
+	  DstPort		  1
+	}
       }
     }
     Block {
-      BlockType		      "S-Function"
-      Name		      "MTT Plant Model"
-      Ports		      [1, 2]
-      Position		      [320, 36, 465, 74]
-      BackgroundColor	      "lightBlue"
-      DropShadow	      on
-      FunctionName	      "<mtt_model_name>_sfun"
-      PortCounts	      "[]"
-      SFunctionModules	      "''"
-      Port {
-	PortNumber		1
-	Name			"MTT Model States: MTTX"
-	TestPoint		off
-	LinearAnalysisOutput	off
-	LinearAnalysisInput	off
-	RTWStorageClass		"Auto"
-      }
-      Port {
-	PortNumber		2
-	Name			"MTT Model Outputs: MTTY"
-	TestPoint		off
-	LinearAnalysisOutput	off
-	LinearAnalysisInput	off
-	RTWStorageClass		"Auto"
-      }
-    }
-    Block {
-      BlockType		      Scope
-      Name		      "Scope"
-      Ports		      [1]
-      Position		      [595, 49, 625, 81]
-      BackgroundColor	      "lightBlue"
-      DropShadow	      on
-      Floating		      off
-      Location		      [604, 136, 1156, 874]
-      Open		      on
-      NumInputPorts	      "1"
-      TickLabels	      "OneTimeTick"
-      ZoomMode		      "on"
-      List {
-	ListType		AxesTitles
-	axes1			"%<SignalLabel>"
-      }
-      List {
-	ListType		SelectedSignals
-	axes1			""
-      }
-      Grid		      "on"
-      TimeRange		      "auto"
-      YMin		      "0"
-      YMax		      "1"
-      SaveToWorkspace	      off
-      SaveName		      "ScopeData"
-      DataFormat	      "StructureWithTime"
-      LimitDataPoints	      on
-      MaxDataPoints	      "5000"
-      Decimation	      "1"
-      SampleInput	      off
-      SampleTime	      "0"
+      BlockType		      Outport
+      Name		      "Out1"
+      Position		      [185, 43, 215, 57]
+      Port		      "1"
+      OutputWhenDisabled      "held"
+      InitialOutput	      "[]"
     }
     Line {
-      Name		      "MTT  Model Inputs: MTTU"
-      Labels		      [0, 0]
-      SrcBlock		      "MTT Model Inputs"
+      SrcBlock		      "MTT Model\n<mtt_model_name>"
       SrcPort		      1
-      DstBlock		      "MTT Plant Model"
+      DstBlock		      "Out1"
       DstPort		      1
     }
     Line {
-      Name		      "MTT Model States: MTTX"
-      Labels		      [2, 0]
-      SrcBlock		      "MTT Plant Model"
+      SrcBlock		      "In1"
       SrcPort		      1
-      Points		      [0, -30; -455, 0]
-      DstBlock		      "MTT Model Inputs"
-      DstPort		      1
-    }
-    Line {
-      Name		      "MTT Model Outputs: MTTY"
-      Labels		      [-1, 0]
-      SrcBlock		      "MTT Plant Model"
-      SrcPort		      2
-      DstBlock		      "Scope"
+      DstBlock		      "MTT Model\n<mtt_model_name>"
       DstPort		      1
     }
   }

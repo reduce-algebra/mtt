@@ -28,6 +28,9 @@ global at_top_level
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.18  1998/07/08 11:30:45  peterg
+% %% Removed second (fileID) argument from mtt_info
+% %%
 % %% Revision 1.17  1998/07/04 07:15:44  peterg
 % %% Back under RCS
 % %%
@@ -101,7 +104,7 @@ if (strcmp(cr,"SS"))		# Then its the standard file
   a = split(args,",");
   [N,M]=size(a);
   if (N~=2)			# Must have 2 arguments
-    mtt_info(sprintf("SS should have 2 args not %i", N));
+    mtt_error(sprintf("SS should have 2 args not %i", N));
   else
     effort_attribute = a(1,:);
     flow_attribute   = a(2,:);
@@ -202,7 +205,7 @@ else
       fprintf(filenum, 'MTTyz%d := %s;\n', ...
 	  zero_outputs, varname(name, bond_number,1));
     else
-      mtt_info([effort_attribute, ' not appropriate for an output ']);
+      mtt_error([effort_attribute, ' not appropriate for an output ']);
     end;
   end;
 end;
@@ -233,7 +236,7 @@ else % Named constant
       fprintf(filenum, 'MTTyz%d := %s;\n', ...
 	  zero_outputs, varname(name, bond_number,-1));
     else
-      mtt_info([flow_attribute, ' not appropriate for an output ']);
+      mtt_error([flow_attribute, ' not appropriate for an output ']);
     end;
   end;
 end;

@@ -13,7 +13,8 @@ function cbg2fig(system_name, system_type, full_name, ...
   ## additional causal strokes superimposed. cbg2fig(system_name, ...
   ## system_type, full_name, ... stroke_length, stroke_thickness,
   ## stroke_colour, ... comp_font, comp_colour_u, comp_colour_o)
-  
+  ## Note this uses geometric info from _rbg.fig - so don't use with
+  ## -abg switch.  
 
   ## P.J.Gawthrop May 1996
   ## Copyright (c) P.J.Gawthrop, 1996.
@@ -23,6 +24,9 @@ function cbg2fig(system_name, system_type, full_name, ...
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## %% $Id$
   ## %% $Log$
+  ## %% Revision 1.14  2000/09/14 12:07:15  peterg
+  ## %% Fixed overwriting of ports.
+  ## %%
   ## %% Revision 1.13  2000/09/14 09:12:19  peterg
   ## %% Fixed stroke orientation bug with bent bonds
   ## %% Uses new info from the _rbg.m file - 4 new cols in rbonds
@@ -120,7 +124,7 @@ function cbg2fig(system_name, system_type, full_name, ...
   filenum = fopen(fig_name, 'a');
 
   ## Get the raw and the processed bonds
-  eval(['[rbonds,rstrokes,rcomponents] = ', system_type, '_rbg;']);
+  eval(['[rbonds,rstrokes,rcomponents,port_coord,port_name,port_list] = ', system_type, '_rbg;']);
   eval(["ABG = ", system_type, "_abg;"]);
   bonds=ABG.bonds;
 
@@ -138,8 +142,11 @@ function cbg2fig(system_name, system_type, full_name, ...
     error('Incorrect rcomponents matrix: must have 13 columns');
   end;
   M_components = Columns;
+  N_rcomponents = Rows;		# Number of raw components
 
-  [N_components, Columns] = size(CBG.subsystemlist);
+  [N_rports,junk] = size(port_list);
+  [N_components, Columns] = size(CBG.subsystemlist); # Number of derived
+						     # components
 
   if struct_contains(CBG,'portlist')
     [N_ports, Columns] = size(CBG.portlist);
@@ -239,7 +246,9 @@ function cbg2fig(system_name, system_type, full_name, ...
   end;
 
   ## Print all the components - coloured acording to causality.
-  for i = 1+N_ports:N_ports+N_components
+  ## Miss out the ports
+  
+  for i = N_rports+1:N_rcomponents
     if i>N_ports			# Subsystem
       comp_name = CBG.subsystemlist(i-N_ports,:);
       eval(["comp_status = CBG.subsystems.", comp_name, ".status;"]);
@@ -248,7 +257,7 @@ function cbg2fig(system_name, system_type, full_name, ...
       eval(["comp_status = CBG.ports.", comp_name, ".status;"]);
     end
     
-
+   i,comp_name,N_rcomponents,N_rports
     fig_params = rcomponents(i,3:M_components);
     coords = rcomponents(i,1:2);
     

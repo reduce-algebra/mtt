@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.21  1999/04/02 06:29:25  peterg
+## New implicit method - solves numerical prob with ISW
+##
 ## Revision 1.20  1999/04/02 02:13:58  peterg
 ## Back to RCS
 ##
@@ -108,12 +111,12 @@ MTTt = 0.0;
 [MTTu] = $1_input(MTTt,MTTx,MTTy);	# Evaluate initial input
 mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny); # And write them
 
-[mttAA]  = zero_matrix($Nx);	# Zero the A matrix
-[mttAAx] = zero_vector($Nx);	# Zero the AAx vector
+#[mttAA]  = zero_matrix($Nx);	# Zero the A matrix
+#[mttAAx] = zero_vector($Nx);	# Zero the AAx vector
 
-if $Nx>0
-  [MTTx] = $1_switch(MTTx);       # Switches
-endif;
+#if $Nx>0
+#  [MTTx] = $1_switch(MTTx);       # Switches
+#endif;
 
 if mttmethod==1			# Euler
   MTTddt = mttdt/mttstepfactor; # The small sample interval
@@ -126,8 +129,8 @@ for MTTit = 1:MTTilast		#Integration loop
     if mttmethod==1		# Euler
       for MTTjt = 1:mttstepfactor
 	[MTTdx] = $1_ode(MTTx,MTTu,MTTt); # State derivative
-	[MTTx] = mtt_euler(MTTx,MTTdx,MTTddt,$Nx); # Euler update
-	[MTTx] = $1_switch(MTTx);	# Switches
+        [MTTopen] = $1_switchopen(MTTx);        # Open switches
+	[MTTx] = mtt_euler(MTTx,MTTdx,MTTddt,$Nx,MTTopen); # Euler update
 	MTTt = MTTt + MTTddt;
       endfor;
     endif;

@@ -13,6 +13,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1996/08/05 11:25:00  peter
+## Removed bonds argument from abg2cbg.
+## Removed call to $1_abg.
+##
 ## Revision 1.1  1996/08/04 17:45:11  peter
 ## Initial revision
 ##
@@ -89,22 +93,17 @@ echo Creating $1_cbg.m
 
   %Convert from acausal to causal bond graph in m-file form.
   system_name = '$1';
-  [cbonds,status] = abg2cbg(system_name,infofile);
 
-
-  %Write the function m-file for the causal bond graph
-  filename = '$1_cbg.m';
-  c = '%';
-  fprintf(filename, 'function [cbonds,status] = $1_cbg\n');
-  fprintf(filename, '%s [cbonds,status] = $1_cbg\n', c);
-  fprintf(filename, '%s Causal bond graph created by MTT on %s \n\n', ...
-                    c, date);
-  mat2mfile(cbonds, 'cbonds', filename);
-  mat2mfile(status, 'status', filename);
+  % THIS IS A NASTY BUG WORKROUND FOR OCTAVE
+  abg2cbg('RC','RC' ,'', [], infofile);
+  
+  port_bonds = [];
+  [cbonds,status] = abg2cbg(system_name, '', '', port_bonds,infofile);
 
 EOF
 
 cat mtt_info.txt
+cp $1_$1_cbg.m $1_cbg.m 
 
 
 

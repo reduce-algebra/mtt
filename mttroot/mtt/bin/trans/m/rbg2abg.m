@@ -5,6 +5,10 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.16  1997/08/07  16:12:36  peterg
+% %% Fixed sorting bug: now puts the jth component from the unsorted list
+% %% into the kth component of the sorted list .. not vice versa!
+% %%
 % %% Revision 1.15  1997/08/06  21:43:19  peterg
 % %% Corrected error in creating component list: the kth component of the
 % %% list is given by the jth component of the original list NOT vice
@@ -187,8 +191,9 @@ for i = 1:n_components
 	end;
       end;
     else % just use that provided by the component
-      unsorted_port_list = port_list;
-      k = n_comp_ports;
+%      unsorted_port_list = port_list;
+%      k = n_comp_ports;
+      k=0;
     end;
 
     %Either all ports or no ports should be labelled - write error
@@ -218,9 +223,11 @@ for i = 1:n_components
         mtt_info(['Two-port ', comp_name, ' (', comp_type, ') does not have though-pointing arrows'], infofile);
       end;
       if direction(1)==1 %in
-        unsorted_port_list = port_list;
+        mtt_info([comp_name, ':in'], infofile);
+        unsorted_port_list = ['[in]';'[out]'];
       else %reverse the order
-        unsorted_port_list = port_list(2:1);
+        mtt_info([comp_name, ':out'], infofile);
+        unsorted_port_list = ['[out]';'[in]'];
       end;
     end;
     

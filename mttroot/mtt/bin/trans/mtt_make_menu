@@ -27,14 +27,13 @@ cat<<EOF
 set system "$system"
 
 # Arguments to mtt
-set args "-q"
+set args {-q}
 
 # Default the again command
-set mtt "mtt warranty"
+set mtt {mtt \$args warranty}
 
 # The top level menu
-button .mtt -text "$title \n Directory: $dirname \n NO WARRANTY (press for details)" -command "exec mtt warranty &"
-#button .again -text "Again" -command "exec $mtt &"
+button .mtt -text "$title \n Directory: $dirname \n NO WARRANTY \n (press for details)" -command "exec mtt warranty &"
 menubutton .man -text "Manual" -menu .man.man
 menubutton .util  -text "Utilities" -menu .util.util
 menubutton .opt  -text "Options" -menu .opt.opt
@@ -42,14 +41,15 @@ menubutton .sys -text "Systems" -menu .sys.sys
 menubutton .rep -text "Representations (major)" -menu .rep.rep
 menubutton .repall -text "Representations (all)" -menu .repall.repall
 menubutton .exam -text "Examples" -menu .exam.exam
+#button .again -text "Again" -command "exec echo \$mtt &; exec \$mtt  &"
 button .mtt_quit -text "Quit" -command exit
-pack .mtt  .exam .rep  .repall .sys  .util .opt  .man .mtt_quit
+pack .mtt .exam .rep  .repall .sys  .util .opt  .man .mtt_quit
 
  
 menu .man.man
 .man.man add command -label "Browser (html)" -command "exec mtt -q hinfo &"
 .man.man add command -label "Info" -command "exec xterm -e mtt -q info &"
-.man.man add command -label "Text (pdf)" -command "exec mtt -q manual &"
+.man.man add command -label "Text (ps)" -command "exec mtt -q manual &"
 
 menu .util.util
 # .mtt.opt.util add command -label "copy example" -command 
@@ -75,7 +75,7 @@ mtt |  awk '{
     label="";
     for (i=2;i<=NF;i++)
       label = sprintf("%s %s",label,$i);
-    printf(".opt.opt add check -label \"%s (-%s)\" -variable %s -command {set args \"$args -%s\"}\n", label, option, option, option); 
+    printf(".opt.opt add check -label \"%s (-%s)\" -variable %s -command {set args \"$args -%s\" }\n", label, option, option, option); 
   }
   if ($1=="Options:") Options = 1;
 }'
@@ -85,24 +85,12 @@ cat <<EOF
 menu .exam.exam
 EOF
 
-examples_txt2tk< $MTTPATH/EXAMPLES
+strip_comments $MTTPATH/EXAMPLES | examples_txt2tk
 
+# Representations menu
 cat<<EOF
 menu .rep.rep
 menu .repall.repall
 EOF
 
-reps_txt2tk <$MTTPATH/REPS 
-
-
-
-
-
-
-
-
-
-
-
-
-
+strip_comments $MTTPATH/REPS  | reps_txt2tk 

@@ -23,6 +23,12 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.40  2000/12/16 08:10:55  geraint
+  ## ## No unit type comparison at ports if either is "none".
+  ## ##
+  ## ## Revision 1.39  2000/11/16 12:54:14  peterg
+  ## ## Added checking of unit consistency at ports
+  ## ##
   ## ## Revision 1.38  2000/11/16 10:00:57  peterg
   ## ## *** empty log message ***
   ## ##
@@ -390,7 +396,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 		     effort_unit
 		     bond_effort_unit(port_bond_number+1:n_bonds,:)
 		     ]
-	      else # check
+	      elseif (!strcmp(this_bond_effort_unit,"none") && !strcmp(effort_unit,"none")) # check
 		mtt_info(sprintf(unit_info,full_name, effort_unit, \
 				 this_bond_effort_unit), infofilenum);
 		if !strcmp(this_bond_effort_unit,effort_unit)
@@ -407,7 +413,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 		     flow_unit
 		     bond_flow_unit(port_bond_number+1:n_bonds,:)
 		     ]
-	      else # check
+	      elseif (!strcmp(this_bond_flow_unit,"none") && !strcmp(flow_unit,"none")) # check
 		mtt_info(sprintf(unit_info,full_name, flow_unit, \
 				 this_bond_flow_unit), infofilenum);
 		if !strcmp(this_bond_flow_unit,flow_unit)

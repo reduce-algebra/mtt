@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.271  2000/10/03 12:14:25  peterg
+## Version 4.8
+##
 ## Revision 1.270  2000/10/03 12:13:51  peterg
 ## Corrected MTT_LIB paths
 ##
@@ -1244,6 +1247,7 @@ if [ "$1" = "Clean" ] && [ "$2" = "" ]; then
   rm -f *_rep.tex
   rm -f  *_unique_raw_list *_raw_list
   rm -f mtt_error.txt mtt_info.txt *_ode2odes.out 
+  rm -f *_*_write.r
   rm -fR *_rep MTT_work
   exit
 fi
@@ -1268,6 +1272,7 @@ if [ "$2" = "Clean" ] && [ "$3" = "" ]; then
   rm -f $1_rep.tex
   rm -f $1_unique_raw_list $1_raw_list
   rm -f mtt_error.txt mtt_info.txt $1_ode2odes.out 
+  rm -f $1_*_write.r
   rm -fR $1_rep MTT_work
   exit
 fi
@@ -1676,6 +1681,10 @@ $MAKE -S $verbose  -f  -  $target << EOF
 ## .cc files
 %.cc:  %.p
 	mtt_p2cc  $< 
+
+# Generates code to write reduce code
+$1_ode_write.r: $1_def.m
+	def2write_r  $1 $2
 
 ifeq ("$sensitivity","sensitivity")
 ifeq ("$level","0")
@@ -2162,6 +2171,7 @@ $1_scse.m: $1_def.m $1_scse.r $1_sympars.txt
 
 $1_scse.tex: $1_scse.r  $1_sympar.r $1_simp.r
 	cse_r2tex $1 $2; latex_tidy $1_scse.tex
+
 
 #SUMMARY ode	ordinary differential equations (r)
 #SUMMARY ode*	ordinary differential equations (m)
@@ -2727,7 +2737,7 @@ ifeq ($REPTYPE,tex)
 #Create html version of dvi file
 $1_$2.html: $1_$2.dvi $1_$2.doc
 	echo Creating $1_$2/$1_$2.html
-	$LATEX2HTML $1_$2.doc
+	$LATEX2HTML $1_$2.doc>latex2html.log 2>latex2html.log
 endif
 
 #Default view

@@ -16,11 +16,13 @@ function args_out = subs_arg(args,Args)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/12/04 21:46:52  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Symbolic argument sign
 S = '$';
-
 
 args_out = '';
 if strcmp(args,'')==0

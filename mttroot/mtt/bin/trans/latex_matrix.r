@@ -11,10 +11,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% $Id$
 %% $Log$
+%% Revision 1.1  1998/01/22 09:59:36  peterg
+%% Initial revision
+%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 PROCEDURE Latex_Matrix;
+BEGIN
+IF MTT_Matrix_m<6 THEN %% Do matrix style version
 BEGIN
   IF MTT_Matrix_n>0 THEN
     IF MTT_Matrix_m>0 THEN
@@ -34,6 +39,26 @@ BEGIN
       write "\end{pmatrix}";
       write "\end{equation}";
     END;
+END
+ELSE  %% write out the elements one-by-one.
+  IF MTT_Matrix_n>0 THEN
+    IF MTT_Matrix_m>0 THEN
+    BEGIN
+      FOR Row := 1:MTT_Matrix_n DO
+      BEGIN
+        FOR Col := 1:MTT_Matrix_m DO
+        BEGIN
+          MTT_element := MTT_Matrix(Row,Col);
+          IF MTT_element NEQ 0 THEN
+          BEGIN
+            write "\begin{equation}";
+            write MTT_Matrix_name, "_", Row, ",", Col, " = {", MTT_element, "}\cr";
+            write "\end{equation}";
+          END;
+        END;
+      END;
+    END;
+END;
 END;
 
 END;;

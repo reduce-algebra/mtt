@@ -1,4 +1,4 @@
-function [bonds, status] = abg2cbg(system_name, ...
+function [port_bonds, status] = abg2cbg(system_name, ...
     system_type, full_name, ...
     port_bonds,infofile)
 % [bonds,status] = abg2cbg(system_name,infofile)
@@ -15,6 +15,9 @@ function [bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1996/08/05 15:41:41  peter
+% %% Now recursively does causality on subsystems.
+% %%
 % %% Revision 1.1  1996/08/04 17:55:55  peter
 % %% Initial revision
 % %%
@@ -69,6 +72,8 @@ end;
 
 % Find number of port bonds
 [n_port_bonds,columns] = size(port_bonds);
+
+% Check compatibility - if ok copy port bonds to the internal bonds list.
 if n_port_bonds~=n_ports
   mtt_info(sprintf('%1.0f port bonds incompatible with %1.0f ports', ...
       n_port_bonds, n_ports), infofile);
@@ -77,10 +82,6 @@ else % Copy the port bonds
     bonds(i,:) = port_bonds(i,:);
   end;
 end;
-
-bonds,port_bonds
-
-
 
 % Set initial status
 status = -ones(n_components,1);
@@ -110,22 +111,30 @@ while done~=old_done
       comp_type = 'one';
     end;
     
-    % Invoke  the appropriate causality procedure
+% $$$     name
+% $$$     comp_bonds
+% $$$     bond_list
+
+    % Component cuasality procedure name
     cause_name = [comp_type, '_cause'];
+    
+    % Invoke  the appropriate causality procedure
     if exist(cause_name)~=2 % Try a compound component
       disp('------------PUSH-----------------');
-      [b,s] = abg2cbg(name, comp_type, full_name, comp_bonds, ...
-	  infofile)
-      status(i)=max(s);
+      [comp_bonds,s] = abg2cbg(name, comp_type, full_name, comp_bonds, ...
+	  infofile);
+      status(i)=max(abs(s));
       disp('------------POP-----------------');
     else % its a simple component
-      cause_name
       eval([ '[comp_bonds,status(i)] = ', cause_name, '(comp_bonds);' ]);
-      % Convert from component orientated to arrow orientated causality
-      bonds(bond_list,:) = comp_bonds.*direction; 
     end;
+    
+    % Update the full bonds list
+    % and convert from component orientated to arrow orientated causality
+    bonds(bond_list,:) = comp_bonds.*direction; 
   end;
-  
+
+
   done = sum(sum(abs(bonds)))/total*100;
   %  mtt_info(sprintf('Causality is %3.0f%s complete.', done, pc), infofile);
   
@@ -138,7 +147,7 @@ mtt_info(sprintf('Final causality is %3.0f%s complete.', final_done, pc),
 infofile);
 
 % List overcausal bonds
-[over_causal_bonds,n] = getindex(status,1)
+[over_causal_bonds,n] = getindex(status,1);
 if n>0
   for i=over_causal_bonds'
     eval([ '[comp_type,name] = ', system_type, '_cmp(i);' ]);
@@ -148,7 +157,7 @@ if n>0
 end;
 
 % List undercausal bonds
-[under_causal_bonds,n] = getindex(status,-1)
+[under_causal_bonds,n] = getindex(status,-1);
 if n>0
   for i=under_causal_bonds'
     eval([ '[comp_type,name] = ', system_type, '_cmp(i);' ]);
@@ -157,19 +166,15 @@ if n>0
   end;
 end;
 
+full_name
 write_cbg(full_name,bonds,status);
 
+% Return the port bonds
+for i = 1:n_ports
+  port_bonds(i,:) = bonds(i,:);
+end;
+
 disp('----------------------');
-
-
-
-
-
-
-
-
-
-
 
 
 

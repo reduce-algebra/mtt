@@ -19,6 +19,9 @@ function [bonds,status] = GY_cause(bonds);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1997/09/12  09:42:12  peterg
+% %% Fixed causality bug.
+% %%
 % %% Revision 1.1  1996/11/01  12:04:25  peterg
 % %% Initial revision
 % %% 
@@ -28,6 +31,6 @@ function [bonds,status] = GY_cause(bonds);
 % Copyright (c) P.J. Gawthrop, 1996.
 
 %Causality of GY is same as that of a TF but with flipped effort/flow
-bonds(2,:) = bonds(2,2:-1:1);
+bonds(2,:) = - bonds(2,2:-1:1);
 [bonds,status] = TF_cause(bonds);
 bonds(2,:) = - bonds(2,2:-1:1);

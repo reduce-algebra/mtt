@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.15  1998/05/21 16:20:27  peterg
+## Modified to include explicit algebraic loop solution
+##
 ## Revision 1.14  1998/05/19 19:48:02  peterg
 ## Read the simpar file now.
 ##
@@ -141,6 +144,44 @@ if nx>0
         ts = ts + dt;
         dx = xx(1:nx);
         x = x + dx*dt;
+        xx(1:nx) = x;
+      end;
+    end;
+  elseif strcmp(method,'implicitl')
+    %Euler integration
+    X=[];
+    dt = (T(2)-T(1))/STEPFACTOR;
+    u = $1_input(x,t);
+    A = $1_sm(x,u); 
+    inverse = inv(eye(nx) - dt*A);
+    for t=T'
+      X = [X; xx'];
+      ts = t;
+      for i=1:STEPFACTOR
+        x = xx(1:nx);
+        xx = $1_ode(xx,ts);
+        ts = ts + dt;
+        dx = xx(1:nx);
+        x = inverse*(x + dt*(dx - A*x));
+        xx(1:nx) = x;
+      end;
+    end;
+  elseif strcmp(method,'implicit')
+    %Euler integration
+    X=[];
+    dt = (T(2)-T(1))/STEPFACTOR;
+    One = eye(nx);
+    for t=T'
+      X = [X; xx'];
+      ts = t;
+      for i=1:STEPFACTOR
+        x = xx(1:nx);
+        u = $1_input(x,t);
+    	A = $1_sm(x,u); 
+        xx = $1_ode(xx,ts);
+        ts = ts + dt;
+        dx = xx(1:nx);
+        x = (One-A*dt)\(x + dt*(dx - A*x));
         xx(1:nx) = x;
       end;
     end;

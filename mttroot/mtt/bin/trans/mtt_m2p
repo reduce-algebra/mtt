@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1998/07/25 14:03:30  peterg
+## Added () to [] conversion when the variable is i j k or an integer or
+## combination
+##
 ## Revision 1.2  1998/07/25 12:39:57  peterg
 ## begin on same line as for and if
 ##
@@ -44,7 +48,7 @@ Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
  
 #Regexps
   name="[a-zA-Z0-9]*"
-  fun_name="$name\_$name"
+  fun_name="$Sys\_$name"
   space="[ \t]*"
   spaces="[ \t][ \t]*"
   non_space="[^ ]*"
@@ -82,7 +86,7 @@ Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
 	echo "    mttx,mttdx      : StateVector;"
 	echo "    mttu            : InputVector;"
 	echo "    mtty            : OutputVector;"
-	echo "    i,j,k,it,iLast,STEPFACTOR : INTEGER;"
+	echo "    i,j,it,iLast,STEPFACTOR : INTEGER;"
 	echo "    METHOD : STRING;"
         ;;
     *)	echo "PROCEDURE $Sys_rep;"
@@ -171,7 +175,7 @@ BEGIN{
           }
           else {
             sub(/=/,":=",$0)
-            sub(/\^/,"**",$0)
+            gsub(/\^/,"**",$0)
             printf("%s\n",$0)
           }
         }

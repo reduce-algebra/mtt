@@ -1,0 +1,89 @@
+#!/bin/sh
+## Shell script dae2ker_r
+## Converts dae to behavioral kernal rep. 
+
+
+echo Creating $1_ker.r
+
+$SYMBOLIC > dae2ker.log <<EOF
+
+% Read the files
+in "$1_dae.r";
+
+% Substitute for the non-state derivatives
+FOR i:=1:MTTNz DO
+BEGIN
+  set(mkid(mttdz,i),s*mttz(i,1));
+END;
+
+% Create a list algebraic equations set to zero
+eq_list:={}; v_list:={};
+FOR i:=1:MTTNyz DO
+BEGIN
+  eq_list := append(eq_list, {MTTyz(i,1)=0});
+  v_list := append(v_list,{mkid(mttui,i)});
+END;
+
+eq_list; v_list;
+
+%Solve for the "unknown" latent variables
+sol := solve(eq_list,v_list);
+
+% Substitute into the manifest variables array
+FOR i:=1:MTTNy DO
+BEGIN
+  mtty(i,1) := sub(sol,mtty(i,1));  
+END;
+
+% Eliminate the "external" latent variables
+eq_list:={}; v_list:={};
+FOR i:=1:MTTNy DO
+BEGIN
+  u_i := mkid(mttu,i);
+  w_i := mkid(mttw,i);
+  eq_list := append(eq_list, {w_i=MTTy(i,1)});
+
+  IF i>MTTNu THEN
+    v_list := append({w_i},v_list)
+  ELSE
+    v_list := append({u_i},v_list);
+END;
+
+eq_list; v_list;
+sol := solve(eq_list,v_list);
+sol := first(sol);
+
+% Pluck out the manifest variable solutions
+behaviour_list:={};
+FOR i:=1:(MTTNy-MTTNu) DO
+BEGIN
+  soli := first(sol);
+  sol := rest(sol);
+  behaviour := DEN(RHS(soli))*LHS(soli) - NUM(RHS(soli)) = 0;
+  behaviour_list := append(behaviour_list, {behaviour});
+END;
+behaviour_list := behaviour_list;
+
+MATRIX MTTR(MTTNy-MTTNu,MTTNy);
+FOR i:=1:(MTTNy-MTTNu) DO
+BEGIN
+  FOR j:=1:MTTNy DO
+  BEGIN
+    w_j := mkid(mttw,j);
+    coeffs := coeff(lhs(first(behaviour_list)),w_j);
+    IF length(coeffs)>1 THEN
+      MTTR(i,j) := second(coeff(lhs(first(behaviour_list)),w_j));
+  END;
+  behaviour_list := rest(behaviour_list);
+END;
+
+%% Now do coefficient matrices
+
+OFF NAT;
+OUT "$1_ker.r";
+write "MATRIX MTTR(", MTTNy-MTTNu, ",", MTTNy, ");";
+MTTR := MTTR;
+SHUT "$1_ker.r";
+
+
+EOF

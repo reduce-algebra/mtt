@@ -53,7 +53,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/mtt.
-	$(MAKE) install install-doc DESTDIR=$(CURDIR)/debian/mtt
+	$(MAKE) install install-doc install-xfig DESTDIR=$(CURDIR)/debian/mtt
 
 
 # Build architecture-independent files here.

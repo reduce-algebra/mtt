@@ -10,6 +10,9 @@ INSTDIR=$(DESTDIR)/usr/share/mtt
 DOCDIR=$(DESTDIR)/usr/share/doc/mtt
 INFODIR=$(DESTDIR)/usr/share/info
 
+# XFIG Libraries directory
+XFIGDIR=$(DESTDIR)/usr/share/xfig/Libraries
+
 configure: configure-stamp
 configure-stamp:
 	@touch configure-stamp
@@ -50,13 +53,19 @@ clean-doc:
 	@rm -f clean-doc.sh
 	@cd doc ; make -s clean
 
-distclean: clean clean-cc clean-conf clean-doc
+clean-xfig:
+	@touch clean-xfig.sh
+	@-chmod a+x clean-xfig.sh
+	@./clean-xfig.sh
+	@rm -f clean-xfig.sh
+
+distclean: clean clean-cc clean-conf clean-doc clean-xfig
 	@-rm -f build-stamp configure-stamp config.log mtt.sh xmtt.sh
 
 install: build clean.sh clean-conf.sh
 	@install -d $(INSTDIR) $(CONFDIR) $(PROGDIR)
 	@cp -a   bin cc doc lib $(INSTDIR)
-	@install bin/mttrc $(CONFDIR)/mtt.conf
+	@cat bin/mttrc | grep -v 'MTT_LIB/xfig' > $(CONFDIR)/mtt.conf
 	@install mtt.sh  $(PROGDIR)/mtt
 	@install xmtt.sh $(PROGDIR)/xmtt
 
@@ -69,6 +78,10 @@ install-doc: build-doc clean-doc.sh
 	@cd doc ; DOCPATH=$(DOCDIR) INFOPATH=$(INFODIR) make -s install-doc
 	@cd doc ; install Makefile mtt.info* mtt.pdf mtt.ps.gz $(DOCDIR)
 	@install doc/mtt.info* $(INFODIR)
+
+install-xfig: clean-xfig.sh
+	@install -d $(XFIGDIR)
+	@cp -a   lib/xfig $(XFIGDIR)/MTT_Bond_Graph
 
 .PHONY: FORCE
 
@@ -93,6 +106,11 @@ clean-doc.sh: FORCE
 	@echo '# This file is auto-generated - do not edit'		>>clean-doc.sh
 	@echo 'rm -fr $(DOCDIR)'					>>clean-doc.sh
 	@echo 'rm -f  $(INFODIR)/mtt.info*'				>>clean-doc.sh
+
+clean-xfig.sh: FORCE
+	@echo '#! /bin/sh'						>>clean-xfig.sh
+	@echo '# This file is auto-generated - do not edit'		>>clean-xfig.sh
+	@echo 'rm -f  $(XFIGDIR)/MTT_Bond_Graph'			>>clean-xfig.sh
 
 mtt.sh.tmp:
 	@echo '#! /bin/sh'						> mtt.sh.tmp

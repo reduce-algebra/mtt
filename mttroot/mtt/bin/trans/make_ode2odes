@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.62  2001/08/01 22:14:32  geraint
+## Bug fix for dassl.
+##
 ## Revision 1.61  2001/08/01 04:06:07  geraint
 ## Added -i dassl for -cc and -oct.
 ##
@@ -589,80 +592,6 @@ mtt_numpar (void)
 #endif
 }
 
-#ifdef STANDALONE
-ColumnVector
-Fmtt_residual (const ColumnVector &X,
-	      const ColumnVector &DX,
-	      double t)
-{
-#else // !STANDALONE
-DEFUN_DLD (mtt_residual, args, , "mtt_residual")
-{
-    static ColumnVector	X  (MTTNX+MTTNYZ);
-    static ColumnVector	DX (MTTNX+MTTNYZ);
-    static double      	t;
-
-    X  = args(0).${vector_value} ();
-    DX = args(1).${vector_value} ();
-    t  = args(2).double_value ();
-#endif // STANDALONE
-
-    static ColumnVector residual (MTTNX+MTTNYZ);
-    static ColumnVector U (MTTNU+MTTNYZ);
-    static ColumnVector u (MTTNU);
-    static ColumnVector y (MTTNY,0.0);
-    static ColumnVector par (MTTNPAR);
-    static ColumnVector dx(MTTNX);
-    static ColumnVector yz(MTTNYZ);
-
-    static ColumnVector x (MTTNX);
-    static ColumnVector ui (MTTNYZ);
-
-    static octave_value_list new_args;
-
-    x = X.extract (0,MTTNX-1);
-    if (MTTNYZ > 0)
-      ui = X.extract (MTTNX,MTTNX+MTTNYZ-1);    
-
-#ifdef STANDALONE
-    par = F${sys}_numpar();
-    u = F${sys}_input(x,y,t,par);
-#else
-    par = feval ("${sys}_numpar",  new_args, 1)(0).${vector_value} ();
-    new_args(0) = octave_value (x);
-    new_args(1) = octave_value (u);
-    new_args(2) = octave_value (t);
-    new_args(3) = octave_value (par);
-    u = feval ("${sys}_input", new_args, 1)(0).${vector_value} ();
-#endif
-
-    U.insert (u,0);
-    if (MTTNYZ > 0)
-      U.insert (ui,MTTNU);
-
-#ifdef STANDALONE
-    dx = F${sys}_${ode} (x,U,t,par);
-    yz = F${sys}_ae (x,U,t,par);
-#else
-    new_args(1) = octave_value (U);
-    dx = feval ("${sys}_${ode}", new_args, 1)(0).${vector_value} ();
-    yz = feval ("${sys}_ae", new_args, 1)(0).${vector_value} ();
-#endif
-
-    for (register int i = 0; i < MTTNX; i++)
-      residual (i) = dx(i) - DX(i);
-    
-    if (MTTNYZ > 0)
-      residual.insert (yz,MTTNX);
-
-#ifdef STANDALONE
-    return residual;
-#else // !STANDALONE
-    return octave_value (residual);
-#endif // STANDALONE
-}
-    
-
 inline Octave_map
 mtt_simpar (void)
 {
@@ -833,7 +762,80 @@ mtt_dassl (ColumnVector &x,
     return f(0).${vector_value} ();
 #endif
 }
-	   
+
+#ifdef STANDALONE
+ColumnVector
+Fmtt_residual (const ColumnVector &X,
+	      const ColumnVector &DX,
+	      double t)
+{
+#else // !STANDALONE
+DEFUN_DLD (mtt_residual, args, , "mtt_residual")
+{
+    static ColumnVector	X  (MTTNX+MTTNYZ);
+    static ColumnVector	DX (MTTNX+MTTNYZ);
+    static double      	t;
+
+    X  = args(0).${vector_value} ();
+    DX = args(1).${vector_value} ();
+    t  = args(2).double_value ();
+#endif // STANDALONE
+
+    static ColumnVector residual (MTTNX+MTTNYZ);
+    static ColumnVector U (MTTNU+MTTNYZ);
+    static ColumnVector u (MTTNU);
+    static ColumnVector y (MTTNY,0.0);
+    static ColumnVector par (MTTNPAR);
+    static ColumnVector dx(MTTNX);
+    static ColumnVector yz(MTTNYZ);
+
+    static ColumnVector x (MTTNX);
+    static ColumnVector ui (MTTNYZ);
+
+    static octave_value_list new_args;
+
+    x = X.extract (0,MTTNX-1);
+    if (MTTNYZ > 0)
+      ui = X.extract (MTTNX,MTTNX+MTTNYZ-1);    
+
+#ifdef STANDALONE
+    par = F${sys}_numpar();
+    u = F${sys}_input(x,y,t,par);
+#else
+    par = feval ("${sys}_numpar",  new_args, 1)(0).${vector_value} ();
+    new_args(0) = octave_value (x);
+    new_args(1) = octave_value (u);
+    new_args(2) = octave_value (t);
+    new_args(3) = octave_value (par);
+    u = feval ("${sys}_input", new_args, 1)(0).${vector_value} ();
+#endif
+
+    U.insert (u,0);
+    if (MTTNYZ > 0)
+      U.insert (ui,MTTNU);
+
+#ifdef STANDALONE
+    dx = F${sys}_${ode} (x,U,t,par);
+    yz = F${sys}_ae (x,U,t,par);
+#else
+    new_args(1) = octave_value (U);
+    dx = feval ("${sys}_${ode}", new_args, 1)(0).${vector_value} ();
+    yz = feval ("${sys}_ae", new_args, 1)(0).${vector_value} ();
+#endif
+
+    for (register int i = 0; i < MTTNX; i++)
+      residual (i) = dx(i) - DX(i);
+    
+    if (MTTNYZ > 0)
+      residual.insert (yz,MTTNX);
+
+#ifdef STANDALONE
+    return residual;
+#else // !STANDALONE
+    return octave_value (residual);
+#endif // STANDALONE
+}
+    
 EOF
     ;;
     "euler" | "rk4" | *)

@@ -11,6 +11,8 @@
 %ALIAS	out	ThermalOut
 
 %ALIAS	$1	flow,r
+%ALIAS	$1	lin
+
 
 %% Label file for system RT (RT_lbl.txt)
 
@@ -19,6 +21,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.5  2001/06/11 19:51:08  gawthrop
+% %% Zapped spurious $1 alias
+% %%
 % %% Revision 1.4  1998/07/22 11:31:42  peterg
 % %% New port names
 % %%

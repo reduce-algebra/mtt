@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 
      ###################################### 
      ##### Model Transformation Tools #####
@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.20  2001/07/04 05:19:57  gawthrop
+## Added RT & CT to list
+##
 ## Revision 1.19  2001/07/03 23:51:10  gawthrop
 ## Now puts outline #Summary and #Description lines at top of lbl file
 ##
@@ -91,6 +94,12 @@ sensitivity=$2;
 system=$1
 outfile=$1_lbl.txt
 
+if [ -n "$sensitivity" ]; then
+    sys="-s ${system}"
+else
+    sys=${system}
+fi
+
 # Remove the old log file
 rm -f abg2lbl_fig2txt.log
 rm -f $1_cbg.m
@@ -99,8 +108,8 @@ rm -f $infofile
 rm -f mtt_junk*
 
 ## Create lbl files beneath this one
-mtt -q -u -l 1 $1 sub sh # Create the list
-sh $1_sub.sh "abg2lbl_fig2txt "
+mtt -q -u -l 1 ${sys} sub sh # Create the list
+sh $1_sub.sh "abg2lbl_fig2txt " " $sensitivity"
 
 if [ -f "$1_lbl.txt" ]; then
   ##echo "$1_lbl.txt exists in `pwd` - no action taken"
@@ -153,6 +162,7 @@ sed 's/\\001//' | \
 sort | \
 tee $1_raw_list | \
 sort -u> $1_unique_raw_list
+
 
 #Write out non-unique names
 #echo 'Non-unique names (if any):'
@@ -287,10 +297,10 @@ cat mtt_junk_alias.txt >> ${outfile}
 create_args mtt_junk   >> ${outfile}
 write_blurb            >> ${outfile}
 cat mtt_junk_lbl.txt   >> ${outfile}
+## Put a blank line at end
+cat >> ${outfile} <<EOF
 
+EOF
 ## Clean up
 rm -f mtt_junk*
-
-
-
 

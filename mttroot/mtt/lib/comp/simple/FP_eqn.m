@@ -17,6 +17,9 @@ function  structure = FP_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1998/06/29 09:54:16  peterg
+% %% Changed name from ES to FP
+% %%
 % %% Revision 1.1  1998/06/29 09:53:22  peterg
 % %% Initial revision
 % %%
@@ -47,11 +50,11 @@ end
 
 
 % There are 2 ports; extract the information
-e_bond = bonds(1,:);
-s_bond = bonds(2,:);
+f_bond = bonds(1,:);
+p_bond = bonds(2,:);
 
 % The efforts are the same - but the enthalpy side has relative T
-if e_bond(1)==1 %effort imposed on the enthalpy bond 
+if f_bond(1)==1 %effort imposed on the enthalpy bond 
 %  fprintf(eqnfile,'%s := %s + t_0;\n' , ...
   fprintf(eqnfile,'%s := %s;\n' , ...
     varname(name,bond_number(2), 1), ...
@@ -65,7 +68,7 @@ end;
 
 % The flows need to be converted - use the absolute temp on the
 % entropy side
-if e_bond(2)==-1 %flow imposed on the enthalpy bond 
+if f_bond(2)==-1 %flow imposed on the enthalpy bond 
   fprintf(eqnfile,'%s := %s/%s;\n' , ...
     varname(name,bond_number(2), -1), ...
     varname(name,bond_number(1), -1), ...

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.283  2000/11/24 15:11:50  peterg
+## -pdf switch for simple displays
+##
 ## Revision 1.282  2000/11/24 14:53:53  peterg
 ## Added lagrange rep : lde.r and lde.tex
 ##
@@ -1091,10 +1094,12 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-opt )  mtt_switches="$mtt_switches $1";
                 optimise='-optimise';;
 	-partition ) mtt_switches="$mtt_switches $1";
-                     partition='-partition';;
+                     partition='-partition';
+                ;;
 	-pdf )   mtt_switches="$mtt_switches $1";
-                 ps=pdf;
+                 ps=pdf; 
                  eps=pdf;
+                 pdf='-pdf';
                  psview=$PDFVIEW;
                 ;;
 	-viewlevel )  mtt_switches="$mtt_switches $1 $2";
@@ -1589,24 +1594,49 @@ case $2 in
 esac
 
 
+## Set up the main arguments
+sys=$1
+rep=$2
+lang=$3
+
+## Make ps pdf if -pdf set
+if [ "$lang" == "ps" ]; then
+  lang=$ps
+fi
+
+## Create the make target name
+target=$1_$2.$lang
+
+# Create some strings
+Subsystem=$1$subsystem;
+
+Subsystem_=$Subsystem"_"
+Subsystem_ese=$Subsystem"_ese"
+Subsystem_def=$Subsystem"_def"
+Subsystem_rdae=$Subsystem"_rdae"
+Subsystem_dae=$Subsystem"_dae"
+Subsystem_subs=$Subsystem"_subs"
+Subsystem_cr=$Subsystem"_cr"
+Subsystem_cbg=$Subsystem"_cbg"
+
 # Save up the argument list in a file; but only if argument has changed
-ARGS=$4; _ARGS=-$4; __ARGS=`echo $_ARGS | tr ',' '-'`
+#ARGS=$4; _ARGS=-$4; __ARGS=`echo $_ARGS | tr ',' '-'`
 
 #DIFF doesn't like empty files - so put a blank if empty
-if [ -z "$ARGS" ]; then
-  ARGS=' ';
-  _ARGS='';
-fi
+#if [ -z "$ARGS" ]; then
+#  ARGS=' ';
+#  _ARGS='';
+#fi
 
-cat > $1_args.new <<EOF
-$ARGS
-EOF
+#cat > $1_args.new <<EOF
+#$ARGS
+##EOF
 
-DIFF=`diff -bq $1_args.m $1_args.new 2>/dev/null`
+#DIFF=`diff -bq $1_args.m $1_args.new 2>/dev/null`
 
-if [ -n "$DIFF" ]; then
-  mv $1_args.new $1_args.m
-fi
+#if [ -n "$DIFF" ]; then
+#  mv $1_args.new $1_args.m
+#fi
 
 # Tidy mode - operate in the directory MTT-work
 if [ "$tidy" = "tidy" ]; then
@@ -1649,8 +1679,8 @@ if [ "$tidy" = "tidy" ]; then
 	  echo Moving $1_$2
           mv $1_$2 ..
       else
-          echo Copying  $1$subsystem"_"$2.$3
-          cp  -p -u $1$subsystem"_"$2.$3 ..
+          echo Copying  $1$subsystem"_"$2.$lang
+          cp  -p -u $1$subsystem"_"$2.$lang ..
       fi
       if [ "$PLOTTYPE" = "multiple" ]; then
         echo Copying  $1_$2$__ARGS.$ps
@@ -1735,21 +1765,8 @@ fi
 # This is the main mtt programme
 ################################
 
-target=$1_$2.$3
 
-# Create some strings
-Subsystem=$1$subsystem;
-
-Subsystem_=$Subsystem"_"
-Subsystem_ese=$Subsystem"_ese"
-Subsystem_def=$Subsystem"_def"
-Subsystem_rdae=$Subsystem"_rdae"
-Subsystem_dae=$Subsystem"_dae"
-Subsystem_subs=$Subsystem"_subs"
-Subsystem_cr=$Subsystem"_cr"
-Subsystem_cbg=$Subsystem"_cbg"
-
-#echo Target is $target, Subsystem is $Subsystem
+## echo Target is $target, Subsystem is $Subsystem, switches are $mtt_switches
 $MAKE -S $verbose  -f  -  $target << EOF
 
 # Cancel implicit rules I don't want
@@ -2881,7 +2898,7 @@ mtt.sty:
 	echo Copying mtt.sty to here
 	cp $MTTPATH/trans/mtt.sty .
 $1_$2.doc: $1_$2.tex
-	makedoc "$mtt_switches" "$1" "$2" "$3" "$4" "$documenttype"
+	makedoc "$mtt_switches" "$1" "$2" "$3" "$4" "$documenttype" "$ps"
 
 
 #Create PostScript version of fig files
@@ -2891,8 +2908,8 @@ $1_$2.$ps : $1_$2.fig
 	multi_command2 "fig2dev -L$eps" $1 $2.fig $2.$ps | sh
 else
 #Generic conversion of LaTeX doc to dvi or pdf
-$1_$2.dvi: $1_$2.doc
-	doc2dvi $1_$2 "$documenttype"
+$1_$2.$ps: $1_$2.doc
+	doc2$ps $1_$2 "$documenttype"
 #$1_$2.pdf: $1_$2.doc
 #	doc2pdf $1_$2 "$documenttype"
 endif
@@ -2921,12 +2938,12 @@ $1_$2.$ps: $1_$2.fig
 
 endif
 
-ifeq ($REPTYPE,tex)
+#ifeq ($REPTYPE,tex)
 #Create PostScript version of dvi file
-$1_$2.$ps: $1_$2.dvi
-	echo Creating $1_$2.$ps
-	dvips -o $1_$2.$ps $1_$2
-endif
+#$1_$2.$ps: $1_$2.dvi
+#	echo Creating $1_$2.$ps
+#	dvips -o $1_$2.$ps $1_$2
+#endif
 
 ifeq ($REPTYPE,tex)
 #Create html version of dvi file
@@ -2949,7 +2966,7 @@ $1_$2.view: $1_$2.$ps
 endif
 
 ifeq ($REPTYPE,tex)
-$1_$2.view : $1_$2.tview
+$1_$2.view : $1_$2.pview
 endif
 
 ifeq ($REPTYPE,txt)
@@ -2985,14 +3002,14 @@ $1_rep.make: $1_rep.txt
 	rep_txt2make $1 "$mtt_switches"
 
 $1_reps_made:
-	rep_txt2sh $1;  touch $1_reps_made
+	rep_txt2sh $1 "$mtt_switches";  touch $1_reps_made
 
 $1_rep.tex: $1_rep.txt $1_reps_made
 	rep_txt2tex $1 "$documenttype" "$directory";
 
 #SUMMARY abg Acausal bond graph report (tex)
 $1_abg.tex: $1_sub.sh
-	abg2tex $1
+	echo abg2tex $pdf $1; abg2tex $pdf $1
 
 #SUMMARY tf Transfer function (mml)
 $1_$2.mml: $1_$2.r

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.269  2000/09/30 14:12:03  peterg
+## Fixed bug with no-parameter systems - changed mtt_txt2m and mtt_m2p
+##
 ## Revision 1.268  2000/09/27 16:15:55  peterg
 ## Now sh (as opposed to bash) compatible -  fixed dat22dat again
 ##
@@ -1144,17 +1147,17 @@ fi
 
 if [ "$1" = "hinfo" ] && [$2 = ""]; then
    mtt_check_var "$HTMLVIEW" HTMLVIEW
-  (cd $MTTPATH/doc/; make --silent mtt.html) 
+  (cd $MTT_DOC/; make --silent mtt.html) 
    echo Invoking $HTMLVIEW
-   (cd $MTTPATH/doc; $HTMLVIEW ./mtt.html)&
+   (cd $MTT_DOC; $HTMLVIEW ./mtt.html)&
    exit
 fi
 
 if [ "$1" = "manual" ] && [$2 = ""]; then
   mtt_check_var "$PDFVIEW" PDFVIEW
-  (cd $MTTPATH/doc/; make --silent mtt.pdf) 
+  (cd $MTT_DOC/; make --silent mtt.pdf) 
   echo Invoking $PDFVIEW 
-  $PDFVIEW  $MTTPATH/doc/mtt.pdf &
+  $PDFVIEW  $MTT_DOC/mtt.pdf &
   exit
 fi
 
@@ -1315,7 +1318,7 @@ if [ "$1" = "copy" ]; then
    #set up source and destination dirs
     source=$3
     if [ -z "$source" ]; then
-      source=$MTTPATH/lib/examples
+      source=$MTT_Examples
     fi
     destination=$4
     if [ -z "$destination" ]; then
@@ -1330,7 +1333,7 @@ if [ "$1" = "copy" ]; then
   else
     source=$3
     if [ -z "$source" ]; then
-      source=$MTTPATH/lib/examples
+      source=$MTT_EXAMPLES
     fi
     destination=$4
     if [ -z "$destination" ]; then
@@ -1399,7 +1402,7 @@ if [ "$1" = "crcopy" ]; then
   else
     path_name=$3
     if [ -z "$path_name" ]; then
-      path_name=$MTTPATH/lib/cr/r
+      path_name=$MTT_LIB/cr/r
     fi
     echo Copying CR $2 to here from $3
     find $path_name -name "$2.cr" -exec cp {} . \;

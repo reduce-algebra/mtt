@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  2000/10/13 10:56:07  peterg
+## Now uses the full name from the struc file - no need to recreate.
+##
 ## Revision 1.9  2000/10/13 09:55:09  peterg
 ## Changed state/input name to $4_$3
 ##
@@ -85,7 +88,19 @@ if [ -f "$textfile" ]; then
   # Inform User
   echo Checking $textfile
 else
-  sympar2numpar_txt2txt $1
+  case $rep in
+    numpar)
+           sympar2numpar_txt2txt $1
+	;;
+    state)
+	   struc2state_txt2txt $1
+	;;
+    input)
+	   struc2input_txt2txt $1
+	;;
+    *)
+	
+esac
   exit    
 fi
 

@@ -1,0 +1,47 @@
+%% Label file for system pBernoulliEuler (pBernoulliEuler_lbl.txt)
+%SUMMARY pBernoulliEuler
+%DESCRIPTION <Detailed description here>
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS	in		y_in,theta_in
+%ALIAS	out		y_out,theta_out
+%ALIAS	torque		patch
+%ALIAS	curvature	patch
+
+
+% Argument aliases
+%ALIAS	$1	dk
+%ALIAS	$2	dm
+%ALIAS	$3	dz
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+% Component type I
+	dm		lin	flow,dm
+
+% Component type C
+	dk		lin	state,dk
+
+% Component type SS
+	[y_in]	SS			external,external
+	[y_out]	SS			external,external
+	[theta_in]	SS		external,external
+	[theta_out]	SS		external,external
+	[torque]	SS		external,external
+
+% Component type TF
+	dz		lin	effort,dz
+

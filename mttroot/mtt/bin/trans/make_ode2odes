@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.52  2001/03/19 02:28:52  geraint
+## Branch merge: merging-ode2odes-exe back to MAIN.
+##
 ## Revision 1.51.2.7  2001/03/17 09:51:07  geraint
 ## Implemented Runge-Kutta IV fixed-step method (-i rk4).
 ##
@@ -790,15 +793,15 @@ Usage: ${sys}_ode2odes (x, par, simpar)
   const int	ilast	= static_cast<int> (round ((last - first) / ddt)) + 1;
   const int	nrows	= static_cast<int> (round ((last - first) / dt)) + 1;
 
-  for (register int i = 0; i < MTTNU; i++)
+  for (register int i = 0; i < MTTNY; i++)
     {
-      u (i) = 0.0;
+      y (i) = 0.0;
     }
 
   for (register int j = 0, i = 1; i <= ilast; i++)
     {
-      y	= mtt_${odeo} (x, u, t, par);
       u	= mtt_input (x, y, t, par);
+      y	= mtt_${odeo} (x, u, t, par);
       if (0 == j)
 	{
            mtt_write (t, x, y, nrows);

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  2004/02/11 10:10:04  gawthrop
+## Includes a _pic.fig file (schematic) if such exists
+##
 ## Revision 1.5  2004/02/10 16:12:21  gawthrop
 ## Don't give details of Se De Sf Df INTF
 ##
@@ -61,7 +64,7 @@ ignored = " Se De Sf Df INTF ";
 }
 {
      subsys = sprintf(" %s ", $1);
-     if (match(ignored,subsys0)==0)
+     if (match(ignored,subsys)==0)
        print $1 
   }'
 }
@@ -166,17 +169,6 @@ cat $1_sub.tex   >> $filename
 
 #Now do the subsystems (if at top level)
 if [ -z "$2" ]; then
- sub2subs $1 | sort -u | ignore \
+    sub2subs $1 | sort -u | ignore |\
   gawk '{print "abg2tex", pdf, $1, filename}' pdf=$pdf filename=$filename | sh
 fi
-
-
-
-
-
-
-
-
-
-
-

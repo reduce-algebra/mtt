@@ -1,0 +1,14 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: mtt_repname
+
+# Returns the representation name from System_rep.lang
+
+# P.J.Gawthrop Feb 2000
+# Copyright (C) 2000 by Peter J. Gawthrop
+
+echo $1 | tr '.' '_' | awk -F '_' '{print $2}'

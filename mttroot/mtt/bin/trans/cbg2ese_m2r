@@ -16,6 +16,9 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.13  1998/05/12 14:49:10  peterg
+## Don't write END; any more - ese-tidy does this now!
+##
 ## Revision 1.12  1998/01/23 13:30:46  peterg
 ## $RMATRIX --> $MATRIX
 ##
@@ -56,6 +59,17 @@
 ## Initial revision
 ##
 ###############################################################
+
+while [ -n "`echo $1 | grep '^-'`" ]; do
+  case $1 in
+	-I )
+                info=info;;
+	*)
+		echo "$1 is an invalid argument - ignoring" ;;
+  esac
+  shift
+done
+
 
 infofile='mtt_info.txt';
 structurefile="$1_struc.txt";
@@ -102,7 +116,10 @@ makedef(structure,deffilenum);
   
 EOF
 
-cat $infofile
+
+if [ "$info" = "info" ]; then
+  cat $infofile
+fi
 
 # Create the composite ese file
 cat $1_ese.r $1_*_ese.r  > $1_ese.tmp 2>> /dev/null

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.15  2000/12/27 14:57:43  peterg
+## Now takes the base path as an argument
+##
 ## Revision 1.14  2000/12/27 13:11:43  peterg
 ## *** empty log message ***
 ##
@@ -62,82 +65,70 @@ MTT_BASE=$1
 
 if [ -z "$MTT_BASE" ]; then
   echo mttrc requires one argument: eg mttrc /usr/share/mtt/latest
-  exit
+else
+  echo Setting paths with base $MTT_BASE
+  # The following line sets up the make to use -- gmake is the standard 
+  # but you may wish to use lsmake for parallelism
+  export MAKE='make'
+  
+  # The following sets up the c compiler
+  export CC='gcc'
+  
+  # Setup the paths
+  export MTTPATH=$MTT_BASE/bin
+  export MTT_LIB=$MTT_BASE/mtt-lib
+  export MTT_DOC=$MTT_BASE/mtt-doc
+  export MTT_CC=$MTT_BASE/mtt-cc
+  
+  export MTT_COMPONENTS=$MTT_LIB/comp
+  export MTT_CRS=$MTT_LIB/cr
+  export MTT_EXAMPLES=$MTT_LIB/examples
+  export MTT_REP=$MTT_LIB/rep
+  
+  export PATH=$PATH\:$MTTPATH\:$MTTPATH/trans\:$MTT_CC
+  
+  #Setup octave
+  export MATRIX_PATH=$MTTPATH/trans/m//
+  export MATRIX_PATH=$MATRIX_PATH\:$MTT_LIB/comp/simple//
+  export MATRIX_PATH=$MATRIX_PATH\:$MTT_LIB/control//
+  export MATRIX_PATH=$MATRIX_PATH\:$MTT_LIB/octave//\:\:
+  
+  export OCTAVE_PATH=.\:$MATRIX_PATH
+  export MATRIX="octave"
+  
+  # Setup the symbolic stuff
+  export SYMBOLIC='reduce 64'
+  
+  
+  # Setup xfig
+  export FIG="xfig  \
+  	-startfontsize 20 \
+  	-metric \
+  	-portrait \
+  	-startgridmode 2 \
+  	-pheight 21 \
+  	-pwidth 30 \
+  	-library_dir $MTT_LIB/xfig/\
+  	"
+  
+  # Setup ps viewer
+  export PSVIEW='ghostview'
+  
+  # Setup pdf viewer
+  export PDFVIEW='acroread'
+  
+  # Setup html viewer
+  export HTMLVIEW='netscape'
+  
+  # Setup dvi viewer
+  export DVIVIEW='xdvi'
+  
+  # Setup latex2html
+  export LATEX2HTML="latex2html -contents_in_navigation -index_in_navigation -address http://mtt.sourceforge.net"
+  
+  # Ascend stuff
+  export ASCENDLIBRARY=$MTTPATH/ascend/lib
+  
+  # Oct file generation - use version with no optimisation.
+  export MKOCTFILE=$MTT_LIB/octave/mkoctfile
 fi
-
-# The following line sets up the make to use -- gmake is the standard 
-# but you may wish to use lsmake for parallelism
-export MAKE='make'
-
-# The following sets up the c compiler
-export CC='gcc'
-
-# Setup the paths
-export MTTPATH=$MTT_BASE/bin
-export MTT_LIB=$MTT_BASE/mtt-lib
-export MTT_DOC=$MTT_BASE/mtt-doc
-export MTT_CC=$MTT_BASE/mtt-cc
-
-export MTT_COMPONENTS=$MTT_LIB/comp
-export MTT_CRS=$MTT_LIB/cr
-export MTT_EXAMPLES=$MTT_LIB/examples
-export MTT_REP=$MTT_LIB/rep
-
-export PATH=$PATH\:$MTTPATH\:$MTTPATH/trans\:$MTT_CC
-
-#Setup octave
-export MATRIX_PATH=$MTTPATH/trans/m//
-export MATRIX_PATH=$MATRIX_PATH\:$MTT_LIB/comp/simple//
-export MATRIX_PATH=$MATRIX_PATH\:$MTT_LIB/control//
-export MATRIX_PATH=$MATRIX_PATH\:$MTT_LIB/octave//\:\:
-
-export OCTAVE_PATH=.\:$MATRIX_PATH
-export MATRIX="octave"
-
-# Setup the symbolic stuff
-export SYMBOLIC='reduce 64'
-
-
-# Setup xfig
-export FIG="xfig  \
-	-startfontsize 20 \
-	-metric \
-	-portrait \
-	-startgridmode 2 \
-	-pheight 21 \
-	-pwidth 30 \
-	-library_dir $MTT_LIB/xfig/\
-	"
-
-# Setup ps viewer
-export PSVIEW='ghostview'
-
-# Setup pdf viewer
-export PDFVIEW='acroread'
-
-# Setup html viewer
-export HTMLVIEW='netscape'
-
-# Setup dvi viewer
-export DVIVIEW='xdvi'
-
-# Setup latex2html
-export LATEX2HTML="latex2html -contents_in_navigation -index_in_navigation -address http://mtt.sourceforge.net"
-
-# Ascend stuff
-export ASCENDLIBRARY=$MTTPATH/ascend/lib
-
-# Oct file generation - use version with no optimisation.
-export MKOCTFILE=$MTT_LIB/octave/mkoctfile
-
-
-
-
-
-
-
-
-
-
-
-

@@ -14,6 +14,12 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.137  1998/03/07 14:04:17  peterg
+## dae creation split into 2 parts:
+## 1. create a raw (ie without constitutive relationship) dae (rdae)
+## 2. add the raw dae to the crs to get the dae.
+## reduce has less work to do with this approach
+##
 ## Revision 1.136  1998/03/04 16:34:19  peterg
 ## New local (_cr.r) and generic (.cr) CR structure.
 ## CR and lbl now have view mode.
@@ -1027,7 +1033,7 @@ $1_sympar.txt: $1_sub.sh
 	sh $1_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' sympar txt' # and recreate them
  
 	if [ "$level" = "0" ]; then \
-	  sort -u +1 +0 MTT_sympar.txt> $1_sympar.txt; \
+	  sort_sympar <MTT_sympar.txt> $1_sympar.txt; \
 	fi
 endif
 ifeq ($switches,1)
@@ -1044,7 +1050,7 @@ $1_sympar.txt: $1_sub.sh $1_struc.txt
 	sh $1_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' sympar txt' # and recreate them
  
 	if [ "$level" = "0" ]; then \
-	  sort -u +1 +0 MTT_sympar.txt> $1_sympar.txt1; \
+	  sort_sympar <MTT_sympar.txt  > $1_sympar.txt1; \
 	  struc2switch_txt $1; \
 	  echo "Appending switch declarations"; \
 	  cat $1_sympar.txt1 $1_switch.txt> $1_sympar.txt; \

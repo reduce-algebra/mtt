@@ -12,6 +12,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.35  2001/06/13 10:39:51  gawthrop
+## Zeros output matices in csex and cseo just in case some elements are
+## actually zero and not set in code. Works for m and oct.
+##
 ## Revision 1.34  2001/05/26 18:36:43  gawthrop
 ## Further modifications. Now works on rcPPP
 ##  -- next jobs:
@@ -410,7 +414,7 @@ for name in $zeromatrices; do
 	    N=$Nx; M=1
 	    ;;
 	y)
-	    N=$Nx; M=1
+	    N=$Ny; M=1
 	    ;;
 	*)
 	    

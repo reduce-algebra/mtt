@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  2003/06/11 16:10:37  gawthrop
+% %% Updated examples for latest MTT.
+% %%
 % %% Revision 1.2  2000/12/28 18:08:28  peterg
 % %% To RCS
 % %%
@@ -28,11 +31,11 @@ mtt -o -ss SimpleGasTurbine state tex
 mtt -o -ss SimpleGasTurbine simpar tex
 mtt -o -ss SimpleGasTurbine odeso ps 'SimpleGasTurbine__comp__T,SimpleGasTurbine__c1__T,SimpleGasTurbine__turb__T'
 
-mtt -o -ss -c SimpleGasTurbine odeso ps 'SimpleGasTurbine_fuel_1_Heat_1_y,SimpleGasTurbine_load_1_Work_1_y'
+mtt -o -ss SimpleGasTurbine odeso ps 'SimpleGasTurbine_fuel_1_Heat_1_y,SimpleGasTurbine_load_1_Work_1_y'
 
-mtt -o -ss -c SimpleGasTurbine odeso ps 'SimpleGasTurbine_shaft_1_speed_1_y'
+mtt -o -ss SimpleGasTurbine odeso ps 'SimpleGasTurbine_shaft_1_speed_1_y'
 
-mtt -o -ss -c SimpleGasTurbine odeso ps 'SimpleGasTurbine_c1_1_P'
+mtt -o -ss SimpleGasTurbine odeso ps 'SimpleGasTurbine_c1_1_P'
 
 
 

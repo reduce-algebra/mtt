@@ -5,14 +5,17 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  2003/08/17 17:02:31  gawthrop
+% %% Updated for new MTT
+% %%
 % %% Revision 1.1  1998/11/23 13:37:55  peterg
 % %% Initial revision
 % %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-mtt -o -cc BigHeatedRod abg tex
+mtt -o BigHeatedRod abg tex
 
-mtt -o -cc BigHeatedRod numpar txt
-mtt -o -cc BigHeatedRod input txt
-mtt -o -cc BigHeatedRod odeso ps
+mtt -o BigHeatedRod numpar txt
+mtt -o BigHeatedRod input txt
+mtt -o BigHeatedRod odeso ps
 

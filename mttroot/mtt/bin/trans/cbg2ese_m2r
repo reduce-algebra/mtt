@@ -16,6 +16,9 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.16  2000/09/02 15:55:51  peterg
+## *** empty log message ***
+##
 ## Revision 1.15  1998/07/08 14:43:12  peterg
 ## Restored inforfile
 ##
@@ -150,7 +153,7 @@ else # Partition the system
 
   # Top level  
 # The top-level definition file
-Nx=`mtt_getsize -external $1 x`
+Nx=`mtt_getsize -external $1 dX`
 Nz=`mtt_getsize -external $1 z`
 Ny=`mtt_getsize -external $1 y`
 Nu=`mtt_getsize -external $1 u`
@@ -182,9 +185,11 @@ EOF
     echo Doing $subsystem
     Ny=`mtt_getsize -internal $subsystem"_1" y`
     Nu=`mtt_getsize -internal $subsystem"_1" u`
-    echo Ny $Ny Nu $Nu Nx $Nx
+    # echo Ny $Ny Nu $Nu Nx $Nx
 
     echo MATRIX "MTT_"$subsystem"_uc("$Nu",1);"  >> $1_def.r
+
+    echo >> $1_ese.r
     echo %Subsystem input connections for $subsystem  >> $1_ese.r
     octave -q <<EOF                            >> $1_ese.r
     for i=1:$Nu

@@ -89,7 +89,8 @@ use XML::DOM;
 
 my (%component_id_tag, %bond_id_start_id, %bond_id_end_id,
     %component_label_data, $objects, %mtt_bond_id_index,
-    %bond_id_arrow_on_start, %bond_id_flow_causality, %bond_id_effort_causality);
+    %bond_id_arrow_on_start, %bond_id_flow_causality, %bond_id_effort_causality,
+    %bond_id_start_label,%bond_id_end_label);
 
 # Parse user options:
 my $diagram_name = '';
@@ -416,6 +417,9 @@ sub output_ibg {
 	$bond_id,$start,$end,$id,
 	$head,$head_component,$head_type,$head_name,
 	$tail,$tail_component,$tail_type,$tail_name,
+	$start_label,$end_label,
+	$head_label,$tail_label,
+	$effort_causality,$flow_causality,
 	$anon_id);
 
     # copy component_id_tag and assign names to anonymous components
@@ -453,9 +457,37 @@ sub output_ibg {
 	    $tail = $end;
 	}
 
+	$start_label = $bond_id_start_label{$dia_bond_id};
+	$end_label   = $bond_id_end_label  {$dia_bond_id};
+
+	$start_label =~ s/\#//g;
+	$end_label   =~ s/\#//g;
+
+	if ($bond_id_arrow_on_start{$dia_bond_id}) {
+	    $head_label = $end_label;
+	    $tail_label = $start_label;
+	} else {
+	    $head_label = $start_label;
+	    $tail_label = $end_label;
+	}
+
 	$head_component = $components{$head};
 	$tail_component = $components{$tail};
 
+	$effort_causality = $bond_id_effort_causality{$dia_bond_id};
+	$flow_causality   = $bond_id_flow_causality  {$dia_bond_id};
+
+	for ($effort_causality) {
+	    if (/-1/) { $effort_causality = "tail";}
+	    if (/0/) { $effort_causality = "none";}
+	    if (/1/) { $effort_causality = "head";}
+	}
+	for ($flow_causality) {
+	    if (/-1/) { $flow_causality = "tail";}
+	    if (/0/) { $flow_causality = "none";}
+	    if (/1/) { $flow_causality = "head";}
+	}
+		       
 	print OUT
 	    "  ## bond $mtt_bond_id \n" .
 	    "  ${diagram_name}.bonds.bond${mtt_bond_id_index{$dia_bond_id}}." .
@@ -465,15 +497,15 @@ sub output_ibg {
 
 	print OUT
 	    "  ${diagram_name}.bonds.bond${mtt_bond_id_index{$dia_bond_id}}." .
-	    "head.ports = \"FIXME!\";\n" .
+	    "head.ports = \"$head_label\";\n" .
 	    "  ${diagram_name}.bonds.bond${mtt_bond_id_index{$dia_bond_id}}." .
-	    "tail.ports = \"FIXME!\";\n";
+	    "tail.ports = \"$tail_label\";\n";
 
 	print OUT
 	    "  ${diagram_name}.bonds.bond${mtt_bond_id_index{$dia_bond_id}}." .
-	    "causality.effort = \"FIXME!\";\n" .
+	    "causality.effort = \"$effort_causality\";\n" .
 	    "  ${diagram_name}.bonds.bond${mtt_bond_id_index{$dia_bond_id}}." .
-	    "causality.flow = \"FIXME!\";\n\n";
+	    "causality.flow = \"$flow_causality\";\n\n";
     }
     
     output_ibg_footer();
@@ -552,6 +584,15 @@ sub get_arrow_info {
     $attribute = get_first_subnode_by_nodename_attribute(1,$object_node, "dia:attribute", "name", "flow_causality");
     change_causality($id_index, $attribute, $change_flow_causality);
     $bond_id_flow_causality{$id} = defined($attribute) ? get_dia_attribute_value("dia:enum",$attribute)-1 : 1;
+
+#    $attribute = get_first_subnode_by_nodename_attribute(1,$object_node, "dia:attribute", "name", "start_label");
+#    $bond_id_start_label{$id} = defined($attribute) ? get_dia_attribute_value("dia:string") : "[]";
+    $bond_id_start_label{$id} = "[]"; # FIXME!
+
+#    $attribute = get_first_subnode_by_nodename_attribute(1,$object_node, "dia:attribute", "name", "end_label");
+#    $bond_id_end_label{$id} = defined($attribute) ? get_dia_attribute_value("dia:string") : "[]";
+    $bond_id_end_label{$id} = "[]"; # FIXME!
+
 }
 
 sub change_causality() {

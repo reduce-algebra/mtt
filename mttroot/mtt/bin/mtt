@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.56  1997/03/05  08:24:09  peterg
+# Delete a.out after it has run.
+#
 # Revision 1.55  1997/02/24  19:31:10  peterg
 # Removed numpar.m requirement from .m files
 #
@@ -299,7 +302,7 @@ if [ "$1" = "clean" ] && [ "$2" = "" ]; then
   rm -f *_dae*.* *_cse.* *_ode*.c *_ode*.m *_obs.* *_rfe.* *_ss.*
   rm -f *_dm.* *_csm.* *_sm.* *_tf.* *_sr*.* *_ir*.* *_*fr.*
   rm -f  *_numpar.m *_numpar.c
-  rm -f mtt_error.txt mtt_info.txt 
+  rm -f mtt_error.txt mtt_info.txt a.out
   exit
 fi
 
@@ -313,7 +316,7 @@ if [ "$2" = "clean" ] && [ "$3" = "" ]; then
   rm -f $1_dae*.* $1_cse.* $1_ode*.c $1_ode*.m $1_obs.* $1_rfe.* $1_ss.*
   rm -f $1_dm.* $1_csm.* $1_sm.* $1_tf.* $1_sr*.* $1_ir*.* $1_*fr.*
   rm -f $1_numpar.m $1_numpar.c
-  rm -f mtt_error.txt mtt_info.txt 
+  rm -f mtt_error.txt mtt_info.txt a.out 
   exit
 fi
 
@@ -851,7 +854,7 @@ $1_odes.m: $1_odes.c $1_ode.c $1_numpar.c $1_odes.h $1_params.c $1_input.c
 	echo Creating $1_odeso.m
 	echo 'Compiling ...'
 	gcc $1_odes.c $1_ode.c $1_numpar.c $1_params.c $1_input.c -lm
-	echo 'Running  ...'; ./a.out; rm -f a.out; echo 'Done.'
+	echo 'Running  ...'; ./a.out; echo 'Done.'
 endif
 $1_odeso.m: $1_odes.m
 	touch $1_odeso.m

@@ -20,6 +20,7 @@ sub port_or_component_or_junction;
 sub read_lbl_file;
 sub read_lbl_line;
 sub sort_components;
+sub sort_rule;
 sub write_header;
 sub write_body;
 sub write_component;
@@ -33,8 +34,7 @@ my (@component_name,
     %component_arg,
     %component_rep);
 
-my (@component_name_lbl_index,
-    %sorted_component_list,
+my (%sorted_component_list,
     %component_class,
     %anonymous_component_type_index);
 
@@ -90,7 +90,7 @@ sub read_cmp_file() {
 	$name = name_anonymous_component($type) if ($name eq '');	
 	$class = port_or_component_or_junction ($type, $name);
 
-	$component_name  [++$i]   = $name;
+	$component_name  [$i++]   = $name;
 	$component_type  {$name}  = $type;
 	$component_rep   {$name}  = $rep;
 	$component_cr    {$name}  = '';
@@ -181,8 +181,6 @@ sub read_lbl_file() {
 	
 	$component_cr{$name}  = $cr;
 	$component_arg{$name} = $arg;
-
-	$component_name_lbl_index[++$i] = $name;
     }
 
     close (LBL);
@@ -228,41 +226,49 @@ EOF
 
 sub sort_components ()
 {
-    # sorts components into the order in which they are found in the label
-    # file within the classes: ports, components then junctions.
+    # sorts components into alphabetical order (type:name)
+    # within the classes: ports, components then junctions.
 
     my ($name, $class, $i, $j, $target);
 
     $i = 0;
     foreach $target ("port", "component", "0junction", "1junction") {
-	# get targets in lbl
-	for ($j = 1; $j < scalar @component_name_lbl_index; $j++) {
-	    $name  = $component_name_lbl_index[$j];
-	    $class = $component_class{$name};
-	    if ($class eq $target) {
-		$sorted_component_list{$name} = ++$i;
-		print "sorted: '$name' '$i'\n" if ($debug); 
-	    }
-	}
-	# get targets not in lbl
-	for ($j = 1; $j < scalar @component_name; $j++) {
-	    $name  = $component_name[$j];
+	my @sorted_list = sort (sort_rule @component_name);
+	for $name (@sorted_list) {
 	    $class = $component_class{$name};
 	    if ($class eq $target) {
 		if (! defined ($sorted_component_list{$name})) {
-		    $sorted_component_list{$name} = ++$i;
+		    $sorted_component_list{$name} = $i++;
 		    print "sorted: '$name' '$i'\n" if ($debug); 
 		}
 	    }
 	}
     }
 }
+
+sub sort_rule ()
+{
+    my ($type1, $name1, $string1,
+	$type2, $name2, $string2);
+
+    $name1 = $a;
+    $name2 = $b;
+
+    $type1 = $component_type{$name1};
+    $type2 = $component_type{$name2};
+
+    $string1 = sprintf ("%s:%s", $type1, $name1);
+    $string2 = sprintf ("%s:%s", $type2, $name2);
+
+    return ($string1 cmp $string2);
+}
+    
     
 sub write_body() {
     my (%reverse_sorted_component_list, $name);
     
     %reverse_sorted_component_list = reverse (%sorted_component_list);
-    for (my $key = 1; $key < scalar @component_name; $key++) {
+    for (my $key = 0; $key < scalar @component_name; $key++) {
 	$name = $reverse_sorted_component_list{$key};
 	write_component ($name);
     }
@@ -271,7 +277,7 @@ sub write_body() {
 sub write_component() {
     my ($name) = @_;
 
-    my $i = $sorted_component_list{$name};
+    my $i = $sorted_component_list{$name}+1;
 
     open (OUT, ">>$out") or
 	die "MTT: cannot open $out for writing.\n";

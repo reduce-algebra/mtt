@@ -5,6 +5,9 @@ function write_abg(system_name,bonds,connections,n_vector_bonds);
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  2001/04/15 21:15:41  geraint
+## Added interface definition rep: _ICD.(txt|c|cc|m).
+##
 ## Revision 1.8  1999/10/18 22:41:41  peterg
 ## Corrected vector junction expansion
 ##
@@ -53,7 +56,7 @@ function write_abg(system_name,bonds,connections,n_vector_bonds);
   fprintf(fid,"\n# Subsystems and Ports\n");
   i_port=0; SubsystemList = ""; PortList ="";
   for i=1:N
-    eval(["[comp_type, name, cr, arg, repetitions] = ", system_name, "_cmp(i);"]);
+    eval(["[comp_type, name, cr, args, repetitions] = ", system_name, "_cmp(i);"]);
     c = nozeros(connections(i,:));# Connections to this component
     m = length(c);		# Number of connections
 
@@ -80,7 +83,7 @@ function write_abg(system_name,bonds,connections,n_vector_bonds);
 	fprintf(fid,"\n# Component %s\n", new_name);
 	fprintf(fid,Sformat,system_name,new_name,"type",comp_type);
 	fprintf(fid,Sformat,system_name,new_name,"cr",cr);
-	fprintf(fid,Sformat,system_name,new_name,"arg",arg);
+	fprintf(fid,Sformat,system_name,new_name,"arg",args);
 	fprintf(fid,Iformat,system_name,new_name,"repetitions",repetitions);
 	fprintf(fid,Iformat,system_name,new_name,"status",-1);
 
@@ -127,7 +130,7 @@ function write_abg(system_name,bonds,connections,n_vector_bonds);
 	fprintf(fid,"\n# Port %s\n", name_i); 
 	fprintf(fid,PSformat,system_name,name_i,"type",comp_type);
 	fprintf(fid,PSformat,system_name,name_i,"cr",cr);
-	fprintf(fid,PSformat,system_name,name_i,"arg",arg);
+	fprintf(fid,PSformat,system_name,name_i,"arg",args);
 	fprintf(fid,PIformat,system_name,name_i,"repetitions",repetitions);
 	fprintf(fid,PIformat,system_name,name_i,"status",-1);
 	

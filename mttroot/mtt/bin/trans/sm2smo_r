@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  2000/09/11 10:53:54  peterg
+## Uses 1st io of mimo to create siso
+##
 ## Revision 1.2  1998/01/22 13:25:22  peterg
 ## Added END;; to output file.
 ##
@@ -49,7 +52,7 @@ reduce >sm2smo_r.log << EOF
 
 in "$1_def.r";
 in "$1_sm.r";
-in "$1_smc.r";
+in "$1_tf.r";
 
 %Read the formatting function
 in "$MTTPATH/trans/reduce_matrix.r";
@@ -68,13 +71,53 @@ FOR i := 1:MTTNx DO
    MTTCA := MTTCA*MTTA;
   END;
 
+%Canonical forms:
+% This statement makes Gs a scalar transfer function
+Gs := MTTtf(1,1);
 
-%Observable form (dual of controller form)
-MTTA_o := tp(MTTA_c);
-MTTB_o := tp(MTTC_c);
-MTTC_o := tp(MTTB_c);
+% Numerator and denominator polynomials
+bs := num(gs);
+as := den(gs);
+
+% extract coeficients and divide by coeff of s^n
+% reverse operator puts list with highest oder coeffs first
+ai := reverse(coeff(as,s));
+a0 := first(ai);
+MTTn := length(ai) - 1;
+
+
+% Normalised coeficients;
+ai := reverse(coeff(as/a0,s));
+bi := reverse(coeff(bs/a0,s));
+MTTm := length(bi)-1;
+
+% Zap the (unity) first element of ai list;
+ai := rest(ai);
+
+% System in observer form
+% MTTA_o matrix
+matrix MTTA_o(MTTNx,MTTNx);
+
+% First column is ai coefficients
+for i := 1:MTTNx do
+  MTTA_o(i,1) := -part(ai,i);
+
+% (MTTNx-1)x(MTTNx-1) unit matrix in upper right-hand corner (if n>1)
+if MTTNx>1 then
+  for i := 1:MTTNx-1 do
+    MTTA_o(i,i+1) := 1;
+
+% C_o vector;
+matrix MTTC_o(1,MTTNx);
+  MTTC_o(1,1) := 1;
+MTTC_o;
+% B_o vector;
+matrix MTTB_o(MTTNx,1);
+for i := 1:MTTm+1 do
+  MTTB_o(i+MTTNx-MTTm-1,1) := part(bi,i);
+
+% D_o
 MTTD_o := MTTD;
-
 
 %Observability matrix of observer form
 MATRIX MTTObs_o(MTTNx,MTTNX);

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.235  2000/04/06 10:52:53  peterg
+## Replace $PWD with `pwd` for sh compatibility
+##
 ## Revision 1.234  2000/04/04 16:14:08  peterg
 ## Sorted mtt help
 ##
@@ -1395,9 +1398,7 @@ fi
 if [ "$tidy" = "tidy" ]; then
    mkdir -p MTT_work
    cp -p -u  Makefile *.* .* MTT_work  2>/dev/null
-   echo now in `pwd`
    cd MTT_work
-   echo now in `pwd`
    if [ -z "$directory" ]; then
      Directory=''
    else

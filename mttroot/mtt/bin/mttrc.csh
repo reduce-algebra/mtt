@@ -1,5 +1,5 @@
 #!/bin/csh
-## Automatically generated from bashrc on Wed Apr 24 10:24:58 BST 2002 - DO NOT EDIT
+## Automatically generated from bashrc on Wed Aug 28 15:17:42 BST 2002 - DO NOT EDIT
 #! /bin/sh
 
      ###################################### 
@@ -17,6 +17,42 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.35  2002/08/06 09:56:54  geraint
+## Updated to work with changes in unstable version of Octave 2.1.36.
+## Tested with 2.0.17 (ok) but will break earlier unstables (2.1.(<=35)).
+##
+## Revision 1.34  2002/05/08 14:51:03  geraint
+## Moved matlab/octave data type conversion functions to a separate file.
+##
+## Revision 1.33  2002/05/08 11:39:36  gawthrop
+## Added MTT_REP to PATH
+##
+## Revision 1.32  2002/05/07 23:50:34  geraint
+## Preliminary support for Matlab dynamically linked shared objects:
+## invoke with: mtt -cc sys rep mexglx
+## ode2odes support is not yet included.
+##
+## Revision 1.31  2002/05/02 20:12:45  geraint
+## Added -Wl,--rpath to MTT_CXXLIBS. Sets the runtime linker path so that the
+## sys-admin does not have to ldconfig the octave directory for -cc to work.
+##
+## Revision 1.30  2002/05/02 11:10:11  geraint
+## s/loctave/loctinterp/
+##
+## Revision 1.29  2002/05/02 11:03:46  geraint
+## Reinstated -liboctinterp and -lncurses; needed by xleftdiv.
+##
+## Revision 1.28  2002/05/01 12:21:29  geraint
+## No longer uses save_ascii_data_for_plotting function to write data
+## - eliminates dependence on liboctinterp (and libncurses) for .cc.
+##
+## Revision 1.27  2002/04/28 18:41:26  geraint
+## Fixed [ 549658 ] awk should be gawk.
+## Replaced calls to awk with call to gawk.
+##
+## Revision 1.26  2002/04/26 16:16:33  geraint
+## Removed unnecessary variables PLAT and GCCVERS.
+##
 ## Revision 1.25  2002/04/02 09:16:39  geraint
 ## Tidied up library search paths, now assumes that system libraries are set up correctly.
 ## For Debian, this means installing the following: blas-dev, fftw-dev, lapack-dev, libncurses5-dev, libkpathsea-dev, libreadline-dev
@@ -108,8 +144,8 @@
 #
 ###############################################################
 
-## When using csh, replace /home/peterg/Development/mttroot/mtt by the mtt base path, eg /usr/share/mtt/latest
-setenv MTT_BASE /home/peterg/Development/mttroot/mtt
+## When using csh, replace /usr/local/mtt/mttroot/mtt by the mtt base path, eg /usr/share/mtt/latest
+setenv MTT_BASE /usr/local/mtt/mttroot/mtt
 
   echo Setting paths with base $MTT_BASE
   # The following line sets up the make to use -- gmake is the standard 
@@ -130,7 +166,7 @@ setenv MTT_BASE /home/peterg/Development/mttroot/mtt
   setenv MTT_EXAMPLES $MTT_LIB/examples
   setenv MTT_REP $MTT_LIB/rep
   
-  setenv PATH $PATH\:$MTTPATH\:$MTTPATH/trans\:$MTT_CC
+  setenv PATH $PATH\:$MTTPATH\:$MTTPATH/trans\:$MTT_CC\:$MTT_REP
   
   #Setup octave
   setenv MATRIX_PATH $MTTPATH/trans/m//
@@ -176,27 +212,32 @@ setenv MTT_BASE /home/peterg/Development/mttroot/mtt
   
   # Oct file generation - use version with no optimisation.
   #setenv MKOCTFILE $MTT_LIB/octave/mkoctfile # This for no optimisation
-    setenv MKOCTFILE mkoctfile
+  setenv MKOCTFILE mkoctfile
 
-  # ode2odes.exe stuff
+  #########################################################################################
+  ##
+  ## Configure environment for standalone compilation of files linked with Octave libraries
+  ## (required for ode2odes.exe only)
 
-    # local system
+    # location of Octave directories on local system (usually /usr, /usr/local or /opt)
 
-set PLAT="i686-pc-linux-gnu"
-set PREFIX="/usr"
-set GCCVERS="2.95.2"
+set OCTAVEPREFIX="/usr"
 
-    # include paths
+    # include paths for Octave
 
-set IOCTAVE="-I${PREFIX}/include/octave/ -I${PREFIX}/include/octave/octave"
+set IOCTAVE="-I${OCTAVEPREFIX}/include/octave/ -I${OCTAVEPREFIX}/include/octave/octave"
 
-    # library paths
+    # library paths for Octave
 
-set OCTAVEVERS=`octave --version | awk '{ print $4 }'`
-set LOCTAVE="-L${PREFIX}/lib/octave-${OCTAVEVERS} -loctave -lcruft -loctinterp"
+set OCTAVEVERS=`octave --version | head -1 | gawk '{ print $4 }'`
+set OCTAVEMINOR=`echo ${OCTAVEVERS} | gawk -F\. '{print $2}'`
+    if [ "${OCTAVEMINOR}" = "0" ] ; then # stable
+	LOCTAVE="-L${OCTAVEPREFIX}/lib/octave-${OCTAVEVERS} -loctave -lcruft -loctinterp -Wl,--rpath,${OCTAVEPREFIX}/lib/octave-${OCTAVEVERS}"
+	LOCTAVE="-L${OCTAVEPREFIX}/lib/octave-${OCTAVEVERS} -loctave -lcruft -loctinterp -Wl,--rpath,${OCTAVEPREFIX}/lib/octave-${OCTAVEVERS} -loct-pathsearch -loct-readline"
+    fi
 set LSYSTEM="-ldl -lm -lncurses -lkpathsea -lreadline -lblas -llapack -lfftw -lg2c"
-
-    # compiler options
+    
+    # C++ compiler options
 
 set DEBUG="-g"
 set OPTIM="-O3"
@@ -207,5 +248,28 @@ set FLAGS="-fno-rtti -fno-exceptions -fno-implicit-templates"
     setenv MTT_CXX "g++"
     setenv MTT_CXXFLAGS "${DEBUG} ${OPTIM} ${FLAGS}"
     setenv MTT_CXXLIBS "${LOCTAVE} ${LSYSTEM}"
-    setenv MTT_CXXINCS "-I. ${IOCTAVE}"
+    setenv MTT_CXXINCS "-I. -I${MTT_LIB}/cc ${IOCTAVE}"
     setenv MTT_LDFLAGS " "
+
+  ## End of Octave environment configuration
+  ##
+  #########################################################################################
+
+  ############################################################  
+  ##
+  ## Configure environment for compilation of Matlab mex files
+    
+set MATLAB_ARCH="glnx86"
+set MATLAB_ROOT="/usr/local/matlab6p1"
+set MATLAB_FLAGS="-shared -fPIC -ansi -D_GNU_SOURCE -pthread"
+set MATLAB_INCS="-I${MATLAB_ROOT}/extern/include"
+set MATLAB_LIBS="-Wl,--rpath-link,${MATLAB_ROOT}/extern/lib/${MATLAB_ARCH},--rpath-link,${MATLAB_ROOT}/bin/${MATLAB_ARCH} -L${MATLAB_ROOT}/bin/${MATLAB_ARCH} -lmx -lmex -lm"
+
+    # exported variables
+
+    setenv MTT_MATLAB_FLAGS "${MATLAB_FLAGS} ${MATLAB_INCS} ${MATLAB_LIBS}"
+
+  ## End of Matlab environment configuration
+  ##
+  #############################################################
+

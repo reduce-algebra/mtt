@@ -1,0 +1,35 @@
+%SUMMARY OttoCycle: Ideal Otto cycle with ideal gas
+%DESCRIPTION Uses the CT2 two-port thermal capacitor.
+%% Label file for system OttoCycle (OttoCycle_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %% Revision 1.1  1997/12/07 20:38:05  peterg
+% %% Initial revision
+% %%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+
+% Component type CT2
+	gas	CT2	c_v;gamma;m;t_0
+
+% Component type INTF
+	entropy
+	volume
+
+% Component type SS
+	S		external	0
+	V		external	0
+	[Heat]		external	external
+	[Work]		external	external
+

@@ -5,6 +5,9 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.31  1998/07/02 14:30:50  peterg
+% %% Corrected various bugs - including resettting n_ports to correct value
+% %%
 % %% Revision 1.30  1998/07/02 13:40:50  peterg
 % %% Added extra ports names (due to defaults) to relevant lists:
 % %% 	port_name
@@ -202,7 +205,7 @@ for i = 1:n_components
   [index,n_comp_bonds] = getindex(comp_near_bond,i);
 
   if index(1,1)==0
-    mtt_info(sprintf("Component %s (%s) has no bonds", comp_name,
+    mtt_error(sprintf("Component %s (%s) has no bonds", comp_name,
     comp_type),fnum);
   end;
   
@@ -212,7 +215,7 @@ for i = 1:n_components
   
   % Check that all bonds are unique -- error if not
   if unique(bond_list)==0
-    mtt_info(sprintf("Component %s (%s) is at both ends of a bond", comp_name,
+    mtt_error(sprintf("Component %s (%s) is at both ends of a bond", comp_name,
     comp_type),fnum);
   end;
     
@@ -226,6 +229,7 @@ for i = 1:n_components
   # Unalias all the ports on this component - if not a junction
   unlabelled_ports = 0;  
   in_bonds = 0;
+  out_bonds = 0;
   if ((comp_type!="0")&&(comp_type!="1")) # Don't do junctions
     for j=1:n_comp_bonds
       signed_bond = signed_bond_list(j);
@@ -240,21 +244,27 @@ for i = 1:n_components
 	    in_bonds++;
 	    port_name_i = "in";
 	  else
+	    out_bonds++;
 	    port_name_i = "out";
 	  end;
 	elseif (unlabelled_ports==2)
 	  if port_direction>0
 	    if (++in_bonds>1)
-	      mtt_info(["More than one unlabelled in port on component " \
+	      mtt_error(["More than one unlabelled INport on component " \
 			comp_name " (" comp_type ")"],fnum);
 	    else
 	      port_name_i = "in";
 	    end
 	  else
-	    port_name_i = "out";
+	    if (++out_bonds>1)
+	      mtt_error(["More than one unlabelled OUTport on component " \
+			comp_name " (" comp_type ")"],fnum);
+	    else
+	      port_name_i = "out";
+	    end
 	  end;
 	else
-	  mtt_info(["More than two unlabelled ports on component " \
+	  mtt_error(["More than two unlabelled ports on component " \
 		    comp_name " (" comp_type ")"],fnum);
         end
 	mtt_info(["Defaulting port name [" port_name_i "]\t on component " \
@@ -358,10 +368,10 @@ for i=1:n_ports
       other_port_name = port_name(other_bond_index,:);
       [other_subport,n_other_subports] = split_port(other_port_name, ',');
       if n_other_subports~=n_subports
-	mtt_info(['Vector ports ', port_name_i, ' and ', other_port_name, 'are not compatible'],fnum);
+	mtt_error(['Vector ports ', port_name_i, ' and ', other_port_name, 'are not compatible'],fnum);
       end
     else 
-      mtt_info(['Vector port ', port_name_i, ' has no matching port'], fnum);
+      mtt_error(['Vector port ', port_name_i, ' has no matching port'], fnum);
     end;
     
     if other_bond_index>i %then its not been done yet
@@ -450,7 +460,7 @@ for i = 1:n_components
 	~(strcmp(comp_type,'zero')|strcmp(comp_type,'one'))
     message=sprintf('Component %s (%s) has %1.0f impinging bonds but has %1.0f ports', ...
 	comp_name,comp_type,n_comp_bonds,n_comp_ports);
-    mtt_info(message, fnum);
+    mtt_error(message, fnum);
   end;
   
   unsorted_port_list="";
@@ -480,7 +490,7 @@ for i = 1:n_components
     for kk=1:k 
       portnames=sprintf("%s %s",portnames, unsorted_port_list(kk,:));
     end;
-    mtt_info(portnames,fnum);
+    mtt_error(portnames,fnum);
   end;
   
   %Compute the number of labeled ports
@@ -492,7 +502,7 @@ for i = 1:n_components
   % One port defaults:
   if (n_comp_bonds==1)&(n_unsorted_ports==0)
     %if (direction(1)<0) & ~strcmp(comp_type,'SS') % Wrong way for default
-    % mtt_info(['One-port ', comp_name, ' (', comp_type, ') has the sign pointing the wrong way '], fnum);
+    % mtt_error(['One-port ', comp_name, ' (', comp_type, ') has the sign pointing the wrong way '], fnum);
     %end;
     unsorted_port_list = port_list;
   end;
@@ -500,7 +510,7 @@ for i = 1:n_components
   %Two port defaults
   if (n_comp_bonds==2)&(n_unsorted_ports==0)
     if direction(1)==direction(2) % Wrong way for default
-      % mtt_info(['Two-port ', comp_name, ' (', comp_type, ') does not have through-pointing arrows'], fnum);
+      % mtt_error(['Two-port ', comp_name, ' (', comp_type, ') does not have through-pointing arrows'], fnum);
     end;
     if direction(1)==1 %in
       % mtt_info([comp_name, ' in'],fnum);
@@ -525,7 +535,7 @@ for i = 1:n_components
   else %Order of ports is important
     unsorted_port_list, port_list
     if n_unsorted_ports==0
-      mtt_info(['Component ', comp_name, ' (', comp_type, ') has no labeled ports'], fnum); 
+      mtt_error(['Component ', comp_name, ' (', comp_type, ') has no labeled ports'], fnum); 
     end;
     %Write out the signed bond list in the correct order
 unsorted_port_list
@@ -535,17 +545,17 @@ for j = 1:n_comp_bonds
       k = name_in_list(name_k, port_list);
       % Check that it only appears once in port list
       if length(k)>1
-	mtt_info(['Component ', comp_name, ' (', comp_type, ') has ports with the same name:  ', name_k], fnum); 
+	mtt_error(['Component ', comp_name, ' (', comp_type, ') has ports with the same name:  ', name_k], fnum); 
       end;
       
       %Check that it only appears one in the label list
       kk = name_in_list(name_k,unsorted_port_list);
       if length(kk)>1
-	mtt_info(['Component ', comp_name, ' (', comp_type, ') has multiple port labels:  ', name_k], fnum); 
+	mtt_error(['Component ', comp_name, ' (', comp_type, ') has multiple port labels:  ', name_k], fnum); 
       end;
       
       if k==0
-	mtt_info(['Component ', comp_name, ' (', comp_type, ') has an unrecognised port: ', name_k], fnum); 
+	mtt_error(['Component ', comp_name, ' (', comp_type, ') has an unrecognised port: ', name_k], fnum); 
       else
 	components(i,k) = signed_bond_list(j);     
       end;

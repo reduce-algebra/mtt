@@ -1,16 +1,16 @@
 function structure =  SS_eqn(bond_number,bonds,direction,cr,args, ...
-                            structure,eqnfile);
+                            structure,filenum);
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/08/08 16:19:08  peter
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if nargin<7
-  eqnfile = 'stdout';
-end;
 
 % The string 'cr' contains the effort attributes;  
 % 'arg' contains the flow attributes. 
@@ -28,18 +28,18 @@ outputs = structure(4);
 if strcmp(effort_attribute, 'external')
   if bonds(1,1)==-1 % Source
     inputs = inputs+1;
-    fprintf(eqnfile, '%s := MTTu(%1.0f,1);\n', ...
+    fprintf(filenum, '%s := MTTu(%1.0f,1);\n', ...
         varname(bond_number,1),inputs);
   else % Sensor
     outputs = outputs+1;
-    fprintf(eqnfile, 'MTTy(%1.0f,1) := %s;\n', ...
+    fprintf(filenum, 'MTTy(%1.0f,1) := %s;\n', ...
         outputs, varname(bond_number,1));
   end;
 elseif strcmp(effort_attribute, 'internal')
   % Do nothing
 else % named constant
   if bonds(1,1)==-1 % Source
-    fprintf(eqnfile, '%s := %s;\n', ...
+    fprintf(filenum, '%s := %s;\n', ...
         varname(bond_number,1), effort_attribute);
   else % Sensor
   % THIS STILL NEEDS DOING!
@@ -51,17 +51,17 @@ end;
 if strcmp(flow_attribute, 'external')
   if bonds(1,2)==1 % Source
     inputs = inputs+1;
-    fprintf(eqnfile, '%s := MTTu(%1.0f,1);\n', varname(bond_number,-1),inputs);
+    fprintf(filenum, '%s := MTTu(%1.0f,1);\n', varname(bond_number,-1),inputs);
   else % Sensor
     outputs = outputs+1;
-    fprintf(eqnfile, 'MTTy(%1.0f,1) := %s;\n', outputs, ...
+    fprintf(filenum, 'MTTy(%1.0f,1) := %s;\n', outputs, ...
         varname(bond_number,-1));
   end;
 elseif strcmp(flow_attribute, 'internal')
   % Do nothing
 else % Named constant
   if bonds(1,2)==1 % Source
-    fprintf(eqnfile, '%s := %s;\n', ...
+    fprintf(filenum, '%s := %s;\n', ...
 	varname(bond_number,-1), flow_attribute);
   else % Sensor
   % THIS STILL NEEDS DOING!

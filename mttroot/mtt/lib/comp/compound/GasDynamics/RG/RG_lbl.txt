@@ -1,4 +1,4 @@
-%SUMMARY RG: R component for compressible gas dynamics
+%SUMMARY RG: R component for compressible gas dynamics: isentropic nozzle
 %DESCRIPTION Port [Thermal_in]: Temperature/Enthalpy pseudo bond
 %DESCRIPTION Port [Thermal_out]: Temperature/Enthalpy pseudo bond
 %DESCRIPTION Port [Mass_in]: Pressure/mass-flow pseudo bond
@@ -18,6 +18,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1997/11/21 19:18:28  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:
@@ -28,10 +31,10 @@
 
 
 % Component type RG
-	rg		IsentropicNozzle	$1;$2;$3
+	rg			RG		$1,$2,$3
 
 % Component type SS
-	[Mass_in]		external	external
-	[Mass_out]		external	external
-	[Thermal_in]		external	external
-	[Thermal_out]		external	external
+	[mass_in]		external	external
+	[mass_out]		external	external
+	[thermal_in]		external	external
+	[thermal_out]		external	external

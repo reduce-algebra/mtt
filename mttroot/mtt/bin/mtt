@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.117  1998/02/04 16:50:50  peterg
+## Introduced the tidy (-t and -T) options
+##
 ## Revision 1.116  1998/02/04 11:00:04  peterg
 ## Added view of subsystems.
 ##
@@ -422,8 +425,8 @@ switches=0
 #By default, don't print the environment variables
 print='';
 
-# By default, make it untidy
-tidy=untidy;
+# By default, make it tidy
+tidy=tidy;
 
 #Initialise list
 mtt_switches='';
@@ -448,7 +451,6 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 mtt_switches="$mtt_switches $1";
 		switches=1 ;;
 	-d )
-                mtt_switches="$mtt_switches $1";
 		directory=$2; cd $directory; shift ;;
 	-D )
                 mtt_switches="$mtt_switches $1";
@@ -490,24 +492,6 @@ mtt_check_vars $print
 if [ "$print" != "" ]; then
   exit
 fi
-
-# Tidy mode - operate in the directory MTT-work
-if [ "$tidy" = "tidy" ]; then
-   mkdir -p MTT_work
-   cp -u *_*.* MTT_work
-   cd MTT_work
-   mtt -u -q  $mtt_switches $1 $2 $3 $4
-   if [ "$3" != "view" ]; then
-     cp -f MTT_work/$1_$2.$3 .
-   fi
-
-   # Remove the MTT_work directory if very tidy
-   if [ "$verytidy" = "verytidy" ]; then
-    echo Removing all working files
-    rm -rf ../MTT_work
-  fi
-exit
-fi 
 
 if [ -z "$1" ]; then
   if [ -z "$print" ]; then
@@ -634,6 +618,17 @@ if [ "$2" = "clean" ] && [ "$3" = "" ]; then
   exit
 fi
 
+if [ "$2" = "rep" ]; then
+     documenttype=article
+      # See if we are making a book -- ie representation rep on a directory
+     isdirectory=`file $1 | awk '{print $2}' | grep directory`
+     if [ -n "$isdirectory" ]; then
+	documenttype=book
+     fi
+else
+     documenttype=section
+fi
+
 #SUMMARY abg	acausal bond graph (fig)
 #SUMMARY abg	acausal bond graph (ps)
 #SUMMARY abg	acausal bond graph (view)
@@ -736,6 +731,26 @@ if [ "$1" = "crcopy" ]; then
   exit
 fi
 
+# Tidy mode - operate in the directory MTT-work
+if [ "$tidy" = "tidy" ]; then
+   mkdir -p MTT_work
+   cp -u *_*.* MTT_work
+   cd MTT_work
+   mtt -u -q  $mtt_switches $1 $2 $3 $4
+   if [ "$3" != "view" ]; then
+     cp -f $1_$2.$3 ..
+   fi
+
+   # Remove the MTT_work directory if very tidy
+   if [ "$verytidy" = "verytidy" ]; then
+    echo Removing all working files
+    rm -rf ../MTT_work
+  fi
+exit
+fi 
+
+
+
 # Save up the argument list in a file; but only if argument has changed
 ARGS=$4; _ARGS=_$4
 
@@ -831,16 +846,7 @@ if [ "$3" = "vc" ]; then
 fi
 
 
-if [ "$2" = "rep" ]; then
-     documenttype=article
-      # See if we are making a book -- ie representation rep on a directory
-     isdirectory=`file $1 | awk '{print $2}' | grep directory`
-     if [ -n "$isdirectory" ]; then
-	documenttype=book
-     fi
-else
-     documenttype=section
-fi
+
 
 
 ################################
@@ -855,7 +861,7 @@ $MAKE -s  -f -  $1_$2.$3 << EOF
 # If level>0, try and get subsystem files
 ifneq ("$level","0")
 $1_abg.fig:
-	mtt -q compcopy $1 
+	mtt -q -u compcopy $1 
 endif
 
 
@@ -879,7 +885,7 @@ $1_cr.txt: $1_sub.sh
 	fi
 
 	sh $1_sub.sh "rm -f " '_cr.txt' # Remove the txt.cr files
-	sh $1_sub.sh "mtt -q -l $level+1 " ' cr txt' #Create new ones
+	sh $1_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' cr txt' #Create new ones
  
  
 	if [ "$level" = "0" ]; then \
@@ -903,7 +909,7 @@ $1_sympar.txt: $1_sub.sh
 	fi
  
 	sh $1_sub.sh "rm -f " '_sympar.txt' # Delete sympar files
-	sh $1_sub.sh "mtt -q -l $level+1 " ' sympar txt' # and recreate them
+	sh $1_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' sympar txt' # and recreate them
  
 	if [ "$level" = "0" ]; then \
 	  sort -u +1 +0 MTT_sympar.txt> $1_sympar.txt; \
@@ -920,7 +926,7 @@ $1_sympar.txt: $1_sub.sh $1_struc.txt
 	fi
  
 	sh $1_sub.sh "rm -f " '_sympar.txt' # Delete sympar files
-	sh $1_sub.sh "mtt -q -l $level+1 " ' sympar txt' # and recreate them
+	sh $1_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' sympar txt' # and recreate them
  
 	if [ "$level" = "0" ]; then \
 	  sort -u +1 +0 MTT_sympar.txt> $1_sympar.txt1; \
@@ -968,7 +974,9 @@ $1_simp.r:
 
 #SUMMARY numpar	numerical parameter declaration (txt) -- default
 $1_numpar.txt:
-	mtt -q $1 sympar txt; mtt -q $1 struc txt; sympar2numpar_txt2txt $1
+	mtt $mtt_switches -q -u $1 sympar txt; 
+	mtt $mtt_switches -q -u $1 struc txt;
+	sympar2numpar_txt2txt $1
 
 #SUMMARY numpar	numerical parameter declaration (m) 
 $1_numpar.m:  $1_numpar.txt $1_sympar.txt
@@ -981,11 +989,13 @@ $1_numpar.c:  $1_numpar.txt $1_sympar.c
 #SUMMARY input	numerical input declaration (txt) -- default
 ifeq ($switches,0)
 $1_input.txt: 
-	mtt $1 struc txt; struc2input_txt2txt $1
+	mtt $mtt_switches $1 struc txt; struc2input_txt2txt $1
 endif
 ifeq ($switches,1)
 $1_input.txt: 
-	mtt -q $1 struc txt; mtt -q $1 switch txt; struc2input_txt2txt -s $1
+	mtt $mtt_switches -q -u $1 struc txt; 
+	mtt $mtt_switches -q -u $1 switch txt; 	
+	struc2input_txt2txt -s $1
 endif
 #SUMMARY input	numerical input declaration (m) 
 $1_input.m:  $1_input.txt $1_sympar.txt
@@ -1102,7 +1112,7 @@ endif
 #SUMMARY abg	acausal bond graph (m)
 #Raw bond graph to acausal bond graph: mfile
 $1_abg.m: $1_rbg.m $1_sub.sh
-	sh $1_sub.sh "mtt -q -l $level+1 " ' abg m'
+	sh $1_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m'
 	rbg2abg_m $1
 
 

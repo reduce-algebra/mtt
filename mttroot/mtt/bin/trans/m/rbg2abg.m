@@ -5,6 +5,11 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.15  1997/08/06  21:43:19  peterg
+% %% Corrected error in creating component list: the kth component of the
+% %% list is given by the jth component of the original list NOT vice
+% %% versa.
+% %%
 % %% Revision 1.14  1997/08/04 14:18:55  peterg
 % %% If no ports labels at all, just use the default component list.
 % %%
@@ -201,7 +206,7 @@ for i = 1:n_components
 
     % One port defaults:
     if (n_comp_ports==1)&(n_unsorted_ports==0)
-      if direction(1)<0 % Wrong way for default
+      if (direction(1)<0) & ~strcmp(comp_type,'SS') % Wrong way for default
         mtt_info(['One-port ', comp_name, ' (', comp_type, ') has the sign pointing the wrong way '], infofile);
       end;
       unsorted_port_list = port_list;
@@ -226,7 +231,7 @@ for i = 1:n_components
     end;
     
     % Junctions or no lables(order of ports unimportant)
-    if (comp_type=='zero')|(comp_type=='one')
+    if strcmp(comp_type,'zero')|strcmp(comp_type,'one')
       for j = 1:n_comp_ports
         components(i,j) = signed_bond_list(j);
       end
@@ -256,8 +261,6 @@ for i = 1:n_components
           components(i,k) = signed_bond_list(j);     
         end;
       end;
-      disp(comp_name);
-      components(i,:),signed_bond_list
     end;
   end;
 end;

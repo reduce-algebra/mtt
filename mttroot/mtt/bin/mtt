@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.263  2000/09/15 07:33:35  peterg
+## Replace fig2dev language eps by ps to avoid version problem.
+##
 ## Revision 1.262  2000/09/14 17:16:33  peterg
 ## Fixes some outstanding bugs:
 ##   perpendicular strokes in cbg.fig
@@ -2723,8 +2726,8 @@ $1_$2.hview: $1_$2.html
 	$HTMLVIEW $1_$2/$1_$2.html&
 
 #View a ps file
-$Subsystem_$2.pview: $Subsystem_$2.ps
-	echo Creating view of $1_$2 - ps file
+$Subsystem_$2.pview: $1_$2.ps
+	echo Creating view of $Subsystem_$2 - ps file
 	mtt_multi $PSVIEW $Subsystem $2 ps $viewlevel  | sh 
 
 #View a gdat file

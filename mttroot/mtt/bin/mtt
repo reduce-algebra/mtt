@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.118  1998/02/05 12:00:11  peterg
+## Tidy mode now default.
+## It seems to work ok but not for book type documents.
+##
 ## Revision 1.117  1998/02/04 16:50:50  peterg
 ## Introduced the tidy (-t and -T) options
 ##
@@ -407,7 +411,7 @@
 ##
 ###############################################################
 
-#Check $MTTPATH has bee set
+#Check $MTTPATH has been set
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 # MTT recursion level is zero unless explicitly set
@@ -452,6 +456,8 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 		switches=1 ;;
 	-d )
 		directory=$2; cd $directory; shift ;;
+	-S )
+		directory=$2;  shift;;
 	-D )
                 mtt_switches="$mtt_switches $1";
 		debug=debug ;;
@@ -513,6 +519,9 @@ if [ -z "$1" ]; then
     echo '         -c  c-code generation'
     echo '         -o  ode and dae are the same'
     echo '         -s  use switch (ISW and CSW) components'
+    echo '         -d  <dir>  use directory <dir>'
+    echo '         -t  tidy mode (default)'
+    echo '         -u  untidy mode (leaves files in current dir)'
     echo '         -d  <dir>  use directory <dir>'
     echo '         -D  debug -- leave log files etc'
     exit
@@ -621,7 +630,13 @@ fi
 if [ "$2" = "rep" ]; then
      documenttype=article
       # See if we are making a book -- ie representation rep on a directory
-     isdirectory=`file $1 | awk '{print $2}' | grep directory`
+     isMTT_work=`pwd | grep 'MTT_work`
+      if [ -n "$isMTT_work" ]; then
+	dotdot='../'
+      fi  
+echo $dotdot$1
+  
+     isdirectory=`file $dotdot$1 | awk '{print $2}' | grep directory`
      if [ -n "$isdirectory" ]; then
 	documenttype=book
      fi
@@ -734,9 +749,10 @@ fi
 # Tidy mode - operate in the directory MTT-work
 if [ "$tidy" = "tidy" ]; then
    mkdir -p MTT_work
-   cp -u *_*.* MTT_work
+   cp -u -f *_*.* MTT_work
    cd MTT_work
-   mtt -u -q  $mtt_switches $1 $2 $3 $4
+   Directory=$directory/MTT_work
+     mtt -u -q  $mtt_switches -S $Directory  $1 $2 $3 $4
    if [ "$3" != "view" ]; then
      cp -f $1_$2.$3 ..
    fi
@@ -1071,7 +1087,7 @@ $1_sspar.r:
 
 ifeq ($documenttype,book)
 $1_rep.txt:
-	dir2rep $1;
+	dir2rep $1 $dotdot;
 else
 $1_rep.txt:
 	echo Creating $1_rep.txt;
@@ -1643,7 +1659,7 @@ EOF
 if [ "$debug" != "debug" ]; then
   rm -f *.log
 else
-  echo Debugging - log files retained in $directory/LOGFILES  
+  echo Debugging - log files retained in LOGFILES  
   mkdir -p LOGFILES
   mv -f *.log LOGFILES
 fi

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.62  2000/12/03 17:15:18  peterg
+## *** empty log message ***
+##
 ## Revision 1.61  2000/11/10 14:46:53  peterg
 ## More fixes to avoid interpering variables as funs - basicly all
 ## functions now have at least ()
@@ -364,6 +367,8 @@ Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
 	## echo "    mttMETHOD : IntegrationMethod;"
 	echo "    open_switches  : StateVector;"
 	echo "    numparfile, statefile, simparfile  : TEXT;"
+        strip_comments <${Sys}_switch.txt |\
+          awk '{printf("%s_logic : REAL;\n", tolower($1))}' 
 	echo ""
         mtt_txt2declare $Sys sympar p
         mtt_txt2declare $Sys struc p

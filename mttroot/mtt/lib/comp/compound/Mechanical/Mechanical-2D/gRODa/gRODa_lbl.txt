@@ -1,0 +1,92 @@
+%SUMMARY	gRODa: rigid rod in two dimensions - with gravity and angle port
+%DESCRIPTION	See Section 10.2 of "Metamodelling"
+%DESCRIPTION	Gravity term added at centre
+
+%ALIAS $1	l_a	# length from end a to mass centre
+%ALIAS $2	l_b	# length from end b to mass centre
+%ALIAS $3	j_m	# inertia about mass centre
+%ALIAS $4	m	# mass
+%ALIAS $5	g	# gravity
+
+%ALIAS in|Tip_a		xTip_a,angularTip_a,yTip_a 	
+%ALIAS out|Tip_b	xTip_b,angularTip_b,yTip_b 	
+
+%ALIAS in|Tip_a		xTip_a,angularTip_a,yTip_a 	
+%ALIAS out|Tip_b	xTip_b,angularTip_b,yTip_b 	
+
+%ALIAS x_a		xTip_a # Force/velocity at tip a in x direction
+%ALIAS y_a		yTip_a # Force/velocity at tip a in y direction
+%ALIAS alpha_a|a_a	angularTip_a # Torque/angular velocity at tip a
+
+%ALIAS x_b		xTip_b # Force/velocity at tip b in x direction
+%ALIAS y_b		yTip_b # Force/velocity at tip b in y direction
+%ALIAS alpha_b|a_b	angularTip_b # Torque/angular velocity at tip b
+
+%ALIAS angle|a		angle	# Angle port
+
+%ALIAS INTF	General/INTF # The flow integration component.
+
+%% Label file for system gRODa (gRODa_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %% Revision 1.3  1998/11/30 10:47:53  peterg
+% %% Added extra a_a and a_b aliases
+% %%
+% %% Revision 1.2  1998/11/25 13:55:42  peterg
+% %% Added missig attribute field m*g,internal
+% %%
+% %% Revision 1.1  1998/11/25 10:48:34  peterg
+% %% Initial revision
+% %%
+% %% Revision 1.5  1998/07/27 12:27:27  peterg
+% %% Added vector port aliases
+% %%
+% %% Revision 1.4  1998/07/27 10:51:20  peterg
+% %% Aliased INTF as well.
+% %%
+% %% Revision 1.3  1998/07/27 10:49:10  peterg
+% %% Major revision to include aliases etc
+% %%
+% %% Revision 1.2  1997/08/15  09:43:06  peterg
+% %% Now has lablelled (as opposed to numbered) ports.
+% %%
+% Revision 1.1  1996/11/07  10:57:17  peterg
+% Initial revision
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+%Inertias
+J	lin	flow,j_m
+m_x	lin	flow,m
+m_y	lin	flow,m
+
+%Integrate angular velocity to get angle
+th
+
+%Modulated transformers
+s1	lsin	flow,l_a
+s2	lsin	flow,l_b
+c1	lcos	flow,l_a
+c2	lcos	flow,l_b
+
+% Component type SS
+	mg			SS		m*g,internal
+	[angularTip_a]		SS		external,external
+	[angularTip_b]		SS		external,external
+	[xTip_a]		SS		external,external
+	[xTip_b]		SS		external,external
+	[yTip_a]		SS		external,external
+	[yTip_b]		SS		external,external
+	[angle]			SS		external,external
+
+
+	

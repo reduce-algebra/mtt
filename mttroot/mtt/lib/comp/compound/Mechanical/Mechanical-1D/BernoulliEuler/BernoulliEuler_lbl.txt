@@ -1,0 +1,43 @@
+%% Label file for system BernoulliEuler (BernoulliEuler_lbl.txt)
+%SUMMARY BernoulliEuler
+%DESCRIPTION <Detailed description here>
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS	in	y_in,theta_in
+%ALIAS	out	y_out,theta_out
+
+% Argument aliases
+%ALIAS	$1	dk
+%ALIAS	$2	dm
+%ALIAS	$3	dz
+%ALIAS	$4	dr_y
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+% Component type I
+	dm		lin	flow,dm
+
+% Component type C
+	dk		lin	state,dk
+
+% Component type SS
+	[y_in]	SS			external,external
+	[y_out]	SS			external,external
+	[theta_in]	SS		external,external
+	[theta_out]	SS		external,external
+
+% Component type TF
+	dz		lin	effort,dz

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1997/05/15 09:44:12  peterg
+## Put switches into the input file.
+##
 # Revision 1.1  1997/05/03  14:55:17  peterg
 # Initial revision
 #
@@ -43,7 +46,8 @@ cat $MTTPATH/trans/rcs_header.txt  >> $1_input.txt
 
 #Write out the defaults -- inputs
   echo "# Set the inputs"  >> $1_input.txt
-awk '{i++; if($1=="input") print  "u(" i ") =\t1.0; \# " $3 " (Default value)"}' $1_struc.txt >> $1_input.txt
+awk '{i++; if($1=="input") print  "u(" i ") =\t1.0; \# Input for system " $4 " (Component " $3 ")"
+}' $1_struc.txt >> $1_input.txt
 
 
 #Set some switches

@@ -22,6 +22,10 @@ global local_y_index
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.14  1997/08/26 07:51:10  peterg
+% %% Now counts the local input and outputs by order of appearence rather
+% %% than by port number - it therfore handles ports with bicausality correctely.
+% %%
 % %% Revision 1.13  1997/05/19 16:45:56  peterg
 % %% Fixed ISW bug -- deleted spurious ISW_eqn.m file
 % %%
@@ -70,11 +74,12 @@ pc = '%';
 
 % Set up the names corresponding to the structure matrix.
 structure_name = [
-  'state       ',
-  'nonstate    ',
-  'input       ',
-  'output      ',
-  'zero_output '];
+  'state        ',
+  'nonstate     ',
+  'input        ',
+  'output       ',
+  'zero_output  ',
+  'unknown_input'];
 
 	
 % Are we at the top level of the heirarchy?

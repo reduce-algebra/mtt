@@ -17,6 +17,13 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.399  2004/08/29 16:09:49  geraint
+## Added option -no-reduce
+##
+## Code sorting can now be used with Reduce (via sese.r) so that existing CRs
+## work with sorted code (using -make-sort or -sort), or without by using
+## -no-reduce; this option implies -make-sort.
+##
 ## Revision 1.398  2004/08/29 14:39:23  geraint
 ## Added rule to create dae from sorted equations (sese) if sorting is requested.
 ##
@@ -3013,23 +3020,31 @@ ${sys}_sae.m: ${sys}_def.r ${sys}_sae.r ${sys}_sympar.txt
 	echo Creating \$@
 	mtt_r2m ${sys} sae m
 
-${sys}_sese.r: ${sys}_sese.make
+${sys}_sese.r: ${sys}_sese.make ${sys}_cr.txt perl_crs.stamp
 	echo Creating \$@
-	make -f \$< all > \$@
-	echo ";end;" >> \$@
-${sys}_sesx.r: ${sys}_sese.make
+	make -f \$< all |\
+	apply_crs ${sys} > \$@
+${sys}_sesx.r: ${sys}_sese.make ${sys}_cr.txt perl_crs.stamp
 	echo Creating \$@
-	make -f \$< MTTdX > \$@
-${sys}_sesy.r: ${sys}_sese.make
+	make -f \$< MTTdX |\
+	apply_crs ${sys} > \$@
+${sys}_sesy.r: ${sys}_sese.make ${sys}_cr.txt perl_crs.stamp
 	echo Creating \$@
-	make -f \$< MTTy > \$@
-${sys}_sae.r: ${sys}_sese.make
+	make -f \$< MTTy |\
+	apply_crs ${sys} > \$@
+${sys}_sae.r: ${sys}_sese.make ${sys}_cr.txt perl_crs.stamp
 	echo Creating \$@
-	make -f \$< MTTyz > \$@
+	make -f \$< MTTyz |\
+	apply_crs ${sys} > \$@
 
 ${sys}_sese.make: ${sys}_ese.r
 	echo Creating \$@
 	ese_r2make.pl --sys=${sys} --outfile=\$@ --$debug
+
+perl_crs.stamp:
+	echo Copying CRs from ${MTT_LIB}/cr/perl
+	cp ${MTT_LIB}/cr/perl/*.pm .
+	touch \$@
 endif
 
 $1_def.r: $1_ese.r

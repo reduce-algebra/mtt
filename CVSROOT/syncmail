@@ -276,6 +276,7 @@ def main():
 
     if verbose:
         print 'Generating notification message...'
+	print 'Debug statement: in mtt/CVSROOT/syncmail'
     blast_mail(subject, people, specs[1:], contextlines)
     if verbose:
         print 'Generating notification message... done.'

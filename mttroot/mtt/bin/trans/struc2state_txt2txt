@@ -15,6 +15,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.8  1998/08/10 13:57:33  peterg
+# %% Removed debugging lines
+# %%
 # %% Revision 1.7  1998/08/10 13:55:11  peterg
 # %% Added option of computing from ss values
 # %%
@@ -39,9 +42,17 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+while [ -n "`echo $1 | grep '-'`" ]; do
+  case $1 in
+	-ss )
+		steadystate_computation=yes ;;
+	*)
+		echo "$1 is an invalid argument - ignoring" ;;
+  esac
+  shift
+done
 
-# Switches
-steadystate_computation="$2"
+
 
 #Create the state file complete with headers.
 echo '# -*-octave-*- Put Emacs into octave-mode' > $1_state.txt

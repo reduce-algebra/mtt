@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.15  1998/04/07 08:44:11  peterg
+## zapped eta - it messes up theta
+##
 ## Revision 1.14  1998/02/25 22:12:07  peterg
 ## Added , to regexp for subscripts
 ##
@@ -91,6 +94,7 @@ sed \
     -e "s/mttk/K/g" \
     -e "s/mttl/L/g" \
     -e "s/mttm/M/g" \
+    -e "s/mtttheta/\\\Theta/g" \
     -e "s/mtto/O/g" \
     -e "s/mttv/V/g" \
     -e "s/mtty0/y_0/g" \
@@ -117,6 +121,7 @@ sed \
     -e "s/gamma/\\\gamma/g" \
     -e "s/delta/\\\delta/g" \
     -e "s/epsilon/\\\epsilon/g" \
+    -e "s/kappa/\\\kappa/g" \
     -e "s/lambd/\\lambda/g" \
     -e "s/lambda/\\\lambda/g" \
     -e "s/mu/\\\mu/g" \

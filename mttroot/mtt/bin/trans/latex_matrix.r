@@ -11,6 +11,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% $Id$
 %% $Log$
+%% Revision 1.5  2000/08/09 10:41:39  peterg
+%% Changed criterion form 3 to 5
+%%
 %% Revision 1.4  1998/11/10 14:15:36  peterg
 %% Now does matrix style for m<3
 %%
@@ -28,7 +31,7 @@
 
 PROCEDURE Latex_Matrix;
 BEGIN
-IF MTT_Matrix_m<5 THEN %% Do matrix style version
+IF MTT_Matrix_m<6 THEN %% Do matrix style version
 BEGIN
   IF MTT_Matrix_n>0 THEN
     IF MTT_Matrix_m>0 THEN

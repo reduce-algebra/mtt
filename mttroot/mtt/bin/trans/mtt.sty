@@ -12,6 +12,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.7  2000/11/28 18:28:29  peterg
+% %% Removed fancy box - messes up TOC
+% %%
 % %% Revision 1.6  2000/11/28 18:09:06  peterg
 % %% Tidied up:
 % %% added hyperef
@@ -68,11 +71,3 @@
 
 % Page refs as well.
 \newcommand{\Ref}[1]{\ref{#1} (on page \pageref{#1})}
-
-% Hyper stuff
-\usepackage[implicit=true,
-            bookmarks=true,
-            pdfauthor={MTT},
-            pdftitle={MTT report},
-            pdfsubject={MTT},
-            pdfkeywords={MTT, bond graphs}]{hyperref}

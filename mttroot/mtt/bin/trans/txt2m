@@ -15,6 +15,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.14  1999/02/16 04:38:22  peterg
+# %% Now forces creation of _smx file if METHOD=IMPLICIT in simpar.txt
+# %%
 # %% Revision 1.13  1998/08/31 11:43:37  peterg
 # %% Now lower cases globals in numpar files
 # %%
@@ -80,6 +83,11 @@ if [ "$representation" = "simpar" ]; then
     implicit=`grep -i METHOD $1_simpar.txt | grep -i -c IMPLICIT`
     if [ "$implicit" = "1"  ]; then
 	mtt -q $1 smx m
+    else
+echo Creating dummy $1_smx.m
+cat<<EOF > $1_smx.m
+%% No code as implicit method not used here %%
+EOF
     fi
 fi
 

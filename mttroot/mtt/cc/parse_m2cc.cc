@@ -1,5 +1,8 @@
 /* $Id$
  * $Log$
+ * Revision 1.3  2001/07/13 04:54:04  geraint
+ * Branch merge: numerical-algebraic-solution back to main.
+ *
  * Revision 1.2.2.1  2001/06/30 03:26:17  geraint
  * gcc-3.0 compatibility.
  *
@@ -304,6 +307,7 @@ int main (void)
 	    }
 	  buf = "";
 	  break;
+	case ';':
 	case '\n':
 	  if (keyword [buf])
 	    {
@@ -327,6 +331,31 @@ int main (void)
 	    }
 	  buf = "";
 	  break;
+	case '#':
+	  if (keyword [buf])
+	    {
+	      /*
+	       * keyword found, call function
+	       */
+	      keyword [buf] ();
+	    }
+	  else
+	    {
+	      cout << buf
+		/*
+		 * keep newline in case this line has an EOL-comment
+		 */
+		   << endl
+		/*
+		 * EOL is end-of-statement in Octave, add ;
+		 */
+		   << indent () << ';' << endl
+		   << indent ();
+	    }
+	  keyword ["#"] ();
+	  buf = "";
+	  break;
+
 	case '\\':
 	  cin >> c;
 	  if ('\n' == c)

@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.315  2001/07/13 04:54:04  geraint
+## Branch merge: numerical-algebraic-solution back to main.
+##
 ## Revision 1.314  2001/07/13 04:19:03  gawthrop
 ## Now loads _subs.r with _cr.r file when using -cr option
 ##
@@ -1120,6 +1123,7 @@ tidy=tidy;
 
 # Default not verbose
 verbose=' -s'
+verbosity=0
 
 # Default integration method
 integration_method=implicit;
@@ -1239,7 +1243,11 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 mtt_switches="$mtt_switches $1";
 		info_switch='-I';
                 Verbose='verbose';
-		verbose=' -w ' ;;
+		verbosity=`expr $verbosity + 1`;
+		if [ $verbosity -ge 1 ]; then verbose=' -w '; fi;
+		if [ $verbosity -ge 2 ]; then set -x; fi;
+		if [ $verbosity -ge 3 ]; then verbose_make=' -d '; fi;
+		;;
 	-I )
                 mtt_switches="$mtt_switches $1";
 		info_switch='-I' ;;
@@ -1370,7 +1378,7 @@ if [ -z "$1" ]; then
     echo '         -sub <subsystem> operate on this subsystem'
     echo '         -t  tidy mode (default)'
     echo '         -u  untidy mode (leaves files in current dir)'
-    echo '         -v  verbose mode'
+    echo '         -v  verbose mode (multiple uses of -v increase the verbosity level)'
     echo '         -viewlevel <N> View N levels of hierachy'
     echo '         --version print version and exit'
     echo '         --versions print version of mtt and components and exit'
@@ -1971,7 +1979,7 @@ esac
 
 
 #echo Target is $target, Subsystem is $Subsystem, options are $mtt_switches
-$MAKE -S $verbose  -f  -  $target << EOF
+$MAKE -S $verbose $verbose_make -f  -  $target << EOF
 
 # Cancel implicit rules I don't want
 %.dvi: %.tex

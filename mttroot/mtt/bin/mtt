@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.378  2003/08/04 09:15:09  gawthrop
+## -ss switch reinstated
+##
 ## Revision 1.377  2003/06/11 15:48:02  gawthrop
 ## Copies (aliased) subsystems first.
 ## Include switches in .ps file names.
@@ -1406,6 +1409,7 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 mtt_switches="$mtt_switches $1";
 		print='-p';;
 	-c )
+	        echo "-c is obsolete. Please use -cc instead"
                 fixcc='-fixcc'
                 mtt_switches="$mtt_switches $1";
                 matrix_smxa="-matrix";

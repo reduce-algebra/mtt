@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1999/08/26 01:34:59  peterg
+% %% Summary line added
+% %%
 % %% Revision 1.2  1999/08/26 01:22:25  peterg
 % %% New alias $1 flow,k
 % %%
@@ -33,7 +36,7 @@
 % ---- Component labels ----
 
 % Component type AE
-	ae		lin		effort,k_s
+	ae		lin		effort,-k_s
 
 % Component type AF
 	af		lin		flow,k_s

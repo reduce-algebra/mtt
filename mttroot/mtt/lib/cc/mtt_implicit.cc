@@ -1,6 +1,12 @@
 #include <octave/oct.h>
 #include <octave/xdiv.h>
 
+#ifdef	OCTAVE_DEV
+#define VECTOR_VALUE column_vector_value
+#else // !OCTAVE_DEV
+#define	VECTOR_VALUE vector_value
+#endif // OCTAVE_DEV
+
 #ifdef STANDALONE
 ColumnVector Fmtt_implicit (      ColumnVector	&x,
 				  ColumnVector	&dx,
@@ -14,23 +20,13 @@ ColumnVector Fmtt_implicit (      ColumnVector	&x,
 DEFUN_DLD (mtt_implicit, args, ,
 	   "implicit integration method")
 {
-#ifdef OCTAVE_DEV
-  ColumnVector  	x	= args(0).column_vector_value ();
-  ColumnVector		dx	= args(1).column_vector_value ();
+  ColumnVector  	x	= args(0).VECTOR_VALUE ();
+  ColumnVector		dx	= args(1).VECTOR_VALUE ();
   Matrix		AA	= args(2).matrix_value ();
-  ColumnVector		AAx	= args(3).column_vector_value ();
+  ColumnVector		AAx	= args(3).VECTOR_VALUE ();
   const  double		t	= args(4).double_value ();
   const  int		Nx	= (int) (args(5).double_value ());
-  const  ColumnVector	openx	= args(6).column_vector_value ();
-#else // !OCTAVE_DEV
-  ColumnVector		x	= args(0).vector_value ();
-  ColumnVector		dx	= args(1).vector_value ();
-  Matrix		AA	= args(2).matrix_value ();
-  ColumnVector		AAx	= args(3).vector_value ();
-  const  double		t	= args(4).double_value ();
-  const  int		Nx	= (int) (args(5).double_value ());
-  const  ColumnVector	openx	= args(6).vector_value ();
-#endif // OCTAVE_DEV
+  const  ColumnVector	openx	= args(6).VECTOR_VALUE ();
 #endif // STANDALONE
 
   register int row, col;

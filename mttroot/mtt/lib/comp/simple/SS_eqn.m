@@ -31,6 +31,9 @@ global at_top_level
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.25  2003/01/07 18:09:21  geraint
+% %% More informative error message.
+% %%
 % %% Revision 1.24  1999/10/22 02:20:32  peterg
 % %% Changed error handleing of number of attributes >2
 % %%
@@ -211,7 +214,7 @@ for i=1:n_bonds			# Loop over all the bonds
       else % Sensor
 	if strcmp(effort_attribute, "zero") %Zero output
 	  zero_outputs = zero_outputs + 1;
-	  fprintf(filenum, "MTTyz%d := %s;\n", ...
+	  fprintf(filenum, "MTTyz(%d,1) := %s;\n", ...
 		  zero_outputs, varname(sname, bond_number,1));
 	else
 	  mtt_error([effort_attribute, " not appropriate for an output (", name, ")"]);
@@ -242,7 +245,7 @@ for i=1:n_bonds			# Loop over all the bonds
       else % Sensor
 	if strcmp(flow_attribute, "zero") %Zero output
 	  zero_outputs = zero_outputs + 1
-	  fprintf(filenum, "MTTyz%d := %s;\n", ...
+	  fprintf(filenum, "MTTyz(%d,1) := %s;\n", ...
 		  zero_outputs, varname(sname, bond_number,-1));
 	else
 	  mtt_error([flow_attribute, " not appropriate for an output (", name, ")"]);

@@ -18,10 +18,19 @@ function [bonds,status] = TF_cause(bonds);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/11/01 12:05:54  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 % Copyright (c) P.J. Gawthrop, 1996.
+
+% Check that there are exactly two bonds.
+if check_bonds(bonds,2,'TF')==0
+  return
+end
+
 
 %Causality of TF is same as that of a junction
 [bonds,status] = zero_cause(bonds);

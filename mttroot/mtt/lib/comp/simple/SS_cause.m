@@ -18,10 +18,18 @@ function [bonds,status] = SS_cause(bonds)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/11/01 12:18:38  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 % Copyright (c) P.J. Gawthrop, 1996.
+
+% Check that there is exactly one bonds.
+if check_bonds(bonds,1,'SS')==0
+  return
+end
 
 if (bonds(1)==0)|(bonds(2)==0) % Under causal
   status = -1;

@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.14  2000/11/27 11:51:43  peterg
+## Added zero matrices in matlab code
+##
 ## Revision 1.13  2000/11/09 17:19:52  peterg
 ## Geraint's pow() mods
 ##
@@ -75,7 +78,7 @@ Nxx=`mtt_getsize $system xx` # States x States
 Nu=`mtt_getsize $system u` # Inputs 
 Ny=`mtt_getsize $system y` # Outputs 
 Nyz=`mtt_getsize $system yz` # Zero outputs
-Npar=`wc -l $system\_sympar.txt | awk '{print $1}'`
+##Npar=`wc -l $system\_sympar.txt | awk '{print $1}'`
 
 # Representation-specific stuff
 

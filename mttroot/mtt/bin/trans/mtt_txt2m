@@ -15,6 +15,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.2  2000/05/11 12:16:46  peterg
+# %% New version of simpar - with record
+# %%
 # %% Revision 1.1  2000/05/11 10:55:57  peterg
 # %% Initial revision
 # %%
@@ -129,8 +132,9 @@ doublequote = "\042";
     LHS = a[1];
     RHS = a[2];
     gsub(quote, doublequote, RHS);
-    sub(/^[ 	]*LAST/, "MTTsimpar.LAST", LHS);
+    sub(/^[ 	]*FIRST/, "MTTsimpar.FIRST", LHS);
     sub(/^[ 	]*DT/, "MTTsimpar.DT", LHS);
+    sub(/^[ 	]*LAST/, "MTTsimpar.LAST", LHS);
     sub(/^[ 	]*STEPFACTOR/, "MTTsimpar.STEPFACTOR", LHS);
     sub(/^[ 	]*METHOD/, "MTTsimpar.METHOD", LHS);
     sub(/^[ 	]*WMIN/, "MTTsimpar.WMIN", LHS);

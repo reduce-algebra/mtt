@@ -14,6 +14,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1996/08/30 14:36:46  peter
+## Added some more subscripts.
+## -- its high time this was rewritten in awk or perl!!!
+##
 ## Revision 1.2  1996/08/19 14:35:51  peter
 ## Prettyfied z dot.
 ##
@@ -53,24 +57,15 @@ sed -e "s/\// \\\over /g" \
     -e "s/mttx10/x_{10}/g" \
     -e "s/mttx11/x_{11}/g" \
     -e "s/mttx12/x_{12}/g" \
-    -e "s/mttui0/v_0/g" \
-    -e "s/mttui1/v_1/g" \
-    -e "s/mttui2/v_2/g" \
-    -e "s/mttui3/v_3/g" \
-    -e "s/mttui4/v_4/g" \
-    -e "s/mttui5/v_5/g" \
-    -e "s/mttui6/v_6/g" \
-    -e "s/mttui7/v_7/g" \
-    -e "s/mttui8/v_8/g" \
-    -e "s/mttui9/v_9/g" \
+    -e "s/mttui\([0-9]*\)/v_{\1}/g" \
     -e "s/mttu/u_/g" \
     -e "s/mtty0/y_0/g" \
     -e "s/mttu0/u_0/g" \
     -e "s/mttx/x/g" \
     -e "s/mttz/z/g" \
-    -e "s/mttu/u/g" \
+    -e "s/[0-9a-z_]*mttu/u/g" \
     -e "s/mttyy/Y/g" \
-    -e "s/mtty/y/g" \
+    -e "s/[0-9a-z_]*mtty/y/g" \
     -e "s/mttw/w/g" \
     -e "s/mtttf/G/g" \
     -e "s/mttpar//g" \
@@ -105,4 +100,6 @@ tr  -s '\012' '\012' \
 >junk
 
 mv junk $1
+
+
 

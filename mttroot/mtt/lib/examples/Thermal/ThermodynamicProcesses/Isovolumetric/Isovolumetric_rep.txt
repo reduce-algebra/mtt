@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  2000/12/28 18:17:57  peterg
+% %% To RCS
+% %%
 % %% Revision 1.1  1999/02/21 02:21:03  peterg
 % %% Initial revision
 % %%
@@ -18,12 +21,12 @@ mtt -o -ss Isovolumetric ss tex
 mtt -o -ss Isovolumetric numpar txt
 mtt -o -ss Isovolumetric input txt
 
-mtt -o -ss -c Isovolumetric odeso ps 'Isovolumetric_cycle_V'
-mtt -o -ss -c Isovolumetric odeso ps 'Isovolumetric_cycle_P'
-mtt -o -ss -c Isovolumetric odeso ps 'Isovolumetric_cycle_S'
-mtt -o -ss -c Isovolumetric odeso ps 'Isovolumetric_cycle_T'
-mtt -o -ss -c Isovolumetric odeso ps 'Isovolumetric_cycle_V:Isovolumetric_cycle_P'
-mtt -o -ss -c Isovolumetric odeso ps 'Isovolumetric_cycle_S:Isovolumetric_cycle_T'
+mtt -o -ss Isovolumetric odeso ps 'Isovolumetric__cycle__V'
+mtt -o -ss Isovolumetric odeso ps 'Isovolumetric__cycle__P'
+mtt -o -ss Isovolumetric odeso ps 'Isovolumetric__cycle__S'
+mtt -o -ss Isovolumetric odeso ps 'Isovolumetric__cycle__T'
+mtt -o -ss Isovolumetric odeso ps 'Isovolumetric__cycle__V:Isovolumetric__cycle__P'
+mtt -o -ss Isovolumetric odeso ps 'Isovolumetric__cycle__S:Isovolumetric__cycle__T'
 
 
 

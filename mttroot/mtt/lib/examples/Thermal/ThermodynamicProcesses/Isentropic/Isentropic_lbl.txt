@@ -1,34 +1,40 @@
-%SUMMARY Isentropic: Isentropic thermodynamic process - ideal gas
-%DESCRIPTION A dynamic simulation of an isentropic process using
-%DESCRIPTION the Cycle component and the two-prt CU component.
+#SUMMARY Isentropic: Isentropic thermodynamic process - ideal gas
+#DESCRIPTION A dynamic simulation of an isentropic process using
+#DESCRIPTION the Cycle component and the two-prt CU component.
 
-%VAR P_0
-%VAR T_0
-%VAR V_0
+#PAR P_0
+#PAR T_0
+#PAR V_0
 
-
-%% Label file for system Isentropic (Isentropic_lbl.txt)
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %% Version control history
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %% $Id$
-% %% $Log$
-% %% Revision 1.1  1998/07/21 14:27:44  peterg
-% %% Initial revision
-% %%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%% Each line should be of one of the following forms:
-%	a comment (ie starting with %)
-%	Component-name	CR_name	arg1,arg2,..argn
-%	blank
+#NOTPAR ideal_gas
 
 
 
-% Component type Cycle
+## Label file for system Isentropic (Isentropic_lbl.txt)
+
+# ###############################################################
+# ## Version control history
+# ###############################################################
+# ## $Id$
+# ## $Log$
+# ## Revision 1.2  2000/12/28 18:16:47  peterg
+# ## To RCS
+# ##
+# ## Revision 1.1  1998/07/21 14:27:44  peterg
+# ## Initial revision
+# ##
+# ###############################################################
+
+## Each line should be of one of the following forms:
+#	a comment (ie starting with #)
+#	Component-name	CR_name	arg1,arg2,..argn
+#	blank
+
+
+
+# Component type Cycle
 	cycle	none	ideal_gas;c_v;gamma_g;m_g	
 
-% Component type SS
+# Component type SS
 	Heat	SS	internal,0
 	Work	SS	internal,external

@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2000/12/28 18:11:47  peterg
+% %% To RCS
+% %%
 % %% Revision 1.1  1999/02/21 02:13:25  peterg
 % %% Initial revision
 % %%
@@ -19,5 +22,5 @@ mtt  ShowerHeater ode tex
 mtt  ShowerHeater numpar txt
 mtt  ShowerHeater input txt
 
-mtt -c  ShowerHeater odeso ps 
+mtt  ShowerHeater odeso ps 
 

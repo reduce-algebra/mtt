@@ -6,11 +6,12 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/12/28 18:11:47  peterg
+## To RCS
+##
 ###############################################################
 
 # Set the inputs
-mttu(1) = 1e-4*(t>30);		# Inflow
-mttu(2) = 280;			# In temperature
-mttu(3) = 240*((t<60)&&(t>1));	# Input voltage
-
-# Set the switches
+showerheater__in__hy_in	= 1e-4*(t>30); # Inflow
+showerheater__in__th_in	=  280; # In temperature
+showerheater__v_in__u	= 240*((t<60)&&(t>1)); # Input voltage

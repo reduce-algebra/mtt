@@ -6,10 +6,11 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  2000/12/28 18:16:47  peterg
+# %% To RCS
+# %%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # Set the inputs
-  u(1) = -0.8;     # Volume rate-of-change
-
-
-
+## Removed by MTT on Wed Aug  6 10:14:17 BST 2003:   u(1) = -0.8;     # Volume rate-of-change
+isentropic__work	= -0.8;     # Volume rate-of-change

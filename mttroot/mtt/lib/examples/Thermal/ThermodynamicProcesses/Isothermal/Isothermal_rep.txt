@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  2000/12/28 18:17:37  peterg
+% %% To RCS
+% %%
 % %% Revision 1.1  1999/02/21 02:20:18  peterg
 % %% Initial revision
 % %%
@@ -18,12 +21,12 @@ mtt -ss Isothermal ss tex
 mtt -ss Isothermal numpar txt
 mtt -ss Isothermal input txt
 
-mtt -ss -c Isothermal odeso ps 'Isothermal_cycle_V'
-mtt -ss -c Isothermal odeso ps 'Isothermal_cycle_P'
-mtt -ss -c Isothermal odeso ps 'Isothermal_cycle_S'
-mtt -ss -c Isothermal odeso ps 'Isothermal_cycle_T'
-mtt -ss -c Isothermal odeso ps 'Isothermal_cycle_V:Isothermal_cycle_P'
-mtt -ss -c Isothermal odeso ps 'Isothermal_cycle_S:Isothermal_cycle_T'
+mtt -ss Isothermal odeso ps 'Isothermal__cycle__V'
+mtt -ss Isothermal odeso ps 'Isothermal__cycle__P'
+mtt -ss Isothermal odeso ps 'Isothermal__cycle__S'
+mtt -ss Isothermal odeso ps 'Isothermal__cycle__T'
+mtt -ss Isothermal odeso ps 'Isothermal__cycle__V:Isothermal__cycle__P'
+mtt -ss Isothermal odeso ps 'Isothermal__cycle__S:Isothermal__cycle__T'
 
 
 

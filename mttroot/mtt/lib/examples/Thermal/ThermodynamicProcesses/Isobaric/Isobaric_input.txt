@@ -6,10 +6,11 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  2000/12/28 18:17:13  peterg
+# %% To RCS
+# %%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # Set the inputs
-  u(1) = 1000;     #Entropy flow 
-
-
-
+## Removed by MTT on Wed Aug  6 11:41:46 BST 2003:   u(1) = 1000;     #Entropy flow 
+isobaric__heat	= 1000;     #Entropy flow 

@@ -6,39 +6,37 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  2000/12/28 18:15:21  peterg
+# %% To RCS
+# %%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 # Set the inputs
 
 if ((t>=0.0)&&(t<1.0))		#Compression
-  u(1) = 0.0;			# Entropy flow
+  dieselcycle__heat = 0.0;	# Entropy flow
   r = 1e10;			# Big R to make a flow source 
-  u(2) = 0.8*r;			#- Volume rate-of-change
+  dieselcycle__work = 0.8*r;	#- Volume rate-of-change
   TopPressure = (gamma_g-1)*(x(1)/x(2))
 endif;
 
 if ((t>=1.0)&&(t<2.0))		#Heating
-  u(1) = 1000;			# Entropy flow
+  dieselcycle__heat = 1000;	# Entropy flow
   r    = 1e4;			# small r constant pressure
-  u(2) = TopPressure;		# Pressure source
+  dieselcycle__work = TopPressure; # Pressure source
   Volume = x(4);
 endif;
 
 if ((t>=2.0)&&(t<3.0))		#Expansion
-  u(1) = 0.0;			# Entropy flow
+  dieselcycle__heat = 0.0;	# Entropy flow
   r = 1e10;			# Big R to make a flow source 
-  u(2) = -(1-Volume)*r;		# Volume rate-of-change
+  dieselcycle__work = -(1-Volume)*r; # Volume rate-of-change
 endif;
 
 if (t>=3.0)			#Cooling
   Pressure = (gamma_g-1)*x(1)/x(2);
-  u(1) = -1000*(Pressure>1e5);	# Entropy flow
+  dieselcycle__heat = -1000*(Pressure>1e5);	# Entropy flow
   r = 1e10;			# Big R to make a flow source 
-  u(2) = 0.0*r;			# Volume rate-of-change
+  dieselcycle__work = 0.0*r;	# Volume rate-of-change
 endif;
-
-
-
-
-

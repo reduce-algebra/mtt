@@ -7,8 +7,8 @@ OPERATOR TankC;
 % -- not relevant here
 
 %Temperature
-FOR ALL rho,c_p,volume,Energy
-LET TankC(rho,c_p,volume,effort,1,
+FOR ALL COMP,rho,c_p,volume,Energy
+LET TankC(COMP,rho,c_p,volume,effort,1,
 	Energy,state,1
 	) = Energy/(volume*rho*c_p);
 

@@ -7,13 +7,15 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  2000/12/28 18:11:47  peterg
+# %% To RCS
+# %%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # Parameters
 c_p = 	4.184*1e3;		# Specific heat
 p_0 = 	0.0;			# Ambient pressure
-r   =   1.0;                    # Pipe flow resistance (no idea what
-				# this should be)
 r_h = 	10.0;			# Heater resistance
 rho = 	1e3;			# Density
 v = 	1e-3;			# Volume (1 lit)
+t_0	= 1.0; # Added by MTT on Wed Aug 06 19:05:01 BST 2003

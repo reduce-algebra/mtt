@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.23  2003/08/17 11:35:07  gawthrop
+## Fixed problem with parentheses
+##
 ## Revision 1.22  2002/09/26 08:33:54  geraint
 ## Removed comma from pattern so that braces are places around each argument
 ## of a function call. Added greek letter nu as a special variable.
@@ -172,7 +175,6 @@ sed \
     -e "s/cos/\\\cos/g" \
     -e "s/23/{23}/g" \
     -e "s/+-/ -/g" \
-    -e "s/\\^/\\\uparrow /g" \
  | cat -s  | \
 sed -e "s/ $//g" | \
 tr  -s '\012' '\012' \

@@ -1,7 +1,8 @@
 %% Fixes for c-code generation
 
 %% Set PI explicitly here to avoid later conflict with cc headers
-LET PI = 3.1415$
+%% if PI is not already a number (i.e. on rounded has not been set)
+IF NOT NUMBERP (pi) THEN LET PI = 3.14159$
 
 ON ROUNDED$ % No integer output
 

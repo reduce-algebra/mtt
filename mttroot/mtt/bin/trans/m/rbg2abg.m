@@ -5,6 +5,9 @@ function [bonds,components] = rbg2abg(rbonds,rstrokes,rcomponents,rports,infofil
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.9  1996/12/31  11:25:57  peterg
+% %% Clearer error messages for incorrect ports.
+% %%
 % %% Revision 1.8  1996/12/04 21:52:39  peterg
 % %% Now uses fopen.
 % %%
@@ -137,6 +140,11 @@ for i = 1:n_components
 	  mtt_info(port_error,fnum);
 	  mtt_info(sprintf('\t it must have consecutive ports labels from 1:%1.0f\n', n), ...
 	      fnum);
+	  port_str = sprintf('\t the port labels are: ');
+	  for kk=1:k
+	    port_str=sprintf('%s %1.0f', port_str, port_number(kk));
+	  end;
+	  mtt_info(port_str, fnum);
 	end;
       else
 	if k~=0

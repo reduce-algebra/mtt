@@ -1,32 +1,36 @@
-%% Label file for system rc (rc_lbl.txt)
-%SUMMARY rc
-%DESCRIPTION 
+## Label file for system rc (rc_lbl.txt)
+#SUMMARY rc a simple rc circuit
+#DESCRIPTION A basic linear voltage-in voltage-out RC circuit
+#DESCRIPTION A standard test example for MTT
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %% Version control history
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %% $Id$
-% %% $Log$
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# ###############################################################
+# ## Version control history
+# ###############################################################
+# ## $Id$
+# ## $Log$
+# ## Revision 1.1  2000/12/28 17:40:36  peterg
+# ## To RCS
+# ##
+# ###############################################################
 
 
-% Port aliases
+# Port aliases
 
-% Argument aliases
-%ALIAS	$1	c
-%ALIAS	$2	r
+# Argument aliases
+#ALIAS	$1	c
+#ALIAS	$2	r
 
-%% Each line should be of one of the following forms:
-%	     a comment (ie starting with %)
-%	     component-name	cr_name	arg1,arg2,..argn
-%	     blank
+## Each line should be of one of the following forms:
+#	     a comment (ie starting with #)
+#	     component-name	cr_name	arg1,arg2,..argn
+#	     blank
 
-% ---- Component labels ----
+# ---- Component labels ----
 	c	lin		effort,c
 
-% Component type R
+# Component type R
 	r	lin		flow,r
 
-% Component type SS
+# Component type SS
 	e1	SS		external,internal
 	e2	SS		external,0

@@ -1,4 +1,9 @@
 # -*-makefile-*-
+
+#SUMMARY 	Identification
+#DESCRIPTION 	Partially know system identification using
+#DESCRIPTION    using bond graphs
+
 # Makefile for representation ident
 # File ident_rep.make
 

@@ -16,6 +16,9 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.11  2002/08/20 15:51:17  gawthrop
+@comment  Update to work with ident DIY rep
+@comment
 @comment  Revision 1.10  2002/07/22 10:45:22  geraint
 @comment  Fixed gnuplot rep so that it correctly re-runs the simulation if input files have changed.
 @comment
@@ -366,6 +369,7 @@ hierarchical bond graphs.
 * Sensitivity models::          
 * Representations::             
 * Extending MTT::               
+* Documentation::               
 * Languages::                   
 * Language tools::              
 * Administration::              
@@ -464,7 +468,6 @@ Representations
 * Acausal bond graph (abg)::    
 * Stripped acausal bond graph (sabg)::  
 * Labels (lbl)::                
-* Description (desc)::          
 * Structure (struc)::           
 * Constitutive Relationship (cr)::  
 * Parameters::                  
@@ -529,7 +532,7 @@ Stripped acausal bond graph (sabg)
 Labels (lbl)
 
 * SS component labels ::        
-* Other component labels ::     
+* Other component labels::      
 * Component names::             
 * Component constitutive relationship::  
 * Component arguments::         
@@ -539,6 +542,7 @@ Labels (lbl)
 * Aliases::                     
 * Parameter passing::           
 * Old-style labels (lbl)::      
+* Language tex (desc.tex)::     
 
 Other component labels 
 
@@ -562,7 +566,7 @@ Old-style labels (lbl)
 * Other component labels (old-style)::  
 * Parameter passing (old-style)::  
 
-Description (desc)
+Parameter passing (old-style)
 
 * Language tex (desc.tex)::     
 
@@ -657,8 +661,24 @@ Report (rep)
 Extending MTT
 
 * Makefiles::                   
-* New representations::         
+* New (DIY) representations::   
 * Component library ::          
+
+New (DIY) representations
+
+* Makefile (DIY representations)::  
+* Shell-script (DIY representations)::  
+* Documentation (DIY representations)::  
+
+Documentation
+
+* Manual (Documentation)::      
+* On-line documentation::       
+
+On-line documentation
+
+* Brief::                       
+* Detailed::                    
 
 Languages
 
@@ -2518,7 +2538,6 @@ representations.
 * Acausal bond graph (abg)::    
 * Stripped acausal bond graph (sabg)::  
 * Labels (lbl)::                
-* Description (desc)::          
 * Structure (struc)::           
 * Constitutive Relationship (cr)::  
 * Parameters::                  
@@ -2659,7 +2678,7 @@ default values by @strong{MTT} and may then be subsequently edited
 @item system_lbl.txt
         the label file (@pxref{Labels (lbl)})
 @item system_desc.tex
-        the description file (@pxref{Description (desc)})
+        the description file (@pxref{Detailed})
 @item system_simp.r
         algebraic simplifications to make output more readable
         (@pxref{Symbolic parameters for simplification (simp.r)})
@@ -3429,7 +3448,7 @@ what is close to what.
 For the purpose of producing a report (@pxref{Report}), @strong{MTT}
 generates a LaTeX (@pxref{LaTeX}) file describing the bond graph and its
 subsystems. Additional information may be supplied using the description
-representation (@pxref{Description (desc)}).
+representation (@pxref{Detailed}).
 
 @c      node   next  prev  up
 @node   Stripped acausal bond graph (sabg), Labels (lbl), Acausal bond graph (abg), Representations
@@ -3464,7 +3483,7 @@ This representation has the standard text view
 (@pxref{Views}).
 
 
-@node Labels (lbl), Description (desc), Stripped acausal bond graph (sabg), Representations
+@node Labels (lbl), Structure (struc), Stripped acausal bond graph (sabg), Representations
 @comment  node-name,  next,  previous,  up
 @section Labels (lbl)
 @cindex Labels
@@ -3475,13 +3494,15 @@ the bond graph.
 
 The label file contains the following non-blank lines (blank lines are ignored)
 @itemize @bullet
-@item Summary - lines beginning with %SUMMARY
-@item Description - lines beginning with %DESCRIPTION
-@item Alias - lines beginning with %ALIAS
-@item Comments - lines beginning with % 
+@item Summary - lines beginning with #SUMMARY
+@item Description - lines beginning with #DESCRIPTION
+@item Alias - lines beginning with #ALIAS
+@item Comments - lines beginning with # 
 @item Labels - other non-blank lines
 @end itemize
 
+Note, for compatability with old versions, % may be used in place of
+#; but the use of % is deprecated.
 Each lable contains three fields (in the following order) separated by
 white space and on one line:
 @enumerate
@@ -3542,7 +3563,7 @@ supported -- you are encouraged to convert them ASAP.
 
 @menu
 * SS component labels ::        
-* Other component labels ::     
+* Other component labels::      
 * Component names::             
 * Component constitutive relationship::  
 * Component arguments::         
@@ -3552,9 +3573,10 @@ supported -- you are encouraged to convert them ASAP.
 * Aliases::                     
 * Parameter passing::           
 * Old-style labels (lbl)::      
+* Language tex (desc.tex)::     
 @end menu
 
-@node SS component labels , Other component labels , Labels (lbl), Labels (lbl)
+@node SS component labels , Other component labels, Labels (lbl), Labels (lbl)
 @comment  node-name,  next,  previous,  up
 @subsection SS component labels 
 @cindex SS component labels 
@@ -3640,7 +3662,7 @@ subsystems.
 * Old-style labels (lbl)::      
 @end menu
 
-@node Component names, Component constitutive relationship, Other component labels , Labels (lbl)
+@node Component names, Component constitutive relationship, Other component labels, Labels (lbl)
 @comment  node-name,  next,  previous,  up
 @subsection Component names
 @cindex  Component names
@@ -4055,7 +4077,7 @@ whereas in component `turb' the first three parameters are the same but
 
 
 
-@node Old-style labels (lbl),  , Parameter passing, Labels (lbl)
+@node Old-style labels (lbl), Language tex (desc.tex), Parameter passing, Labels (lbl)
 @comment  node-name,  next,  previous,  up
 @subsection Old-style labels (lbl)
 @cindex Old-style labels
@@ -4221,30 +4243,19 @@ rod     none    l;l;j;m
 
 @end example
 
-@node Description (desc), Structure (struc), Labels (lbl), Representations
-@comment  node-name,  next,  previous,  up
-@section Description (desc)
-@cindex Description
-@cindex desc
-
-The bond graph can be described textually in LaTeX (.tex) description
-file; this is the only language for this representation. This
-representation is used by the LaTeX language version (@pxref{Language tex
-(abg.tex)}) of the acausal bond graph representation (@pxref{Acausal
-bond graph (abg)}).
 
 @menu
 * Language tex (desc.tex)::     
 @end menu
 
-@node Language tex (desc.tex),  , Description (desc), Description (desc)
+@node Language tex (desc.tex),  , Old-style labels (lbl), Labels (lbl)
 @comment  node-name,  next,  previous,  up
 @subsection Language tex (desc.tex)
 @cindex Language tex (desc.tex)
 This file may contain any LaTeX compatible commands. Any mathematics
 should conform to the AMSmath package.
 
-@node Structure (struc), Constitutive Relationship (cr), Description (desc), Representations
+@node Structure (struc), Constitutive Relationship (cr), Labels (lbl), Representations
 @comment  node-name,  next,  previous,  up
 @section Structure (struc)
 @cindex Structure
@@ -4581,6 +4592,9 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.11  2002/08/20 15:51:17  gawthrop
+# %% Update to work with ident DIY rep
+# %%
 # %% Revision 1.10  2002/07/22 10:45:22  geraint
 # %% Fixed gnuplot rep so that it correctly re-runs the simulation if input files have changed.
 # %%
@@ -5461,7 +5475,7 @@ mtt rc lmfr ps
 The acausal bond graph (abg) (@pxref{Acausal bond graph (abg)}) with the
 tex language is handled in a special way: the acausal Bond Graph  in
 fig format (@pxref{Language fig (abg.fig)}), the label file (@pxref{Labels (lbl)})
-the description file (@pxref{Description (desc)}), together with
+the description file (@pxref{Detailed}), together with
 corresponding subsystems are included in the report. It is recommended
 that the first (non-comment line) in the file should be:
 @example
@@ -5483,7 +5497,7 @@ for all systems to be found in that directory tree.
 This representation has the standard text view
 (@pxref{Views}).
 
-@node Extending MTT, Languages, Representations, Top
+@node Extending MTT, Documentation, Representations, Top
 @comment  node-name,  next,  previous,  up
 @chapter Extending MTT
 @cindex Extending MTT
@@ -5495,11 +5509,11 @@ that some of these  involve the creation of `make files'.
 
 @menu
 * Makefiles::                   
-* New representations::         
+* New (DIY) representations::   
 * Component library ::          
 @end menu
 
-@node Makefiles, New representations, Extending MTT, Extending MTT
+@node Makefiles, New (DIY) representations, Extending MTT, Extending MTT
 @comment  node-name,  next,  previous,  up
 @section Makefiles
 @cindex Makefiles
@@ -5532,15 +5546,40 @@ TwoLinkGMV_numpar.m: TwoLinkGMV_numpar.txt
 All of the files in the line stating `all:' are created when
 @strong{MTT} is executed (if they don't already exist).
 
-@node New representations, Component library , Makefiles, Extending MTT
+@node New (DIY) representations, Component library , Makefiles, Extending MTT
 @comment  node-name,  next,  previous,  up
-@section New representations
+@section New (DIY) representations
 @cindex New representations
+@cindex DIY representations
 
 It may be convenient to create new representations for @strong{MTT}; in
 particular, it is nice to be able to include the result of some
 numerical or symbolic computations within an @strong{MTT} report
-(@pxref{Report}).
+(@pxref{Report}). Therefore @strong{MTT} provides a mechanism for doing
+this.
+
+Future extensions of @strong{MTT} will use such representations stored
+in $MTT_REP.
+
+There are three parts to creating a DIY representation called myrep
+@enumerate
+@item Creating a make file in Make format called myrep_rep.make
+@item Optionally creating a shell script called myrep_rep.sh
+@item Optionally creating a documentation file in LaTeX format called myrep_rep.tex
+@end enumerate
+
+@menu
+* Makefile (DIY representations)::  
+* Shell-script (DIY representations)::  
+* Documentation (DIY representations)::  
+@end menu
+
+@node Makefile (DIY representations), Shell-script (DIY representations), New (DIY) representations, New (DIY) representations
+@comment  node-name,  next,  previous,  up
+@subsection Makefile
+@cindex New representations
+@cindex DIY representations
+@cindex Makefile
 
 To create a new representation `myrep' in a language `mylang', create a
 file with the name
@@ -5553,74 +5592,175 @@ This file must contain text in `make' syntax. It is executed by
 cannot know of any prerequisites, but these can be explicitly included in
 the makefile (which may include execution of @strong{MTT} itself.
 
-The following example declares the new representation `nppp' which is
-created with the Octave script sys_nppp.m where `sys' is the system
-name.  This needs a number of files (for exaample `sys_ode2odes.out')
-which are themselves created by @strong{MTT}.
-@example
+The following example declares the new representation `ident' which is
+created in conjunction with the shell-script ident_rep.sh (@pxref{Shell-script (DIY
+representations)}).
+
+@verbatim
 # -*-makefile-*-
-# Makefile for representation nppp
-# File nppp_rep.make
 
-#Copyright (C) 2000 by Peter J. Gawthrop
+#SUMMARY 	Identification
+#DESCRIPTION 	Partially know system identification using
+#DESCRIPTION    using bond graphs
 
-all: $(SYS)_nppp.$(LANG)
+# Makefile for representation ident
+# File ident_rep.make
 
-$(SYS)_nppp.view: $(SYS)_nppp.ps
-        echo Viewing $(SYS)_nppp.ps; ghostview $(SYS)_nppp.ps&
+#Copyright (C) 2000,2001,2002 by Peter J. Gawthrop
 
-$(SYS)_nppp.ps: $(SYS)_ode2odes.out s$(SYS)_ode2odes.out \
-                $(SYS)_sim.m s$(SYS)_sim.m \
-                $(SYS)_state.m $(SYS)_sympar.m $(SYS)_numpar.m  \
-                s$(SYS)_state.m s$(SYS)_sympar.m s$(SYS)_numpar.m \
-                $(SYS)_sm.m $(SYS)_def.m  s$(SYS)_def.m
-        octave $(SYS)_nppp.m
+## Model targets
+model_reps =  ${SYS}_sympar.m ${SYS}_simpar.m ${SYS}_state.m 
+model_reps += ${SYS}_numpar.m ${SYS}_input.m ${SYS}_ode2odes.m  
+model_reps += ${SYS}_def.m 
 
-$(SYS)_ode2odes.out: 
-        mtt -q -c -stdin $(SYS) ode2odes out
+## Prepend s to get the sensitivity targets
+sensitivity_reps = ${model_reps:%=s%}
 
-s$(SYS)_ode2odes.out:
-        mtt -q -c -stdin -s s$(SYS) ode2odes out
+## Model prerequisites
+model_pre =  ${SYS}_abg.fig ${SYS}_lbl.txt 
+model_pre += ${SYS}_rdae.r ${SYS}_numpar.txt
 
-$(SYS)_sim.m:
-        mtt -q -c $(SYS) sim m
+## Prepend s to get the sensitivity targets
+sensitivity_pre = ${model_pre:%=s%}
 
-s$(SYS)_sim.m:
-        mtt -q -c -s s$(SYS) sim m
 
-$(SYS)_state.m:
-        mtt -q $(SYS) state m
+## Simulation targets
+sims = ${SYS}_sim.m s${SYS}_ssim.m
 
-$(SYS)_sympar.m :
-        mtt -q $(SYS) sympar m 
+## m-files needed for ident
+ident_m = ${SYS}_ident.m ${SYS}_ident_numpar.m 
 
-$(SYS)_numpar.m:
-        mtt -q $(SYS) numpar m
+## Targets for the ident simulation
+ident_reps = ${ident_m} ${sims} ${model_reps} ${sensitivity_reps}
 
-s$(SYS)_state.m:
-        mtt -q -s s$(SYS) state m
+## ps output files etc
+psfiles = ${SYS}_ident.ps ${SYS}_ident.comparison.ps
+figfiles = ${psfiles:%.ps=%.fig}
+gdatfiles = ${psfiles:%.ps=%.gdat}
+datfiles = ${psfiles:%.ps=%.dat2}
 
-s$(SYS)_sympar.m :
-        mtt -q -s s$(SYS) sympar m 
+## LaTeX files etc
+latexfiles = ${SYS}_ident_par.tex
 
-s$(SYS)_numpar.m:
-        mtt -q -s s$(SYS) numpar m
+all: ${SYS}_ident.${LANG}
 
-$(SYS)_sm.m:
-        mtt -q $(SYS) sm m
+echo:
+	echo "sims: ${sims}"
+	echo "model_reps: ${model_reps}"
+	echo "sensitivity_reps: ${sensitivity_reps}"
+	echo "ident_reps: ${ident_reps}"
 
-$(SYS)_def.m:
-        mtt -q $(SYS) def m
+${SYS}_ident.view: ${psfiles}
+	ident_rep.sh ${SYS} view
 
-s$(SYS)_def.m:
-        mtt -q -s s$(SYS) def m
+${psfiles}: ${figfiles}
+	ident_rep.sh ${SYS} ps
 
-@end example
+${figfiles}: ${gdatfiles}
+	ident_rep.sh ${SYS} fig
 
-Future extensions of @strong{MTT} will use such representations stored
-in $MTT_REP.
+${gdatfiles}: ${datfiles}
+	ident_rep.sh ${SYS} gdat
 
-@node Component library ,  , New representations, Extending MTT
+${datfiles} ${latexfiles}: ${ident_reps}
+	ident_rep.sh ${SYS} dat2
+
+${SYS}_ident.m: 
+	ident_rep.sh ${SYS} m
+
+${SYS}_ident_numpar.m:
+	ident_rep.sh ${SYS} numpar.m
+
+## System model reps
+## Generic txt files 
+${SYS}_%.txt:
+	mtt ${OPTS} -q -stdin ${SYS} $* txt
+
+## Specific m files
+${SYS}_ode2odes.m: ${model_pre}
+	mtt -q -stdin ${OPTS} ${SYS} ode2odes m
+
+${SYS}_sim.m: ${SYS}_ode2odes.m
+	mtt ${OPTS} -q -stdin ${SYS} sim m
+
+## Numpar files
+${SYS}_numpar.m:
+	mtt ${SYS} numpar m
+
+## Sympar files
+${SYS}_sympar.m:
+	mtt ${SYS} sympar m
+
+## Generic txt to m
+${SYS}_%.m: ${SYS}_%.txt
+	mtt ${OPTS} -q -stdin ${SYS} $* m
+
+## r files
+${SYS}_def.r: ${SYS}_abg.fig
+	mtt ${OPTS} -q -stdin ${SYS} def r
+
+${SYS}_rdae.r: 
+	mtt ${OPTS} -q -stdin ${SYS} rdae r
+
+## Sensitivity model reps
+## Generic txt files 
+s${SYS}_%.txt:
+	mtt ${OPTS} -q -stdin -s s${SYS} $* txt
+
+## Specific m files
+## Numpar files
+s${SYS}_numpar.m:
+	mtt -s s${SYS} numpar m
+
+## Sympar files
+s${SYS}_sympar.m:
+	mtt -s s${SYS} sympar m
+
+s${SYS}_ode2odes.m: ${sensitivity_pre}
+	mtt -q -stdin ${OPTS} -s s${SYS} ode2odes m
+
+s${SYS}_ssim.m:
+	mtt -q -stdin ${OPTS} -s s${SYS} ssim m
+
+s${SYS}_def.m:
+	mtt -q -stdin ${OPTS} -s s${SYS} def m
+
+
+## Generic txt to m
+s${SYS}_%.m: s${SYS}_%.txt
+	mtt ${OPTS} -q -stdin s${SYS} $* m
+
+## r files
+s${SYS}_rdae.r: 
+	mtt ${OPTS} -q -stdin -s s${SYS} rdae r
+
+@end verbatim
+
+@node Shell-script (DIY representations), Documentation (DIY representations), Makefile (DIY representations), New (DIY) representations
+@comment  node-name,  next,  previous,  up
+@subsection Shell-script
+@cindex New representations
+@cindex DIY representations
+@cindex Shell-script
+
+For more complex DIY representations, it is convenient to define new
+commands to be used by the Makefile (@pxref{Makefile (DIY
+representations)}).
+
+The following example shows this in the context of the DIY
+representation `ident' used as an example in the previous section
+(@pxref{Makefile (DIY representations)}).
+
+
+@node Documentation (DIY representations),  , Shell-script (DIY representations), New (DIY) representations
+@comment  node-name,  next,  previous,  up
+@subsection Documentation
+@cindex New representations
+@cindex DIY representations
+@cindex Documentation
+
+
+@node Component library ,  , New (DIY) representations, Extending MTT
 @comment  node-name,  next,  previous,  up
 @section Component library
 @cindex Component library
@@ -5637,7 +5777,113 @@ contain MyComponent_desc.tex MyComponent_abg.fig MyComponent_lbl.txt and MyCompo
 addition to MyComponent_lbl.txt.
 
 @c      node   next  prev  up
-@node   Languages, Language tools, Extending MTT, Top
+@node   Documentation, Languages, Extending MTT, Top
+@chapter Documentation
+@cindex Documentation
+
+@menu
+* Manual (Documentation)::      
+* On-line documentation::       
+@end menu
+
+@node   Manual (Documentation), On-line documentation, Documentation, Documentation
+@section Manual
+@cindex Manual
+
+MTT is documented in this manual. The manual can be invoked in various
+ways:
+
+@vtable @code
+@item mtt manual
+      Brings up a pdf version of the manual
+@item mtt info
+      Brings up an xterm containing an info version of the manual
+@item mtt hinfo
+      Brings up an html browser containing the manual
+@item emacs
+      type ^h^i followed by mmtt in the command window
+@item browser
+      point browser to mtt.sf.netb
+@end vtable
+
+@node On-line documentation,  , Manual (Documentation), Documentation
+@section On-line documentation
+@cindex Components 
+@cindex Examples
+@cindex Documentation
+@cindex On-line documentation
+
+@strong{MTT} components, constitutive relations, examples and representations in libraries
+(@pxref{Component library}) are documented in two ways:
+
+@enumerate 
+@item brief 
+@item verbose
+@end enumerate
+
+@menu
+* Brief::                       
+* Detailed::                    
+@end menu
+
+@node Brief, Detailed, On-line documentation, On-line documentation
+@subsection Brief on-line documentation
+@cindex Brief documentation
+
+Documentation of DIY components, examples, constitutive relationships
+and representations is provides by the programmer by inserting code of
+the form
+
+@example
+#SUMMARY     One line summary
+#DESCRIPTION Multi-line
+#DESCRIPTION More detailed description
+@end example
+
+within the appropriate file (usually at or near the top):
+@vtable @code
+@item components
+      _lbl.txt (@pxref{Labels (lbl)})
+@item examples
+      _lbl.txt (@pxref{Labels (lbl)})
+@item constitutive relations
+      _cr.r (@pxref{DIY constitutive relationships})
+@item representations
+      _rep.make (@pxref{Makefile (DIY representations)})
+@end vtable
+
+This documentation is accessed by the user in various ways
+@vtable @code
+@item mtt help name
+      prints basic information on the screen
+@item mtt system lbl view
+      gives formatted information about the component or example
+@item Including mtt system abg tex in the _rep.txt file
+      gives formatted information about the component or example
+      within the report
+@end vtable
+
+@node Detailed,  , Brief, On-line documentation
+@subsection Detailed on-line documentation
+@cindex Detailed documentation
+@cindex Description
+@cindex desc
+
+DIY components, examples, constitutive relationships can be described
+textually in LaTeX (.tex) description file; this is the only language
+for this representation. This representation is used by the LaTeX
+language version (@pxref{Language tex (abg.tex)}) of the acausal bond
+graph representation (@pxref{Acausal bond graph (abg)}).
+
+The file may contain any  LaTeX commands
+valis for the ``article'' document type but must @strong{not} contain:
+@itemize @bullet
+@item documentclass commands
+@item document environments
+@end itemize
+
+@c      node   next  prev  up
+@node   Languages, Language tools, Documentation, Top
 @chapter Languages
 @cindex Languages
 @pindex Languages

@@ -1,4 +1,8 @@
 # -*-makefile-*-
+
+#SUMMARY 	Nonlinear pole-placement predictive control (nPPP)
+#DESCRIPTION 	
+
 # Makefile for representation nppp
 # File nppp_rep.make
 

@@ -28,6 +28,9 @@ function [par,Par,Error,Y,iterations,x] = \
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.6  2001/07/03 22:59:10  gawthrop
+  ## Fixed problems with argument passing for CRs
+  ##
   ## Revision 1.5  2001/06/06 07:54:38  gawthrop
   ## Further fixes to make nonlinear PPP work ...
   ##
@@ -116,8 +119,8 @@ function [par,Par,Error,Y,iterations,x] = \
     y_par = y_par(1+N_data-n_data:N_data,:);
 
     if extras.verbose		# Diagnostics
-      printf("y and y_0\n");
-      [y,y_0]
+##      printf("y and y_0\n");
+##      [y,y_0]
     endif
     
     ##Evaluate error, cost derivative J and cost second derivative JJ

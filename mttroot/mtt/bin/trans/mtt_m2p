@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.55  2000/10/11 09:06:17  peterg
+## New csex rep (uses scope optimisation)
+##
 ## Revision 1.54  2000/09/30 14:10:06  peterg
 ## Zap lines containing "Remove in mtt_m2p"
 ##
@@ -401,8 +404,7 @@ BEGIN{
   comment_regexp = "{"
   doing_header = 0
   doing_globals = 0
-  No = 1;
-  Ns = 1;
+  N_tmp = 100;
   inc ="$I"
 }
 {
@@ -465,9 +467,7 @@ BEGIN{
           printvar("x",Nx);
           printvar("u",Nu);
           printvar("y",Ny);
-          printvar("_s",Ns);
-          printvar("_o",No);
-
+          printvar("_tmp",N_tmp);
           printf("VAR mtt_i, mtt_j : INTEGER;\n");
           #if ( (rep=="smxa")||(rep=="smxax") ) {
           #  printvar("_t",Nt);

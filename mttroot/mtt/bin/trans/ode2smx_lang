@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1998/08/13 09:03:35  peterg
+## *** empty log message ***
+##
 ## Revision 1.3  1998/07/30 10:49:55  peterg
 ## Removed zeroing.
 ##
@@ -35,10 +38,15 @@ fi
 
 # Inform user
 echo Creating $1_smx.$lang
+echo Creating $1_smxx.$lang
+echo Creating $1_smxtx.$lang
 
 # Remove the old log file
 rm -f ode2smx_r.log
 
+rm -f $1_smx.$lang
+rm -f $1_smxx.$lang
+rm -f $1_smxtx.$lang
 
 # Use reduce to accomplish the transformation
 reduce << EOF  >ode2smx_lang.log
@@ -50,6 +58,18 @@ in "$1_ode.r";
 
 OFF Echo;
 
+% Load the general translator package
+LOAD GENTRAN;
+GENTRANLANG!* := 'Pascal;
+ON GENTRANSEG;
+MAXEXPPRINTLEN!* := 80;
+TEMPVARNUM!* := 1;
+TEMPVARNAME!* := 'mtt_t;
+
+% Matrix output function
+in"$MTTPATH/trans/lang_matrix.r";
+
+
 %Procedure to write out the result according to the language used.
 PROCEDURE WriteElement(name, i, j, element);
 BEGIN
@@ -59,14 +79,14 @@ BEGIN
       write name, "(", i, ",", j, ") := ", element;
 
     IF (lang = m) THEN 
-      write name, "[", i, ",", j, "] = ", element;
+      GENTRAN foo :=: element;
 
   END
 END;
 
 %Set up output according to the language.
  OFF NAT;
- OUT "$1_smx.$lang";
+ GENTRANOUT "$1_smx.$lang";
 
 % Set up output according to the language.
     IF (lang = r) THEN 
@@ -78,12 +98,34 @@ END;
     END;
 
 % find MTTA : the A matrix
-  FOR j := 1:MTTNx DO
+  matrix mttAAx(MTTNx,1);
+  matrix mttAAtx(MTTNx,1);
+  FOR i := 1:MTTNx DO
+  BEGIN
+    xi := MTTX(i,1);
+    FOR j := 1:MTTNx DO
     BEGIN
-    xj := MTTX(j,1);
-    FOR i := 1:MTTNx DO
-      WriteElement("mtta",i,j,df(MTTdx(i,1), xj, 1));
+      xj := MTTX(j,1);
+      a_ij := df(MTTdx(i,1), xj, 1);
+      a_ji := df(MTTdx(j,1), xi, 1);
+      IF i=j THEN
+      BEGIN
+        aa_ij := 1 - mttdt*a_ij;
+        aa_ji := aa_ij;
+      END
+      ELSE
+      BEGIN
+        aa_ij := -mttdt*a_ij;
+        aa_ji := -mttdt*a_ji;
+      END;
+      IF (aa_ij NEQ 0) THEN
+        GENTRAN mtta(i,j) ::=: aa_ij;
+      mttAAx(i,1) := mttAAx(i,1) + aa_ij*mkid(mttxx,j);
+      mttAAtx(i,1) := mttAAtx(i,1) + aa_ji*mkid(mttxx,j);
     END;
+  END;
+
+
 
 %% Find MTTB : the B matrix
 %  FOR j := 1:MTTNu DO
@@ -110,15 +152,48 @@ END;
 %    END;
 
 %Shut the  output according to the language.
- SHUT "$1_smx.$lang";
+ GENTRANSHUT "$1_smx.$lang";
+
+
+% The AAx matrix;
+GENTRANOUT "$1_smxx.$lang";
+FOR i := 1:MTTNx DO
+BEGIN
+  ax_i := mttAAx(i,1);
+  IF (ax_i NEQ 0) THEN
+    GENTRAN mttax(i) ::=: ax_i;
+END
+GENTRANSHUT "$1_smxx.$lang";
+
+% The AAtx matrix;
+GENTRANOUT "$1_smxtx.$lang";
+FOR i := 1:MTTNx DO
+BEGIN
+  atx_i := mttAAtx(i,1);
+  IF (atx_i NEQ 0) THEN
+    GENTRAN mttax(i) ::=: atx_i;
+END
+GENTRANSHUT "$1_smxtx.$lang";
 
 EOF
 
 if [ "$lang" = "m" ]; then
   mv $1_smx.$lang  mtt_junk
-  lang_header $1 smx m 'mttx,mttu' '[mtta]' > $1_smx.m
+  lang_header $1 smx m 'mttx,mttu,mttdt' '[mtta]' > $1_smx.m
   cat mtt_junk | mtt_p2m >> $1_smx.m
   rm -f mtt_junk
+
+  mv $1_smxx.$lang  mtt_junk
+  lang_header $1 smxx m 'mttx,mttu,mttxx,mttdt' '[mttax]' > $1_smxx.m
+  cat mtt_junk | mtt_p2m >> $1_smxx.m
+  rm -f mtt_junk
+
+  mv $1_smxtx.$lang  mtt_junk
+  lang_header $1 smxtx m 'mttx,mttu,mttxx,mttdt' '[mttax]' > $1_smxtx.m
+  cat mtt_junk | mtt_p2m >> $1_smxtx.m
+  rm -f mtt_junk
+
+
 fi
 
 # Now invoke the standard error handling.

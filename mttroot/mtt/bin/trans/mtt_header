@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.59  2004/06/20 13:53:06  gawthrop
+## Initialise for numpar as well
+##
 ## Revision 1.58  2004/06/20 13:34:11  gawthrop
 ## Create vectors using zeros(N,1) - avoids new octave
 ## default to row vector - more reps now included
@@ -575,7 +578,6 @@ zero_matrices()
 {
 ## Set matrices to zero
 echo
- ## echo '## Set matrices to zero'
 for name in $zeromatrices; do
     case $name in
 	a)

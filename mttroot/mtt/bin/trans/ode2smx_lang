@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1998/07/30 10:49:55  peterg
+## Removed zeroing.
+##
 ## Revision 1.2  1998/07/30 10:49:02  peterg
 ## Put [] round output of zeros.
 ##
@@ -56,7 +59,7 @@ BEGIN
       write name, "(", i, ",", j, ") := ", element;
 
     IF (lang = m) THEN 
-      write name, "(", i, ",", j, ") = ", element;
+      write name, "[", i, ",", j, "] = ", element;
 
   END
 END;
@@ -64,7 +67,6 @@ END;
 %Set up output according to the language.
  OFF NAT;
  OUT "$1_smx.$lang";
- LineLength 1000;
 
 % Set up output according to the language.
     IF (lang = r) THEN 
@@ -75,8 +77,6 @@ END;
       write "matrix mttd(", mttny, ",", mttnu, ");";    
     END;
 
-
-
 % find MTTA : the A matrix
   FOR j := 1:MTTNx DO
     BEGIN
@@ -85,29 +85,29 @@ END;
       WriteElement("mtta",i,j,df(MTTdx(i,1), xj, 1));
     END;
 
-% Find MTTB : the B matrix
-  FOR j := 1:MTTNu DO
-    BEGIN
-    uj := MTTU(j,1);
-    FOR i := 1:MTTNx DO
-      WriteElement("mttb",i,j,df(MTTdx(i,1), uj, 1));
-    END;
-
-% Find MTTC : the C matrix
-  FOR i := 1:MTTNy DO
-    FOR j := 1:MTTNx DO
-    BEGIN
-      xj := MTTX(j,1);
-      WriteElement("mttc",i,j,df(MTTY(i,1), xj, 1));
-    END;
-
-% Find MTTD : the D matrix
-  FOR i := 1:MTTNy DO
-    FOR j := 1:MTTNu DO
-    BEGIN
-      xj := MTTU(j,1);
-      WriteElement("mttd",i,j,df(MTTY(i,1), xj, 1));
-    END;
+%% Find MTTB : the B matrix
+%  FOR j := 1:MTTNu DO
+%    BEGIN
+%    uj := MTTU(j,1);
+%    FOR i := 1:MTTNx DO
+%      WriteElement("mttb",i,j,df(MTTdx(i,1), uj, 1));
+%    END;
+%
+%% Find MTTC : the C matrix
+%  FOR i := 1:MTTNy DO
+%    FOR j := 1:MTTNx DO
+%    BEGIN
+%      xj := MTTX(j,1);
+%      WriteElement("mttc",i,j,df(MTTY(i,1), xj, 1));
+%    END;
+%
+%% Find MTTD : the D matrix
+%  FOR i := 1:MTTNy DO
+%    FOR j := 1:MTTNu DO
+%    BEGIN
+%      xj := MTTU(j,1);
+%      WriteElement("mttd",i,j,df(MTTY(i,1), xj, 1));
+%    END;
 
 %Shut the  output according to the language.
  SHUT "$1_smx.$lang";
@@ -116,8 +116,8 @@ EOF
 
 if [ "$lang" = "m" ]; then
   mv $1_smx.$lang  mtt_junk
-  lang_header $1 smx m 'mttx,mttu' '[mtta,mttb,mttc,mttd]' > $1_smx.m
-  cat mtt_junk >> $1_smx.m
+  lang_header $1 smx m 'mttx,mttu' '[mtta]' > $1_smx.m
+  cat mtt_junk | mtt_p2m >> $1_smx.m
   rm -f mtt_junk
 fi
 

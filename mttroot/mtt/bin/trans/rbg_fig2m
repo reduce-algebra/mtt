@@ -1,0 +1,40 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: rbg_fig2m
+# Raw  bond-graph conversion from fig to matlab
+# P.J.Gawthrop May 1996
+# Modified June 1996 to handle xfig version 3
+# Copyright (c) P.J.Gawthrop, 1996.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+# Inform user
+echo "Creating $1_rbg.m"
+echo "Creating $1_cmp.m"
+echo "Creating $1_fig.fig"
+
+rm -f $1_fig.fig
+
+# The following horrible sed thing is to replace tab by ----
+# this is because I can't get sed to recognise tabs even if FS=" ".
+sed 's/	/---- /'<$1_abg.fig > $1_abg.mtt
+
+# This is the main transformation using gawk
+cat $1_lbl.txt $1_abg.mtt |  gawk -f $MTTPATH/rbg_fig2m.awk $1
+
+rm -f $1_abg.mtt
+
+
+
+
+

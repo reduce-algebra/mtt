@@ -5,6 +5,9 @@ function write_abg(system_name,bonds,connections);
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1998/08/26 12:31:07  peterg
+## numerical names prefixed by mtt
+##
 ## Revision 1.2  1998/08/26 11:59:20  peterg
 ## Don't use strrep to remove[]
 ##
@@ -35,11 +38,6 @@ function write_abg(system_name,bonds,connections);
   for i=1:N
     eval(["[comp_type, name, cr, arg, repetitions] = ", system_name, "_cmp(i);"]);
 
-    ch=name(1);			# First char of name
-    if (ch>="0")&&(ch<="9")	# Its a numeral
-      name=["mtt",name];	# prefix by mtt
-    endif;
-    
     if index(name,"[")==0	# Not a port
       fprintf(fid,"\n# Component %s\n", name);
       fprintf(fid,Sformat,system_name,name,"type",comp_type);
@@ -57,6 +55,11 @@ function write_abg(system_name,bonds,connections);
       fprintf(fid,"];\n");
     else
       name=name(2:length(name)-1); # Strip []
+      ch=name(1);			# First char of name
+      if (ch>="0")&&(ch<="9")	# Its a numeral
+      	name=["mttp",name];	# prefix by mttp
+      endif;
+    
       fprintf(fid,"\n# Port %s\n", name); 
       fprintf(fid,PIformat,system_name,name,"index",++i_port);
       fprintf(fid,PSformat,system_name,name,"type",comp_type);

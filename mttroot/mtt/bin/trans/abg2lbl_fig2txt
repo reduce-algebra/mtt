@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.14  2001/06/11 15:06:58  gawthrop
+## Now handles user-defined components
+##
 ## Revision 1.13  2001/06/04 08:13:37  gawthrop
 ## Various changes to support PPP
 ##
@@ -118,14 +121,16 @@ awk --field-separator ':' '
  }
  { 
   Component = $1;
-  ##Aliases
+  Name = $2;
+  
+##Aliases
   if (Component == "SS") {
-    port_alias[++j] = $2;
+    port_alias[++j] = Name;
   }
   else {
-    alias[++i] = $2;
+    alias[++i] = Name;
     if (length(sensitivity)>0) {
-      s_arg = sprintf("%ss",$2);
+      s_arg = sprintf("%ss",Name);
       alias[++i] = s_arg;
       s_arg = sprintf(";%s",s_arg);
       Component = substr(Component,2);
@@ -146,31 +151,31 @@ awk --field-separator ':' '
     cr["De"] = "SS";  arg["De"] = "external";
     cr["Df"] = "SS";  arg["Df"] = "external";
 
-    cr["R"] = lin;  arg["R"]  = sprintf("flow,%s%s", $2, s_arg);
-    cr["C"] = lin;  arg["C"]  = sprintf("effort,%s%s", $2, s_arg);
-    cr["I"] = lin;  arg["I"]  = sprintf("flow,%s%s", $2, s_arg);
+    cr["R"] = lin;  arg["R"]  = sprintf("flow,%s%s", Name, s_arg);
+    cr["C"] = lin;  arg["C"]  = sprintf("effort,%s%s", Name, s_arg);
+    cr["I"] = lin;  arg["I"]  = sprintf("flow,%s%s", Name, s_arg);
 
-    cr["CS"] = "lin";  arg["CS"]  = sprintf("effort,%s;%s_x0%s", $2, $2, s_arg);
-    cr["IS"] = "lin";  arg["IS"]  = sprintf("flow,%s;%s_x0%s", $2, $2, s_arg);
-    cr["INTFS"] = "lin";  arg["INTFS"]  = sprintf("%s_x0%s", $2, s_arg);
+    cr["CS"] = "lin";  arg["CS"]  = sprintf("effort,%s;%s_x0%s", Name, Name, s_arg);
+    cr["IS"] = "lin";  arg["IS"]  = sprintf("flow,%s;%s_x0%s", Name, Name, s_arg);
+    cr["INTFS"] = "lin";  arg["INTFS"]  = sprintf("%s_x0%s", Name, s_arg);
 
-    cr["TF"] = "lin";  arg["TF"]  = sprintf("flow,%s%s", $2, s_arg);
-    cr["GY"] = "lin";  arg["GY"]  = sprintf("flow,%s%s", $2, s_arg);
+    cr["TF"] = "lin";  arg["TF"]  = sprintf("flow,%s%s", Name, s_arg);
+    cr["GY"] = "lin";  arg["GY"]  = sprintf("flow,%s%s", Name, s_arg);
 
-    cr["AE"] = "lin";  arg["AE"]  = sprintf("%s%s", $2, s_arg);
-    cr["AF"] = "lin";  arg["AF"]  = sprintf("%s%s", $2, s_arg);
+    cr["AE"] = "lin";  arg["AE"]  = sprintf("%s%s", Name, s_arg);
+    cr["AF"] = "lin";  arg["AF"]  = sprintf("%s%s", Name, s_arg);
 
-    cr["CDx"] = "lin";  arg["CDx"]  = sprintf("%s%s", $2, s_arg);
+    cr["CDx"] = "lin";  arg["CDx"]  = sprintf("%s%s", Name, s_arg);
 
 
-    cr["RS"] = lin;  arg["RS"]  = sprintf("flow,%s%s", $2, s_arg);
+    cr["RS"] = lin;  arg["RS"]  = sprintf("flow,%s%s", Name, s_arg);
 
 
   ## Heading
   if (Component !~ OldComponent) print "\n% Component type", Component
 
   ## Component
-    printf("\t%s\t", Component);
+    printf("\t%s\t", Name);
     if (Component in cr)
       printf("%s\t\t", cr[Component])
     else 
@@ -182,7 +187,6 @@ awk --field-separator ':' '
 	print "lbl2args_txt2out", Component | "/bin/sh"; close("/bin/sh")
     }
 
-    ##print  "\t" $2 "\t" cr[Component] "\t\t" arg[Component];
     OldComponent=Component;
   }
   END{
@@ -197,19 +201,25 @@ awk --field-separator ':' '
       }
     }
 
-    print "\n% Argument aliases" >> "mtt_junk_alias.txt";
-    for (k=1;k<=i;k++){
-      print "%ALIAS\t\$" k "\t" alias[k] >> "mtt_junk_alias.txt";
-    }
- }' sensitivity=$sensitivity > mtt_junk_body.txt
-
-cat mtt_junk_top.txt mtt_junk_alias.txt mtt_junk_blurb.txt mtt_junk_body.txt > $1_lbl.txt
+#    print "\n% Argument aliases" >> "mtt_junk_alias.txt";
+#    for (k=1;k<=i;k++){
+#      print "%ALIAS\t\$" k "\t" alias[k] >> "mtt_junk_alias.txt";
+#    }
+ }' sensitivity=$sensitivity > $1_lbl.txt
 
 
+## Create argument aliases
+cat > mtt_junk_arg_alias.txt<<EOF
 
+# Argument aliases
+EOF
 
+abg2sympar_m2txt $1 "" use_label_file |\
+ awk '{printf("#ALIAS $%i %s\n", ++i, $1)}' >> mtt_junk_arg_alias.txt
 
+mv  $1_lbl.txt mtt_junk_body.txt
 
+cat mtt_junk_top.txt mtt_junk_alias.txt mtt_junk_arg_alias.txt mtt_junk_blurb.txt mtt_junk_body.txt > $1_lbl.txt
 
 
 

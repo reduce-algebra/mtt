@@ -1,0 +1,28 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: mtt_check_var
+
+# P.J.Gawthrop July 1997
+# Copyright (c) P.J.Gawthrop 1997
+
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+var=$1
+name=$2
+
+if [ -z "$1"  ]; then
+ echo '***** Shell variable' $name 'not set. *****'
+ echo 'Check that mttrc or mttrc.csh has been invoked.'
+ exit
+fi
+

@@ -1,0 +1,32 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: mtt_check_vars
+
+# P.J.Gawthrop July 1997
+# Copyright (c) P.J.Gawthrop 1997
+
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+mtt_check_var "$MAKE" "MAKE"
+mtt_check_var "$MTTPATH" "MTTPATH"
+mtt_check_var "$MATRIX" "MATRIX"
+mtt_check_var "$RMATRIX" "RMATRIX"
+mtt_check_var "$SYMBOLIC" "SYMBOLIC"
+mtt_check_var "$FIG" "FIG"
+mtt_check_var "$PSVIEW" "PSVIEW"
+mtt_check_var "$HTMLVIEW" "HTMLVIEW"
+mtt_check_var "$DVIVIEW" "DVIVIEW"
+
+
+

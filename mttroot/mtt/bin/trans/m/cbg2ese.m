@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.34  2000/09/01 08:42:44  peterg
+  ## ## Cahged somes ends to end for etc for clarity
+  ## ##
   ## ## Revision 1.33  2000/09/01 08:05:32  peterg
   ## ## Reformatted with out changing function
   ## ##
@@ -243,7 +246,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
     	  message = sprintf("\tfor component  %s (%s) within %s",\
 			    comp_name,subsystem.type,full_name);    
     	  if struct_contains(CBG,"alias")
-	    subsystem.arg = alias_args(subsystem.arg,CBG.alias,";",message,infofilenum)
+	    subsystem.arg = alias_args(subsystem.arg,CBG.alias,";",message,infofilenum,full_name)
     	  endif;
 	endif;
 	

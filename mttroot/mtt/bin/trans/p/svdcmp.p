@@ -1,6 +1,9 @@
 PROCEDURE svdcmp(VAR a: glmpbynp; m,n: integer;
 		 VAR w: glnparray; VAR v: glnpbynp);
 
+{ This file is derived from the NUMERICAL RECIPES PASCAL SHAREWARE DISKETTE.
+ Please read the README file in $MTTPATH/trans/p
+ }
 
 {
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -8,6 +11,9 @@ PROCEDURE svdcmp(VAR a: glmpbynp; m,n: integer;
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.4  1998/08/12 11:26:39  peterg
+% % Zapped unnecessary np and mp arguments
+% %
 % % Revision 1.3  1998/08/12 11:08:03  peterg
 % % Put in pythag routine to compute z = sqrt(y^2 + z^2) (as in book)
 % % Save loop index l as ll when jumping from loop - using l itself is

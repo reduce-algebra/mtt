@@ -166,7 +166,7 @@ function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run(system_n
 	## Optimise
 	tick = time;
 	[pars,Par,Error,Y,its] = \
-	    ppp_optimise(s_system_name,x_0_models,pars,simpar_est,u_star_t,y_est,i_par,extras);
+	    ppp_optimise(s_system_name,x_0_models,pars,simpar_est,u_star_t,y_est,i_par,Q,extras);
 	
 	if extras.visual
 	  figure(11);

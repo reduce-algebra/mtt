@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.13  1999/11/23 00:59:14  peterg
+## Now does ssm.m
+##
 ## Revision 1.12  1999/11/15 22:57:20  peterg
 ## Removed a debugging line
 ##
@@ -196,7 +199,7 @@ rm -f mtt_odeo mtt_ode #mtt_odee
  rm -f    $1_odeo.p
 fi
   
-if [ "$rep" = "sm" ]||[ "$rep" = "ssm" ]||[ "$rep" = "dm" ]; then
+if [ "$rep" = "sm" ]||[ "$rep" = "ssm" ]||[ "$rep" = "dm" ]||[ "$rep" = "csm" ]; then
 
 if  [ "$rep" = "sm" ]||[ "$rep" = "ssm" ]; then
    #Header
@@ -204,7 +207,7 @@ if  [ "$rep" = "sm" ]||[ "$rep" = "ssm" ]; then
   Symbols='a b c d'    
 fi
 
-if [ "$rep" = "dm" ]; then
+if [ "$rep" = "dm" ]||[ "$rep" = "csm" ]; then
    #Header
   lang_header $1 $rep $ext '' [mtta,mttb,mttc,mttd,mtte] > $outfile.p
   Symbols='a b c d e'    
@@ -214,7 +217,7 @@ for Symbol in $Symbols; do
   rm -f $outfile.1
 
 
-if  [ "$rep" = "sm" ]||[ "$rep" = "ssm" ]; then
+if  [ "$rep" = "sm" ]||[ "$rep" = "ssm" ]||[ "$rep" = "csm" ]; then
       case $Symbol in
     a)
 	N=MTTNx; M=MTTNx

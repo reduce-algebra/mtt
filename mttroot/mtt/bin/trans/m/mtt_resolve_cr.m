@@ -11,8 +11,8 @@ function eqn = mtt_resolve_cr (eqn)
   ###############################################################
   ## $Id$
   ## $Log$
-  ## Revision 1.2  2001/07/03 22:59:10  gawthrop
-  ## Fixed problems with argument passing for CRs
+  ## Revision 1.1  2003/03/24 10:19:42  gawthrop
+  ## Documentation added
   ##
   ###############################################################
 

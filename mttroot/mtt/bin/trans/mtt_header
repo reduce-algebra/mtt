@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  2000/11/07 16:56:24  peterg
+## Version from Geraint
+##
 ## Revision 1.2  2000/11/03 00:55:42  geraint
 ## typo: missed out 'd' in mttedx
 ## todo: need to accommodate mttsimpar
@@ -303,7 +306,7 @@ function write_DLD_header ()
 #include <octave/ov-struct.h>
 #include <octave/toplev.h>
 
-#include <MTT/useful-functions.h>
+#include "useful-functions.hh"
 #include "${system}_def.h"
 #include "${system}_sympar.h"
 

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.195  1998/10/28 13:58:57  peterg
+## Added $1_sympars.txt prerequisite to _tf.m target
+##
 ## Revision 1.194  1998/10/20 09:00:43  peterg
 ## Added a few summary lines - to help with xmtt
 ##
@@ -1654,7 +1657,7 @@ $1_abg.m: $1_rbg.m $1_alias.m $1_sub.sh
 #SUMMARY cbg	causal bond graph (m)
 #Acausal bond graph to causal bond graph: mfile
 $1_cbg.m: $1_abg.m
-	abg2cbg_m $1
+	abg2cbg_m  $info_switch $1
 
 $1_type.sh: $1_cbg.m
 

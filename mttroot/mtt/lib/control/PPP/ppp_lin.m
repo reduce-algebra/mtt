@@ -48,6 +48,9 @@ function [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,cond_uu] = ppp_l
   ## Default P (terminal weight)
   if nargin<10
     P = zeros(n_x,n_x);
+    P_weighting = 0
+  else
+    P_weighting = 1
   endif
 
   ## Default condittion number
@@ -188,32 +191,34 @@ function [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,cond_uu] = ppp_l
     endfor
   endif
 
-  ## Terminal constraint 
-  tau_last = tau(m_t);
-  x_x_t = expm(A*tau_last);	# deriv. of x*(tau_2) wrt x(0)
-  J_ux = J_ux + x_u_t'*P*x_x_t;
-  J_uu = J_uu + x_u_t'*P*x_u_t;
-
-  ## Terminal constraint - w bits
-  ## NB SISO ONLY at the moment
-  C = C(1,:);			# REMOVE ME
-
-  ## deriv of x* wrt W
-  if (cond(A)<1e10)		# Finite ss gain
-    x_W_t =  (A\B)*inv(C*(A\B));
-  else				# Infinite ss gain
-    Y_0 = zeros(n_x,n_y); Y_0(1,:) = ones(1,n_y);
-    x_W_t =  obsv(A,C)\Y_0;
+  if P_weighting
+    ## Terminal constraint 
+    tau_last = tau(m_t);
+    x_x_t = expm(A*tau_last);	# deriv. of x*(tau_2) wrt x(0)
+    J_ux = J_ux + x_u_t'*P*x_x_t;
+    J_uu = J_uu + x_u_t'*P*x_u_t;
+    
+    ## Terminal constraint - w bits
+    ## NB SISO ONLY at the moment
+    C = C(1,:);			# REMOVE ME
+    
+    ## deriv of x* wrt W
+    if (cond(A)<1e10)		# Finite ss gain
+      x_W_t =  (A\B)*inv(C*(A\B));
+    else				# Infinite ss gain
+      Y_0 = zeros(n_x,n_y); Y_0(1,:) = ones(1,n_y);
+      x_W_t =  obsv(A,C)\Y_0;
+    endif
+    
+    J_uw = J_uw + x_u_t'*P*x_W_t;
   endif
-
-  J_uw = J_uw + x_u_t'*P*x_W_t;
-
+  
   ## Exit if badly conditioned
   cond_uu = cond(J_uu);
   if cond_uu>max_cond
-    error(sprintf("J_uu is badly conditioned. Condition number = 10^%i",log10(cond_uu)));
+    error(sprintf("J_uu is badly conditioned. Condition number = \
+	10^%i",log10(cond_uu)));
   endif
-
 
   ## Compute the open-loop gains
   K_w = J_uu\J_uw;

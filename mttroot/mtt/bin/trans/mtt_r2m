@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  1999/03/16 00:38:06  peterg
+## Done some more tidying up
+##
 ## Revision 1.6  1999/03/15 07:29:25  peterg
 ## Fixed various obscure reduce bugs
 ## THIS NEEDS A MAJOR REWRITE!!!!
@@ -211,8 +214,7 @@ rm -f mtt_odeo mtt_ode
 # Convert from Pascal syntax to Octave syntax 
  mtt_p2m<$1_odeo.p > $1_odeo.m 
 
-#rm -f    $1_odeo.p
-
+ rm -f    $1_odeo.p
 fi
   
 if [ "$rep" = "sm" ]||[ "$rep" = "dm" ]; then

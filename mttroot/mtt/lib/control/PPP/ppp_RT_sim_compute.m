@@ -19,8 +19,8 @@ function ppp_RT_sim_compute (U)
   ## Simulate
   par(i_ppp_sim(:,3)) = U;		# Update the simulation ppp weights
   [y_sim,x] = eval(sprintf("%s_sim(x_0_sim, par, simpar_sim, u_star);", \
-			     system_name_sim));
-  x_0_sim  = x(n_t,:)';     # Extract state for next time
+			   system_name_sim));
+  x_0_sim  = x(n_t,:)';		# Extract state for next time
   u_sim = (u_star*U);
 endfunction
 

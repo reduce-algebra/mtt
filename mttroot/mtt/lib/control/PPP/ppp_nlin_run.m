@@ -39,10 +39,11 @@ function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run (system_
     extras.simulate = 1;
     extras.v = 1e-5;
     extras.verbose = 0;
+    extras.visual = 0;
   endif
 
   ##Estimate if we have some adjustable parameters
-  estimating_parameters = (length(i_par)>0)
+  estimating_parameters = (length(i_par)>0);
   
   ## Names
   s_system_name = sprintf("s%s", system_name);
@@ -143,7 +144,7 @@ function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run (system_
       ## Tune parameters/states
       if (estimating_parameters==1)
 	## Save up the estimated parameters
-	par_est = pars(i_par(:,1))
+	par_est = pars(i_par(:,1));
 	p = [p; par_est'];
 
 	## Set up according to interval length
@@ -162,7 +163,13 @@ function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run (system_
 	tick = time;
 	[pars,Par,Error,Y,its] = \
 	    ppp_optimise(s_system_name,x_0_models,pars,simpar_est,u_star_t,y_est,i_par,extras);
-II = [1:length(y_est)]; plot(II,y_est,"*", II,Y)
+	
+	if extras.visual
+	  figure(2);
+	  title("Parameter optimisation"); 
+	  II = [1:length(y_est)]; plot(II,y_est,"*", II,Y);
+	endif
+	
 	est_time = time-tick;  
 	t_est = [t_est;est_time];
 	its_est = [its_est; its-1];
@@ -180,6 +187,7 @@ II = [1:length(y_est)]; plot(II,y_est,"*", II,Y)
  					       u_star_t);",system_name));
 
       x_0 = x_model(n_ol+1,:)';	# Initial state of next interval
+##      x_0 = x_model(n_ol-1,:)';	# Initial state of next interval
       x_0_model = x_0;
       x_0_models(1:2:(2*n_x)-1) = x_0_model;
 
@@ -198,7 +206,12 @@ II = [1:length(y_est)]; plot(II,y_est,"*", II,Y)
       U = expm(A_u*T_ol)*U;	# Initialise from continuation trajectory
       pars(i_ppp(:,1)) = U;	# Put initial value of U into the parameter vector
       [U, U_all, Error, Y, its] = ppp_nlin(system_name,x_nexts,pars,simpars,u_star_tau,w_s,i_ppp,extras);
-
+      if extras.visual
+	figure(3);
+	title("PPP optimisation");
+	II = [1:length(w_s)]; plot(II,w_s,"*", II,Y);
+	figure(1);
+	endif
 
       ppp_time = time-tick;  
       t_ppp = [t_ppp;ppp_time];

@@ -28,6 +28,9 @@ function [par,Par,Error,Y,iterations,x] = \
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.8  2002/04/23 17:50:39  gawthrop
+  ## error --> err to avoid name clash with built in function
+  ##
   ## Revision 1.7  2001/08/10 16:19:06  gawthrop
   ## Tidied up the optimisation stuff
   ##
@@ -54,7 +57,6 @@ function [par,Par,Error,Y,iterations,x] = \
 
 
   ## Copyright (C) 1999,2000 by Peter J. Gawthrop
-
   sim_command = sprintf("%s_ssim(x_0,par,simpar,u,i_s)", system_name);
 
   ## Extract indices
@@ -118,14 +120,9 @@ function [par,Par,Error,Y,iterations,x] = \
     endif
     
     ## Use the last part of the simulation to compare with data
-    y = y(1+N_data-n_data:N_data,:);
-    y_par = y_par(1+N_data-n_data:N_data,:);
+    y = y(N_data-n_data:N_data-1,:);
+    y_par = y_par(N_data-n_data:N_data-1,:);
 
-    if extras.verbose		# Diagnostics
-##      printf("y and y_0\n");
-##      [y,y_0]
-    endif
-    
     ##Evaluate error, cost derivative J and cost second derivative JJ
     err = 0; 
     J = zeros(n_th,1);

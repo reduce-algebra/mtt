@@ -16,6 +16,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.304  2001/04/11 07:35:22  gawthrop
+## Now uses system_cr.h in place of system.h in .c rep -
+##   compatible with older code
+##
 ## Revision 1.303  2001/04/10 12:54:50  gawthrop
 ## Minor fixes for sensitivity versions
 ##
@@ -1101,10 +1105,12 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 mtt_switches="$mtt_switches $1";
 		print='-p';;
 	-c )
+                fixcc='-fixcc'
                 mtt_switches="$mtt_switches $1";
                 matrix_smxa="-matrix";
 		computation=c ;;
 	-cc )
+                fixcc='-fixcc'
                 mtt_switches="$mtt_switches $1";
                 matrix_smxa="-matrix";
 		computation=cc ;;
@@ -1184,6 +1190,7 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 subsystem="_"$2;
                 shift;;
 	-oct )
+                fixcc='-fixcc'
                 mtt_switches="$mtt_switches $1";
                 using_oct=yes;
                 m=oct
@@ -1915,7 +1922,7 @@ mtt_%.o: mtt_%.cc
 
 # Generates code to write reduce code
 $1_ode_write.r: $1_def.m
-	def2write_r  $1 $2
+	def2write_r  $1 $2 $computation
 
 ifeq ("$sensitivity","sensitivity")
 ifeq ("$level","0")
@@ -2345,7 +2352,7 @@ ifeq ($rdae_is_dae,1)
 	echo Copying $1_rdae.r to $1_dae.r
 	cp $1_rdae.r  $1_dae.r
 else
-	rdae2dae_r ${Subsystem}; tidy ${Subsystem}_dae.r
+	rdae2dae_r ${fixcc} ${Subsystem}; tidy ${Subsystem}_dae.r
 endif
 
 $1_dae.m: $1_def.r $1_dae.r  $1_sympars.txt
@@ -2706,13 +2713,13 @@ $1_smx.r: $1_def.r $1_def.m $1_ode.r $1_subs.r
 		ode2smx_lang $1 r; tidy $1_smx.r
 
 $1_smx.m: $1_def.r $1_def.m $1_cse.r $1_sympars.txt $1_subs.r
-		cse2smx_lang $optimise -parameters $1 smx m
+		cse2smx_lang $fixcc $optimise -parameters $1 smx m
 
 $1_smxa.m: $1_def.r $1_def.m $1_cse.r $1_sympars.txt $1_subs.r
-		cse2smx_lang $optimise -parameters $matrix_smxa $1 smxa m
+		cse2smx_lang $fixcc $optimise -parameters $matrix_smxa $1 smxa m
 
 $1_smxax.m: $1_def.r $1_def.m $1_cse.r $1_sympars.txt $1_subs.r
-		cse2smx_lang $optimise -parameters $1 smxax m
+		cse2smx_lang $fixcc $optimise -parameters $1 smxax m
 
 #SUMMARY smc	controller form state matrices etc. - siso only (r)
 #SUMMARY smc	controller form state matrices etc. - siso only (tex)

@@ -29,6 +29,10 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	optimise='LOAD SCOPE; ON GENTRANOPT;';
         iname='INAME mtt_o;';
 	;;
+    -fixcc )
+        include=`echo 'in "'$MTT_LIB'/reduce/fix_c.r";'`
+        blurb2='fixing c and cc code';
+		;;
     *)
 	echo $1 is an unknown option
         exit;;
@@ -82,7 +86,7 @@ if [ -n "$optimise" ]; then
     blurbopt=' using code optimisation'
 fi
 
-echo Creating $1_$rep.$lang $blurb $blurbopt
+echo Creating $1_$rep.$lang $blurb $blurbopt $blurb2
 #echo Creating $1_smxx.$lang
 #echo Creating $1_smxtx.$lang
 
@@ -97,6 +101,9 @@ rm -f $1_$rep.body
 $SYMBOLIC << EOF  >cse2smx_lang.log
 
 lang := $lang;
+
+%% Fixes for c and cc (if needed)
+$include;
 
 in "$1_subs.r";
 in "$1_def.r";

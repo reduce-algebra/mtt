@@ -7,11 +7,19 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2000/12/28 18:00:45  peterg
+% %% To RCS
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 % Port aliases
-%ALIAS	in	x,y,a
+%UNITS  x         translational N m/s
+%UNITS  y         translational N m/s
+%UNITS  a         rotational N*m radian/s
+
+
+%ALIAS	in|cart	x,y,a
 
 
 % Argument aliases

@@ -1,19 +1,26 @@
 %% Label file for system Cart (Cart_lbl.txt)
 %SUMMARY Cart
-%DESCRIPTION <Detailed description here>
+%DESCRIPTION Simple cart model
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2000/12/28 18:00:45  peterg
+% %% To RCS
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 % Port aliases
-%ALIAS	
 %ALIAS	in	drive
 %ALIAS	pendulum|out	x,y,a
+%UNITS  drive     translational N m/s
+b%UNITS  x         translational N m/s
+%UNITS  y         translational N m/s
+%UNITS  a         rotational N*m radian/s
+
 
 % Argument aliases
 %ALIAS	$1	m_c
@@ -38,8 +45,8 @@
 	[x]	SS		external,external
 	[y]	SS		external,external
 
-% Component type Df
-	v_c			SS	external
+% Component type De
+	Position			SS	external
 
 % Component type Sf
 	zero_velocity		SS	0

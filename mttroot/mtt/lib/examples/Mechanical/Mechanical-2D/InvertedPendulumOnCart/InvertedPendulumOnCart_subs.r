@@ -8,6 +8,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  2001/04/02 10:57:57  gawthrop
+% %% Added missing ;
+% %%
 % %% Revision 1.1  2000/12/28 18:00:45  peterg
 % %% To RCS
 % %%
@@ -16,5 +19,9 @@
 % Put algebraic substitution commands here
 
 for all x let cos(x)^2+sin(x)^2 = 1;
+
+FOR ALL x,y LET x^y = pow(x,y); % Use the pow function
+
+ON ROUNDED; % No integer output
 
 END;

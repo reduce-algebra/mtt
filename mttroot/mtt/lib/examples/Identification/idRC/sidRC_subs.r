@@ -8,6 +8,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2001/04/05 11:57:29  gawthrop
+% %% Identification example
+% %%
 % %% Revision 1.1  2000/12/28 09:13:38  peterg
 % %% Initial revision
 % %%
@@ -15,8 +18,10 @@
 
 % Put algebraic substitution commands here
 
-FOR ALL x,y LET x^y = pow(x,y); % Use the pow function
 
-ON ROUNDED; % No integer output
+%The following is now done automatically
+%FOR ALL x,y LET x^y = pow(x,y); % Use the pow function
+
+%ON ROUNDED; % No integer output
 
 END;

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  2001/02/03 13:40:45  gawthrop
+## Added explicit MTTNu
+##
 ## Revision 1.5  2000/12/28 12:39:02  peterg
 ## Put under RCS
 ##
@@ -88,6 +91,10 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 partition=yes;
                 blurb='with partitioning';
 		;;
+	-fixcc )
+                include=`echo 'in "'$MTT_LIB'/reduce/fix_c.r";'`
+                blurb2='fixing c and cc code';
+		;;
 	*)
 		echo "$1 is an invalid argument - ignoring";
                 exit ;;
@@ -114,13 +121,16 @@ daename=$sysname"_dae.r"
 logname="rdae2dae.log"
 
 # Inform user
-echo Creating $daename
+echo Creating $daename $blurb $blurb2
 
 # Remove the old log file
 rm -f $logname
 
 # Use symbolic algebra to accomplish the transformation
 $SYMBOLIC >$logname  << EOF
+
+% Fix c code if required
+$include
 
 %Read the formatting function
 in "$MTTPATH/trans/reduce_matrix.r";

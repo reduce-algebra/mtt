@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.112  1998/01/21 09:24:46  peterg
+## Removed 'touch $1_rep.txt' -- perhaps best to do this by hand if
+## necessary. As it is, it cuased probs wene reediting the _rep.txt file.
+##
 ## Revision 1.111  1998/01/16 14:56:59  peterg
 ## Argument now correctely recognised as a string beginning with -
 ## (rather than containing -)
@@ -1191,19 +1195,57 @@ $1_sm.c: $1_def.r $1_sm.r $1_sympar.c
 $1_sm.tex: $1_sm.r  $1_sympar.r $1_simp.r
 	sm_r2tex $1; latex_tidy $1_sm.tex
 
-#SUMMARY can	canonical form matrices - siso only (r)
-#SUMMARY can	canonical form matrices - siso only (tex)
-#SUMMARY can	canonical form matrices - siso only (m)
-#SUMMARY can	canonical form matrices - siso only (view)
-#SUMMARY can	canonical form matrices - siso only (ps)
-#Linearised system: canonical form matrices
-$1_can.r: $1_sm.r $1_def.r $1_tf.r 
-	sm2can_r $1; tidy $1_can.r
-$1_can.tex: $1_can.r  $1_simp.r
-	can_r2tex $1; latex_tidy $1_can.tex
-$1_can.m: $1_def.r $1_can.r $1_numpar.m
-		can_r2m $1;  matlab_tidy $1_can.m
+#SUMMARY smc	controller form state matrices etc. - siso only (r)
+#SUMMARY smc	controller form state matrices etc. - siso only (tex)
+#SUMMARY smc	controller form state matrices etc. - siso only (m)
+#SUMMARY smc	controller form state matrices etc. - siso only (view)
+#SUMMARY smc	controller form state matrices etc. - siso only (ps)
+#Linearised system: controller form state matrices etc.
+$1_smc.r: $1_sm.r $1_def.r $1_tf.r 
+	sm2smc_r $1; tidy $1_smc.r
+$1_smc.tex: $1_smc.r  $1_simp.r
+	smc_r2tex $1; latex_tidy $1_smc.tex
+$1_smc.m: $1_def.r $1_smc.r $1_numpar.m
+		smc_r2m $1;  matlab_tidy $1_smc.m
 
+#SUMMARY smo	observer form state matrices etc. - siso only (r)
+#SUMMARY smo	observer form state matrices etc. - siso only (tex)
+#SUMMARY smo	observer form state matrices etc. - siso only (m)
+#SUMMARY smo	observer form state matrices etc. - siso only (view)
+#SUMMARY smo	observer form state matrices etc. - siso only (ps)
+#Linearised system: observer form state matrices etc.
+$1_smo.r: $1_sm.r $1_def.r $1_smc.r 
+	sm2smo_r $1; tidy $1_smo.r
+$1_smo.tex: $1_smo.r  $1_simp.r
+	smo_r2tex $1; latex_tidy $1_smo.tex
+$1_smo.m: $1_def.r $1_smo.r $1_numpar.m
+		smo_r2m $1;  matlab_tidy $1_smo.m
+
+#SUMMARY ssk	State-space controller gain - siso only (r)
+#SUMMARY ssk	State-space controller gain - siso only (tex)
+#SUMMARY ssk	State-space controller gain - siso only (m)
+#SUMMARY ssk	State-space controller gain - siso only (view)
+#SUMMARY ssk	State-space controller gain - siso only (ps)
+#Linearised system: State-space controller gain
+$1_ssk.r: $1_def.r $1_smc.r 
+	smc2ssk_r $1; tidy $1_ssk.r
+$1_ssk.tex: $1_ssk.r  $1_simp.r
+	ssk_r2tex $1; latex_tidy $1_ssk.tex
+$1_ssk.m: $1_def.r $1_ssk.r $1_numpar.m
+		ssk_r2m $1;  matlab_tidy $1_ssk.m
+
+#SUMMARY ssl	State-space observer gain - siso only (r)
+#SUMMARY ssl	State-space observer gain - siso only (tex)
+#SUMMARY ssl	State-space observer gain - siso only (m)
+#SUMMARY ssl	State-space observer gain - siso only (view)
+#SUMMARY ssl	State-space observer gain - siso only (ps)
+#Linearised system: State-space observer gain
+$1_ssl.r: $1_def.r $1_smo.r 
+	smo2ssl_r $1; tidy $1_ssl.r
+$1_ssl.tex: $1_ssl.r  $1_simp.r
+	ssl_r2tex $1; latex_tidy $1_ssl.tex
+$1_ssl.m: $1_def.r $1_ssl.r $1_numpar.m
+		ssl_r2m $1;  matlab_tidy $1_ssl.m
 
 #SUMMARY tf	transfer function (r)
 #SUMMARY tf	transfer function (m)

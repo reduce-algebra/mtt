@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.353  2002/05/28 18:08:38  geraint
+## Fixed [ 547294 ] CRs are not sought from MTT_CRS.
+##
 ## Revision 1.352  2002/05/24 11:04:10  geraint
 ## Removed unnecessary message about *.log file not existing when -D option is used.
 ##
@@ -2972,11 +2975,11 @@ $1_ode2odes.c: $1_ode2odes.p
 #endif
 
 #SUMMARY ssim Octave sensitivity simulation function (m)
-$1_ssim.m: $1_def.r
+$1_ssim.m: $1_def.r $1_ode2odes.${m}
 	make_ssim $1 m
 
 #SUMMARY sim Octave simulation function (m)
-$1_sim.m: $1_def.r
+$1_sim.m: $1_def.r $1_ode2odes.${m}
 	make_sim $1 m
 
 #SUMMARY obs	observer equations for CGPC (r)

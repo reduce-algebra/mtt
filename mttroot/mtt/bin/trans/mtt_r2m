@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  1999/11/01 21:20:14  peterg
+## Removed the E matrix from the cse file.
+##
 ## Revision 1.10  1999/10/27 07:38:30  peterg
 ## Now does cse version -- but not needed now exept for Euler integration
 ##
@@ -148,7 +151,7 @@ END;;
 EOF
   else
 ## cse representation
-echo doing cse
+
 $SYMBOLIC  > mtt_r2m.log <<EOF
   %Set up the code generator
   in"mtt_setreduce.r";

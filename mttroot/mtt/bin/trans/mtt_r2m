@@ -7,15 +7,20 @@
 # Bourne shell script: mtt_r2m
 # Reduce to octave conversion
 # Based on obsolete ode_r2m  and ode_r2lang
+# Based on obsolete mtt_r2m_old
 # P.J.Gawthrop 14 June 1991, 12 Jan 1994, April 1994, Jan 95, May 1998
 # July 1998
 # Copyright (c) P.J.Gawthrop 1991, 1994, 1995, 1996, 1998
+# Copyright (C) 2000 by Peter J. Gawthrop
 
 ###############################################################
 ## Version control history
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.22  2000/09/15 08:27:07  peterg
+## Removed debugging lines
+##
 ## Revision 1.21  2000/08/30 11:43:40  peterg
 ## -optimise switch added
 ##
@@ -96,11 +101,6 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	parameters='-parameters';
         par='mttpar'
 	;;
-    -optimise)
-	optimise='LOAD SCOPE; ON GENTRANOPT;';
-        iname='INAME mtt_o;';
-	;;
-
     *)
 	echo $1 is an unknown option
         exit;;
@@ -108,308 +108,52 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
   shift
 done
 
-# Set up the language specific stuff
+# Set up some strings
 rep=$2
-ext='m';
-codegenerator='PASCAL'
-Lc='#';
-Rc='#';
-Lb='(';
-Rb=')';
-
-outfile=$1"_"$rep
-
-## Find som constants
-Nx=`grep "MTTNx " <$1_def.r | awk '{print $3}' | sed 's/;//'`
-
-#Set up gentran
-cat <<EOF >mtt_setreduce.r
-% Set up the code generator
-
-% Load the general translator package
-LOAD GENTRAN;
-GENTRANLANG!* := '$codegenerator; %'
-ON GENTRANSEG; % Segmentation 
-% Optimise
-$optimise 
-
-ON GETDECS;    % Create decrarations automatically
-DEFTYPE!* := 'REAL; % and default to real '
-OFF GENDECS;  % No declarations
-MAXEXPPRINTLEN!* := 80;
-TEMPVARNUM!* := 1;
-TEMPVARNAME!* := 'mtt_s; % '
-
-$iname
-
-% Matrix output function
-%in"$MTTPATH/trans/lang_matrix.r";
-
-%Read the reduce definitions file
-in "$1_def.r";
-
-%Read the reduce  $REP   file
-in "$1_$rep.r";
-
-%Read the substitution file
-in "$1_subs.r";
-
-%%% The following is a bug fix  from ZIB to fix 
-%%% segmentation violation problem
-symbolic procedure maxtype type;
-% ------------------------------------------------------------------- ;
-% A type may be a pair (l u) wher l is the minimum type for a variable;
-% and  u is the maximum type. This procedure returns the maximum type.;
-% ------------------------------------------------------------------- ;
-   if atom type
-   then type
-   else if pairp cdr type then cadr type else car type;
-
-% This fix handles the case that the type is a list with ONE entry.
-% Should never happen ?? W.N.
-%%%%%% End of bug fix
-
-
-END;
-EOF
+ext=m
+out=$1"_"$rep.$ext
 
 #Inform user
-if [ -n "$optimise" ]; then
-    blurb=' using code optimisation'
-fi
-echo Creating $outfile.m $blurb
-
-
+echo Creating $out
 
 # Remove the old log file
 rm -f mtt_r2m.log
 
-
-if [ "$rep" = "ode" ]||[ "$rep" = "cse" ]; then
-  #echo Creating $1_odea.$ext
-  outfileo=$outfile"o"
-  echo Creating $outfileo.m $blurb
-
-  #rm -f $1_odea.$ext.1;
-
-  #Header
-  lang_header $noglobals $parameters $1 $rep $ext 'mttx,mttu,mttt,mttpar' mttdx > $1_$2.pas
-  lang_header $noglobals $parameters $1 $2o $ext 'mttx,mttu,mttt,mttpar' mtty  > $1_$2o.pas
-
-  rm -f mtt_ode mtt_odeo
-
-  # Use reduce to accomplish the transformation
-$SYMBOLIC  > mtt_r2m.log <<EOF
-  %Set up the code generator
-  in"mtt_setreduce.r";
-      
-    
-    % The body of the odeo function
-     GENTRANOUT "mtt_odeo";
-     %mtt_matrix := MTTy$
-     %mtt_matrix_n := MTTNy$
-     %mtt_matrix_m := 1$
-     %lang_matrix(); 
-
-     GENTRAN MTT_matrix :=: MTTy$
-     GENTRANSHUT "mtt_odeo";
-END;;
-
-EOF
-mtt_vectorise mtt_odeo; # Its really a vector
-
-  if [ "$rep" = "ode" ]; then
-  # Use reduce to accomplish the transformation
-$SYMBOLIC  >> mtt_r2m.log <<EOF
-  %Set up the code generator
-  in"mtt_setreduce.r";
-      
-  % The body of the ode function
-    GENTRANOUT "mtt_ode";
-    %mtt_matrix := MTTdX$
-    %mtt_matrix_n := MTTNx$
-    %mtt_matrix_m := 1$
-    %lang_matrix();
-    GENTRAN MTT_matrix :=: MTTdX$
-    GENTRANSHUT "mtt_ode";
-END;;
-
-EOF
-mtt_vectorise mtt_ode; # Its really a vector
-
-  else
-## cse representation
-
-$SYMBOLIC  >> mtt_r2m.log <<EOF
-  %Set up the code generator
-  in"mtt_setreduce.r";
-      
-  % The body of the cse function
-    GENTRANOUT "mtt_ode";
-  %  mtt_matrix := MTTEdX$
-  %  mtt_matrix_n := MTTNx$
-  %  mtt_matrix_m := 1$
-  %  lang_matrix();
-    GENTRAN MTT_matrix :=: MTTEdX$
-    GENTRANSHUT "mtt_ode";
-    
-%    GENTRANOUT "mtt_odee";
-%    mtt_matrix := MTTE$
-%    mtt_matrix_n := MTTNx$
-%    mtt_matrix_m := MTTNx$
-%    lang_matrix();
-%    GENTRANSHUT "mtt_odee";
-
-END;;
-EOF
-mtt_vectorise mtt_ode; # Its really a vector
-
-  fi
-
-#if [ "$rep" = "ode" ]; then
-#  touch mtt_odee
-#fi
-
-sed 's/mtt_matrix/mttdx/' <mtt_ode  >> $1_$2.pas
-#sed 's/mtt_matrix/mtte/'  <mtt_odee >> $1_$2.pas
-sed 's/mtt_matrix/mtty/'  <mtt_odeo >> $1_$2o.pas
-
-
-rm -f mtt_odeo mtt_ode #mtt_odee
-
-# Convert from Pascal syntax to Octave syntax 
- mtt_p2m<$1_$2o.pas > $1_$2o.m 
-
- rm -f    $1_odeo.pas
-fi
-  
-if [ "$rep" = "sm" ]||[ "$rep" = "ssm" ]||[ "$rep" = "dm" ]||\
-   [ "$rep" = "csm" ]||[ "$rep" = "obs" ]; then
-
-if  [ "$rep" = "sm" ]||[ "$rep" = "ssm" ]; then
-   #Header
-  lang_header $noglobals $parameters $1 $rep $ext "$par" [mtta,mttb,mttc,mttd] > $outfile.pas
-  Symbols='a b c d'    
-fi
-
-if [ "$rep" = "dm" ]||[ "$rep" = "csm" ]; then
-   #Header
-  lang_header $noglobals $parameters $1 $rep $ext "$par" [mtta,mttb,mttc,mttd,mtte] > $outfile.pas
-  Symbols='a b c d e'    
-fi
-
-if [ "$rep" = "obs" ]; then
-  # Is the system affine (look in the _obs.r file
-  affine=`grep 'affine :=' $1_obs.r | awk '{print $3}' | sed 's/;//'`
-  echo 'affine = ' $affine
-   #Header 
-if [ "$affine" = "1" ]; then
-    lang_header $noglobals $parameters $1 obs m mttx [mttobs_o,mttobs_h] >  $outfile.pas
-else
-    lang_header $noglobals $parameters $1 obs m mttx,mttu mttyy > $outfile.pas
-fi
-  Symbols='obs_o obs_h'    
-fi
-
-for Symbol in $Symbols; do
-  rm -f $outfile.1
-# echo Doing $Symbol
-
-if  [ "$rep" = "sm" ]||[ "$rep" = "ssm" ]||[ "$rep" = "csm" ]||[ "$rep" = "obs" ]; then
-      case $Symbol in
-    a)
-	N=MTTNx; M=MTTNx
-	;;
-    b)
-	N=MTTNx; M=MTTNu
-	;;
-    c)
-	N=MTTNy; M=MTTNx
-	;;
-    d)
-	N=MTTNy; M=MTTNu
-	;;
-    e)
-	N=MTTNx; M=MTTNx
-	;;
-    obs_o)
-	N=MTTNyy; M=1
-	;;
-    obs_h)
-	N=MTTNyy; M=MTTNuu
-	;;
+#Header
+case $rep in
+    cse)
+    mtt_header  $1 $rep $ext 'mttx,mttu,mttt,mttpar' 'mttedx,mtte' > $out
+       ;;
+    cseo)
+    mtt_header  $1 $rep $ext 'mttx,mttu,mttt,mttpar' mtty > $out
+       ;;
+    ode)
+    mtt_header  $1 $rep $ext 'mttx,mttu,mttt,mttpar' mttdx > $out
+       ;;
+    odeo)
+    mtt_header  $1 $rep $ext 'mttx,mttu,mttt,mttpar' mtty > $out
+       ;;
+    sm)
+    mtt_header  $1 $rep $ext mttpar 'mtta,mttb,mttc,mttd' > $out
+       ;;
     *)
-	
-     esac
-else
-  NN=MTTNx+2*MTTNz+MTTNyz
-  case $Symbol in
-    a)
-	N=$NN; M=$NN
-	;;
-    b)
-	N=$NN; M=MTTNu
-	;;
-    c)
-	N=MTTNy; M=$NN
-	;;
-    d)
-	N=MTTNy; M=MTTNu
-	;;
-    e)
-	N=$NN; M=$NN
-	;;
-    *)
-  esac
-    
-fi
+esac
 
-# Set up the matrices
-
-    rm -f mtt_zero.m
-
- $SYMBOLIC  << EOF >>mtt_r2m.log
-    write "Doing ", "$Symbol";
-    %Set up the code generator
-    in"mtt_setreduce.r";
-   OUT "mtt_zero.m";
-     write  "mtt$Symbol = zeros(", $N, ",", $M , ");" ;
-  SHUT  "mtt_zero.m";
-
-    GENTRANOUT "$outfile.1";
-    mtt_matrix := MTT$Symbol;
-    %mtt_matrix_n := $N;
-    %mtt_matrix_m := $M;
-    %lang_matrix();
-    GENTRAN mtt_matrix :=: mtt_matrix;
-    GENTRANSHUT "$outfile.1";
-END;
-EOF
+#Convert from the (optimised) r file
+echo >> $out
+echo '## Code' >> $out
+grep 'mtt' < $1_$2.r |\
+sed \
+    -e "s/^mtt/  mtt/" \
+    -e "s/:=/=/" \
+    -e "s/\\$/;/" \
+ >> $out
 
 
-echo "%$Symbol matrix#" >> $outfile.pas
-cat mtt_zero.m >> $outfile.pas
-
-sed "s/mtt_matrix/mtt$Symbol/" < $outfile.1 |\
-grep -v '=0\.0;'  >> $outfile.pas
-
-#echo Done $Symbol
-
-done
-
-
-fi 
-
-# Convert from Pascal syntax to Octave syntax
- mtt_p2m <$outfile.pas > $outfile.m
-
-rm -f $outfile.pas  
-rm -f mtt_zero.m
-rm -f $outfile.1  
-  
+echo endfunction >> $out
 
 # Now invoke the standard error handling.
-mtt_error_r mtt_r2m.log
+#mtt_error_r mtt_r2m.log
 
 
 

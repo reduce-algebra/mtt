@@ -1,0 +1,151 @@
+#!/bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: tf_r2m
+# Reduce transfer-function matrices to Matlab MV toolbox matrices.
+# P.J.Gawthrop 9 June 1990, 8 July 1990, Dec 993
+# Copyright (c) P.J.Gawthrop, 1990, 1993.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+## Revision 1.1  1996/09/18 14:05:31  peter
+## Initial revision
+##
+###############################################################
+
+#Inform user
+echo Creating $1_tf.m
+
+# Remove the old log file
+rm -f tf_r2m.log
+
+# Use reduce to accomplish the transformation
+reduce >tf_r2m.log << EOF
+
+%Read the definitions file
+in "$1_def.r";
+
+%Set up the number of argument variables to zero in case the user has forgotten
+MTTNVar := 0;
+
+%Read the parameter file
+%%in "$1_sympar.r";
+
+%Read the transfer-function matrices file
+OFF Exp; ON GCD; 
+in "$1_tf.r";
+
+OFF Echo;
+%OFF Nat;
+OFF factor;
+
+%Find the largest degree numerator polynomial
+NnMax := 0;
+  FOR Row := 1:MTTNy DO
+  BEGIN
+    FOR Col := 1:MTTNu DO
+    BEGIN
+    Nn := length(coeff(num(MTTtf(Row,Col)),s));
+    IF Nn>NnMax THEN NnMax := Nn;
+    END;
+  END;
+
+NnMax;
+
+%Find the largest degree denominator polynomial, and corresp indices
+NdMax := 0;
+  FOR Row := 1:MTTNy DO
+  BEGIN
+    FOR Col := 1:MTTNu DO
+    BEGIN
+    Nd := length(coeff(den(MTTtf(Row,Col)),s));
+    IF Nd>NdMax THEN 
+                BEGIN
+                  NdMax := Nd; MaxRow := Row; MaxCol := Col;
+                END
+    END;
+  END;
+
+NdMax; MaxRow; MaxCol;
+
+IF NnMax>NdMax THEN NMax := NnMax ELSE NMax := NdMax;
+Nmax;
+
+%Use any denominator with maximum degree as the common denominator
+MTTden := den(MTTtf(MaxRow,MaxCol));
+
+%Find the corresponding numerator
+matrix MTTnum(MTTNy,MTTNu);
+  FOR Row := 1:MTTNy DO
+  BEGIN
+    FOR Col := 1:MTTNu DO
+    MTTnum(Row,Col) := num(MTTtf(Row,Col))*(MTTden/den(MTTtf(Row,Col)));
+  END;
+MTTnum;
+
+%Put coefficients into matrices
+matrix MTTdenco(1,Nmax);
+MTTCoeff := Coeff(MTTden,s);
+FOR i := 1:Nmax DO
+BEGIN
+  j := Nmax-i+1;
+  IF j>length(MTTCoeff) THEN MTTdenco(1,i) := 0 
+                        ELSE MTTdenco(1,i) := part(MTTCoeff,j);
+END; 
+
+matrix MTTnumco(MTTNy,MTTNu*Nmax);
+FOR MTTRow := 1:MTTNy DO
+BEGIN
+  FOR MTTCol := 1:MTTNu DO
+  BEGIN
+    MTTCoeff := Coeff(MTTnum(MTTRow,MTTCol),s);
+    FOR MTTi := 1:Nmax DO
+    BEGIN
+      MTTj := Nmax-MTTi+1;
+      MTTk := MTTi + (MTTCol-1)*Nmax;
+      IF MTTj>length(MTTCoeff) THEN MTTnumco(MTTRow, MTTk) := 0 
+                            ELSE MTTnumco(MTTRow, MTTk) := part(MTTCoeff,MTTj);
+    END;
+  END;
+END;
+
+
+
+OUT "$1_tf.m1";
+
+write "mttden = zeros(1,", Nmax, ");";
+write "mttnum =    zeros(", MTTNy, ",", Nmax*MTTNu, ");";
+
+%Suppress zeros
+ON NERO;
+
+%Fortran switches - one line expressions
+ON fort;
+cardno!* := 1\$
+fortwidth!* := 100\$
+OFF period;
+
+%Write out the matlab code
+mttden := MTTdenco;
+mttnum    := MTTnumco;
+SHUT "$1_tf.m1";
+quit;
+EOF
+
+#Headers
+mtt_header $1 tf m > $1_tf.m
+
+#Body
+cat $1_tf.m1  >> $1_tf.m
+echo '## END Code' >> $1_tf.m
+rm -f $1_tf.m1
+
+
+
+

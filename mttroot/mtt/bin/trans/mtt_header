@@ -12,6 +12,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.31  2001/04/03 14:49:42  gawthrop
+## Revised to incorporate new ssim (sensitivity simulation)
+## representation (m only just now).
+##
 ## Revision 1.30  2001/03/30 15:13:58  gawthrop
 ## Rationalised simulation modes to each return mtt_data
 ##
@@ -287,7 +291,13 @@ case $rep in
         output='y,y_par'
         args='x0,par,simpar,u,index'
 	;;
-    *)
+    tf)
+	states=no;
+	inputs=no;
+	parameters=yes;
+        output='mttnum,mttden'
+        args=mttpar;
+	;;    *)
 	echo Representation $rep not supported - sorry; exit 1
 esac
 

@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  2000/10/17 09:04:12  peterg
+## *** empty log message ***
+##
 ## Revision 1.9  1999/08/02 12:44:21  peterg
 ## zero_vector --> zero_state.
 ##
@@ -39,10 +42,10 @@
 
 
 # Find system constants
-Nx=`grep "MTTNx " <$1_def.r | awk '{print $3}' | sed 's/;//'`
+Nx=`mtt_getsize $1 x` # States
 
 #Write some file headers
-lang_header $1 switch m 'mttx' '[mttx]' > $1_switch.m
+#lang_header $1 switch m 'mttx' '[mttx]' > $1_switch.m
 
 #echo Creating  $1_switch.m
 # Set states to zero
@@ -65,18 +68,18 @@ lang_header $1 switch m 'mttx' '[mttx]' > $1_switch.m
 # }' Nx=$Nx < $1_switch.txt >> $1_switch.m
 
 ## Set index version
-echo Creating  $1_switchopen.m
+#echo Creating  $1_switchopen.m
 
 #Write some file headers
-lang_header $1 switchopen m 'mttx' '[open]' > $1_switchopen.m
+#lang_header $1 switchopen m 'mttx' '[open]' > $1_switchopen.m
 
 ## Add the switching logic
-cat  >> $1_switchopen.m <<EOF
+#cat  >> $1_switchopen.m <<EOF
 
 ## User defined logic (from $1_logic.m)
 
-EOF
-cat $1_logic.txt >> $1_switchopen.m
+#EOF
+#cat $1_logic.txt >> $1_switchopen.m
 
 # Set states to zero
 awk '{
@@ -87,17 +90,17 @@ awk '{
   }
   else{
   printf("\n#== Switch: %s ==#\n",$1)
-  printf("if (%s==0.0) \n", $1);
+  printf("if (%s_logic==0.0) \n", $1);
   printf("  open(%s) = 1;\n", $2);
   printf("end;\n");
-  printf("if (%s<0.0)\n",$1);
-  printf("  if (mttx(%s)<0.0)\n",$2);
+  printf("if (%s_logic<0.0)\n",$1);
+  printf("  if (%s<0.0)\n",$1);
   printf("    open(%s) = 1;\n", $2);
   printf("  end;\n");
   printf("end;\n");
 
   }
-}' Nx=$Nx < $1_switch.txt >> $1_switchopen.m
+}' Nx=$Nx < $1_switch.txt #>> $1_switchopen.m
 
 #echo Creating  $1_switcha.m
 

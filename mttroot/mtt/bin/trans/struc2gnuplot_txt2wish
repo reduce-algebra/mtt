@@ -47,9 +47,9 @@ menu .menubar.edit.menu.axes
 .menubar.edit.menu.axes add cascade -label "Ranges"    -underline 0 -menu .menubar.edit.menu.axes.range
 
 menu .menubar.edit.menu.axes.range
-.menubar.edit.menu.axes.range add command -label "Set X"   -underline 4 -command { puts "set xrange \[[get_value "X axis range? min:max" "*:*"]\]" }
-.menubar.edit.menu.axes.range add command -label "Set Y"   -underline 4 -command { puts "set yrange \[[get_value "Y axis range? min:max" "*:*"]\]" }
-.menubar.edit.menu.axes.range add command -label "Set Z"   -underline 4 -command { puts "set zrange \[[get_value "Z axis range? min:max" "*:*"]\]" }
+.menubar.edit.menu.axes.range add command -label "Set X"   -underline 4 -command { puts "set xrange \[[get_value "X axis range? min:max" "*:*"]\] ; replot" }
+.menubar.edit.menu.axes.range add command -label "Set Y"   -underline 4 -command { puts "set yrange \[[get_value "Y axis range? min:max" "*:*"]\] ; replot" }
+.menubar.edit.menu.axes.range add command -label "Set Z"   -underline 4 -command { puts "set zrange \[[get_value "Z axis range? min:max" "*:*"]\] ; replot" }
 
 menu .menubar.edit.menu.contour
 .menubar.edit.menu.contour add command -label "Show Contour" -underline 0 -command { puts "set   dgrid3d ; set   contour ; replot" }
@@ -163,9 +163,10 @@ canvas .rotationbar
 scale .rotationbar.xrot  -label "Rotate X" -orient h -from "0" -to "180" -command { do_rotate_3d "xrot" }
 scale .rotationbar.zrot  -label "Rotate Z" -orient h -from "0" -to "360" -command { do_rotate_3d "zrot" }
 pack .rotationbar.xrot  -side left
-pack .rotationbar.zrot  -side right
+pack .rotationbar.zrot  -side left
 .rotationbar.xrot set 30
 .rotationbar.zrot set 60
+
 pack .rotationbar		-expand false -fill x    -side bottom
 
 proc "enable_rotationbar" "" {
@@ -272,6 +273,7 @@ cat <<EOF >> ${out}
 }
 
 proc "plot" "title" {
+    global dimension
     global select
     global view
     global xcolumn
@@ -300,6 +302,7 @@ proc "plot" "title" {
 	"Select Z" {
 	    set zcolumn \$column
 	    set ztitle  \$title
+	    set dimension "3D"
 	}
     }
     plot_var
@@ -449,6 +452,11 @@ proc "get_value" "string initial" {
     label	.f.label	-text "\$string"
 
     .f.entry insert 0 "\$initial"
+    bind .f.entry <<Return>> {
+	set get_value_status "ok"
+	set get_value_retval [.f.entry get ]
+	destroy .f
+    }
 
     pack .f.buttons.ok		-side left   -expand false
     pack .f.buttons.cancel	-side left   -expand false
@@ -498,13 +506,16 @@ proc "get_scale" "string min max" {
 
 proc "do_rotate_3d" "var val" {
     switch -- \$var {
-	xrot	{ puts "set view \$val,,, ; replot" }
-	zrot	{ puts "set view ,\$val,, ; replot" }
-	scale	{ puts "set view ,,[expr pow(2,\$val)], ; replot" }
-	zscale	{ puts "set view ,,,[expr pow(2,\$val)] ; replot" }
+	xrot	{
+	    puts "set view \$val,,, ; replot"
+	}
+	zrot	{
+	    puts "set view ,\$val,, ; replot"
+	}
     }
 }
 
+event add <<Return>> <Return>
     
 # Defaults
 set parameter ""

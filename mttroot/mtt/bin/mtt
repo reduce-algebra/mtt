@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.284  2000/11/27 10:33:35  peterg
+## -pdf option now coerces ps-->pdf
+##
 ## Revision 1.283  2000/11/24 15:11:50  peterg
 ## -pdf switch for simple displays
 ##
@@ -2893,6 +2896,18 @@ $1_odess.dat: $1_odess.dat2 $1_def.r
 $1_$2.gdat: $1_$2.dat $1_struc.txt  $1_args.m
 	dat2gdat $1 $2 "$4" "$NyquistStyle"
 
+
+ifeq ($REPTYPE,data)
+## Conversion of gdat to fig files
+$1_$2.fig: $1_$2.gdat
+	gdat2fig $1_$2 "$ARGS"
+## Conversion of gdat fig files to ps/pdf
+$1_$2.$ps : $1_$2.fig
+	echo Creating $1_$2.$ps
+	fig2dev -L$eps $1_$2.fig > $1_$2.$ps
+endif
+
+
 #Generic conversion of Latex to latex document
 mtt.sty:
 	echo Copying mtt.sty to here
@@ -2906,44 +2921,35 @@ ifeq ($REPTYPE,bg)
 $1_$2.$ps : $1_$2.fig
 	echo Creating $1_$2.$ps
 	multi_command2 "fig2dev -L$eps" $1 $2.fig $2.$ps | sh
-else
+endif
+
+#ifeq ($REPTYPE,data)
+#ifeq ($PLOTTYPE,multiple)
+#ifneq ($_ARGS,)
+#$1_$2.fig: $1_$2.gdat
+#	gdat2fig $1_$2 '$ARGS'
+#	echo Creating $1_$2$__ARGS.$ps
+#	cp $1_$2.$ps $1_$2$__ARGS.$ps
+#else
+#$1_$2.fig: $1_$2.gdat
+#	gdat2fig $1_$2
+#endif
+#else
+#$1_$2.$ps: $1_$2.gdat
+#	gdat2ps $1_$2  '$ARGS'
+#endif
+#$1_$2.$ps: $1_$2.fig
+#	echo Creating $1_$2.$ps
+#	fig2dev -L$eps $1_$2.fig> $1_$2.$ps
+#
+#endif
+
+ifeq ($REPTYPE,tex)
 #Generic conversion of LaTeX doc to dvi or pdf
 $1_$2.$ps: $1_$2.doc
 	doc2$ps $1_$2 "$documenttype"
-#$1_$2.pdf: $1_$2.doc
-#	doc2pdf $1_$2 "$documenttype"
 endif
 
-
-ifeq ($REPTYPE,data)
-#Create PostScript version of dat file 
-#  + another version with Args added to the name if its appropriate
-ifeq ($PLOTTYPE,multiple)
-ifneq ($_ARGS,)
-$1_$2.fig: $1_$2.gdat
-	gdat2fig $1_$2 '$ARGS'
-	echo Creating $1_$2$__ARGS.$ps
-	cp $1_$2.$ps $1_$2$__ARGS.$ps
-else
-$1_$2.fig: $1_$2.gdat
-	gdat2fig $1_$2
-endif
-else
-$1_$2.$ps: $1_$2.gdat
-	gdat2ps $1_$2  '$ARGS'
-endif
-$1_$2.$ps: $1_$2.fig
-	echo Creating $1_$2.$ps
-	fig2dev -L$eps $1_$2.fig> $1_$2.$ps
-
-endif
-
-#ifeq ($REPTYPE,tex)
-#Create PostScript version of dvi file
-#$1_$2.$ps: $1_$2.dvi
-#	echo Creating $1_$2.$ps
-#	dvips -o $1_$2.$ps $1_$2
-#endif
 
 ifeq ($REPTYPE,tex)
 #Create html version of dvi file
@@ -2958,8 +2964,6 @@ $1_$2.view : $Subsystem_$2.pview
 endif
 
 ifeq ($REPTYPE,data)
-# This is the gnuplot version which leaves lots of defunct processes
-# $1_$2.view : $1_$2.dview
 $1_$2.view: $1_$2.$ps
 	echo Creating view of $1_$2 - $ps file
 	$psview $1_$2.$ps&
@@ -3009,7 +3013,7 @@ $1_rep.tex: $1_rep.txt $1_reps_made
 
 #SUMMARY abg Acausal bond graph report (tex)
 $1_abg.tex: $1_sub.sh
-	echo abg2tex $pdf $1; abg2tex $pdf $1
+	abg2tex $pdf $1
 
 #SUMMARY tf Transfer function (mml)
 $1_$2.mml: $1_$2.r

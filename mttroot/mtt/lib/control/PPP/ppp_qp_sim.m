@@ -49,7 +49,7 @@ test = test
 
   ## Design the controller
   ## disp("Designing controller");
-  [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww] = ppp_lin (A,B,C,D,A_u,A_w,t,Q);
+  [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww] = ppp_lin (A,B,C,D,A_u,A_w,t,Q,R,P);
 
   ## Set up various time vectors
   dt = t(2)-t(1);		# Time increment

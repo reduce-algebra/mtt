@@ -20,6 +20,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/03/26 09:00:26  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:
@@ -31,11 +34,12 @@
 
 % Component type SS
 	[Hy_in]		external	external
-	[Hy_out]		external	external
+	[Hy_out]	external	external
 	[pHy]		external	external
 	[pTh]		external	external
 	[Th_in]		external	external
-	[Th_out]		external	external
+	[Th_out]	external	external
+	zero		internal	internal
 
 % Component type Tankp
 	tank		none		$1

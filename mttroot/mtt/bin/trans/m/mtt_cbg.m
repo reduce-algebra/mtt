@@ -10,7 +10,7 @@ function cbg = mtt_cbg (name)
   cbg_file = sprintf("%s_cbg",name);
 
   if (exist(cbg_file)==0)
-    error(sprintf("mtt_component_eqn: subystem \"%s\" does not exist", name));
+    error(sprintf("mtt_cbg: subsystem \"%s\" does not exist", name));
   endif
   
   ## Subsystem data structure

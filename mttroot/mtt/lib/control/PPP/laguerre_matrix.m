@@ -6,10 +6,13 @@ function A = laguerre_matrix (n,p)
 
   ## Copyright (C) 1999 by Peter J. Gawthrop
 
-  ## Create A matrix
-  A = diag(-p*ones(n,1));
-  for i=1:n-1
-    A = A + diag(-2*p*ones(n-i,1),-i);
-  endfor
+  if n<1			# Creatre empty matrix
+    A = [];
+  else				# Create A matrix
+    A = diag(-p*ones(n,1));
+    for i=1:n-1
+      A = A + diag(-2*p*ones(n-i,1),-i);
+    endfor
+  endif
 
 endfunction

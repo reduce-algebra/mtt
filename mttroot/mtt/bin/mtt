@@ -17,6 +17,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.325  2001/10/11 03:15:55  geraint
+## Fixed make dependencies for c++ simulation code
+## - re-simulation no longer required for different output format.
+##
 ## Revision 1.324  2001/10/05 23:39:43  geraint
 ## Made odes.dat2 .PRECIOUS to prevent deletion when simulation receives ^C.
 ##
@@ -2570,7 +2574,7 @@ ifneq ($partition,)
 	echo Doing subsystems
 	mtt_make_subsystems  ${sys} cse r
 endif
-	dae2cse_r $optimise $Solve ${Subsystem}; tidy ${Subsystem}_cse.r #$1_subs.r
+	dae2cse_r $fixcc $optimise $Solve ${Subsystem}; tidy ${Subsystem}_cse.r #$1_subs.r
 $1_csex.r: $1_cse.r
 	touch $1_csex.r
 $1_cseo.r: $1_cse.r

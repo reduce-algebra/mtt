@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.18  2001/10/05 23:37:32  geraint
+## Fixed assignment statement in ae.r when RHS=0.
+##
 ## Revision 1.17  2001/07/27 23:29:10  geraint
 ## Optimises only when requested (-opt).
 ##
@@ -109,6 +112,10 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
         -A )
                 solve=1
 		solve_msg=' with explicit solution of algebraic equations' ;;
+	-fixcc )
+                fixcc=`echo 'in "'$MTT_LIB'/reduce/fix_c.r";'`
+                fix_msg='fixing c and cc code';
+		;;
 	-optimise)
 	    optimise='-optimise'
 	    optimise_msg=' with optimisation' ;;
@@ -123,7 +130,7 @@ def2write_r $optimise $1 cse
 def2write_r $optimise $1 csex # Version without E matrix
 def2write_r $optimise $1 cseo
 
-echo "Creating $1_cse.r $solve_msg $optimise_msg"
+echo "Creating $1_cse.r $solve_msg $optimise_msg $fix_msg"
 echo "Creating $1_csex.r $optimise_msg"
 echo "Creating $1_cseo.r $optimise_msg"
 
@@ -142,6 +149,9 @@ in "$MTTPATH/trans/reduce_matrix.r";
 OFF Echo;
 OFF Nat;
 ON NERO;
+
+%Fix c code if required
+$fixcc
 
 in "$1_def.r";
 MTTdxs := MTTdX;  %Save the symbolic form of dX

@@ -16,6 +16,10 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.17  2003/08/19 14:20:38  gawthrop
+@comment  Version 5.0 of MTT
+@comment  Remove xref errors (spurious spaces)
+@comment
 @comment  Revision 1.16  2003/08/19 14:11:23  gawthrop
 @comment  Links to legal stuff
 @comment
@@ -315,7 +319,7 @@ original English.
 @title MTT: Model Transformation Tools
 @subtitle August 2003
 @subtitle For version 5.0.
-@author Peter Gawthrop
+@author Peter Gawthrop, Geraint Bevan
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1996,1997,1998,1999,2000,2001,2002,2003 Peter J. Gawthrop
@@ -4621,6 +4625,10 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.17  2003/08/19 14:20:38  gawthrop
+# %% Version 5.0 of MTT
+# %% Remove xref errors (spurious spaces)
+# %%
 # %% Revision 1.16  2003/08/19 14:11:23  gawthrop
 # %% Links to legal stuff
 # %%

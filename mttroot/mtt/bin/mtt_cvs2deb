@@ -102,6 +102,9 @@ done
 
 topdir=`pwd`
 
+## Main MTT
+echo "Packaging mtt ..."
+
 # create working directory
 tmpdir=`mktemp -d mtt_cvs2deb.tmp.XXXXXXXXXX`
 if [ ! -d ${tmpdir} ]; then
@@ -118,7 +121,9 @@ fi
 
 # generate tarball of sources
 cd mttroot
-tar -czf mtt-${version}.tar.gz mtt/
+tar -cf mtt-${version}.tar mtt/
+tar --file mtt-${version}.tar --delete mtt/lib/examples
+gzip mtt-${version}.tar
 cd mtt
 
 # create .deb
@@ -132,6 +137,48 @@ cd ..
 
 # clean up
 cp mtt*.deb ${topdir}/
+cd ${topdir}
+if [ "${keeptmp}" = "remove" ]; then
+    rm -r ${tmpdir}
+else
+    echo Keeping temporary directory: ${tmpdir}
+fi
+
+
+## Examples
+echo "Packaging mtt-examples ..."
+
+# create working directory
+tmpdir=`mktemp -d mtt_cvs2deb.tmp.XXXXXXXXXX`
+if [ ! -d ${tmpdir} ]; then
+    error "cannot create temporary directory"
+fi
+
+# copy sources to working directory
+cd ${tmpdir}
+if [ "${sources}" = "${default_sources}" ]; then
+    cvs -z3 -d:pserver:anonymous@cvs.mtt.sf.net:/cvsroot/mtt co mttroot
+else
+    cp -a ${sources} .
+fi
+
+# generate tarball of sources
+cd mttroot/mtt/lib
+tar -cf mtt-examples-${version}.tar examples/
+gzip mtt-examples-${version}.tar
+cd examples
+
+# create .deb
+echo "$0: information: a \"Could not find diffs\" error in the next few lines is probably harmless"
+uupdate -u mtt-examples-${version}.tar.gz
+cd ../mtt-examples-${version}/debian
+dch -v ${version} ${logtext}
+cd ..
+dpkg-buildpackage -rfakeroot -k${DEBEMAIL}
+cd ..
+
+# clean up
+cp mtt-examples*.deb ${topdir}/
 cd ${topdir}
 if [ "${keeptmp}" = "remove" ]; then
     rm -r ${tmpdir}

@@ -1,0 +1,17 @@
+Source: mtt-examples
+Section: contrib/math
+Priority: optional
+Maintainer: Geraint Paul Bevan <geraint@users.sourceforge.net>
+Build-Depends: debhelper (>= 4.0.0)
+Standards-Version: 3.6.0
+
+Package: mtt-examples
+Architecture: any
+Depends: mtt
+Description: Library of examples for Model Transformation Tools
+ A library of examples for MTT, a set of tools for modelling dynamic physical systems using the bond-graph methodology and transforming these models into representations suitable for analysis, control and simulation. These tools use, and generate m files for, GNU Octave.
+ .
+ The MTT homepage is located at http://mtt.sourceforge.net. An on-line manual is available at http://mtt.sourceforge.net/doc.
+ .
+ mtt requires the non-free symbolic algebra tool Reduce to be installed. Details of Reduce can be found at http://www.uni-koeln.de/REDUCE/
+ .

@@ -28,6 +28,11 @@ global at_top_level
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.16  1998/04/11 19:07:16  peterg
+% %% Now do named ports as ordinary ports iff at top level.
+% %% --- not yet complete, need to pass necesssary info though to this
+% %%     function
+% %%
 % %% Revision 1.15  1997/12/16 19:16:07  peterg
 % %% Added unknown input to the effort part.
 % %%
@@ -94,6 +99,7 @@ STDerr = 2; % Standard output
 effort_attribute = cr;
 flow_attribute = args;
 
+% Default attributes
 if strcmp(effort_attribute,'')
   effort_attribute = 'external';
 end;
@@ -108,7 +114,15 @@ outputs = structure(4);
 zero_outputs = structure(5);
 unknown_inputs = structure(6);
 
-if strcmp(effort_attribute, 'MTT_port')&&~at_top_level % It's a named port
+% Is it a named port? (Name begins with [)
+Named_Port = (name(1)=='[');
+
+if Named_Port
+  % Strip the [
+  name = name(2:length(name));
+end;
+
+if Named_Port&&~at_top_level % It's a named port
 
 % Note: we don't have numbered ports now, so the correct indices are deduced
 % by incrementing the two globals: local_u_index and local_y_index

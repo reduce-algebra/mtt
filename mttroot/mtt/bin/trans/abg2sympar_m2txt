@@ -39,20 +39,25 @@ function matches(names, name) {
 }
 
 BEGIN {
+  var = "[%|#]VAR";
   not_an_arg = "effort flow state internal external zero unknown 0 1";
   arg_line = "arg = ";
 }
 {
+  ## Explicit VAR declarations
+  if (match($1,var)>0) print $2 "\t" name;
+
+   ## Implicit declarations from the arg list
   if (match($1,"arg")>0) {
     args=substr($3,2,length($3)-3);
     N=split(args, arg, ",");
     for (i=1;i<=N;i++){
       if ( (length(arg[i])>0)&&(matches(not_an_arg,arg[i])==0) ){
-        print arg[i];
+        print arg[i] "\t" name;
       }
     }
   }
-}' |\
+}'name=$1 |\
 sort -u > $1_sympar.txt 2>mtt_error.txt
 
 # Now invoke the standard error handling.

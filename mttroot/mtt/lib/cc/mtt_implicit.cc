@@ -61,7 +61,7 @@ DEFUN_DLD (mtt_implicit, args, ,
 	   "implicit integration method")
 {
 #ifdef OCTAVE_DEV
-  ColumnVector		x	= args(0).column_vector_value ();
+  static ColumnVector  	x	= args(0).column_vector_value ();
   const ColumnVector	dx	= args(1).column_vector_value ();
   const Matrix		AA	= args(2).matrix_value ();
   const ColumnVector	AAx	= args(3).column_vector_value ();
@@ -69,7 +69,7 @@ DEFUN_DLD (mtt_implicit, args, ,
   const int		Nx	= (int) (args(5).double_value ());
   const ColumnVector	openx	= args(6).column_vector_value ();
 #else
-  ColumnVector		x	= args(0).vector_value ();
+  static ColumnVector	x	= args(0).vector_value ();
   const ColumnVector	dx	= args(1).vector_value ();
   const Matrix		AA	= args(2).matrix_value ();
   const ColumnVector	AAx	= args(3).vector_value ();
@@ -91,10 +91,10 @@ DEFUN_DLD (mtt_implicit, args, ,
 	}
     }
 
-  ColumnVector	tmp_dx	(n, 0.0);
-  ColumnVector	tmp_x	(n, 0.0);
-  ColumnVector	tmp_AAx	(n, 0.0);
-  Matrix	tmp_AA	(n, n, 0.0);
+  static ColumnVector	tmp_dx	(n);
+  static ColumnVector	tmp_x	(n);
+  static ColumnVector	tmp_AAx	(n);
+  static Matrix	tmp_AA	(n, n);
 
   for (row_new = row_old = 0; row_old < Nx; row_old++)
     {

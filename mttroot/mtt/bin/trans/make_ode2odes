@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.47  2001/02/11 05:25:52  geraint
+## Reduced number of matrix operations during .oct simulation data write
+##
 ## Revision 1.46  2001/02/05 08:32:31  geraint
 ## typo
 ##
@@ -300,7 +303,7 @@ mtt_${ode} (const ColumnVector &x,
 	    const double &t,
 	    const ColumnVector &par)
 {
-  octave_value_list args, f;
+  static octave_value_list args, f;
   args (0) = octave_value (x);
   args (1) = octave_value (u);
   args (2) = octave_value (t);
@@ -319,7 +322,7 @@ mtt_${odeo} (const ColumnVector &x,
 	     const double &t,
 	     const ColumnVector &par)
 {
-  octave_value_list args, f;
+  static octave_value_list args, f;
   args (0) = octave_value (x);
   args (1) = octave_value (u);
   args (2) = octave_value (t);
@@ -341,7 +344,7 @@ mtt_implicit (const ColumnVector &x,
 	      const int &nx,
 	      const ColumnVector &open_switches)
 {
-  octave_value_list args, f;
+  static octave_value_list args, f;
   args (0) = octave_value (x);
   args (1) = octave_value (dx);
   args (2) = octave_value (AA);
@@ -364,7 +367,7 @@ mtt_euler (const ColumnVector &x,
 	   const int &nx,
 	   const ColumnVector &open_switches)
 {
-  octave_value_list args, f;
+  static octave_value_list args, f;
   args (0) = octave_value (x);
   args (1) = octave_value (dx);
   args (2) = octave_value (ddt);
@@ -384,12 +387,11 @@ mtt_input (const ColumnVector &x,
 	   const double &t,
 	   const ColumnVector &par)
 {
-  octave_value_list args;
+  static octave_value_list args, f;
   args (0) = octave_value (x);
   args (1) = octave_value (y);
   args (2) = octave_value (t);
   args (3) = octave_value (par);
-  octave_value_list f;
 #ifdef STANDALONE
   f = F${sys}_input (args, 1);
 #else
@@ -401,8 +403,7 @@ mtt_input (const ColumnVector &x,
 inline ColumnVector
 mtt_numpar (void)
 {
-  octave_value_list args;
-  octave_value_list f;
+  static octave_value_list args, f;
 #ifdef STANDALONE
   f = F${sys}_numpar (args, 1);
 #else
@@ -414,8 +415,8 @@ mtt_numpar (void)
 inline Octave_map
 mtt_simpar (void)
 {
-  octave_value_list args;
-  Octave_map f;
+  static octave_value_list args;
+  static Octave_map f;
 #ifdef STANDALONE
   f["first"]		= F${sys}_simpar (args, 1)(0).map_value ()["first"];
   f["dt"]		= F${sys}_simpar (args, 1)(0).map_value ()["dt"];
@@ -444,12 +445,11 @@ mtt_smxa (const ColumnVector &x,
 	  const double &t,
 	  const ColumnVector &par)
 {
-  octave_value_list args;
+  static octave_value_list args, f;
   args (0) = octave_value (x);
   args (1) = octave_value (u);
   args (2) = octave_value (t);
   args (3) = octave_value (par);
-  octave_value_list f;
 #ifdef STANDALONE
   f = F${sys}_smxa (args, 1);
 #else
@@ -464,12 +464,11 @@ mtt_smxax (const ColumnVector &x,
 	   const double &t,
 	   const ColumnVector &par)
 {
-  octave_value_list args;
+  static octave_value_list args, f;
   args (0) = octave_value (x);
   args (1) = octave_value (u);
   args (2) = octave_value (t);
   args (3) = octave_value (par);
-  octave_value_list f;
 #ifdef STANDALONE
   f = F${sys}_smxax (args, 1);
 #else
@@ -481,9 +480,8 @@ mtt_smxax (const ColumnVector &x,
 inline ColumnVector
 mtt_state (const ColumnVector &x)
 {
-  octave_value_list args;
+  static octave_value_list args, f;
   args (0) = octave_value (x);
-  octave_value_list f;
 #ifdef STANDALONE
   f = F${sys}_state (args, 1);
 #else
@@ -498,13 +496,12 @@ mtt_logic (const ColumnVector &x,
 	   const double &t,
 	   const ColumnVector &par)
 {
-  octave_value_list args;
+  static octave_value_list args, f;
   args (0) = octave_value (x);
   args (1) = octave_value (u);
   args (2) = octave_value (t);
   args (3) = octave_value (par);
 
-  octave_value_list f;
 #ifdef STANDALONE
   f = F${sys}_logic (args, 1);
 #else
@@ -528,18 +525,18 @@ mtt_write (const double &t,
   if (0 == row)
     data = Matrix (nrows, 1+ny+1+nx, 0.0);
 
-  data (row, col) = t;
+  data.elem (row, col) = t;
   for (register int i = 0; i < ny; i++)
-    data (row, ++col) = y (i);
-  data (row, ++col) = t;
+    data.elem (row, ++col) = y.elem (i);
+  data.elem (row, ++col) = t;
   for (register int i = 0; i < nx; i++)
-    data (row, ++col) = x (i);
+    data.elem (row, ++col) = x.elem (i);
 
   row++;
 
   if (nrows == row)
 #ifdef STANDALONE
-    cout << data;
+    cout << data << endl;
 #else // ! STANDALONE
   set_global_value ("MTT_data", data);
 #endif
@@ -552,13 +549,13 @@ DEFUN_DLD (${sys}_ode2odes, args, ,
 Usage: ${sys}_ode2odes (x, par, simpar)
 ")
 {
-  octave_value_list retval;
+  static octave_value_list retval;
 
-  ColumnVector	x;
-  ColumnVector	par;
-  Octave_map	simpar;
+  static ColumnVector	x;
+  static ColumnVector	par;
+  static Octave_map	simpar;
 
-  double
+  static double
     first	= 0.0,
     dt		= 0.0,
     last	= 0.0,
@@ -604,14 +601,14 @@ Usage: ${sys}_ode2odes (x, par, simpar)
       error("aborting.");
     }
 
-  ColumnVector	dx (MTTNX);
-  ColumnVector	u (MTTNU);
-  ColumnVector	y (MTTNY);
+  static ColumnVector	dx (MTTNX);
+  static ColumnVector	u (MTTNU);
+  static ColumnVector	y (MTTNY);
 
-  Matrix	AA (MTTNX, MTTNX);
-  ColumnVector	AAx (MTTNX);
-
-  ColumnVector	open_switches (MTTNX);
+  static Matrix	AA (MTTNX, MTTNX);
+  static ColumnVector	AAx (MTTNX);
+  
+  static ColumnVector	open_switches (MTTNX);
 
   register double t	= 0.0;
 

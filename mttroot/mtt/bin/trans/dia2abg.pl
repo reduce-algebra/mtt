@@ -569,11 +569,11 @@ sub parse_component_data {
 	    $type = $type_name;
 	    if (! defined ($anon_index{$type})) {
 		$anon_index{$type} = 1;
+		$name = "mtt${type}";
 	    } else {
-		$anon_index{$type}++;
+		my $num = ++$anon_index{$type};
+		$name = "mtt${type}_${num}";
 	    }
-	    my $num = $anon_index{$type};
-	    $name = "mtt${type}_${num}";
 	    $anonymous = 1;
 	} else {
 	    $anonymous = 0;

@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1996/12/07 18:06:50  peterg
+## Now detects symbolic args ($1 etc) and ignores them.
+##
 # Revision 1.4  1996/08/30  18:45:32  peter
 # Removed header stuff.
 #
@@ -53,7 +56,6 @@ not_an_arg = "effort flow state internal external zero 0 1";
 numeric = "[0-9]";
 symbol_count = 0;
 symbols = "";
-symbolic_arg_char = "$";
 }
 {
   if ( (match($1,comment)==0) && (NF>=3) ) {
@@ -70,7 +72,7 @@ symbolic_arg_char = "$";
       first_char = substr(arg[i],1,1);
       if ( (matches(not_an_arg,arg[i])==0) \
 	   && (match(first_char,numeric)==0) \
-	   && (match(first_char,symbolic_arg_char)==0) \
+	   && (match(arg[i],"\\$")==0) \
 	   && (length(arg[i])>0) \
 	   && (matches(symbols,arg[i]) ==0) ) {
 	symbol_count++;

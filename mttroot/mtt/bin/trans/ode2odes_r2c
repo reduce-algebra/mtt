@@ -20,6 +20,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1997/05/06 13:53:32  peterg
+## Now uses the preprocessor to declare sizes -- MTTNX etc
+##
 # Revision 1.5  1997/05/01  13:50:11  peterg
 # Replaced float by double.
 #
@@ -115,6 +118,7 @@ write "{"$
 
 write "/* Counters etc*/ "$
 write "  double time;"$
+write "  int itime;"$
 write "  double dt;"$
 write "  int i;"$
 write "  int k;"$
@@ -133,7 +137,8 @@ write "  $1_numpar();"$
 
 %Initialise main (Euler) integration loop
 write "/* Initialise main (Euler) integration loop */"$
-write "  time = 0;"$
+write "  time = 0.0;"$
+write "  itime = 0;"$
 write "  dt = DT/STEPFACTOR;"$
 write "  for (i=1; i<=MTTNX; i++)"$
 write "      x[i] = 0.0;"$
@@ -174,20 +179,19 @@ write "    for (i=1; i<=MTTNX; i++)"$
 write "      fprintf(fps, ""%5.4f "", x[i]);"$
 write "    fprintf(fps, ""\n"");"$
 
-% Inner integration loop
+write "    /* Set up system inputs */"$
+write "    $1_input(time);"$
+
 write "/* Inner integration loop */"$
 write "    for (k=1; k<=STEPFACTOR; k++)"$
 write "    {"$
-%Set up system inputs
-write "      /* Set up system inputs */"$
-write "      $1_input(time);"$
 write "      for (i=1; i<=MTTNX; i++)"$
 write "        x[i] = x[i] + dx[i]*dt;"$
 write "      $1_ode();"$
-write "      time = time + dt;"$
-
 write "    }"$
 
+write "      time = time + DT;"$
+write "      itime = itime + 1;"$
 write "  }"$
 
 %Write to files
@@ -209,6 +213,7 @@ write "    fprintf(fps, ""\n"");"$
 write "  fprintf(fps, ""];\n"");"$
 write "  fprintf(fpso, ""];\n"");"$
 
+write "  return 0;"$
 write "}"$
 
 
@@ -216,4 +221,6 @@ SHUT "$1_odes.c";
 
 
 EOF
+
+
 

@@ -51,15 +51,15 @@ sub lin (@) {
     $_ = $args[0];		# get component type
 
     # select rule to use
-    if (/AE|ae/)	{ $retval = lin_amp	(@args); }
-    if (/AF|af/)	{ $retval = lin_amp	(@args); }
-    if (/C|c/)		{ $retval = lin_cir	(@args); }
-    if (/EMTF|emtf/)	{ $retval = lin_emtf	(@args); }
-    if (/FMR|fmr/)	{ $retval = lin_fmr	(@args); }
-    if (/GY|gy/)	{ $retval = lin_gy	(@args); }
-    if (/I|i/)		{ $retval = lin_cir	(@args); }
-    if (/R|r/)		{ $retval = lin_cir	(@args); }
-    if (/TF|tf/)	{ $retval = lin_tf	(@args); }
+    if (/^AE|ae$/)	{ $retval = lin_amp	(@args); }
+    if (/^AF|af$/)	{ $retval = lin_amp	(@args); }
+    if (/^C|c$/)	{ $retval = lin_cir	(@args); }
+    if (/^EMTF|emtf$/)	{ $retval = lin_emtf	(@args); }
+    if (/^FMR|fmr$/)	{ $retval = lin_fmr	(@args); }
+    if (/^GY|gy$/)	{ $retval = lin_gy	(@args); }
+    if (/^I|i$/)	{ $retval = lin_cir	(@args); }
+    if (/^R|r$/)	{ $retval = lin_cir	(@args); }
+    if (/^TF|tf$/)	{ $retval = lin_tf	(@args); }
     
     # if a substitution has been made ($retval)
     if ($retval)

@@ -46,7 +46,7 @@ sub lcos (@) {
     $_ = $args[0];		# get component type
 
     # select rule to use
-    if (/EMTF|emtf/)	{ $retval = lcos_emtf	(@args); }
+    if (/^EMTF|emtf$/)	{ $retval = lcos_emtf	(@args); }
     
     # if a substitution has been made ($retval)
     if ($retval)

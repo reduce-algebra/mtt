@@ -14,6 +14,9 @@
 ###############################################################
 ## $$Id$
 ## $Log$
+## Revision 1.1  2001/04/02 08:19:18  gawthrop
+## Translates modulated parameters into reduce
+##
 ###############################################################
 
 # Inform user
@@ -28,6 +31,14 @@ inputs=`strip_comments < $1_modpar.txt |  cut -f2`
 
 
 for parameter in $parameters; do
-    grep $parameter $1_struc.txt | grep input |\
-     awk '{printf("%s := mttu(%i,1);\n", parameter, $2)}' parameter=$parameter >> $1_modpar.r
+    grep $1_${parameter}_ $1_struc.txt |\
+    awk 'BEGIN{
+               name["input"] = "u";
+               name["output"] = "y";
+               name["state"] = "x";
+               name["nonstate"] = "z";
+	      }
+	 {
+           printf("%s := mtt%s(%i,1);\n", parameter, name[$1],  $2)
+         }' parameter=$parameter >> $1_modpar.r
 done

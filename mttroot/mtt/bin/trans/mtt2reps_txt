@@ -9,6 +9,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  2000/04/04 16:15:14  peterg
+## Fixed awk prob - must be the same sep. for each field (?)
+## So tr tab to space
+##
 ## Revision 1.6  2000/04/04 13:09:51  peterg
 ## *** empty log message ***
 ##
@@ -32,7 +36,7 @@
 ##
 ###############################################################
 
-
+sep='|'; # Separates the languages from the rest.
 representations=`grep '#SUMMARY' $MTTPATH/mtt | awk '{print $2'} | sort -u `
 
 for rep in $representations ; do
@@ -54,7 +58,7 @@ for rep in $representations ; do
       sort -u | sed 's/[()]//g'` 
 
       Title='('$title')'
-      echo $rep $Title $language
+      echo -e  $rep $Title '\t' $sep $language
      
 done
 

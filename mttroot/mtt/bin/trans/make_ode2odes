@@ -4,6 +4,14 @@
      ##### Model Transformation Tools #####
      ######################################
 
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
 # Bourne shell script: make_ode2odes
 
 # Copyright (c) P.J.Gawthrop July 1998.
@@ -42,13 +50,11 @@ mtt_write(t,MTTx,MTTy,$Nx,$Ny); # And write them
 #Integration loop
 for it = 1:iLast
     for i = 1:STEPFACTOR
-	MTTu = $1_input(MTTx,t);# Input
-        MTTx = $1_switch(MTTx); # Switches
-	MTTdx = $1_ode(MTTx,MTTu,t);
-	for j = 1:$Nx
-	    MTTx(j) = MTTx(j) + MTTdx(j)*DDT;
-	end;
-	MTTy = $1_odeo(MTTx,MTTu,t);
+        [MTTu] = $1_input(MTTx,t);# Input
+        [MTTx] = $1_switch(MTTx); # Switches
+        [MTTdx] = $1_ode(MTTx,MTTu,t);
+        [MTTx] = mtt_update(MTTdx,MTTx,DDT,$Nx,METHOD);
+        [MTTy] = $1_odeo(MTTx,MTTu,t);
 	t = t + DDT;
     end;
     mtt_write(t,MTTx,MTTy,$Nx,$Ny);

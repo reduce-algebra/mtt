@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.14  1998/05/19 19:48:02  peterg
+## Read the simpar file now.
+##
 ## Revision 1.13  1998/05/14 08:05:10  peterg
 ## Put back under RCS
 ##
@@ -112,6 +115,9 @@ $MATRIX << EOF > ode2odes_m.log 2>mtt_error.txt
     x = zeros(nx,1);
    end;
 
+  % xx is the composite vector containing x and the internal inputs.
+  xx = [x; zeros(nyz,1)];
+
   [n,m]=size(T);
   if m>n
     T=T';
@@ -127,12 +133,15 @@ if nx>0
     X=[];
     dt = (T(2)-T(1))/STEPFACTOR;
     for t=T'
-      X = [X; x'];
+      X = [X; xx'];
       ts = t;
       for i=1:STEPFACTOR
-        dx = $1_ode(x,ts);
+        x = xx(1:nx);
+        xx = $1_ode(xx,ts);
         ts = ts + dt;
+        dx = xx(1:nx);
         x = x + dx*dt;
+        xx(1:nx) = x;
       end;
     end;
   else
@@ -147,7 +156,7 @@ end;
 if ny>0 % compute y and print it
   i = 0; Y=[];
   for t=T'
-    i = i+1;
+    i = i+1, X(i,:)
     y = $1_odeo(X(i,:),t);
     Y = [Y; y'];
   end;

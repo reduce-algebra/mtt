@@ -1,5 +1,5 @@
 %% Label file for system sTF (sTF_lbl.txt)
-%SUMMARY sTF
+%SUMMARY sTF TF component with sensitivity ports
 %DESCRIPTION <Detailed description here>
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1999/08/26 01:22:25  peterg
+% %% New alias $1 flow,k
+% %%
 % %% Revision 1.1  1999/08/26 00:15:58  peterg
 % %% Initial revision
 % %%

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.80  1997/05/22 07:38:27  peterg
+## Added command line info to .doc files (makedoc)
+##
 ## Revision 1.79  1997/05/19 16:44:12  peterg
 ## Many changes to get rep.html mode working properly.
 ##
@@ -1155,8 +1158,8 @@ $1_$2.dat: $1_$2.m
 	m2dat $1_$2
 
 #Generic conversion of data files from dat to (gplot) gdat format
-$1_$2.gdat: $1_$2.dat $1_args.m
-	dat2gdat $1_$2 
+$1_$2.gdat: $1_$2.dat $1_args.m $1_struc.txt
+	dat2gdat $1_$2 `name2index $1 "$4"`
 
 #Generic conversion of Latex to latex document
 mtt.sty:

@@ -1,0 +1,38 @@
+%SUMMARY DC: DC motor (or generator)
+%DESCRIPTION Port 1: Electical (in)
+%DESCRIPTION Port 2: Mechanical (out)
+%DESCRIPTION Parameter 1: Motor gain (k_m)
+%DESCRIPTION Parameter 2: Armature inductance (l_a)
+%DESCRIPTION Parameter 3: Armature resistance (r_a)
+%DESCRIPTION Parameter 4: Inertia (j_m)
+%DESCRIPTION Parameter 5: Friction coefficient
+
+
+%% Label file for system DC (DC_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+%Motor gain
+k_m	lin	flow,$1
+
+% Electrical components
+%Inductance
+l_a	lin	effort,$2
+%Resistance
+r_a	lin	flow,$3
+
+% Mechanical components
+%Inertia
+j_m	lin	flow,$4
+%Friction
+b_m	lin	flow,$5

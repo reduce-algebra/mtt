@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/11/20 11:34:17  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -44,7 +47,6 @@
 % Component type SS
 	[Hydraulic_in]	SS	external,external
 	[Hydraulic_out]	SS	external,external
-	[Shaft]		SS	external,external
 	[Thermal_in]	SS	external,external
 	[Thermal_out]	SS	external,external
 

@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  1997/01/06 21:36:44  peterg
+## Fixed bug mtt_error --> mtt_error.txt
+## Replaced lsode by Euler integration.
+##
 ## Revision 1.8  1996/09/13 17:54:08  peter
 ## Now writes default $PARAMS to $1_args.m - $1_ode may use it.
 ##
@@ -58,6 +62,7 @@ PARAMS="$PARAMS ;"
 
 $MATRIX << EOF > ode2odes_m.log 2>mtt_error.txt
 
+  step_factor = 1; %Set up default step factor
   %Read in parameters
   $1_numpar;
 
@@ -82,15 +87,22 @@ $MATRIX << EOF > ode2odes_m.log 2>mtt_error.txt
 
 if nx>0
 %  x = lsode('$1_ode', x0, T);
+
 %Euler integration
   x = x0;
   X=[];
-  dt = T(2)-T(1);
+  dt = (T(2)-T(1))/step_factor;
+
   for t=T'
     X = [X x];
-    dx = $1_ode(x,t);
-    x = x + dx*dt;
+    ts = t;
+    for i=1:step_factor
+      dx = $1_ode(x,ts);
+      ts = ts + dt;
+      x = x + dx*dt;
+    end;
   end;
+
   X = X';
   write_matrix([T,X], '$1_odes');
 else

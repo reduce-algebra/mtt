@@ -1,4 +1,3 @@
-
 ###################################### 
 ##### Model Transformation Tools #####
 ######################################
@@ -13,6 +12,12 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.34  1999/02/17 06:23:49  peterg
+## Bugs arising from Fig 3.2 fixed
+##
+## -- depth now zero modulo 10 (3.2 defaults to depth 100!!)
+## -- horrible bug using = in place of == fixed.
+##
 ## Revision 1.33  1998/08/10 15:51:06  peterg
 ## Comments may now be prefaced by # as well as %
 ##
@@ -493,6 +498,7 @@ function process_fig() {
 # Test for the fig format first line and data line
   data_line = (match($1,data_symbol)>0);
   first_line = (data_line==0)&&(NF>min_line_length);
+
 #Process firstline
   if (first_line) {
     object = $1;
@@ -507,7 +513,8 @@ function process_fig() {
 
 #Process text
   if (object==text) {
-    process_text()
+    process_text();
+    object = 0; # Text on one line so reset object to zero- avoids compound problem
       }
 
 # Process bond
@@ -566,6 +573,7 @@ BEGIN {
   sub_polyline=1; 
   firm_style = 0;
   text = 4;
+  compound_object = 6;
   bond_coords = 3;
   stroke_coords = 2;
   arrow_coords = 2;

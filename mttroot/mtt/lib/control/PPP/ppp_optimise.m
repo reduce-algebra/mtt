@@ -1,5 +1,5 @@
 function [par,Par,Error,Y,iterations,x] = \
-      ppp_optimise(system_name,x_0,par_0,simpar,u,y_0,free,extras);
+      ppp_optimise(system_name,x_0,par_0,simpar,u,y_0,free,Q,extras);
   ## Levenberg-Marquardt optimisation for PPP/MTT
   ## Usage: [par,Par,Error,Y,iterations,x] = ppp_optimise(system_name,x_0,par_0,simpar,u,y_0,free[,extras]);
   ##  system_name     String containing system name
@@ -14,6 +14,7 @@ function [par,Par,Error,Y,iterations,x] = \
   ##  free            one row for each adjustable parameter
   ##                  first column parameter indices
   ##                  second column corresponding sensitivity indices
+  ##  Q               vector of positive output weights.
   ##  extras (opt)    optimisation parameters
   ##        .criterion convergence criterion
   ##        .max_iterations limit to number of iterations
@@ -28,6 +29,9 @@ function [par,Par,Error,Y,iterations,x] = \
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.9  2002/05/08 10:14:21  gawthrop
+  ## Idetification now OK (Moved data range in ppp_optimise by one sample interval)
+  ##
   ## Revision 1.8  2002/04/23 17:50:39  gawthrop
   ## error --> err to avoid name clash with built in function
   ##
@@ -63,7 +67,7 @@ function [par,Par,Error,Y,iterations,x] = \
   i_t = free(:,1);		# Parameters
   i_s = free(:,2)';		# Sensitivities
 
-  if nargin<8
+  if nargin<9
     extras.criterion = 1e-5;
     extras.max_iterations = 10;
     extras.v = 1e-5;
@@ -76,6 +80,10 @@ function [par,Par,Error,Y,iterations,x] = \
     error("ppp_optimise: y_0 should be in columns, not rows")
   endif
 
+  if nargin<8
+    Q = ones(n_y,1);
+  endif
+  
   n_th = length(i_s);
   err_old = inf;
   err_old_old = inf;
@@ -130,10 +138,10 @@ function [par,Par,Error,Y,iterations,x] = \
     
     for i = 1:n_y
       E = y(:,i) - y_0(:,i);	#  Error in ith output
-      err = err + (E'*E);	# Sum the squared error over outputs
+      err = err + Q(i)*(E'*E);	# Sum the squared error over outputs
       y_par_i = y_par(:,i:n_y:n_y*n_th); # sensitivity function (ith output)
-      J  = J + y_par_i'*E;	# Jacobian
-      JJ = JJ + y_par_i'*y_par_i; # Newton Euler approx Hessian
+      J  = J + Q(i)*y_par_i'*E;	# Jacobian
+      JJ = JJ + Q(i)*y_par_i'*y_par_i; # Newton Euler approx Hessian
     endfor
 
     if iterations>1 # Adjust the Levenberg-Marquardt parameter

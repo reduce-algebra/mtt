@@ -1,4 +1,4 @@
-function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run (system_name,i_ppp,i_par,A_u,w_s,N_ol,extras)
+function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run(system_name,i_ppp,i_par,A_u,w_s,N_ol,Q,extras)
 
 
   ## usage: [y,u,t,p,U,t_open,t_ppp,t_est,its_ppp,its_est] =
@@ -31,7 +31,7 @@ function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run (system_
   global system_name_sim i_ppp_sim x_0_sim y_sim u_sim A_u_sim simpar_sim
 
   ## Defaults
-  if nargin<7
+  if nargin<8
     extras.alpha = 0.1;
     extras.criterion = 1e-5;
     extras.emulate_timing = 0;
@@ -61,6 +61,10 @@ function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run (system_
   x_0_model = x_0;
   [n_x,n_y,n_u] = eval(sprintf("%s_def;", system_name));
 
+  if nargin<8
+    Q = ones(n_y,1);
+  endif
+ 
   ## Sensitivity system details -- defines moving horizon simulation
   simpars = eval(sprintf("%s_simpar;", s_system_name));
   pars = eval(sprintf("%s_numpar;", s_system_name));
@@ -165,7 +169,7 @@ function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run (system_
 	    ppp_optimise(s_system_name,x_0_models,pars,simpar_est,u_star_t,y_est,i_par,extras);
 	
 	if extras.visual
-	  figure(2);
+	  figure(11);
 	  title("Parameter optimisation"); 
 	  II = [1:length(y_est)]; plot(II,y_est,"*", II,Y);
 	endif
@@ -205,9 +209,9 @@ function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run (system_
       U_old = U;		# Save previous value
       U = expm(A_u*T_ol)*U;	# Initialise from continuation trajectory
       pars(i_ppp(:,1)) = U;	# Put initial value of U into the parameter vector
-      [U, U_all, Error, Y, its] = ppp_nlin(system_name,x_nexts,pars,simpars,u_star_tau,w_s,i_ppp,extras);
+      [U, U_all, Error, Y, its] = ppp_nlin(system_name,x_nexts,pars,simpars,u_star_tau,w_s,i_ppp,Q,extras);
       if extras.visual
-	figure(3);
+	figure(12);
 	title("PPP optimisation");
 	II = [1:length(w_s)]; plot(II,w_s,"*", II,Y);
 	figure(1);

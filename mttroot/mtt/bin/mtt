@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.371  2003/03/13 15:47:35  gawthrop
+## Added sese rep.
+##
 ## Revision 1.370  2003/02/11 20:04:08  geraint
 ## Reverted to line-by-line optimisation as default and added caution to
 ## description of -optg.
@@ -2797,7 +2800,7 @@ ${sys}_ese.r: ${sys}_cbg.m
 	   cbg2ese_m2r $partition $info_switch $Subsystem; #ese_tidy $1
 
 ${sys}_sese.r: ${sys}_cbg.m ${sys}_struc.m
-	   cbg2sese_m2r $Subsystem
+	   cbg2sese_m2r $info_switch $Subsystem
 
 $1_def.r: $1_ese.r
 	touch $1_def.r

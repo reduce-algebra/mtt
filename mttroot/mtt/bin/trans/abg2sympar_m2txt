@@ -10,7 +10,7 @@
 # Copyright (C) 2000 by Peter J. Gawthrop
 
 # Inform user
-#echo "Creating $1_sympar.txt"
+##echo "Creating $1_sympar.txt" with $1 $2 $3
 
 # Separation characters
 SEPS='^=*;+/()-'
@@ -21,11 +21,12 @@ SystemName=$2
 UseLabelFile=$3
 
 if [ -n "$UseLabelFile" ]; then ## Take input from lbl.txt
-     strip_comments < $1_lbl.txt | tr $SEPS $REPS |\
+     strip_comments < $1_lbl.txt  | tr $SEPS $REPS |\
      awk '{printf("%s %s \"%s\",\n",$1,$2,$3)}' > mtt_stripped_file
 else ## Take input from _abg.m
      cat $1_abg.m | grep "arg =" | tr $SEPS $REPS > mtt_stripped_file
 fi
+
 rm -f mtt_error
 # This is the main transformation using gawk
 cat mtt_stripped_file | \

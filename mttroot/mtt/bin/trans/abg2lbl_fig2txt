@@ -13,6 +13,11 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.21  2001/07/06 00:46:50  gawthrop
+## Added -cr option -- forces cr to be loaded before the ese.r file
+## This avoids causality problems when using multi-port Rs to represent
+## arbitary equations
+##
 ## Revision 1.20  2001/07/04 05:19:57  gawthrop
 ## Added RT & CT to list
 ##
@@ -100,7 +105,7 @@ else
     sys=${system}
 fi
 
-# Remove the old log file
+# Remove unwanted files
 rm -f abg2lbl_fig2txt.log
 rm -f $1_cbg.m
 rm -f $typefile
@@ -157,6 +162,8 @@ EOF
 
 create_lbl_body()
 {
+
+## Find names aof all components
 awk '/:/ {print $NF}' $1_abg.fig | \
 sed 's/\\001//' | \
 sort | \
@@ -190,11 +197,13 @@ awk --field-separator ':' '
       s_arg = sprintf("%ss",Name);
       alias[++i] = s_arg;
       s_arg = sprintf(";%s",s_arg);
+      Component_type = Component;
       Component = substr(Component,2);
       lin = "slin"
     }
    else {
-      lin = "lin"
+      Component_type = Component;
+      lin = "lin";
     }
   
  }
@@ -238,20 +247,20 @@ awk --field-separator ':' '
         cr[Component] = "lin";
     }
 
-  ## Heading
-  if (Component !~ OldComponent) print "\n## Component type", Component
+  ## Print component header 
+  if (Component !~ OldComponent) print "\n## Component type", Component_type
 
-  ## Component
+  ## Print Component
     printf("\t%s\t", Name);
     if (Component in cr)
       printf("%s\t\t", cr[Component])
     else 
-      printf("%s\t\t",default_cr);
+      printf("%s\t\t", default_cr);
 
    if (Component in arg)
       printf("%s\t\t\n", arg[Component])
     else {
-	print "lbl2args_txt2out", Component | "/bin/sh"; close("/bin/sh")
+	print "lbl2args_txt2out", Component_type | "/bin/sh"; close("/bin/sh")
     }
 
     OldComponent=Component;
@@ -277,24 +286,25 @@ awk --field-separator ':' '
  }' sensitivity=$sensitivity
 }
 
-create_args()
+create_arg_aliases()
 {
 cat <<EOF
 
 ## Argument aliases
 EOF
-
-abg2sympar_m2txt $1 "" use_label_file |\
- awk '{printf("#ALIAS\t$%i\t%s\n", ++i, $1)}'
+abg2sympar_m2txt ${system} ${system} use_label_file |\
+awk '{printf("#ALIAS\t$%i\t%s\n", ++i, $1)}'
 }
 
 ## Main 
 
-create_lbl_body $1> mtt_junk_lbl.txt
+create_lbl_body $1> $1_lbl.txt
+create_arg_aliases > mtt_args.txt # using $1_lbl.txt
+mv $1_lbl.txt mtt_junk_lbl.txt
 
 write_header            > ${outfile}
 cat mtt_junk_alias.txt >> ${outfile}
-create_args mtt_junk   >> ${outfile}
+cat mtt_args.txt       >> ${outfile}
 write_blurb            >> ${outfile}
 cat mtt_junk_lbl.txt   >> ${outfile}
 ## Put a blank line at end
@@ -303,4 +313,8 @@ cat >> ${outfile} <<EOF
 EOF
 ## Clean up
 rm -f mtt_junk*
+
+
+
+
 

@@ -12,6 +12,9 @@ function structure = cbg2ese(system_name, system_type, full_name, infofile)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.4  1996/08/19 09:03:41  peter
+% %% Handles repeating components.
+% %%
 % %% Revision 1.3  1996/08/18 20:08:02  peter
 % %% Included additional structure: structure(5) = zero_outputs.
 % %%
@@ -129,7 +132,8 @@ filenum = fopen(ese_name, 'w');
     end;
   end;
 
-fclose(filenum);
+  fprintf(filenum, 'END;');
+  fclose(filenum);
 
 
 

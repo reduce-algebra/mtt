@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.45  2004/04/07 12:17:43  gawthrop
+## Handles new Fig header line.
+##
 ## Revision 1.44  2002/05/25 09:23:47  gawthrop
 ## Self-naming components: name is mttTYPE or mttTYPE_2 ...
 ##
@@ -222,7 +225,13 @@
 #		field 14 is the type:name string terminated by \001
 # To prevent text being confused with components, components consist
 # of alphanumeric characters and : and _ only.
-# The lbl file is used to sort the components.
+# 
+# Components are sorted alphabetically ("type:name")
+# within the following categories:
+# 1) internal ports (SS:[...])
+# 2) basic components, subsystems and external ports 
+# 3) 0 junctions
+# 4) 1 junctions
 ##############################################################
 
 function modulo10(x) {
@@ -271,6 +280,26 @@ function process_lbl() {
 	}
 }
 
+function sort_cmp() {
+# Sorts components alphabetically by type then name
+  for (i = 1; i <= i_label; i++) {
+    name = label[i,1];
+    type = comp_type[name];
+    cmp_list[i] = sprintf ("'%s:%s'", type, name);
+  }
+  asort (cmp_list);
+  for (i = 1; i <= i_label; i++) {
+    for (j = 1; j <= i_label; j++) {
+      name = label[j,1];
+      type = comp_type[name];
+      typename = sprintf ("'%s:%s'", type, name);
+      if (typename == cmp_list[i]) {
+	sort_cmp_list[i] = j;
+      }
+    }
+  }
+}
+
 function fig_info() {
 # Grabs the fig-file information for a component
   return(sprintf("%s %s %s %s %s %s %s %s %s %s %s ", \
@@ -306,7 +335,7 @@ function process_text() {
 # Zap maths
   ##gsub(/[()-+*/]/,"",str); 
 
-# Loose the cr stuff (if present)
+# Lose the cr stuff (if present)
   if (depth==0) {
       N=split(str,a,delimiter);
       if (N==3)
@@ -737,22 +766,44 @@ END {
   printf("rcomponents = [") >> b_file;
   j = 0;
 
+  sort_cmp();	# sort components alphabetically
 
 # Do the port components, in order of appearance, first.
   for (i = 1; i <= i_label; i++) {
-    name = label[i,1];
+    num  = sort_cmp_list[i];
+    name = label[num,1];
     if (match(name,port_regexp))
-      write_component(i);
+      write_component(num);
   }
-
-# Now do the ordinary components, in order of appearance, last.
+  
+# then do the ordinary components, in order of appearance.
   for (i = 1; i <= i_label; i++) {
-    name = label[i,1];
+    num  = sort_cmp_list[i];
+    name = label[num,1];
     if (!match(name,port_regexp))
-      write_component(i);  
-}
+      if ((!match(comp_type[name],"0"))&&
+	  (!match(comp_type[name],"1"))) 
+	write_component(num);
+  }
+  
+# followed by the 0 junctions
+  for (i = 1; i <= i_label; i++) {
+    num  = sort_cmp_list[i];
+    name = label[num,1];
+    if (!match(name,port_regexp))
+      if (match(comp_type[name],"0"))
+	write_component(num);
+  }
+# and finally the 1 junctions
+  for (i = 1; i <= i_label; i++) {
+    num  = sort_cmp_list[i];
+    name = label[num,1];
+    if (!match(name,port_regexp))
+      if (match(comp_type[name],"1"))
+	write_component(num);      
+  }
   printf("];\n") >> b_file;
-
+  
 # Print the (internal) ports list
   printf("port_coord = [\n") >> b_file;
   for (i = 1; i <= i_port; i++) {

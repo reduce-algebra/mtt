@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1998/04/07 05:45:12  peterg
+## Reverted to an older version due to untraceable bug in new version
+##
 ## Revision 1.3  1996/08/25 10:07:05  peter
 ## Remove a du state ment causaing touble
 ##      - but needs more work.
@@ -55,6 +58,7 @@ MTTGPCNu := 0;
 in "$1_ode.r";
 %%in "$1_simp.r";
 
+% Read the obs form parameters.
 in "$1_obspar.r";
 
 %Create the U vector of input derivatives.
@@ -88,20 +92,23 @@ l := MTTNy;
 FOR i := 1:MTTGPCNy DO
     FOR j := 1:MTTNy DO
     BEGIN
-    l := l+1;
-    MTTYY(l,1) := 0;
-    FOR k := 1:MTTNx DO %Derivatives wrt x
-    BEGIN
-      xk := MTTX(k,1);
-      MTTYY(l,1) := MTTYY(l,1) + df(MTTYY(l-MTTNy,1), xk, 1)*MTTdX(k,1);
+      l := l+1;
+      MTTYY(l,1) := 0;
+      FOR k := 1:MTTNx DO %Derivatives wrt x
+      BEGIN
+        xk := MTTX(k,1);
+        MTTYY(l,1) := MTTYY(l,1) + df(MTTYY(l-MTTNy,1), xk, 1)*MTTdX(k,1);
+      END;
+      IF MTTGPCNu>0 THEN
+      FOR k := 1:MTTGPCNu DO %Non-zero derivatives of u
+      BEGIN
+        FOR kk := 1:MTTNu DO
+        BEGIN
+          uk := MTTUU(kk,k);
+          MTTYY(l,1) := MTTYY(l,1) + df(MTTYY(l,1), uk, 1)*MTTUU(1,k+1);
+        END;
+      END;
     END;
-    IF MTTGPCNu>0 THEN
-    FOR k := 1:MTTGPCNu DO %Derivatives wrt u
-    BEGIN
-      uk := MTTUU(1,k);
-      MTTYY(l,1) := MTTYY(l,1) + df(MTTYY(l,1), uk, 1)*MTTUU(1,k+1);
-    END;
-  END;
 END;
 
 %%Create O_x - derivative of YY wrt x
@@ -161,16 +168,55 @@ END;
 %  END;
 
 
+% Try and split the obs function into affine form (O(x,u) = o(x) + h(x)u)
+affine := 1;
+MTTNuu := (MTTGPCNu+1)*MTTNu;
 
-mtt_matrix := MTTYY$
-mtt_matrix_n := MTTNy*MTTGPCNy;
-mtt_matrix_m := 1;
-mtt_matrix_name := "MTTYY"$
+IF affine=1 THEN
+BEGIN
+  MATRIX MTTObs_o(MTTNyy,1);
+  MATRIX MTTObs_h(MTTNyy,MTTNuu);
+  FOR i := 1:MTTNyy DO
+  BEGIN
+    MTTObs_o(i,1) := MTTYY(i,1);
+    FOR j := 1:MTTNuu DO
+    BEGIN
+      %Expand as polynomial in uj
+      coeffs := coeff(MTTObs_o(i,1), MTTu(j,1));
+      MTTObs_o(i,1) := first(coeffs);
+      IF length(coeffs)>1 THEN
+        MTTObs_h(i,j) := second(coeffs);
+      IF length(coeffs)>2 THEN affine := 0;
+    END;
+  END;
+END;
+
+
 
 %%Create the _obs.r file
 OUT "$1_obs.r";
+affine := affine;
 
+mtt_matrix := MTTYY$
+mtt_matrix_n := MTTNyy$
+mtt_matrix_m := 1$
+mtt_matrix_name := "MTTYY"$
 reduce_matrix();
+
+IF affine=1 THEN
+BEGIN
+  mtt_matrix := MTTObs_o$
+  mtt_matrix_n := MTTNyy$
+  mtt_matrix_m := 1$
+  mtt_matrix_name := "MTTObs_o"$
+  reduce_matrix();
+
+  mtt_matrix := MTTObs_h$
+  mtt_matrix_n := MTTNyy$
+  mtt_matrix_m := MTTNuu$
+  mtt_matrix_name := "MTTObs_h"$
+  reduce_matrix();
+END;
 
 %MTTO_x := MTTO_x;
 %MTTO_u := MTTO_u;

@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/10/11 05:08:14  peterg
+% %% Initial revision
+% %%
 % %% Revision 1.1  1999/05/18 04:01:50  peterg
 % %% Initial revision
 % %%
@@ -20,33 +23,62 @@ Section \Ref{sec:PinnedBeam_lbl}.  The subsystems are listed in Section
 This example represents the dynamics of a uniform beam with two pinned
 ends. The left-hand end is driven by a torque input and the
 corresponding collocated angular velocity is measured.  The beam is
-approximated by 20 equal lumps using the Bernoulli-Euler approximation
-with damping. 
+approximated by 20 equal lumps using the Bernoulli-Euler.  Because the
+two end lumps have different causality to the rest of the beam lumps,
+they are represented seperately.  The system has 40 states (20 modes
+of vibration), 1 input and 1 output.
 
-Because the two end lumps have different causality to the rest of the
-beam lumps, they are represented seperately.
-
-The system parameters are given in Section
-\Ref{sec:PinnedBeam_numpar.tex}. 
-
- The system has 20 states (10
-modes of vibration), 1 inputs and 1 outputs.
-
-The first 5 vibration frequencies are given in Table \ref{tab:freq}
-togtherr with the theoretical (based on the Bernoulli-Euler beam with
-the same values of $EI$ and $\rho A$. 
 \begin{table}[htbp]
   \begin{center}
-    \begin{tabular}{||l|l|l||}
+    \begin{tabular}{|l|l|}
+      \hline
+      Name & Value\\
+      \hline
+      Beam Length, $L$       & 0.60 m\\
+      Beam Width $w$             & 0.05 m\\
+      Beam Thickness $t_b$   & 0.003\\
+      Young's Modulus  $E$       & $68.94 \times 10^9$ \\
+      Density          $\rho$    & 2712.8\\
+      \hline
+      Derived quantities & \\
+      \hline
+      $EI$                     & 7.76\\
+      $\rho A$   & 0.40692 \\
+      \hline
+    \end{tabular}
+    \caption{Beam parameters}
+    \label{tab:beam}
+  \end{center}
+\end{table}
+
+
+The beam was made of aluminium with physical dimensions and constants
+given in Table \ref{tab:beam}. The derived beam constants are given by the
+formulae:
+\begin{equation}
+  \label{eq:formulae}
+  \begin{align}
+    EI &= E \times w \frac{1}{12} t_b^3\\
+    \rho A &= \rho \times w t_b
+  \end{align}
+\end{equation}
+
+The system parameters are also given in Section
+\Ref{sec:PinnedBeam_numpar.tex}.
+
+
+\begin{table}[htbp]
+  \begin{center}
+    \begin{tabular}{||l|l|l|l||}
       \hline
       \hline
-      Mode & Frequency & Theoretical frequency\\
-      \hline
-      1 & 119.44 & 119.69\\
-      2 & 474.83 & 479.02\\
-      3 &1057.41 &1078.09\\
-      4 &1852.85 &1914.86\\
-      5 &2841.54 &2992.95\\
+Index   & Theory        & Model         & Theory        & Model \\ 
+\hline
+1       & 19.05         & 19.01         & 29.72         & 31.28\\ 
+2       & 76.24         & 75.57         & 96.50         & 100.80\\ 
+3       & 171.58        & 168.29        & 200.73        & 208.20\\ 
+4       & 304.76        & 294.89        & 344.13        & 350.88\\ 
+5       & 476.34        & 452.25        & 524.98        & 525.23\\ 
       \hline
       \hline
     \end{tabular}
@@ -55,7 +87,12 @@ the same values of $EI$ and $\rho A$.
   \end{center}
 \end{table}
 
-
-
-
+Standard modal analysis give the theoretical system resonant
+frequencies (based on the Bernoulli-Euler beam with the same values of
+$EI$ and $\rho A$). The system anti-resonances correspond to those of
+the \emph{inverse} system with reversed causality, that the driven
+pinned end is replaced by a clamped end; again modal analysis of the
+inverse system gives the system anti resonances. The model and
+theoretical values are compared in Table \ref{tab:freq} for the first
+5 modes. (This table was generated using the script MakeFreqTable.m)
 

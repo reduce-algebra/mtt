@@ -16,6 +16,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/11/02 10:18:25  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -46,5 +49,4 @@ LET lsin(gain_causality, gain, causality, outport,
 	m_input, m_causality, 3)
 	 = input/(sin(m_input)*gain);
 
-
-
+END;;

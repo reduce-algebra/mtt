@@ -16,6 +16,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/11/02 10:18:07  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -45,3 +48,5 @@ LET lcos(gain_causality, gain, causality, outport,
 	input, causality, inport,
 	m_input, m_causality, 3)
 	 = input/(cos(m_input)*gain);
+
+END;;

@@ -45,7 +45,7 @@ install: build clean.sh
 	@install -d $(INSTDIR) $(CONFDIR) $(PROGDIR)
 	@install -d $(INSTDIR)/bin $(INSTDIR)/cc $(INSTDIR)/lib
 	@install bin/mttrc $(CONFDIR)/mtt.conf
-	@install mtt.sh $(PROGDIR)/mtt
+	@install mtt.sh bin/xmtt $(PROGDIR)
 	@install cc/parse_m2cc.exe $(INSTDIR)/bin/trans
 
 install-doc: clean-doc.sh

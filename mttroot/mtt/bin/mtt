@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.181  1998/08/15 13:45:28  peterg
+## Added new integration methods in Pascal/c version
+## Revised the various translations appropriately
+##
 ## Revision 1.180  1998/08/12 14:15:13  peterg
 ## Implicit integration - c implemetation now included.
 ##
@@ -2182,34 +2186,34 @@ $1_$2.vc: RCS
 # Copy Pascal utilities
 sign.p: 
 	echo Copying sign.p; cp $MTTPATH/trans/p/sign.p .
-svdcmp.p: 
-	echo Copying svdcmp.p; cp $MTTPATH/trans/p/svdcmp.p .
-svbksb.p: 
-	echo Copying svbksb.p; cp $MTTPATH/trans/p/svbksb.p .
+mtt_ludcmp.p: 
+	echo Copying mtt_ludcmp.p; cp $MTTPATH/trans/p/mtt_ludcmp.p .
+mtt_lubksb.p: 
+	echo Copying mtt_lubksb.p; cp $MTTPATH/trans/p/mtt_lubksb.p .
 mtt_sparse.p: 
 	echo Copying mtt_sparse.p; cp $MTTPATH/trans/p/mtt_sparse.p .
 mtt_write.p: 
 	echo Copying mtt_write.p; cp $MTTPATH/trans/p/mtt_write.p .
-mtt_update.p: mtt_solve.p mtt_sparse.p
+mtt_update.p: mtt_solve_lud.p mtt_sparse.p
 	echo Copying mtt_update.p; cp $MTTPATH/trans/p/mtt_update.p .
-mtt_solve.p: svdcmp.p svbksb.p
-	echo Copying mtt_solve.p; cp $MTTPATH/trans/p/mtt_solve.p .
+mtt_solve_lud.p: mtt_ludcmp.p mtt_lubksb.p
+	echo Copying mtt_solve_lud.p; cp $MTTPATH/trans/p/mtt_solve_lud.p .
 zero_vector.p: 
 	echo Copying zero_vector.p; cp $MTTPATH/trans/p/zero_vector.p .
 zero_matrix.p: 
 	echo Copying zero_matrix.p; cp $MTTPATH/trans/p/zero_matrix.p .
 
 # Copy c utilities
-dsvdcmp.c: dpythag.c nrutil.c nrutil.h
-	echo Copying dsvdcmp.c; cp $MTTPATH/trans/c/dsvdcmp.c .
-dpythag.c: 
-	echo Copying dpythag.c; cp $MTTPATH/trans/c/dpythag.c .
-nrutil.c: 
-	echo Copying nrutil.c; cp $MTTPATH/trans/c/nrutil.c .
-nrutil.h: 
-	echo Copying nrutil.h; cp $MTTPATH/trans/c/nrutil.h .
-sign.c:
-	echo Copying sign.c; cp $MTTPATH/trans/c/sign.c .
+##dsvdcmp.c: dpythag.c nrutil.c nrutil.h
+##	echo Copying dsvdcmp.c; cp $MTTPATH/trans/c/dsvdcmp.c .
+##dpythag.c: 
+##	echo Copying dpythag.c; cp $MTTPATH/trans/c/dpythag.c .
+##nrutil.c: 
+##	echo Copying nrutil.c; cp $MTTPATH/trans/c/nrutil.c .
+##nrutil.h: 
+##	echo Copying nrutil.h; cp $MTTPATH/trans/c/nrutil.h .
+##sign.c:
+##	echo Copying sign.c; cp $MTTPATH/trans/c/sign.c .
 
 EOF
 # Remember the exit status of make

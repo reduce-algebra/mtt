@@ -11,7 +11,7 @@
 # Copyright (C) 2000 by Peter J. Gawthrop
 
 
-strip_comments <$1_sympars.txt  |\
+strip_comments <$1_sympar.txt  |\
 awk '{
   i++; printf("  %s = mttpar(%i);\n", tolower($1), i);
 }'

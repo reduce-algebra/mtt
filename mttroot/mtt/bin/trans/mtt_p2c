@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/07/25 16:28:38  peterg
+## Initial revision
+##
 ###############################################################
 
 
@@ -35,10 +38,10 @@ done
 echo Creating $1_$2.c
 
 # Use p2c to do the translation - but zap the PASCAL_MAIN which we don't want. 
-p2c -V  $1_$2.p  > mtt_p2c.log 2>/dev/null
+p2c -V  $1_$2.p  2>/dev/null
 
-mv $1_$2.p mtt_junk
-grep -v 'PASCAL_MAIN' < mtt_junk > $1_$2.p
+mv $1_$2.c mtt_junk
+grep -v 'PASCAL_MAIN' < mtt_junk > $1_$2.c
 
 # Info if needed
 if [ -n "$info" ]; then

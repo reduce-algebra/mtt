@@ -5,11 +5,10 @@ CC=g++
 
 ifeq (0,1)
 CFLAGS+=-static
-OCTAVE_LIBS_PATH=-L/usr/local/lib/octave
-OCTAVE_LIBRARIES=-loctave -lcruft -lm -lncurses -ldl -lstdc++ -lc -lkpathsea -lreadline -lf2c
+OCTAVE_LIBRARIES=-loctave -lcruft -lm -lncurses -ldl -lstdc++ -lc -lkpathsea -lreadline -lg2c
 
 %.exe: %.cc
-	$(CC) $< $(CFLAGS) $(OCTAVE_LIBS_PATH) $(OCTAVE_LIBRARIES) -o $@
+	$(CC) $< $(CFLAGS) $(OCTAVE_LIBRARIES) -o $@
 
 %.oct: %.cc
 	mkoctfile $<

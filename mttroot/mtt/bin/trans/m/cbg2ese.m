@@ -8,6 +8,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 % which is only used for named SS components.
 global local_u_index
 global local_y_index
+global at_top_level
 % 
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %     %%%%% Model Transformation Tools %%%%%
@@ -22,6 +23,9 @@ global local_y_index
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.17  1998/04/04 10:47:31  peterg
+% %% Uses (coerced) components from _cbg file - _abg not now used here.
+% %%
 % %% Revision 1.16  1998/03/06 09:38:58  peterg
 % %% Now writes correct structure file for multiport C & I
 % %%

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.186  1998/08/18 10:49:05  peterg
+## VERSION 3.1 release
+##
 ## Revision 1.185  1998/08/18 09:21:14  peterg
 ## Removed "" from default simpar file.
 ##
@@ -638,7 +641,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='3.1'
+version='3.1++'
 
 # MTT recursion level is zero unless explicitly set
 level=0
@@ -1419,7 +1422,7 @@ $1_numpar.txt:
 
 #SUMMARY numpar	numerical parameter declaration (m) 
 $1_numpar.m:  $1_numpar.txt $1_sympars.txt
-	numpar_txt2m $1
+	txt2m $1 numpar
 
 #SUMMARY numpar	numerical parameter declaration (c) 
 $1_numpar.c:  $1_numpar.txt $1_sympar.c
@@ -1787,6 +1790,7 @@ $1_csm.tex: $1_csm.r  $1_sympar.r $1_simp.r
 
 #SUMMARY sm	state matrices (r)
 #SUMMARY sm	state matrices (m)
+#SUMMARY sm	state matrices (icad)
 #SUMMARY sm	state matrices (tex)
 #SUMMARY sm	state matrices (c)
 #SUMMARY sm	state matrices (view)
@@ -1796,6 +1800,8 @@ $1_sm.r: $1_csm.r $1_def.r $1_cr.r $1_ss.r $1_sympar.r
 	csm2sm_r $1; tidy $1_sm.r
 $1_sm.m: $1_def.r $1_sm.r $1_sympars.txt 
 		mtt_r2m $1 sm
+$1_sm.icad:  $1_sm.m $1_numpar.m
+		sm_m2icad $1
 $1_sm.c: $1_def.r $1_sm.r $1_sympar.c
 		sm_r2c $1
 $1_sm.tex: $1_sm.r  $1_sympar.r $1_simp.r

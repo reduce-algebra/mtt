@@ -1,0 +1,30 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: mtt_error
+# Does the error handing for transformations and forces error exit.
+# P.J.Gawthrop  August 1996
+# Copyright (c) P.J.Gawthrop, 1996
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+error_file=$1;
+
+# Test for errors and print if any
+err_length=$(wc -c <$error_file)
+if [ $err_length != "0" ]
+then
+  echo MTT has failed with the following errors '...'
+  cat $error_file
+  exit 1
+else
+  exit 0
+fi

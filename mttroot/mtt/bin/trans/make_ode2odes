@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.66  2002/03/26 11:58:58  geraint
+## Added cputime monitoring.
+##
 ## Revision 1.65  2001/11/15 06:24:11  geraint
 ## Updated (-i dassl) residual function to use new DAEFunc (octave-2.1.35).
 ## YZ residual dependency on Ui still requires some work.
@@ -933,7 +936,7 @@ mtt_write (const double &t,
 
   row++;
 
-  static std::fstream fcputime ("MTT.cputime", ios::out | ios::trunc | ios::app);
+  static std::fstream fcputime ("MTT.cputime", std::ios::out | std::ios::trunc | std::ios::app);
   static clock_t cputime0 = clock();
   static clock_t cputime1 = cputime0;
   clock_t cputime = clock();

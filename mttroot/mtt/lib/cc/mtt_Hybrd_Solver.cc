@@ -16,7 +16,7 @@ MTT::Hybrd_Solver::f_hybrd (const ColumnVector &tryUi)
 void
 MTT::Hybrd_Solver::Solve (void)
 {    
-  static std::fstream ferr ("MTT.Hybrd_messages", ios::out | ios::trunc | ios::app);
+  static std::fstream ferr ("MTT.Hybrd_messages", std::ios::out | std::ios::trunc | std::ios::app);
   int info;
   static int input_errors;
   static int user_errors;

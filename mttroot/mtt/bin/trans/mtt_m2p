@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.43  2000/05/11 19:35:16  peterg
+## Major revisions for new paprameter passing versions
+##
 ## Revision 1.42  2000/04/18 11:11:44  peterg
 ## mtt_parameters ---> mttpar
 ## mtt_n_parameters ---> mttnpar
@@ -242,7 +245,7 @@ Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
 	echo "                       mttpar     : ParameterVector);"
 	;;
     smxa )
-	echo "PROCEDURE $Sys_rep(VAR mtta       : StateMatrixVector;"
+	echo "PROCEDURE $Sys_rep(VAR mtta       : StateMatrix;"
 	echo "                       mttx       : StateVector;"
 	echo "                       mttu       : InputVector;"
 	echo "                       mttt      : REAL;"

@@ -3,7 +3,6 @@
 sys=$1
 
 out=${sys}_gnuplot.wish
-tmp=${sys}_gnuplot.tmp
 
 struc=${sys}_struc.txt
 dat2=${sys}_odes.dat2
@@ -20,29 +19,52 @@ exec wish "\$0" "\$@"
 
 ## main window
 wm title . "MTT Viewer: ${sys}"
-
 set parameter ""
-button .print -text "Print" -command { 
-    global parameter;
-    if {"\$parameter"==""} {
-	tk_dialog ".mtt_Print_Error" "Print Error" "Select a parameter!" "" "0" "Try Again"
-    } else {
-	print \$parameter
-    }
-}
-button .quit  -text "Quit"  -command exit
+
+# menu bar
+canvas .menubar
+
+menubutton .menubar.file -text "File" -menu .menubar.file.menu
+menu .menubar.file.menu
+.menubar.file.menu add command -label "Open  (Gnuplot plot file)"    -command open_plotfile
+.menubar.file.menu add command -label "Save  (Gnuplot plot file)"    -command save_plotfile
+.menubar.file.menu add separator
+.menubar.file.menu add command -label "Print (PostScript file)"	     -command print_postscript
+.menubar.file.menu add separator
+.menubar.file.menu add command -label "Quit"			     -command exit
+
+button .menubar.quit  -text "Quit" -relief flat		 -command exit 
+
+pack .menubar.file    -expand false -fill x -side left
+pack .menubar.quit    -expand false -fill x -side right
+
+# status bar
+canvas .statusbar
+
+radiobutton .statusbar.states  -text "States"      -value states  -variable view      -relief solid -command { raise .cx }
+radiobutton .statusbar.outputs -text "Outputs"     -value outputs -variable view      -relief solid -command { raise .cy }
+
+tk_optionMenu .statusbar.plot  plottype "Single Plot" "Multi Plot" "New Window"
+tk_optionMenu .statusbar.grid  grid     "Grid On" "Grid Off"
+tk_optionMenu .statusbar.coord coord	"Cartesian" "Polar"
+
+pack .statusbar.states  -expand false -fill x -side left
+pack .statusbar.outputs -expand false -fill x -side left
+pack .statusbar.plot    -expand false -fill x -side right
+pack .statusbar.coord   -expand false -fill x -side right
+pack .statusbar.grid    -expand false -fill x -side right
 
 ## states canvas
 canvas		.cx
 listbox		.cx.l
 scrollbar	.cx.sy	-orient v
-checkbutton    	.cx.t	-text		"States"
+checkbutton    	.cx.t	-text		"States"	-relief flat
 
 ## outputs canvas
 canvas		.cy
 listbox		.cy.l
 scrollbar	.cy.sy	-orient v
-checkbutton    	.cy.t	-text		"Outputs"
+checkbutton    	.cy.t	-text		"Outputs"	-relief flat
 
 ## configure scrollbars
 .cx.sy configure -command ".cx.l yview"
@@ -105,6 +127,9 @@ cat <<EOF >> ${out}
 .cx.t configure -command { set xl [sort_list \$xl \$xsortorder] } -indicatoron false -onvalue "reverse" -offvalue "normal" -variable xsortorder
 .cy.t configure -command { set yl [sort_list \$yl \$ysortorder] } -indicatoron false -onvalue "reverse" -offvalue "normal" -variable ysortorder
 
+pack .menubar	      -expand false -fill x -side top
+pack .statusbar	      -expand false -fill x -side bottom
+
 pack .cx.t -expand false -fill x -side top
 pack .cy.t -expand false -fill x -side top
 
@@ -116,22 +141,6 @@ pack .cy.l -expand true -fill both -side left
 
 pack .cx -expand true -fill both
 place .cy -in .cx -relx 0 -rely 0 -relwidth 1 -relheight 1 -anchor nw -bordermode outside
-
-radiobutton .states  -text "States"      -value states  -variable view      -relief solid -command { raise .cx }
-radiobutton .outputs -text "Outputs"     -value outputs -variable view      -relief solid -command { raise .cy }
-
-#menubutton .plottype -text "Plot type" -menu .plottype.plottype
-
-#menu .plottype.plottype
-tk_optionMenu .plottype plottype "Single Plot"\
-                                 "Multi Plot "\
-                                 "New Window "
-
-pack .states .outputs -side left
-
-pack .quit   -expand false -fill x -side right
-pack .print  -expand false -fill x -side right
-pack .plottype   -expand false -fill x -side top
 
 ## map names to column numbers
 EOF
@@ -156,34 +165,94 @@ cat <<EOF >> ${out}
 
 ## call gnuplot
 proc "plot_var" "title column" {
-    puts "set grid"
+    set_plot_options
     puts "set term X11"
     global plottype
-    if {"\$plottype" == "Multi Plot "} {
+    if {"\$plottype" == "Multi Plot"} {
 	puts "replot '${dat2}' using 1:\$column title '\$title' with lines"
-    } elseif {"\$plottype" == "New Window "} {
+    } elseif {"\$plottype" == "New Window"} {
 	puts "! echo \"plot '${dat2}' using 1:\$column title '\$title' with lines\" | gnuplot -geometry 400x300 -persist"
     } else {
 	puts "plot '${dat2}' using 1:\$column title '\$title' with lines"
     }
 }
 
-## print output
-proc "print" "parameter" {
-    set filename [tk_getSaveFile\
+proc "set_plot_options" "" {
+    global coord;			# "Cartesian", "Polar"
+    global grid;			# "Grid On", "Grid Off"
+    if {"\$coord" == "Cartesian"} {
+	puts "set nopolar"
+    } else {
+	puts "set polar"
+    }
+    if {"\$grid" == "Grid On"} {
+	puts "set grid"
+    } else {
+	puts "set nogrid"
+    }
+}
+
+## open gnuplot plot file
+proc "open_plotfile" "" {
+    global parameter
+    if {"\$parameter"==""} {
+	set name "${sys}.plt"
+    } else {
+	set name "\$parameter.plt"
+    }
+    set filename [tk_getOpenFile\
 	-initialdir ".."\
-	-initialfile "\$parameter.ps"\
-	-defaultextension ".ps"\
+	-initialfile "\$name"\
+	-defaultextension ".plt"\
 	-filetypes {
-	    {{Postscript} {.ps}}
+	    {{Gnuplot} {.plt}}
 	    {{All files} {*}}
 	}
     ]
-    if {\$filename != ""} {
-	puts "set term postscript"
-	puts "set output \"\$filename\""
-	puts "replot"
-	tk_dialog ".printed" "Graph Printed!" "PostScript saved as \$filename" "" "0" "Close"
+    puts "load '\$filename'"
+}
+
+## save gnuplot plot file
+proc "save_plotfile" "" {
+    global parameter
+    if {"\$parameter"==""} {
+	set name "${sys}.plt"
+    } else {
+	set name "\$parameter.plt"
+    }
+    set filename [tk_getSaveFile\
+	-initialdir ".."\
+	-initialfile "\$name"\
+	-defaultextension ".plt"\
+	-filetypes {
+	    {{Gnuplot} {.plt}}
+	    {{All files} {*}}
+	}
+    ]
+    puts "save '\$filename'"
+}
+
+## print output to postscript
+proc "print_postscript" "" {
+    global parameter;
+    if {"\$parameter"==""} {
+	tk_dialog ".mtt_Print_Error" "Print Error" "Select a parameter!" "" "0" "Try Again"
+    } else {
+	set filename [tk_getSaveFile\
+		-initialdir ".."\
+		-initialfile "\$parameter.ps"\
+		-defaultextension ".ps"\
+		-filetypes {
+		    {{Postscript} {.ps}}
+		    {{All files} {*}}
+		}
+	]
+	if {\$filename != ""} {
+	    puts "set term postscript"
+	    puts "set output '\$filename'"
+	    puts "replot"
+	    tk_dialog ".printed" "Graph Printed!" "PostScript saved as \$filename" "" "0" "Close"
+	}
     }
 }
 

@@ -15,6 +15,10 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.4  1996/08/08 08:30:06  peter
+% %% The cbg filename contains the system name - this makes things easier
+% %% when setting up the m to fig translation and m to ese translation
+% %%
 % %% Revision 1.3  1996/08/05 18:53:21  peter
 % %% Fixed bug passing causality from subsystems.
 % %%
@@ -40,6 +44,14 @@ if nargin<5
   infofile = 'stdout';
 end;
 
+% Create the (full) system name
+if length(full_name)==0
+  full_name = system_name;
+  system_type = system_name;
+else
+  full_name = [full_name, '_', system_name];
+end;
+
 fun_name = [system_type, '_abg']
 
 % If no such function - then there is nothing to be done.
@@ -48,13 +60,6 @@ if exist(fun_name)~=2
   bonds = [];
   status = [];
   return
-end;
-
-% Create the (full) system name
-if length(full_name)==0
-  full_name = system_name;
-else
-  full_name = [full_name, '_', system_name];
 end;
 
 % Evaluate the system function to get the bonds
@@ -114,10 +119,6 @@ while done~=old_done
       comp_type = 'one';
     end;
     
-% $$$     name
-% $$$     comp_bonds
-% $$$     bond_list
-
     % Component cuasality procedure name
     cause_name = [comp_type, '_cause'];
     

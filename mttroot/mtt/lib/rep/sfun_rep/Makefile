@@ -55,7 +55,7 @@ README:: ${MTT_REP}/sfun_rep/README.tmpl README.CVS
 
 README.CVS:
 	echo Getting CVS status
-	cvs status ../$(MTT_SYS)_abg.fig > $@ 2>1
+	(cvs status ../$(MTT_SYS)_abg.fig || echo -e "\n$(MTT_SYS)_abg.fig is not under CVS\n") > $@ 2>1
 	date >> $@
 
 $(MTT_SYS)_ae.c: $(MTT_SYS)_ae.m

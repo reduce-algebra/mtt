@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.16  2000/12/01 17:56:30  peterg
+## Removed spurious  echo '## Set matrices to zero' - thanks Geraint
+##
 ## Revision 1.15  2000/11/29 21:06:16  peterg
 ## Removed Npar creation - not needed??
 ##
@@ -581,6 +584,14 @@ if [ ${language} = "oct" ];then
     undeclared=$(get_extra_fields ${args:-"nil"} ${output:-"nil"})
     declare_DLD_outputs ${undeclared}
     array2constant
+ 	case ${arg_type} in
+ 	    Matrix)
+ 		printf "  ${w}\t\t\t= zeros ${arg_size};\n"
+ 		;;
+ 	    *)
+ 		;;
+ 	esac
+
     cat <<EOF
 
 // BEGIN Code

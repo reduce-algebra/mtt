@@ -125,51 +125,46 @@ update_inputs_from_solver (void)
 
   /* starting value for solver - start with zero */
   MTT_MATLAB_Ui = mxCreateDoubleMatrix (MTTNYZ, 1, mxREAL);
-  mxSetName (MTT_MATLAB_Ui, "MTT_Ui");
   p = mxGetPr (MTT_MATLAB_Ui);
   for (i = 0; i < MTTNYZ; i++) {
     p[i] = 0.0;
   }
-  mexPutArray (MTT_MATLAB_Ui, "base");
+  mexPutVariable ("base", "MTT_Ui", MTT_MATLAB_Ui);
 
   /* put states into matlab workspace */
   MTT_MATLAB_X = mxCreateDoubleMatrix (MTTNX, 1, mxREAL);
-  mxSetName (MTT_MATLAB_X, "MTT_X");
   p = mxGetPr (MTT_MATLAB_X);
   for (i = 0; i < MTTNX; i++) {
     p[i] = mttx[i];
   }
-  mexPutArray (MTT_MATLAB_X, "base");
+  mexPutVariable ("base", "MTT_X", MTT_MATLAB_X);
 
   /* put known inputs into matlab workspace */
   MTT_MATLAB_U = mxCreateDoubleMatrix (MTTNU, 1, mxREAL);
-  mxSetName (MTT_MATLAB_U, "MTT_U");
   p = mxGetPr (MTT_MATLAB_U);
   for (i = 0; i < MTTNU; i++) {
     p[i] = mttu[i];
   }
-  mexPutArray (MTT_MATLAB_U, "base");
+  mexPutVariable ("base", "MTT_U", MTT_MATLAB_U);
 
   /* put time into matlab workspace */
   MTT_MATLAB_T = mxCreateDoubleMatrix (1, 1, mxREAL);
-  mxSetName (MTT_MATLAB_T, "MTT_T");
   *mxGetPr (MTT_MATLAB_T) = mttt;
-  mexPutArray (MTT_MATLAB_T, "base");
+  mexPutVariable ("base", "MTT_T", MTT_MATLAB_T);
 
   /* put parameters into matlab workspace */
   MTT_MATLAB_P = mxCreateDoubleMatrix (MTTNPAR, 1, mxREAL);
-  mxSetName (MTT_MATLAB_P, "MTT_P");
   p = mxGetPr (MTT_MATLAB_P);
   for (i = 0; i < MTTNPAR; i++) {
     p[i] = mttpar[i];
   }
-  mexPutArray (MTT_MATLAB_P, "base");
+  mexPutVariable ("base", "MTT_P", MTT_MATLAB_P);
 
   /* call solver */
   mexEvalString ("MTT_Ui = lsqnonlin (@<mtt_model_name>_sfun_ae, MTT_Ui, [], [], optimset('display','off','diagnostics','off','TolX',1e-2,'TolFun',1e-2), MTT_X, MTT_U, MTT_T, MTT_P);");
 
   /* retrieve result */
-  MTT_MATLAB_Ui = mexGetArray ("MTT_Ui", "base");
+  MTT_MATLAB_Ui = mexGetVariable ("base", "MTT_Ui");
   p = mxGetPr (MTT_MATLAB_Ui);
   for (i = 0; i < MTTNYZ; i++) {
     mttu[MTTNU + i] = p[i];

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1998/03/13 11:53:29  peterg
+## reduce --> reduce 64
+##
 ## Revision 1.5  1998/01/16 08:55:01  peterg
 ## MAKE=make
 ##
@@ -54,14 +57,14 @@ export MTT_LIB=$MTTPATH/lib
 OCTAVE_LOAD_PATH=$OCTAVE_PATH
 
 #Setup octave
-export OCTAVE_LOAD_PATH=$OCTAVE_LOAD_PATH\:$MATRIX_PATH
-export MATRIX="octave --path $OCTAVE_LOAD_PATH"
+export OCTAVE_PATH=$OCTAVE_LOAD_PATH\:$MATRIX_PATH
+export MATRIX="octave --path $OCTAVE_PATH"
 
 #Setup matlab
 #MATLABPATH $MATLABPATH\:$MATRIX_PATH
 #export MATLABPATH=
 # Setup the symbolic stuff
-export SYMBOLIC='reduce'
+export SYMBOLIC='reduce 64'
 
 # Setup xfig
 export FIG='xfig  -startfontsize 20 -metric -startgridmode 1'

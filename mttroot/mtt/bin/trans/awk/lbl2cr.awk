@@ -12,6 +12,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1998/03/06 09:15:28  peterg
+## Ignores SS fields (assumes that if first field is a symbol then other
+## field is and SS-style field.
+##
 ## Revision 1.7  1997/04/22 12:50:15  peterg
 ## New much simpler version -- does not check for multiple crs -- these
 ## are removed later anyway.
@@ -53,7 +57,7 @@ function matches(names, name) {
 
 BEGIN {
 comment = "%";
-arg_delimiter = ",";
+cr_delimiter = ";";
 not_a_cr = "effort flow state internal external zero none";
 is_a_SS = "internal external zero";
 numeric = "[0-9]";
@@ -65,11 +69,14 @@ print "lin"
 }
 {
   if ( (match($1,comment)==0) && (NF>=3) ) {
-      cr = $2
-      first_char = substr(cr,1,1);
-      if ( (matches(not_a_cr,cr)==0) &&
+      crs = $2
+    n_crs = split(crs,cr,cr_delimiter);
+    for (i = 1; i <= n_crs; i++) {
+      first_char = substr(cr[i],1,1);
+      if ( (matches(not_a_cr,cr[i])==0) &&
          (match(numeric,first_char)==0) &&
          (matches(is_a_SS,$3)==0))
-	 print cr;
+	 print cr[i];
+    }
   }
 }

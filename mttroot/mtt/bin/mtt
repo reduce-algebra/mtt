@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.281  2000/11/16 13:51:15  peterg
+## Added units stuff
+##
 ## Revision 1.280  2000/11/10 14:45:16  peterg
 ## Finished up changes to incorporate Geraint's cc stuff
 ##
@@ -2337,6 +2340,13 @@ $1_odea.m: $1_ode.m
 $1_ode.tex: $1_ode.r  $1_sympar.r $1_simp.r
 	ode_r2tex $1; latex_tidy $1_ode.tex
 
+
+$1_lde.r: $1_dae.r
+	dae2lde_r $1; tidy $1_lde.r
+
+$1_lde.tex: $1_lde.r  $1_sympar.r $1_simp.r
+	lde_r2tex $1; latex_tidy $1_lde.tex
+
 # The main simulation programme
 ifeq ($integration_method,implicit)
 $1_ode2odes.m : $1_def.r $1_sympars.txt \
@@ -2860,9 +2870,6 @@ mtt.sty:
 $1_$2.doc: $1_$2.tex
 	makedoc "$mtt_switches" "$1" "$2" "$3" "$4" "$documenttype"
 
-#Generic conversion of LaTeX doc to dvi
-$1_$2.dvi: $1_$2.doc
-	doc2dvi $1_$2 "$documenttype"
 
 #Create PostScript version of fig files
 ifeq ($REPTYPE,bg)
@@ -2872,6 +2879,12 @@ $1_$2.ps : $1_$2.fig
 $1_$2.pdf : $1_$2.fig
 	echo Creating $1_$2.pdf
 	multi_command2 'fig2dev -Lpdf' $1 $2.fig $2.pdf | sh
+else
+#Generic conversion of LaTeX doc to dvi or pdf
+$1_$2.dvi: $1_$2.doc
+	doc2dvi $1_$2 "$documenttype"
+$1_$2.pdf: $1_$2.doc
+	doc2pdf $1_$2 "$documenttype"
 endif
 
 

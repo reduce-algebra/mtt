@@ -27,6 +27,10 @@ global local_y_index
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.13  1997/09/18 13:15:15  peterg
+% %% Fixed incorrect error message flagging inappropriate flow outputs
+% %% -- used to give the effort rather than the flow in the error message.
+% %%
 % %% Revision 1.12  1997/08/26 07:51:30  peterg
 % %% Now counts the local input and outputs by order of appearence rather
 % %% than by port number - it therfore handles ports with bicausality correctely.
@@ -95,6 +99,7 @@ end;
 inputs = structure(3);
 outputs = structure(4);
 zero_outputs = structure(5);
+unknown_inputs = structure(6);
 
 if strcmp(effort_attribute, 'MTT_port') % Its a named port
 
@@ -141,31 +146,34 @@ if strcmp(effort_attribute, 'external')
   if bonds(1,1)==-1 % Source
     inputs = inputs+1;
     fprintf(filenum, '%s := MTTu(%d,1);\n', ...
-        varname(name, bond_number,1),inputs);
+	varname(name, bond_number,1),inputs);
   else % Sensor
     outputs = outputs+1;
     fprintf(filenum, 'MTTy(%d,1) := %s;\n', ...
-        outputs, varname(name, bond_number,1));
+	outputs, varname(name, bond_number,1));
   end;
 elseif strcmp(effort_attribute, 'internal')
   % Do nothing
-else % named constant
-  if bonds(1,1)==-1 % Source
-    fprintf(filenum, '%s := %s;\n', ...
-	varname(name, bond_number,1), effort_attribute);
+else 
+  if bonds(1,1)==-1 % Named or unknown source
+    if strcmp(effort_attribute, 'unknown') % Unknown input
+      fprintf(filenum, '%s := MTTUi%d;\n', ...
+	  varname(name, bond_number,-1), zero_outputs);
+    else
+      fprintf(filenum, '%s := %s;\n', ...
+	  varname(name, bond_number,1), effort_attribute);
+    end;
   else % Sensor
     if strcmp(effort_attribute, 'zero') %Zero output
       zero_outputs = zero_outputs + 1;
       fprintf(filenum, 'MTTyz%d := %s;\n', ...
 	  zero_outputs, varname(name, bond_number,1));
-      fprintf(filenum, '%s := MTTUi%d;\n', ...
-	  varname(name, bond_number,-1), zero_outputs);
     else
       mtt_info([effort_attribute, ' not appropriate for an output '],STDerr);
     end;
   end;
 end;
-
+  
 % Flow
 if strcmp(flow_attribute, 'external')
   if bonds(1,2)==1 % Source
@@ -174,8 +182,12 @@ if strcmp(flow_attribute, 'external')
   else % Sensor
     outputs = outputs+1;
     fprintf(filenum, 'MTTy(%d,1) := %s;\n', outputs, ...
-        varname(name, bond_number,-1));
+	varname(name, bond_number,-1));
   end;
+elseif strcmp(flow_attribute, 'unknown') % Unknown input
+  unknown_inputs = unknown_inputs + 1;
+  fprintf(filenum, '%s := MTTUi%d;\n', ...
+      varname(name, bond_number,-1), unknown_inputs);
 elseif strcmp(flow_attribute, 'internal')
   % Do nothing
 else % Named constant
@@ -187,15 +199,14 @@ else % Named constant
       zero_outputs = zero_outputs + 1;
       fprintf(filenum, 'MTTyz%d := %s;\n', ...
 	  zero_outputs, varname(name, bond_number,-1));
-      fprintf(filenum, '%s := MTTUi%d;\n', ...
-	  varname(name, bond_number,1), zero_outputs);
     else
-      mtt_info([flow_attribute, ' not appropriate for an output '], STDerr);
+      mtt_info([flow_attribute, ' not appropriate for an output '], ...
+	  STDerr);
     end;
   end;
 end;
 
-
 structure(3) = inputs;
 structure(4) = outputs;
 structure(5) = zero_outputs;
+structure(6) = unknown_inputs;

@@ -6,10 +6,13 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/07/27 11:29:13  peterg
+## Initial revision
+##
 ###############################################################
 
 
 LAST=10.0;			# Last time in simulation
 DT=0.1;				# Print interval
-STEPFACTOR=100;			# Integration steps per print interval
-METHOD="Implicit";		# Integration method;
+STEPFACTOR=10;			# Integration steps per print interval
+METHOD=Euler;		# Integration method;

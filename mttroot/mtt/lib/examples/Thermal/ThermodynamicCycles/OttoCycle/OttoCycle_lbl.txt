@@ -1,5 +1,12 @@
-%SUMMARY OttoCycle: <brief description here>
-%DESCRIPTION <Detailed description here>
+%SUMMARY OttoCycle: a simple closed thermodynamic cycle
+%DESCRIPTION The Otto cycle is a simple closed thermodynamic cycle
+%DESCRIPTION with four parts:
+%DESCRIPTION o Isentropic compression
+%DESCRIPTION o Heating at constant volume
+%DESCRIPTION o Isentropic expansion
+%DESCRIPTION o Cooling at constant volume
+  
+
 %% Label file for system OttoCycle (OttoCycle_lbl.txt)
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -7,6 +14,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/07/21 15:12:21  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:

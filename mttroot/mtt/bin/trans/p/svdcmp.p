@@ -8,6 +8,10 @@ PROCEDURE svdcmp(VAR a: glmpbynp; m,n,mp,np: integer;
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.2  1998/08/12 11:05:33  peterg
+% % Taken from NR share library nrpas13 as SVDCMP.PAS
+% % and renamed svdcmp.p
+% %
 % % Revision 1.1  1998/08/12 11:03:57  peterg
 % % Initial revision
 % %
@@ -25,10 +29,27 @@ LABEL 1,2,3;
 CONST
    nmax=100;
 VAR
-   nm,l,k,j,jj,its,i: integer;
-   z,y,x,scale,s,h,g,f,c,anorm: real;
-   rv1: ARRAY [1..nmax] OF real;
-FUNCTION sign(a,b: real): real;
+   nm,l,k,j,jj,its,i,ll	       : integer;
+   z,y,x,scale,s,h,g,f,c,anorm : real;
+   rv1			       : ARRAY [1..nmax] OF real;
+			  
+FUNCTION pythag(a,b : real): real;
+VAR p,at,bt : REAL;
+BEGIN
+   at:=abs(a);
+   bt:=abs(b);
+   IF at>bt THEN
+      p:= at*sqrt(1.0+sqr(bt/at))
+   ELSE
+      IF bt=0.0 THEN
+	 p := 0.0
+      ELSE
+	 p := bt*sqrt(1.0+sqr(at/bt));
+   pythag := p;
+END{pythag};
+			   
+   
+FUNCTION sign(a,b : real): real;
    BEGIN
       IF (b >= 0.0) THEN sign := abs(a) ELSE sign := -abs(a)
    END;
@@ -120,8 +141,8 @@ BEGIN
       IF (i < n) THEN BEGIN
          IF (g <> 0.0) THEN BEGIN
             FOR j := l TO n DO BEGIN
-               v[j,i] := (a[i,j]/a[i,l])/g
-            END;
+	       v[j,i] := (a[i,j]/a[i,l])/g;
+	    END;
             FOR j := l TO n DO BEGIN
                s := 0.0;
                FOR k := l TO n DO BEGIN
@@ -177,17 +198,26 @@ BEGIN
       FOR its := 1 TO 30 DO BEGIN
          FOR l := k DOWNTO 1 DO BEGIN
             nm := l-1;
-            IF ((abs(rv1[l])+anorm) = anorm) THEN GOTO 2;
+            IF ((abs(rv1[l])+anorm) = anorm) THEN
+	       BEGIN
+		  ll:=l;
+		  GOTO 2;
+	       END;
 	    IF nm>0 THEN {* Put in by me - see book *}
-	       IF ((abs(w[nm])+anorm) = anorm) THEN GOTO 1
+	       IF ((abs(w[nm])+anorm) = anorm) THEN
+		  BEGIN
+		     ll:=l;
+		     GOTO 1
+		  END;
          END;
 1:         c := 0.0;
          s := 1.0;
-         FOR i := l TO k DO BEGIN
+         FOR i := ll TO k DO BEGIN
             f := s*rv1[i];
             IF ((abs(f)+anorm) <> anorm) THEN BEGIN
 	       g := w[i];
-               h := sqrt(f*f+g*g);
+	       {**h := sqrt(f*f+g*g);**}
+	       h := pythag(f,g);
                w[i] := h;
                h := 1.0/h;
                c := (g*h);
@@ -201,7 +231,7 @@ BEGIN
             END
          END;
 2:         z := w[k];
-         IF (l = k) THEN BEGIN
+         IF (ll = k) THEN BEGIN
             IF (z < 0.0) THEN BEGIN
                w[k] := -z;
                FOR j := 1 TO n DO BEGIN
@@ -212,24 +242,26 @@ BEGIN
          END;
          IF (its = 30) THEN BEGIN
             writeln ('no convergence in 30 SVDCMP iterations'); readln
-         END;
+	 END;
          x := w[l];
          nm := k-1;
          y := w[nm];
          g := rv1[nm];
          h := rv1[k];
          f := ((y-z)*(y+z)+(g-h)*(g+h))/(2.0*h*y);
-         g := sqrt(f*f+1.0);
+	 {***g := sqrt(f*f+1.0); writeln(g);***}
+	 g := pythag(f,1.0);
          f := ((x-z)*(x+z)+h*((y/(f+sign(g,f)))-h))/x;
          c := 1.0;
          s := 1.0;
-         FOR j := l TO nm DO BEGIN
+         FOR j := ll TO nm DO BEGIN
             i := j+1;
             g := rv1[i];
             y := w[i];
             h := s*g;
             g := c*g;
-            z := sqrt(f*f+h*h);
+            {**z := sqrt(f*f+h*h);**}
+	    z := pythag(f,h);
             rv1[j] := z;
             c := f/z;
             s := h/z;
@@ -243,7 +275,8 @@ BEGIN
                v[jj,j] := (x*c)+(z*s);
                v[jj,i] := -(x*s)+(z*c)
             END;
-            z := sqrt(f*f+h*h);
+            {**z := sqrt(f*f+h*h);**}
+	    z := pythag(f,h);
             w[j] := z;
             IF (z <> 0.0) THEN BEGIN
                z := 1.0/z;
@@ -265,3 +298,4 @@ BEGIN
       END;
 3:   END
 END;
+

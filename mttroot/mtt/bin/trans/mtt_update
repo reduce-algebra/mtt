@@ -13,6 +13,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.17  2002/04/28 18:41:27  geraint
+## Fixed [ 549658 ] awk should be gawk.
+## Replaced calls to awk with call to gawk.
+##
 ## Revision 1.16  2000/10/17 13:45:18  peterg
 ## split up state and input - different defaults
 ##
@@ -76,6 +80,21 @@ if [ -z "$2" ]; then
   exit
 fi
 
+## Extract initial value from steady-state information
+initial_value() {
+    i=$1
+    ssfile=${sys}_ss.r
+    if [ "${rep}" = "state" ]; then
+       if [ -f "${ssfile}" ]; then
+	value=`grep "MTTx($i" ${ssfile}| sed 's/ //g' | gawk -F '=' '{print substr($2,1,length($2)-2)}'`
+       else
+	value=${default}   
+       fi 
+    else
+	value=${default}
+    fi
+}
+
 rm -f mtt_empty
 touch mtt_empty
 
@@ -130,8 +149,11 @@ else
   echo Creating $textfile
   mtt_header $sys $rep $lang > $textfile 
   info=`cut -f1 $infofile | sort`
+  i=0;
   for new in $info; do
-    echo $new $default  |\
+    let i=$i+1;
+    initial_value $i;
+    echo $new $value  |\
     gawk '{printf("%s\t= %s; # Default\n",$1,$2)}' >> $textfile
   done
   exit    

@@ -17,6 +17,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.313  2001/06/13 14:53:59  gawthrop
+## MTT now gas the double-colon option in the abg.fig file
+## eg R:r:a^2+3*b
+##
 ## Revision 1.312  2001/06/11 19:43:49  gawthrop
 ## MTT is now much more sophisticated in generating lbl files
 ## Labels can contain maths
@@ -1144,6 +1148,10 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 mtt_switches="$mtt_switches $1";
                 matrix_smxa="-matrix";
 		computation=cc ;;
+	-cr )
+                mtt_switches="$mtt_switches $1";
+		rdae_is_dae=1 ;
+                cr_first='-cr';;
 	-o )
                 mtt_switches="$mtt_switches $1";
 		dae_is_ode=1 ;;
@@ -1171,6 +1179,7 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                         exit;;
 		esac;;
 	-s )
+                sensitivity_switch='-s';
                 mtt_switches="$mtt_switches $1";
 		sensitivity=sensitivity ;;
 	-ss )
@@ -1302,6 +1311,7 @@ if [ -z "$1" ]; then
     echo '         -I  prints more information'
     echo '         -abg start at abg.m representation'
     echo '         -c  c-code generation'
+    echo '         -cr Use cr before resolving equations'
     echo '         -d  <dir>  use directory <dir>'
     echo '         -dc Maximise derivative (not integral) causality'
     echo '         -dc Maximise derivative (not integral) causality'
@@ -2401,13 +2411,13 @@ $1_def.h: $1_def.m $1_sympar.txt
 #SUMMARY dae	differential-algebraic equations (ps)
 #Differential-algebraic equations
 
-${sys}_rdae.r: ${sys}_ese.r ${sys}_def.r $1_modpar.r
+${sys}_rdae.r: ${sys}_ese.r ${sys}_def.r $1_modpar.r ${Subsystem}_cr.r ${Subsystem}_subs.r
 ifneq ($partition,)
 	echo Doing subsystems
 	mtt_make_subsystems  ${sys} rdae r
 endif
 	mtt_prepend.sh -p $1_modpar.r $1_ese.r # Add modulated parameters to start
-	ese2rdae_r ${Subsystem}; tidy ${Subsystem}_rdae.r
+	ese2rdae_r ${cr_first} ${Subsystem}; tidy ${Subsystem}_rdae.r
 
 ${sys}_dae.r: ${Subsystem}_rdae.r ${Subsystem}_def.r ${Subsystem}_subs.r ${Subsystem}_cr.r
 ifneq ($partition,)
@@ -3190,7 +3200,7 @@ $1_rep.tex: $1_rep.txt $1_reps_made
 
 #SUMMARY abg Acausal bond graph report (tex)
 $1_abg.tex: $1_sub.sh
-	abg2tex $pdf $1
+	abg2tex $pdf ${sensitivity_switch} $1
 
 #SUMMARY tf Transfer function (mml)
 $1_$2.mml: $1_$2.r

@@ -1,31 +1,36 @@
-function [index,prefered] = getdynamic(status,system_type);
-% Get the index of a dynamic components which is not set.
+function [name,prefered] = getdynamic(subsystems);
+# Get the index of a dynamic components which is not set.
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %% Version control history
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %% $Id$
-% %% $Log$
-% %% Revision 1.1  1996/08/16 12:50:41  peter
-% %% Initial revision
-% %%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# ###############################################################
+# ## Version control history
+# ###############################################################
+# ## $Id$
+# ## $Log$
+# ## Revision 1.2  1996/08/16 12:51:22  peter
+# ## Removed debugging lines.
+# ##
+# ## Revision 1.1  1996/08/16 12:50:41  peter
+# ## Initial revision
+# ##
+# ###############################################################
 
-index=0; prefered=0;
-n_components = length(status);
+  prefered = 0;			# No prefered causality to start with
+  for [subsystem,name] = subsystems
+    if subsystem.status==-1 # Undercausal
+      if strcmp(subsystem.type,'C')
+      	prefered=-1;
+      	break;
+      endif;
+      if strcmp(subsystem.type,'I')
+      	prefered=1;
+      	break;
+      endif;
+    endif;
+  endfor;
 
-for i = 1:n_components
-  if status(i)==-1 % Undercausal
-    eval([ '[comp_type,name,cr,arg] = ', system_type, '_cmp(i);' ]); 
-    if strcmp(comp_type,'C')
-      index=i;
-      prefered=-1;
-      break;
-    end;
-    if strcmp(comp_type,'I')
-      index=i;
-      prefered=1;
-      break;
-    end;
+  if prefered==0
+    name = "";
   end;
-end;
+  
+endfunction
+

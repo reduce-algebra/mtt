@@ -6,6 +6,9 @@ function structure =  SS_eqn(bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1996/08/08 16:38:19  peter
+% %% Changed to filenumer type of fprintf
+% %%
 % %% Revision 1.1  1996/08/08 16:19:08  peter
 % %% Initial revision
 % %%
@@ -17,9 +20,18 @@ function structure =  SS_eqn(bond_number,bonds,direction,cr,args, ...
 % external indicates an external variable
 % internal indicates an internal variable
 % anything else is the name of a constant.
+% Blank is taken to be external
 
 effort_attribute = cr;
 flow_attribute = args;
+
+if length(effort_attribute)==0
+  effort_attribute = 'external';
+end;
+
+if length(flow_attribute)==0
+  flow_attribute = 'external';
+end;
 
 inputs = structure(3);
 outputs = structure(4);

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  2002/05/01 14:07:05  gawthrop
+## Added -dr foo (reads files from foo) dir.
+##
 ## Revision 1.2  2002/04/28 18:55:03  geraint
 ## Fixed [ 549658 ] awk should be gawk.
 ## Replaced calls to awk with call to gawk.
@@ -196,6 +199,7 @@ print "%%" __Args "%%"
   SysRepLangArgs = sprintf("%s_%s", System, RepLang, __Args);
   SysRep = sprintf("%s_%s%s", System, Representation, __Args);
   filename = gensub(/,/, "-", "g", SysRep);
+  FileName = sprintf("%s/%s", PWD, filename);
   section_head = sprintf("\\textbf{%s\\_%s.%s} \\emph{%s}",
    System,Representation,Language, header_args);
    
@@ -213,7 +217,7 @@ print "%%" __Args "%%"
 
 # tex files
     if( match("tex",Language)>0) {
-      printf("  \\input{%s/%s_%s.%s}\n", PWD, System, Representation, Language);
+      printf("  \\input{%s}\n", FileName);
 #      command = sprintf("sed s!fig{!fig{%s! < %s_%s.%s", Directory, System, Representation, Language);
 #      system(command);    
 }
@@ -228,7 +232,6 @@ print "%%" __Args "%%"
 # ps files
     if( match("ps",Language)>0) {
       printf("This representation is given as Figure \\Ref{fig:%s}.\n", SysRepLangArgs);
-      FileName = sprintf("%s/%s", PWD, filename);
       Label = sprintf("%s", SysRepLangArgs);
       Caption = sprintf("System \\textbf{%s}, representation %s (%s)", System, Representation, __Args);
       printf("\\fig{%s}\n    {%s}\n    {0.9}\n    {%s}\n",FileName,Label,Caption);

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1996/08/25 10:09:55  peter
+## Initial revision
+##
 ###############################################################
 
 #Inform user
@@ -23,7 +26,7 @@ echo Creating $1_tf.r
 rm -f dm2tf_r.log
 
 # Use reduce to accomplish the transformation
-reduce >dm2tf_r.log << EOF
+$SYMBOLIC >dm2tf_r.log << EOF
 
 %ON FLOAT;
 

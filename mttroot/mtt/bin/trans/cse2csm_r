@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1999/12/08 02:04:46  peterg
+## Removed bug - uj := MTTU(j,1); not commented out
+##
 ## Revision 1.4  1999/11/22 23:49:50  peterg
 ## Writes out the new MTTNx and MTTNy
 ##
@@ -51,7 +54,7 @@ reduce >cse2csm_r.log << EOF
 
 in "$1_def.r";
 in "$1_$rep.r";
-in "$1_cr.r";
+%%in "$1_cr.r";
 %%in "$1_sympar.r";
 
 OFF Echo;

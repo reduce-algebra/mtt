@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1997/05/19 16:43:34  peterg
+## Explicit include of tex files 'cos latex2html prefers this!
+##
 # Revision 1.2  1997/05/19  16:11:10  peterg
 # Modified section headers.
 #
@@ -25,25 +28,27 @@ BEGIN {
   split(ARGV[1],a,"_");
   system_name = a[1];
   args = ARGV[2];
+  comment="\%";
 }
 {
-  if (NF==2) {
-
+  if ((match($1,comment)==0)&&(NF==2)) {
     Representation = $1;
     Language = $2;
     Rep_lang = sprintf("%s_%s", Representation, Language);
     section_head = sprintf("System \\textbf{%s}: representation \\textbf{%s}, language \\textbf{%s}", \
 			   system_name,Representation,Language);
+# section headings
+    print "\\section{" section_head "}";
+    print "\\label{" Rep_lang "}";
+    print "\\index{\\textbf{" system_name "} -- " Representation "}";
 
 # tex files
     if( match("tex",Language)>0) {
-      print "\\section{" section_head "}";
       # printf("  \\input{%s_%s.%s}\n", system_name, Representation, Language);
       command = sprintf("cat %s_%s.%s", system_name, Representation, Language);
       system(command);    }
 # text files
-    if( match("txt r m c",Language)>0) {
-      print "\\section{" section_head "}";
+    if( match("txt r m c h",Language)>0) {
       print "  \\begin{verbatim}";
       command = sprintf("cat %s_%s.%s", system_name, Representation, Language);
       system(command);
@@ -51,12 +56,11 @@ BEGIN {
     }
 # ps files
     if( match("ps",Language)>0) {
-      print "\\section{" section_head "}";
-      printf("This representation is given as Figure \\ref{fig:%s}.\n", Rep_lang);
+      printf("This representation is given as Figure \\Ref{fig:%s}.\n", Rep_lang);
       print "  \\begin{figure}";
       printf("    \\epsfig{file=%s_%s.%s,width=\\linewidth}\n", \
 	     system_name, Representation, Language);
-      printf("    \\caption{System %s, representation %s}\n", system_name, Representation);
+      printf("    \\caption{System \\textbf{%s}, representation %s}\n", system_name, Representation);
       printf("    \\label{fig:%s}\n", Rep_lang);
       print "  \\end{figure}";
     }

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.30  1998/04/12 15:01:17  peterg
+## Converted to uniform port notation - always use []
+##
 ## Revision 1.29  1998/04/12 12:35:32  peterg
 ## Named and unnamed SS handled in a uniform manner - in particular, the
 ## attributes are passed through
@@ -180,8 +183,7 @@ function write_component(i) {
     arg  = label[i,3];
     
     if (length(x[name])==0) {
-# print error unless its a port component
-      if (match(name,port_regexp)==0)
+        # print error - its in lbl but not fig file
         printf(warning_l, name);
     }
     else {
@@ -640,12 +642,14 @@ END {
   }
   printf("];\n\n") >> b_file;
 
-# Print the (external) port list
+# Print the (external) port list - ignore spurious ports (in lbl, not fig)
   printf("port_list = [\n") >> b_file;
   for (i = 1; i <= i_label; i++) {
     name = label[i,1];
-    if (match(name,port_regexp))
-      printf("'%s'\n", name) >> b_file;
+    if (length(x[name])>0) {
+      if (match(name,port_regexp))
+	printf("'%s'\n", name) >> b_file;
+    }
   }
   printf("];\n\n") >> b_file;
   

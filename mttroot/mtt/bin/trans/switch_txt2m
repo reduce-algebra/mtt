@@ -1,0 +1,36 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: switch_txt2m
+
+# Convert switch file from txt to m
+# P.J.Gawthrop May 1997
+# Copyright (c) P.J.Gawthrop, 1997.
+
+
+echo Creating  $1_switch.m
+
+# Find system constants
+Nx=`grep "MTTNx " <$1_def.r | awk '{print $3}' | sed 's/;//'`
+
+#Write some file headers
+lang_header $1 switch m mttx '[mttxs]' > $1_switch.m
+
+# This is the main transformation using gawk
+awk '{
+  if (NR==1){
+    printf("for i=1:%s\n",Nx)
+    printf("  mttxs(i) = mttx(i);\n")
+    printf("end;\n\n")
+  }
+  printf("if (%s==0.0)\n  mttxs(%s)=0.0;\nend;\n\n", $1,$2)
+  printf("if (%s<0.0)\n  if (mttx(%s)<0.0)\n    mttxs(%s)=0.0;\n  end;\nend;\n", $1,$2,$2)
+}' Nx=$Nx < $1_switch.txt >> $1_switch.m
+
+
+
+
+

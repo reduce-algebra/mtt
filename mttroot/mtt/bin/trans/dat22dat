@@ -1,0 +1,18 @@
+#! /bin/sh
+
+case $2 in
+    odeso)
+	i=1;
+	;;
+    odes)
+	i=2;
+	;;
+    *)
+	i=1;
+        ;;
+esac
+
+echo Creating $1_$2.dat
+
+awk  -F# '{print $1}' i=$1 <$1_odes.dat2 > $1_$2.dat
+

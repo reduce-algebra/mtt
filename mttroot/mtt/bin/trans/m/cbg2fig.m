@@ -26,6 +26,11 @@ function cbg2fig(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.7  1997/08/19 09:49:19  peterg
+% %% Modified to take account of the expanded vector bonds. Only displays
+% %% causality corresponding to the bond connecting the first element of
+% %% the vector ports.
+% %%
 % %% Revision 1.6  1997/08/19 09:41:47  peterg
 % %% Some debugging lines added.
 % %%
@@ -100,7 +105,7 @@ filenum = fopen(fig_name, 'a');
 
 % Get the raw and the processed bonds
 eval(['[rbonds,rstrokes,rcomponents] = ', system_type, '_rbg;']);
-eval(['[bonds] = ', system_type, '_abg;']);
+eval(['[bonds,components,n_ports] = ', system_type, '_abg;']);
 
 % Original number of bonds
 [n_bonds,junk] = size(rbonds);
@@ -139,9 +144,17 @@ unit_stroke_vector = (rot*unit_bond_vector')';
   
 % Get indices of bonds with changed causality -- but ignore the extra bonds
 % due to vector bond expansion
-changed_e = bonds(1:n_bonds,1)~=cbonds(1:n_bonds,1)
-changed_f = bonds(1:n_bonds,2)~=cbonds(1:n_bonds,2)
-changed = changed_e|changed_f
+changed_e = bonds(1:n_bonds,1)~=cbonds(1:n_bonds,1);
+changed_f = bonds(1:n_bonds,2)~=cbonds(1:n_bonds,2);
+changed = changed_e|changed_f;
+% Don't do port bonds
+if n_ports>0
+  port_bonds = sort(abs(components(1:n_ports,1)));
+  changed(port_bonds) = zeros(n_ports,1);
+  changed_e(port_bonds) = zeros(n_ports,1);
+  changed_f(port_bonds) = zeros(n_ports,1);
+end
+
 index_e  = getindex(changed_e,1)'
 index_f  = getindex(changed_f,1)'
 index  = getindex(changed,1)';

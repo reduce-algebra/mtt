@@ -1,0 +1,46 @@
+%% Label file for system sInvertedPendulum (sInvertedPendulum_lbl.txt)
+%SUMMARY sInvertedPendulum
+%DESCRIPTION 
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %% Revision 1.1  2000/12/28 09:13:38  peterg
+% %% Initial revision
+% %%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS  in|cart x_1,x_2,y_1,y_2,a_1,a_2
+
+%ALIAS	x	x_1,x_2
+%ALIAS	y	y_1,y_2
+%ALIAS	a	a_1,a_2
+
+% Argument aliases
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+% Component type SS
+	[a]	SS		external,external
+	[x]	SS		external,external
+	[y]	SS		external,external
+
+% Component type De
+	theta	SS		external
+
+% Component type Se
+	a_0	SS		0;0
+	x_0	SS		0;0
+	y_0	SS		0;0
+
+% Component type gRODa
+	rod     none		m_p*l_p*l_p/12;m_ps*l_p*l_p/12;m_p;m_ps;l_p/2;l_p/2;g			

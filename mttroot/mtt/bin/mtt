@@ -16,6 +16,11 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.305  2001/04/11 09:44:26  gawthrop
+## Fixed cc and c problems to do with pow(x,y) and integers
+## mtt/lib/reduce/fix_c.r is included in rdae2dae and cse2smx_lang for
+## -c, -cc and -oct options
+##
 ## Revision 1.304  2001/04/11 07:35:22  gawthrop
 ## Now uses system_cr.h in place of system.h in .c rep -
 ##   compatible with older code
@@ -1400,7 +1405,7 @@ if [ "$1" = "Clean" ] && [ "$2" = "" ]; then
   rm -f *_numpar.m *_numpar.c *_input.m *_input.c *_switch.c *_switch.txt
   rm -f *_sm.* *_can.*
   rm -f *_struc.* *_sympar.txt *_sympar.c *_sympar.h *_sympar.m
-  rm -f *_odes.c *_odes.dat *_odes.gdat *_odes.m *_odes.ps
+  rm -f *_odes.c *_odes.dat *_odes.gdat *_odes.m *_odes.ps *_odes.sg
   rm -f *_odeso.dat *_odeso.gdat *_odeso.sdat *_odeso.m *_odeso.ps
   rm -f *_*.doc *_*.idx *_*.ind *_*.ilg *_*.dvi *_*.aux *_*.lof *_*.toc
   rm -f *_rep.tex
@@ -1435,7 +1440,7 @@ if [ "$2" = "Clean" ] && [ "$3" = "" ]; then
   rm -f  $1_numpar.m $1_numpar.c $1_input.m $1_input.c $1_switch.c $1_switch.txt
   rm -f $1_sm*.* $1_can.*
   rm -f $1_struc.* $1_sympar.txt $1_sympar.c $1_sympar.h $1_sympar.m
-  rm -f $1_odes.c $1_odes.dat $1_odes.gdat $1_odes.sdat $1_odes.m $1_odes.ps
+  rm -f $1_odes.c $1_odes.dat $1_odes.gdat $1_odes.sdat $1_odes.m $1_odes.ps $1_odes.sg
   rm -f $1_odeso.dat $1_odeso.gdat $1_odeso.m $1_odeso.ps
   rm -f $1_*.doc $1_*.idx $1_*.ind $1_*.ilg $1_*.dvi $1_*.aux $1_*.lof $1_*.toc
   rm -f $1_rep.tex
@@ -1790,7 +1795,7 @@ if [ "$tidy" = "tidy" ]; then
 	  echo Moving $1_$2
           mv $1_$2 ..
       else
-        if [ "$PLOTTYPE" = "multiple" ]; then
+        if [ "$PLOTTYPE" = "multiple" -a -f $1_$2__ARGS.$ps ]; then
           echo Copying  $1_$2$__ARGS.$ps
           cp  $1_$2$__ARGS.$ps ..
         else
@@ -2830,6 +2835,7 @@ $1_ctf.tex: $1_def.r $1_ctf.r $1_sympar.r $1_simp.r
 
 #SUMMARY odes	ode solution - state (m)
 #SUMMARY odes*	ode solution - state (dat)
+#SUMMARY odes  ode solution - state & output for SciGraphica (sg)
 #SUMMARY odes*	ode solution - state (ps)
 #SUMMARY odes*	ode solution - state (view)
 
@@ -2897,9 +2903,9 @@ ifeq ($computation,cc)
 $1_sim.exe: $1_ese.r 
 	mtt $mtt_switches -q $1 sim exe
 
-$1_odes.dat2: $1_sim.exe 
+$1_odes.dat2: $1_ode2odes.exe 
 	echo Creating $1_odes.dat2 using cc version $ARGS
-	    time ./$1_sim.exe $ARGS >$1_odes.dat2
+	    time ./$1_ode2odes.exe $ARGS >$1_odes.dat2
 endif
 
 
@@ -2919,6 +2925,11 @@ $1_odeso.sdat: $1_odeso.dat $1_struc.txt
 
 $1_odes.sdat: $1_odes.dat $1_struc.txt
 	odes_dat2sdat $1
+
+#Conversion of data to SciGraphica
+$1_odes.sg: $1_struc.m $1_odes.dat2
+	echo Creating $1_odes.sg
+	dat22sg.sh $1
 
 #SUMMARY odess	ode numerical steady-states - states (m)
 #SUMMARY odess	ode numerical steady-states - states (dat)

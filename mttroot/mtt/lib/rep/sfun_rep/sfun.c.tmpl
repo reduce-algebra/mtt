@@ -14,6 +14,7 @@
 #include "useful-functions.hh"
 #include "<mtt_model_name>_def.h"
 #include "<mtt_model_name>_sympar.h"
+#include "<mtt_model_name>_cr.h"
 
 static double *mttdx;		/* pointer to rates */
 static double *mttu;		/* pointer to inputs */
@@ -165,7 +166,7 @@ update_inputs_from_solver (void)
   mexPutArray (MTT_MATLAB_P, "base");
 
   /* call fsolve */
-  mexEvalString ("MTT_Ui = fsolve (@<mtt_model_name>_sfun_ae, MTT_Ui, optimset('display','off'), MTT_X, MTT_U, MTT_T, MTT_P);");
+  mexEvalString ("MTT_Ui = fsolve (@<mtt_model_name>_sfun_ae, MTT_Ui, optimset('display','off','diagnostics','off'), MTT_X, MTT_U, MTT_T, MTT_P);");
 
   /* retrieve result */
   MTT_MATLAB_Ui = mexGetArray ("MTT_Ui", "base");

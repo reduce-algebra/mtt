@@ -2,11 +2,11 @@ Document: mtt
 Title: Model Transformation Tools (MTT) Manual
 Author: Peter Gawthrop, Geraint Bevan
 Abstract: This manual describes Model Transformation Tools (MTT),
- a set of tools for modelling dynamic physical systems using the bond-graph methodology and transforming these models into representations suitable for analysis, control and simulation. These tools use, and generate m files for, GNU Octave.
+ a set of tools for modelling dynamic physical systems using the bond-graph
+ methodology and transforming these models into representations suitable for
+ analysis, control and simulation.
+ These tools use, and generate m files for, GNU Octave.
 Section: Apps/Math
-
-Format: info
-Files: /usr/share/doc/mtt/mtt.info.gz
 
 Format: postscript
 Files: /usr/share/doc/mtt/mtt.ps.gz

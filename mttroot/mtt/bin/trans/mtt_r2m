@@ -18,6 +18,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.28  2001/07/13 04:54:04  geraint
+## Branch merge: numerical-algebraic-solution back to main.
+##
 ## Revision 1.27.4.1  2001/05/04 04:07:24  geraint
 ## Numerical solution of algebraic equations.
 ## sys_ae.cc written for unsolved inputs.
@@ -157,8 +160,8 @@ strip_comments<$1_$2.r | tr [A-Z] [a-z] |\
 grep -vi 'MATRIX ' |\
 grep -vi 'END;' |\
 grep -vi 'clear mtt' |\
-grep -v '^off' |\
-grep -v '^in' |\
+grep -v '^off .*\$' |\
+grep -v '^in .*\$' |\
 sed \
     -e "s/^mtt/  mtt/" \
     -e "s/:=/=/" \

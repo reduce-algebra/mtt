@@ -19,6 +19,9 @@ function structure =  SS_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.9  1997/03/22  15:50:59  peterg
+% %% Changed %1.0f to %d format.
+% %%
 % %% Revision 1.8  1996/12/10 16:52:29  peterg
 % %% Detect null string using strcmp, not length.
 % %% Put filnum argument to mtt_info.
@@ -77,7 +80,8 @@ zero_outputs = structure(5);
 
 if strcmp(effort_attribute, 'MTT_port') % Its a numbered port
   % Convert string to number
-  port_number = abs(flow_attribute)-abs('0');
+  % port_number = abs(flow_attribute)-abs('0');
+  port_number = str2num(flow_attribute);
 
   % Effort 
   if bonds(1,1)==-1 % Source
@@ -158,3 +162,7 @@ else % Named constant
   end;
 end;
 
+
+structure(3) = inputs;
+structure(4) = outputs;
+structure(5) = zero_outputs;

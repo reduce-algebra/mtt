@@ -1,0 +1,38 @@
+%% Label file for system sSf (sSf_lbl.txt)
+%SUMMARY sSf Sensitivity version of flow source (Sf)
+%DESCRIPTION 
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %% Revision 1.1  1999/07/29 04:54:41  peterg
+% %% Initial revision
+% %%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS	in|out	port_1,port_2
+
+% Argument aliases
+%ALIAS	$1 f_s
+%ALIAS	$2 k_s
+
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+% Component type SS
+	[port_1]	SS		external,external
+	[port_2]	SS		external,external
+
+% Component type Sf
+	sf_1		SS		f_s
+	sf_2		SS		k_s
+

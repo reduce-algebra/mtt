@@ -18,6 +18,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.25  2000/10/14 08:50:07  peterg
+## Use new mtt_header
+##
 ## Revision 1.24  2000/10/11 09:07:53  peterg
 ## Vectorisation
 ## csex rep.
@@ -139,21 +142,26 @@ esac
 #Convert from the (optimised) r file
 echo >> mtt_junk
 echo '## Code' >> mtt_junk
-grep 'mtt'  $1_$2.r |\
+strip_comments<$1_$2.r | tr [A-Z] [a-z] |\
+grep -vi 'MATRIX ' |\
+grep -vi 'END;' |\
+grep -v '^off' |\
+grep -v '^in' |\
 sed \
     -e "s/^mtt/  mtt/" \
     -e "s/:=/=/" \
     -e "s/\\$/;/" \
  >> mtt_junk
-
-
+echo '## END Code' >> mtt_junk
 echo endfunction >> mtt_junk
 
+# Mend broken lines
+mtt_mend_lines < mtt_junk > mtt_junk_mended
 # Vectorise (n,1) arrays when appropriate
 if [ -n "$vectorise" ]; then
-     mtt_vectorise <mtt_junk >$out
+     mtt_vectorise <mtt_junk_mended >$out
 else
-     mv mtt_junk $out
+     mv mtt_junk_mended $out
 fi
 
 # Now invoke the standard error handling.

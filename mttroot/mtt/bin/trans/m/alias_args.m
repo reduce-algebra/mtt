@@ -5,6 +5,9 @@ function args = alias_args(args,alias,delim,message,FileID,sys_name)
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  2001/06/13 14:50:15  gawthrop
+## Operator ^ now ok in args in abg and/or lbl
+##
 ## Revision 1.6  2001/04/23 16:23:30  gawthrop
 ## Now stips ; from bottlom level argument list - allows aliasing of
 ## parts of a,b,c (eg a,b by using a,b;c
@@ -41,14 +44,14 @@ function args = alias_args(args,alias,delim,message,FileID,sys_name)
   	  mtt_info(["Replacing ", arg, "\t by ",\
 		    new_arg, message],FileID);
   	  mtt_save_alias(arg,sys_name);
-
+##	  printf("%s --> %s\n",arg,new_arg);
           arg = new_arg;
-# 	else
-# 	  mtt_info(["NOT replacing ", arg, message],FileID);
+## 	else
+## 	  mtt_info(["NOT replacing ", arg, message],FileID);
         end
         SEPS = ",+-*/()^";
         for j = 1:length(SEPS)
-	  if (length(arg)>0)&&(length(findstr(arg,SEPS(j)))>0)
+	  if (length(arg)>1)&&(length(findstr(arg,SEPS(j)))>0)
 	    arg = alias_args(arg,alias,SEPS(j),message,FileID,sys_name);
 	  end 
 	end;
@@ -63,3 +66,8 @@ function args = alias_args(args,alias,delim,message,FileID,sys_name)
     end
   end;
 endfunction;
+
+
+
+
+

@@ -5,6 +5,9 @@ function write_abg(system_name,bonds,connections,n_vector_bonds);
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1999/10/18 22:41:41  peterg
+## Corrected vector junction expansion
+##
 ## Revision 1.7  1999/10/18 05:16:51  peterg
 ## Now vectorises 0 and 1 junctions !!
 ##
@@ -80,7 +83,7 @@ function write_abg(system_name,bonds,connections,n_vector_bonds);
 	fprintf(fid,Sformat,system_name,new_name,"arg",arg);
 	fprintf(fid,Iformat,system_name,new_name,"repetitions",repetitions);
 	fprintf(fid,Iformat,system_name,new_name,"status",-1);
-	
+
 	##Connections
 	fprintf(fid,Cformat,system_name,new_name);
 	## Each vector junction has n*m bonds
@@ -131,6 +134,7 @@ function write_abg(system_name,bonds,connections,n_vector_bonds);
 	fprintf(fid,PCformat,system_name,name_i);
       	fprintf(fid,"%i ", c(i_port));
 	fprintf(fid,"];\n");
+
       endfor;
     endif;
   endfor;
@@ -172,6 +176,15 @@ function write_abg(system_name,bonds,connections,n_vector_bonds);
       fprintf(fid,"%s.alias.%s = \"%s\";\n", system_name,key,val);
     endfor
   endif
+
+  fprintf(fid,"\n# Interface Definition\n");
+  eval(["icd = ",system_name, "_icd;"]);
+  if is_struct(icd)
+    for [val,key] = icd
+      fprintf(fid,"%s.icd.%s = \"%s\";\n",system_name,key,val);
+    endfor
+  endif
+	
 
   fclose(fid);
   

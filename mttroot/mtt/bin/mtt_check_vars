@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  2000/05/22 12:37:24  peterg
+## *** empty log message ***
+##
 ## Revision 1.5  2000/05/22 12:34:07  peterg
 ## Added MTT_REP
 ##
@@ -64,6 +67,7 @@ mtt_check_var "$MATRIX" "MATRIX" "$print" "MTT"
 mtt_check_var "$SYMBOLIC" "SYMBOLIC" "$print" "MTT"
 mtt_check_var "$FIG" "FIG" "$print" "MTT"
 mtt_check_var "$PSVIEW" "PSVIEW" "$print" "MTT"
+mtt_check_var "$PDFVIEW" "PDFVIEW" "$print" "MTT"
 mtt_check_var "$HTMLVIEW" "HTMLVIEW" "$print" "MTT"
 mtt_check_var "$DVIVIEW" "DVIVIEW" "$print" "MTT"
 mtt_check_var "$CC" "CC" "$print" "MTT"

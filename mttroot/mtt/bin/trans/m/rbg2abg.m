@@ -5,6 +5,17 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.18  1997/08/14  11:01:42  peterg
+% %% Reordered algorithms as follows:
+% %% bond end coordinates
+% %% associate port labels with bonds (port_bond)
+% %% associate bonds with components
+% %% unsorted list of bonds on each component (components)
+% %% interpret strokes and setup the causality of the bonds (bonds)
+% %% expand vector ports & add new bonds and connections
+% %% sort bonds on each component according to the labels -- two ports
+% %% default included here.
+% %%
 % %% Revision 1.17  1997/08/09 11:31:16  peterg
 % %% Default two port list is [in;out] (or [out;in])
 % %% Dont do global default if no ports labels.
@@ -214,40 +225,53 @@ for i=1:n_ports
   [n_subports,junk] = size(subport);
   exp_port_name = [exp_port_name; subport(1,:)];
   if n_subports>1
-    mtt_info(port_name(i,:),infofile);
     % Check that there is a corresponding vector port at the other end of the
     % bond
     signed_bond_index = port_bond(i);
-    [other_index,n_other] = getindex(port_bond,-signed_bond_index);
+    [other_bond_index,n_other] = getindex(port_bond,-signed_bond_index);
     if n_other == 1
-      other_port_name = port_name(other_index,:);
-      mtt_info(other_port_name,infofile);
+      other_port_name = port_name(other_bond_index,:);
+      other_subport = split(other_port_name, ',');
+      [n_other_subports,junk] = size(other_subport);
+      if n_other_subports~=n_subports
+	mtt_info(['Vector ports ', port_name(i,:), ' and ', other_port_name, 'are not compatible'],infofile);
+      end
     else 
       mtt_info(['Vector port ', port_name(i,:), ' has no matching port'], infofile);
     end;
     
-    % Remove sign info.
-    bond_index = abs(signed_bond_index);
-    sig = sign(signed_bond_index);
-    for j=2:n_subports
-      mtt_info(subport(j,:),infofile);
-      % Add a new name to give a non-vector list
-      exp_port_name = [exp_port_name; subport(j,:)];
-      n_exp_ports = n_exp_ports+1;
+    if other_bond_index>i %then its not been done yet
+      mtt_info(['Vector port: ', port_name(i,:)],infofile);
+      mtt_info(['matching: ', other_port_name],infofile);
+      % Remove sign info.
+      bond_index = abs(signed_bond_index);
+      sig = sign(signed_bond_index);
+      % add first element of port list to the expanded list
+      exp_port_name = [exp_port_name; other_subport(1,:)];
+      for j=2:n_subports
+	% Add a new name (for each end) to give a non-vector list
+	exp_port_name = [exp_port_name; subport(j,:)];
+	exp_port_name = [exp_port_name; other_subport(j,:)];
+	      
+	% Add one more bond to the list
+	bonds = [bonds; bonds(bond_index,:)];
+	n_bonds = n_bonds + 1;
       
-      % Add one more bond to the list
-      bonds = [bonds; bonds(bond_index,:)];
-      n_bonds = n_bonds + 1;
-      
-      % Add bond to the port_bond list
-      port_bond = [port_bond; n_bonds];
+	% Add bond to the port_bond list
+	port_bond = [port_bond; sig*n_bonds]; %this end
+	port_bond = [port_bond; -sig*n_bonds]; %other end
 
-      % Add a new bond to the component at this end (taking note of the direction).
-      comp_index = comp_near_bond(bond_index,1);
-      components = add_bond(components, sig*n_bonds, comp_index);
+	% Add a new bond to the component at both ends (taking note 
+	% of the direction).
+	arrow_index = comp_near_bond(bond_index,1);
+	components = add_bond(components, n_bonds, arrow_index);
+	other_index = comp_near_bond(bond_index,2);
+	components = add_bond(components, -n_bonds, other_index);
+      end;
     end;
   end;
 end;
+
 
 %Replace old list by new
 port_name = exp_port_name

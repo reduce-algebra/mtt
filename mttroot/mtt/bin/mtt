@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.123  1998/02/09 13:51:04  peterg
+## Fixed directory string bug.
+##
 ## Revision 1.122  1998/02/06 15:02:26  peterg
 ## New default sspar -- sets all states to zero.
 ##
@@ -1376,6 +1379,19 @@ $1_tf.m: $1_def.r $1_tf.r
 	tf_r2m $1; matlab_tidy $1_tf.m
 $1_tf.tex: $1_def.r $1_tf.r $1_sympar.r $1_simp.r
 	tf_r2tex $1; latex_tidy $1_tf.tex
+
+#SUMMARY ctf	controller transfer function (r)
+#SUMMARY ctf	controller transfer function (m)
+#SUMMARY ctf	controller transfer function (tex)
+#SUMMARY ctf	controller transfer function (view)
+#SUMMARY ctf	controller transfer function (ps)
+#Linearised system: transfer function
+$1_ctf.r: $1_dm.r $1_ssk.r  $1_ssl.r   $1_sm.r  
+	ssk2ctf_r $1; tidy $1_ctf.r
+$1_ctf.m: $1_def.r $1_ctf.r 
+	ctf_r2m $1; matlab_tidy $1_ctf.m
+$1_ctf.tex: $1_def.r $1_ctf.r $1_sympar.r $1_simp.r
+	ctf_r2tex $1; latex_tidy $1_ctf.tex
 
 #SUMMARY ir	impulse response - state (m)
 #SUMMARY ir	impulse response - state (dat)

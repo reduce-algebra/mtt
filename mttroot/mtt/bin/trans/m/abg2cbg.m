@@ -20,6 +20,10 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 # ###############################################################
 # ## $Id$
 # ## $Log$
+# ## Revision 1.43  1998/12/14 15:19:36  peterg
+# ## Added missing "derivative_causality," argument to recursive call of
+# ## this function
+# ##
 # ## Revision 1.42  1998/12/03 14:55:40  peterg
 # ## Now uses number of components with complete causality to measure
 # ## progress of algorithm -- Done.
@@ -232,20 +236,23 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 # Evaluate the system function to get the bonds and number of ports
 #eval(["[bonds,components,n_ports,N_ports]=", fun_name, ";"]);
   eval(["[ABG]=", fun_name, ";"]);
-
+!struct_contains(ABG,"subsystems")
   if !struct_contains(ABG,"subsystems")# Are there any subsystems?
     return;			# Nothing to do
   else
-    [n_subsystems,junk] = size(struct_elements(ABG.subsystems));
+    [n_subsystems,junk] = size(struct_elements(ABG.subsystems))
   endif
   
   if struct_contains(ABG,"portlist")# Are there any ports?
     [n_ports,junk] = size(ABG.portlist);
-    port_bond_index=zeros(n_ports,1);
-    for i=1:n_ports		# Find indices of the internal
+#     port_bond_index=zeros(n_ports,1);
+    i_port = 0;
+    for i=1:n_ports		# Find indices of the internal ports
       name = deblank(ABG.portlist(i,:)); # Name of this port
       eval(["port = ABG.ports.",name,";"]); # Extract port info
-      port_bond_index(i) = abs(port.connections);
+      for j=1:length(port.connections) # Maybe vector SS
+	port_bond_index(++i_port) = abs(port.connections(j));
+      endfor;
     endfor
   else
     n_ports = 0;

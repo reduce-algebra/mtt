@@ -44,7 +44,7 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
 
   C = C_0(p_c.I_0,:)
   C_c = C_0(p_c.I_1,:);
-  D = D_0(p_c.I_0,:)
+  D = D_0(p_c.I_0,:);
   D_c = D_0(p_c.I_1,:);
   [n_x, n_u, n_y] = abcddim(A,B,C,D); # Dimensions
   [n_x, n_u, n_y_c] = abcddim(A,B,C_c,D_c); # Dimensions
@@ -152,7 +152,6 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
     p_o.method = "remote";
   endif
   
-
   ## Check w.
   [n_w,m_w] = size(w);
   if ( (n_w!=n_y) || (m_w!=1) )
@@ -167,7 +166,7 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
 
   if ControlType==0		# Step input
     I = 1;			# 1 large sample
-    p_c.delta_ol = p_c.T	# I
+    p_c.delta_ol = p_c.T;	# I
     K_w = zeros(p_c.n_U,n_y);
     K_w(1,1) = 1;
     K_w(2,1) = -1;
@@ -180,7 +179,7 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
     elseif strcmp(p_c.Method, "lq") # LQ design
       [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,A_u] \
 	  = ppp_lin_quad (A,B,C,D,p_c.tau,p_c.Q,p_c.R,p_c.A_e);
-      p_c.A_u = A_u
+      p_c.A_u = A_u;
     else
       error(sprintf("Control method %s not recognised", p_c.Method));
     endif
@@ -193,12 +192,12 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
 
     ## Checks
     cl_poles = eig(A - B*k_x)
-    t_max = 1/min(abs(cl_poles))
-    t_min = 1/max(abs(cl_poles))
+    t_max = 1/min(abs(cl_poles));
+    t_min = 1/max(abs(cl_poles));
   endif
   
   ## Initial control U
-  U = zeros(p_c.n_U,1)	
+  U = zeros(p_c.n_U,1)	;
 
   ## Short sample interval
   dt = p_c.delta_ol/p_c.N;
@@ -271,7 +270,7 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
 	ti  = [(i-1)*p_c.N:i*p_c.N-1]*dt; 
 	y_i = yi(1);	# Current output
 	t_i = ti(1);
-	##X = xsi(:,1);
+	##X = xsi(:,1);		# Wrong!!
       else			# The real thing
 	if strcmp(p_o.method, "remote")
 	  [t_i,y_i,X] = ppp_put_get_X(U); # Remote-state interface

@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1996/08/05 20:12:43  peter
+## Now writes a _fig.fig file.
+##
 ## Revision 1.7  1996/08/05 18:44:56  peter
 ## Now writes out a _cbg file without ----- symbol.
 ##
@@ -124,8 +127,8 @@ function process_text() {
 # A component string contain only alphanumeric  _ and :
   isa_plain_component = match(str, component_regexp)==0;
 
-# A port is an integer within []
-  isa_port = exact_match(str, port_regexp)>0;
+# A port is an integer within [] and no alpha characters
+  isa_port = (match(str, port_regexp)>0)&&(match(str, nonport_regexp)==0);
 
 # A port component is SS followed by : followed by a port string
   isa_port_component = 0;
@@ -141,6 +144,13 @@ function process_text() {
 # Coordinates in fields 12 & 13
   x_coord = $12;
   y_coord = $13;
+
+# Do the ports
+  if (isa_port) {
+    i_port++;
+    port_index = substr(str,2,length(str)-2);
+    ports[i_port] = sprintf("%s %s %s", x_coord, y_coord, port_index);
+  }
 
 # Do the port components
   if (isa_port_component) {
@@ -221,11 +231,6 @@ function process_text() {
     info[name] =  fig_info();
   }
 
-  if (isa_port) {
-    i_port++;
-    port_index = substr(str,2,length(str)-2);
-    ports[i_port] = sprintf("%s %s %s", x_coord, y_coord, port_index);
-  }
 }
 
 function process_bond() {
@@ -326,6 +331,7 @@ BEGIN {
   terminator = "\\001";
   component_regexp = "[^0-9a-zA-Z_:]";
   port_regexp = "\[[0-9]*\]";
+  nonport_regexp = "a-zA-Z";
     
   isa_fig_file = 0;
   min_line_length = 10;
@@ -432,10 +438,13 @@ END {
   }
   printf("];\n") >> b_file;
 
+# Print the ports list
   printf("rports = [\n") >> b_file;
   for (i = 1; i <= i_port; i++)
     print  ports[i] >> b_file;
   printf("];\n\n") >> b_file;
+
+# Print the number of ports
   printf("n_ports = %1.0f;\n", i_port_component) >> b_file;
 
   

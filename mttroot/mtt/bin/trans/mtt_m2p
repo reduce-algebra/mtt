@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1998/07/25 16:59:40  peterg
+## Give other procedures local i,j vars.
+##
 ## Revision 1.5  1998/07/25 15:06:17  peterg
 ## Added DDT VAR
 ##
@@ -52,13 +55,6 @@ Nx=`grep "MTTNx " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
 Nu=`grep "MTTNu " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
 Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
  
-#Regexps
-  name="[a-zA-Z0-9]*"
-  fun_name="$Sys\_$name"
-  space="[ \t]*"
-  spaces="[ \t][ \t]*"
-  non_space="[^ ]*"
-
 # Heading
 (case $rep in
     state)
@@ -87,6 +83,7 @@ Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
 	echo "    StateVector  =ARRAY[1..$Nx] OF REAL;"
 	echo "    InputVector  =ARRAY[1..$Nu] OF REAL;"
 	echo "    OutputVector =ARRAY[1..$Ny] OF REAL;"
+	echo "    IntegrationMethod = (Euler,ImplicitL,Implicit);"
 	echo "VAR"
         echo "    t,LAST,DT,DDT   : REAL;"
 	echo "    mttx,mttdx      : StateVector;"
@@ -95,6 +92,12 @@ Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
 	echo "    i,j,it,iLast,STEPFACTOR : INTEGER;"
 	echo "    METHOD : STRING;"
         ;;
+    switch)
+	echo "PROCEDURE $Sys_rep(VAR mttxs : StateVector;"
+	echo "                       mttx  : StateVector);"
+	echo "VAR"
+	echo "    i,j :  INTEGER;"
+	;;
     *)	echo "PROCEDURE $Sys_rep;"
 	echo "VAR"
 	echo "    i,j :  INTEGER;"
@@ -108,7 +111,13 @@ cat<<EOF >> $Filename
 
 EOF
 
-
+#Regexps
+  name="[a-zA-Z0-9]*"
+  fun_name="$Sys\_$name"
+  mttfun_name="mtt_update"
+  space="[ \t]*"
+  spaces="[ \t][ \t]*"
+  non_space="[^ ]*"
 
 # Body	
 grep -v '^[ ]*function' < $Sys_rep.m  | sed "s/^$space%/#/" |\
@@ -117,6 +126,7 @@ awk -F# '{printf("%s",$1)
           printf("\n") 
          }' |\
 sed "s/$space\[\($non_space\)\]$spaces=$spaces\($fun_name\)(\([a-zA-Z0-9,]*\))/\2(\1,\3)/" |\
+sed "s/$space\[\($non_space\)\]$spaces=$spaces\($mttfun_name\)(\([a-zA-Z0-9,]*\))/\2(\1,\3)/" |\
 sed "s/$space\[\($non_space\)\]$spaces=$spaces\($fun_name\)/\2(\1)/" |\
 sed "s/$space\($non_space\)$spaces=$spaces\($fun_name\)(\([a-zA-Z0-9,]*\))/\2(\1,\3)/" |\
 sed "s/$space\($non_space\)$spaces=$spaces\($fun_name\)/\2(\1)/"  |\
@@ -158,6 +168,8 @@ BEGIN{
           printf("{%s %s_input.p}\n",inc,sys)
           printf("{%s %s_ode.p}\n",inc,sys)
           printf("{%s %s_odeo.p}\n",inc,sys)
+          printf("{%s %s_switch.p}\n",inc,sys)
+          printf("{%s mtt_update.p}\n",inc,sys)
           printf("{%s mtt_write.p}\n",inc,sys)
         }
         for (k=1;k<=j;k++) printf("%s\n", comment[k])
@@ -173,7 +185,8 @@ BEGIN{
       }
       else {
         if ($1=="if") {
-          printf("%s THEN BEGIN", $0)
+          sub(/==/, "=", $0)
+          printf("%s THEN BEGIN\n", $0)
         }
         else{ 
           if ($1=="for"){

@@ -19,17 +19,43 @@ INCLUDE=-I. -I${MTT_LIB}/cr/hh
 OPTIMISE=-O0
 WARNINGS=-Wall -ansi -pedantic
 
+ifeq ("","$(MTT_ARG)")
+TARGET=$(MTT_SYS)_cxxsim.$(MTT_LANG)
+else
+TARGET=$(MTT_SYS)_cxxsim-$(MTT_ARG).$(MTT_LANG)
+endif
 
-all: $(MTT_SYS)_cxxsim.$(MTT_LANG)
+all: $(TARGET)
 
-# view rule copied from gnuplot_rep.make
+# rule copied from gnuplot_rep.make
 # need it here to prevent MTT using the default route (via dae)
-$(MTT_SYS)_cxxsim.view: $(MTT_SYS)_gnuplot.wish $(MTT_SYS)_cxxsim.exe
-	./$(MTT_SYS)_cxxsim.exe > $(MTT_SYS)_odes.dat2
+$(MTT_SYS)_cxxsim.gnuplot: $(MTT_SYS)_gnuplot.wish $(MTT_SYS)_odes.dat2
 	sh $(MTT_SYS)_gnuplot.wish		|\
 		tee gnuplot_in.log		|\
 		 gnuplot -geometry 400x300	\
 		 > gnuplot_out.log 2> gnuplot_err.log &
+
+$(MTT_SYS)_cxxsim.view: $(MTT_SYS)_cxxsim-odes.ps $(MTT_SYS)_cxxsim-odeso.ps
+	${PSVIEW} $(MTT_SYS)_cxxsim-odes.ps
+	${PSVIEW} $(MTT_SYS)_cxxsim-odeso.ps
+
+$(MTT_SYS)_cxxsim.ps: $(MTT_SYS)_cxxsim-odeso.ps
+	cp $< $@
+
+$(MTT_SYS)_cxxsim-ode%.ps: $(MTT_SYS)_ode%.fig
+	fig2dev -Leps $(MTT_SYS)_ode$*.fig $@
+
+$(MTT_SYS)_ode%.fig: $(MTT_SYS)_ode%.gdat
+	gdat2fig $(MTT_SYS)_ode$*
+
+$(MTT_SYS)_ode%.gdat: $(MTT_SYS)_ode%.dat
+	dat2gdat $(MTT_SYS) ode$*
+
+$(MTT_SYS)_ode%.dat: $(MTT_SYS)_def.r $(MTT_SYS)_odes.dat2
+	dat22dat $(MTT_SYS) ode $*
+
+$(MTT_SYS)_odes.dat2: $(MTT_SYS)_cxxsim.exe
+	./$< > $@
 
 $(MTT_SYS)_cxxsim.exe: $(MTT_SYS)_cxxsim.cc
 	echo Creating $(MTT_SYS)_cxxsim.exe
@@ -47,6 +73,10 @@ cxxsim: ${MTT_LIB}/rep/cxxsim.cc
 # list of constitutive relationships
 $(MTT_SYS)_cr.txt:
 	mtt -q $(MTT_OPTS) $(MTT_SYS) cr txt
+
+# array sizes
+$(MTT_SYS)_def.r:
+	mtt -q $(MTT_OPTS) $(MTT_SYS) def r
 
 # elementary system equations
 $(MTT_SYS)_ese.r:

@@ -10,17 +10,26 @@
 # Used in lang_header
 # Copyright (C) 2000 by Peter J. Gawthrop
 
-if [ "$2" = "zero" ]; then
-  strip_comments <$1_sympar.txt  |\
-  awk '{
-    i++; printf(" %s = 0.0;\n", tolower($1));
-  }'
-else
-  strip_comments <$1_sympar.txt  |\
-  awk '{
-    i++; printf("  %s = mttpar(%i);\n", tolower($1), i);
-  }'
-fi
+case $2 in
+    zero)
+	  strip_comments <$1_sympar.txt  |\
+          awk '{
+          i++; printf(" %s = 0.0;\n", tolower($1));
+          }'
+	;;
+    set)
+	  strip_comments <$1_sympar.txt  |\
+         awk '{
+           i++; printf("  mttpar(%i) \t= %s;\n", i, tolower($1));
+         }'
+        ;;
+    *)
+         strip_comments <$1_sympar.txt  |\
+         awk '{
+           i++; printf("  %s \t= mttpar(%i);\n", tolower($1), i);
+         }'
+	;;
+esac
 
 
 

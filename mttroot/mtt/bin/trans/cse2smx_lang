@@ -12,6 +12,8 @@
 
 
 # Args
+## Now default to matrix form
+matrix='yes'
 while [ -n "`echo $1 | grep '^-'`" ]; do
   case $1 in
     -noglobals)
@@ -19,6 +21,9 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	;;
     -parameters)
 	parameters='-parameters';
+	;;
+    -matrix)
+	matrix='yes';
 	;;
     *)
 	echo $1 is an unknown option
@@ -45,14 +50,23 @@ case $rep in
     smx)
 	nrep=0;
         out='[mtta,mttax]';
+        nmatrix=1;
 	;;
     smxa)
-	nrep=1;
+        nrep=1;
+	if [ -n "$matrix" ]; then
+          blurb="in matrix form";
+          nmatrix=1;
+	else
+          blurb="in vector form";
+          nmatrix=0;
+	fi
         out='mtta';
 	;;
     smxax)
 	nrep=2
         out='mttax';
+        nmatrix=0;
 	;;
     *) echo Representation $2 not recognised;
        exit;;
@@ -60,7 +74,7 @@ esac
 
 
 # Inform user
-echo Creating $1_$rep.$lang
+echo Creating $1_$rep.$lang $blurb
 #echo Creating $1_smxx.$lang
 #echo Creating $1_smxtx.$lang
 
@@ -87,14 +101,17 @@ OFF Echo;
 
 % Load the general translator package
 LOAD GENTRAN;
+LOAD SCOPE;
 GENTRANLANG!* := 'Pascal;
-ON GENTRANSEG;
-MAXEXPPRINTLEN!* := 120;
+ON GENTRANSEG; % Segmentation
+ON GENTRANOPT; % Code optimise using scope
+OFF GENDECS;  % No declarations
+MAXEXPPRINTLEN!* := 80;
 TEMPVARNUM!* := 1;
-TEMPVARNAME!* := 'mtt_t;
+TEMPVARNAME!* := 'mtt_s;
 
 % Matrix output function
-in"$MTTPATH/trans/lang_matrix.r";
+%in"$MTTPATH/trans/lang_matrix.r";
 
 
 %Set up output according to the language.
@@ -121,21 +138,26 @@ in"$MTTPATH/trans/lang_matrix.r";
       a_ij := df(MTTEdx(i,1), xj, 1);
       aa_ij := MTTE(i,j) - mttt*a_ij;
       IF (aa_ij NEQ 0) THEN
-        IF ($nrep EQ 0) THEN
+        IF ($nmatrix EQ 1) THEN
         BEGIN
-          %% Write a and  with full indexing
+          %% Write a  with full indexing
+          INAME(mtt_o); % Set temp name
           GENTRAN mtta(i,j) ::=: aa_ij;
         END;
-        IF ($nrep EQ 1) THEN
+        IF (($nmatrix EQ 0) AND ($nrep EQ 1)) THEN
         BEGIN
           %% Write a  with vector indexing
+          INAME(mtt_o); % Set temp name
           GENTRAN mtta(ij) ::=: aa_ij;
         END;
         mttAAx_i := mttAAx_i + aa_ij*xj;
       END;
       IF (mttAAx_i NEQ 0) THEN
         IF (($nrep EQ 0) OR ($nrep EQ 2)) THEN
+        BEGIN
+          INAME(mtt_o); % Set temp name
           GENTRAN mttax(i) ::=: mttAAx_i;
+        END;
   END;
 
 %Shut the  output according to the language.

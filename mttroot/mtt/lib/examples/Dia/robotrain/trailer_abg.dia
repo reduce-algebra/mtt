@@ -676,7 +676,7 @@
         <dia:point val="47.4169,36.0036"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="41.5718,34.0969;45.6004,36.8035"/>
+        <dia:rectangle val="38.2053,34.0636;46.4674,36.7702"/>
       </dia:attribute>
       <dia:attribute name="conn_endpoints">
         <dia:point val="47.4169,36.0036"/>
@@ -722,7 +722,7 @@
         <dia:point val="37.3084,28.9743"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="37.2213,30.2735;40.0145,34.1514"/>
+        <dia:rectangle val="37.2224,29.3228;40.0157,35.1021"/>
       </dia:attribute>
       <dia:attribute name="conn_endpoints">
         <dia:point val="37.3084,28.9743"/>
@@ -890,7 +890,7 @@
         <dia:point val="37.3169,35.9036"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="25.5726,34.0536;34.4497,36.7536"/>
+        <dia:rectangle val="24.7053,34.0536;37.8169,36.7536"/>
       </dia:attribute>
       <dia:attribute name="conn_endpoints">
         <dia:point val="37.3169,35.9036"/>
@@ -982,7 +982,7 @@
         <dia:point val="23.8169,35.9036"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="12.5695,34.0536;21.9999,36.7536"/>
+        <dia:rectangle val="9.20534,34.0536;22.8669,36.7536"/>
       </dia:attribute>
       <dia:attribute name="conn_endpoints">
         <dia:point val="23.8169,35.9036"/>
@@ -1377,7 +1377,7 @@
         <dia:point val="23.8169,35.9036"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="23.5525,31.1557;24.9346,34.1016"/>
+        <dia:rectangle val="23.5128,30.2028;24.9742,35.0545"/>
       </dia:attribute>
       <dia:attribute name="conn_endpoints">
         <dia:point val="23.8169,35.9036"/>
@@ -1997,7 +1997,7 @@
             <dia:real val="1"/>
           </dia:attribute>
           <dia:attribute name="pos">
-            <dia:point val="37.3084,29.2743"/>
+            <dia:point val="37.3083,29.2743"/>
           </dia:attribute>
           <dia:attribute name="color">
             <dia:color val="#000000"/>
@@ -2016,16 +2016,16 @@
     </dia:object>
     <dia:object type="BondGraph - MTT port" version="0" id="O42">
       <dia:attribute name="obj_pos">
-        <dia:point val="45.65,39.7"/>
+        <dia:point val="44.6812,39.7"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="45.6,39.65;49.2714,41.5571"/>
+        <dia:rectangle val="44.6312,39.65;50.2401,41.5571"/>
       </dia:attribute>
       <dia:attribute name="elem_corner">
-        <dia:point val="45.65,39.7"/>
+        <dia:point val="44.6812,39.7"/>
       </dia:attribute>
       <dia:attribute name="elem_width">
-        <dia:real val="3.5713834764831756"/>
+        <dia:real val="5.5088834764831933"/>
       </dia:attribute>
       <dia:attribute name="elem_height">
         <dia:real val="1.8071067811865469"/>
@@ -2049,7 +2049,7 @@
       <dia:attribute name="text">
         <dia:composite type="text">
           <dia:attribute name="string">
-            <dia:string>#INTF#</dia:string>
+            <dia:string>#INTF:x_e#</dia:string>
           </dia:attribute>
           <dia:attribute name="font">
             <dia:font family="serif" style="80" name="Times-Roman"/>
@@ -2077,16 +2077,16 @@
     </dia:object>
     <dia:object type="BondGraph - MTT port" version="0" id="O43">
       <dia:attribute name="obj_pos">
-        <dia:point val="40.7143,28.05"/>
+        <dia:point val="39.7456,28.05"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="40.6643,28;44.3357,29.9071"/>
+        <dia:rectangle val="39.6956,28;45.3044,29.9071"/>
       </dia:attribute>
       <dia:attribute name="elem_corner">
-        <dia:point val="40.7143,28.05"/>
+        <dia:point val="39.7456,28.05"/>
       </dia:attribute>
       <dia:attribute name="elem_width">
-        <dia:real val="3.5713834764831982"/>
+        <dia:real val="5.5088834764831791"/>
       </dia:attribute>
       <dia:attribute name="elem_height">
         <dia:real val="1.8071067811865476"/>
@@ -2110,7 +2110,7 @@
       <dia:attribute name="text">
         <dia:composite type="text">
           <dia:attribute name="string">
-            <dia:string>#INTF#</dia:string>
+            <dia:string>#INTF:y_e#</dia:string>
           </dia:attribute>
           <dia:attribute name="font">
             <dia:font family="serif" style="80" name="Times-Roman"/>
@@ -2263,7 +2263,7 @@
         <dia:point val="56.1107,35.8536"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="49.1716,34.0634;52.715,36.7911"/>
+        <dia:rectangle val="48.305,34.021;55.1755,36.8061"/>
       </dia:attribute>
       <dia:attribute name="conn_endpoints">
         <dia:point val="56.1107,35.8536"/>
@@ -2309,7 +2309,7 @@
         <dia:point val="37.2607,21.4036"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="36.4227,22.696;38.4961,27.2167"/>
+        <dia:rectangle val="36.4167,21.746;38.5021,28.1668"/>
       </dia:attribute>
       <dia:attribute name="conn_endpoints">
         <dia:point val="37.2607,21.4036"/>
@@ -2355,7 +2355,7 @@
         <dia:point val="37.3084,28.9743"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="38.1477,27.1109;40.7199,29.7628"/>
+        <dia:rectangle val="38.6399,27.1169;40.0535,29.7601"/>
       </dia:attribute>
       <dia:attribute name="conn_endpoints">
         <dia:point val="37.3084,28.9743"/>
@@ -2366,6 +2366,12 @@
       </dia:attribute>
       <dia:attribute name="line_width">
         <dia:real val="0.050000000000000003"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_start_gap">
+        <dia:real val="1"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_end_gap">
+        <dia:real val="1"/>
       </dia:attribute>
       <dia:attribute name="object_edge_start">
         <dia:boolean val="true"/>
@@ -2398,7 +2404,7 @@
         <dia:point val="47.4169,36.0036"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="46.6297,36.3024;48.6318,39.8449"/>
+        <dia:rectangle val="46.6256,37.2919;48.6277,38.8449"/>
       </dia:attribute>
       <dia:attribute name="conn_endpoints">
         <dia:point val="47.4169,36.0036"/>
@@ -2409,6 +2415,12 @@
       </dia:attribute>
       <dia:attribute name="line_width">
         <dia:real val="0.050000000000000003"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_start_gap">
+        <dia:real val="1"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_end_gap">
+        <dia:real val="1"/>
       </dia:attribute>
       <dia:attribute name="object_edge_start">
         <dia:boolean val="true"/>
@@ -2541,7 +2553,7 @@
             <dia:real val="1"/>
           </dia:attribute>
           <dia:attribute name="pos">
-            <dia:point val="47.4215,45.2536"/>
+            <dia:point val="47.4214,45.2536"/>
           </dia:attribute>
           <dia:attribute name="color">
             <dia:color val="#000000"/>
@@ -2563,7 +2575,7 @@
         <dia:point val="42.5,28.9536"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="44.308,27.1352;46.6263,29.7972"/>
+        <dia:rectangle val="45.5148,27.1565;46.9382,29.8257"/>
       </dia:attribute>
       <dia:attribute name="conn_endpoints">
         <dia:point val="42.5,28.9536"/>
@@ -2574,6 +2586,12 @@
       </dia:attribute>
       <dia:attribute name="line_width">
         <dia:real val="0.050000000000000003"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_start_gap">
+        <dia:real val="1"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_end_gap">
+        <dia:real val="1"/>
       </dia:attribute>
       <dia:attribute name="object_edge_start">
         <dia:boolean val="true"/>
@@ -2606,7 +2624,7 @@
         <dia:point val="47.4357,40.6036"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="46.6323,40.9101;48.6326,44.2048"/>
+        <dia:rectangle val="46.6356,41.6437;48.6293,43.2049"/>
       </dia:attribute>
       <dia:attribute name="conn_endpoints">
         <dia:point val="47.4357,40.6036"/>
@@ -2617,6 +2635,12 @@
       </dia:attribute>
       <dia:attribute name="line_width">
         <dia:real val="0.050000000000000003"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_start_gap">
+        <dia:real val="1"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_end_gap">
+        <dia:real val="1"/>
       </dia:attribute>
       <dia:attribute name="object_edge_start">
         <dia:boolean val="true"/>

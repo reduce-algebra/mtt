@@ -41,6 +41,8 @@
 	v	  SS		external		
 
 ## Component type INTF
+	x_e	  none
+	y_e	  none
 	yaw	  none				
 
 ## Component type SS

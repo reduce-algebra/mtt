@@ -132,7 +132,7 @@ uupdate -u mtt-${version}.tar.gz
 cd ../mtt-${version}/debian
 dch -v ${version} ${logtext}
 cd ..
-dpkg-buildpackage -rfakeroot -k${DEBEMAIL}
+dpkg-buildpackage -rfakeroot -k${DEBEMAIL} -m${DEBEMAIL}
 cd ..
 
 # clean up
@@ -174,7 +174,7 @@ uupdate -u mtt-examples-${version}.tar.gz
 cd ../mtt-examples-${version}/debian
 dch -v ${version} ${logtext}
 cd ..
-dpkg-buildpackage -rfakeroot -k${DEBEMAIL}
+dpkg-buildpackage -rfakeroot -k${DEBEMAIL} -m${DEBEMAIL}
 cd ..
 
 # clean up

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  2004/02/10 16:12:21  gawthrop
+## Don't give details of Se De Sf Df INTF
+##
 ## Revision 1.4  2002/04/28 18:41:26  geraint
 ## Fixed [ 549658 ] awk should be gawk.
 ## Replaced calls to awk with call to gawk.
@@ -115,6 +118,17 @@ cat <<EOF  >> $filename
    \fig{`pwd`/$1_abg}{$1_abg.ps}{0.9}{System \textbf{$1}: acausal bond graph}
 
 EOF
+
+## Put a schematic if exists (_pic.fig)
+if [ -e "$1_pic.fig" ]; then
+  echo Inserting $1_pic.fig
+  fig2dev -L eps $1_pic.fig  > $1_pic.ps
+cat <<EOF  >> $filename
+
+   \fig{`pwd`/$1_pic}{$1_pic.ps}{0.9}{System \textbf{$1}: schematic diagram}
+
+EOF
+fi
 
 # Description
 mtt -q -u $1 desc tex

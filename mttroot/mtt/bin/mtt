@@ -17,6 +17,14 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.345  2002/05/15 14:22:25  geraint
+## Code for Simulink S-function target written direct to sfun.cc instead of
+## calling .mexglx files. This eliminates the sfun dependency on Octave
+## ColumnVectors. sys_sfun.cc should build directly on a MS Windows machine
+## (can't test this yet).
+##
+## added sfun.zip target to create source code to export.
+##
 ## Revision 1.344  2002/05/11 01:14:17  geraint
 ## Fix for [ 553218 ] simpar.oct and simpar.m different.
 ## Translation added between ColumnVector in base .cc and Octave_map in .oct.
@@ -1982,8 +1990,12 @@ this_dir=`basename $PWD`
 if [ "${this_dir}" = "MTT_work" ]; then
   # Copy from read dirs to MTT_work
   for dir in ${read_dirs}; do
-    echo Copying ${dir}/*
-    cp --force ${dir}/* .
+     if [ -n "$Verbose" ]; then
+       echo Copying ${dir}/*
+       cp --force ${dir}/* .
+     else
+       cp --force ${dir}/* . 2> /dev/null
+     fi
     read_files=`echo ${dir}/*`
     for read_file in ${read_files}; do
      read_file_name=`basename ${read_file}`
@@ -2057,6 +2069,8 @@ fi
 
 # User defined representations
 ## Copy from library if not already here
+
+## .make versions
 if [ -f "$MTT_REP/$2_rep.make" ]; then
   if [ -f "$2_rep.make" ]; then
     echo Using $2_rep.make

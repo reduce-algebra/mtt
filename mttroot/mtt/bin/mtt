@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.381  2003/08/10 18:56:55  gawthrop
+## Explicitly generate eps files
+##
 ## Revision 1.380  2003/08/06 14:44:51  gawthrop
 ## Don't include -q or -u in long file names via ${__ARGS}
 ##
@@ -1348,7 +1351,7 @@ set_oct() {
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='4.9'
+version='5.0'
 
 # MTT recursion level is zero unless explicitly set
 level=0

@@ -53,7 +53,7 @@ default_version=`date --iso-8601 | sed 's/\-/./g'`
 
 sources=${default_sources}
 logtext=${default_logtext}
-version="4.91."${default_version}
+version="5.0."${default_version}
 keeptmp="remove"
 
 # look for command line arguments

@@ -10,6 +10,9 @@ function  fr = dm2fr(A,B,C,D,E,W,u0)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+// Revision 1.6  1996/08/24  14:22:23  peter
+// Put in a ; to avoid excessive log output.
+//
 % %% Revision 1.5  1996/08/16 14:26:37  peter
 % %% Check and fix size of u0.
 % %%
@@ -52,7 +55,7 @@ if m>n
   u0=u0';
 end;
 
-
+j = sqrt(-1);
 fr = zeros(N,Ny);
 i = 0;
 for w = W'

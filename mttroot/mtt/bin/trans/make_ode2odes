@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.38  2000/10/11 09:08:08  peterg
+## cse --> csex
+##
 ## Revision 1.37  2000/08/01 12:25:06  peterg
 ## Now includes euler
 ##
@@ -187,8 +190,8 @@ global MTT_data;
 
   mttj = 0;
     for it = 1:ilast		#Integration loop
-    [y] = $1_$odeo(x,u,t,par);# Output 
-    [u] = $1_input(t,x,y);	# Input
+    [y] = $1_$odeo(x,u,t,par);  # Output 
+    [u] = $1_input(x,y,t,par);	# Input
     if mttj==0
      mtt_write(t,x,y,$Nx,$Ny);   # Write it out
     endif

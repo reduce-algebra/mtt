@@ -15,7 +15,7 @@ case $representation in
     ae)
 	matrix=yz ;
 	nmatrix=`mtt_getsize $system yz` ;;
-    cse | csex)
+    csex)
 	matrix=edx ;
 	nmatrix=`mtt_getsize $system x` ;;
     ode)

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.17  2002/09/16 08:08:00  geraint
+## Merged changes from global-optimisation branch.
+##
 ## Revision 1.16.2.3  2002/09/10 23:24:19  geraint
 ## Rationalised local and global optimisations.
 ## Fixes presentation of locally optimised code (ode view).
@@ -174,8 +177,24 @@ echo 'off echo$' >> $1_$2_write.r
 echo 'load gentran$' >> $1_$2_write.r
 
 for matrix in $matrices; do
-    matrix_exists=`grep -i MTT${matrix} ${sys}_dae.r | wc -l | gawk '{print $1}'`
-    if [ "$matrix" = "EdX" -o $matrix_exists -gt 0 ]; then
+    ignore_matrix="no"
+    if [ "$matrix" = "E" ]; then
+	matrix_exists=`grep -i MTTE ${sys}_dae.r | wc -l | gawk '{print $1}'`
+	if [ ! $matrix_exists -gt 0 ]; then
+	    ignore_matrix="yes"
+	    n=`first "$ns"`; ns=`rest "$ns"` 
+	    m=`first "$ms"`; ms=`rest "$ms"`
+ 	    is=`n2m 1 $n`;
+	    echo "write \"% Begin Matrix MTTE\"$" >> $1_$2_write.r
+	    for i in $is; do
+		echo 'write'
+		name=`echo MTTE'('$i','$i')'`
+		echo '  '$comma$name ':=' $name '$'
+	    done >> $1_$2_write.r
+	    echo "write \"% End Matrix MTTE\"$" >> $1_$2_write.r
+	fi
+    fi
+    if [ ! "$ignore_matrix" = "yes" ]; then
 	n=`first "$ns"`; ns=`rest "$ns"` 
 	m=`first "$ms"`; ms=`rest "$ms"`
 	is=`n2m 1 $n`; 

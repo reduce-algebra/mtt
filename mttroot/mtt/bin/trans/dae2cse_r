@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.24  2002/09/16 08:08:00  geraint
+## Merged changes from global-optimisation branch.
+##
 ## Revision 1.23.2.3  2002/09/12 18:50:50  geraint
 ## Uncommented cse optimisations - they seem to work ok.
 ##
@@ -492,12 +495,10 @@ cat $1_cseo.r1 $1_cseo.r2  > $1_cseo.r
 
 if [ ${optimise:-""} = "-optimise_global" ]; then
     mtt_optimise global $1 ae
-    mtt_optimise global $1 cse
     mtt_optimise global $1 cseo
     mtt_optimise global $1 csex
 elif [ ${optimise:-""} = "-optimise_local" ]; then
     mtt_optimise local $1 ae
-    mtt_optimise local $1 cse
     mtt_optimise local $1 cseo
     mtt_optimise local $1 csex
 fi

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.13  2002/07/10 17:43:05  geraint
+## Added feature [ 562453 ] Optimisation of algebraic equations.
+##
 ## Revision 1.12  2002/06/28 10:13:40  geraint
 ## Includes fix_c.r in ese2rdae and def2write_r to eliminate occurrances of x**y.
 ##
@@ -155,7 +158,8 @@ mtt_fix_integers ()
 	rhs=$2" " ;
 	rhs1 = gensub ( /([^A-Za-z_0-9\.\+])([0-9]+)([^\.0-9])/ , "\\1\\2.0\\3" , "g", rhs );
 	rhs2 = gensub ( /([^e]\+)([0-9]+)([^\.0-9])/ , "\\1\\2.0\\3" , "g", rhs1 );
-	printf "%s:=%s$\n", lhs, rhs2 ;
+	rhs3 = gensub ( /([^A-Za-z_0-9\.\+])([0-9]+)e([0-9]+).0([^\.0-9])/ , "\\1\\2\\3\\4" , "g" , rhs)
+	printf "%s:=%s$\n", lhs, rhs3 ;
     }'
 }
 

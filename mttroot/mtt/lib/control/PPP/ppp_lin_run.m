@@ -106,6 +106,18 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
     endif
   endif
   
+  if !struct_contains(p_c,"tau") # Time horizon
+    if strcmp(p_c.Method,"lq")
+      p_c.tau = [0:0.1:1]*2;
+    elseif strcmp(p_c.Method,"original");
+      p_c.tau = [10:0.1:11];
+    else
+      error(sprintf("Method %s not recognised", p_c.Method));
+    endif
+  endif
+  
+      
+
   if !struct_contains(p_o,"x_0")
     p_o.x_0 = zeros(n_x,1);
   endif
@@ -139,13 +151,13 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   else
     I = ceil(p_c.T/p_c.delta_ol) # Number of large samples
     if strcmp(p_c.Method, "original")
-      tau = [10:0.1:11]*(2/a_u);	# Time horizons
+##      tau = [10:0.1:11]*(2/a_u);	# Time horizons
       [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww] =\
-	  ppp_lin(A,B,C,D,p_c.A_u,p_c.A_w,tau); # Design
+	  ppp_lin(A,B,C,D,p_c.A_u,p_c.A_w,p_c.tau); # Design
     elseif strcmp(p_c.Method, "lq") # LQ design
-      tau = [0:0.1:2]; # Time horizons
+##      tau = [0:0.001:1]*2; # Time horizons
       [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,A_u] \
-	  = ppp_lin_quad (A,B,C,D,tau,p_c.Q,p_c.R);
+	  = ppp_lin_quad (A,B,C,D,p_c.tau,p_c.Q,p_c.R);
       p_c.A_u = A_u;
     else
       error(sprintf("Control method %s not recognised", p_c.Method));
@@ -160,6 +172,8 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
     ## Checks
     [ol_zeros, ol_poles] = sys2zp(sys)
     cl_poles = eig(A - B*k_x)
+    t_max = 1/min(abs(cl_poles))
+    t_min = 1/max(abs(cl_poles))
   endif
 
   ## Initial control U

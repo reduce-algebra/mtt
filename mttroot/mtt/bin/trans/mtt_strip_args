@@ -1,0 +1,57 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: strip args
+# Strips unwanted bits from a list of arguments
+# Label file to symbolic parameters conversion
+# Copyright (C) 2000 by Peter J. Gawthrop
+
+## $Id$  ##
+## $Log$ ##
+# Inform user
+#echo "Creating $1_sympar.txt"
+
+# Separation characters
+SEPS='=*;+/()-'
+# Replace by ,
+REPS=',,,,,,,,'
+
+# This is the main transformation using gawk
+tr $SEPS $REPS | \
+awk '
+function exact_match(name1, name2) {
+  return ((match(name1,name2)>0)&&(length(name1)==length(name2)))
+}
+
+function matches(names, name) {
+  n_matches = split(names,match_name);
+  matched = 0;
+  for (i_matches = 1; i_matches <= n_matches; i_matches++) {
+    if ( exact_match(name,match_name[i_matches]) ) {
+      matched = 1;
+      break;
+    }
+  }
+  return matched;
+}
+
+BEGIN {
+  not_an_arg = "effort flow state internal external zero unknown\
+                mtt_e mtt_f sqrt exp log sign none abs";
+}
+{
+    args=$1
+    N=split(args, arg, ",");
+    for (i=1;i<=N;i++){
+      if ( (length(arg[i])>0)&&(matches(not_an_arg,arg[i])==0)&&(match(arg[i],"^[0-9]+[.]*")==0) ){
+        print arg[i]
+      }
+  }
+}' |\
+grep -v '^\$' 
+
+
+

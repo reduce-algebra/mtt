@@ -17,5 +17,5 @@ function mtt_save_alias (arg,system_name)
 
   fileid = fopen('mtt_aliased.txt','a');
   fprintf(fileid, "%s\t%s\n", arg,system_name);
-
+  fclose(fileid);
 endfunction

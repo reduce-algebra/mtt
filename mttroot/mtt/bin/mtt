@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.87  1997/07/27 13:11:11  peterg
+## Added path checking code -- mtt_check_vars
+##
 # Revision 1.86  1997/06/29  19:05:51  peterg
 # Seascale changes -- mainly to new rep format.
 #
@@ -343,7 +346,7 @@ done
 #Print header if not in quiet (-q) mode.
 if [ "$quiet" != "quiet" ]; then
   echo
-  echo 'MTT (Model Transformation Tools) version 2.4++'
+  echo 'MTT (Model Transformation Tools) version 2.5'
   echo 'This is free software with ABSOLUTELY NO WARRANTY.'
   echo 'Type `mtt warranty'\' 'for details.'
   echo

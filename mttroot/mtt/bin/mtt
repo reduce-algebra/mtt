@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.108  1997/12/19  08:48:55  peterg
+# Lille modifications - bicausal algebraic loops supported
+#
 ## Revision 1.107  1997/12/11 10:59:50  peterg
 ## This is version 2.6
 ##
@@ -1390,11 +1393,7 @@ ifeq ($REPTYPE,tex)
 #Create html version of dvi file
 $1_$2.html: $1_$2.dvi $1_$2.doc
 	echo Creating $1_$2/$1_$2.html
-	latex2html \
-	-contents_in_navigation \
-	-index_in_navigation \
-	-auto_navigation \
-	$1_$2.doc
+	$LATEX2HTML $1_$2.doc
 endif
 
 #Default view

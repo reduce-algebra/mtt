@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.65  2004/08/29 13:14:29  geraint
+## Added rule to make header for sae (sorted algebraic equations).
+##
 ## Revision 1.64  2004/08/29 01:48:46  geraint
 ## Added rules to create headers for sorted systems: sesx and sesy.
 ##
@@ -604,7 +607,7 @@ get_sizes()
 
     case ${rep} in
 	dm)
-	let Nx=Nx+2*Nz+Nyz # Matrices not usual size
+	Nx=$(( $Nx + 2 * $Nz + $Nyz )) # Matrices not usual size
 	;;
 	*)
 	

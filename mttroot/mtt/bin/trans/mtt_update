@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.22  2003/08/19 13:08:44  gawthrop
+## Ingnore if/endif
+##
 ## Revision 1.21  2003/08/14 10:33:46  gawthrop
 ## Ignore if and endif
 ##
@@ -189,7 +192,7 @@ remove_if() {
      fi
    i=0;
    for new in $info; do
-     let i=$i+1;
+     i=$(( $i + 1 ));
      initial_value $i ${default}
      echo $new $value  |\
      gawk '{printf("%s\t= %s; # Default\n",$1,$2)}' >> $textfile

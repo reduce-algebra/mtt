@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  2004/08/26 16:15:40  geraint
+## Counts abg.m instead of fig files so that dia models are also included.
+##
 ## Revision 1.5  2004/02/10 16:11:01  gawthrop
 ## Removed debug
 ##
@@ -84,9 +87,9 @@ filename=$2
 
 
 if [ -z "$3" ]; then
-    let level=0;
+    level=0;
 else
-    let level=$4;
+    level=$4;
 fi
 echo "level: $level"
 #Top-level commands
@@ -137,7 +140,7 @@ if [ "$level" != "$maxlevel" ]; then
 	    \begin{$listtype}
 EOF
 	# Recursively generate the subsystems
-        let level1="$level+1"
+        level1=$(( $level + 1 ))
 	sh $system\_sub.sh "sub_sh2tex $arg " " $filename $system $level1" 
 	cat <<EOF >> $filename
 	    \end{$listtype}

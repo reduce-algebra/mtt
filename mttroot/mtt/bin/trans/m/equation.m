@@ -7,8 +7,9 @@ function eqn =  equation(name,cr,args,outbond,outcause,outport, ...
 %     %%%%% Model Transformation Tools %%%%%
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 
-% Matlab function  printcr
-% printcr(name,outport,bond_number,cr,args,RHS_cause,eqnfile
+% Matlab function equations.m
+% eqn =  equation(name,cr,args,outbond,outcause,outport, ...
+%                              inbonds,incauses,inports)
 
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -16,6 +17,11 @@ function eqn =  equation(name,cr,args,outbond,outcause,outport, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1996/09/12 12:03:58  peter
+% %% Added some error checking.
+% %% If no constitutive relationship, only add diagonal elementts to
+% %% default unity output.
+% %%
 % %% Revision 1.2  1996/09/10 11:29:47  peter
 % %% Removed causality & port info when no constitutive relationship.
 % %%
@@ -70,25 +76,22 @@ RHS1 = sprintf('%s%s%s%s%s%s%s%s\n', ...
 % Set up rest of RHS - the input variables, causality and ports.
 RHS2 = '';
 for i=1:nports
-  if (length(cr)>0) | (i == outport) % only do diag terms if no cr
-    RHS2 = sprintf('%s\t%s', ...
-	RHS2, varname(name, inbonds(i), incauses(i)))
+  RHS2 = sprintf('%s\t%s', ...
+      RHS2, varname(name, inbonds(i), incauses(i)))
   
-    if length(cr)>0 % add the causality & port info
-      RHS2 = sprintf('%s,%s,%1.0f', ...
-	  RHS2, cause2name(incauses(i)), inports(i));
-    end;
+  if length(cr)>0 % add the causality & port info
+    RHS2 = sprintf('%s,%s,%1.0f', ...
+	RHS2, cause2name(incauses(i)), inports(i));
+  end;
   
-    if i<nports % Add a comma
-      RHS2 = sprintf('%s,\n',RHS2);
-    else
-      RHS2 = sprintf('%s\n',RHS2);
-    end;
+  if (i<nports) % Add a comma
+    RHS2 = sprintf('%s,\n',RHS2);
+  else
+    RHS2 = sprintf('%s\n',RHS2);
   end;
 end;
  
-  
-
+ 
 % Set up equation
 eqn = sprintf('%s := %s%s\t%s;\n', LHS, RHS1, RHS2, rp);
 

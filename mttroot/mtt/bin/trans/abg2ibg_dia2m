@@ -1,0 +1,14 @@
+#! /bin/sh
+
+### abg2ibg_dia2m
+## Creates _ibg.m from _abg.dia
+## Copyright (C) 2004 by Geraint Paul Bevan
+
+  ###################################### 
+  ##### Model Transformation Tools #####
+  ######################################
+
+set -e
+
+mtt_uncompress.sh $1_abg.dia
+dia2abg.pl --create_ibg --diagram_name=$1

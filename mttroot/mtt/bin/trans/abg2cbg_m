@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1996/08/19 15:38:31  peter
+## Removed bug work round.
+##
 ## Revision 1.4  1996/08/16 14:28:45  peter
 ## Some debugging lines removed.
 ##
@@ -93,7 +96,7 @@ rm -f mtt_info.txt
 echo Creating $1_cbg.m
 
 # Use matrix manipulation to accomplish the transformation
-$MATRIX  >abg2cbg_m.log  2>>abg2cbg_m.log << EOF
+$MATRIX  >abg2cbg_m.log  2>mtt_error << EOF
 
   infofile= '$infofile';
 
@@ -109,6 +112,20 @@ $MATRIX  >abg2cbg_m.log  2>>abg2cbg_m.log << EOF
 EOF
 
 cat mtt_info.txt
+
+# Test for errors and print if any
+err_length=$(wc -c <mtt_error)
+if [ $err_length != "0" ]
+then
+  echo MTT has failed with the following errors '...'
+  cat mtt_error
+  exit 1
+else
+  exit 0
+fi
+
+
+
 cp $1_$1_cbg.m $1_cbg.m 
 
 

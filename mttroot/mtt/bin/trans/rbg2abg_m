@@ -11,6 +11,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1996/08/05 12:22:16  peter
+## Initial revision
+##
 ###############################################################
 
 # Raw bond graph to structured acausal bond graph: mfile format
@@ -60,18 +63,17 @@
 # Remove the old log file
 rm -f rbg2abg_m.log
 rm -f $1_abg.m
-rm -f warning.txt; touch warning.txt
 
 #Inform user
 echo Creating $1_abg.m
 
 # Use matrix manipulation to accomplish the transformation
-$MATRIX > rbg2abg_m.log  2>>rbg2abg_m.log << EOF
+$MATRIX > rbg2abg_m.log  2>mtt_err << EOF
 
-  warningfile = 'warning.txt';
+  infofile = 'mtt_info.txt';
   %Convert from the fig version of the bonds to a structured version
   [rbonds,rstrokes,rcomponents,rports,n_ports] = $1_rbg;
-  [bonds,components] = rbg2abg(rbonds,rstrokes,rcomponents,rports,warningfile);
+  [bonds,components] = rbg2abg(rbonds,rstrokes,rcomponents,rports,infofile);
 
   %Write the function m-file for the causal bond graph
   filename = '$1_abg.m';
@@ -87,7 +89,21 @@ $MATRIX > rbg2abg_m.log  2>>rbg2abg_m.log << EOF
 
 EOF
 
-cat warning.txt
+touch mtt_info.txt
+cat mtt_info.txt
+
+# Test for errors and print if any
+err_length=$(wc -c <mtt_error)
+if [ $err_length != "0" ]
+then
+  echo MTT has failed with the following errors '...'
+  cat mtt_error
+  exit 1
+else
+  exit 0
+fi
+
+
 
 
 

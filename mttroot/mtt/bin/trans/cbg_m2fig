@@ -18,6 +18,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1996/08/08 18:07:31  peter
+## Sorted out naming scheme for files
+##
 ## Revision 1.1  1996/08/05 20:13:56  peter
 ## Initial revision
 ##
@@ -37,7 +40,7 @@ ls $1_*_cbg.m | sed 's/\(.*_\)\(.*_\)cbg.m/cp \2fig.fig \1\2cbg.fig/' | sh
 echo Creating $1_cbg.fig
 
 # Use  matrix manipulation to accomplish the transformation
-$MATRIX > cbg_m2fig.log  2>> cbg_m2fig.log << EOF
+$MATRIX > cbg_m2fig.log  2>mtt_error << EOF
 
   system_name = '$1';
   thick = 3; length = 250; red = 4; blue = 1; green = 12; font = 18;
@@ -49,6 +52,16 @@ EOF
 
 cp $1_$1_cbg.fig $1_cbg.fig
 
+# Test for errors and print if any
+err_length=$(wc -c <mtt_error)
+if [ $err_length != "0" ]
+then
+  echo MTT has failed with the following errors '...'
+  cat mtt_error
+  exit 1
+else
+  exit 0
+fi
 
 
 

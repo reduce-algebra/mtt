@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  2002/12/06 12:26:34  gawthrop
+## Strips comments from cmp.txt file
+##
 ## Revision 1.1  2002/12/03 23:26:08  geraint
 ## Convert _cmp.txt to _sub.sh.
 ## Slightly edited copy of (obsolete) abg2sub_m2sh.
@@ -55,7 +58,7 @@ sort -u > mtt_tmp1
 grep -v '^[01]' < mtt_tmp1 > mtt_tmp4
 
 # Get a list of all standard simple components
-echo ls $MTT_LIB/comp/simple
+# echo ls $MTT_LIB/comp/simple
 ls $MTT_LIB/comp/simple |\
   gawk '/_cause.m/{split($1,a,"_");print(a[1])}'  >mtt_tmp2
 

@@ -17,6 +17,14 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.342  2002/05/10 13:24:58  geraint
+## Added initial support for building Simulink S-functions.
+## Rates do not update properly yet.
+## Inertial switches do not work yet.
+## Implicit integration not supported yet.
+##
+## build with: mtt -i euler MotorGenerator sfun mexglx.
+##
 ## Revision 1.341  2002/05/09 15:40:22  gawthrop
 ## -dr touches copied files to redo timestamp
 ##
@@ -2146,6 +2154,7 @@ $1_%.mexglx: $1_%.cc $1_def.h $1_sympar.h $1_cr.h mtt_kpathsea.cc mtt_matlab_oct
 
 ## .cc files
 .PRECIOUS: %.cc # Don't let mtt delete them
+.PRECIOUS: $1_%.cc # Don't let mtt delete them
 $1_%.cc:  $1_%.m
 	mtt_m2cc.sh  $1 \$* cat 
 

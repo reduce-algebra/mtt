@@ -39,6 +39,13 @@ static void
 }
 
 static void
+<mtt_model_name>_numpar (void)
+{
+#include "<mtt_model_name>_sympar.h"
+#include "<mtt_model_name>_numpar.c"
+}
+
+static void
 <mtt_model_name>_ode (void)
 {
 #include "<mtt_model_name>_ode.c"
@@ -235,12 +242,9 @@ static void mdlInitializeSampleTimes(SimStruct *S)
 #define MDL_INITIALIZE_CONDITIONS
 static void mdlInitializeConditions(SimStruct *S)
 {
-#include "<mtt_model_name>_sympar.h"
-
   PRINT_ENTER("mdlInitializeConditions");
 
-#include "<mtt_model_name>_numpar.c"
-
+  <mtt_model_name>_numpar ();
   <mtt_model_name>_state ();
 
   for (i = 0; i < MTTNX; i++) {

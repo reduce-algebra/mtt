@@ -16,6 +16,10 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.11  1997/12/16 18:05:03  peterg
+## Increased size of structure vector by on to include unknown_inputs as
+## 6th element
+##
 ## Revision 1.10  1997/04/15 09:18:26  peterg
 ## Added structure file
 ##
@@ -65,7 +69,7 @@ echo Creating $deffile
 echo Creating $structurefile
 
 # Use matrix manipulation to accomplish the transformation
-$RMATRIX > cbg2ese_m2r.log 2>mtt_error.txt << EOF
+$MATRIX > cbg2ese_m2r.log 2>mtt_error.txt << EOF
 
 infofile = '$infofile';;
 infofilenum = fopen(infofile,'w');

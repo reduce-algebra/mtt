@@ -13,6 +13,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.10  1996/12/04  21:51:02  peterg
+# Now uses filenum instead of line name.
+# Uses fopen
+#
 # Revision 1.9  1996/11/06  15:49:33  peterg
 # Cahged $MATRIX to $RMATRIX
 #
@@ -112,7 +116,7 @@ echo Creating $1_cbg.m
 echo Creating $1_type.sh
 
 # Use matrix manipulation to accomplish the transformation
-$RMATRIX  >abg2cbg_m.log  2>mtt_error.txt << EOF
+$MATRIX  >abg2cbg_m.log  2>mtt_error.txt << EOF
 
   infofile= '$infofile';
   typefile = '$typefile';
@@ -120,11 +124,12 @@ $RMATRIX  >abg2cbg_m.log  2>mtt_error.txt << EOF
   typefilenum = fopen(typefile,'w');
 
   %Convert from acausal to causal bond graph in m-file form.
-  system_name='$1'
+  system_name='$1';
 
   port_bonds = [];
-  [cbonds,status] = abg2cbg(system_name, '', '', port_bonds, ...
-      typefilenum, infofile);
+  port_status = [];
+  [cbonds,status] = abg2cbg(system_name, '', '', port_bonds, port_status, ...
+      typefilenum, infofilenum);
 
 EOF
 

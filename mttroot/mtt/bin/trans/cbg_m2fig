@@ -18,6 +18,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1996/12/07 19:23:07  peterg
+## Registered agian.
+##
 # Revision 1.7  1996/11/09  19:04:34  peterg
 # Removed cp $1_$1_cbg.fig $1_cbg.fig.
 #
@@ -58,7 +61,7 @@ sh $1_type.sh 'cp ' '_fig.fig ' '_cbg.fig'> mtt_error.txt
 echo Creating $1_cbg.fig
 
 # Use  matrix manipulation to accomplish the transformation
-$RMATRIX > cbg_m2fig.log  2>>mtt_error.txt << EOF
+$MATRIX > cbg_m2fig.log  2>>mtt_error.txt << EOF
 
   system_name = '$1';
   thick = 3; length = 150; red = 4; blue = 1; green = 12; font = 18;

@@ -1,4 +1,4 @@
-%SUMMARY BouncingRod: Two-dimensional bouncing rod
+%SUMMARY BouncingRod: Two-dimensional bouncing rod (hybrid)
 %DESCRIPTION A uniform rod bounces on a compliant surface -- the
 %DESCRIPTION CSW component is used.
 
@@ -10,6 +10,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1997/09/11 08:37:29  peterg
+% %% Added description
+% %%
 % %% Revision 1.1  1997/07/06 16:18:37  peterg
 % %% Initial revision
 % %%

@@ -19,6 +19,9 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 # ###############################################################
 # ## $Id$
 # ## $Log$
+# ## Revision 1.37  1998/08/25 08:33:29  peterg
+# ## Now does ports as well - fixed string prob by using deblank
+# ##
 # ## Revision 1.36  1998/08/25 06:44:40  peterg
 # ## Furhter revisions
 # ##
@@ -311,6 +314,7 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
     field=deblank(fields(i,:));
     if struct_contains(ABG,field);
       eval(["ABG_field = ABG.",field, ";"]);
+field,ABG_field
       
 # Outer while loop sets preferred causality
       ci_index=1;
@@ -325,6 +329,7 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
     	while done!=old_done	# Inner loop propagates causality
 	  old_done = done;
 	  for [subsystem,name] = ABG_field
+name,subsystem
       	    if subsystem.status != 0 # only do this if causality not yet complete
 	      comp = subsystem.connections; # Get the bonds on this component
 	      bond_list = abs(comp);
@@ -392,7 +397,7 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 	      end;
 	      
 	      ABG.bonds(bond_list,:) = comp_bonds;# Update the full bonds list
-	      eval(["ABG.subsystems.",name,".status = subsystem.status'"]);
+	      eval(["ABG_field.",name,".status = subsystem.status;"]);
     	    end;
 	  end;
 	  
@@ -401,20 +406,20 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 	  
     	endwhile			# done!=old_done
   	
-				# Set causality of a C or I which is not already set
-    	[name,prefered] = getdynamic(ABG.subsystems)
+    	[name,prefered] = getdynamic(ABG_field) # Set causality of a C or I which is not already set
     	if prefered==0
 	  ci_index=0;
     	else
 	  disp("Set causality of a C or I which is not already set")
-	  eval(["ci_bond_index = ABG.subsystems.",name,".connections;"]); # Get bonds
+	  eval(["ci_bond_index = ABG.",field,".",name,".connections;"]); # Get bonds
 	  ci_direction = sign(ci_bond_index);
 	  ci_bond_index = abs(ci_bond_index)
 	  ABG.bonds(ci_bond_index,1:2) = prefered*ci_direction'*[1 1]
 	  eval(["ABG.subsystems.",name,".status=0"]); #set status of the C or I
     	endif
       endwhile			# ( ci_index>0)
-    endif				# struct_contains(CBG,field(i,:));
+      eval(["ABG.",field," = ABG_field;"]); # Copy back to actual structure
+    endif			# struct_contains(CBG,field(i,:));
   endfor
 #  if n_ports>0
 #    status(1:n_ports) = zeros(n_ports,1); # Port status not relevant

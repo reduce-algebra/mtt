@@ -1,11 +1,6 @@
 %SUMMARY	INTF: flow integrator
 %DESCRIPTION	Port [in]:	Flow to be integrated
-%DESCRIPTION	Port [out]:	Effort = integral of flow on port [1]
+%DESCRIPTION	Port [out]:	Effort = integral of flow on port [in]
 
 %% Label file for system INTF (INTF_lbl.txt)
 
-
-%% Each line should be of one of the following forms:
-%	a comment (ie starting with %)
-%	Component-name	CR_name	arg1,arg2,..argn
-%	blank

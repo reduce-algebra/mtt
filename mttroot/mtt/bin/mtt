@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.196  1998/11/10 11:55:40  peterg
+## Added $info_switch to abg2cbg invocation
+##
 ## Revision 1.195  1998/10/28 13:58:57  peterg
 ## Added $1_sympars.txt prerequisite to _tf.m target
 ##
@@ -1945,6 +1948,15 @@ $1_tf.m: $1_def.r $1_sympars.txt $1_tf.r
 $1_tf.tex: $1_def.r $1_tf.r $1_sympar.r $1_simp.r
 	tf_r2tex $1; latex_tidy $1_tf.tex
 
+#SUMMARY pkim	partialyy-known system identification matrix (r)
+#SUMMARY pkim	partialyy-known system identification matrix (tex)
+#SUMMARY pkim	partialyy-known system identification matrix (view)
+#SUMMARY pkim	partialyy-known system identification matrix (ps)
+$1_pkim.r: $1_tf.r $1_sympar.r 
+	tf2pkim_r $1; tidy $1_pkim.r
+$1_pkim.tex: $1_def.r $1_pkim.r $1_simp.r
+	pkim_r2tex $1; latex_tidy $1_pkim.tex
+
 #SUMMARY ctf	controller transfer function (r)
 #SUMMARY ctf	controller transfer function (m)
 #SUMMARY ctf	controller transfer function (tex)
@@ -2122,11 +2134,6 @@ $1_nyfr.dat: $1_fr.m
 $1_nifr.dat: $1_fr.m
 	m2dat $1_nifr
 
-#Partially-known system indentification structure matrices
-$1_pkim.r: $1_tf.r $1_sympar.r 
-	tf2pkim_r $1; tidy $1_pki.r
-$1_pkim.tex: $1_def.r $1_pkim.r $1_sympar.r
-	pkim_r2tex $1; latex_tidy $1_pkim.tex
 
 ifeq ($REPTYPE,txt)
 #Generic conversion of txt files to tex files

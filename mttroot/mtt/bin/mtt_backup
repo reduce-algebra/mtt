@@ -24,8 +24,10 @@ done
 #Name of archive
 if [ -z "$1" ]; then
     mtt="mtt"
+    dirs='mtt mtt-lib mtt-cc mtt-doc'
 else
     mtt="mtt-$1"
+    dirs=$mtt
 fi
 
 ## Create appropriate filename
@@ -47,9 +49,6 @@ echo Backup file $filename
 
 
 
-#Files to backup
-dir=$mtt
-
 #Check whether archive exists here
 if [ -f "$filename" ]; then
     echo File $filename already exists - exiting
@@ -57,19 +56,19 @@ if [ -f "$filename" ]; then
 fi
 
 # Listing files to ignore
-echo Finding irrelevant files
-find $dir -name '*.*' -print |\
-  grep 'dvi$\|ps$\|pdf$\|html$\|info$\|gif$\|log$\|dat$\|MTT_work\|core\|~$' >IGNORE
-wc IGNORE | awk '{print "Ignoring", $1, "files"}'
+#echo Finding irrelevant files
+#find $dirs -name '*.*' -print |\
+#  grep 'dvi$\|ps$\|gif$\|log$\|dat$\|MTT_work\|core\|~$' >IGNORE
+#wc IGNORE | awk '{print "Ignoring", $1, "files"}'
 
 #echo examples >> IGNORE
 
 #Inform user
-echo Backing up $dir to $filename
+echo Backing up $dirs to $filename
 
 #Tar the files
-tar --exclude-from IGNORE --create --gzip --file $filename $dir
-
+#tar --exclude-from IGNORE --create --gzip --file $filename $dir
+tar --create --gzip --file $filename $dirs
 #Size info
 ls -l $filename
 #

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.13  2000/10/03 12:12:14  peterg
+## New path structure to account for three way split in mtt tree
+##
 ## Revision 1.12  2000/09/18 12:17:07  peterg
 ## Now includes to control system toolbox in OCTAVE_PATH
 ## Don't use -path stuff - use :: instead.
@@ -68,13 +71,14 @@ export CC='gcc'
 export MTTPATH=$MTT_BASE/mtt
 export MTT_LIB=$MTT_BASE/mtt-lib
 export MTT_DOC=$MTT_BASE/mtt-doc
+export MTT_CC=$MTT_BASE/mtt-cc
 
 export MTT_COMPONENTS=$MTT_LIB/comp
 export MTT_CRS=$MTT_LIB/cr
-export MTT_EXAMPLES=$MTT_LIB/mtt_examples
+export MTT_EXAMPLES=$MTT_LIB/examples
 export MTT_REP=$MTT_LIB/rep
 
-export PATH=$PATH\:$MTTPATH\:$MTTPATH/trans
+export PATH=$PATH\:$MTTPATH\:$MTTPATH/trans\:$MTT_CC
 
 #Setup octave
 export MATRIX_PATH=$MTTPATH/trans/m//
@@ -113,10 +117,14 @@ export HTMLVIEW='netscape'
 export DVIVIEW='xdvi'
 
 # Setup latex2html
-export LATEX2HTML="latex2html -contents_in_navigation -index_in_navigation -address http://www.mech.gla.ac.uk/~peterg/software/MTT"
+export LATEX2HTML="latex2html -contents_in_navigation -index_in_navigation -address http://mtt.sourceforge.net"
 
 # Ascend stuff
 export ASCENDLIBRARY=$MTTPATH/ascend/lib
+
+# Oct file generation - use version with no optimisation.
+export MKOCTFILE=$MTT_LIB/octave/mkoctfile
+
 
 
 

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.2  1997/12/04  10:41:15  peterg
+# Added third argument to print env. variables.
+#
 ## Revision 1.1  1997/07/27 13:11:37  peterg
 ## Initial revision
 ##
@@ -23,10 +26,11 @@
 var=$1
 name=$2
 print=$3
+software=$4
 
 if [ -z "$1"  ]; then
- echo '***** Environment variable' $name 'not set. *****'
- echo 'Check that mttrc or mttrc.csh has been invoked.'
+ echo '*** MTT WARNING Environment variable' $name 'not set. *****'
+ echo "Please check that software package $software has been correctely installed"
  echo
  exit
 fi

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.104  1997/12/07  21:05:10  peterg
+# Removed a debbugging echo
+#
 ## Revision 1.103  1997/12/07 20:10:36  peterg
 ## Fixed bugs with reprots and distinguish between book, article and
 ## section reports.
@@ -947,10 +950,6 @@ $1_rep.txt:
 	echo "# Outline report file for system $1 ($1_rep.txt)"; \
 	cat $MTTPATH/trans/m/rcs_header.txt; \
 	echo "mtt $1 abg tex"; \
-	echo "mtt $1 struc tex"; \
-	echo "mtt $1 dae tex"; \
-	echo "mtt $1 dm tex"; \
-	echo "mtt $1 lmfr ps"; \
 	)> $1_rep.txt
 endif
 
@@ -1353,8 +1352,9 @@ $1_$2.ps: $1_$2.gdat
 	gdat2ps $1_$2 '$ARGS';
 
 ifeq ($PLOTTYPE,multiple)
-ifneq ($ARGS,)
-	cp  $1_$2.ps $1_$2$_ARGS.ps ; echo COPYING       
+ifneq ($_ARGS,)
+	echo Creating $1_$2$_ARGS.ps
+	cp  $1_$2.ps $1_$2$_ARGS.ps
 endif
 endif
 
@@ -1453,4 +1453,4 @@ EOF
   rm -f  *_unique_raw_list *_raw_list
   rm -f mtt_error.txt mtt_info.txt a.out 
   rm -f *.log  mtt_info.txt warning.txt
-  rm -f *_*.idx *_*.ind *_*.ilg  *_*.aux *_*.lof *_*.toc
+#  rm -f *_*.idx *_*.ind *_*.ilg  *_*.lof *_*.toc

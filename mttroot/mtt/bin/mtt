@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.298  2001/04/02 17:36:20  gawthrop
+## Resolved $sys name clash when using -s
+##
 ## Revision 1.297  2001/03/29 19:20:45  gawthrop
 ## Can now use c representations of crs when using -c option
 ##
@@ -1538,7 +1541,9 @@ if [ "$1" = "compcopy" ]; then
          cp $comp_path/*_*.* $destination
          exit 0
       elif [ "$n_found" = "0" ]; then
-         echo Component $2 not found - is MTT_COMPONENTS set correctly?
+	if [ "$quiet" != "quiet" ]; then    
+           echo Component $2 not found - is MTT_COMPONENTS set correctly?
+        fi
          exit 1
       elif [ "$n_found" > "1" ]; then
          echo "Multiple versions of $2 found (see below) - use a more explicit alias"
@@ -1855,7 +1860,7 @@ esac
 ################################
 
 
-echo Target is $target, Subsystem is $Subsystem, options are $mtt_switches
+#echo Target is $target, Subsystem is $Subsystem, options are $mtt_switches
 $MAKE -S $verbose  -f  -  $target << EOF
 
 # Cancel implicit rules I don't want
@@ -1900,7 +1905,7 @@ $1_abg.fig: $sys_abg.fig
 	abg2sensitivity_fig $sys_s
 else # Either find the sensitivity model or fetch the model and create sensitivity model
 $1_abg.fig:
-	mtt -q -u $mtt_switches compcopy $1 || abg2sensitivity_fig $sys
+	mtt -q -u $mtt_switches compcopy $1 || abg2sensitivity_fig $sys_s
 endif
 endif
 
@@ -2165,11 +2170,7 @@ $1_numpar.c:  $1_numpar.txt $1_sympar.c
 
 
 
-#SUMMARY input	numerical input declaration (m) 
-$1_input.m:  $1_input.txt $1_sympars.txt
-	mtt_txt2m $1 input
-
-#SUMMARY input	numerical input declaration (m) 
+#SUMMARY logic	logic input declaration (m) 
 $1_logic.m:  $1_logic.txt $1_switch.txt
 	mtt_txt2m $1 logic
 
@@ -2505,10 +2506,15 @@ $1_numpar.p : $1_def.r $1_numpar.m
 $1_state.p : $1_def.r $1_state.m
 	mtt_m2p $1_state.m
 
+#SUMMARY input	numerical input declaration (m) 
 ifeq ($stdin,stdin)
+$1_input.m : $1_def.r
+	make_stdin $1 m
 $1_input.p : $1_def.r
 	make_stdin $1 p
 else
+$1_input.m:  $1_input.txt $1_sympars.txt
+	mtt_txt2m $1 input
 $1_input.p : $1_def.r $1_input.m
 	mtt_m2p $1_input.m
 endif

@@ -6,20 +6,26 @@
 
 ## 	$Id$	
 
-# Copyright (C) 1999 by Peter J. Gawthrop
+# Copyright (C) 1999,2000 by Peter J. Gawthrop
 
 # Tell user
 Sys=$1
 lang=$2
 date=`date`
-Nu=`grep "MTTNu " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
-echo  "Creating $1_input.$2 for standard input"
+outfile=$1_input.$2
 
-cat <<EOF > $1_input.$2 
+Nu=`mtt_getsize $Sys u` # Inputs 
+echo  "Creating $outfile for standard input"
+
+## Pascal code
+make_p()
+{
+cat <<EOF > $outfile
 PROCEDURE $1_input(VAR mttu : InputVector;
-                       mttt : REAL;
                        mttx : StateVector;
-                       mtty : OutputVector);
+                       mtty : OutputVector;
+                       mttt : REAL;
+                       par  : ParameterVector);
 
 {Created by MTT on $date for standard input to simulation}
 
@@ -41,3 +47,54 @@ BEGIN{$1_input}
 
 END{$1_input};
 EOF
+}
+
+make_m() {
+mtt_header $Sys input m stdin > $outfile
+cat >> $outfile <<EOF
+## The "standard input"
+global MTT_input MTT_input_index MTT_input_last
+  
+  MTT_input_index = min(++MTT_input_index,MTT_input_last);
+  mttu = MTT_input(MTT_input_index,:);
+## END Code
+endfunction
+EOF
+
+}
+
+
+make_cc() {
+cat > $outfile <<EOF
+#include "${Sys}_def.h"
+
+DEFUN_DLD (sidRC_input, args, ,
+"Usage: [mttu] = sidRC_input(mttx,mtty,mttt,mttpar)
+Octave input representation of system sidRC");
+
+{
+  static ColumnVector	u (MTTNU);
+  static Matrix mtt_input;
+  octave_value_list retval;
+  
+  mtt_input = octave_value (get_global_value ("MTT_input"));
+
+  retval (0)	= octave_value (mtt_input);
+  return (retval);
+}
+EOF
+}
+
+case $lang in
+    p)
+	make_p
+	;;
+    m)
+	make_m
+	;;
+    cc)
+	make_cc
+	;;
+    *)
+	echo language $lang not supported - sorry
+esac

@@ -15,6 +15,8 @@ function [t,y,u,X_est,y_c,t_e,y_e,e_e,p_c,p_o] = ppp_lin_run (Name,Simulate,Cont
   ## par_control and par_observer are structures containing parameters
   ## for the observer and controller
 
+  disp("Special version");
+
   ##Defaults
   if nargin<1			# Default name to dir name
     names = split(pwd,"/");
@@ -127,7 +129,7 @@ function [t,y,u,X_est,y_c,t_e,y_e,e_e,p_c,p_o] = ppp_lin_run (Name,Simulate,Cont
       error(sprintf("Method %s not recognised", p_c.Method));
     endif
   endif
-  
+
   if !struct_contains(p_c,"tau") # Time horizon
     if strcmp(p_c.Method,"lq")
       p_c.tau = [0:0.1:1]*2;
@@ -163,6 +165,7 @@ function [t,y,u,X_est,y_c,t_e,y_e,e_e,p_c,p_o] = ppp_lin_run (Name,Simulate,Cont
 
   ## Initialise simulation state
   x = x_0;
+  y_i = C*x_0
 
   if ControlType==0		# Step input
     I = 1;			# 1 large sample
@@ -203,7 +206,6 @@ function [t,y,u,X_est,y_c,t_e,y_e,e_e,p_c,p_o] = ppp_lin_run (Name,Simulate,Cont
   ## Short sample interval
   dt = p_c.delta_ol/p_c.N;
 
-p_o
   ## Observer design
   G = eye(n_x);		# State noise gain 
   sigma_x = eye(n_x);		# State noise variance
@@ -266,15 +268,9 @@ p_o
     for k=1:I
       tim=time;			# Timing
       i++;
+
       if Simulate		# Exact simulation 
-	X = x;			# Current state
-	t_sim = [1:p_c.N]*dt;	# Simulation time points
-	[yi,ui,xsi] = ppp_ystar(A,B,C,D,x,p_c.A_u,U,t_sim); # Simulate
-	x = xsi(:,p_c.N);	# Current state (for next time)
-	ti  = [(i-1)*p_c.N:i*p_c.N-1]*dt; 
-	y_i = yi(1);	# Current output
-	t_i = ti(1);
-	##X = xsi(:,1);		# Wrong!!
+	X = x;			# Current (simulated) state
       else			# The real thing
 	if strcmp(p_o.method, "remote")
 	  [t_i,y_i,u_i,X] = ppp_put_get_X(U); # Remote-state interface
@@ -299,16 +295,25 @@ p_o
       elseif strcmp(p_o.method, "remote")
 	## predict from remote state (with zero L)	
 	if (ControlType==2)	# Closed-loop
-# 	  [x_est y_est y_new e_est] = ppp_int_obs \
-# 	      (X,y_i,U,A,B,C,D,p_c.A_u,p_c.delta_ol,zeros(n_x,1));
-	  x_est = X; y_est=y_i; y_new=y_i; e_est=0;
+    	  [x_est y_est y_new e_est] = ppp_int_obs \
+    	      (X,y_i,U,A,B,C,D,p_c.A_u,p_c.delta_ol,zeros(n_x,1));
+	##  x_est = X; y_est=y_i; y_new=y_i; e_est=0;
 	else			# Open-loop
 	  [x_est y_est y_new e_est] = ppp_int_obs \
 	      (x_est,y_i,U,A,B,C,D,p_c.A_u,p_c.delta_ol,zeros(n_x,1));
 	endif
-	
       endif
       
+      ## Simulation (based on U_i)
+      if Simulate
+	t_sim = [1:p_c.N]*dt;	# Simulation time points
+	[yi,ui,xsi] = ppp_ystar(A,B,C,D,x,p_c.A_u,U,t_sim); # Simulate
+	x = xsi(:,p_c.N);	# NEXT state
+	ti  = [(i-1)*p_c.N:i*p_c.N-1]*dt; 
+	y_i = yi(1);	# Current output
+	t_i = ti(1);
+      endif
+
       ##Control
       if ( length(p_c.Tau_u)==0&&length(p_c.Tau_y)==0 )
 	U = K_w*w - K_x*x_est;
@@ -329,6 +334,9 @@ p_o
 	[u_qp,U,n_active] = ppp_qp \
 	    (x_est,w,J_uu,J_ux,J_uw,Us0,Gamma,gamma,1e-6,1);
       endif
+
+      ## Allow for the delay
+      ##U = expm(p_c.delta_ol*p_c.A_u)*U;
 
       ## Save data
       if Simulate

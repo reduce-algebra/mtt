@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  1998/07/16 20:41:05  peterg
+## Now uses new mtt_help
+##
 ## Revision 1.10  1998/05/18 08:35:19  peterg
 ## Surround arguments to tr with ""
 ##
@@ -49,6 +52,12 @@
 
 Topic=$1
 topic=`echo $Topic | tr "[A-Z]" "[a-z]"`
+
+if [ -n "$2" ]; then
+    regexp=$2;
+else
+    regexp='^';
+fi
 
 if [ "$topic" = "" ]; then
     echo 'Usage: mtt help representations'
@@ -93,7 +102,7 @@ case $topic in
 
   representations)
     key=$summary 
-    find_path=$MTTPATH/mtt
+    find_path=$MTTPATH
     name='mtt'
     all='all'
     sort='sort -u'
@@ -119,7 +128,7 @@ echo $blurb
 
   mtt_find $find_path "$name" |\
   awk '{print "cat " $1 "/" $2}'   | sh  |\
-  egrep $key |\
+  egrep $key | egrep $regexp  |\
   sed "s/$summary[	]*//" |\
   sed "s/$description[	]*/  /" |\
   sed "s/$alias[	]*/  Alias: /" |\

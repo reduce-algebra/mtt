@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  1999/11/10 00:47:08  peterg
+## Replaced ifs by a table of cr/arg information
+##
 ## Revision 1.8  1999/11/09 22:32:41  peterg
 ## Under RCS ready for using arrays to contaain defaults.
 ##
@@ -50,6 +53,7 @@
 
 infofile='mtt_info.txt'
 typefile="$1_type.sh"
+sensitivity=$2;
 
 # Remove the old log file
 rm -f abg2lbl_fig2txt.log
@@ -59,7 +63,13 @@ rm -f $infofile
 rm -f mtt_junk*
 
 #Inform user
-echo Creating $1_lbl.txt
+
+
+if [ -n "$sensitivity" ]; then
+    echo "Creating $1_lbl.txt (sensitivity version)"
+else
+    echo "Creating $1_lbl.txt"
+fi
 
 	( \
 	echo "%% Label file for system $1 ($1_lbl.txt)"; \
@@ -94,11 +104,21 @@ awk --field-separator ':' '
  BEGIN {
  }
  { 
+  Component = $1;
   ##Aliases
-  if ($1 == "SS") 
+  if (Component == "SS") {
     port_alias[++j] = $2;
-  else
+  }
+  else {
     alias[++i] = $2;
+    if (length(sensitivity)>0) {
+      s_arg = sprintf("%ss",$2);
+      alias[++i] = s_arg;
+      s_arg = sprintf(";%s",s_arg);
+      Component = substr(Component,2);
+    }
+ }
+
 
 
     ## Table of components
@@ -110,24 +130,28 @@ awk --field-separator ':' '
     cr["De"] = "SS";  arg["De"] = "external";
     cr["Df"] = "SS";  arg["Df"] = "external";
 
-    cr["R"] = "lin";  arg["R"]  = sprintf("flow,%s", $2);
-    cr["C"] = "lin";  arg["C"]  = sprintf("effort,%s", $2);
-    cr["TF"] = "lin";  arg["TF"]  = sprintf("flow,%s", $2);
-    cr["GY"] = "lin";  arg["GY"]  = sprintf("flow,%s", $2);
+    cr["R"] = "lin";  arg["R"]  = sprintf("flow,%s%s", $2, s_arg);
+    cr["C"] = "lin";  arg["C"]  = sprintf("effort,%s%s", $2, s_arg);
+    cr["I"] = "lin";  arg["I"]  = sprintf("flow,%s%s", $2, s_arg);
+    cr["TF"] = "lin";  arg["TF"]  = sprintf("flow,%s%s", $2, s_arg);
+    cr["GY"] = "lin";  arg["GY"]  = sprintf("flow,%s%s", $2, s_arg);
 
   ## Heading
-  if (Component !~ $1) print "\n% Component type", $1
+  if (Component !~ OldComponent) print "\n% Component type", Component
 
   ## Component
-    print  "\t" $2 "\t" cr[$1] "\t\t" arg[$1];
-    Component=$1
+    print  "\t" $2 "\t" cr[Component] "\t\t" arg[Component];
+    OldComponent=Component;
   }
   END{
     print "\n% Port aliases" >> "mtt_junk_alias.txt";
     for (k=1;k<=j;k++){
       if (port_alias[k] ~ "\\["){ # Only do ports
         port_name = substr(port_alias[k],2,length(port_alias[k])-2);
-        print "%ALIAS\t" port_name "\t" port_name >> "mtt_junk_alias.txt";
+        if (length(sensitivity)==0)
+          print "%ALIAS\t" port_name "\t" port_name >> "mtt_junk_alias.txt";
+        else
+          print "%ALIAS\t" port_name "\t" port_name "_1," port_name "_2" >> "mtt_junk_alias.txt";
       }
     }
 
@@ -135,6 +159,15 @@ awk --field-separator ':' '
     for (k=1;k<=i;k++){
       print "%ALIAS\t\$" k "\t" alias[k] >> "mtt_junk_alias.txt";
     }
- }' > mtt_junk_body.txt
+ }' sensitivity=$sensitivity > mtt_junk_body.txt
 
 cat mtt_junk_top.txt mtt_junk_alias.txt mtt_junk_blurb.txt mtt_junk_body.txt > $1_lbl.txt
+
+
+
+
+
+
+
+
+

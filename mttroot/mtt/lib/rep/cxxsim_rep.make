@@ -20,23 +20,23 @@ OPTIMISE=-O0
 WARNINGS=-Wall -ansi -pedantic
 
 
-all: $(SYS)_cxxsim.$(LANG)
+all: $(MTT_SYS)_cxxsim.$(MTT_LANG)
 
 # view rule copied from gnuplot_rep.make
 # need it here to prevent MTT using the default route (via dae)
-$(SYS)_cxxsim.view: $(SYS)_gnuplot.wish $(SYS)_cxxsim.exe
-	./$(SYS)_cxxsim.exe > $(SYS)_odes.dat2
-	sh $(SYS)_gnuplot.wish			|\
+$(MTT_SYS)_cxxsim.view: $(MTT_SYS)_gnuplot.wish $(MTT_SYS)_cxxsim.exe
+	./$(MTT_SYS)_cxxsim.exe > $(MTT_SYS)_odes.dat2
+	sh $(MTT_SYS)_gnuplot.wish		|\
 		tee gnuplot_in.log		|\
 		 gnuplot -geometry 400x300	\
 		 > gnuplot_out.log 2> gnuplot_err.log &
 
-$(SYS)_cxxsim.exe: $(SYS)_cxxsim.cc
-	echo Creating $(SYS)_cxxsim.exe
+$(MTT_SYS)_cxxsim.exe: $(MTT_SYS)_cxxsim.cc
+	echo Creating $(MTT_SYS)_cxxsim.exe
 	$(CC) -o $@ $^ $(OPTIMISE) $(WARNINGS) $(INCLUDE)
 
-$(SYS)_cxxsim.cc: $(SYS)_cr.txt $(SYS)_ese.r $(SYS)_struc.txt $(SYS)_sympar.txt cxxsim
-	./cxxsim $(SYS)
+$(MTT_SYS)_cxxsim.cc: $(MTT_SYS)_cr.txt $(MTT_SYS)_ese.r $(MTT_SYS)_struc.txt $(MTT_SYS)_sympar.txt cxxsim
+	./cxxsim $(MTT_SYS)
 	cp $@ ..
 
 cxxsim: ${MTT_LIB}/rep/cxxsim.cc
@@ -45,21 +45,21 @@ cxxsim: ${MTT_LIB}/rep/cxxsim.cc
 	$(CC) -o $@ $^ $(OPTIMISE) $(WARNINGS) $(INCLUDE)
 
 # list of constitutive relationships
-$(SYS)_cr.txt:
-	mtt -q $(OPTS) $(SYS) cr txt
+$(MTT_SYS)_cr.txt:
+	mtt -q $(MTT_OPTS) $(MTT_SYS) cr txt
 
 # elementary system equations
-$(SYS)_ese.r:
-	mtt -q $(OPTS) $(SYS) ese r
+$(MTT_SYS)_ese.r:
+	mtt -q $(MTT_OPTS) $(MTT_SYS) ese r
 
 # system structure
-$(SYS)_struc.txt:
-	mtt -q $(OPTS) $(SYS) struc txt
+$(MTT_SYS)_struc.txt:
+	mtt -q $(MTT_OPTS) $(MTT_SYS) struc txt
 
 # list of symbolic parameters
-$(SYS)_sympar.txt:
-	mtt -q $(OPTS) $(SYS) sympar txt
+$(MTT_SYS)_sympar.txt:
+	mtt -q $(MTT_OPTS) $(MTT_SYS) sympar txt
 
 # gnuplot script
-$(SYS)_gnuplot.wish:
-	mtt -q $(OPTS) $(SYS) gnuplot wish
+$(MTT_SYS)_gnuplot.wish:
+	mtt -q $(MTT_OPTS) $(MTT_SYS) gnuplot wish

@@ -11,6 +11,9 @@
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.4  2001/04/23 15:06:21  gawthrop
+  ## Removed stdin bug workaround
+  ##
   ## Revision 1.3  2001/04/11 07:52:45  gawthrop
   ## Temporary fix to avoid incorrect _input.cc with stdin
   ##
@@ -24,48 +27,48 @@
 
 #Copyright (C) 2000 by Peter J. Gawthrop
 
-all: $(SYS)_ippp.$(LANG)
+all: $(MTT_SYS)_ippp.$(MTT_LANG)
 
-$(SYS)_ippp.view:  $(SYS)_ippp.pdf
+$(MTT_SYS)_ippp.view:  $(MTT_SYS)_ippp.pdf
 	acroread *.pdf
 
-$(SYS)_ippp.ps: $(SYS)_parameters.ps $(SYS)_error.ps $(SYS)_outputs.ps $(SYS)_ippp.pdf
-	cp $(SYS)_parameters.ps $(SYS)_ippp.ps
+$(MTT_SYS)_ippp.ps: $(MTT_SYS)_parameters.ps $(MTT_SYS)_error.ps $(MTT_SYS)_outputs.ps $(MTT_SYS)_ippp.pdf
+	cp $(MTT_SYS)_parameters.ps $(MTT_SYS)_ippp.ps
 
-$(SYS)_ippp.pdf: $(SYS)_parameters.pdf $(SYS)_error.pdf $(SYS)_outputs.pdf
-	cp $(SYS)_parameters.pdf $(SYS)_ippp.pdf
+$(MTT_SYS)_ippp.pdf: $(MTT_SYS)_parameters.pdf $(MTT_SYS)_error.pdf $(MTT_SYS)_outputs.pdf
+	cp $(MTT_SYS)_parameters.pdf $(MTT_SYS)_ippp.pdf
 
-$(SYS)_parameters.ps: s$(SYS)_ode2odes.m s$(SYS)_ssim.m $(SYS)_ippp.m s$(SYS)_sympar.m s$(SYS)_simpar.m
-	octave $(SYS)_ippp.m
+$(MTT_SYS)_parameters.ps: s$(MTT_SYS)_ode2odes.m s$(MTT_SYS)_ssim.m $(MTT_SYS)_ippp.m s$(MTT_SYS)_sympar.m s$(MTT_SYS)_simpar.m
+	octave $(MTT_SYS)_ippp.m
 
-$(SYS)_error.ps: $(SYS)_parameters.ps
-	touch $(SYS)_error.ps
+$(MTT_SYS)_error.ps: $(MTT_SYS)_parameters.ps
+	touch $(MTT_SYS)_error.ps
 
-$(SYS)_outputs.ps: $(SYS)_parameters.ps
-	touch $(SYS)_outputs.ps
+$(MTT_SYS)_outputs.ps: $(MTT_SYS)_parameters.ps
+	touch $(MTT_SYS)_outputs.ps
 
-$(SYS)_parameters.pdf: s$(SYS)_ode2odes.m s$(SYS)_ssim.m $(SYS)_ippp.m s$(SYS)_sympar.m s$(SYS)_simpar.m
-	octave $(SYS)_ippp.m
+$(MTT_SYS)_parameters.pdf: s$(MTT_SYS)_ode2odes.m s$(MTT_SYS)_ssim.m $(MTT_SYS)_ippp.m s$(MTT_SYS)_sympar.m s$(MTT_SYS)_simpar.m
+	octave $(MTT_SYS)_ippp.m
 
-$(SYS)_error.pdf: $(SYS)_parameters.pdf
-	touch $(SYS)_error.pdf
+$(MTT_SYS)_error.pdf: $(MTT_SYS)_parameters.pdf
+	touch $(MTT_SYS)_error.pdf
 
-$(SYS)_outputs.pdf: $(SYS)_parameters.pdf
-	touch $(SYS)_outputs.pdf
+$(MTT_SYS)_outputs.pdf: $(MTT_SYS)_parameters.pdf
+	touch $(MTT_SYS)_outputs.pdf
 
-s$(SYS)_ode2odes.m: 
-	echo Starting creation of s$(SYS)_ode2odes.m with options $(OPTS)
-	mtt -q $(OPTS) -stdin -s s$(SYS) ode2odes oct
+s$(MTT_SYS)_ode2odes.m: 
+	echo Starting creation of s$(MTT_SYS)_ode2odes.m with options $(MTT_OPTS)
+	mtt -q $(MTT_OPTS) -stdin -s s$(MTT_SYS) ode2odes oct
 
-s$(SYS)_ssim.m: s$(SYS)_def.m
-	mtt -q $(OPTS) -s s$(SYS) ssim m
+s$(MTT_SYS)_ssim.m: s$(MTT_SYS)_def.m
+	mtt -q $(MTT_OPTS) -s s$(MTT_SYS) ssim m
 
-s$(SYS)_sympar.m:
-	mtt -q $(OPTS) -s s$(SYS) sympar m
+s$(MTT_SYS)_sympar.m:
+	mtt -q $(MTT_OPTS) -s s$(MTT_SYS) sympar m
 
-s$(SYS)_simpar.m:
-	mtt -q $(OPTS) -s s$(SYS) simpar m
+s$(MTT_SYS)_simpar.m:
+	mtt -q $(MTT_OPTS) -s s$(MTT_SYS) simpar m
 
-s$(SYS)_def.m:
-	mtt -q $(OPTS) -s s$(SYS) def m
+s$(MTT_SYS)_def.m:
+	mtt -q $(MTT_OPTS) -s s$(MTT_SYS) def m
 

@@ -10,40 +10,40 @@
 #Copyright (C) 2000,2001,2002 by Peter J. Gawthrop
 
 ## Model targets
-model_reps =  ${SYS}_sympar.m ${SYS}_simpar.m ${SYS}_state.m 
-model_reps += ${SYS}_numpar.m ${SYS}_input.m ${SYS}_ode2odes.m  
-model_reps += ${SYS}_def.m 
+model_reps =  ${MTT_SYS}_sympar.m ${MTT_SYS}_simpar.m ${MTT_SYS}_state.m 
+model_reps += ${MTT_SYS}_numpar.m ${MTT_SYS}_input.m ${MTT_SYS}_ode2odes.m  
+model_reps += ${MTT_SYS}_def.m 
 
 ## Prepend s to get the sensitivity targets
 sensitivity_reps = ${model_reps:%=s%}
 
 ## Model prerequisites
-model_pre =  ${SYS}_abg.fig ${SYS}_lbl.txt 
-model_pre += ${SYS}_rdae.r ${SYS}_numpar.txt
+model_pre =  ${MTT_SYS}_abg.fig ${MTT_SYS}_lbl.txt 
+model_pre += ${MTT_SYS}_rdae.r ${MTT_SYS}_numpar.txt
 
 ## Prepend s to get the sensitivity targets
 sensitivity_pre = ${model_pre:%=s%}
 
 
 ## Simulation targets
-sims = ${SYS}_sim.m s${SYS}_ssim.m
+sims = ${MTT_SYS}_sim.m s${MTT_SYS}_ssim.m
 
 ## m-files needed for ident
-ident_m = ${SYS}_ident.m ${SYS}_ident_numpar.m 
+ident_m = ${MTT_SYS}_ident.m ${MTT_SYS}_ident_numpar.m 
 
 ## Targets for the ident simulation
 ident_reps = ${ident_m} ${sims} ${model_reps} ${sensitivity_reps}
 
 ## ps output files etc
-psfiles = ${SYS}_ident.ps ${SYS}_ident.comparison.ps
+psfiles = ${MTT_SYS}_ident.ps ${MTT_SYS}_ident.comparison.ps
 figfiles = ${psfiles:%.ps=%.fig}
 gdatfiles = ${psfiles:%.ps=%.gdat}
 datfiles = ${psfiles:%.ps=%.dat2}
 
 ## LaTeX files etc
-latexfiles = ${SYS}_ident_par.tex
+latexfiles = ${MTT_SYS}_ident_par.tex
 
-all: ${SYS}_ident.${LANG}
+all: ${MTT_SYS}_ident.${MTT_LANG}
 
 echo:
 	echo "sims: ${sims}"
@@ -51,87 +51,87 @@ echo:
 	echo "sensitivity_reps: ${sensitivity_reps}"
 	echo "ident_reps: ${ident_reps}"
 
-${SYS}_ident.view: ${psfiles}
-	ident_rep.sh ${SYS} view
+${MTT_SYS}_ident.view: ${psfiles}
+	ident_rep.sh ${MTT_SYS} view
 
 ${psfiles}: ${figfiles}
-	ident_rep.sh ${SYS} ps
+	ident_rep.sh ${MTT_SYS} ps
 
 ${figfiles}: ${gdatfiles}
-	ident_rep.sh ${SYS} fig
+	ident_rep.sh ${MTT_SYS} fig
 
 ${gdatfiles}: ${datfiles}
-	ident_rep.sh ${SYS} gdat
+	ident_rep.sh ${MTT_SYS} gdat
 
 ${datfiles} ${latexfiles}: ${ident_reps}
-	ident_rep.sh ${SYS} dat2
+	ident_rep.sh ${MTT_SYS} dat2
 
-${SYS}_ident.m: 
-	ident_rep.sh ${SYS} m
+${MTT_SYS}_ident.m: 
+	ident_rep.sh ${MTT_SYS} m
 
-${SYS}_ident_numpar.m:
-	ident_rep.sh ${SYS} numpar.m
+${MTT_SYS}_ident_numpar.m:
+	ident_rep.sh ${MTT_SYS} numpar.m
 
 ## System model reps
 ## Generic txt files 
-${SYS}_%.txt:
-	mtt ${OPTS} -q -stdin ${SYS} $* txt
+${MTT_SYS}_%.txt:
+	mtt ${MTT_OPTS} -q -stdin ${MTT_SYS} $* txt
 
 ## Specific m files
-${SYS}_ode2odes.m: ${model_pre}
-	mtt -q -stdin ${OPTS} ${SYS} ode2odes m
+${MTT_SYS}_ode2odes.m: ${model_pre}
+	mtt -q -stdin ${MTT_OPTS} ${MTT_SYS} ode2odes m
 
-${SYS}_sim.m: ${SYS}_ode2odes.m
-	mtt ${OPTS} -q -stdin ${SYS} sim m
+${MTT_SYS}_sim.m: ${MTT_SYS}_ode2odes.m
+	mtt ${MTT_OPTS} -q -stdin ${MTT_SYS} sim m
 
 ## Numpar files
-${SYS}_numpar.m:
-	mtt ${SYS} numpar m
+${MTT_SYS}_numpar.m:
+	mtt ${MTT_SYS} numpar m
 
 ## Sympar files
-${SYS}_sympar.m:
-	mtt ${SYS} sympar m
+${MTT_SYS}_sympar.m:
+	mtt ${MTT_SYS} sympar m
 
 ## Generic txt to m
-${SYS}_%.m: ${SYS}_%.txt
-	mtt ${OPTS} -q -stdin ${SYS} $* m
+${MTT_SYS}_%.m: ${MTT_SYS}_%.txt
+	mtt ${MTT_OPTS} -q -stdin ${MTT_SYS} $* m
 
 ## r files
-${SYS}_def.r: ${SYS}_abg.fig
-	mtt ${OPTS} -q -stdin ${SYS} def r
+${MTT_SYS}_def.r: ${MTT_SYS}_abg.fig
+	mtt ${MTT_OPTS} -q -stdin ${MTT_SYS} def r
 
-${SYS}_rdae.r: 
-	mtt ${OPTS} -q -stdin ${SYS} rdae r
+${MTT_SYS}_rdae.r: 
+	mtt ${MTT_OPTS} -q -stdin ${MTT_SYS} rdae r
 
 ## Sensitivity model reps
 ## Generic txt files 
-s${SYS}_%.txt:
-	mtt ${OPTS} -q -stdin -s s${SYS} $* txt
+s${MTT_SYS}_%.txt:
+	mtt ${MTT_OPTS} -q -stdin -s s${MTT_SYS} $* txt
 
 ## Specific m files
 ## Numpar files
-s${SYS}_numpar.m:
-	mtt -s s${SYS} numpar m
+s${MTT_SYS}_numpar.m:
+	mtt -s s${MTT_SYS} numpar m
 
 ## Sympar files
-s${SYS}_sympar.m:
-	mtt -s s${SYS} sympar m
+s${MTT_SYS}_sympar.m:
+	mtt -s s${MTT_SYS} sympar m
 
-s${SYS}_ode2odes.m: ${sensitivity_pre}
-	mtt -q -stdin ${OPTS} -s s${SYS} ode2odes m
+s${MTT_SYS}_ode2odes.m: ${sensitivity_pre}
+	mtt -q -stdin ${MTT_OPTS} -s s${MTT_SYS} ode2odes m
 
-s${SYS}_ssim.m:
-	mtt -q -stdin ${OPTS} -s s${SYS} ssim m
+s${MTT_SYS}_ssim.m:
+	mtt -q -stdin ${MTT_OPTS} -s s${MTT_SYS} ssim m
 
-s${SYS}_def.m:
-	mtt -q -stdin ${OPTS} -s s${SYS} def m
+s${MTT_SYS}_def.m:
+	mtt -q -stdin ${MTT_OPTS} -s s${MTT_SYS} def m
 
 
 ## Generic txt to m
-s${SYS}_%.m: s${SYS}_%.txt
-	mtt ${OPTS} -q -stdin s${SYS} $* m
+s${MTT_SYS}_%.m: s${MTT_SYS}_%.txt
+	mtt ${MTT_OPTS} -q -stdin s${MTT_SYS} $* m
 
 ## r files
-s${SYS}_rdae.r: 
-	mtt ${OPTS} -q -stdin -s s${SYS} rdae r
+s${MTT_SYS}_rdae.r: 
+	mtt ${MTT_OPTS} -q -stdin -s s${MTT_SYS} rdae r
 

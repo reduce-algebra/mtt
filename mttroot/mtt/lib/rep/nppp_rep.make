@@ -9,27 +9,27 @@
 #Copyright (C) 2000,2001,2002 by Peter J. Gawthrop
 
 ## Model targets
-model_reps =  ${SYS}_sympar.m ${SYS}_simpar.m ${SYS}_state.m 
-model_reps += ${SYS}_numpar.m ${SYS}_input.m ${SYS}_ode2odes.m  
-model_reps += ${SYS}_def.m
+model_reps =  ${MTT_SYS}_sympar.m ${MTT_SYS}_simpar.m ${MTT_SYS}_state.m 
+model_reps += ${MTT_SYS}_numpar.m ${MTT_SYS}_input.m ${MTT_SYS}_ode2odes.m  
+model_reps += ${MTT_SYS}_def.m
 
 ## Prepend s to get the sensitivity targets
 sensitivity_reps = ${model_reps:%=s%}
 
 ## Simulation targets
-sims = ${SYS}_sim.m s${SYS}_ssim.m
+sims = ${MTT_SYS}_sim.m s${MTT_SYS}_ssim.m
 
 ## m-files needed for nppp
-nppp_m = ${SYS}_nppp.m ${SYS}_nppp_numpar.m 
+nppp_m = ${MTT_SYS}_nppp.m ${MTT_SYS}_nppp_numpar.m 
 
 ## Targets for the nppp simulation
 nppp_reps = ${nppp_m} ${sims} ${model_reps} ${sensitivity_reps}
 
 ## ps output files
-psfiles = ${SYS}_nppp.ps ${SYS}_nppp.basis.ps ${SYS}_nppp.par.ps ${SYS}_nppp.U.ps
+psfiles = ${MTT_SYS}_nppp.ps ${MTT_SYS}_nppp.basis.ps ${MTT_SYS}_nppp.par.ps ${MTT_SYS}_nppp.U.ps
 figfiles = ${psfiles:%.ps=%.fig}
 
-all: ${SYS}_nppp.${LANG}
+all: ${MTT_SYS}_nppp.${MTT_LANG}
 
 echo:
 	echo "sims: ${sims}"
@@ -37,70 +37,70 @@ echo:
 	echo "sensitivity_reps: ${sensitivity_reps}"
 	echo "nppp_reps: ${nppp_reps}"
 
-${SYS}_nppp.view: ${SYS}_nppp.ps
-	nppp_rep.sh ${SYS} view
+${MTT_SYS}_nppp.view: ${MTT_SYS}_nppp.ps
+	nppp_rep.sh ${MTT_SYS} view
 
-${psfiles}: ${SYS}_nppp.fig
-	nppp_rep.sh ${SYS} ps
+${psfiles}: ${MTT_SYS}_nppp.fig
+	nppp_rep.sh ${MTT_SYS} ps
 
-${SYS}_nppp.gdat: ${SYS}_nppp.dat2
-	nppp_rep.sh ${SYS} gdat
+${MTT_SYS}_nppp.gdat: ${MTT_SYS}_nppp.dat2
+	nppp_rep.sh ${MTT_SYS} gdat
 
-${SYS}_nppp.fig ${SYS}_nppp.dat2: ${nppp_reps}
-	nppp_rep.sh ${SYS} dat2
+${MTT_SYS}_nppp.fig ${MTT_SYS}_nppp.dat2: ${nppp_reps}
+	nppp_rep.sh ${MTT_SYS} dat2
 
-${SYS}_nppp.m: 
-	nppp_rep.sh ${SYS} m
+${MTT_SYS}_nppp.m: 
+	nppp_rep.sh ${MTT_SYS} m
 
-${SYS}_nppp_numpar.m:
-	nppp_rep.sh ${SYS} numpar.m
+${MTT_SYS}_nppp_numpar.m:
+	nppp_rep.sh ${MTT_SYS} numpar.m
 
 ## System model reps
 ## Generic txt files 
-${SYS}_%.txt:
-	mtt ${OPTS} -q -stdin ${SYS} $* txt
+${MTT_SYS}_%.txt:
+	mtt ${MTT_OPTS} -q -stdin ${MTT_SYS} $* txt
 
 ## Specific m files
-${SYS}_ode2odes.m: ${SYS}_rdae.r
-	mtt -q -stdin ${OPTS} ${SYS} ode2odes m
+${MTT_SYS}_ode2odes.m: ${MTT_SYS}_rdae.r
+	mtt -q -stdin ${MTT_OPTS} ${MTT_SYS} ode2odes m
 
-${SYS}_sim.m: ${SYS}_ode2odes.m
-	mtt ${OPTS} -q -stdin ${SYS} sim m
+${MTT_SYS}_sim.m: ${MTT_SYS}_ode2odes.m
+	mtt ${MTT_OPTS} -q -stdin ${MTT_SYS} sim m
 
 ## Generic txt to m
-${SYS}_%.m: ${SYS}_%.txt
-	mtt ${OPTS} -q -stdin ${SYS} $* m
+${MTT_SYS}_%.m: ${MTT_SYS}_%.txt
+	mtt ${MTT_OPTS} -q -stdin ${MTT_SYS} $* m
 
 ## r files
-${SYS}_def.r: ${SYS}_abg.fig
-	mtt ${OPTS} -q -stdin ${SYS} def r
+${MTT_SYS}_def.r: ${MTT_SYS}_abg.fig
+	mtt ${MTT_OPTS} -q -stdin ${MTT_SYS} def r
 
-${SYS}_rdae.r: 
-	mtt ${OPTS} -q -stdin ${SYS} rdae r
+${MTT_SYS}_rdae.r: 
+	mtt ${MTT_OPTS} -q -stdin ${MTT_SYS} rdae r
 
 ## Sensitivity model reps
 ## Generic txt files 
-s${SYS}_%.txt:
-	mtt ${OPTS} -q -stdin s${SYS} $* txt
+s${MTT_SYS}_%.txt:
+	mtt ${MTT_OPTS} -q -stdin s${MTT_SYS} $* txt
 
 ## Specific m files
-s${SYS}_ode2odes.m: s${SYS}_rdae.r
-	mtt -q -stdin ${OPTS} -s s${SYS} ode2odes m
+s${MTT_SYS}_ode2odes.m: s${MTT_SYS}_rdae.r
+	mtt -q -stdin ${MTT_OPTS} -s s${MTT_SYS} ode2odes m
 
-s${SYS}_ssim.m:
-	mtt -q -stdin ${OPTS} -s s${SYS} ssim m
+s${MTT_SYS}_ssim.m:
+	mtt -q -stdin ${MTT_OPTS} -s s${MTT_SYS} ssim m
 
-s${SYS}_def.m:
-	mtt -q -stdin ${OPTS} -s s${SYS} def m
+s${MTT_SYS}_def.m:
+	mtt -q -stdin ${MTT_OPTS} -s s${MTT_SYS} def m
 
 
 ## Generic txt to m
-s${SYS}_%.m: s${SYS}_%.txt
-	mtt ${OPTS} -q -stdin s${SYS} $* m
+s${MTT_SYS}_%.m: s${MTT_SYS}_%.txt
+	mtt ${MTT_OPTS} -q -stdin s${MTT_SYS} $* m
 
 
 ## r files
-s${SYS}_rdae.r: 
-	mtt ${OPTS} -q -stdin -s s${SYS} rdae r
+s${MTT_SYS}_rdae.r: 
+	mtt ${MTT_OPTS} -q -stdin -s s${MTT_SYS} rdae r
 
 

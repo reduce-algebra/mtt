@@ -1379,5 +1379,5 @@ EOF
 set_debug false
 check_for_valid_input "$*"
 
-OPTS="$1" SYS="$2" REP="$3" LANG="$4" make $make_debug -f ${MTT_REP}/sfun_rep/Makefile ${2}_${3}.${4}
+MTT_OPTS="$1" MTT_SYS="$2" MTT_LANG="$3" make $make_debug -f ${MTT_REP}/sfun_rep/Makefile ${2}_sfun.${3}
 exit 0

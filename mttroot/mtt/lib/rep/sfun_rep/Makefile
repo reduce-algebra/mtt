@@ -1,88 +1,88 @@
 #! /usr/bin/make -f
 
-all: $(SYS)_sfun.mexglx
+all: $(MTT_SYS)_sfun.mexglx
 
-$(SYS)_sfun.mexglx: $(SYS)_sfun.c sfun_debug.h useful-functions.hh $(SYS)_def.h $(SYS)_sympar.h $(SYS)_cr.h $(SYS)_numpar.c $(SYS)_ode.c $(SYS)_odeo.c $(SYS)_state.c $(SYS)_sfun_ae.mexglx $(SYS)_sfun_input.mexglx $(SYS)_sfun_interface.mexglx $(SYS).mdl
+$(MTT_SYS)_sfun.mexglx: $(MTT_SYS)_sfun.c sfun_debug.h useful-functions.hh $(MTT_SYS)_def.h $(MTT_SYS)_sympar.h $(MTT_SYS)_cr.h $(MTT_SYS)_numpar.c $(MTT_SYS)_ode.c $(MTT_SYS)_odeo.c $(MTT_SYS)_state.c $(MTT_SYS)_sfun_ae.mexglx $(MTT_SYS)_sfun_input.mexglx $(MTT_SYS)_sfun_interface.mexglx $(MTT_SYS).mdl
 	echo Creating $@
-	mex $(SYS)_sfun.c
-	cp *_sfun*mexglx $(SYS).mdl ..
+	mex $(MTT_SYS)_sfun.c
+	cp *_sfun*mexglx $(MTT_SYS).mdl ..
 
-$(SYS)_sfun.c:: ${MTT_REP}/sfun_rep/sfun.c.tmpl
+$(MTT_SYS)_sfun.c:: ${MTT_REP}/sfun_rep/sfun.c.tmpl
 	echo Creating $@
-	cat $^ | sed 's/<mtt_model_name>/$(SYS)/g' > $@
+	cat $^ | sed 's/<mtt_model_name>/$(MTT_SYS)/g' > $@
 
-$(SYS)_sfun_ae.mexglx: $(SYS)_sfun_ae.c sfun_debug.h useful-functions.hh $(SYS)_def.h $(SYS)_sympar.h $(SYS)_cr.h $(SYS)_ae.c
+$(MTT_SYS)_sfun_ae.mexglx: $(MTT_SYS)_sfun_ae.c sfun_debug.h useful-functions.hh $(MTT_SYS)_def.h $(MTT_SYS)_sympar.h $(MTT_SYS)_cr.h $(MTT_SYS)_ae.c
 	echo Creating $@
-	mex $(SYS)_sfun_ae.c
+	mex $(MTT_SYS)_sfun_ae.c
 
-$(SYS)_sfun_ae.c:: ${MTT_REP}/sfun_rep/mex_ae.c.tmpl
+$(MTT_SYS)_sfun_ae.c:: ${MTT_REP}/sfun_rep/mex_ae.c.tmpl
 	echo Creating $@
-	cat $^ | sed 's/<mtt_model_name>/$(SYS)/g' > $@
+	cat $^ | sed 's/<mtt_model_name>/$(MTT_SYS)/g' > $@
 
-$(SYS)_sfun_input.mexglx: $(SYS)_sfun_input.c sfun_debug.h useful-functions.hh $(SYS)_def.h $(SYS)_sympar.h $(SYS)_cr.h $(SYS)_input.c $(SYS)_numpar.c
+$(MTT_SYS)_sfun_input.mexglx: $(MTT_SYS)_sfun_input.c sfun_debug.h useful-functions.hh $(MTT_SYS)_def.h $(MTT_SYS)_sympar.h $(MTT_SYS)_cr.h $(MTT_SYS)_input.c $(MTT_SYS)_numpar.c
 	echo Creating $@
-	mex $(SYS)_sfun_input.c
+	mex $(MTT_SYS)_sfun_input.c
 
-$(SYS)_sfun_input.c:: ${MTT_REP}/sfun_rep/sfun_input.c.tmpl
+$(MTT_SYS)_sfun_input.c:: ${MTT_REP}/sfun_rep/sfun_input.c.tmpl
 	echo Creating $@
-	cat $^ | sed 's/<mtt_model_name>/$(SYS)/g' > $@
+	cat $^ | sed 's/<mtt_model_name>/$(MTT_SYS)/g' > $@
 
-$(SYS)_sfun_interface.mexglx: $(SYS)_sfun_interface.c sfun_debug.h useful-functions.hh $(SYS)_def.h $(SYS)_sympar.h $(SYS)_numpar.c
+$(MTT_SYS)_sfun_interface.mexglx: $(MTT_SYS)_sfun_interface.c sfun_debug.h useful-functions.hh $(MTT_SYS)_def.h $(MTT_SYS)_sympar.h $(MTT_SYS)_numpar.c
 	echo Creating $@
-	mex $(SYS)_sfun_interface.c
+	mex $(MTT_SYS)_sfun_interface.c
 
-$(SYS)_sfun_interface.c: ${MTT_REP}/sfun_rep/sfun_interface.c.tmpl $(SYS)_struc.c
+$(MTT_SYS)_sfun_interface.c: ${MTT_REP}/sfun_rep/sfun_interface.c.tmpl $(MTT_SYS)_struc.c
 	echo Creating $@
 	cat ${MTT_REP}/sfun_rep/sfun_interface.c.tmpl	|\
-	 sed 's/<mtt_model_name>/$(SYS)/g'		|\
+	 sed 's/<mtt_model_name>/$(MTT_SYS)/g'		|\
 	 ${MTT_REP}/sfun_rep/insert_file.sh > $@
 
-$(SYS)_sfun.zip: $(SYS)_sfun.c sfun_debug.h useful-functions.hh $(SYS)_sfun_ae.c $(SYS)_sfun_input.c $(SYS)_sfun_interface.c \
-	 $(SYS)_def.h $(SYS)_sympar.h $(SYS)_cr.h\
-	 $(SYS)_ae.c $(SYS)_input.c $(SYS)_numpar.c $(SYS)_ode.c $(SYS)_odeo.c $(SYS)_state.c \
-	 $(SYS).mdl README
+$(MTT_SYS)_sfun.zip: $(MTT_SYS)_sfun.c sfun_debug.h useful-functions.hh $(MTT_SYS)_sfun_ae.c $(MTT_SYS)_sfun_input.c $(MTT_SYS)_sfun_interface.c \
+	 $(MTT_SYS)_def.h $(MTT_SYS)_sympar.h $(MTT_SYS)_cr.h\
+	 $(MTT_SYS)_ae.c $(MTT_SYS)_input.c $(MTT_SYS)_numpar.c $(MTT_SYS)_ode.c $(MTT_SYS)_odeo.c $(MTT_SYS)_state.c \
+	 $(MTT_SYS).mdl README
 	echo Creating $@
 	zip $@ $^
 
-$(SYS).mdl: ${MTT_REP}/sfun_rep/mdl.tmpl
+$(MTT_SYS).mdl: ${MTT_REP}/sfun_rep/mdl.tmpl
 	echo Creating $@
-	cat $^ | sed 's/<mtt_model_name>/$(SYS)/g' > $@
+	cat $^ | sed 's/<mtt_model_name>/$(MTT_SYS)/g' > $@
 
 README:: ${MTT_REP}/sfun_rep/README.tmpl README.CVS
 	echo Creating $@
-	cat $^ | sed 's/<mtt_model_name>/$(SYS)/g' > $@
+	cat $^ | sed 's/<mtt_model_name>/$(MTT_SYS)/g' > $@
 	rm -f README.CVS
 
 README.CVS:
 	echo Getting CVS status
-	cvs status ../$(SYS)_abg.fig > $@ 2>1
+	cvs status ../$(MTT_SYS)_abg.fig > $@ 2>1
 	date >> $@
 
-$(SYS)_ae.c: $(SYS)_ae.m
+$(MTT_SYS)_ae.c: $(MTT_SYS)_ae.m
 	echo Creating $@
-	${MTT_CC}/mtt_m2cc.sh $(SYS) ae c cat 
+	${MTT_CC}/mtt_m2cc.sh $(MTT_SYS) ae c cat 
 
-$(SYS)_input.c: $(SYS)_input.m
+$(MTT_SYS)_input.c: $(MTT_SYS)_input.m
 	echo Creating $@
-	${MTT_CC}/mtt_m2cc.sh $(SYS) input c cat 
+	${MTT_CC}/mtt_m2cc.sh $(MTT_SYS) input c cat 
 
-$(SYS)_numpar.c: $(SYS)_numpar.m
+$(MTT_SYS)_numpar.c: $(MTT_SYS)_numpar.m
 	echo Creating $@
-	${MTT_CC}/mtt_m2cc.sh $(SYS) numpar c cat
+	${MTT_CC}/mtt_m2cc.sh $(MTT_SYS) numpar c cat
 
-$(SYS)_ode.c: $(SYS)_ode.m
+$(MTT_SYS)_ode.c: $(MTT_SYS)_ode.m
 	echo Creating $@
-	${MTT_CC}/mtt_m2cc.sh $(SYS) ode c cat
+	${MTT_CC}/mtt_m2cc.sh $(MTT_SYS) ode c cat
 
-$(SYS)_odeo.c: $(SYS)_odeo.m
+$(MTT_SYS)_odeo.c: $(MTT_SYS)_odeo.m
 	echo Creating $@
-	${MTT_CC}/mtt_m2cc.sh $(SYS) odeo c cat
+	${MTT_CC}/mtt_m2cc.sh $(MTT_SYS) odeo c cat
 
-$(SYS)_state.c: $(SYS)_state.m
+$(MTT_SYS)_state.c: $(MTT_SYS)_state.m
 	echo Creating $@
-	${MTT_CC}/mtt_m2cc.sh $(SYS) state c cat
+	${MTT_CC}/mtt_m2cc.sh $(MTT_SYS) state c cat
 
-$(SYS)_struc.c: $(SYS)_struc.txt
+$(MTT_SYS)_struc.c: $(MTT_SYS)_struc.txt
 	echo Creating $@
 	gawk '\
 ($$1 == "input")  { printf "         double *%s\t= &(mttu[%d]);\t/* input and output */\n", $$4, $$2-1 }\
@@ -100,4 +100,4 @@ useful-functions.hh:: ${MTT_CC}/include/useful-functions.hh
 	cp $^ $@
 
 %::
-	mtt -q $(OPTS) `echo $* | sed 's/\(.*\)_\(.*\)\.\(.*\)/\1 \2 \3/'`
+	mtt -q $(MTT_OPTS) `echo $* | sed 's/\(.*\)_\(.*\)\.\(.*\)/\1 \2 \3/'`

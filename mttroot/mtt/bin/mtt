@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.367  2002/12/09 00:14:08  geraint
+## Hierarchical dia and mixed dia/fig bond graphs now working.
+##
 ## Revision 1.366  2002/12/06 21:56:21  geraint
 ## Cosmetic change: removed commented-out lines.
 ##
@@ -2209,9 +2212,9 @@ if [ -f "$2_rep.make" ]; then
    #   echo $filename exists
    #else
      if [ -n "$Verbose" ]; then
-      echo make -s -f $2_rep.make "SYS=$1" "LANG=$3" "ARG=$4" "OPTS=$mtt_switches" 
+      echo make -s -f $2_rep.make "MTT_SYS=$1" "MTT_LANG=$3" "MTT_ARG=$4" "MTT_OPTS=$mtt_switches" 
      fi
-      make -s -f $2_rep.make "SYS=$1" "LANG=$3" "ARG=$4" "OPTS=$mtt_switches"
+      make -s -f $2_rep.make "MTT_SYS=$1" "MTT_LANG=$3" "MTT_ARG=$4" "MTT_OPTS=$mtt_switches"
       if [ -n "$4" ]; then
          echo Copying  $1_$2$__ARGS.$ps
          cp  $1_$2$__ARGS.$ps ..

@@ -1,5 +1,6 @@
 %SUMMARY CT: One-port thermal C component with T/Sdot bond
 %DESCRIPTION CR and parameters as for a one-port C component
+%DESCRIPTION Internally pseudo
 %DESCRIPTION Example label file entry:
 %DESCRIPTION % Component type CT
 %DESCRIPTION % Component type CT
@@ -12,6 +13,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1997/09/04  09:49:19  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:
@@ -20,9 +24,6 @@
 %	blank
 
 
-
-% Component type ES
-	es	
 
 % Component type C
 	c		$1	$1

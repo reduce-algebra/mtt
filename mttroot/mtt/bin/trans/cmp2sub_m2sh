@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1996/10/20 19:22:41  peterg
+## Cleans up after itself.
+##
 ## Revision 1.1  1996/10/20 19:19:50  peterg
 ## Initial revision
 ##
@@ -40,7 +43,7 @@ ls $MTTPATH/comp/simple |\
 
 # Print the non-standard components
 comm mtt_tmp1 mtt_tmp2 |\
-  awk 'BEGIN{FS="\t"}{if (length($1)>0) print "mtt", $1, "abg m"}' \
+  awk 'BEGIN{FS="\t"}{if (length($1)>0) print "mtt -q", $1, "abg m"}' \
   >>$1_sub.sh
 
 # Clean up mtt_tmp files

@@ -1,5 +1,13 @@
 function structure =  SS_eqn(name,bond_number,bonds,direction,cr,args, ...
     structure,filenum);
+
+% Set up globals to count the component inputs and outputs. This relies on
+% the named SS (the ports) being in the correct order. Using globals here
+% avoids changing the common argument list for all _eqn files for something
+% which is only used for named SS components.
+global local_u_index
+global local_y_index
+
 % SS_eqn - equations for SS component
 % 
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -19,6 +27,9 @@ function structure =  SS_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.11  1997/05/09 08:21:07  peterg
+% %% Explicit computation of port number -- avoids str2num
+% %%
 % %% Revision 1.10  1997/03/22  17:13:03  peterg
 % %% Fixed bug for port nos. > 1 digit!
 % %%
@@ -81,39 +92,46 @@ inputs = structure(3);
 outputs = structure(4);
 zero_outputs = structure(5);
 
-if strcmp(effort_attribute, 'MTT_port') % Its a numbered port
-  % Convert string to number
-  % port_number = abs(flow_attribute)-abs('0');
-  %port_number = str2num(flow_attribute);
+if strcmp(effort_attribute, 'MTT_port') % Its a named port
 
-  %Compute port number
-  str_port_number = flow_attribute;
-  N_string = length(str_port_number);
-  port_number=0;
-  for i=1:N_string
-    port_number = 10*port_number + abs(str_port_number(i))-abs('0');
-  end;
+% Note: we don't have numbered ports now, so the correct indices are deduced
+% by incrementing the two globals: local_u_index and local_y_index
+% $$$   % Convert string to number
+% $$$   % port_number = abs(flow_attribute)-abs('0');
+% $$$   % port_number = str2num(flow_attribute);
+
+% $$$   %Compute port number
+% $$$   str_port_number = flow_attribute;
+% $$$   N_string = length(str_port_number);
+% $$$   port_number=0;
+% $$$   for i=1:N_string
+% $$$     port_number = 10*port_number + abs(str_port_number(i))-abs('0');
+% $$$   end;
 
   % Effort 
   if bonds(1,1)==-1 % Source
+    local_u_index = local_u_index + 1;
     fprintf(filenum, '%s := %s_MTTu%d;\n', ...
-        varname(name, bond_number,1), name, port_number);
+        varname(name, bond_number,1), name, local_u_index);
   else % Sensor
+    local_y_index = local_y_index + 1;
     fprintf(filenum, '%s_MTTy%d := %s;\n', ...
-        name, port_number, varname(name, bond_number,1));
+        name, local_y_index, varname(name, bond_number,1));
   end;
   % Flow 
   if bonds(1,2)==1 % Source
+    local_u_index = local_u_index + 1;
     fprintf(filenum, '%s := %s_MTTu%d;\n', ...
-        varname(name, bond_number,-1), name, port_number);
+        varname(name, bond_number,-1), name, local_u_index);
   else % Sensor
+    local_y_index = local_y_index + 1;
     fprintf(filenum, '%s_MTTy%d := %s;\n', ...
-        name, port_number, varname(name, bond_number,-1));
+        name, local_y_index, varname(name, bond_number,-1));
   end;  
   return
 end;
 
-
+% Now do SS which are not ports.
 % Effort
 if strcmp(effort_attribute, 'external')
   if bonds(1,1)==-1 % Source

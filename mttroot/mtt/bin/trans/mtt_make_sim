@@ -13,17 +13,25 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/04/08 10:43:26  peterg
+## Initial revision
+##
 ###############################################################
 
 # Tell user
 Sys=$1
 method=$2
+computation=$3
 
 if [ -z "$method" ]; then
     method=implicit    
 fi
-#
-echo  "Creating $1_sim.m with $method integration method"
+
+if [ -n "$computation" ]; then
+   blurb="for language $computation"    
+fi
+
+echo  "Creating $1_sim.m with $method integration method $blurb"
 
 if [ $method = "implicit" ]; then
     ode=cse
@@ -37,17 +45,19 @@ fi
 Nx=`mtt_getsize $Sys x` # States
 Nu=`mtt_getsize $Sys u` # Inputs 
 Ny=`mtt_getsize $Sys y` # Inputs 
+Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
 
 # Header
-lang_header -noglobal $1 sim m 'x0,u,t,par' '[y,x]' > $1_sim.m
+lang_header -noglobals $1 sim m 'x0,u,t,par,sensitivities' '[y,x]' > $1_sim.m
 
 cat >> $1_sim.m <<EOF
+  if nargin<5
+    sensitivities = [];
+  endif;
+
   ## Initialise
-  ui  = zero_input($Nu);	# Zero the input
-  xi = x0;	        # Read in initial state
-
-
-  yi = $1_cseo(xi,ui,t(1),par);    # First output
+  [ui]  = zero_input($Nu);	# Zero the input
+  [xi] = x0;	        # Read in initial state
 
   ##Sizes
   N = length(t);
@@ -55,17 +65,71 @@ cat >> $1_sim.m <<EOF
   ## Initialise  arrays   
   x = zeros($Nx,N);
   y = zeros($Ny,N);
-  y(:,1) = yi(:);
+
+  ## Timing parameters
+  first = t(1);
+  dt = t(2) - t(1);
+  last = t(length(t))+dt;
+  n_sens = length(sensitivities);
+EOF
+
+if [ "$computation" = "c" ]; then
+cat >> $1_sim.m <<EOF
+
+  ## Create the command string
+  command = "";
+  for sensitivity_index = [0 sensitivities]
+    args = "";
+    for i=1:$Nx
+      args = sprintf("%s %g", args, x0(i));
+    endfor
+
+    par(sensitivities) = zeros(1,n_sens);
+    if sensitivity_index>0
+      par(sensitivity_index) = 1;
+      i_1 = $Ny/2 + 2;
+    else
+      i_1 = 2;
+    endif;
+    i_2 = i_1 + $Ny/2 -1;
+
+    for i=1:$Npar
+      args = sprintf("%s %g", args, par(i));
+    endfor
+
+    args = sprintf("%s %g %g %g", args, first, dt, last);
+  
+    command = sprintf("%s ./$1_ode2odes.out %s | cut -f %i-%i;", command, args, i_1, i_2);
+  endfor;
+
+command
+  ## And execute it ...
+  yy=str2num(system(command));
+  
+  [Ny,My] = size(yy);
+  ## Reshape
+
+  Ny/N,N
+  y = reshape(yy',N,Ny/N)';  
+endfunction
+
+EOF
+    
+else
+
+cat >> $1_sim.m <<EOF    
   A = zeros($Nx,$Nx);
   Ax = zeros($Nx,1);
   dx = zeros($Nx,1);
 
   ## Step size
   dt = t(2)-t(1);
-
+  iFirst = first/dt;
   for i = 1:N
     ti = t(i);
-    ui = u(i);
+    ui = u(:,i);
+    yi = $1_cseo(xi,ui,ti,par);    # Output 
+    if i>
     y(:,i) = yi;
     x(:,i) = xi;
     dxi = $1_cse(xi,ui,ti,par); # State derivative
@@ -75,8 +139,8 @@ cat >> $1_sim.m <<EOF
     #open = eval(sprintf("%s_switchopen(x);", system_name));        # Open switches
     #x = mtt_implicit(x,dx,A,Ax,dt,$Nx,zeros(20,1)); # Implicit update
     xi = A\(Ax + dxi*dt);        # Implicit update
-    yi = $1_cseo(xi,ui,ti,par);    # Output 
   endfor;			
 
 endfunction
 EOF
+fi

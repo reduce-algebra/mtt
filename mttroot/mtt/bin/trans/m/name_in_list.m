@@ -14,6 +14,9 @@ function index = name_in_list(name,list)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/01/23 09:22:05  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -25,9 +28,8 @@ end;
 index = 0;
 
 for i = 1:N
-  name,list(i,:)
- j = findstr(name,list(i,:))
- if length(j==1)
+ j = findstr(name,list(i,:));
+ if (length(j)==1)
     if j(1)==1
       if index==0
         index = i;

@@ -9,17 +9,27 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1999/03/08 06:34:07  peterg
+## Removed mtt help - replaced by grep #SUMMARY - quicker
+##
 ## Revision 1.1  1998/10/20 08:15:08  peterg
 ## Initial revision
 ##
 ###############################################################
 
 
-representations=`grep '#SUMMARY' $MTTPATH/mtt | awk '{print $2'} | sort -u | grep -v 'Representations'`
-echo $representations
+representations=`grep '#SUMMARY' $MTTPATH/mtt | awk '{print $2'} | sort -u `
+
 for rep in $representations ; do
-    language=`grep '#SUMMARY' $MTTPATH/mtt | grep "^#SUMMARY[ ]*$rep" |\
-      awk '{print $NF}'|  grep -v 'Representations' |\
+    language=`grep '#SUMMARY' $MTTPATH/mtt |\
+      awk '
+        {
+          if (index(rep,"*")==length(rep)){
+            if ($2==rep) print $NF
+          }
+          else
+            if (($2==rep)||($2==sprintf("%s*",rep))) print $NF
+        }' rep=$rep |\
       sort -u | sed 's/[()]//g'`
     echo $rep $language |\
        awk '{
@@ -27,6 +37,5 @@ for rep in $representations ; do
          for (i=2;i<=NF;i++) printf("\t%s", $i); 
          printf("\n")
        }'
-
 done
 

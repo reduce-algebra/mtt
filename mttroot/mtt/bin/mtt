@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.261  2000/09/14 12:43:46  peterg
+## view of ps s files now uses -sub and -viewlevel options
+##
 ## Revision 1.260  2000/09/14 09:59:08  peterg
 ## Added -viewlevel switch
 ##
@@ -880,7 +883,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='4.5'
+version='4.6'
 
 # MTT recursion level is zero unless explicitly set
 level=0

@@ -9,6 +9,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.75  2002/05/07 13:48:42  geraint
+## Improved clarity of code generated for -cc and -oct (except ode2odes).
+## Octave DEFUN_DLDs now call (rather than replace) their .cc equivalents.
+##
 ## Revision 1.74  2002/05/01 17:30:56  geraint
 ## Improved pre-processor directives to better accommodate future alternatives (matlab)
 ## if necessary.
@@ -457,7 +461,6 @@ cat <<EOF  > $filename
 
 #include <fstream>
 #if (CODEGENTARGET == STANDALONE)
-#include <csignal>
 
 extern ColumnVector ${sys}_ae (
 	ColumnVector &x,
@@ -553,8 +556,6 @@ EOF
     ;;
 esac
 cat <<EOF >> $filename
-
-void set_signal_handlers (void);
 
 #endif // (CODEGENTARGET == STANDALONE)
 
@@ -992,108 +993,15 @@ mtt_write (const double &t,
     }
 }
 
-#if (CODEGENTARGET == STANDALONE)
-void dump_data (std::ostream &file)
+void
+${sys}_ode2odes (ColumnVector &state0, ColumnVector &numpar, ColumnVector &simpar)
 {
-  ColumnVector null (0);
-  mtt_write (0.0, null, null, 0, true, file);
-}
+  static double first, dt, last, stepfactor;
+  first		= simpar (0);
+  dt		= simpar (1);
+  last		= simpar (2);
+  stepfactor	= simpar (3);
 
-void handle_signal (int signum)
-{
-  // handle some signals to ensure data is written.
-  std::cerr << "# Writing data to MTT.core (signal " << signum << ")" << std::endl;
-  std::ofstream corefile ("MTT.core");
-  dump_data (corefile);
-  switch (signum)
-    {
-      case SIGFPE:
-        // Intel chips do not raise SIGFPE for DIVZERO :-(
-//        raise (SIGABRT);
-        break;
-      case SIGINT:
-	break;
-      case SIGQUIT:
-	signal (SIGQUIT, SIG_DFL);
-	raise (SIGQUIT);
-	break;
-      default:
-        std::cerr << "# Warning: make_ode2odes needs updating!" << std::endl;
-	signal (signum, SIG_DFL);
-	raise (signum);
-        break;
-    }
-  corefile.close ();
-  set_signal_handlers ();
-}
-
-void set_signal_handlers (void)
-{
-  signal (SIGFPE,	handle_signal);
-  signal (SIGINT,	handle_signal);
-  signal (SIGQUIT,	handle_signal);
-}
-
-int main (void) {
-  set_signal_handlers ();
-#elif (CODEGENTARGET == OCTAVEDLD)
-DEFUN_DLD (${sys}_ode2odes, args, ,
-"Octave ode2odes representation of system with $method integration method\nUsage: mtt_data = ${sys}_ode2odes (x0, par, simpar)\n")
-{
-  static octave_value_list retval;
-#endif // (CODEGENTARGET == STANDALONE)
-  static ColumnVector	x0;
-  static ColumnVector	par;
-  static ColumnVector	simpar;
-
-  static double
-    first	= 0.0,
-    dt		= 0.0,
-    last	= 0.0,
-    stepfactor	= 0.0;
-#if (CODEGENTARGET == OCTAVEDLD)
-  int nargin = args.length ();
-  switch (nargin)
-    {
-    case 3:
-      first		= args (2).${vector_value} ()(0);
-      dt		= args (2).${vector_value} ()(1);
-      last		= args (2).${vector_value} ()(2);
-      stepfactor     	= args (2).${vector_value} ()(3);
-      par    		= args (1).${vector_value} ();
-      x0      		= args (0).${vector_value} ();
-      break;
-    case 2:
-      first		= mtt_simpar ()(0);
-      dt		= mtt_simpar ()(1);
-      last		= mtt_simpar ()(2);
-      stepfactor     	= mtt_simpar ()(3);
-      par    		= args (1).${vector_value} ();
-      x0      		= args (0).${vector_value} ();
-      break;
-    case 1:
-      first		= mtt_simpar ()(0);
-      dt		= mtt_simpar ()(1);
-      last		= mtt_simpar ()(2);
-      stepfactor     	= mtt_simpar ()(3);
-      par    		= mtt_numpar ();
-      x0      		= args (0).${vector_value} ();
-      break;
-    case 0:
-#endif // (CODEGENTARGET == OCTAVEDLD)
-      first		= mtt_simpar ()(0);
-      dt		= mtt_simpar ()(1);
-      last		= mtt_simpar ()(2);
-      stepfactor     	= mtt_simpar ()(3);
-      par    		= mtt_numpar ();
-      x0      		= mtt_state (par);
-#if (CODEGENTARGET == OCTAVEDLD)
-      break;
-    default:
-      usage("${sys}_ode2odes (x par simpar)", nargin);
-      error("aborting.");
-    }
-#endif // (CODEGENTARGET == OCTAVEDLD)
   static ColumnVector	dx (MTTNX, 0.0);
   static ColumnVector	x (MTTNX, 0.0);
   static ColumnVector	u (MTTNU, 0.0);
@@ -1117,13 +1025,13 @@ DEFUN_DLD (${sys}_ode2odes, args, ,
 
   for (register int i = 0; i < MTTNX; i++)
     {
-      x (i) = x0 (i);
+      x (i) = state0 (i);
     }
 
   for (register int j = 0, i = 1; i <= ilast; i++)
     {
-      u	= mtt_input (x, y, t, par);
-      y	= mtt_output (x, u, t, par);
+      u	= mtt_input (x, y, t, numpar);
+      y	= mtt_output (x, u, t, numpar);
       if (0 == j)
 	{
            mtt_write (t, x, y, nrows);
@@ -1148,10 +1056,10 @@ case "$method" in
           x2 (x),
           x3 (x);
 
-        k1 = ddt * mtt_rate (x , u, t , par); x1 += k1 * 0.5;
-        k2 = ddt * mtt_rate (x1, u, t1, par); x2 += k2 * 0.5;
-        k3 = ddt * mtt_rate (x2, u, t1, par); x3 += k3;
-        k4 = ddt * mtt_rate (x3, u, t2, par);
+        k1 = ddt * mtt_rate (x , u, t , numpar); x1 += k1 * 0.5;
+        k2 = ddt * mtt_rate (x1, u, t1, numpar); x2 += k2 * 0.5;
+        k3 = ddt * mtt_rate (x2, u, t1, numpar); x3 += k3;
+        k4 = ddt * mtt_rate (x3, u, t2, numpar);
         dx = (k1 + 2.0 * (k2 + k3) + k4) / (6.0 * ddt);
       }
 EOF
@@ -1160,39 +1068,135 @@ EOF
     ;;
     "implicit")
 	cat << EOF >> $filename
-      dx = mtt_rate (x, u, t, par);
-      AA = mtt_smxa (x, u, ddt, par);
-      AAx = mtt_smxax (x, u, ddt, par);
+      dx = mtt_rate (x, u, t, numpar);
+      AA = mtt_smxa (x, u, ddt, numpar);
+      AAx = mtt_smxax (x, u, ddt, numpar);
 EOF
     ;;
     "euler" | *)
 	cat << EOF >> $filename
-      dx = mtt_rate (x, u, t, par);
+      dx = mtt_rate (x, u, t, numpar);
 EOF
     ;;
 esac
 
 ## Common stuff
 cat <<EOF >> $filename
-      open_switches = mtt_logic (x, u, t, par);
+      open_switches = mtt_logic (x, u, t, numpar);
       x =  $algorithm; 
       t += ddt;
       j++;
       j = (j == static_cast<int> (stepfactor)) ? 0 : j;
     }
 
+}
+
 #if (CODEGENTARGET == STANDALONE)
+#include <csignal>
+
+void set_signal_handlers (void);
+
+void dump_data (std::ostream &file)
+{
+  ColumnVector null (0);
+  mtt_write (0.0, null, null, 0, true, file);
+}
+
+void handle_signal (int signum)
+{
+  // handle some signals to ensure data is written.
+  std::cerr << "# Writing data to MTT.core (signal " << signum << ")" << std::endl;
+  std::ofstream corefile ("MTT.core");
+  dump_data (corefile);
+  switch (signum)
+    {
+      case SIGFPE:
+        // Intel chips do not raise SIGFPE for DIVZERO :-(
+	// raise (SIGABRT);
+        break;
+      case SIGINT:
+	break;
+      case SIGQUIT:
+	signal (SIGQUIT, SIG_DFL);
+	raise (SIGQUIT);
+	break;
+      default:
+        std::cerr << "# Warning: make_ode2odes needs updating!" << std::endl;
+	signal (signum, SIG_DFL);
+	raise (signum);
+        break;
+    }
+  corefile.close ();
+  set_signal_handlers ();
+}
+
+void set_signal_handlers (void)
+{
+  signal (SIGFPE,	handle_signal);
+  signal (SIGINT,	handle_signal);
+  signal (SIGQUIT,	handle_signal);
+}
+
+int
+main (void)
+{
+  set_signal_handlers ();
+
+  static ColumnVector simpar (8), numpar (MTTNPAR), state0 (MTTNX);
+
+  simpar	= mtt_simpar ();
+  numpar	= mtt_numpar ();
+  state0	= mtt_state (numpar);
+
+  ${sys}_ode2odes (state0, numpar, simpar);
+
   return 0;
+}
 #elif (CODEGENTARGET == OCTAVEDLD)
-/*  
-  retval (0) = octave_value (y);
-  retval (1) = octave_value (x);
-  retval (2) = octave_value (t);
-*/
+DEFUN_DLD (${sys}_ode2odes, args, ,
+"Octave ode2odes representation of system with $method integration method\nUsage: mtt_data = ${sys}_ode2odes (state0, numpar, simpar)\n")
+{
+  static octave_value_list retval;
+
+  static ColumnVector	state0 (MTTNX);
+  static ColumnVector	numpar (MTTNPAR);
+  static ColumnVector	simpar (8);
+  
+  int nargin = args.length ();
+  switch (nargin)
+    {
+    case 3:
+      simpar	= args(2).${vector_value} ();
+      numpar	= args(1).${vector_value} ();
+      state0	= args(0).${vector_value} ();
+      break;
+    case 2:
+      simpar	= mtt_simpar ();
+      numpar	= args(1).${vector_value} ();
+      state0	= args(0).${vector_value} ();
+      break;
+    case 1:
+      simpar	= mtt_simpar ();
+      numpar	= mtt_numpar ();
+      state0	= args(0).${vector_value} ();
+      break;
+    case 0:
+      simpar	= mtt_simpar ();
+      numpar	= mtt_numpar ();
+      state0	= mtt_state (numpar);
+      break;
+    default:
+      usage("${sys}_ode2odes (x par simpar)", nargin);
+      error("aborting.");
+    }
+
+  ${sys}_ode2odes (state0, numpar, simpar);
+    
   retval = octave_value (get_global_value ("MTT_data"));
   return (retval);
-#endif // (CODEGENTARGET == STANDALONE)
 }
+#endif // (CODEGENTARGET == STANDALONE)
+
 EOF
 }
 

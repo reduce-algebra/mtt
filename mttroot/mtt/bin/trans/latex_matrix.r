@@ -11,6 +11,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% $Id$
 %% $Log$
+%% Revision 1.4  1998/11/10 14:15:36  peterg
+%% Now does matrix style for m<3
+%%
 %% Revision 1.3  1998/03/14 11:07:09  peterg
 %% Removed comma from array subscript
 %%
@@ -25,7 +28,7 @@
 
 PROCEDURE Latex_Matrix;
 BEGIN
-IF MTT_Matrix_m<3 THEN %% Do matrix style version
+IF MTT_Matrix_m<5 THEN %% Do matrix style version
 BEGIN
   IF MTT_Matrix_n>0 THEN
     IF MTT_Matrix_m>0 THEN

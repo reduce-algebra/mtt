@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.270  2000/10/03 12:13:51  peterg
+## Corrected MTT_LIB paths
+##
 ## Revision 1.269  2000/09/30 14:12:03  peterg
 ## Fixed bug with no-parameter systems - changed mtt_txt2m and mtt_m2p
 ##
@@ -909,7 +912,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='4.7.3'
+version='4.8'
 
 # MTT recursion level is zero unless explicitly set
 level=0

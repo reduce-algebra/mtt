@@ -1,0 +1,32 @@
+%SUMMARY LeakyPiston: Leaky piston sub model
+%DESCRIPTION <Detailed description here>
+%% Label file for system LeakyPiston (LeakyPiston_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type Piston
+	piston		lin	$1;$2;$3
+
+% Component type RG
+	leak		lin	$4;$5;$6
+
+% Component type SS
+	[mass_b]		external	external
+	[mass_t]		external	external
+	[mechanical_b]		external	external
+	[mechanical_t]		external	external
+	[shaft]		external	external
+	[thermal_b]		external	external
+	[thermal_t]		external	external

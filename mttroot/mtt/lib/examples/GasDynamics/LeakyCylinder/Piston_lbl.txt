@@ -1,0 +1,29 @@
+%SUMMARY Piston: simple model of the piston
+%DESCRIPTION Inludes inertia and pressure effects.
+%% Label file for system Piston (Piston_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type I
+	m_p		lin	flow,$1
+
+% Component type SS
+	[bottom]		external	external
+	[shaft]		external	external
+	[top]		external	external
+
+% Component type TF
+	a_b		lin	flow,$2
+	a_t		lin	effort,$3

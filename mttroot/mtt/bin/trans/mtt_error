@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1996/08/26 09:46:37  peterg
+## Changed $() to ``
+##
 # Revision 1.1  1996/08/25  09:20:00  peter
 # Initial revision
 #
@@ -23,7 +26,8 @@ error_file=$1;
 
 # Test for errors and print if any
 err_length=`wc -c <$error_file`
-if [ $err_length != "0" ]
+
+if [ "$err_length" != "0" ]
 then
   echo MTT has failed with the following errors '...'
   cat $error_file

@@ -13,6 +13,7 @@ case $2 in
 esac
 
 echo Creating $1_$2.dat
+echo $i
 
-awk  -F# '{print $1}' i=$1 <$1_odes.dat2 > $1_$2.dat
+awk  -F# '{print $i}' i=$i <$1_odes.dat2 > $1_$2.dat
 

@@ -16,6 +16,9 @@
 ## $Id$
 ##
 ## $Log$
+# Revision 1.6  1996/08/26  13:25:07  peterg
+# Corrected error handling.
+#
 # Revision 1.5  1996/08/24  14:38:11  peter
 # Error handling included.
 #
@@ -50,21 +53,34 @@ echo Creating $eqnfile
 echo Creating $1_def.r
 
 # Use matrix manipulation to accomplish the transformation
-$MATRIX > cbg2ese_m2r.log 2>mtt_error << EOF
+$MATRIX > cbg2ese_m2r.log 2>mtt_error.txt << EOF
 
-infofile = '$infofile'
-system_name = '$1'
+infofile = '$infofile';;
+system_name = '$1';
+system_type = '';
+system_cr = '';
+system_args = '';
+full_name = '';
+
 deffile = '$1_def.r';
 
-structure = cbg2ese(system_name,'','',infofile)
+%Structure matrix [states,nonstates,inputs,outputs,zero_outputs]
+structure = zeros(1,5);
+
+structure = cbg2ese(system_name, system_type, system_cr, ...
+                     system_args, full_name , 1, structure, infofile);
 makedef(structure,deffile);
   
 EOF
 
 cat $infofile
 
+cat $1_*ese.r - > $1_ese.r 2>> mtt_error.txt <<EOF
+END;
+EOF
+
 # Now invoke the standard error handling.
-mtt_error_r cbg2ese_m2r.log
+mtt_error mtt_error.txt
 
 
 

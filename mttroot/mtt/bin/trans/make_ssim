@@ -44,7 +44,7 @@ cat >> ${outfile} <<EOF
 	y = mtt_data(:,2:2:1+ny2);
       endif
       y_par = [y_par, mtt_data(:,3:2:2+ny2)];
-      x = [];
+      x = mtt_data(:,3+ny2:2+ny2+nx2);
     endfor
   endif
 

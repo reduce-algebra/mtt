@@ -17,15 +17,13 @@ case $2 in
 	;;
     state)
         name=mttx
-        cat $1_struc.txt |\
-        grep $2 |\
-	awk '{printf("%s\n", $4)}'>mtt_infile
+	awk '{if ($1==rep) printf("%s\n", $4)}' rep=$2 \
+        <$1_struc.txt >mtt_infile
 	;;
     input)
         name=mttu
-        cat $1_struc.txt |\
-        grep $2 |\
-	awk '{printf("%s\n", $4)}'>mtt_infile
+	awk '{if ($1==rep) printf("%s\n", $4)}' rep=$2 \
+        <$1_struc.txt >mtt_infile
 	;;
     *)
 	echo Repesentation $2 not supported

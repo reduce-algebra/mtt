@@ -14,6 +14,15 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.54  1997/02/07  13:33:03  peterg
+# Added ; to _input.c file - bug fix.
+#
+# Revision 1.53  1997/02/07  13:25:04  peterg
+# Version 2.3
+#
+# Revision 1.52  1997/01/21  22:55:59  peterg
+# Minor bug fixes
+#
 ## Revision 1.51  1997/01/21 13:16:40  peterg
 ## Included transformations to language c for:
 ## ode
@@ -184,11 +193,16 @@
 # MTT recursion level is zero unless explicitly set
 level=0
 
+#Computation mode is octave by default
+computation=octave
+
 #Look for a command line argument
 while [ -n "`echo $1 | grep '-'`" ]; do
   case $1 in
 	-q )
 		quiet=quiet ;;
+	-c )
+		computation=c ;;
 	-l )
 		level=$2; shift ;;
   esac
@@ -198,7 +212,7 @@ done
 #Print header if not in quiet (-q) mode.
 if [ "$quiet" != "quiet" ]; then
   echo
-  echo 'MTT (Model Transformation Tools) version 2.2++'
+  echo 'MTT (Model Transformation Tools) version 2.3'
   echo 'This is free software with ABSOLUTELY NO WARRANTY.'
   echo 'Type `mtt warranty'\' 'for details.'
   echo
@@ -472,7 +486,7 @@ $1_numpar.m: $1_sympar.r $1_params.m
 	sympar2numpar_r2m $1
 
 #SUMMARY numpar	numerical parameter declaration (c) 
-$1_numpar.c: $1_sympar.r $1_params.c
+$1_numpar.c: $1_sympar.r
 	sympar2numpar_r2c $1
 
 #SUMMARY params	numerical parameter setting (m)
@@ -494,9 +508,22 @@ $1_numpar.c: $1_sympar.r $1_params.c
 	echo "%% This file provides the system params for simulation:";\
 	echo '*/'; \
 	echo '$1_params()'; \
-	echo '{'; \
+        echo '{'; \
 	echo '};'; \
         )> $1_params.c
+
+#SUMMARY odes ODE simulation header file (h)
+ $1_odes.h: 
+	echo Creating $1_odes.h
+	( \
+	echo '/*'; \
+	echo "%% Parameter file for system $1 ($1_odes.h)"; \
+	echo "%% This file provides the params for simulation:";\
+	echo '*/'; \
+	echo '#define DT 0.1 /* Time step (for printing) */'; \
+	echo '#define LAST 10.0 /* Last time */'; \
+	echo '#define STEPFACTOR 1000 /* Integration steps per time step */'; \
+        )> $1_odes.h
 
 #SUMMARY params	symbolic parameter setting (r)
  $1_params.r: 
@@ -522,6 +549,23 @@ $1_input.m:
 	echo "% Change the following lines as you wish"; \
 	echo "u = ones(nu,1);"; \
         )> $1_input.m
+
+#SUMMARY input	input signal definition (c)
+$1_input.c:
+	echo Creating $1_input.c
+	( \
+	echo "$1_input(t)"; \
+	echo '  float t;'; \
+	echo '/*'; \
+	echo "%% Input file for system $1 ($1_input.c)"; \
+	echo "%% This file provides the system input for simulation:";\
+	echo '*/'; \
+	cat $MTTPATH/trans/rcs_header.c; \
+	echo; \
+	echo "/* Change the following lines as you wish */"; \
+        echo '{'; \
+	echo '};'; \
+        )> $1_input.c
 
 #SUMMARY sspar	steady-state definition (r)
 $1_sspar.r:
@@ -632,7 +676,7 @@ $1_ode.r: $1_cse.r $1_def.r $1_sympar.r
 	cse2ode_r $1; tidy $1_ode.r
 $1_ode.m: $1_def.r $1_ode.r $1_sympar.r $1_numpar.m
 	ode_r2m $1; matlab_tidy $1_ode.m; matlab_tidy $1_odeo.m
-$1_ode.c: $1_def.r $1_ode.r $1_sympar.r $1_numpar.c
+$1_ode.c: $1_def.r $1_ode.r $1_sympar.r
 	ode_r2c $1
 $1_ode.tex: $1_ode.r  $1_sympar.r $1_simp.r
 	ode_r2tex $1; latex_tidy $1_ode.tex
@@ -753,6 +797,7 @@ $1_tf.tex: $1_def.r $1_tf.r $1_sympar.r $1_simp.r
 #SUMMARY odes	ode solution - state (dat)
 #SUMMARY odes	ode solution - state (ps)
 #SUMMARY odes	ode solution - state (view)
+#SUMMARY odes	ode solution - state & output(c)
 
 #SUMMARY odeso	ode solution - output (m)
 #SUMMARY odeso	ode solution - output (dat)
@@ -778,8 +823,19 @@ $1_sr.m: $1_sm.m $1_numpar.m $1_params.m $1_args.m $1_def.m
 	sm2sr_m $1 '$ARGS'
 $1_sro.m: $1_sr.m
 	touch $1_sro.m
+$1_odes.c: $1_ode.c $1_def.r $1_sympar.r
+	ode2odes_r2c $1
+ifeq ($computation,octave)
 $1_odes.m: $1_ode.m $1_numpar.m $1_params.m $1_args.m $1_def.m $1_input.m
 	ode2odes_m $1 '$ARGS'
+endif
+ifeq ($computation,c)
+$1_odes.m: $1_odes.c $1_ode.c $1_numpar.c $1_odes.h $1_params.c $1_input.c
+	echo Creating $1_odes.m
+	echo 'Compiling ...'
+	gcc $1_odes.c $1_ode.c $1_numpar.c $1_params.c $1_input.c
+	echo 'Running  ...'; a.out; echo 'Done.'
+endif
 $1_odeso.m: $1_odes.m
 	touch $1_odeso.m
 $1_daes.m: $1_dae.m $1_numpar.m $1_params.m $1_args.m $1_def.m $1_input.m

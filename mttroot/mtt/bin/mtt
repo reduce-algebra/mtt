@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.53  1997/02/09 20:30:04  peterg
+## Copied from tweedledum.
+##
 # Revision 1.54  1997/02/07  13:33:03  peterg
 # Added ; to _input.c file - bug fix.
 #
@@ -212,7 +215,7 @@ done
 #Print header if not in quiet (-q) mode.
 if [ "$quiet" != "quiet" ]; then
   echo
-  echo 'MTT (Model Transformation Tools) version 2.3'
+  echo 'MTT (Model Transformation Tools) version 2.3++'
   echo 'This is free software with ABSOLUTELY NO WARRANTY.'
   echo 'Type `mtt warranty'\' 'for details.'
   echo
@@ -834,7 +837,7 @@ $1_odes.m: $1_odes.c $1_ode.c $1_numpar.c $1_odes.h $1_params.c $1_input.c
 	echo Creating $1_odes.m
 	echo 'Compiling ...'
 	gcc $1_odes.c $1_ode.c $1_numpar.c $1_params.c $1_input.c
-	echo 'Running  ...'; a.out; echo 'Done.'
+	echo 'Running  ...'; ./a.out; echo 'Done.'
 endif
 $1_odeso.m: $1_odes.m
 	touch $1_odeso.m

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.39  2003/09/22 17:38:56  gawthrop
+## gv --> ghostview
+##
 ## Revision 1.38  2003/07/13 21:53:24  geraint
 ## Updated to conform to latest Octave (tested with 2.1.49).
 ## - the pathsearch library was merged into liboctave last year
@@ -207,7 +210,7 @@ else
   	"
   
   # Setup ps viewer
-  export PSVIEW='ghostview'
+  export PSVIEW='gv'
   
   # Setup pdf viewer
   export PDFVIEW='acroread'

@@ -14,6 +14,11 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.148  1998/05/12 14:42:07  peterg
+## Added ese_tidy and new method for organising ese files -
+## Each subsystem has an array of variables - effort, flow and state for
+## each bond
+##
 ## Revision 1.147  1998/04/15 18:41:47  peterg
 ## Fixed various probs with multiple systems in one directory
 ##
@@ -1188,6 +1193,9 @@ $1_simpar.m: $1_simpar.txt
 	echo Creating $1_simpar.m
 	sed 's/txt/m/'<$1_simpar.txt >$1_simpar.m
 
+#SUMMARY simpar	simulation information (h) (c) header file
+$1_simpar.h: $1_simpar.txt
+	simpar_txt2h $1
 
 
 #SUMMARY numpar	numerical parameter declaration (txt) -- default
@@ -1664,7 +1672,7 @@ $1_odes.m: $1_ode.m $1_numpar.m  $1_def.m $1_input.m $1_state.m $1_simpar.m
 endif
 
 ifeq ($computation,c)
-$1_odes.m: $1_odes.c $1_ode.c $1_numpar.c $1_state.c $1_odes.h\
+$1_odes.m: $1_odes.c $1_ode.c $1_numpar.c $1_state.c $1_simpar.h\
          $1_sympar.c $1_sympar.h\
          $1_numpar.c $1_input.c sign.c
 	echo Creating $1_odes.m
@@ -1674,7 +1682,7 @@ $1_odes.m: $1_odes.c $1_ode.c $1_numpar.c $1_state.c $1_odes.h\
 	echo 'Running  ...'; time ./a.out; echo 'Done.'
 
 
-$1_sms.m: $1_sms.c $1_sm.c $1_numpar.c $1_sms.h\
+$1_sms.m: $1_sms.c $1_sm.c $1_numpar.c $1_simpar.h\
          $1_sympar.c $1_sympar.h\
          $1_numpar.c $1_input.c dsvdcmp.c
 	echo Creating $1_sms.m
@@ -1688,7 +1696,7 @@ $1_odeso.m: $1_odes.m
 	touch $1_odeso.m
 $1_smso.m: $1_sms.m
 	touch $1_smso.m
-$1_daes.m: $1_dae.m $1_numpar.m $1_args.m $1_def.m $1_input.m
+$1_daes.m: $1_dae.m $1_numpar.m  $1_def.m $1_input.m $1_simpar.m
 	dae2daes_m $1 '$ARGS'
 $1_daeso.m: $1_daes.m
 	touch $1_daeso.m

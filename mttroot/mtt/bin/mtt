@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.280  2000/11/10 14:45:16  peterg
+## Finished up changes to incorporate Geraint's cc stuff
+##
 ## Revision 1.279  2000/11/08 09:51:52  peterg
 ## Started incorporating Geraints CC/oct conversions
 ##
@@ -1003,6 +1006,9 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-o )
                 mtt_switches="$mtt_switches $1";
 		dae_is_ode=1 ;;
+	-nocr )
+                mtt_switches="$mtt_switches $1";
+		rdae_is_dae=1 ;;
 	-i )
                 mtt_switches="$mtt_switches $1";
                 shift;
@@ -2234,7 +2240,13 @@ ifneq ($partition,)
 	echo Doing subsystems
 	mtt_make_subsystems $1 dae r
 endif
+ifeq ($rdae_is_dae,1)
+	echo Copying $1_rdae.r to $1_dae.r
+	cp $1_rdae.r  $1_dae.r
+else
 	rdae2dae_r $partition $Subsystem; tidy $Subsystem_dae.r
+endif
+
 $1_dae.m: $1_def.r $1_dae.r  $1_sympars.txt
 	dae_r2m $1; matlab_tidy $1_dae.m; matlab_tidy $1_daeo.m
 $1_dae.c: $1_def.r $1_dae.r  $1_sympar.r
@@ -2293,16 +2305,16 @@ $1_scse.tex: $1_scse.r  $1_sympar.r $1_simp.r
 #SUMMARY ode	ordinary differential equations (ps)
 #SUMMARY ode	ordinary differential equations (oct)
 #Ordinary differential equations
-ifeq ($dae_is_ode,0)
-$1_ode.r: $1_cse.r $1_cseo.r $1_def.r $1_sympar.r $1_subs.r
-	cse2ode_r $1; tidy $1_ode.r
-endif
 
 ifeq ($dae_is_ode,1)
 $1_ode.r: $1_dae.r
 	echo Copying $1_dae.r to $1_ode.r
 	cp $1_dae.r  $1_ode.r
+else
+$1_ode.r: $1_cse.r $1_cseo.r $1_def.r $1_sympar.r $1_subs.r
+	cse2ode_r $1; tidy $1_ode.r
 endif
+
 $1_odeo.r: $1_ode.r
 	touch $1_odeo.r
 

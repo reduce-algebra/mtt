@@ -264,12 +264,14 @@ function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,
       tim=time;			# Timing
       i++;
       if Simulate		# Exact simulation 
+	X = x;			# Current state
 	t_sim = [1:p_c.N]*dt;	# Simulation time points
 	[yi,ui,xsi] = ppp_ystar(A,B,C,D,x,p_c.A_u,U,t_sim); # Simulate
 	x = xsi(:,p_c.N);	# Current state (for next time)
 	ti  = [(i-1)*p_c.N:i*p_c.N-1]*dt; 
 	y_i = yi(1);	# Current output
 	t_i = ti(1);
+	##X = xsi(:,1);
       else			# The real thing
 	if strcmp(p_o.method, "remote")
 	  [t_i,y_i,X] = ppp_put_get_X(U); # Remote-state interface

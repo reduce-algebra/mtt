@@ -1,0 +1,168 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: cse2scse_r
+# Reduce constrained-state equations to sensitivity version
+# P.J.Gawthrop 10th May 199, 8th August 1991, April 1994, Dec 1994
+# Copyright (c) P.J.Gawthrop, 1999
+
+
+# The sensitivity parameter
+theta=$2
+thetas=$2"s"
+
+echo $theta $thetas
+# Number of states
+Nx=`grep "MTTNx " <$1_def.r | awk '{print $3}' | sed 's/;//'`
+
+#Inform user
+echo "Creating $1_scse.r (for parameter $theta, $Nx states)"
+
+# Remove the old log file
+rm -f cse2scse_r.log
+
+# Use reduce to accomplish the transformation
+$SYMBOLIC  << EOF >cse2scse_r.log
+
+%Read the formatting function
+in "$MTTPATH/trans/reduce_matrix.r";
+
+%Read the definitions file
+in "$1_def.r";
+
+%Read the substitution file
+in "$1_subs.r";
+
+%Read the constrained-state equations file
+in "$1_cse.r";
+
+% Compute the sensitivity E matrix
+matrix MTTssE(MTTNx,MTTNx);
+clear MTTx; % Dont use - mkid is better
+
+FOR ii := 1:MTTNx DO
+  FOR jj := 1:MTTNx DO
+  BEGIN
+    % First with respect to theta...
+    MTTssE(ii,jj) := df(MTTE(ii,jj), $theta)*$thetas;
+    % then with respect to x
+    FOR i := 1:MTTNx DO
+    BEGIN
+      xi := mkid(MTTx,i);
+      sxi := mkid(MTTsx,i);
+      MTTssE(ii,jj) := MTTssE(ii,jj) + df(MTTE(ii,jj), xi)*sxi;
+    END;
+  END;
+
+% Compute the sensitivity of the RHS of the cse
+matrix MTTssEdx(MTTNx,1);
+
+
+FOR ii := 1:MTTNx DO
+BEGIN 
+  % First with respect to theta
+  MTTssEdx(ii,1) := $thetas*df(MTTEdx(ii,1), $theta);
+  
+% Then with respect to x
+  FOR i := 1:MTTNx DO
+  BEGIN
+    xi := mkid(MTTx,i);
+    sxi := mkid(MTTsx,i);
+    MTTssEdx(ii,1) := MTTssEdx(ii,1) + df(MTTEdx(ii,1), xi)*sxi;
+  END; 
+END; 
+
+% Now reorganise everything into composite system
+%  - odd rows are the system 
+%  - even rows are the sensitivity system
+% NB at this stage, the states are numbered incorrectly - sorted out below.
+
+%E matrix 
+MTTNx2 := 2*MTTNx;
+matrix MTTsE(MTTNx2,MTTNx2);
+FOR i := 1:MTTNx DO
+  FOR j := 1:MTTNx DO
+  BEGIN
+    MTTsE(2*i-1,2*j-1) := MTTE(i,j);  % System
+    MTTsE(2*i,2*j)     := MTTE(i,j);  % Sensitivity system
+    MTTsE(2*i,2*j-1)   := MTTssE(i,j);  % Sensitivity system
+  END; 
+
+%dX matrix
+matrix MTTsEdX(MTTNx2,1);
+
+FOR i := 1:MTTNx DO
+BEGIN
+  MTTsEdX(2*i-1,1) := MTTEdx(i,1);
+  MTTsEdX(2*i,1)   := MTTssEdx(i,1);
+END; 
+
+OFF nat;
+
+OUT "$1_scse.r";
+
+write "%File: $1_scse.r";
+
+
+% E matrix
+MTT_Matrix := MTTsE$ 
+MTT_Matrix_name := "MTTsE"$
+MTT_Matrix_n := MTTNx2$
+MTT_Matrix_m := MTTNx2$
+Reduce_Matrix()$
+
+% State derivative
+MTT_Matrix := MTTsEdX$ 
+MTT_Matrix_name := "MTTsEdX"$
+MTT_Matrix_n := MTTNx2$
+MTT_Matrix_m := 1$
+Reduce_Matrix()$
+
+% Output
+MTT_Matrix := MTTY$ 
+MTT_Matrix_name := "MTTY"$
+MTT_Matrix_n := MTTNy$
+MTT_Matrix_m := 1$
+Reduce_Matrix()$
+
+write "END;";
+
+SHUT "$1_scse.r";
+quit;
+EOF
+
+# Now invoke the standard error handling.
+mtt_error_r cse2scse_r.log
+
+
+## Now reorganise the  states
+mv -f $1_scse.r mtt_junk
+
+
+##echo "Nx = $Nx"
+awk '{
+  ## Make sure all MTTn variables are followed by a space
+  gsub(/mttx[0-9]*/, "& ");
+
+  for (i=Nx;i>0;i--) {
+
+    state = sprintf("mttx%i ",i);
+    newstate = sprintf("mttx%i ",2*i-1);
+    sstate = sprintf("mttsx%i",i);
+    newsstate = sprintf("mttx%i",2*i);
+
+    gsub(state,newstate);
+    gsub(sstate,newsstate);
+
+  }
+  print $0
+}' Nx=$Nx <mtt_junk > $1_scse.r
+
+
+
+
+
+

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.13  1998/09/03 09:12:32  peterg
+## Removed debugging lines
+##
 ## Revision 1.12  1998/09/02 12:02:14  peterg
 ## Added mttinput paramater
 ##
@@ -77,28 +80,28 @@ echo Creating $1_nifr.m
 $MATRIX << EOF > dm2fr_m.log 2>mtt_error.txt
 
 # Data
-  $1_numpar;
+  mttpar=$1_numpar;
 
 # Simulation parameters
-  $1_simpar;
+  simpar=$1_simpar;
 
   [nx,ny,nu,nz,nyz] = $1_def
 
   %Defaults
   
-  if exist('mttwmin')==0
-    mttwmin = -1;
+  if exist('simpar.wmin')==0
+    simpar.wmin = -1;
   end;
 
-  if exist('mttwmax')==0
-    mttwmax = 2;
+  if exist('simpar.wmax')==0
+    simpar.wmax = 2;
   end;
 
-  if exist('mttwsteps')==0
-    mttwsteps = 100;
+  if exist('simpar.wsteps')==0
+    simpar.wsteps = 100;
   end;
 
-  W = logspace(mttwmin,mttwmax,mttwsteps)';
+  W = logspace(simpar.wmin,simpar.wmax,simpar.wsteps)';
   if exist('mttinput')==0
     mttinput = 1;
   end;
@@ -115,7 +118,7 @@ $MATRIX << EOF > dm2fr_m.log 2>mtt_error.txt
     mttu0=mttu0';
   end;
 
-  [A,B,C,D,E] = $1_dm;
+  [A,B,C,D,E] = $1_dm(mttpar);
   fr = dm2fr(A,B,C,D,E,W,mttu0);
   lw = log10(W);
   lmfr = log10(abs(fr));

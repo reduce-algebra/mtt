@@ -1,0 +1,147 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH MTT 1 "April 27, 2002"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+mtt \- Model Transformation Tools
+.SH SYNOPSIS
+.B mtt
+.RI [ options ] " system representation language" 
+.br
+.B xmtt
+.RI [ --update ]
+.SH DESCRIPTION
+This manual page documents briefly the
+.B mtt
+and
+.B xmtt
+commands.
+Detailed documentation is available in info or html format by issuing
+the command
+.B mtt info
+for info format or
+.B mtt hinfo
+for html.
+.PP
+.\" TeX users may be more comfortable with the \fB<whatever>\fP and
+.\" \fI<whatever>\fP escape sequences to invode bold face and italics, 
+.\" respectively.
+\fBmtt\fP is a  set of tools for modelling dynamic physical systems using the bond-graph methodology and transforming these models into representations suitable for analysis, control and simulation. These tools use, and generate m files for, GNU Octave. 
+.SH OPTIONS
+A summary of options is included below.
+For a complete description, see the Info files.
+.TP
+.B \-q
+quiet mode -- suppress MTT banner
+.TP
+.B \-A
+solve algebraic equations symbolically
+.TP
+.B \-D
+debug -- leave log files etc
+.TP
+.B \-I
+prints more information
+.TP
+.B \-abg
+start at abg.m representation
+.TP
+.B \-c
+c-code generation
+.TP
+.B \-cc
+C++ code generation
+.TP
+.B \-cr
+Use cr before resolving equations
+.TP
+.B \-d  <dir>
+use directory <dir>
+.TP
+.B \-dc
+Maximise derivative (not integral) causality
+.TP
+.B \-dc
+Maximise derivative (not integral) causality
+.TP
+.B \-i <implicit|euler|rk4|dassl>
+Use implicit, euler, rk4 or dassl integration
+.TP
+.B \-ae <reduce|hybrd|dassl|hooke>
+Solve algebraic equations with specified solver
+.TP
+.B \-o
+ode is same as dae
+.TP
+.B \-oct
+use oct files in place of m files where appropriate
+.TP
+.B \-opt
+optimise code generation
+.TP
+.B \-p
+print environment variables
+.TP
+.B \-partition
+ partition hierachical system
+.TP
+.B \-pdf
+generate pdf in place of ps
+.TP
+.B \-r
+reset time stamp on representation
+.TP
+.B \-s
+generate sensitivity BG (use mtt -s sSys rep lang)
+.TP
+.B \-ss
+use steady-state info to initialise simulations
+.TP
+.B \-stdin
+read input data from standard input for  simulations
+.TP
+.B \-sub <subsystem>
+operate on this subsystem
+.TP
+.B \-t
+tidy mode (default)
+.TP
+.B \-trace
+Just indicate what mtt will do - but do not do it
+.TP
+.B \-u
+untidy mode (leaves files in current dir)
+.TP
+.B \-v
+verbose mode (multiple uses of -v increase the verbosity level)
+.TP
+.B \-viewlevel <N>
+View N levels of hierachy
+.TP
+.B \-\-version
+print version and exit
+.TP
+.B \-\-versions
+print version of mtt and components and exit
+
+The programs are documented fully by
+.IR "mtt: Model Transformation Tools" ,
+available via the Info system.
+.SH FILES
+/etc/mtt.conf
+.SH AUTHOR
+This manual page was written by Geraint <geraint@users.sf.net>,
+for the Debian GNU/Linux system (but may be used by others).

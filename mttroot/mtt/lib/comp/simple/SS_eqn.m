@@ -31,6 +31,9 @@ global at_top_level
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.23  1998/12/03 16:46:16  peterg
+% %% Deblanked attributes so that zero attribute works.
+% %%
 % %% Revision 1.22  1998/07/28 19:05:46  peterg
 % %% Fixed a few bugs.
 % %%
@@ -117,14 +120,15 @@ global at_top_level
 %     arg contains port number
 
 if (strcmp(cr,"SS"))		# Then its the standard file
-  a = split(args,",");
+  a = split(args,",")
   [N,M]=size(a);
   if (N~=2)			# Must have 2 arguments
     mtt_error(sprintf("SS should have 2 args not %i", N));
-  else
-    effort_attribute = deblank(a(1,:));
-    flow_attribute   = deblank(a(2,:));
   end;
+
+  effort_attribute = deblank(a(1,:));
+  flow_attribute   = deblank(a(2,:));
+
 else				# Old style file
   effort_attribute = cr;
   flow_attribute = args;

@@ -126,7 +126,7 @@ in"$MTTPATH/trans/lang_matrix.r";
 EOF
 
 if [ "$lang" = "m" ]; then
-  lang_header $1 rep m 'mttx,mttu,mttt,mttpar' $out > $1_$rep.m
+  lang_header $1 $rep m 'mttx,mttu,mttt,mttpar' $out > $1_$rep.m
 
   echo '#====== Start of code ======#' >> $1_$rep.m
 

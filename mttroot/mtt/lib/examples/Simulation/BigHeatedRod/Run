@@ -1,0 +1,104 @@
+#! /bin/sh
+# Shell script for running the large HeatedRod systems to compare
+# four integration methods.
+# Usage example: Run 100 0.25 runf the 100 segment example at interval 0.25
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+n=$1
+DT=$2
+
+if [ -z "$n" ]; then
+    echo "First argument is N: number of segments (eg 100)"
+    exit
+fi
+if [ -z "$DT" ]; then
+    echo "Second argument is DT: the sample interval (eg 0.25)"
+    exit
+fi
+
+echo "Running system HR$1 with DT = $DT"
+
+#Create the system
+mtt -q rename HR HR$n >/dev/null
+
+# Is it already correct?
+count=`grep -c "*$n" HR$1_abg.fig`
+
+# if not, then set the correct number of segments
+if [ "$count" = "0" ]; then
+    echo Setting number of segments to $n
+    mv HR$1_abg.fig  HR$1_abg.old
+    sed "s/\*[0-9]*/*$1/"<HR$1_abg.old>HR$1_abg.fig
+
+    mv HR$1_numpar.txt  HR$1_numpar.old
+    sed "s/segments = [0-9]*/segments = $1/"<HR$1_numpar.old >HR$1_numpar.txt
+
+   echo "Making the default HR$1_state.txt"
+   rm -f HR$1_state.txt MTT_work/HR$1_state.txt
+   mtt -q  HR$1 state txt
+   echo "Setting $n states to c_t*t_0"
+   mv HR$1_state.txt  HR$1_state.old
+   sed "s/0.0/c_t*t_0/"<HR$1_state.old >HR$1_state.txt
+fi
+
+echo Computing  STEPFACTOR
+mtt -q HR$n numpar m
+mtt -q HR$n sm m
+
+
+# What is the minimum step size for Euler? (and for sparse method)
+octave -q <<EOF >HR$1.tmp1
+  HR$1_numpar;
+  A=HR$1_sm;
+  Max_Eig=max(eig(-A))
+  STEPFACTOR=ceil( Max_Eig*$DT/2 )
+  SparseSTEPFACTOR=5*$n # Emiprical!!
+EOF
+
+MinSTEPFACTOR=`awk '{if ($1=="STEPFACTOR") print $3}' HR$1.tmp1`
+SparseSTEPFACTOR=`awk '{if ($1=="SparseSTEPFACTOR") print $3}' HR$1.tmp1`
+
+rm -f HR$1_table.txt
+
+#Set the methods of interest
+METHODS='ImplicitS Euler ImplicitL Implicit'
+
+for METHOD in $METHODS; do
+
+case $METHOD in
+    Euler)
+		STEPFACTOR=$MinSTEPFACTOR
+	;;
+    ImplicitS)
+		STEPFACTOR=$SparseSTEPFACTOR
+	;;
+    *)
+		STEPFACTOR=1
+	;;
+esac
+
+
+  echo "Doing HR$1 with DT=$DT using $METHOD (STEPFACTOR = $STEPFACTOR)"
+  grep -v 'STEPFACTOR' HR_simpar.txt | grep -v 'METHOD' | grep -v 'DT' > HR$1_simpar.txt
+  echo "STEPFACTOR = $STEPFACTOR; # Added automatically" >>HR$1_simpar.txt
+  echo "METHOD = $METHOD;         # Added automatically" >>HR$1_simpar.txt
+  echo "DT = $DT;                 # Added automatically" >>HR$1_simpar.txt
+  mtt -q -c -o HR$1 odeso ps > junk 2>>junk #HR$1_$METHOD.tmp
+  grep user junk |\
+     awk '{print System " &\t" METHOD " &\t"  DT " &\t"  STEPFACTOR " &\t" $2 "\\\\"}'\
+      METHOD=$METHOD STEPFACTOR=$STEPFACTOR System=HR$1 DT=$DT >> HR$1_table.txt
+
+  cp HR$1_odeso.ps  HR$1.$METHOD.$DT.ps
+done
+
+cat HR$1_table.txt
+
+
+

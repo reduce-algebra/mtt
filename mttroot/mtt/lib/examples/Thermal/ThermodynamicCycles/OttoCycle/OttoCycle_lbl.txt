@@ -6,9 +6,11 @@
 %DESCRIPTION o Isentropic expansion
 %DESCRIPTION o Cooling at constant volume
   
-%VAR P_0
-%VAR T_0
-%VAR V_0
+%PAR P_0
+%PAR T_0
+%PAR V_0
+%NOTPAR ideal_gas
+
 
 %% Label file for system OttoCycle (OttoCycle_lbl.txt)
 
@@ -17,6 +19,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1998/08/10 16:05:52  peterg
+% %% Added VARs and parameters
+% %%
 % %% Revision 1.2  1998/07/21 15:15:27  peterg
 % %% Documentation + new format
 % %%

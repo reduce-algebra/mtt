@@ -8,14 +8,17 @@
 %ALIAS	$2	r_2
 %ALIAS	$3	c
 
-%ALIAS	in	1
-%ALIAS	out	2
+%ALIAS	in	e_1
+%ALIAS	out	e_2
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1999/12/16 22:21:09  peterg
+% %% Changed port names
+% %%
 % %% Revision 1.1  1998/07/16 16:30:41  peterg
 % %% Initial revision
 % %%

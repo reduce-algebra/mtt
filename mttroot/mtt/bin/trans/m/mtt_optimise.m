@@ -1,4 +1,4 @@
-function [theta,Theta,Error,Y,iterations] = mtt_optimise (system_name,y_s,theta_0,method,free,weight,criterion,max_iterations,alpha)
+function [theta,Theta,Error,Y,iterations] = mtt_optimise (system_name,y_s,theta_0,method,free,weight,criterion,max_iterations,alpha,View)
   ## Usage: [theta,Theta,Error,Y,iterations] = mtt_optimise (system_name,y_s,theta_0,method,free,weight,criterion,max_iterations,alpha)
   ##  system_name     String containg system name
   ##  y_s   actual system output
@@ -34,7 +34,11 @@ function [theta,Theta,Error,Y,iterations] = mtt_optimise (system_name,y_s,theta_
   endif
 
   if nargin<9
-    alpha = 1.0;
+    alpha = 0.1;
+  endif
+  
+  if nargin<10
+    View = 0;
   endif
   
   if (!strcmp(method,"time"))&&(!strcmp(method,"freq"))
@@ -44,8 +48,8 @@ function [theta,Theta,Error,Y,iterations] = mtt_optimise (system_name,y_s,theta_
   [n_data,n_y] = size(y_s);
 
   n_th = length(free);
-  error_old = 1e20;
-  error=1e10;
+  error_old = inf;
+  error=1e50;
   theta = theta_0;
   Theta = [];
   Error = [];
@@ -55,7 +59,15 @@ function [theta,Theta,Error,Y,iterations] = mtt_optimise (system_name,y_s,theta_
     iterations = iterations + 1;
     error_old_old = error_old;
     error_old = error;
-    eval(sprintf("[t,y,y_theta] = mtt_s%s(system_name,theta,free);",method)); # Simulate system
+    eval(sprintf("[t,y,y_theta] = \
+	mtt_s%s(system_name,theta,free);",method)); # Simulate system
+
+    if View
+      xlabel("");
+      title(sprintf("mtt_optimise: Weighted actual and estimated Interation %i", iterations));
+      plot(t,y.*weight,t,y_s.*weight);
+    endif
+    
     error = 0; 
     J = zeros(n_th,1);
     JJ = zeros(n_th,n_th);
@@ -69,21 +81,23 @@ function [theta,Theta,Error,Y,iterations] = mtt_optimise (system_name,y_s,theta_
       JJ = JJ + real(y_theta_w'*y_theta_w); # Newton Euler approx Hessian
     endfor
 
-    error = error
-    ## Diagnostics
-    Error = [Error error];	# Save error
-    Theta = [Theta theta];	# Save parameters
-    Y = [Y y];			# Save output
+    error
+ 
+    if error<(error_old+criterion) # Save some diagnostics
+      Error = [Error error];	# Save error
+      Theta = [Theta theta];	# Save parameters
+      Y = [Y y];		# Save output
+    endif
 
     ## Update the estimate if we are not done yet.
     if (abs(error_old-error)>criterion)&&(iterations<max_iterations)
-      if error>error_old+criterion # Halve step size and try again
+      if error>(error_old+criterion) # Reduce step size and try again
         factor = 10;
-	disp(sprintf("step/%i",factor));
+	disp(sprintf("%2.2f*step",alpha));
 	error = error_old;	# Go back to previous error value
 	error_old = inf;	# Don't let it think its converged
 	theta(free) = theta(free)  + step; # Reverse step
-	step = step/factor;	# new stepsize
+	step = alpha*step;	# new stepsize
       else			# Recompute step size
 	tol = 1e-5;
 	step =  pinv(JJ,tol)*J;	# Step size
@@ -91,8 +105,8 @@ function [theta,Theta,Error,Y,iterations] = mtt_optimise (system_name,y_s,theta_
       endif
       theta(free) = theta(free) - step; # Increment parameters
     endif
-
-   endwhile
+ ##   theta
+  endwhile
 endfunction
 
 

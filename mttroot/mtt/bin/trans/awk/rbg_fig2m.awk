@@ -12,6 +12,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.43  2002/05/22 10:33:18  gawthrop
+## Nameless components are now named according to type - replaces old
+## mtt1 etc style.
+##
 ## Revision 1.42  2002/03/26 12:05:27  geraint
 ## Escaped characters to eliminate awk warnings.
 ##
@@ -272,14 +276,15 @@ function fig_info() {
 	 }
 
 function type_name(type) {
-    if (type==1)
-      return "one"
-    else {
-      if (type==0)
-        return "zero"
-      else
-        return type
-    }
+#    if (type==1)
+#      return "one"
+#    else {
+#      if (type==0)
+#        return "zero"
+#      else
+#        return type
+#    }
+    return sprintf("mtt%s", type);
 }
 
 function process_text() {
@@ -432,7 +437,7 @@ label[i_label,3] = args
       if (name_index[type]==1)
         name = sprintf("%s", type_name(type))
       else
-        name = sprintf("%s%i", type_name(type), name_index[type]);
+        name = sprintf("%s_%i", type_name(type), name_index[type]);
 
       i_label++;
       label[i_label,1] = name;

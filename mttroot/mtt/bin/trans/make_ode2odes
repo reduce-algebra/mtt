@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.61  2001/08/01 04:06:07  geraint
+## Added -i dassl for -cc and -oct.
+##
 ## Revision 1.60  2001/07/16 22:23:00  geraint
 ## Fixed misleading variable name in .cc rep.
 ##
@@ -635,7 +638,7 @@ DEFUN_DLD (mtt_residual, args, , "mtt_residual")
 
     U.insert (u,0);
     if (MTTNYZ > 0)
-      U.insert (ui,MTTNX);
+      U.insert (ui,MTTNU);
 
 #ifdef STANDALONE
     dx = F${sys}_${ode} (x,U,t,par);

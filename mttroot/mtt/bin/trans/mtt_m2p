@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.41  2000/04/18 10:13:43  peterg
+## Getargs now after numpar file
+##
 ## Revision 1.40  2000/04/07 19:09:04  peterg
 ## New smxa and smxax reps
 ##
@@ -271,8 +274,8 @@ Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
 	echo "    mttSTEPFACTOR,mttWSTEPS,mttSTEPS,mttINPUT : INTEGER;"
 	## echo "    mttMETHOD : IntegrationMethod;"
 	echo "    MTTopen  : StateVector;"
-	echo "    mtt_parameters  : ARRAY[1..MTT_MaxParameters] OF REAL;"
-	echo "    mtt_n_parameters  : INTEGER;"
+	echo "    mttpar  : ARRAY[1..MTT_MaxParameters] OF REAL;"
+	echo "    mttnpar  : INTEGER;"
 	echo ""
         ;;
     switchopen)

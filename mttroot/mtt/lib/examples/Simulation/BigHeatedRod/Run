@@ -8,6 +8,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/08/15 14:07:11  peterg
+## Don't do ImplicitL
+##
 ## Revision 1.1  1998/08/15 13:58:27  peterg
 ## Initial revision
 ##
@@ -25,11 +28,18 @@ if [ -z "$DT" ]; then
     echo "Second argument is DT: the sample interval (eg 0.25)"
     exit
 fi
+if [ -z "$3" ]; then
+    METHODS='ImplicitS Euler Implicit'
+else
+    METHODS=$3
+fi
 
 echo "Running system HR$1 with DT = $DT"
+echo "using methods $METHODS"
 
 #Create the system
 mtt -q rename HR HR$n >/dev/null
+rm -f MTT_work/HR$1_state.* #Why ??
 
 # Is it already correct?
 count=`grep -c "*$n" HR$1_abg.fig`
@@ -51,35 +61,42 @@ if [ "$count" = "0" ]; then
    sed "s/0.0/c_t*t_0/"<HR$1_state.old >HR$1_state.txt
 fi
 
-echo Computing  STEPFACTOR
-mtt -q HR$n numpar m
-mtt -q HR$n sm m
 
 
-# What is the minimum step size for Euler? (and for sparse method)
-octave -q <<EOF >HR$1.tmp1
-  HR$1_numpar;
-  A=HR$1_sm;
-  Max_Eig=max(eig(-A))
-  STEPFACTOR=ceil( Max_Eig*$DT/2 )
-  SparseSTEPFACTOR=5*$n # Emiprical!!
-EOF
 
-MinSTEPFACTOR=`awk '{if ($1=="STEPFACTOR") print $3}' HR$1.tmp1`
-SparseSTEPFACTOR=`awk '{if ($1=="SparseSTEPFACTOR") print $3}' HR$1.tmp1`
+
 
 rm -f HR$1_table.txt
 
-#Set the methods of interest
-METHODS='ImplicitS Euler Implicit'
+#Do the methods of interest
 
 for METHOD in $METHODS; do
 
 case $METHOD in
     Euler)
-		STEPFACTOR=$MinSTEPFACTOR
+    # What is the minimum step size for Euler?
+    mtt -q HR$n numpar m
+    mtt -q HR$n sm m
+octave -q <<EOF >HR$1.tmp1
+    HR$1_numpar;
+    A=HR$1_sm;
+    Max_Eig=max(eig(-A))
+    STEPFACTOR=ceil( Max_Eig*$DT/2 )
+EOF
+    MinSTEPFACTOR=`awk '{if ($1=="STEPFACTOR") print $3}' HR$1.tmp1`
+    STEPFACTOR=$MinSTEPFACTOR
 	;;
     ImplicitS)
+    # What is the empirical step size for sparse method?
+    octave -q <<EOF >HR$1.tmp1
+    if $n>100 
+      SparseSTEPFACTOR=10*$n
+    else
+      SparseSTEPFACTOR=5*$n
+    endif
+EOF
+     SparseSTEPFACTOR=`awk '{if ($1=="SparseSTEPFACTOR") print $3}' HR$1.tmp1`
+
 		STEPFACTOR=$SparseSTEPFACTOR
 	;;
     *)
@@ -89,6 +106,8 @@ esac
 
 
   echo "Doing HR$1 with DT=$DT using $METHOD (STEPFACTOR = $STEPFACTOR)"
+
+  # Modify the simpar.txt files
   grep -v 'STEPFACTOR' HR_simpar.txt | grep -v 'METHOD' | grep -v 'DT' > HR$1_simpar.txt
   echo "STEPFACTOR = $STEPFACTOR; # Added automatically" >>HR$1_simpar.txt
   echo "METHOD = $METHOD;         # Added automatically" >>HR$1_simpar.txt

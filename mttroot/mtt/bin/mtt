@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.24  1996/08/30 18:37:17  peter
+## inor changes.
+##
 ## Revision 1.23  1996/08/30 11:10:37  peter
 ## More files in clean up.
 ##
@@ -298,8 +301,7 @@ $1_simp.r:
         )> $1_simp.r
 
 $1_numpar.m: $1_sympar.r
-	mknumpar $1; matlab_tidy $1_numpar.m;
-	mv $1_numpar.m junk; cat $MTTPATH/trans/m/rcs_header.txt junk>$1_numpar.m
+	sympar2numpar_r2m $1
 
 $1_input.m:
 	echo Creating $1_input.m
@@ -576,7 +578,7 @@ $1_rep.html: $1_rep.dvi
 RCS:
 	echo Creating RCS
 	mkdir RCS
-$1_$2.vc: RCS $1_$2.$VCext 
+$1_$2.vc: RCS 
 	echo Version control on $1_$2.$VCext
 	ci -I $1_$2.$VCext </dev/tty  ; co -l $1_$2.$VCext 
 

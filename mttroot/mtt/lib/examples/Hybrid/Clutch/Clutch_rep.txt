@@ -5,14 +5,21 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/02/21 08:18:25  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-mtt  -o Clutch abg tex
-mtt  -o Clutch struc tex
-mtt  -o Clutch ode tex
-mtt  -o Clutch dm tex
+mtt  Clutch abg tex
+mtt  Clutch struc tex
+mtt  Clutch ode tex
+mtt  Clutch dm tex
 
-mtt  -o Clutch simpar.txt
-mtt  -o Clutch imput.txt
-mtt  -o Clutch odeso ps
+mtt  Clutch simpar txt
+mtt  Clutch input txt
+mtt  Clutch logic txt
+mtt  Clutch numpar txt
 
+mtt  -c  Clutch odeso ps
+
+mtt  Clutch rep txt

@@ -7,6 +7,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1999/12/21 09:24:26  peterg
+## Euler integration - compiled
+##
 ## Revision 1.3  1999/03/02 22:19:22  peterg
 ## Added switch rep
 ##
@@ -34,4 +37,7 @@ mtt Weirs switch txt	        # The system switches
 mtt Weirs simpar tex		# Simulation parameters
 mtt Weirs numpar tex		# Numerical simulation parameters
 mtt Weirs input tex		# Simulation input
-mtt -c -i euler Weirs odeso ps		# Simulation output
+mtt Weirs logic tex		# Switch logic
+mtt -c Weirs odeso ps		# Simulation output
+
+mtt Weirs rep txt

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  2000/09/02 15:55:11  peterg
+## Now doesn't include def files in da files
+##
 ## Revision 1.2  2000/09/01 13:36:15  peterg
 ## Added -partition option
 ##
@@ -174,7 +177,7 @@ if [ -n "$partition" ]; then
   rm -f mtt_junk
   # Now for the subsystems
   # Find subsystems
-  subsystems=`sh rc2_type.sh 'echo ' ' ' | awk '{if (NR>1) print $2}'`
+  subsystems=`mtt_get_subsystems $1`
 
   for subsystem in $subsystems; do
   echo Doing $subsystem
@@ -211,6 +214,8 @@ if [ -n "$partition" ]; then
 EOF
   echo >> $1_dae.r
   echo %Connections for subsystem $subsystem  >> $1_dae.r
+  echo >> $1_dae.r
+
   cat mtt_junk >> $1_dae.r
   rm -rf mtt_junk
   done

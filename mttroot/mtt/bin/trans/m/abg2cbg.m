@@ -17,6 +17,10 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.13  1996/12/31 11:49:09  peterg
+% %% Don't copy port bond causality if already set -- allows subsystem
+% %% causality to be preset directely on named SS.
+% %%
 % %% Revision 1.12  1996/12/31 11:42:36  peterg
 % %% *** empty log message ***
 % %%
@@ -157,7 +161,7 @@ ci_index=1;
 
 while( ci_index>0)
   old_done = inf;
-  % Inner loop propogates causality
+  % Inner loop propagates causality
   while done~=old_done
     disp(sprintf('Causality is %3.0f%s complete.', done, pc));
     old_done = done;
@@ -232,27 +236,30 @@ while( ci_index>0)
 end;
 
 % Print final causality
-final_done =  (sum(status==zeros(n_components,1))/n_components)*100;;
-mtt_info(sprintf('Final causality of %s is %3.0f%s complete.', ...
-                  full_name, final_done, pc), infofile);
+final_done =  (sum(status==zeros(n_components,1))/n_components)*100;
 
-% List overcausal bonds
-[over_causal_bonds,n] = getindex(status,1);
-if n>0
-  for i=over_causal_bonds'
-    eval([ '[comp_type,name] = ', system_type, '_cmp(i);' ]);
-    mtt_info(sprintf('Component %s (%s) is overcausal', name, comp_type), ...
-      infofile);
+if at_top_level
+  mtt_info(sprintf('Final causality of %s is %3.0f%s complete.', ...
+      full_name, final_done, pc), infofile);
+
+  % List overcausal bonds
+  [over_causal_bonds,n] = getindex(status,1);
+  if n>0
+    for i=over_causal_bonds'
+      eval([ '[comp_type,name] = ', system_type, '_cmp(i);' ]);
+      mtt_info(sprintf('Component %s (%s) is overcausal', name, comp_type), ...
+	  infofile);
+    end;
   end;
-end;
-
-% List undercausal bonds
-[under_causal_bonds,n] = getindex(status,-1);
-if n>0
-  for i=under_causal_bonds'
-    eval([ '[comp_type,name] = ', system_type, '_cmp(i);' ]);
-    mtt_info(sprintf('Component %s (%s) is undercausal', name, comp_type), ...
-      infofile);
+  
+  % List undercausal bonds
+  [under_causal_bonds,n] = getindex(status,-1);
+  if n>0
+    for i=under_causal_bonds'
+      eval([ '[comp_type,name] = ', system_type, '_cmp(i);' ]);
+      mtt_info(sprintf('Component %s (%s) is undercausal', name, comp_type), ...
+	  infofile);
+    end;
   end;
 end;
 

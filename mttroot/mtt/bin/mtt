@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.76  1997/05/15  09:43:46  peterg
+# New version of _input.txt for -s option
+#
 # Revision 1.75  1997/05/15  09:15:54  peterg
 # Included switch.c in dependancy list for _input.c (when -s switch set)
 #
@@ -268,6 +271,9 @@
 ## Initial revision
 ##
 ###############################################################
+
+#Useful strings
+bs='\0134'
 
 # MTT recursion level is zero unless explicitly set
 level=0
@@ -670,7 +676,7 @@ $1_simp.r:
 
 #SUMMARY numpar	numerical parameter declaration (txt) -- default
 $1_numpar.txt:
-	sympar2numpar_txt2txt $1
+	mtt -q $1 sympar txt; mtt -q $1 struc txt; sympar2numpar_txt2txt $1
 
 #SUMMARY numpar	numerical parameter declaration (m) 
 $1_numpar.m:  $1_numpar.txt $1_sympar.txt
@@ -706,10 +712,19 @@ $1_input.c:  $1_input.txt $1_sympar.c $1_switch.c
 	input_txt2c -s $1
 endif
 
-
+#SUMMARY desc Verbal description of system (tex)
+$1_desc.tex:
+	echo Creating $1_desc.tex
+	( \
+	echo "%% Verbal description file for system $1 ($1_desc.tex)" ;\
+	echo "The acausal bond graph of system $bs""textbf{$1} is" ;\
+	echo "displayed in Figure $bs""Ref{$1_abg} and its label" ;\
+	echo "file is listed in Section $bs""Ref{sec:$1_lbl}." ;\
+	echo "The subsystems are listed in Section $bs""Ref{sec:$1""_sub}." ;\
+	) > $1_desc.tex
 
 #SUMMARY odes ODE simulation header file (h)
- $1_odes.h: 
+$1_odes.h: 
 	echo Creating $1_odes.h
 	( \
 	echo '/*'; \
@@ -719,7 +734,7 @@ endif
 	echo '#define DT 0.1 /* Time step (for printing) */'; \
 	echo '#define LAST 10.0 /* Last time */'; \
 	echo '#define STEPFACTOR 1000 /* Integration steps per time step */'; \
-        )> $1_odes.h
+	)> $1_odes.h
 
 #SUMMARY smss SM simulation header file (h)
  $1_sms.h: 
@@ -732,7 +747,7 @@ endif
 	echo '#define DT 0.1 /* Time step (for printing) */'; \
 	echo '#define LAST 10.0 /* Last time */'; \
 	echo '#define STEPFACTOR 1 /* Integration steps per time step */'; \
-        )> $1_sms.h
+	)> $1_sms.h
 
 #SUMMARY params	symbolic parameter setting (r)
  $1_params.r: 
@@ -782,10 +797,15 @@ $1_sabg.fig: $1_rbg.m
 
 
 #Subsystem creation commands
+#SUMMARY sub Executable subsystem list (sh)
 $1_sub.sh: $1_cmp.m
 	cmp2sub_m2sh $1
 
-    #SUMMARY abg	acausal bond graph (m)
+#SUMMARY sub LaTeX subsystem list (tex)
+$1_sub.tex: $1_sub.sh
+	sub_sh2tex -l $1
+
+#SUMMARY abg	acausal bond graph (m)
 #Raw bond graph to acausal bond graph: mfile
 $1_abg.m: $1_rbg.m $1_sub.sh
 	sh $1_sub.sh "mtt -q -l $level+1 " ' abg m'
@@ -1124,11 +1144,14 @@ $1_$2.dat: $1_$2.m
 	m2dat $1_$2
 
 #Generic conversion of data files from dat to (gplot) gdat format
-$1_$2.gdat: $1_$2.dat
-	dat2gdat $1_$2
+$1_$2.gdat: $1_$2.dat $1_args.m
+	dat2gdat $1_$2 
 
 #Generic conversion of Latex to latex document
-$1_$2.doc: $1_$2.tex
+mtt.sty:
+	echo Copying mtt.sty to here
+	cp $MTTPATH/trans/mtt.sty .
+$1_$2.doc: $1_$2.tex mtt.sty
 	makedoc $1 $2
 
 #Generic conversion of LaTeX doc to dvi
@@ -1191,12 +1214,12 @@ $1_$2.pview: $1_$2.ps
 $1_$2.dview: $1_$2.gdat
 	echo Creating view of $1_$2
 	gdat2view $1_$2 '$ARGS'&
-	
+
 #View a tex file
 $1_$2.tview: $1_$2.dvi
 	echo Creating view of $1_$2
 	$DVIVIEW $1_$2.dvi&
-	
+
 #Report generation
 $1_rep.make: $1_rep.txt $1_args.m
 	rep_txt2make $1
@@ -1205,6 +1228,9 @@ $1_rep.tex: $1_rep.make
 	cat $1_rep.make | sh
 	rep_txt2tex $1;
 
+#SUMMARY abg Acausal bond graph report (tex)
+$1_abg.tex: $1_sub.sh
+	abg2tex $1
 
 # Version control system - uses RCS
 RCS:

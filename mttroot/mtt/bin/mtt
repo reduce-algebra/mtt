@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.322  2001/08/01 04:06:07  geraint
+## Added -i dassl for -cc and -oct.
+##
 ## Revision 1.321  2001/07/27 23:43:34  geraint
 ## Added -cc to usage options (required for use with xmtt).
 ##
@@ -2356,8 +2359,9 @@ $1_ode2odes_dassl.oct	: $1_ode.oct	$1_odeo.oct	mtt_dassl.oct
 	@echo > /dev/null
 
 mtt_Solver.cc:	mtt_Solver.hh
-$1_ode2odes_${algebraic_solver}.cc:	mtt_Solver.cc mtt_${algebraic_solver}.hh mtt_${algebraic_solver}.cc
-$1_ode2odes_${algebraic_solver}.o:	mtt_Solver.o mtt_${algebraic_solver}.o
+mtt_AlgebraicSolver.cc: mtt_AlgebraicSolver.hh
+$1_ode2odes_${algebraic_solver}.cc:	mtt_Solver.cc mtt_AlgebraicSolver.cc mtt_${algebraic_solver}.hh mtt_${algebraic_solver}.cc
+$1_ode2odes_${algebraic_solver}.o:	mtt_Solver.o  mtt_AlgebraicSolver.o  mtt_${algebraic_solver}.o
 	@echo "Creating $1_ode2odes_${algebraic_solver}.o"
 	ar -cr \$@ \$^
 
@@ -2703,11 +2707,12 @@ $1_ode2odes.o: $1_ode2odes.cc $1_ode2odes_common.o $1_ode2odes_${integration_met
 $1_ode2odes.oct: $1_ode2odes.cc $1_ode2odes_common.oct $1_ode2odes_${integration_method}.oct $1_ode2odes_${algebraic_solver}.o
 	touch $1_ode2odes.m
 	echo Creating $1_ode2odes.oct
-	$MKOCTFILE $1_ode2odes.cc mtt_${algebraic_solver}.cc mtt_Solver.cc
+	$MKOCTFILE $1_ode2odes.cc mtt_${algebraic_solver}.cc mtt_Solver.cc mtt_AlgebraicSolver.cc
 
 $1_ode2odes.cc: $1_def.r $1_sympars.txt\
 		$1_ode2odes_common.m $1_ode2odes_common.cc\
-		$1_ode2odes_${integration_method}.m $1_ode2odes_${integration_method}.cc mtt_Solver.cc mtt_${algebraic_solver}.cc mtt_${algebraic_solver}.hh
+		$1_ode2odes_${integration_method}.m $1_ode2odes_${integration_method}.cc\
+		mtt_Solver.cc mtt_AlgebraicSolver.cc mtt_${algebraic_solver}.cc mtt_${algebraic_solver}.hh
 	touch $1_ode2odes.m
 	make_ode2odes $1 cc $integration_method $algebraic_solver
 

@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.63  2001/08/07 04:39:24  geraint
+## Consolidated dassl and residual functions.
+##
 ## Revision 1.62  2001/08/01 22:14:32  geraint
 ## Bug fix for dassl.
 ##
@@ -537,7 +540,7 @@ mtt_input (ColumnVector &x,
 	   const double &t,
 	   ColumnVector &par)
 {
-  static ${algebraic_solver} ae(mtt_ae,MTTNPAR,MTTNU,MTTNX,MTTNY,MTTNYZ);
+  static MTT::${algebraic_solver} ae(MTTNPAR,MTTNU,MTTNX,MTTNY,MTTNYZ);
   static ColumnVector u  (MTTNU);
 
 #ifdef STANDALONE

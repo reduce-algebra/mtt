@@ -3,18 +3,27 @@
 
 // http://www.netlib.org/minpack/hybrd.f
 // used by Octave's fsolve
-  
-Hybrd_Solver *Hybrd_Solver::static_ptr;
+
+MTT::Hybrd_Solver *MTT::Hybrd_Solver::static_ptr;
+
+MTT::Hybrd_Solver (const int npar,
+		   const int nu,
+		   const int nx,
+		   const int ny,
+		   const int nyz)
+{
+  static_ptr = this;
+}
 
 ColumnVector
-Hybrd_Solver::f_hybrd (const ColumnVector &tryUi)
+MTT::Hybrd_Solver::f_hybrd (const ColumnVector &tryUi)
 {
-  Hybrd_Solver::static_ptr->_yz = Hybrd_Solver::static_ptr->eval(tryUi);
-  return Hybrd_Solver::static_ptr->_yz;
+  MTT::Hybrd_Solver::static_ptr->_yz = MTT::Hybrd_Solver::static_ptr->eval(tryUi);
+  return MTT::Hybrd_Solver::static_ptr->_yz;
 }
 
 void
-Hybrd_Solver::Solve (void)
+MTT::Hybrd_Solver::Solve (void)
 {    
   int info;
   static int input_errors;
@@ -64,4 +73,3 @@ Hybrd_Solver::Solve (void)
 		<< "  (max error = " << std::abs(eval(_ui).max()) << ")" << std::endl;
     }
 }
-

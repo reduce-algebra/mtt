@@ -1,38 +1,43 @@
 
-#include "mtt_Solver.hh"
+#ifndef MTT_HYBRDSOLVER
+#define MTT_HYBRDSOLVER
+
+
 #include <octave/NLEqn.h>
+#include "mtt_AlgebraicSolver.hh"
 
-class Hybrd_Solver : public Solver {
 
-  // http://www.netlib.org/minpack/hybrd.f
-  // used by Octave's fsolve
-  
-public:
-
-  Hybrd_Solver (sys_ae ae,
-		const int npar,
-		const int nu,
-		const int nx,
-		const int ny,
-		const int nyz)
-  : Solver (ae,npar,nu,nx,ny,nyz)
+namespace MTT
+{
+  class Hybrd_Solver : public MTT::AlgebraicSolver
   {
-    static_ptr = this;
-  }
+    // http://www.netlib.org/minpack/hybrd.f
+    // used by Octave's fsolve
+    
+  public:
 
-  static ColumnVector
-  f_hybrd (const ColumnVector &tryUi);
+    Hybrd_Solver (const int npar,
+		  const int nu,
+		  const int nx,
+		  const int ny,
+		  const int nyz)
+      : MTT::AlgebraicSolver (npar,nu,nx,ny,nyz);
 
-  ~Hybrd_Solver (void) {};
+    static ColumnVector
+    f_hybrd (const ColumnVector &tryUi);
 
-protected:
+    ~Hybrd_Solver (void) {};
 
-  void
-  Solve (void);
+  protected:
 
-public:
+    void
+    Solve (void);
+    
+  public:
+    
+    static Hybrd_Solver *static_ptr;
+  };
+}
 
-  static Hybrd_Solver *static_ptr;
 
-};
-
+#endif // MTT_HYBRDSOLVER

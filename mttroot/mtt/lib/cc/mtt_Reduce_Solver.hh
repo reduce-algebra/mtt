@@ -1,33 +1,41 @@
 
-#include "mtt_Solver.hh"
+#ifndef MTT_REDUCESOLVER
+#define MTT_REDUCESOLVER
 
-class Reduce_Solver : public Solver {
 
-  // Dummy class
-  // This will not be used unless the Reduce solver has failed earlier
-  // in the model build process
+#include "mtt_AlgebraicSolver.hh"
 
-public:
 
-  Reduce_Solver (sys_ae ae,
-		 const int npar,
-		 const int nu,
-		 const int nx,
-		 const int ny,
-		 const int nyz)
-    : Solver (ae,npar,nu,nx,ny,nyz)
-  { ; };
+namespace MTT
+{
+  class Reduce_Solver : public MTT::AlgebraicSolver
+  {
+    // Dummy class
+    // This will not be used unless the Reduce solver has failed earlier
+    // in the model build process
+
+  public:
+    
+    Reduce_Solver (const int npar,
+		   const int nu,
+		   const int nx,
+		   const int ny,
+		   const int nyz)
+      : AlgebraicSolver (npar,nu,nx,ny,nyz)
+    {;}
 	
-  void
-  Solve (void);
+    void
+    Solve (void);
+    
+    ColumnVector
+    solve (const ColumnVector	&x,
+	   const ColumnVector	&u,
+	   const double		&t,
+	   const ColumnVector	&par);
+    
+    ~Reduce_Solver (void) {};
+  };
+}
 
-  ColumnVector
-  solve (const ColumnVector	&x,
-	 const ColumnVector	&u,
-	 const double		&t,
-	 const ColumnVector	&par);
 
-  ~Reduce_Solver (void) {};
-
-};
-   
+#endif // MTT_REDUCESOLVER 

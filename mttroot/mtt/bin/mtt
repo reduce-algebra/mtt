@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.139  1998/03/07 16:04:23  peterg
+## Added some more txt view reps: input, lbl, numpar, state
+##
 ## Revision 1.138  1998/03/07 15:23:40  peterg
 ## Uses sort_sympar to uniquely produce the sympar list.
 ##
@@ -1099,6 +1102,15 @@ $1_simp.r:
 	echo 'END;'; \
         )> $1_simp.r
 
+#SUMMARY subs  algebraic substitution (r)
+$1_subs.r:
+	echo Creating $1_subs.r
+	( \
+	echo "%% Reduce  substitution statements for system $1 ($1_subs.r)"; \
+	cat $MTTPATH/trans/m/rcs_header.txt; \
+	echo 'END;'; \
+        )> $1_subs.r
+
 #SUMMARY simpar	simulation information (txt)
 $1_simpar.txt:
 	echo Creating $1_simpar.txt
@@ -1315,7 +1327,7 @@ $1_def.m: $1_def.r
 #Differential-algebraic equations
 $1_rdae.r: $1_ese.r $1_def.r
 	ese2rdae_r $1; tidy $1_rdae.r
-$1_dae.r: $1_cr.r $1_rdae.r $1_def.r
+$1_dae.r: $1_cr.r $1_rdae.r $1_def.r $1_subs.r
 	rdae2dae_r $1; tidy $1_dae.r
 $1_dae.m: $1_def.r $1_dae.r  $1_sympar.r 
 	dae_r2m $1; matlab_tidy $1_dae.m; matlab_tidy $1_daeo.m
@@ -1576,10 +1588,12 @@ $1_odes.c: $1_ode.c $1_def.r $1_sympar.r
 	ode2odes_r2c $1
 $1_sms.c: $1_sm.c $1_def.r $1_sympar.r
 	sm2sms_r2c $1
+
 ifeq ($computation,octave)
 $1_odes.m: $1_ode.m $1_numpar.m  $1_def.m $1_input.m $1_state.m $1_simpar.m
 	ode2odes_m $1 
 endif
+
 ifeq ($computation,c)
 $1_odes.m: $1_odes.c $1_ode.c $1_numpar.c $1_state.c $1_odes.h\
          $1_sympar.c $1_sympar.h\
@@ -1768,7 +1782,7 @@ $1_$2.hview: $1_$2.html
 #View a ps file
 $1_$2.pview: $1_$2.ps
 	echo Creating view of $1_$2
-	$PSVIEW $1_$2.ps
+	$PSVIEW $1_$2.ps &
 
 #View a gdat file
 $1_$2.dview: $1_$2.gdat

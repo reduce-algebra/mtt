@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.21  2002/08/21 18:11:15  geraint
+## Replaced |x| with |{x}|. LaTeX now renders abs(fractions) correctly.
+##
 ## Revision 1.20  2002/08/20 19:33:21  geraint
 ## Minor bug fixes and enhancements (I hope):
 ##
@@ -89,7 +92,7 @@
 cat $1 | \
 tr "[A-Z]" "[a-z]" | \
 sed \
-    -e "s/_\([a-z0-9,]*\)/_{\1}/g" \
+    -e "s/_\([a-z0-9]*\)/_{\1}/g" \
     -e "s/\// \\\over /g" \
     -e "s/[0-9a-z_]*mtty/mtty/g" \
     -e "s/[0-9a-z_]*mttu/mttu/g" \
@@ -155,6 +158,7 @@ sed \
     -e "s/lambd/\\lambda/g" \
     -e "s/lambda/\\\lambda/g" \
     -e "s/mu/\\\mu/g" \
+    -e "s/nu/\\\nu/g" \
     -e "s/phi/\\\phi/g" \
     -e "s/pi/\\\pi/g" \
     -e "s/rho/\\\rho/g" \

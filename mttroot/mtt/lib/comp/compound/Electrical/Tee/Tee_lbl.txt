@@ -16,6 +16,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/07/16 16:30:41  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:
@@ -33,5 +36,5 @@
 	r_2		lin	flow,r_2
 
 % Component type SS
-	[1]		SS	external,external
-	[2]		SS	external,external
+	[e_1]		SS	external,external
+	[e_2]		SS	external,external

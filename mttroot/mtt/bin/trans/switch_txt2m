@@ -22,8 +22,8 @@ lang_header $1 switch m mttx '[mttxs]' > $1_switch.m
 # This is the main transformation using gawk
 awk '{
   if ($1=="#"){
-    printf("for i=1:%s\n", Nx)
-    printf("  mttxs(i) = mttx(i);\n")
+    printf("for MTTi=1:%s\n", Nx)
+    printf("  mttxs(MTTi) = mttx(MTTi);\n")
     printf("end;\n\n")
   }
   else{

@@ -18,6 +18,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1996/11/06 15:58:46  peterg
+## Changed Matrix to RMATRIX
+##
 # Revision 1.5  1996/11/02  10:16:50  peterg
 # Changed stroke length to 150
 #
@@ -61,7 +64,7 @@ $RMATRIX > cbg_m2fig.log  2>>mtt_error.txt << EOF
           font, green, red);
 EOF
 
-cp $1_$1_cbg.fig $1_cbg.fig 2>> mtt_error.txt
+#cp $1_$1_cbg.fig $1_cbg.fig 2>> mtt_error.txt
 
 # Print errors, if any.
 mtt_error mtt_error.txt

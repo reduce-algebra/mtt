@@ -5,6 +5,9 @@ function makedef(structure,deffile);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1996/08/24 15:06:22  peter
+% %% Write `END;' at end to please reduce.
+% %%
 % %% Revision 1.2  1996/08/18 20:05:20  peter
 % %% Put unded version control
 % %%
@@ -76,6 +79,6 @@ for i=1:nonstates
   fprintf(filenum, 'MTTdz(%1.0f,1) := MTTdz%1.0f;\n', i, i);
 end;
 
-fprintf(filenum, 'END;');
+fprintf(filenum, 'END;\n');
 fclose(filenum);
   

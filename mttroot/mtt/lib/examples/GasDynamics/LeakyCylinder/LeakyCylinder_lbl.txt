@@ -13,6 +13,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/03/04 09:56:05  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:
@@ -30,4 +33,4 @@
 	piston		none	m_p;a_b;a_t;gamma;r;0
 
 % Component type SS
-	shaft		external	external
+	shaft		SS	external,external

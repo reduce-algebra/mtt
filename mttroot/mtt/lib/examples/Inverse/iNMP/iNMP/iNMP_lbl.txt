@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/03/09 00:10:07  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -39,5 +42,5 @@
 	r_s		lin	flow,r_s
 
 % Component type SS
-	e1	SS		external,internal
-	e2	SS		external,0
+	e1	SS		SS	external,internal
+	e2	SS		SS	external,0

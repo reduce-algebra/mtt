@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  2000/05/11 19:32:29  peterg
+## Put in c version + sensitivity computation
+##
 ## Revision 1.1  2000/04/08 10:43:26  peterg
 ## Initial revision
 ##
@@ -48,35 +51,54 @@ Ny=`mtt_getsize $Sys y` # Inputs
 Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
 
 # Header
-lang_header -noglobals $1 sim m 'x0,u,t,par,sensitivities' '[y,x]' > $1_sim.m
+lang_header -noglobals $1 sim m 'x0,u,t,par,sensitivities' '[y,ys]' > $1_sim.m
 
 cat >> $1_sim.m <<EOF
+##  tick=time; 
   if nargin<5
     sensitivities = [];
   endif;
 
-  ## Initialise
-  [ui]  = zero_input($Nu);	# Zero the input
-  [xi] = x0;	        # Read in initial state
-
   ##Sizes
   N = length(t);
+  [n_u,N_u] = size(u);
 
-  ## Initialise  arrays   
-  x = zeros($Nx,N);
-  y = zeros($Ny,N);
+  ## Doing sensitivities (assumes sensitivity system is invoked)
+  doing_sensitivities = (length(sensitivities)>0);
+  if doing_sensitivities
+    n_y = $Ny/2;
+    doing_state=0;
+  else
+    n_y = $Ny;
+    doing_state=(nargout>1);
+  endif;
+
+
+
+  ## Initialise
+  ui = zeros(n_u,1);	# Initial control
+  [xi] = x0;	        # Read in initial state
 
   ## Timing parameters
   first = t(1);
   dt = t(2) - t(1);
-  last = t(length(t))+dt;
+  last = t(length(t));
   n_sens = length(sensitivities);
 EOF
 
 if [ "$computation" = "c" ]; then
 cat >> $1_sim.m <<EOF
+  ## Create the system input file
+  t1 = [0:N_u-1]*dt; # Create time vector from zero (to fit u);
+  ut = [t1' u'];
+##  tick1=time;
+  save -ascii $1_input.dat ut 
+##  save_time = time-tick1
+
+  ##system("strip_comments <mtt_junk.dat >mtt_u.dat;"); #Strip the leading comments
 
   ## Create the command string
+##  tick1=time;
   command = "";
   for sensitivity_index = [0 sensitivities]
     args = "";
@@ -87,11 +109,16 @@ cat >> $1_sim.m <<EOF
     par(sensitivities) = zeros(1,n_sens);
     if sensitivity_index>0
       par(sensitivity_index) = 1;
-      i_1 = $Ny/2 + 2;
+      i_1 = 2+n_y;
     else
       i_1 = 2;
     endif;
-    i_2 = i_1 + $Ny/2 -1;
+ 
+    if doing_state
+      i_2 = i_1 + n_y + $Nx;
+    else
+      i_2 = i_1 + n_y -1;
+    endif;
 
     for i=1:$Npar
       args = sprintf("%s %g", args, par(i));
@@ -99,18 +126,32 @@ cat >> $1_sim.m <<EOF
 
     args = sprintf("%s %g %g %g", args, first, dt, last);
   
-    command = sprintf("%s ./$1_ode2odes.out %s | cut -f %i-%i;", command, args, i_1, i_2);
+    command = sprintf("%s ./$1_ode2odes.out< $1_input.dat %s | cut -f %i-%i;", command, args, i_1, i_2);
   endfor;
+##  string_time = time-tick1
 
-command
   ## And execute it ...
+##  tick1=time;
   yy=str2num(system(command));
-  
-  [Ny,My] = size(yy);
-  ## Reshape
+##  command_time = time-tick1
+  [N_yy,M_yy] = size(yy);
 
-  Ny/N,N
-  y = reshape(yy',N,Ny/N)';  
+  ## Reshape
+  yy = reshape(yy,N,M_yy*(1+n_sens))';  
+  y = yy(1:n_y,:);              # Output
+
+  if doing_sensitivities
+    i_1 = n_y+1;
+    i_2 = i_1 + n_y*n_sens - 1;
+    ys = yy(i_1:i_2,:);		# sensitivity
+  endif;
+  if doing_state
+    i_1 = n_y+2;
+    i_2 = i_1 + $Nx - 1;
+    ys = yy(i_1:i_2,:);		# state
+  endif;
+
+##  sim_time = time-tick
 endfunction
 
 EOF

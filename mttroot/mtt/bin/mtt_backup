@@ -1,0 +1,31 @@
+#!/bin/sh
+# Does a backup with date of selected files.
+
+#Name of archive
+filename=`date | awk '{printf("mtt_%s%s_%s.tgz\n", $2,$3,$6)}'`
+echo Backup file $filename
+
+#Files to backup
+dir="mtt"
+
+#Check whether archive exists here
+if [ -f "$filename" ]; then
+    echo File $filename already exists - exiting
+    exit    
+fi
+
+# Listing files to ignore
+echo Finding irrelevant files
+find $dir -name '*.*' -print |\
+  grep 'dvi$\|ps$\|pdf$\|html$\|info$\|gif$\|log$\|MTT_work\|core\|~$' >IGNORE
+wc IGNORE | awk '{print "Ignoring", $1, "files"}'
+
+#Inform user
+echo Backing up $dir to $filename
+
+#Tar the files
+tar --exclude-from IGNORE --create --gzip --file $filename $dir
+
+#Size info
+ls -l $filename
+#

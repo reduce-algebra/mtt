@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.60  2004/06/21 16:05:58  gawthrop
+## Zapped comment that causes
+##
 ## Revision 1.59  2004/06/20 13:53:06  gawthrop
 ## Initialise for numpar as well
 ##
@@ -623,15 +626,19 @@ for name in $zeromatrices; do
 	    
     esac
 
-    if [ "${language}" = "oct" ]; then
-      if [ "$M" = "1" ]; then
-        echo "   mtt$name = zeros($N);"
-      else
-        echo "   mtt$name = zeros($N,$M);"
-      fi
-    else
-      echo "   mtt$name = zeros($N,$M);"
-    fi
+    case ${language} in
+	m)
+          echo "   mtt$name = zeros($N,$M);"	
+	;;
+	oct)
+	    if [ "$M" = "1" ]; then
+		echo "   mtt$name = zeros($N);"
+	    else
+		echo "   mtt$name = zeros($N,$M);"
+	    fi
+	    ;;
+        *)
+    esac
 done
 }
 
@@ -748,6 +755,7 @@ fi
 if [ "$declareswitches" = "yes" ]; then
   declare_switches
 fi
+
 
 zero_matrices;
 

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.147  1998/04/15 18:41:47  peterg
+## Fixed various probs with multiple systems in one directory
+##
 ## Revision 1.146  1998/04/04 11:00:20  peterg
 ## Modified various parts to allow coercing directions at ports
 ##
@@ -1372,7 +1375,7 @@ $1_cbg.fig: $1_cbg.m $1_rbg.m $1_fig.fig $1_type.sh
 #SUMMARY struc	structure - list of inputs, outputs and states (view)
 #Elementary system equations + definitions
 $1_ese.r: $1_cbg.m
-	   cbg2ese_m2r $1
+	   cbg2ese_m2r $1; ese_tidy $1
 $1_def.r: $1_ese.r
 	touch $1_def.r
 $1_struc.txt: $1_ese.r

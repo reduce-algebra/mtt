@@ -16,6 +16,9 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.6  2001/10/15 14:29:50  gawthrop
+@comment  Added documentaton on  [1:N] style port labels
+@comment
 @comment  Revision 1.5  2001/07/23 03:35:29  geraint
 @comment  Updated file structure (mtt/bin).
 @comment
@@ -2821,12 +2824,26 @@ R:r
 @end example
 @item type:label:cr
 Not only are the type and the label of the component given, but also the
-component cr. The type must be
+component cr argument. The type must be
 a valid name (@pxref{Valid names}.The name provides a link to more
 information to be found in @xref{Labels (lbl)}. For example:
 @example
 R:r:flow,r
 @end example
+@item type:label:expression
+Expression is a mathematical expression relating the effort (called
+mtt_e) to the flow (called mtt_f).
+For example the following three forms are equivalent
+@example
+R:r:mtt_e=r*mtt_f
+R:r:mtt_e-r*mtt_f=0
+R:r:mtt_f=mtt_e/r
+@end example
+A non-linear example is:
+@example
+R:r:mtt_e = sin(mtt_f)
+@end example
+
 @item type*n
 The name, together with the number @samp{n} of repetitions of the
 component, are given. This repetition only makes sense if the component
@@ -3259,6 +3276,7 @@ and the label file (@pxref{Labels (lbl)}) and generates the rbg
 label file.
 It also generates a file sys_fig.fig containing details of the bond
 graph with the components removed.
+
 
 @node Language m (abg.m), Language tex (abg.tex), Language m (rbg.m), Acausal bond graph (abg)
 @comment  node-name,  next,  previous,  up
@@ -4524,6 +4542,9 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.6  2001/10/15 14:29:50  gawthrop
+# %% Added documentaton on  [1:N] style port labels
+# %%
 # %% Revision 1.5  2001/07/23 03:35:29  geraint
 # %% Updated file structure (mtt/bin).
 # %%
@@ -5559,12 +5580,10 @@ If @strong{MTT} does not recognise a component (eg named MyComponent) as
 a simple component (@pxref{Simple components}) or as already existing,
 it searches the library search path $MTT_COMPONENTS
 (@pxref{$MTT_COMPONENTS}) for a directory called MyComponent containing
-MyComponent_abg.fig. It then copies the @emph{entire} directory into the
+MyComponent_lbl.txt. It then copies the @emph{entire} directory into the
 current working directory. Thus, for example, the directory could
-contain MyComponent_desc.tex MyComponent_lbl.txt and MyComponent_cr.r in
-addition to MyComponent_abg.fig.
-
-
+contain MyComponent_desc.tex MyComponent_abg.fig MyComponent_lbl.txt and MyComponent_cr.r in
+addition to MyComponent_lbl.txt.
 
 @c      node   next  prev  up
 @node   Languages, Language tools, Extending MTT, Top
@@ -6115,4 +6134,5 @@ listed directories is a subdirectory of @file{/usr/local}. The directory
 @contents
 
 @bye
+
 

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.61  1997/03/20  16:53:01  peterg
+# Generates c files using include statements.
+#
 # Revision 1.60  1997/03/20  10:25:41  peterg
 # Generates a compehensive default params file.
 #
@@ -615,8 +618,9 @@ $1_input.c:
 	echo '*/'; \
 	cat $MTTPATH/trans/rcs_header.c; \
 	echo; \
-	echo "/* Change the following lines as you wish */"; \
         echo '{'; \
+        echo "#include \"$1_sympar.c\""; \
+	echo "/* Change the following lines as you wish */"; \
         echo '  extern double u;'; \
 	echo '};'; \
         )> $1_input.c

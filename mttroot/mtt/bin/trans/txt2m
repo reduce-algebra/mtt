@@ -15,6 +15,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.15  1999/02/16 21:44:38  peterg
+# %% Revised smx generation
+# %%
 # %% Revision 1.14  1999/02/16 04:38:22  peterg
 # %% Now forces creation of _smx file if METHOD=IMPLICIT in simpar.txt
 # %%
@@ -76,7 +79,7 @@ if [ "$representation" = "state" ]; then
 fi
 if [ "$representation" = "input" ]; then
     name='mttu';
-    arg='(mttx,mttt)'
+    arg='(mttt,mttx,mtty)'
 fi
 if [ "$representation" = "simpar" ]; then
     # Check if implicit method and generate xmx.m if

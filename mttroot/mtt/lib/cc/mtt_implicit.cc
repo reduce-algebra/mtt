@@ -49,7 +49,7 @@ DEFUN_DLD (mtt_implicit, args, ,
 	}
     }
 
-  x = static_cast<ColumnVector> (xleftdiv (AA, static_cast<Matrix>(AAx + dx * t)));
+  x = static_cast<ColumnVector> (xleftdiv (AA, static_cast<Matrix>(static_cast<ColumnVector>(AAx + dx * t))));
   
   for (row = 0; row < Nx; row++)
     {

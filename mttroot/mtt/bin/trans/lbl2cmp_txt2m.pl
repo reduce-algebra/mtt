@@ -279,7 +279,7 @@ sub write_component() {
     print OUT
 	"if (i == $i)\n" .
 	"\tcomp_type   = '$component_type{$name}';\n" .
-	"\tname        = '$name'\n" .
+	"\tname        = '$name';\n" .
 	"\tcr          = '$component_cr{$name}';\n" .
 	"\targ         = '$component_arg{$name}';\n" .
 	"\trepetitions =  $component_rep{$name} ;\n" .

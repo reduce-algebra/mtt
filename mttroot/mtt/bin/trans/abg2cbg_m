@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.9  1996/11/06  15:49:33  peterg
+# Cahged $MATRIX to $RMATRIX
+#
 # Revision 1.8  1996/08/25  09:31:49  peter
 # More error handling.
 #
@@ -94,36 +97,40 @@
 # P.J.Gawthrop May 1996
 # Copyright (c) P.J.Gawthrop, 1996.
 
-infofile='mtt_info.txt';
+infofile='mtt_info.txt'
+typefile="$1_type.sh"
 
 # Remove the old log file
 rm -f abg2cbg_m.log
 rm -f $1_cbg.m
-rm -f mtt_info.txt
+rm -f $typefile
+rm -f $infofile
 
 
 #Inform user
 echo Creating $1_cbg.m
+echo Creating $1_type.sh
 
 # Use matrix manipulation to accomplish the transformation
 $RMATRIX  >abg2cbg_m.log  2>mtt_error.txt << EOF
 
   infofile= '$infofile';
+  typefile = '$typefile';
+  infofilenum = fopen(infofile,'w');
+  typefilenum = fopen(typefile,'w');
 
   %Convert from acausal to causal bond graph in m-file form.
-  system_name = '$1';
+  system_name='$1'
 
-  % THIS IS A NASTY BUG WORKROUND FOR OCTAVE
-  % abg2cbg('RC','RC' ,'', [], infofile);
-  
   port_bonds = [];
-  [cbonds,status] = abg2cbg(system_name, '', '', port_bonds,infofile);
+  [cbonds,status] = abg2cbg(system_name, '', '', port_bonds, ...
+      typefilenum, infofile);
 
 EOF
 
 cat mtt_info.txt
 
-cp $1_$1_cbg.m $1_cbg.m 2>> mtt_error.txt 
+# cp $1_$1_cbg.m $1_cbg.m 2>> mtt_error.txt 
 
 # Print errors, if any.
 mtt_error mtt_error.txt

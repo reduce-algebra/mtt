@@ -5,6 +5,9 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.20  1997/08/18  19:39:48  peterg
+% %% Now generates (exampaded) port_bond list correctely
+% %%
 % %% Revision 1.19  1997/08/14  11:59:47  peterg
 % %% Vector ports added!!
 % %%
@@ -158,8 +161,16 @@ end;
 % Now do a list of the bonds on each component - unsorted at this stage.
 components = [];
 for i = 1:n_components
+  %Get component type
+  eval(['[comp_type, comp_name] = ', name, '_cmp(i)']);
+
   % There are n_comp_bonds bonds on this component with corresponding index
   [index,n_comp_bonds] = getindex(comp_near_bond,i);
+
+  if index(1,1)==0
+    mtt_info(sprintf("Component %s (%s) has no bonds", comp_name,
+    comp_type),infofile);
+  end;
   
   % Create the signed list of bonds on this component
   one = ones(n_comp_bonds,1);

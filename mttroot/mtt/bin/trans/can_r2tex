@@ -1,0 +1,137 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: sm_r2tex
+# Reduce constrained-state matrices to LaTex constrained-state matrices.
+# P.J.Gawthrop  9 Sep 1991, May 1994
+# Copyright (c) P.J.Gawthrop, 1991, May 1994, 1996.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+# Revision 1.3  1997/06/13  13:50:11  peterg
+# Matrices in amstex format
+#
+# Revision 1.2  1997/04/18  12:54:00  peterg
+# No longer does labels.
+#
+# Revision 1.1  1996/08/19  15:19:23  peter
+# Initial revision
+#
+###############################################################
+
+
+# Inform user
+echo Creating $1_sm.tex
+
+# Remove the old log file
+rm -f sm_r2tex.log
+
+# Use reduce to accomplish the transformation
+reduce >sm_r2tex.log << EOF
+
+%Read the definitions file
+in "$1_def.r";
+
+%Read the constrained-state matrices file
+in "$1_sm.r";
+
+%Read the symbolic parameters file
+in "$1_sympar.r";
+
+%Read the simplification file
+in "$1_simp.r";
+
+
+OFF Echo;
+OFF Nat;
+OFF EXP;
+%ON Rounded;
+%Precision 5;
+
+
+OUT "$1_sm.tex";
+
+%Write out the state matrices.
+write "%state  matrices $1";
+write "%File: $1.rcm";
+write"";
+
+write "%constrained-state matrices";
+
+IF MTTNx>0 THEN
+BEGIN
+write "%  - A matrix";
+write "\begin{equation}";
+write "MTTA = \begin{pmatrix}";
+	FOR Row := 1:MTTNx DO
+	BEGIN
+		FOR Col := 1:MTTNx DO
+		BEGIN
+			Write "{", MTTA(Row,Col), "}";
+			IF Col<MTTNx THEN Write "&"
+		END;
+
+	IF Row<MTTNx THEN Write "\cr";
+	END;
+	Write "\end{pmatrix}";
+write "\end{equation}";
+
+write "%  - B matrix";
+write "\begin{equation}";
+write "MTTB = \begin{pmatrix}";
+	FOR Row := 1:MTTNx DO
+	BEGIN
+		FOR Col := 1:MTTNu DO
+		BEGIN
+			Write "{", MTTB(Row,Col), "}";
+			IF Col<MTTNu THEN Write "&"
+		END;
+
+	IF Row<MTTNx THEN Write "\cr";
+	END;
+	Write "\end{pmatrix}";
+write "\end{equation}";
+
+write "%  - C matrix";
+write "\begin{equation}";
+write "MTTC = \begin{pmatrix}";
+	FOR Row := 1:MTTNy DO
+	BEGIN
+		FOR Col := 1:MTTNx DO
+		BEGIN
+			Write "{", MTTC(Row,Col), "}";
+			IF Col<MTTNx THEN Write "&"
+		END;
+
+	IF Row<MTTNy THEN Write "\cr";
+	END;
+	Write "\end{pmatrix}";
+write "\end{equation}";
+
+END; %Nx>0
+
+write "%  - D matrix";
+write "\begin{equation}";
+write "MTTD = \begin{pmatrix}";
+	FOR Row := 1:MTTNy DO
+	BEGIN
+		FOR Col := 1:MTTNu DO
+		BEGIN
+			Write "{", MTTD(Row,Col), "}";
+			IF Col<MTTNu THEN Write "&"
+		END;
+
+	IF Row<MTTNy THEN Write "\cr";
+	END;
+	Write "\end{pmatrix}";
+write "\end{equation}";
+
+SHUT "$1_sm.tex";
+quit;
+EOF

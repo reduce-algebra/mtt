@@ -26,6 +26,9 @@ function cbg2fig(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.8  1998/04/04 10:45:01  peterg
+% %% Don't do strokes on port bonds
+% %%
 % %% Revision 1.7  1997/08/19 09:49:19  peterg
 % %% Modified to take account of the expanded vector bonds. Only displays
 % %% causality corresponding to the bond connecting the first element of
@@ -95,7 +98,7 @@ full_name_type = [full_name, '_', system_type];
 % $$$ fig_name = [full_name_type, '_cbg.fig'];
 fig_name = [full_name, '_cbg.fig']
  
-% Return if cbg file doesn't exist
+% Return if initial fig file doesn't exist
 if exist(fig_name)~=2
   return
 end;
@@ -105,13 +108,17 @@ filenum = fopen(fig_name, 'a');
 
 % Get the raw and the processed bonds
 eval(['[rbonds,rstrokes,rcomponents] = ', system_type, '_rbg;']);
-eval(['[bonds,components,n_ports] = ', system_type, '_abg;']);
+%eval(['[bonds,components,n_ports] = ', system_type, '_abg;']);
+eval(["ABG = ", system_type, "_abg;"]);
+bonds=ABG.bonds;
 
 % Original number of bonds
 [n_bonds,junk] = size(rbonds);
 
 % Get the causal bonds
-eval(['[cbonds,status]=', full_name, '_cbg;']);
+%eval(['[cbonds,status]=', full_name, '_cbg;']);
+eval(["CBG = ", full_name, "_cbg;"]);
+cbonds=CBG.bonds;
 
 % Check sizes
 [N_components,Columns] = size(rcomponents);
@@ -148,12 +155,12 @@ changed_e = bonds(1:n_bonds,1)~=cbonds(1:n_bonds,1);
 changed_f = bonds(1:n_bonds,2)~=cbonds(1:n_bonds,2);
 changed = changed_e|changed_f;
 % Don't do port bonds
-if n_ports>0
-  port_bonds = sort(abs(components(1:n_ports,1)));
-  changed(port_bonds) = zeros(n_ports,1);
-  changed_e(port_bonds) = zeros(n_ports,1);
-  changed_f(port_bonds) = zeros(n_ports,1);
-end
+#if n_ports>0
+#  port_bonds = sort(abs(components(1:n_ports,1)));
+#  changed(port_bonds) = zeros(n_ports,1);
+#  changed_e(port_bonds) = zeros(n_ports,1);
+#  changed_f(port_bonds) = zeros(n_ports,1);
+#end
 
 index_e  = getindex(changed_e,1)'
 index_f  = getindex(changed_f,1)'
@@ -211,15 +218,15 @@ for i = 1:N_components
   fig_params = rcomponents(i,3:M_components);
   coords = rcomponents(i,1:2);
   
-  if status(i)==-1  %Then under causal
-    fig_params(3) = comp_colour_u;
-    fig_params(6) = comp_font;
-  end;
+#  if status(i)==-1  %Then under causal
+#    fig_params(3) = comp_colour_u;
+#    fig_params(6) = comp_font;
+#  end;
 
-  if status(i)==1  %Then over causal
-    fig_params(3) = comp_colour_o;
-    fig_params(6) = comp_font;
-  end;
+#  if status(i)==1  %Then over causal
+#    fig_params(3) = comp_colour_o;
+#    fig_params(6) = comp_font;
+#  end;
 
 
   %Now print the component in fig format
@@ -229,6 +236,7 @@ for i = 1:N_components
   for j = 1:length(fig_params)
     fprintf(filenum, '%1.0f ', fig_params(j));
   end;
+  
   fprintf(filenum, '%1.0f %1.0f ', coords(1), coords(2)); 
   fprintf(filenum, '%s:%s%s\n', comp_type, comp_name, Terminator);
   

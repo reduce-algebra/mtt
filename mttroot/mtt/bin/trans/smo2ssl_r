@@ -14,11 +14,31 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/01/23 09:31:03  peterg
+## Initial revision
+##
 ###############################################################
+
+Nu=`mtt_getsize $1 u`
+Ny=`mtt_getsize $1 y`
+
+if [ "$Nu" = "1" ]; then
+  if [ "$Ny" = "1" ]; then
+    blurb=' for this siso system'    
+  else
+    blurb=" using first output of $Ny"
+  fi
+else
+  if [ "$Ny" = "1" ]; then
+    blurb=" using first input of $Nu"
+  else
+    blurb=" using first input of $Nu and using first output of $Ny"
+  fi
+fi
 
 
 # Inform user
-echo Creating $1_ssl.r -- NOTE this is for SISO systems only.
+echo Creating $1_ssl.r $blurb
 
 # Remove the old log file
 rm -f smo2ssl_r.log

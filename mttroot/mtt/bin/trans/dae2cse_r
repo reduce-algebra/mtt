@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.21  2002/06/28 10:13:40  geraint
+## Includes fix_c.r in ese2rdae and def2write_r to eliminate occurrances of x**y.
+##
 ## Revision 1.20  2002/04/28 18:41:26  geraint
 ## Fixed [ 549658 ] awk should be gawk.
 ## Replaced calls to awk with call to gawk.
@@ -337,21 +340,21 @@ END; % if MTTNyz>0 (and !$solve)
 WRITE ";END;";
 SHUT "$1_ae.r";
 
-OUT "$1_aej.r";
-IF (MTTNyz>0) THEN % as above
-BEGIN
-    WRITE "MATRIX MTTyzj(",MTTNyz,",",MTTNyz,")";
-    WRITE "%File: $1_aej.r";
-    FOR i := 1:MTTNyz DO
-	FOR j := 1:MTTNyz DO
-	BEGIN
-	   didj := df(MTTyz(i,1),mkid('mttui,j));
-	   IF (didj NEQ 0) THEN
-	      WRITE "MTTyzj(",i,",",j,") := ",didj," +0";
-	END;
-END;
-WRITE ";END;";
-SHUT "$1_aej.r";
+%OUT "$1_aej.r";
+%IF (MTTNyz>0) THEN % as above
+%BEGIN
+%    WRITE "MATRIX MTTyzj(",MTTNyz,",",MTTNyz,")";
+%    WRITE "%File: $1_aej.r";
+%    FOR i := 1:MTTNyz DO
+%	FOR j := 1:MTTNyz DO
+%	BEGIN
+%	   didj := df(MTTyz(i,1),mkid('mttui,j));
+%	   IF (didj NEQ 0) THEN
+%	      WRITE "MTTyzj(",i,",",j,") := ",didj," +0";
+%	END;
+%END;
+%WRITE ";END;";
+%SHUT "$1_aej.r";
 
 % Create the matrix declarations
 OUT "$1_cse.r1";

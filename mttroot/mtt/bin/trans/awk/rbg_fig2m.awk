@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1996/08/05 12:17:37  peter
+## n_ports now appear in the _abg file instead.
+##
 ## Revision 1.5  1996/08/05 12:01:28  peter
 ## The _cmp function now returns the number of ports.
 ##
@@ -252,7 +255,14 @@ function process_bond() {
 function write_cbg() {
 # Create _cbg.fig file from _abg file - not components
   if ( (fig_file)&&((object!=text)||(isa_component==0))) {
-    printf $1 >> cbg_file
+    if (exact_match($1,data_symbol)) {
+      field_1 = out_data_symbol
+	}
+    else {
+      field_1 = $1
+	}
+
+    printf field_1 >> cbg_file
       for (i=2; i<=NF; i++)
 	printf(" %s", $i) >> cbg_file;
     printf("\n") >> cbg_file
@@ -299,12 +309,13 @@ BEGIN {
   delete ARGV[1];
   b_file = sprintf("%s_rbg.m", sys_name);
   c_file = sprintf("%s_cmp.m", sys_name);
-  cbg_file = sprintf("%s_cbg1.fig", sys_name);
+  cbg_file = sprintf("%s_cbg.fig", sys_name);
   warning_f = "WARNING %s \t in fig file but not lbl file  - using\n";
   warning_l = "WARNING %s \t in lbl file but not fig file  - ignoring\n";
   warning_p = "WARNING system ports are not consecutively numbered\n";
 
   data_symbol = "----";
+  out_data_symbol = "\t";
   default_cr = "";
   default_args = "";
   delimiter = ":";

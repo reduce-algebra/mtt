@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.385  2004/08/02 20:25:47  geraint
+## abg.m requires lbl.txt to allow units to be checked.
+##
 ## Revision 1.384  2004/08/01 20:13:30  geraint
 ## ibg2abg transformation does not require lbl.txt (directly)
 ##
@@ -2791,8 +2794,9 @@ endif
 $1_rbg.m: $1_abg.fig  $1_lbl.txt
 	rbg_fig2m $1
 
-$1_cmp.m: $1_rbg.m
-	
+$1_cmp.m: $1_lbl.txt $1_cmp.txt
+	lbl2cmp_txt2m.pl --sys=$1 #--debug
+
 $1_fig.fig: $1_rbg.m
 	
 

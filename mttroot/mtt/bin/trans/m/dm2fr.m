@@ -10,6 +10,9 @@ function  fr = dm2fr(A,B,C,D,E,W,u0)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.4  1996/08/15 12:50:51  peter
+% %% Put in a conj to undo effect of transpose.
+% %%
 % %% Revision 1.3  1996/08/15 11:53:44  peter
 % %% Now has u0 input vector
 % %%
@@ -26,15 +29,32 @@ function  fr = dm2fr(A,B,C,D,E,W,u0)
 N = length(W);
 
 if nargin<7
-  u0 = zeros(Nu,1);
-  u0(1) = 1;
+  U0 = zeros(Nu,1);
+  U0(1) = 1;
+else
+  for i=1:Nu
+    U0(i) = u0(i);
+  end;
 end;
+
+u0 = U0;
+
+[n,m]=size(W);
+if m>n
+  W=W';
+end;
+
+[n,m]=size(u0);
+if m>n
+  u0=u0';
+end;
+
 
 fr = zeros(N,Ny);
 i = 0;
 for w = W'
   i = i+1;
-  FR = C*( (E*j*w - A) \ B ) + D;
+  FR = C*( (E*j*w - A) \ B*u0 ) + D*u0
   fr(i,:) = conj(FR');
 end;
 

@@ -14,7 +14,7 @@ configure: configure-stamp
 configure-stamp:
 	@touch configure-stamp
 
-build: configure mtt.sh build-stamp
+build: configure mtt.sh xmtt.sh build-stamp
 
 build-cc:
 	@cd cc ; make -s build
@@ -51,14 +51,14 @@ clean-doc:
 	@cd doc ; make -s clean
 
 distclean: clean clean-cc clean-conf clean-doc
-	@-rm -f build-stamp configure-stamp config.log mtt.sh
+	@-rm -f build-stamp configure-stamp config.log mtt.sh xmtt.sh
 
 install: build clean.sh clean-conf.sh
 	@install -d $(INSTDIR) $(CONFDIR) $(PROGDIR)
 	@cp -a   bin cc doc lib $(INSTDIR)
 	@install bin/mttrc $(CONFDIR)/mtt.conf
-	@install mtt.sh $(PROGDIR)/mtt
-	@install bin/xmtt $(PROGDIR)
+	@install mtt.sh  $(PROGDIR)/mtt
+	@install xmtt.sh $(PROGDIR)/xmtt
 
 install-cc: build-cc clean-cc.sh
 	@install -d $(INSTDIR)/bin/trans
@@ -94,30 +94,35 @@ clean-doc.sh: FORCE
 	@echo 'rm -fr $(DOCDIR)'					>>clean-doc.sh
 	@echo 'rm -f  $(INFODIR)/mtt.info*'				>>clean-doc.sh
 
-mtt.sh:
-	@echo '#! /bin/sh'						> mtt.sh
-	@echo '# This file is auto-generated - do not edit'		>>mtt.sh
-	@echo ''							>>mtt.sh
-	@echo 'mtt_config_file=$(CONFDIR)/mtt.conf'			>>mtt.sh
-	@echo 'mtt_program_dir=$(PROGDIR)'				>>mtt.sh
-	@echo 'mtt_install_dir=$(INSTDIR)'				>>mtt.sh
-	@echo ''							>>mtt.sh
-	@echo '# get site-specific settings'				>>mtt.sh
-	@echo 'if [[ -r $${mtt_config_file} ]]; then'			>>mtt.sh
-	@echo '   . $${mtt_config_file} $${mtt_install_dir} >/dev/null'	>>mtt.sh
-	@echo ''							>>mtt.sh
-	@echo 'elif [[ -r $${mtt_install_dir}/bin/mttrc ]]; then'	>>mtt.sh
-	@echo '   . $${mtt_install_dir}/bin/mttrc $${mtt_install_dir}'	>>mtt.sh
-	@echo 'fi'							>>mtt.sh
-	@echo ''							>>mtt.sh
-	@echo '# get user-specific settings'				>>mtt.sh
-	@echo 'if [[ -r $${HOME}/.mttrc ]]; then'			>>mtt.sh
-	@echo '   . $${HOME}/.mttrc'					>>mtt.sh
-	@echo 'fi'							>>mtt.sh
-	@echo ''							>>mtt.sh
-	@echo '# get directory-specific settings'			>>mtt.sh
-	@echo 'if [[ -r ./.mttrc ]]; then'				>>mtt.sh
-	@echo '   . ./.mttrc'						>>mtt.sh
-	@echo 'fi'							>>mtt.sh
-	@echo ''							>>mtt.sh
-	@cat bin/mtt							>>mtt.sh
+mtt.sh.tmp:
+	@echo '#! /bin/sh'						> mtt.sh.tmp
+	@echo '# This file is auto-generated - do not edit'		>>mtt.sh.tmp
+	@echo ''							>>mtt.sh.tmp
+	@echo 'mtt_config_file=$(CONFDIR)/mtt.conf'			>>mtt.sh.tmp
+	@echo 'mtt_program_dir=$(PROGDIR)'				>>mtt.sh.tmp
+	@echo 'mtt_install_dir=$(INSTDIR)'				>>mtt.sh.tmp
+	@echo ''							>>mtt.sh.tmp
+	@echo '# get site-specific settings'				>>mtt.sh.tmp
+	@echo 'if [[ -r $${mtt_config_file} ]]; then'			>>mtt.sh.tmp
+	@echo '   . $${mtt_config_file} $${mtt_install_dir} >/dev/null'	>>mtt.sh.tmp
+	@echo ''							>>mtt.sh.tmp
+	@echo 'elif [[ -r $${mtt_install_dir}/bin/mttrc ]]; then'	>>mtt.sh.tmp
+	@echo '   . $${mtt_install_dir}/bin/mttrc $${mtt_install_dir}'	>>mtt.sh.tmp
+	@echo 'fi'							>>mtt.sh.tmp
+	@echo ''							>>mtt.sh.tmp
+	@echo '# get user-specific settings'				>>mtt.sh.tmp
+	@echo 'if [[ -r $${HOME}/.mttrc ]]; then'			>>mtt.sh.tmp
+	@echo '   . $${HOME}/.mttrc'					>>mtt.sh.tmp
+	@echo 'fi'							>>mtt.sh.tmp
+	@echo ''							>>mtt.sh.tmp
+	@echo '# get directory-specific settings'			>>mtt.sh.tmp
+	@echo 'if [[ -r ./.mttrc ]]; then'				>>mtt.sh.tmp
+	@echo '   . ./.mttrc'						>>mtt.sh.tmp
+	@echo 'fi'							>>mtt.sh.tmp
+	@echo ''							>>mtt.sh.tmp
+
+mtt.sh: mtt.sh.tmp
+	@cat mtt.sh.tmp bin/mtt						> mtt.sh
+
+xmtt.sh: mtt.sh.tmp
+	@cat mtt.sh.tmp bin/xmtt					> xmtt.sh

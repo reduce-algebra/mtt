@@ -1,10 +1,13 @@
-function args = alias_args(args,alias,delim,message)
+function args = alias_args(args,alias,delim,message,FileID)
 
 ###############################################################
 ## Version control history
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/07/03 18:29:40  peterg
+## Initial revision
+##
 ###############################################################
 
 
@@ -14,17 +17,17 @@ function args = alias_args(args,alias,delim,message)
       [N,M]= size(Args);
       for i=1:N
         arg = deblank(Args(i,:));
-        _arg = strrep(arg,",","__");
-        if struct_contains(alias,_arg)
-          eval(["new_arg = alias.", _arg,";"]);
+        arg_ = strrep(arg,",","__");
+        if struct_contains(alias,arg_)
+          eval(["new_arg = alias.", arg_,";"]);
   	  mtt_info(["Replacing ", arg, "\t by ",\
-		    new_arg, message]);
+		    new_arg, message],FileID);
           arg = new_arg;
         end
-        OPS = "+-*/";
-        for j = 1:length(OPS)
-	  if length(findstr(arg,OPS(j)))>0
-	    arg = alias_args(arg,alias,OPS(j),message);
+        SEPS = ",+-*/";
+        for j = 1:length(SEPS)
+	  if length(findstr(arg,SEPS(j)))>0
+	    arg = alias_args(arg,alias,SEPS(j),message,FileID);
 	  end 
 	end;
         args = sprintf("%s%s%s", args, delim, arg);
@@ -33,10 +36,3 @@ function args = alias_args(args,alias,delim,message)
     end
   end;
 endfunction;
-
-# " for component ", comp_name,\
-#		    " (", comp_type,") within ", full_name]);
-
-
-
-

@@ -23,6 +23,12 @@ const bool false = 0;
 using std::pow;
 #endif /* ! __cplusplus */
 
+
+static double pi = M_PI;
+static double Pi = M_PI;
+static double PI = M_PI;
+
+
 static inline double
 max (const double x1, const double x2)
 {

@@ -1,0 +1,36 @@
+%SUMMARY Pendulum example from Section 10.3 of "Metamodelling"
+%DESCRIPTION <Detailed description here>
+%% Label file for system pend (pend_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+%Rod parameters
+rod	none	l;l;j;m
+
+%Zero velocity sources
+v_x	internal	0
+v_y	internal	0
+
+%Zero force/torque sources
+F_x	0	internal
+F_y	0	internal
+F_a	0	internal
+F_cx	0	internal
+
+%Torque at end
+f_a	external external
+
+%Gravity
+F_cy	mg	internal
+
+

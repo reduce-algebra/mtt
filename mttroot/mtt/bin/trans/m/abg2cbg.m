@@ -19,6 +19,14 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 # ###############################################################
 # ## $Id$
 # ## $Log$
+# ## Revision 1.38  1998/08/25 09:15:28  peterg
+# ## Fixed couple of problems with using two copies of the one data
+# ## stucture:
+# ##
+# ## ABG_field and ABG.field
+# ##
+# ## Maybe this is conceptually wrong?
+# ##
 # ## Revision 1.37  1998/08/25 08:33:29  peterg
 # ## Now does ports as well - fixed string prob by using deblank
 # ##
@@ -243,65 +251,47 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
   
 # Coerce the port (SS:[]) component bonds to have the same direction as
 # of the bonds in the encapsulating system -- but not at top level
-#  if (n_ports>0)&&(!at_top_level)
-    
-#   # port_bond_index = abs(components(1:n_ports,1:m_components))# relevant
-#							     # bond
-#							     # numbers
-#				#    port_bond_index = nozeros(reshape(\
-#				#			      port_bond_index',n_ports*m_components,1))'# vectorise
+  Flipped.ports="";Flipped.subs="";Flipped.cons="";
+  if (n_ports>0)&&(!at_top_level) # Coerce directions
+    for [port,name] = ABG.ports	# Just ports are relevant here
+      if (sign(port.connections)!=port_bond_direction(port.index)) # Direction different?
+      	eval(["ABG.ports.",name,".connections = - port.connections;"]); # Flip direction at port
+	Flipped.ports=[Flipped.ports;name];	# Remember which port has been flipped
+        bond_index=abs(port.connections); # Index of bond on port
+      	mtt_info(sprintf("Flip port %s on %s"\
+			 ,name,full_name),infofile); # And report
+      	for [subsystem,name] = ABG.subsystems # and at the other end
+	  for k=1:length(subsystem.connections)
+	    if (abs(subsystem.connections(k))==bond_index)
+	    eval(["ABG.subsystems.",name,".connections(k)   = -subsystem.connections(k);"]);
+	    Flipped.subs=[Flipped.subs;name];	# Remember which subsystem has been flipped
+	    Flipped.cons=[Flipped.cons;k];	# Remember which connection has been flipped
+      	    mtt_info(sprintf("Flip subsystem %s on %s"\
+			     ,name,full_name),infofile); # And report
+	    endif
+	  endfor
+      	endfor			# subsystem = ABG.subsystems
 
-#    for port = ABG.ports
-#    #for i=1:n_ports
-#				# Is the direction different?
-#      if (sign(port.connections)!=port_bond_direction(i))
-#      	mtt_info(sprintf("Flip port #i",i),infofile);
-#				# Flip direction at port
-#      	port.connections = - port.connections;
-#				# and at the other end
-#      	for subsystem = ABG.subsystems
-#	  for k=1:length(subsystem.connections)
-#	    if (abs(subsystem.connection(k))==port_bond_index(i))
-#	    subsystem.connection(k)   = -subsystem.connection(k);
-#	    end
-#	  end
-#      	end;
-#				# Flip the bond causalities (these are arrow-orientated)
-#      	ABG.bonds(port_bond_index(i),:) = -ABG.bonds(port_bond_index(i),:);
-#      end
-#    end
-#  end
-
-
-
-# Set initial status
-#  status = -ones(n_subsystems,1);
+      	ABG.bonds(bond_index,:) = -ABG.bonds(bond_index,:);	# Flip the bond causalities 
+				#(these are arrow-orientated)
+      endif			# Is the direction different?
+    endfor			# port = ABG.ports
+  endif				# (n_ports>0)&&(!at_top_level)
 
 # If not at top level, then copy the port bonds.
-  if ~at_top_level 
-  # Find number of port bonds
-    [n_port_bonds,columns] = size(port_bonds);
-
-  # Check compatibility - if ok copy port bonds to the internal bonds list.
-#    if n_port_bonds~=N_ports
-#      mtt_error(sprintf("#s: #1.0f port bonds incompatible with #1.0f ports", ...
-#			full_name, n_port_bonds, n_ports), errorfile);
-
-#    else # Copy the port bonds & status
-      for j = 1:n_port_bonds
-      	jj = port_bond_index(j);
-      	for k = 1:2
-	  if ABG.bonds(jj,k)==0 # only copy if not already set
-	    ABG.bonds(jj,k) = port_bonds(j,k);
-	  end;
-      	end;
-#      status(1:N_ports) = port_status;
-#      end
-    end
+  if !at_top_level		# Find number of port bonds
+    for port = ABG.ports	# Copy the port bonds.
+      jj = abs(port.connections); # The index of the bond
+      j = port.index;		# The index of the port bond
+      for k = 1:2
+	if ABG.bonds(jj,k)==0 # only copy if not already set
+	  ABG.bonds(jj,k) = port_bonds(j,k);
+	endif
+      endfor
+    endfor
   else
     n_port_bonds=0;
-  end;
-# bonds,port_bonds
+  endif
 
 # Causality indicator
   total = 2*n_bonds;
@@ -439,24 +429,25 @@ name,subsystem
   
 
   disp(["Writing ", full_name]);
-  write_cbg(full_name,system_type,ABG);
+  write_cbg(full_name,system_type,ABG,Flipped);
   
 				# Return the port bonds - arrow orientated causality - and the direction 
   status=0;
   if !at_top_level # Not at top level
     port_bonds = ABG.bonds(port_bond_index,:); # Return port bonds
-    for [subsystem,name] = ABG.subsystems
-      if subsystem.status==-1	# Under causal
-      	status=-1;
-      	mtt_info(sprintf("Component %s (%s) is undercausal", name, subsystem.type), ...
-		 infofile);
-      elseif subsystem.status==1;	# Over causal
-      	status=-1;
-      	mtt_info(sprintf("Component %s (%s) is overcausal", name, subsystem.type), ...
-		 infofile);
-      endif;
-    endfor;			# [subsystem,name] = ABG.subsystems
   endif;				# at top level
+
+  for [subsystem,name] = ABG.subsystems
+    if subsystem.status==-1	# Under causal
+      status=-1;
+      mtt_info(sprintf("Component %s (%s) is undercausal", name, subsystem.type), ...
+	       infofile);
+    elseif subsystem.status==1;	# Over causal
+      status=-1;
+      mtt_info(sprintf("Component %s (%s) is overcausal", name, subsystem.type), ...
+	       infofile);
+    endif;
+  endfor;			# [subsystem,name] = ABG.subsystems
 
   status, port_bonds
   disp("====================================");

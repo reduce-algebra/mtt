@@ -1,7 +1,7 @@
 ## Makes the figures
 
 par = ReactorTF_numpar;		# Parameters
-sym = Reactor_sympar;		# Parameter indices
+sym = ReactorTF_sympar;		# Parameter indices
 
 F_s= [90:10:500];		# Range of flows
 

@@ -1,0 +1,69 @@
+%% Label file for system Reactor (Reactor_lbl.txt)
+%SUMMARY Reactor: Simple reactor model
+%DESCRIPTION Pseudo bond graph reactor model (based on ancient version)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%ALIAS Rate Chemical/Rate
+
+% Extra variables
+%VAR t_s
+%VAR f_s
+%VAR t_0
+%VAR c_0
+%VAR rho
+%VAR v_r
+%VAR e_1
+%VAR e_2
+%VAR e_3
+%VAR a
+%VAR b
+%VAR c
+%VAR c_A
+%VAR c_B
+%VAR x1
+%VAR x2
+%VAR x3
+%VAR q_S
+
+%VAR u1
+%VAR u2
+
+% Port aliases
+
+% Argument aliases
+
+%% each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+% Component type C
+	m_a	lin		effort,1
+	m_b	lin		effort,1
+	h_r	lin		effort,c_p
+
+% Component type FMR
+	rfa	lin		effort,1		
+	rfb	lin		effort,1		
+	rt	lin		effort,c_p
+
+% Component type Rate
+        AB	Rate	k_1,q_1,h_1,1
+	BC	Rate	k_2,q_2,h_2,1
+	AD	Rate	k_3,q_3,h_3,2
+
+% Component type SS
+	c_0	SS		c_0,internal
+	c_a	SS		external,0
+	c_b	SS		external,0
+	f	SS		internal,external
+	t	SS		external,external
+	t_0	SS		t_0,internal

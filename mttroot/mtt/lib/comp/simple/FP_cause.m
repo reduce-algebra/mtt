@@ -12,6 +12,9 @@ function [bonds,status] = FP_cause(bonds);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/06/29 09:56:02  peterg
+% %% Initial revision
+% %%
 % %% Revision 1.1  1997/09/04  08:34:53  peterg
 % %% Initial revision
 % %%
@@ -29,5 +32,6 @@ end
 
 % Same causality as TF
 [bonds,status] = TF_cause(bonds);
+
 
 

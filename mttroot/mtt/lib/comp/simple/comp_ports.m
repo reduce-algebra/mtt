@@ -14,6 +14,9 @@ function ports = comp_ports(comp_type,N)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.5  1998/04/12 15:01:53  peterg
+% %% Converted to uniform port notation - always use []
+% %%
 % %% Revision 1.4  1998/03/31 08:39:31  peterg
 % %% Added EBTF
 % %%
@@ -43,7 +46,7 @@ elseif length(findstr(comp_type,two_ports))==1
   ports = ['[in]';'[out]'];
 elseif length(findstr(comp_type,'[-EMTF-]'))==1
   ports = ['[in]';'[out]';'[mod]'];
-elseif length(findstr(comp_type,'[-ES-]'))==1
+elseif length(findstr(comp_type,'[-FP-]'))==1
   ports = ['[e]';'[s]'];
 elseif length(findstr(comp_type,'[-PS-]'))==1
   ports = ['[in]';'[out]';'[power]'];
@@ -55,7 +58,7 @@ elseif length(findstr(comp_type,N_ports))==1
   elseif N>2
     ports = '[1]';
     for i=2:N
-      ports = [ports; sprintf("%i",i)];
+      ports = [ports; sprintf("[%i]",i)];
     end;
   end;
 end;

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1998/03/05 10:17:41  peterg
+## Cosmetic change
+##
 ## Revision 1.5  1998/03/05 10:14:37  peterg
 ## Toned down the error warning message
 ##
@@ -38,8 +41,8 @@ error_file=$1;
 err_length=`wc -c <$error_file | awk '{print $1}'`
 if [ "$err_length" != "0" ]
 then
-  echo INFORMATION: An MTT transformation has generated the following messages 
-  echo which may not be important
+  echo "INFORMATION: An MTT transformation has generated the following messages"
+  echo "             (which may not be important)"
   cat $error_file
   exit 1
 else

@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.2  1997/05/19  16:11:10  peterg
+# Modified section headers.
+#
 # Revision 1.1  1996/08/18  19:58:49  peter
 # Initial revision
 #
@@ -35,8 +38,9 @@ BEGIN {
 # tex files
     if( match("tex",Language)>0) {
       print "\\section{" section_head "}";
-      printf("  \\input{%s_%s.%s}\n", system_name, Representation, Language);
-    }
+      # printf("  \\input{%s_%s.%s}\n", system_name, Representation, Language);
+      command = sprintf("cat %s_%s.%s", system_name, Representation, Language);
+      system(command);    }
 # text files
     if( match("txt r m c",Language)>0) {
       print "\\section{" section_head "}";

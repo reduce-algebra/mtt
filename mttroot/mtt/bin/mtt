@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.69  1997/05/03  13:58:35  peterg
+# Implicit integration for sm representation added.
+#
 # Revision 1.68  1997/05/01  08:39:20  peterg
 # params.c and params.m not used any more.
 # _numpar.txt is the common base from which _numpar.c and numpar.m is
@@ -993,9 +996,10 @@ $1_odes.m: $1_odes.c $1_ode.c $1_numpar.c $1_odes.h\
 	gcc $1_odes.c $1_ode.c $1_numpar.c  $1_input.c -lm
 	echo 'Running  ...'; ./a.out; echo 'Done.'
 
+
 $1_sms.m: $1_sms.c $1_sm.c $1_numpar.c $1_sms.h\
          $1_sympar.c $1_sympar.h\
-         $1_numpar.c $1_input.c svdcmp.c
+         $1_numpar.c $1_input.c dsvdcmp.c
 	echo Creating $1_sms.m
 	echo Creating $1_smso.m
 	echo 'Compiling ...'
@@ -1167,5 +1171,15 @@ RCS:
 $1_$2.vc: RCS 
 	echo Version control on $1_$2.$VCext
 	ci -I $1_$2.$VCext </dev/tty  ; co -l $1_$2.$VCext 
+
+# Copy c utilities
+dsvdcmp.c: dpythag.c nrutil.c nrutil.h
+	echo Copying dsvdcmp.c; cp $MTTPATH/trans/c/dsvdcmp.c .
+dpythag.c: 
+	echo Copying dpythag.c; cp $MTTPATH/trans/c/dpythag.c .
+nrutil.c: 
+	echo Copying nrutil.c; cp $MTTPATH/trans/c/nrutil.c .
+nrutil.h: 
+	echo Copying nrutil.h; cp $MTTPATH/trans/c/nrutil.h .
 
 EOF

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.25  1999/02/16 04:38:09  peterg
+## Now forces creation of _smx file if METHOD=IMPLICIT in simpar.txt
+##
 ## Revision 1.24  1998/11/18 16:56:15  peterg
 ## Now handles comments after IFS
 ##
@@ -98,6 +101,8 @@ Sys=`echo $args  | awk '{print $1}'`
 sys=`echo $Sys  | awk '{print tolower($1)}'`
 rep=`echo $args  | awk '{print $2}'`
 Sys_rep="$Sys""_""$rep"
+Sys_smx="$Sys""_smx"
+Sys_smxp="$Sys""_smx.p"
 Filename="$Sys""_""$rep.p"
 filename="$sys""_""$rep.p"
 
@@ -110,12 +115,7 @@ Nu=`grep "MTTNu " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
 Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
 
 if [ "$rep" = "simpar" ]; then
-
-    # Check if implicit method and generate smx.p if so
-    implicit=`grep -i METHOD $Sys_rep.txt | grep -i -c IMPLICIT`
-    if [ "$implicit" = "1"  ]; then
-	mtt -q $Sys smx p
-    fi
+    mtt $Sys smx p
 fi
 
 # Heading
@@ -264,21 +264,21 @@ BEGIN{
           printvar("y",Ny);
           printvar("_t",Nt);
 
+          printf("{%s mtt_write.p}\n",inc)
           printf("\n{%s sign.p}\n",inc)
           printf("{%s mtt_euler.p}\n",inc)
           printf("{%s mtt_implicit.p}\n",inc)
-          printf("{%s mtt_write.p}\n",inc)
           printf("{%s zero_matrix.p}\n",inc)
           printf("{%s zero_vector.p}\n",inc)
-          printf("{%s %s_simpar.p}\n",inc,sys) 
-          printf("{%s %s_numpar.p}\n",inc,sys)
-          printf("{%s %s_state.p}\n",inc,sys)
-          printf("{%s %s_input.p}\n",inc,sys)
-          printf("{%s %s_ode.p}\n",inc,sys)
-          printf("{%s %s_odeo.p}\n",inc,sys)
-          printf("{%s %s_switch.p}\n\n",inc,sys)
-          printf("{%s %s_switcha.p}\n\n",inc,sys)
-          printf("\n{%s %s_smx.p}\n",inc,sys)
+          printf("{%s %s_simpar.p}\n",inc,Sys) 
+          printf("{%s %s_numpar.p}\n",inc,Sys)
+          printf("{%s %s_state.p}\n",inc,Sys)
+          printf("{%s %s_input.p}\n",inc,Sys)
+          printf("{%s %s_ode.p}\n",inc,Sys)
+          printf("{%s %s_odeo.p}\n",inc,Sys)
+          printf("{%s %s_switch.p}\n\n",inc,Sys)
+          printf("{%s %s_switcha.p}\n\n",inc,Sys)
+          printf("\n{%s %s_smx.p}\n",inc,Sys)
 
           for (k=1;k<=j;k++) printf("%s\n", comment[k])
           printf("\n")
@@ -347,9 +347,16 @@ sed 's/switch(MTTx,/switch(/g'  \
 >> $Filename
 
 # p2c doesn't like mixed case filenames!
-if [ "$Filename" != "$filename" ]; then
-  echo Creating $filename
-  cp -f $Filename $filename
+#if [ "$Filename" != "$filename" ]; then
+#  echo Creating $filename
+#  cp -f $Filename $filename
+#fi
+
+if [ "$rep" = "ode2odes" ]; then
+    # Explicitly include files
+    mtt_pinclude $Filename>junk.p
+    mv junk.p $Filename
 fi
+
 
 

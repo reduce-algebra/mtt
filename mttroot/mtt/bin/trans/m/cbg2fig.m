@@ -1,5 +1,4 @@
-function cbg2fig(system_name, ...
-                 system_type, full_name, ...
+function cbg2fig(system_name, system_type, full_name, ...
                  stroke_length, stroke_thickness, stroke_colour, ...
                  comp_font, comp_colour_u, comp_colour_o)
 
@@ -24,6 +23,10 @@ function cbg2fig(system_name, ...
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## %% $Id$
   ## %% $Log$
+  ## %% Revision 1.13  2000/09/14 09:12:19  peterg
+  ## %% Fixed stroke orientation bug with bent bonds
+  ## %% Uses new info from the _rbg.m file - 4 new cols in rbonds
+  ## %%
   ## %% Revision 1.12  2000/09/14 08:07:00  peterg
   ## %% Reformated as an Octave function
   ## %%
@@ -100,7 +103,6 @@ function cbg2fig(system_name, ...
   ## Create the (full) system name
   if strcmp(full_name,'')
     full_name = system_name;
-    system_type = system_name;
   else
     full_name = [full_name, '_', system_name];
   end;
@@ -119,7 +121,6 @@ function cbg2fig(system_name, ...
 
   ## Get the raw and the processed bonds
   eval(['[rbonds,rstrokes,rcomponents] = ', system_type, '_rbg;']);
-  %eval(['[bonds,components,n_ports] = ', system_type, '_abg;']);
   eval(["ABG = ", system_type, "_abg;"]);
   bonds=ABG.bonds;
 
@@ -127,7 +128,7 @@ function cbg2fig(system_name, ...
   [n_bonds,junk] = size(rbonds);
 
   ## Get the causal bonds
-  %eval(['[cbonds,status]=', full_name, '_cbg;']);
+  #eval(['[cbonds,status]=', full_name, '_cbg;']);
   eval(["CBG = ", full_name, "_cbg;"]);
   cbonds=CBG.bonds;
 
@@ -176,22 +177,14 @@ function cbg2fig(system_name, ...
   changed_e = bonds(1:n_bonds,1)~=cbonds(1:n_bonds,1);
   changed_f = bonds(1:n_bonds,2)~=cbonds(1:n_bonds,2);
   changed = changed_e|changed_f;
-  ## Don't do port bonds
-				#if n_ports>0
-				#  port_bonds = sort(abs(components(1:n_ports,1)));
-				#  changed(port_bonds) = zeros(n_ports,1);
-				#  changed_e(port_bonds) = zeros(n_ports,1);
-				#  changed_f(port_bonds) = zeros(n_ports,1);
-				#end
 
-  index_e  = getindex(changed_e,1)'
-  index_f  = getindex(changed_f,1)'
+  index_e  = getindex(changed_e,1)';
+  index_f  = getindex(changed_f,1)';
   index_ef  = getindex(changed,1)';
 
   ## Print the new strokes in fig format
   if index_ef(1,1)>0
     for i = index_e		# Do the effort stroke - opp. side to arrow
-
       if cbonds(i,1)==1		# Stroke at arrow end
 	bond_vector = arrow_end_direction(i,:); # Directional vector
 	stroke_end_1 = arrow_end(i,:);
@@ -219,7 +212,6 @@ function cbg2fig(system_name, ...
     end;
 
     for i = index_f		# Do the flow stroke - same side as arrow
-
       if cbonds(i,2)==1		# Stroke at arrow end
 	bond_vector = arrow_end_direction(i,:); # Directional vector
 	stroke_end_1 = arrow_end(i,:);
@@ -247,7 +239,7 @@ function cbg2fig(system_name, ...
   end;
 
   ## Print all the components - coloured acording to causality.
-  for i = 1:N_ports+N_components
+  for i = 1+N_ports:N_ports+N_components
     if i>N_ports			# Subsystem
       comp_name = CBG.subsystemlist(i-N_ports,:);
       eval(["comp_status = CBG.subsystems.", comp_name, ".status;"]);
@@ -272,7 +264,7 @@ function cbg2fig(system_name, ...
 
 
     ## Now print the component in fig format
-    eval(['[comp_type,comp_name] = ', system_type, '_cmp(i)']);
+    eval(['[comp_type,comp_name] = ', system_type, '_cmp(i);']);
     
     if index(comp_name,"mtt")==1 # Its a dummy name
       typename = comp_type;	# just show type
@@ -283,29 +275,12 @@ function cbg2fig(system_name, ...
     Terminator = [bs, '001'];   
     for j = 1:length(fig_params)
       fprintf(filenum, '%1.0f ', fig_params(j));
-    end;
+    endfor
+    
     
 
     fprintf(filenum, '%1.0f %1.0f ', coords(1), coords(2)); 
     fprintf(filenum, '%s%s\n', typename, Terminator);
-    
-				#   % If it's a subsystem (ie not a component), do the fig file for that as
-				#   % well
-				#   if comp_type=='0'
-				#     comp_type='zero';
-				#   endif
-    
-				#   if comp_type=='1'
-				#     comp_type='one';
-				#   endif
-    
-    
-				#   if (exist([comp_type,'_cause'])==0)
-				#     cbg2fig(comp_name, ...
-				# 	comp_type, full_name, ...
-				#         stroke_length, stroke_thickness, stroke_colour, ...
-				#         comp_font, comp_colour_u, comp_colour_o);
-				#   endif
 
   endfor
 

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  1998/08/11 13:32:42  peterg
+## Lowercase mttLAST etc
+##
 ## Revision 1.10  1998/07/27 20:27:25  peterg
 ## Now get parameters for simpar file.
 ##
@@ -94,10 +97,11 @@ $MATRIX << EOF > dm2fr_m.log 2>mtt_error.txt
 
   W = logspace(mttwmin,mttwmax,mttwsteps)';
 
-  if exist('u0')==0
-    u0 = zeros(nu,1);
-    u0(1) = 1;
+  if exist('mttinput')==0
+    mttinput = 1;
   end;
+  mttu0 = zeros(nu,1);
+  mttu0(mttinput) = 1;
 
 
   [n,m]=size(W);
@@ -105,13 +109,13 @@ $MATRIX << EOF > dm2fr_m.log 2>mtt_error.txt
     W=W';
   end;
 
-  [n,m]=size(u0);
+  [n,m]=size(mttu0);
   if m>n
-    u0=u0';
+    mttu0=mttu0';
   end;
 
   [A,B,C,D,E] = $1_dm
-  fr = dm2fr(A,B,C,D,E,W,u0)
+  fr = dm2fr(A,B,C,D,E,W,mttu0);
   lw = log10(W);
   lmfr = log10(abs(fr));
   pfr = angle(fr)*180/pi;

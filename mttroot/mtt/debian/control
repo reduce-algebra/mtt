@@ -9,7 +9,7 @@ Package: mtt
 Architecture: all
 Depends: gawk, octave, xfig
 Recommends: blas-dev, fftw-dev, c-compiler, g++, gnuplot, info-browser, lapack-dev, latex2html, libkpathsea-dev, libncurses5-dev, libreadline4-dev, pdf-viewer, postscript-viewer, octave-headers, octave-info, p2c, transfig, xterm, www-browser, wish
-Suggests: scigraphica zip
+Suggests: scigraphica, zip
 Description: Model Transformation Tools.
  A set of tools for modelling dynamic physical systems using the bond-graph
  methodology and transforming these models into representations suitable for

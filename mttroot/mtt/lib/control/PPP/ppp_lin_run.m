@@ -21,6 +21,11 @@ function [y,u,t,y_e,t_e] = ppp_lin_run (Name,Simulate,ControlType,w,p_c,p_o)
     [n_name,m_name] = size(names);
     Name = deblank(names(n_name,:));
   endif
+
+  ## System
+  sys = mtt2sys(Name);		# Create system
+  [A,B,C,D] = sys2ss(sys);	# SS form
+  [n_x, n_u, n_y] = abcddim(A,B,C,D); # Dimensions
   
   if nargin<2
     Simulate = 1;
@@ -42,9 +47,10 @@ function [y,u,t,y_e,t_e] = ppp_lin_run (Name,Simulate,ControlType,w,p_c,p_o)
     p_o.sigma = 0.001;
   endif
 
-  if !struct_contains(p_c,"N")
-    p_c.N = 10;			# Number of small samples per large sample
-  endif
+
+#   if !struct_contains(p_c,"N")
+#     p_c.N = 10;			# Number of small samples per large sample
+#   endif
   
   if !struct_contains(p_c,"delta_ol")
     p_c.delta_ol = 1.0;	# OL sample interval
@@ -64,17 +70,18 @@ function [y,u,t,y_e,t_e] = ppp_lin_run (Name,Simulate,ControlType,w,p_c,p_o)
     p_c.A_u = ppp_aug(p_c.A_w,laguerre_matrix(p_c.N_u-1,a_u));
   endif
   
+  if !struct_contains(p_c,"Method")
+    p_c.Method = "lq"; 
+    p_c.Q = eye(n_y);
+    p_c.R = (0.1^2)*eye(n_u);
+    p_c.N_u = n_x;
+  endif
+  
   [p_c.N_u,M_u] = size(p_c.A_u);
   if (p_c.N_u<>M_u)
     error("A_u must be square");
   endif
   
-  ## System
-  sys = mtt2sys(Name); # Create system
-  [A,B,C,D] = sys2ss(sys);	# SS form
-  [n_x, n_u, n_y] = abcddim(A,B,C,D)
-  ol_poles = eig(A)
-
   ## Check w.
   [n_w,m_w] = size(w);
   if ( (n_w<>n_y) || (m_w<>1) )
@@ -101,20 +108,26 @@ function [y,u,t,y_e,t_e] = ppp_lin_run (Name,Simulate,ControlType,w,p_c,p_o)
     U = K_w*w;			# Initial control U
   else				# PPP control
     I = ceil(p_c.T/p_c.delta_ol); # Number of large samples
-    tau = [10:0.1:11]*(2/a_u);	# Time horizons
-    [k_x,k_w,K_x,K_w] = ppp_lin(A,B,C,D,p_c.A_u,p_c.A_w,tau); # Design
-    U = K_w*w			# Initial control U
+    if strcmp(p_c.Method, "original")
+      tau = [10:0.1:11]*(2/a_u);	# Time horizons
+      [k_x,k_w,K_x,K_w] = ppp_lin(A,B,C,D,p_c.A_u,p_c.A_w,tau); # Design
+    elseif strcmp(p_c.Method, "lq")
+      tau = [0:0.001:1.0]*5; # Time horizons
+      [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,p_c.A_u] \
+	  = ppp_lin_quad (A,B,C,D,tau,p_c.Q,p_c.R);
+    else
+      error(sprintf("Method %s not recognised", p_c.Method));
+    endif
+    
+    U = K_w*w;			# Initial control U
 
     ## Checks
+    [ol_zeros, ol_poles] = sys2zp(sys)
     cl_poles = eig(A - B*k_x)
   endif
 
-  ## Sample times
-  dt = 0.1;
-  delta = p_c.N*dt;
-
   ## Observer design
-  Ad = expm(A*delta);		# Discrete-time transition matrix
+  Ad = expm(A*p_c.delta_ol);		# Discrete-time transition matrix
   if (ControlType==2)
     G = eye(n_x);			# State noise gain 
     sigma_x = eye(n_x);		# State noise variance
@@ -126,6 +139,9 @@ function [y,u,t,y_e,t_e] = ppp_lin_run (Name,Simulate,ControlType,w,p_c,p_o)
   endif
   
   obs_poles = eig(Ad-L*C)
+
+  ## Short sample interval
+  dt = p_c.delta_ol/p_c.N;
 
   ## Control loop
   y = [];
@@ -149,7 +165,7 @@ function [y,u,t,y_e,t_e] = ppp_lin_run (Name,Simulate,ControlType,w,p_c,p_o)
     
 
     ## Zero-gain (OL) observer with state resetting
-    [x_est y_est] = ppp_int_obs (x_est,y_now,U,A,B,C,D,p_c.A_u,delta,L);
+    [x_est y_est] = ppp_int_obs (x_est,y_now,U,A,B,C,D,p_c.A_u,p_c.delta_ol,L);
     
 				#       ## Reset states
 				#       x_est(2) = y_now(1);	# Position

@@ -1,0 +1,82 @@
+#! /bin/sh
+
+   ###################################### 
+   ##### Model Transformation Tools #####
+   ######################################
+
+
+# Bourne shell script: mtt_make_sim
+# Copyright (C) 2000 by Peter J. Gawthrop
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+# Tell user
+Sys=$1
+method=$2
+
+if [ -z "$method" ]; then
+    method=implicit    
+fi
+#
+echo  "Creating $1_sim.m with $method integration method"
+
+if [ $method = "implicit" ]; then
+    ode=cse
+    odeo=cseo
+else
+    ode=ode
+    odeo=odeo
+fi
+
+# Find system constants
+Nx=`mtt_getsize $Sys x` # States
+Nu=`mtt_getsize $Sys u` # Inputs 
+Ny=`mtt_getsize $Sys y` # Inputs 
+
+# Header
+lang_header -noglobal $1 sim m 'x0,u,t,par' '[y,x]' > $1_sim.m
+
+cat >> $1_sim.m <<EOF
+  ## Initialise
+  ui  = zero_input($Nu);	# Zero the input
+  xi = x0;	        # Read in initial state
+
+
+  yi = $1_cseo(xi,ui,t(1),par);    # First output
+
+  ##Sizes
+  N = length(t);
+
+  ## Initialise  arrays   
+  x = zeros($Nx,N);
+  y = zeros($Ny,N);
+  y(:,1) = yi(:);
+  A = zeros($Nx,$Nx);
+  Ax = zeros($Nx,1);
+  dx = zeros($Nx,1);
+
+  ## Step size
+  dt = t(2)-t(1);
+
+  for i = 1:N
+    ti = t(i);
+    ui = u(i);
+    y(:,i) = yi;
+    x(:,i) = xi;
+    dxi = $1_cse(xi,ui,ti,par); # State derivative
+    A = $1_smxa(xi,ui,dt,par);	# (I-Adt)
+    A = reshape(A,$Nx,$Nx);
+    Ax = $1_smxax(xi,ui,dt,par);	# (I-Adt)x
+    #open = eval(sprintf("%s_switchopen(x);", system_name));        # Open switches
+    #x = mtt_implicit(x,dx,A,Ax,dt,$Nx,zeros(20,1)); # Implicit update
+    xi = A\(Ax + dxi*dt);        # Implicit update
+    yi = $1_cseo(xi,ui,ti,par);    # Output 
+  endfor;			
+
+endfunction
+EOF

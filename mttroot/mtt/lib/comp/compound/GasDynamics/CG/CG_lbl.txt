@@ -1,0 +1,36 @@
+%SUMMARY CG: C component for compressible gas dynamics
+%DESCRIPTION Port [Thermal]: Temperature/Enthalpy pseudo bond
+%DESCRIPTION Port [Mass]: Pressure/mass-flow pseudo bond
+%DESCRIPTION Port [Mechanical]: Pressure/volume flow energy bond
+%DESCRIPTION 
+%DESCRIPTION Parameter 1: c_v (specific heat at constant volume)
+%DESCRIPTION Parameter 2: R   (universal gas constant)
+%DESCRIPTION Based on Karnopp, Margolis and Rosenberg: Section 12.4.
+
+
+%% Label file for system CG (CG_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type C
+	cg		GasAccumulator	$1;$2
+
+% Component type PS
+	ps		lin		effort,1
+
+% Component type SS
+	[Mass]		external	external
+	[Mechanical]		external	external
+	[Thermal]		external	external

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.220  1999/12/17 03:17:57  peterg
+## reps_made is now $1_reps_made - stops clash between two reps per directory
+##
 ## Revision 1.219  1999/12/14 00:36:50  peterg
 ## Changed $source to $stdin and added to mtt_m2p arg list
 ##
@@ -747,7 +750,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='4.0--'
+version='4.0'
 
 # MTT recursion level is zero unless explicitly set
 level=0
@@ -929,6 +932,7 @@ if [ -z "$1" ]; then
     echo '         -dc Maximise derivative (not integral) causality'
     echo '         -i implicit   Use implicit integration'
     echo '         -i euler      Use Euler integration'
+    echo '         -o  ode is same as dae'
     echo '         -p  print environment variables'
     echo '         -r  reset time stamp on representation'
     echo '         -s  try to generate sensitivity BG (experimental)'
@@ -2029,7 +2033,7 @@ $1_ode2odes.c: $1_ode2odes.p
 $1_obs.r: $1_ode.r $1_def.r $1_obspar.r $1_subs.r
 	ode2obs_r $1; tidy $1_obs.r
 $1_obs.m: $1_def.r $1_sympars.txt $1_obs.r $1_obspar.r $1_numpar.m
-	obs_r2m $1; #matlab_tidy $1_obs.m
+	mtt_r2m $1 obs
 $1_obs.tex: $1_obs.r  $1_sympar.r $1_simp.r
 	obs_r2tex $1; latex_tidy $1_obs.tex
 
@@ -2412,7 +2416,7 @@ $1_odes.dat: $1_odes.dat2 $1_def.r
 
 #Generic conversion of data files from dat to (gplot) gdat format 
 $1_$2.gdat: $1_$2.dat $1_struc.txt  $1_args.m
-	dat2gdat $1 $2 $4 $NyquistStyle
+	dat2gdat $1 $2 "$4" "$NyquistStyle"
 
 #Generic conversion of Latex to latex document
 mtt.sty:

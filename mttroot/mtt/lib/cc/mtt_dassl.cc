@@ -65,7 +65,7 @@ DEFUN_DLD (mtt_dassl, args, ,
   static ColumnVector XX (Nx+Nyz);
   XX.insert (x,0);
 
-  for (register int i = Nx; i < Nyz; i++)
+  for (register int i = Nx; i < Nx+Nyz; i++)
     XX(i) = 0.0;
 
   double tout = t + ddt;

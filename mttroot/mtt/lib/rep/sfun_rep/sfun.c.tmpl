@@ -1,4 +1,4 @@
-/* -*-c-*-
+/* -*-c-*-	Put emacs into c-mode
  * <mtt_model_name>_sfun.c:
  * Matlab S-function simulation of <mtt_model_name>
  */
@@ -6,18 +6,10 @@
 #define S_FUNCTION_NAME <mtt_model_name>_sfun
 #define S_FUNCTION_LEVEL 2
 
-#if (0)				/* DEBUG? */
-#define PRINT_ENTER(f) fprintf (stderr, "Entered %s\n", f)
-#define PRINT_LEAVE(f) fprintf (stderr, "Leaving %s\n", f)
-#else
-#define PRINT_ENTER(f)
-#define PRINT_LEAVE(f)
-#endif /* DEBUG? */
-
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "simstruc.h"
+#include "sfun_debug.h"
 #include "<mtt_model_name>_def.h"
 
 static double *mttdx;		/* pointer to rates */
@@ -36,6 +28,7 @@ static void
 <mtt_model_name>_ae (void)
 {
 #include "<mtt_model_name>_ae.c"
+  PRINT_LEAVE;
 }
 
 static void
@@ -43,24 +36,28 @@ static void
 {
 #include "<mtt_model_name>_sympar.h"
 #include "<mtt_model_name>_numpar.c"
+  PRINT_LEAVE;
 }
 
 static void
 <mtt_model_name>_ode (void)
 {
 #include "<mtt_model_name>_ode.c"
+  PRINT_LEAVE;
 }
 
 static void
 <mtt_model_name>_odeo (void)
 {
 #include "<mtt_model_name>_odeo.c"
+  PRINT_LEAVE;
 }
 
 static void
 <mtt_model_name>_state (void)
 {
 #include "<mtt_model_name>_state.c"
+  PRINT_LEAVE;
 }
 
 /* utility procedures */
@@ -78,7 +75,7 @@ array_of_double (size_t n)
 static void
 initialise_arrays (void)
 {
-  PRINT_ENTER("initialise_arrays");
+  PRINT_ENTER;
 
   mttdx		= array_of_double (MTTNX);
   mttpar	= array_of_double (MTTNPAR);
@@ -87,27 +84,27 @@ initialise_arrays (void)
   mtty		= array_of_double (MTTNY);
   mttyz		= array_of_double (MTTNYZ);
 
-  PRINT_LEAVE("initialise_arrays");
+  PRINT_LEAVE;
 }
 
 static void
 update_states_from_simulink (SimStruct *S)
 {
-  PRINT_ENTER("update_states_from_simulink");
+  PRINT_ENTER;
   for (i = 0; i < MTTNX; i++) {
     mttx[i] = ssGetContStates (S)[i];
   }
-  PRINT_LEAVE("update_states_from_simulink");
+  PRINT_LEAVE;
 }
 
 static void
 update_inputs_from_simulink (SimStruct *S)
 {
-  PRINT_ENTER("update_inputs_from_simulink");
+  PRINT_ENTER;
   for (i = 0; i < MTTNU; i++) {
-    mttu[i] = *ssGetInputPortRealSignalPtrs (S, i)[0];
+    mttu[i] = *ssGetInputPortRealSignalPtrs (S, 0)[i];
   }
-  PRINT_LEAVE("update_inputs_from_simulink");
+  PRINT_LEAVE;
 }
 
 static void
@@ -121,7 +118,7 @@ update_inputs_from_solver (void)
 
   double *p;
 
-  PRINT_ENTER ("update_inputs_from_solver");
+  PRINT_ENTER;
 
   /* starting value for solver - start with zero */
   MTT_MATLAB_Ui = mxCreateDoubleMatrix (MTTNYZ, 1, mxREAL);
@@ -182,67 +179,68 @@ update_inputs_from_solver (void)
   mxDestroyArray (MTT_MATLAB_Ui);
   mxDestroyArray (MTT_MATLAB_X);
 
-  PRINT_LEAVE ("update_inputs_from_solver");
+  PRINT_LEAVE;
 }
 
 static void
 update_simtime_from_simulink (SimStruct *S)
 {
-  PRINT_ENTER("update_simtime_from_simulink");
+  PRINT_ENTER;
   mttt = ssGetT (S);
-  PRINT_LEAVE("update_simtime_from_simulink");
+  PRINT_LEAVE;
 }
 
 /* S-function methods */
 
 static void mdlInitializeSizes(SimStruct *S)
 {
-  PRINT_ENTER("mdlInitializeSizes");
+  PRINT_ENTER;
+
   ssSetNumSFcnParams(S, 0); 
   if (ssGetNumSFcnParams(S) != ssGetSFcnParamsCount(S)) {
-    PRINT_LEAVE("mdlInitializeSizes");
+    PRINT_LEAVE;
     return;
   }
   
   ssSetNumContStates(S, MTTNX);
   ssSetNumDiscStates(S, 0);
   
-  if (!ssSetNumInputPorts(S, MTTNU)) return;
-    for (i = 0; i < MTTNU; i++) {
-      ssSetInputPortWidth(S, i, 1);
-      ssSetInputPortDirectFeedThrough(S, i, 1);
-    }
+  if (!ssSetNumInputPorts(S, 1)) return;
+  ssSetInputPortWidth(S, 0, MTTNU);
+  ssSetInputPortDirectFeedThrough(S, 0, 1);
+
+  if (!ssSetNumOutputPorts(S, 2)) return;
+  ssSetOutputPortWidth(S, 0, MTTNX);
+  ssSetOutputPortWidth(S, 1, MTTNY);
     
-    if (!ssSetNumOutputPorts(S, MTTNY)) return;
-    for (i = 0; i < MTTNY; i++) {
-      ssSetOutputPortWidth(S, i, 1);
-    }
-    
-    ssSetNumSampleTimes(S, 1);
-    ssSetNumRWork(S, 0);
-    ssSetNumIWork(S, 0);
-    ssSetNumPWork(S, 0);
-    ssSetNumModes(S, 0);
-    ssSetNumNonsampledZCs(S, 0);
-    
-    ssSetOptions(S, SS_OPTION_EXCEPTION_FREE_CODE);
-    
-    initialise_arrays ();
-    PRINT_LEAVE("mdlInitializeSizes");
+  ssSetNumSampleTimes(S, 1);
+  ssSetNumRWork(S, 0);
+  ssSetNumIWork(S, 0);
+  ssSetNumPWork(S, 0);
+  ssSetNumModes(S, 0);
+  ssSetNumNonsampledZCs(S, 0);
+  
+  ssSetOptions(S, SS_OPTION_EXCEPTION_FREE_CODE);
+  
+  initialise_arrays ();
+
+  PRINT_LEAVE;
 }
 
 static void mdlInitializeSampleTimes(SimStruct *S)
 {
-  PRINT_ENTER("mdlInitializeSampleTimes");
+  PRINT_ENTER;
+
   ssSetSampleTime(S, 0, CONTINUOUS_SAMPLE_TIME);
   ssSetOffsetTime(S, 0, 0.0);
-  PRINT_LEAVE("mdlInitializeSampleTimes");
+
+  PRINT_LEAVE;
 }
 
 #define MDL_INITIALIZE_CONDITIONS
 static void mdlInitializeConditions(SimStruct *S)
 {
-  PRINT_ENTER("mdlInitializeConditions");
+  PRINT_ENTER;
 
   <mtt_model_name>_numpar ();
   <mtt_model_name>_state ();
@@ -251,12 +249,12 @@ static void mdlInitializeConditions(SimStruct *S)
     ssGetContStates (S)[i] = mttx[i];
   }
 
-  PRINT_LEAVE("leaving mdlInitializeConditions");
+  PRINT_LEAVE;
 }
 
 static void mdlOutputs(SimStruct *S, int_T tid)
 {
-  PRINT_ENTER("entered mdlOutputs");
+  PRINT_ENTER;
 
   update_states_from_simulink (S);
   update_inputs_from_simulink (S);
@@ -269,17 +267,21 @@ static void mdlOutputs(SimStruct *S, int_T tid)
 
   <mtt_model_name>_odeo ();
 
-  for (i = 0; i < MTTNY; i++) {
-      ssGetOutputPortRealSignal (S,i)[0] = mtty[i];
+  for (i = 0; i < MTTNX; i++) {
+      ssGetOutputPortRealSignal (S, 0)[i] = mttx[i];
   }
 
-  PRINT_LEAVE("leaving mdlOutputs");
+  for (i = 0; i < MTTNY; i++) {
+      ssGetOutputPortRealSignal (S, 1)[i] = mtty[i];
+  }
+
+  PRINT_LEAVE;
 }
 
 #define MDL_DERIVATIVES
 static void mdlDerivatives(SimStruct *S)
 {
-  PRINT_ENTER("entered mdlDerivatives\n");
+  PRINT_ENTER;
     
   update_states_from_simulink (S);
   update_inputs_from_simulink (S);
@@ -294,12 +296,12 @@ static void mdlDerivatives(SimStruct *S)
     ssGetdX (S)[i] = mttdx[i];
   }
 
-  PRINT_LEAVE("leaving mdlDerivatives");
+  PRINT_LEAVE;
 }
 
 static void mdlTerminate(SimStruct *S)
 {
-  PRINT_ENTER("entered mdlTerminate");
+  PRINT_ENTER;
   UNUSED_ARG(S);
 
   free (mttdx);
@@ -309,7 +311,7 @@ static void mdlTerminate(SimStruct *S)
   free (mtty);
   free (mttyz);
 
-  PRINT_LEAVE("leaving mdlTerminate");
+  PRINT_LEAVE;
 }
 
 #ifdef  MATLAB_MEX_FILE    /* Is this file being compiled as a MEX-file? */

@@ -1,9 +1,12 @@
-/* -*-c-*-	Put emacs into c-mode */
+/* -*-c-*-	Put emacs into c-mode
+ * <mtt_model_name>_sfun_ae.c:
+ * Matlab mex algebraic equations for <mtt_model_name>
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
-
 #include <mex.h>
+#include "sfun_debug.h"
 #include "<mtt_model_name>_def.h"
 
 /* utility procedures */
@@ -28,6 +31,7 @@ static double *
 		     const double *mttpar)
 {
 #include "<mtt_model_name>_ae.c"
+  PRINT_LEAVE;
 }
 
 /* generic mex function */
@@ -49,6 +53,8 @@ mexFunction (int nlhs, mxArray *plhs[],
 
   unsigned int i;
   double *p;
+
+  PRINT_ENTER;
 
   mttyz		= array_of_double (MTTNYZ);
 
@@ -99,6 +105,8 @@ mexFunction (int nlhs, mxArray *plhs[],
   free (mttu);
   free (mttpar);
   free (mttyz);
+
+  PRINT_LEAVE;
 }
 
 #ifdef __cplusplus

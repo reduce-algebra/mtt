@@ -1,0 +1,182 @@
+/* -*-c-*-	Put emacs into c-mode
+ * <mtt_model_name>_sfun_input.c:
+ * Matlab S-function inputs for <mtt_model_name>
+ */
+
+#define S_FUNCTION_NAME <mtt_model_name>_sfun_input
+#define S_FUNCTION_LEVEL 2
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "simstruc.h"
+#include "sfun_debug.h"
+#include "<mtt_model_name>_def.h"
+
+static double *mttu;		/* pointer to inputs */
+static double *mttpar;		/* pointer to parameters */
+static double *mttx;		/* pointer to states */
+static double *mtty;		/* pointer to outputs */
+static double  mttt;		/* time */
+
+static unsigned int i;		/* loop counter */
+
+/* system equations */
+
+static void
+<mtt_model_name>_input (void)
+{
+#include "<mtt_model_name>_input.c"
+  PRINT_LEAVE;
+}
+
+static void
+<mtt_model_name>_numpar (void)
+{
+#include "<mtt_model_name>_sympar.h"
+#include "<mtt_model_name>_numpar.c"
+  PRINT_LEAVE;
+}
+
+/* utility procedures */
+
+static double *
+array_of_double (size_t n)
+{
+  void *p = calloc (n, sizeof (double));
+  if (! p) {
+    fprintf (stderr, "*** Error: failed to allocate memory\n");
+  }
+  return (double *) p;
+}
+
+static void
+initialise_arrays (void)
+{
+  PRINT_ENTER;
+
+  mttpar	= array_of_double (MTTNPAR);
+  mttu		= array_of_double (MTTNU + MTTNYZ);
+  mttx		= array_of_double (MTTNX);
+  mtty		= array_of_double (MTTNY);
+
+  PRINT_LEAVE;
+}
+
+static void
+update_inputs_from_simulink (SimStruct *S)
+{
+  PRINT_ENTER;
+  for (i = 0; i < MTTNX; i++) {
+    mttx[i] = *ssGetInputPortRealSignalPtrs (S, 0)[i];
+  }
+  PRINT_LEAVE;
+}
+
+static void
+update_simtime_from_simulink (SimStruct *S)
+{
+  PRINT_ENTER;
+  mttt = ssGetT (S);
+  PRINT_LEAVE;
+}
+
+/* S-function methods */
+
+static void mdlInitializeSizes(SimStruct *S)
+{
+  PRINT_ENTER;
+
+  ssSetNumSFcnParams(S, 0); 
+  if (ssGetNumSFcnParams(S) != ssGetSFcnParamsCount(S)) {
+    PRINT_LEAVE;
+    return;
+  }
+  
+  ssSetNumContStates(S, 0);
+  ssSetNumDiscStates(S, 0);
+  
+  if (!ssSetNumInputPorts(S, 1)) return;
+  ssSetInputPortWidth(S, 0, MTTNX);
+  ssSetInputPortDirectFeedThrough(S, 0, 1);
+    
+  if (!ssSetNumOutputPorts(S, 1)) return;
+  ssSetOutputPortWidth(S, 0, MTTNU);
+    
+  ssSetNumSampleTimes(S, 1);
+  ssSetNumRWork(S, 0);
+  ssSetNumIWork(S, 0);
+  ssSetNumPWork(S, 0);
+  ssSetNumModes(S, 0);
+  ssSetNumNonsampledZCs(S, 0);
+  
+  ssSetOptions(S, SS_OPTION_EXCEPTION_FREE_CODE);
+  
+  initialise_arrays ();
+
+  PRINT_LEAVE;
+}
+
+static void mdlInitializeSampleTimes(SimStruct *S)
+{
+  PRINT_ENTER;
+  ssSetSampleTime(S, 0, CONTINUOUS_SAMPLE_TIME);
+  ssSetOffsetTime(S, 0, 0.0);
+  PRINT_LEAVE;
+}
+
+#define MDL_INITIALIZE_CONDITIONS
+static void mdlInitializeConditions(SimStruct *S)
+{
+  PRINT_ENTER;
+  <mtt_model_name>_numpar ();
+  PRINT_LEAVE;
+}
+
+static void mdlOutputs(SimStruct *S, int_T tid)
+{
+  PRINT_ENTER;
+
+  update_inputs_from_simulink (S);
+  update_simtime_from_simulink (S);
+
+  UNUSED_ARG(tid); /* not used in single tasking mode */
+
+  <mtt_model_name>_input ();
+
+  for (i = 0; i < MTTNU; i++) {
+      ssGetOutputPortRealSignal (S, 0)[i] = mttu[i];
+  }
+
+  PRINT_LEAVE;
+}
+
+#define MDL_DERIVATIVES
+static void mdlDerivatives(SimStruct *S)
+{
+  PRINT_ENTER;
+
+  update_inputs_from_simulink (S);
+  update_simtime_from_simulink (S);
+
+  PRINT_LEAVE;
+}
+
+static void mdlTerminate(SimStruct *S)
+{
+  PRINT_ENTER;
+
+  UNUSED_ARG(S);
+
+  free (mttpar);
+  free (mttu);
+  free (mttx);
+  free (mtty);
+
+  PRINT_LEAVE;
+}
+
+#ifdef  MATLAB_MEX_FILE    /* Is this file being compiled as a MEX-file? */
+#include "simulink.c"      /* MEX-file interface mechanism */
+#else
+#include "cg_sfun.h"       /* Code generation registration function */
+#endif

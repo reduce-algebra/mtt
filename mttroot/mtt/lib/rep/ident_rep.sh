@@ -106,12 +106,23 @@ function [epar,Y] = ${sys}_ident (y,u,t,par_names,Q,extras)
   
   ## Do some plots
   figure(1);
+  grid;
   title("Comparison of data");
   xlabel("t");
   ylabel("y");
   [N,M] = size(Y);
-  plot(t,Y(:,M-n_y+1:M),"1;Estimated;", t,y,"3;Actual;");
+  y_est = Y(:,M-n_y+1:M);
+  plot(t,y_est,"1;Estimated;", t,y,"3;Actual;");
   figfig("${sys}_ident_comparison");
+
+  figure(2);
+  [n_par,m_par] = size(Par);
+  grid;
+  title("Parameter estimates");
+  xlabel("Iteration");
+  ylabel("Estimates");
+  plot(0:m_par-1, Par, 0:m_par-1, Par,"x");
+  figfig("${sys}_ident_pars");
 
   ## Create a table of the parameters
   [n_par,m_par] = size(i_par);
@@ -131,6 +142,9 @@ function [epar,Y] = ${sys}_ident (y,u,t,par_names,Q,extras)
   fprintf(fid,"\\\\end{table}\\n");
   fclose(fid);
 
+  ## Save the data for later use.
+   par_values = epar(i_par(:,1));
+   save ${sys}_ident_est_data.dat y_est Y par_names par_values
 endfunction
 EOF
 }

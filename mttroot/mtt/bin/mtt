@@ -17,6 +17,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.331  2002/04/19 09:24:29  gawthrop
+## 2 changes to ode2odes_out generation: only compiles the specified c
+## file; outside the computation=c clause
+##
 ## Revision 1.330  2002/04/17 10:03:12  geraint
 ## Marked .sg as a major representation.
 ##
@@ -1450,9 +1454,9 @@ fi
 
 
 if [ "$1" = "info" ]  && [ "$3" = "" ]; then
-  (cd $MTTPATH/doc/; make --silent mtt.info)
+  (cd $MTT_DOC ; make --silent mtt.info)
   echo "Invoking info in xterm"
-  xterm -e info -f $MTTPATH/doc/mtt.info $2
+  xterm -e info -f $MTT_DOC/mtt.info $2
   exit
 fi
 

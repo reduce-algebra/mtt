@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Makes subsystems for partitioning
+# Copyright (C) 2000 by Peter J. Gawthrop
+
+echo Creating subsystems for $1_$2.$3
+
+# Get subsystems
+  subsystems=`mtt_get_subsystems -strip $1`;
+
+for subsystem in $subsystems; do
+    mtt -q -sub $subsystem $1 $2 $3
+    ## Repeating systems need sorting out !!!!
+    #cp $1_$subsystem"_"$2.$3 $1_$subsystem"_1_"$2.$3
+done

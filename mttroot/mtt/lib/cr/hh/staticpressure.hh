@@ -1,7 +1,7 @@
 #ifndef STATICPRESSURE_HH
 #define STATICPRESSURE_HH
 
-#include <math.h>		// log, pow
+#include <cmath>		// log, pow
 
 #include "constants.hh"
 

@@ -1,7 +1,7 @@
 #ifndef SQUARELAW_HH
 #define SQUARELAW_HH
 
-#include <math.h>
+#include <cmath
 #include "sign.hh"
 
 inline double squarelaw(const double gain,

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  2000/10/12 13:45:13  peterg
+## Put in the no-file version
+##
 ## Revision 1.1  2000/10/12 12:32:23  peterg
 ## Initial revision
 ##
@@ -22,10 +25,17 @@
 
 sys=$1 # System name
 rep=$2 # System representation
+update=$3 # Update or not
 
-textfile=$1_$2.txt
-infofile=$1_sympar.txt
-default='0.0'
+if [ -z "$2" ]; then
+  echo Usage mtt_update system representation [update]    
+  exit
+fi
+
+ext=txt
+textfile=$1_$2.$ext
+infofile=$1_sympar.$ext
+default='1.0'
 
 if [ -f "$textfile" ]; then
   # Inform User
@@ -62,6 +72,21 @@ END{
   }'  default=$default mtt_text mtt_info
 
 
+if [ -z "$update" ]; then
+  if [ -f "mtt_in_text" ]; then
+    in_text=`cat mtt_in_text`
+    echo "The following variables are defined in $textfile, but do not exist:"
+    echo $in_text
+    echo Use mtt $sys $rep $ext to update
+  fi
+  if [ -f "mtt_in_info" ]; then
+    in_info=`cat mtt_in_info`
+    echo "The following variables are defined in $infofile, but do not exist:"
+    echo $in_info
+    echo Use mtt $sys $rep $ext to update
+  fi
+  exit    
+fi
 answered=''
 if [ -f "mtt_in_text" ]; then
   in_text=`cat mtt_in_text`

@@ -1,0 +1,40 @@
+%% Label file for system sIS (sIS_lbl.txt)
+%SUMMARY sIS
+%DESCRIPTION 
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %% Revision 1.1  2000/12/28 17:29:10  peterg
+% %% To RCS
+% %%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Port aliases
+%ALIAS	in	in_1,in_2
+
+% Argument aliases
+%ALIAS	$1	flow,i
+%ALIAS	$2	f_0
+%ALIAS	$3	i_s
+%ALIAS	$4	f_0s
+
+% Argument aliases
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+% Component type SS
+	[in]	SS		external,external
+
+% Component type sI
+	i       slin             flow,i;i_s
+
+% Component type sSf
+	f_0     SS	        f_0;f_0s

@@ -2,12 +2,12 @@ function cbg2fig(system_name, ...
                  system_type, full_name, ...
                  stroke_length, stroke_thickness, stroke_colour, ...
                  comp_font, comp_colour_u, comp_colour_o)
-% $$$ function cbg2fig(bonds, cbonds, rbonds, ...
-% $$$                  rcomponents, status, system_name, ...
+ 
+% $$$ cbg2fig(system_name, ...
+% $$$                  system_type, full_name, ...
 % $$$                  stroke_length, stroke_thickness, stroke_colour, ...
-% $$$                  comp_font, comp_colour_u, comp_colour_o, ...
-% $$$                  filename)
-% $$$ 
+% $$$                  comp_font, comp_colour_u, comp_colour_o)
+ 
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %     %%%%% Model Transformation Tools %%%%%
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -25,6 +25,9 @@ function cbg2fig(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1996/08/05 20:15:39  peter
+% %% Prepared for recursive version.
+% %%
 % %% Revision 1.1  1996/08/05 18:12:25  peter
 % %% Initial revision
 % %%
@@ -63,12 +66,23 @@ else
   full_name = [full_name, '_', system_name];
 end;
 
+full_name_type = [full_name, '_', system_type];
+fig_name = [full_name_type, '_cbg.fig'];
+
+% Return if cbg file doesn't exist
+if exist(fig_name)~=2
+  return
+end;
+
+% Setup file - append to the fig file
+filenum = fopen(fig_name, 'a');
+
 % Get the raw and the processed bonds
 eval(['[rbonds,rstrokes,rcomponents] = ', system_type, '_rbg;']);
 eval(['[bonds] = ', system_type, '_abg;']);
 
 % Get the causal bonds
-eval(['[cbonds,status]=', full_name, '_cbg;']);
+eval(['[cbonds,status]=', full_name_type, '_cbg;']);
 
 % Check sizes
 [N_components,Columns] = size(rcomponents);
@@ -76,9 +90,6 @@ if (Columns ~= 13)
   error('Incorrect rcomponents matrix: must have 13 columns');
 end;
 M_components = Columns;
-
-% Setup file - append to the cbg file
-filenum = fopen([full_name, '_cbg.fig'], 'a');
 
 % Rotation matrix
 rot = [0 -1; 1 0];
@@ -174,18 +185,25 @@ for i = 1:N_components
 
 
   %Now print the component in fig format
-  eval(['[comp_type,comp_name] = ', system_name, '_cmp(i);']);
+  eval(['[comp_type,comp_name] = ', system_type, '_cmp(i);']);
+
   Terminator = '\\001';   
   for j = 1:length(fig_params)
     fprintf(filenum, '%1.0f ', fig_params(j));
   end;
   fprintf(filenum, '%1.0f %1.0f ', coords(1), coords(2)); 
-  % don't print the auto-numbered labels
   fprintf(filenum, '%s:%s%s\n', comp_type, comp_name, Terminator);
+  
+  % If it's a subsystem, do the fig file for that as well
+  cbg2fig(comp_name, ...
+                 comp_type, full_name, ...
+                 stroke_length, stroke_thickness, stroke_colour, ...
+                 comp_font, comp_colour_u, comp_colour_o);
 end;
 
 % Close the file
 fclose(filenum);
+return
 
 
 

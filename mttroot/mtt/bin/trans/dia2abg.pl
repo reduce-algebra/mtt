@@ -120,7 +120,7 @@ die usage() if $diagram_name eq '';
 
 # Use defaults if necessary:
 $dia_input_file = $diagram_name . "_abg.dia" if ($dia_input_file eq '');
-$dia_output_file = $diagram_name . "_abg.dia" if ($dia_output_file eq '');
+$dia_output_file = $diagram_name . "_cbg.dia" if ($dia_output_file eq '');
 $label_file = $diagram_name . "_lbl.txt" if ($label_file eq '');
 $abg_file = $diagram_name . "_abg.m" if ($abg_file eq '');
 $component_list_file = $diagram_name . "_cmp.txt" if ($component_list_file eq '');

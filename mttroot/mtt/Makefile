@@ -55,7 +55,7 @@ distclean: clean clean-cc clean-conf clean-doc
 
 install: build clean.sh clean-conf.sh
 	@install -d $(INSTDIR) $(CONFDIR) $(PROGDIR)
-	@cp -a   bin cc lib $(INSTDIR)
+	@cp -a   bin cc doc lib $(INSTDIR)
 	@install bin/mttrc $(CONFDIR)/mtt.conf
 	@install mtt.sh $(PROGDIR)/mtt
 	@install bin/xmtt $(PROGDIR)
@@ -67,7 +67,7 @@ install-cc: build-cc clean-cc.sh
 install-doc: build-doc clean-doc.sh
 	@install -d $(DOCDIR) $(INFODIR)
 	@cd doc ; DOCPATH=$(DOCDIR) INFOPATH=$(INFODIR) make -s install-doc
-	@install doc/Makefile doc/*.* $(DOCDIR)
+	@cd doc ; install Makefile mtt.info* mtt.pdf mtt.ps.gz $(DOCDIR)
 	@install doc/mtt.info* $(INFODIR)
 
 .PHONY: FORCE
@@ -109,8 +109,6 @@ mtt.sh:
 	@echo 'elif [[ -r $${mtt_install_dir}/bin/mttrc ]]; then'	>>mtt.sh
 	@echo '   . $${mtt_install_dir}/bin/mttrc $${mtt_install_dir}'	>>mtt.sh
 	@echo 'fi'							>>mtt.sh
-	@echo ''							>>mtt.sh
-	@echo 'MTT_DOC=$(DOCDIR)'					>>mtt.sh
 	@echo ''							>>mtt.sh
 	@echo '# get user-specific settings'				>>mtt.sh
 	@echo 'if [[ -r $${HOME}/.mttrc ]]; then'			>>mtt.sh

@@ -1,4 +1,4 @@
-function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,p_o)
+function [t,y,u,y_c,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,p_o)
 
   ## usage: [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,p_o)
   ##
@@ -246,6 +246,7 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
 
   ## Control loop
   y = [];
+  y_c = [];
   u = [];
   t = [];
   y_e = [];
@@ -309,6 +310,7 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
       if Simulate
 	t = [t;ti'];
 	y = [y;yi'];
+	y_c = [y_c;(C_c*xsi)'];
 	u = [u;ui'];
       else
 	t = [t;t_i];

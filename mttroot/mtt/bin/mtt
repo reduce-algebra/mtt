@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.257  2000/09/02 15:53:53  peterg
+## Now does partitioning up to dae.view
+##
 ## Revision 1.256  2000/09/02 14:24:06  peterg
 ## -sub switch introduced - works up to dae.r
 ##
@@ -993,14 +996,14 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-sub )  mtt_switches="$mtt_switches $1 $2";
                 sub='-sub'; 
                 subsystem="_"$2;
-                shift ;;
+                shift;;
 	-oct )
                 mtt_switches="$mtt_switches $1";
                 m='oct';;
 	-opt )  mtt_switches="$mtt_switches $1";
                 optimise='-optimise';;
-	-partition )  mtt_switches="$mtt_switches $1";
-                partition='-partition';;
+	-partition ) mtt_switches="$mtt_switches $1";
+                     partition='-partition';;
         --version)                
                   echo 'MTT version' $version; exit;;
         --versions)                
@@ -1792,6 +1795,10 @@ $1_simp.r:
 	( \
 	echo "%% Reduce commands to simplify output for system $1 ($1_simp.r)"; \
 	cat $MTTPATH/trans/m/rcs_header.txt; \
+	    echo 'ON ALLFAC; %Multiplicative factors'; \
+	    echo 'OFF DIV; %Polynomial division'; \
+	    echo 'OFF FACTOR; %Factorise polynomials'; \
+	    echo 'OFF LIST; %Each term on a new line'; \
 	echo 'END;'; \
 	)> $1_simp.r
 

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.21  1996/08/22 12:19:51  peter
+## Added various document viewers.
+##
 ## Revision 1.20  1996/08/20 08:24:53  peter
 ## Now with version control.
 ##
@@ -86,6 +89,7 @@ echo
 
 if [ "$1" = "" ]; then
   echo 'Usage: mtt help'
+  echo '       mtt hinfo'
   echo '       mtt info'
   echo '       mtt info topic'
   echo '       mtt manual'
@@ -101,19 +105,19 @@ fi
 
 if [ "$1" = "info" ]  && [ "$3" = "" ]; then
   echo Invoking info
-  info -f $MTTPATH/../doc/mtt.info $2
+  info -f $MTTPATH/doc/mtt.info $2
   exit
 fi
 
 if [ "$1" = "hinfo" ] && [$2 = ""]; then
    echo Invoking $HTMLVIEW
-   (cd $MTTPATH/../doc; $HTMLVIEW ./mtt.html)&
+   (cd $MTTPATH/doc; $HTMLVIEW ./mtt.html)&
    exit
 fi
 
 if [ "$1" = "manual" ] && [$2 = ""]; then
   echo Invoking $DVIVIEW
-  $DVIVIEW  $MTTPATH/../doc/mtt.dvi &
+  $DVIVIEW  $MTTPATH/doc/mtt.dvi &
   exit
 fi
 
@@ -144,7 +148,7 @@ fi
 if [ "$1" = "clean" ] && [ "$2" = "" ]; then
   echo 'Removing all generated files for all systems'
   rm -f *.log  mtt_info.txt warning.txt
-  rm -f *_abg.m *_args.* 
+  rm -f *_abg.m *_args.* *_sympar.r 
   rm -f *_rbg.* *_cmp.* *_fig.fig *_*cbg.* *_ese.* *_def.*
   rm -f *_dae*.* *_cse.* *_ode*.* *_obs.* *_rfe.* *_ss.*
   rm -f *_dm.* *_csm.* *_sm.* *_tf.* *_sr*.* *_*fr.*
@@ -156,7 +160,7 @@ fi
 if [ "$2" = "clean" ] && [ "$3" = "" ]; then
   echo 'Removing all generated files for system ' $1
   rm -f *.log  mtt_info.txt warning.txt
-  rm -f $1_abg.m $1_args.* 
+  rm -f $1_abg.m $1_args.* $1_sympar.r 
   rm -f $1_rbg.* $1_cmp.* $1_fig.fig $1_*cbg.* $1_ese.* $1_def.*
   rm -f $1_dae*.* $1_cse.* $1_ode*.* $1_obs.* $1_rfe.* $1_ss.*
   rm -f $1_dm.* $1_csm.* $1_sm.* $1_tf.* $1_sr*.* $1_*fr.*
@@ -233,9 +237,6 @@ if [ "$3" = "vc" ]; then
 	 cr)
 		VC='ok'
 		VCext='r' ;;
-	sympar )
-		VC='ok'
-		VCext='r' ;;
 	simp )
 		VC='ok'
 		VCext='r' ;;
@@ -266,16 +267,13 @@ make -s  -f -  $1_$2.$3 << EOF
 $1_args.m:
 	touch $1_args.m
 
-#Create acausal bond graph figure using xfig
-$1_abg.fig:
-	$FIG $1_abg.fig 
 
 #Create empty files (with titles) if not already there
 $1_lbl.txt:
 	echo Creating $1_lbl.txt
 	( \
 	echo "%% Label file for system $1 ($1_lbl.txt)"; \
-	cat $MTTPATH/m/rcs_header.txt; \
+	cat $MTTPATH/trans/m/rcs_header.txt; \
 	echo "%% Each line should be of one of the following forms:"; \
 	echo "%	a comment (ie starting with %)"; \
 	echo "%	Component-name	CR_name	arg1,arg2,..argn"; \
@@ -283,27 +281,17 @@ $1_lbl.txt:
         )> $1_lbl.txt
 $1_cr.r:
 	makecr $1
-$1_sympar.r:
-	echo Creating $1_sympar.r
-	( \
-	echo "%% Symbolic parameter file for system $1 ($1_sympar.r)"; \
-	cat $MTTPATH/m/rcs_header.txt; \
-	echo "%% Change the following line to reflect the number of variables"; \
-	echo "MTTNVar := 0;"; \
-	echo "IF MTTNVar>0 THEN MATRIX MTTVar(MTTNVar,1);"; \
- 	echo "%% Add an assignment statement here for each variable"; \
- 	echo "%% For example: MTTVar(1,1) := r"; \
-        )> $1_sympar.r
 $1_simp.r:
 	echo Creating $1_simp.r
 	( \
 	echo "%% Reduce comands to simplify output for system $1 ($1_simp.r)"; \
-	cat $MTTPATH/m/rcs_header.txt; \
+	cat $MTTPATH/trans/m/rcs_header.txt; \
+	echo 'END;'; \
         )> $1_simp.r
 
 $1_numpar.m: $1_sympar.r
 	mknumpar $1; matlab_tidy $1_numpar.m;
-	mv $1_numpar.m junk; cat $MTTPATH/m/rcs_header.txt junk>$1_numpar.m
+	mv $1_numpar.m junk; cat $MTTPATH/trans/m/rcs_header.txt junk>$1_numpar.m
 
 $1_input.m:
 	echo Creating $1_input.m
@@ -311,7 +299,7 @@ $1_input.m:
 	echo "function u = $1_input(t)"; \
 	echo "%% Input file for system $1 ($1_input.m)"; \
 	echo "%% This file provides the system input for simulation:";\
-	cat $MTTPATH/m/rcs_header.txt; \
+	cat $MTTPATH/trans/m/rcs_header.txt; \
 	echo; \
 	echo "% Set up system definitions"; \
 	echo "[nx,ny,nu,nz,nyz] = $1_def;"; \
@@ -324,14 +312,15 @@ $1_sspar.r:
 	echo Creating $1_sspar.r
 	(\
 	echo "%% Reduce steady-state parameter file for $1 ($1_sspar.r)" \
-	cat $MTTPATH/m/rcs_header.txt; \
+	cat $MTTPATH/trans/m/rcs_header.txt; \
+	echo 'END;'; \
 	)> $1_sspar.r
 
 $1_rep.txt:
 	echo Creating $1_rep.txt
 	( \
 	echo "%% Outline report file for system $1 ($1_rep.txt)"; \
-	cat $MTTPATH/m/rcs_header.txt; \
+	cat $MTTPATH/trans/m/rcs_header.txt; \
 	echo "abg ps"; \
 	echo "lbl txt"; \
 	echo "cbg ps"; \
@@ -345,7 +334,10 @@ $1_rbg.m: $1_abg.fig $1_lbl.txt
 $1_cmp.m: $1_rbg.m
 $1_fig.fig: $1_rbg.m
 
-#Bond graph conversions using matlab
+# Lbl to sympar conversion
+$1_sympar.r: $1_lbl.txt
+	lbl2sympar_txt2r $1
+
 #Raw bond graph to acausal bond graph: mfile
 $1_abg.m: $1_rbg.m
 	rbg2abg_m $1	
@@ -369,7 +361,7 @@ $1_def.m: $1_def.r
 
 
 #Differential-algebraic equations
-$1_dae.r:	$1_ese.r $1_cr.r $1_sympar.r
+$1_dae.r: $1_ese.r $1_cr.r $1_sympar.r
 	ese2dae_r $1; tidy $1_dae.r
 $1_dae.m: $1_def.r $1_dae.r  $1_sympar.r
 	dae_r2m $1; matlab_tidy $1_dae.m; matlab_tidy $1_daeo.m

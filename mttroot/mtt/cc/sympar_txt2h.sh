@@ -1,6 +1,9 @@
 #! /bin/sh
 # $Id$
 # $Log$
+# Revision 1.3  2001/03/19 02:28:53  geraint
+# Branch merge: merging-ode2odes-exe back to MAIN.
+#
 # Revision 1.2.2.1  2001/03/16 03:56:54  geraint
 # Convert variable names to lower case.
 #
@@ -50,7 +53,7 @@ OUT=${SYS}_sympar.h
 
 declare_sys_param ()
 {
-cat ${IN} | awk '{printf ("static double %s MTT_UNUSED;\t// %s\n", tolower($1), $2)}'
+cat ${IN} | awk '(NF>0){printf ("static double %s MTT_UNUSED;\t// %s\n", tolower($1), $2)}'
 }
 
 declare_temp_vars ()

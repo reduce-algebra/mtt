@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.22  1998/11/17 17:39:45  peterg
+## Put _smx include at end of list (?????)
+##
 ## Revision 1.21  1998/11/17 17:26:11  peterg
 ## Put sign.p first
 ##
@@ -239,7 +242,7 @@ BEGIN{
       if (doing_header==1){
         if (rep=="ode2odes"){
           printf("VAR \n");
-          for (k=1;k<i;k++) printf("  %s,\n",global[k])
+          for (k=1;k<=i;k++) printf("  %s,\n",global[k])
           printf("%s : REAL;\n", global[i])
           printvar("x",Nx);
           printvar("u",Nu);

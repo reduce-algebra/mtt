@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2002/12/01 14:54:52  gawthrop
+## Replaces defunct abg2lbl_fig2txt
+##
 ##
 ## Old log from abg2lbl_fig2txt
 ## Revision 1.28  2002/10/30 00:04:22  gawthrop
@@ -193,7 +196,7 @@ create_lbl_body()
 
 
 #Write out the outline lbl file
-grep -v  '\[[0-9]*\]'  $1_cmp.txt | \
+strip_comments <$1_cmp.txt | grep -v  '\[[0-9]*\]' | \
 gawk --field-separator ':' '
  BEGIN {
     OldComponent="None";
@@ -333,6 +336,7 @@ cat mtt_junk_alias.txt >> ${outfile}
 cat mtt_args.txt       >> ${outfile}
 write_blurb            >> ${outfile}
 cat mtt_junk_lbl.txt   >> ${outfile}
+
 ## Put a blank line at end
 cat >> ${outfile} <<EOF
 

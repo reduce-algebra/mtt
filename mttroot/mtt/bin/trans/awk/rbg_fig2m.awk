@@ -13,6 +13,11 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.29  1998/04/12 12:35:32  peterg
+## Named and unnamed SS handled in a uniform manner - in particular, the
+## attributes are passed through
+## wrote_component function used.
+##
 ## Revision 1.28  1998/04/06 08:41:48  peterg
 ## Fixed bug due to adding (and then removing) 0 and 1 as port types
 ##
@@ -302,12 +307,11 @@ function process_text() {
       split(str,a,delimiter);
       type = a[1];
       name = a[2];
-
 # Check  if name is in label file and if used already
       found = 0; name_used = 0;
       for (i=1; i<=i_label; i++) {
 	lname = label[i,1];
-	if ( exact_match(name,lname) ) {
+	if ( lname==name ) {
 	  found = 1;
 	  if (name in used) {
 	    name_used = 1;
@@ -321,17 +325,15 @@ function process_text() {
 	    }
       }
 
-	if (!found) {
-	  if (isa_plain_component) {
-	    printf(warning_f, name)
-	  }
-	  i_label++;
-	  CR = default_cr;
-	  args = "";
-	  label[i_label,1] = name; 
-	  label[i_label,2] = CR;
-	  label[i_label,3] = args
-	    }
+if (!found) {
+printf(warning_f, name);
+i_label++;
+CR = default_cr;
+args = "";
+label[i_label,1] = name; 
+label[i_label,2] = CR;
+label[i_label,3] = args
+}
 
 # Give it a new entry if already used
 #  -- also tell user as it is an error now(?)
@@ -631,19 +633,23 @@ END {
   printf("port_name = [\n") >> b_file;
   for (i = 1; i <= i_port; i++) {
     split(ports[i],a, " ");
-    # Remove the []
-    name = substr(a[3],2,length(a[3])-2);
+    # Dont Remove the []
+    # name = substr(a[3],2,length(a[3])-2);
+    name = a[3];
     printf("'%s'\n", name) >> b_file;
   }
   printf("];\n\n") >> b_file;
 
 # Print the (external) port list
-#  printf("n_ports = %1.0f;\n", i_port_component) >> b_file;
   printf("port_list = [\n") >> b_file;
-  for (i = 1; i <= i_port_component; i++) 
-    printf("'%s'\n", port_labels[i]) >> b_file;
+  for (i = 1; i <= i_label; i++) {
+    name = label[i,1];
+    if (match(name,port_regexp))
+      printf("'%s'\n", name) >> b_file;
+  }
   printf("];\n\n") >> b_file;
   
 }
+
 
 

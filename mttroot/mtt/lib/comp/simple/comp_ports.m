@@ -14,6 +14,9 @@ function ports = comp_ports(comp_type,N)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.4  1998/03/31 08:39:31  peterg
+% %% Added EBTF
+% %%
 % %% Revision 1.3  1997/11/21 11:32:57  peterg
 % %% N ports numbered 1..N
 % %%
@@ -33,24 +36,24 @@ N_ports   = '-R-C-I-';
 comp_type = ['-', comp_type, '-'];
 
 if length(findstr(comp_type,junctions))==1
-  ports = ['undefined]'];
+  ports = ['[undefined]'];
 elseif length(findstr(comp_type,one_ports))==1
-  ports = ['in'];
+  ports = ['[in]'];
 elseif length(findstr(comp_type,two_ports))==1
-  ports = ['in';'out'];
+  ports = ['[in]';'[out]'];
 elseif length(findstr(comp_type,'[-EMTF-]'))==1
-  ports = ['in';'out';'mod'];
+  ports = ['[in]';'[out]';'[mod]'];
 elseif length(findstr(comp_type,'[-ES-]'))==1
-  ports = ['e';'s'];
+  ports = ['[e]';'[s]'];
 elseif length(findstr(comp_type,'[-PS-]'))==1
-  ports = ['in';'out';'power'];
+  ports = ['[in]';'[out]';'[power]'];
 elseif length(findstr(comp_type,N_ports))==1
   if N==1
-    ports = ['in'];
+    ports = ['[in]'];
   elseif N==2
-    ports = ['in';'out'];
+    ports = ['[in]';'[out]'];
   elseif N>2
-    ports = '1';
+    ports = '[1]';
     for i=2:N
       ports = [ports; sprintf("%i",i)];
     end;

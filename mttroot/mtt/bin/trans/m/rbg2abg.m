@@ -5,6 +5,9 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.24  1998/02/19 08:57:16  peterg
+% %% Fixed mtt-info bug -- confused filename with number
+% %%
 % %% Revision 1.23  1997/12/04 14:24:22  peterg
 % %% Removed error message about through-pointing arrows
 % %%
@@ -410,10 +413,10 @@ for i = 1:n_components
     end;
     if direction(1)==1 %in
       % mtt_info([comp_name, ' in'],fnum);
-      unsorted_port_list = ['in';'out'];
+      unsorted_port_list = ['[in]';'[out]'];
     else %reverse the order
       % mtt_info([comp_name, ' out'],fnum);
-      unsorted_port_list = ['out';'in'];
+      unsorted_port_list = ['[out]';'[in]'];
     end;
   end;
   

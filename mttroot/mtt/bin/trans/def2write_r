@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  2000/10/14 16:19:54  peterg
+## Just optimize one line at a time ...
+##
 ## Revision 1.3  2000/10/11 09:07:17  peterg
 ## Added csex rep (cse without E)
 ##
@@ -55,6 +58,16 @@ case $rep in
         matrices='Y'
         ns="$Ny"
         ms="1"
+	;;
+    lde)
+        matrices='L'
+        ns="$Nyz"
+        ms="1"
+	;;
+    ldeo)
+        matrices='Y Yz'
+        ns="$Ny $Nyz"
+        ms="1 1"
 	;;
     ode)
         matrices='dX'

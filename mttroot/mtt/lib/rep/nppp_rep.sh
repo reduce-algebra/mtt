@@ -16,6 +16,7 @@ def_file=${sys}_def.r
 dat2_file=${sys}_nppp.dat2
 dat2s_file=${sys}_nppps.dat2
 nppp_numpar_file=${sys}_nppp_numpar.m
+option_file=${sys}_nppp_mtt_options.txt
 
 ## Get system information
 if [ -f "${def_file}" ]; then
@@ -27,19 +28,16 @@ fi
 ny=`mtt_getsize $1 y`
 nu=`mtt_getsize $1 u`
 
-## Help documentation
-help_short() {
-cat<<EOF
-Nonlinear predictive pole placement
-EOF
+check_new_options() {
+    if [ -f "${option_file}" ]; then
+	old_options=`cat ${option_file}`
+        if [ "${mtt_options}" != "${old_options}" ]; then
+	   echo ${mtt_options} > ${option_file}
+	fi
+    else
+	echo ${mtt_options} > ${option_file}
+    fi
 }
-
-help_long() {
-cat<<EOF
-Details go here
-EOF
-}
-
 
 ## Make the _nppp.m file
 make_nppp() {
@@ -93,7 +91,7 @@ function [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, A_u, A_w, w, Q, extr
   endif
   
   t_horizon = [simpars.first+simpars.dt:simpars.dt:simpars.last]';
-  w_s = ones(size(t_horizon))*w';
+  w_s = ones(length(t_horizon)-1,1)*w';
 
   ## Setup the indices of the adjustable stuff
   if nargin<2
@@ -159,7 +157,7 @@ function [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, A_u, A_w, w, Q, extr
   y_open = y(j,:);
   u_open = u(j,:);
 
-  if extras.visual
+  ##if extras.visual
     ## Plots
     gset grid; xlabel "Time (sec)"; title "${sys}"
     ty = [t y] ; 
@@ -178,7 +176,7 @@ function [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, A_u, A_w, w, Q, extr
   
     system("gv ${sys}_y.eps&");
     system("gv ${sys}_u.eps&");
-  endif
+  ##endif
 endfunction
 
 EOF
@@ -231,39 +229,6 @@ endfunction
 EOF
 }
 
-make_model() {
-    
-echo "Making sensitivity simulation for system ${sys} (lang ${lang})"
-
-if [ "${lang}" = "oct" ]; then
-    oct='-oct'
-fi
-
-## System
-mtt -q ${mtt_parameters} -stdin ${sys} sympar m
-mtt -q ${mtt_parameters} -stdin ${sys} simpar m
-mtt -q ${mtt_parameters} -stdin ${oct} ${sys} state ${lang}
-mtt -q ${mtt_parameters} -stdin ${oct} ${sys} numpar ${lang}
-mtt -q ${mtt_parameters} -stdin ${oct} ${sys} input ${lang}
-mtt -q ${mtt_parameters} -stdin ${oct} ${sys} ode2odes ${lang}
-mtt -q ${mtt_parameters} -stdin ${sys} sim m
-
-## Sensitivity system
-mtt -q ${mtt_parameters} -stdin -s s${sys} sympar m
-mtt -q ${mtt_parameters} -stdin -s s${sys} simpar m
-mtt -q ${mtt_parameters} -stdin ${oct} -s s${sys} state ${lang}
-mtt -q ${mtt_parameters} -stdin ${oct} -s s${sys} numpar ${lang}
-mtt -q ${mtt_parameters} -stdin ${oct} -s s${sys} input ${lang}
-mtt -q ${mtt_parameters} -stdin ${oct} -s s${sys} ode2odes ${lang}
-mtt -q ${mtt_parameters} -stdin -s s${sys} ssim m
-
-## Additional system reps for PPP
-mtt -q ${mtt_parameters} -stdin  ${sys} sm m
-mtt -q ${mtt_parameters} -stdin  ${sys} def m
-mtt -q ${mtt_parameters} -stdin  -s s${sys} def m
-
-}
-
 make_dat2() {
 
 ## Inform user
@@ -279,12 +244,6 @@ EOF
 }
 
 case ${lang} in
-    help_short)
-        help_short
-        ;;
-    help_long)
-        help_long
-        ;;
     numpar.m)
         ## Make the numpar stuff
         make_nppp_numpar;
@@ -310,10 +269,11 @@ case ${lang} in
 	;;
 
     view)
-	
+	echo Viewing ${sys}_${rep}.ps
+        gv ${sys}_${rep}.ps&
 	;;
     *)
-	echo Language ${lang} not supported by nppp representation
+	echo Language ${lang} not supported by ${rep} representation
         exit 3
 esac
 

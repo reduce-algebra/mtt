@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.19  2001/07/03 23:51:10  gawthrop
+## Now puts outline #Summary and #Description lines at top of lbl file
+##
 ## Revision 1.18  2001/06/13 18:24:10  gawthrop
 ## Made "lin" default in place of "none"
 ## Still needs arg and cr alias clashes to be sorted ....
@@ -213,6 +216,8 @@ awk --field-separator ':' '
 
 
     cr["RS"] = lin;  arg["RS"]  = sprintf("flow,%s%s", Name, s_arg);
+    cr["RT"] = lin;  arg["RT"]  = sprintf("flow,%s%s", Name, s_arg);
+    cr["CT"] = lin;  arg["CT"]  = sprintf("effort,%s%s", Name, s_arg);
 
     ## Put in the explicit arguments
     if (length(Arg)>0) {

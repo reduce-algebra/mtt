@@ -18,6 +18,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.31  2002/09/16 08:08:00  geraint
+## Merged changes from global-optimisation branch.
+##
 ## Revision 1.30.4.1  2002/09/03 23:44:43  geraint
 ## adding global optimisation (-optg).
 ##
@@ -157,7 +160,7 @@ rm -f mtt_r2m.log
 
 #Header
 case $rep in
-    ae|csex|cseo|ode|odeo)
+    ae|csex|cseo|ode|odeo|sese)
     vectorise=yes
        ;;
     *)

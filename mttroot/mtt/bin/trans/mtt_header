@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.55  2002/10/30 01:15:20  gawthrop
+## Now gives correct-size matrices for dm rep.
+##
 ## Revision 1.54  2002/07/11 13:00:23  geraint
 ## Declared more function arguments to be "const" - improves compiler optimisation.
 ##
@@ -369,6 +372,13 @@ case $rep in
 	output='mttsimpar'
 	oct_rep_include="#include <mtt_simpar.hh>"
 	oct_return_type="mtt_simpar"
+	;;
+    sese)
+	states=yes;
+	inputs=yes;
+	parameters=yes;
+	output="mttdx,mtty";
+	args=$eqnargs;
 	;;
     sm)
 	states=no;

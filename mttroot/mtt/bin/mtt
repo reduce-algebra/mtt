@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.372  2003/03/24 12:03:36  gawthrop
+## Added -I switch to sese transformation
+##
 ## Revision 1.371  2003/03/13 15:47:35  gawthrop
 ## Added sese rep.
 ##
@@ -1772,6 +1775,7 @@ if [ "$1" = "Clean" ] && [ "$2" = "" ]; then
   rm -f *_modpar.txt *_modpar.r
   rm -f *_ICD.txt *_ICD.c *_ICD.cc *_ICD.m
   rm -f *_ae.r *_ae.m *_ae.cc *_ae.oct
+  rm -f *_sese.r *_sese.m
   rm -fR *_rep MTT_work
   exit
 fi
@@ -1813,6 +1817,7 @@ if [ "$2" = "Clean" ] && [ "$3" = "" ]; then
   rm -f $1_modpar.txt $1_modpar.r
   rm -f $1_ICD.txt $1_ICD.c $1_ICD.cc $1_ICD.m
   rm -f $1_ae.r $1_ae.m $1_ae.cc $1_ae.oct
+  rm -f $1_sese.r $1_sese.m
   rm -fR $1_rep MTT_work
   exit
 fi
@@ -2798,6 +2803,9 @@ $1_cbg.fig: $1_cbg.m  $1_fig.fig $1_type.sh
 #Elementary system equations + definitions
 ${sys}_ese.r: ${sys}_cbg.m
 	   cbg2ese_m2r $partition $info_switch $Subsystem; #ese_tidy $1
+
+${sys}_sese.m: ${sys}_def.r ${sys}_sese.r ${sys}_sympar.txt
+	mtt_r2m ${sys} sese m
 
 ${sys}_sese.r: ${sys}_cbg.m ${sys}_struc.m
 	   cbg2sese_m2r $info_switch $Subsystem

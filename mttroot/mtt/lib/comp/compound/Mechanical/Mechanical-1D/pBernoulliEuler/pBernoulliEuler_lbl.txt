@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1999/05/16 21:31:48  peterg
+% %% Renamed SS to patch
+% %%
 % %% Revision 1.1  1999/05/16 21:08:13  peterg
 % %% Initial revision
 % %%
@@ -37,6 +40,9 @@
 
 % Component type C
 	dk		lin	state,dk
+
+% Component type R
+	r_d		lin	flow,r_d
 
 % Component type SS
 	[y_in]		SS		external,external

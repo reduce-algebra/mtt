@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/05/16 07:12:40  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -18,7 +21,7 @@
 %ALIAS	$1	dk
 %ALIAS	$2	dm
 %ALIAS	$3	dz
-%ALIAS	$4	dr_y
+%ALIAS	$4	r_d
 
 %% Each line should be of one of the following forms:
 %	     a comment (ie starting with %)
@@ -32,6 +35,9 @@
 
 % Component type C
 	dk		lin	state,dk
+
+% Component type R
+	r_d		lin	flow,r_d
 
 % Component type SS
 	[y_in]	SS			external,external

@@ -19,6 +19,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.1  1996/08/04 17:29:42  peter
+## Initial revision
+##
 ###############################################################
 
 
@@ -77,17 +80,17 @@ $1_sspar.r:
 $1_rbg.m: $1_abg.fig $1_lbl.txt
 	rbg_fig2m $1
 
+$1_cmp.m: $1_rbg.m
+
+$1_fig.fig: $1_rbg.m
+
 #Bond graph conversions using matlab
 #Raw bond graph to acausal bond graph: mfile
 $1_abg.m: $1_rbg.m
-	rbg2abg_m $1
-
-#Component file
-$1_cmp.m: $1_rbg.m
-	
+	rbg2abg_m $1	
 
 #Causal bond graph: mfile to fig conversion
-$1_cbg.fig: $1_cbg.m
+$1_cbg.fig: $1_cbg.m $1_rbg.m $1_fig.fig
 	cbg_m2fig $1
 
 #Causal bond graph: xfig display

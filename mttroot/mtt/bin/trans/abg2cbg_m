@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.14  2000/12/28 12:16:13  peterg
+## *** empty log message ***
+##
 ## Revision 1.13  1998/07/27 20:30:12  peterg
 ## *** empty log message ***
 ##
@@ -138,12 +141,15 @@ rm -f $infofile
 echo "Creating $1_cbg.m (maximise $blurb causality)"
 echo Creating $1_type.sh
 
+## Start the type.sh file
+mtt_header $1 type sh > $typefile
+
 # Use matrix manipulation to accomplish the transformation
 $MATRIX << EOF  >abg2cbg_m.log  #2>mtt_error.txt
 
   infofilenum  = fopen("$infofile",'w');
   errorfilenum = fopen("$errorfile",'w');
-  typefilenum  = fopen("$typefile",'w');
+  typefilenum  = fopen("$typefile",'a');
 
   %Convert from acausal to causal bond graph in m-file form.
   system_name='$1';

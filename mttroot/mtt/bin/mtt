@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.27  1996/09/12 19:24:56  peter
+## New numpar/params setup.
+##
 ## Revision 1.26  1996/09/10 17:04:47  peter
 ## Added impulse response (ir) representation.
 ##
@@ -169,6 +172,7 @@ if [ "$1" = "clean" ] && [ "$2" = "" ]; then
   rm -f *_dm.* *_csm.* *_sm.* *_tf.* *_sr*.* *_ir*.* *_*fr.*
   rm -f *_rep.* *_numpar.m
   rm -f mtt_error.txt mtt_info.txt
+  exit
 fi
 
 # Clean up named system
@@ -315,7 +319,7 @@ $1_numpar.m: $1_sympar.r
 $1_params.m: 
 	echo Creating $1_params.m
 	( \
-	echo "function u = $1_params(t)"; \
+	echo "function u = $1_params"; \
 	echo "%% Paramaters file for system $1 ($1_params.m)"; \
 	echo "%% This file provides the system params for simulation:";\
 	cat $MTTPATH/trans/m/rcs_header.txt; \
@@ -474,25 +478,25 @@ $1_tf.tex: $1_def.r $1_tf.r $1_sympar.r $1_simp.r
 
 
 #Time responses
-$1_ir.m: $1_sm.m $1_numpar.m $1_args.m $1_def.m
+$1_ir.m: $1_sm.m $1_numpar.m $1_params.m $1_args.m $1_def.m
 	sm2ir_m $1 '$ARGS'
 $1_iro.m: $1_ir.m
 	touch $1_iro.m
-$1_sr.m: $1_sm.m $1_numpar.m $1_args.m $1_def.m
+$1_sr.m: $1_sm.m $1_numpar.m $1_params.m $1_args.m $1_def.m
 	sm2sr_m $1 '$ARGS'
 $1_sro.m: $1_sr.m
 	touch $1_sro.m
-$1_odes.m: $1_ode.m $1_numpar.m $1_args.m $1_def.m $1_input.m
+$1_odes.m: $1_ode.m $1_numpar.m $1_params.m $1_args.m $1_def.m $1_input.m
 	ode2odes_m $1 '$ARGS'
 $1_odeso.m: $1_odes.m
 	touch $1_odeso.m
-$1_daes.m: $1_dae.m $1_numpar.m $1_args.m $1_def.m $1_input.m
+$1_daes.m: $1_dae.m $1_numpar.m $1_params.m $1_args.m $1_def.m $1_input.m
 	dae2daes_m $1 '$ARGS'
 $1_daeso.m: $1_daes.m
 	touch $1_daeso.m
 
 #Numerical steady states
-$1_odess.m: $1_ode.m $1_numpar.m $1_args.m $1_def.m $1_input.m
+$1_odess.m: $1_ode.m $1_numpar.m $1_params.m $1_args.m $1_def.m $1_input.m
 	ode2odess_m $1 '$ARGS'
 
 $1_odesso.m: $1_odess.m
@@ -500,7 +504,7 @@ $1_odesso.m: $1_odess.m
 
 
 #Frequency responses
-$1_fr.m: $1_dm.m $1_numpar.m $1_args.m $1_def.m
+$1_fr.m: $1_dm.m $1_numpar.m $1_params.m $1_args.m $1_def.m
 	dm2fr_m $1 '$ARGS'
 $1_lmfr.m: $1_fr.m
 	touch $1_lmfr.m

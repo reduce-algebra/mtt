@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.328  2002/02/19 16:27:05  geraint
+## Changes to make MTT work out of the box with Debian.
+##
 ## Revision 1.327  2001/11/15 02:56:17  geraint
 ## Added DASSL as an option for solution of algebraic equations (-ae dassl).
 ## Requires octave-2.1.35.
@@ -1653,11 +1656,11 @@ if [ "$1" = "copy" ]; then
       source=$MTT_Examples
     fi
     destination=$4
-    if [ -z "$destination" ]; then
+    if [ -z "${destination}" ]; then
       destination=$2
     fi      
 # check that its not here already
-  file_exists=`ls $destination/$2_abg.fig 2> /dev/null`
+  file_exists=`ls ${destination}/$2_abg.fig 2> /dev/null`
   if [ -n "$file_exists" ]; then
     if [ "$quiet" != "quiet" ]; then    
       echo System $2 exists already - no action taken
@@ -1668,11 +1671,12 @@ if [ "$1" = "copy" ]; then
       source=$MTT_EXAMPLES
     fi
     destination=$4
-    if [ -z "$destination" ]; then
+    if [ -z "${destination}" ]; then
       destination=$2
     fi    
-echo Copying system $2 from $source into directory $destination
-    find $source -name "$2" -exec cp -rf {} . \; 
+echo Copying system $2 from $source into directory ${destination}
+    find $source -name "$2" -exec cp -fr {} . \;
+    rm -rf ${destination}/CVS
   fi
   exit
 fi
@@ -1689,26 +1693,26 @@ if [ "$1" = "compcopy" ]; then
       source=$MTT_COMPONENTS
     fi
     destination=$4
-    if [ -z "$destination" ]; then
+    if [ -z "${destination}" ]; then
       destination='.'
     fi   
 
   # check that its not here already
-  file_exists=`ls $destination/"$name"_abg.fig 2> /dev/null`
+  file_exists=`ls ${destination}/"$name"_abg.fig 2> /dev/null`
   if [ -n "$file_exists" ]; then
     if [ "$quiet" != "quiet" ]; then    
       echo Component $name exists already - no action taken
     fi
   else
     if [ $source = "." ]; then
-      cp -u *_*.* $destination
+      cp -u *_*.* ${destination}
     else
       comp_path=`mtt_find $source $2 path_only`
       n_found=`echo $comp_path | wc | awk '{print $2}'`
 
       if [ "$n_found" = "1" ]; then
-         echo Copying $2 from $comp_path to $destination
-         cp $comp_path/*_*.* $destination
+         echo Copying $2 from $comp_path to ${destination}
+         cp $comp_path/*_*.* ${destination}
          exit 0
       elif [ "$n_found" = "0" ]; then
 	if [ "$quiet" != "quiet" ]; then    

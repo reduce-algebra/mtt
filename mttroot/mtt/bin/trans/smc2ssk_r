@@ -1,0 +1,89 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: smc2ssk_r
+# controller-form state matrices to controller gain k
+# P.J.Gawthrop  Jan 1998
+# Copyright (c) P.J.Gawthrop 1998
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+# Inform user
+echo Creating $1_ssk.r -- NOTE this is for SISO systems only.
+
+# Remove the old log file
+rm -f smc2ssk_r.log
+
+# Use reduce to accomplish the transformation
+reduce >smc2ssk_r.log << EOF
+
+in "$1_def.r";
+in "$1_smc.r";
+
+%Read the formatting function
+in "$MTTPATH/trans/reduce_matrix.r";
+
+
+OFF Echo;
+OFF Nat;
+
+
+%%%%  Controller design %%%%%
+
+% gain in controller form:
+matrix MTTk_c(1,MTTNx);
+
+matrix alpha_c(9,1);
+alpha_c(1,1) := alpha_c1;
+alpha_c(2,1) := alpha_c2;
+alpha_c(3,1) := alpha_c3;
+alpha_c(4,1) := alpha_c4;
+alpha_c(5,1) := alpha_c5;
+alpha_c(6,1) := alpha_c6;
+alpha_c(7,1) := alpha_c7;
+alpha_c(8,1) := alpha_c8;
+alpha_c(9,1) := alpha_c9;
+
+
+for i := 1:MTTNx do
+ MTTk_c(1,i) := alpha_c(i,1) - MTTA_c(1,i);
+
+% Gain in physical form
+MTTk := MTTk_c*MTTT_c;
+
+
+%Create the output file
+OUT "$1_ssk.r";
+
+%Write out the matrices.
+
+write "%  - Gain matrix - controller form";
+MTT_Matrix := MTTK_c$ 
+MTT_Matrix_name := "MTTK_c"$
+MTT_Matrix_n := MTTNu$
+MTT_Matrix_m := MTTNx$
+Reduce_Matrix()$
+
+write "%  - Gain matrix - physical form";
+MTT_Matrix := MTTK$ 
+MTT_Matrix_name := "MTTK"$
+MTT_Matrix_n := MTTNu$
+MTT_Matrix_m := MTTNx$
+Reduce_Matrix()$
+
+SHUT "$1_ssk.r";
+quit;
+
+EOF
+
+# Now invoke the standard error handling.
+mtt_error_r smc2ssk_r.log

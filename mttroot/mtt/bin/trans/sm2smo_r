@@ -1,0 +1,132 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: sm2smo_r
+# state matrices to cobserver form
+# P.J.Gawthrop  12 Jan 1997
+# Copyright (c) P.J.Gawthrop 1998
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+# Inform user
+echo Creating $1_smo.r -- NOTE this is for SISO systems only.
+
+# Remove the old log file
+rm -f sm2smo_r.log
+
+# Use reduce to accomplish the transformation
+reduce >sm2smo_r.log << EOF
+
+in "$1_def.r";
+in "$1_sm.r";
+in "$1_smc.r";
+
+%Read the formatting function
+in "$MTTPATH/trans/reduce_matrix.r";
+
+
+OFF Echo;
+OFF Nat;
+
+% Find  observibility matrix.
+MATRIX MTTObs(MTTNx,MTTNX);
+MTTCA := MTTC;
+FOR i := 1:MTTNx DO
+  BEGIN
+   FOR j := 1:MTTNx DO 
+      MTTObs(i,j) := MTTCA(1,j);
+   MTTCA := MTTCA*MTTA;
+  END;
+
+
+%Observable form (dual of controller form)
+MTTA_o := tp(MTTA_c);
+MTTB_o := tp(MTTC_c);
+MTTC_o := tp(MTTB_c);
+MTTD_o := MTTD;
+
+
+%Observability matrix of observer form
+MATRIX MTTObs_o(MTTNx,MTTNX);
+MTTCA := MTTC_o;
+FOR i := 1:MTTNx DO
+  BEGIN
+   FOR j := 1:MTTNx DO 
+      MTTObs_o(i,j) := MTTCA(1,j);
+   MTTCA := MTTCA*MTTA_o;
+  END;
+
+% Transformation matrix;
+MTTT_o := MTTObs^(-1)*MTTObs_o;
+
+
+%Create the output file
+OUT "$1_smo.r";
+
+%Write out the matrices.
+
+% Observable form
+MTT_Matrix := MTTA_o$ 
+MTT_Matrix_name := "MTTA_o"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := MTTNx$
+Reduce_Matrix()$
+
+MTT_Matrix := MTTB_o$ 
+MTT_Matrix_name := "MTTB_o"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := MTTNu$
+Reduce_Matrix()$
+
+MTT_Matrix := MTTC_o$ 
+MTT_Matrix_name := "MTTC_o"$
+MTT_Matrix_n := MTTNy$
+MTT_Matrix_m := MTTNx$
+Reduce_Matrix()$
+
+MTT_Matrix := MTTD_o$ 
+MTT_Matrix_name := "MTTD_o"$
+MTT_Matrix_n := MTTNy$
+MTT_Matrix_m := MTTNu$
+Reduce_Matrix()$
+
+write "%  -Observability matrix";
+MTT_Matrix := MTTObs$ 
+MTT_Matrix_name := "MTTObs"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := MTTNx$
+Reduce_Matrix()$
+
+
+write "%  -Observability matrix - Observer form";
+MTT_Matrix := MTTObs_o$ 
+MTT_Matrix_name := "MTTObs_o"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := MTTNx$
+Reduce_Matrix()$
+
+write "%  - Transformation matrix - Observer form";
+MTT_Matrix := MTTT_o$ 
+MTT_Matrix_name := "MTTT_o"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := MTTNx$
+Reduce_Matrix()$
+
+
+
+SHUT "$1_smo.r";
+quit;
+
+EOF
+
+# Now invoke the standard error handling.
+mtt_error_r sm2smo_r.log

@@ -1,0 +1,73 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: ssk_r2tex
+# Reduce constrained-state matrices to LaTex constrained-state matrices.
+# P.J.Gawthrop  January 8th 1997
+# Copyright (c) P.J.Gawthrop, 1997
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+# Inform user
+echo Creating $1_ssk.tex
+
+# Remove the old log file
+rm -f ssk_r2tex.log
+
+# Use reduce to accomplish the transformation
+reduce >ssk_r2tex.log<< EOF
+
+%Read the definitions file
+in "$1_def.r";
+
+%Read the smconical-form matrices file
+in "$1_ssk.r";
+
+
+%Read the simplification file
+in "$1_simp.r";
+
+%Read the formatting function
+in "$MTTPATH/trans/latex_matrix.r";
+
+OFF Echo;
+OFF Nat;
+OFF EXP;
+%ON Rounded;
+%Precision 5;
+
+
+OUT "$1_ssk.tex";
+
+%Write out the canonical matrices
+write "%Canonical-form  matrices $1";
+write "%File: $1_ssk.tex";
+write"";
+
+
+write "%  - Gain matrix - controller form";
+MTT_Matrix := MTTK_c$ 
+MTT_Matrix_name := "MTTK_c"$
+MTT_Matrix_n := MTTNu$
+MTT_Matrix_m := MTTNx$
+Latex_Matrix()$
+
+write "%  - Gain matrix - physical form";
+MTT_Matrix := MTTK$ 
+MTT_Matrix_name := "MTTK"$
+MTT_Matrix_n := MTTNu$
+MTT_Matrix_m := MTTNx$
+Latex_Matrix()$
+
+SHUT "$1_ssk.tex";
+quit;
+EOF

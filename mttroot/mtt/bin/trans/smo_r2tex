@@ -1,0 +1,106 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: smo_r2tex
+# Reduce constrained-state matrices to LaTex constrained-state matrices.
+# P.J.Gawthrop  January 8th 1997
+# Copyright (c) P.J.Gawthrop, 1997
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+# Inform user
+echo Creating $1_smo.tex
+
+# Remove the old log file
+rm -f smo_r2tex.log
+
+# Use reduce to accomplish the transformation
+reduce >smo_r2tex.log<< EOF
+
+%Read the definitions file
+in "$1_def.r";
+
+%Read the observer-form matrices file
+in "$1_smo.r";
+
+
+%Read the simplification file
+in "$1_simp.r";
+
+%Read the formatting function
+in "$MTTPATH/trans/latex_matrix.r";
+
+OFF Echo;
+OFF Nat;
+OFF EXP;
+%ON Rounded;
+%Precision 5;
+
+
+OUT "$1_smo.tex";
+
+%Write out the canonical matrices
+write "%Canonical-form  matrices $1";
+write "%File: $1_smo.tex";
+write"";
+
+
+% Observable form
+MTT_Matrix := MTTA_o$ 
+MTT_Matrix_name := "MTTA_o"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := MTTNx$
+LaTeX_Matrix()$
+
+MTT_Matrix := MTTB_o$ 
+MTT_Matrix_name := "MTTB_o"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := MTTNu$
+LaTeX_Matrix()$
+
+MTT_Matrix := MTTC_o$ 
+MTT_Matrix_name := "MTTC_o"$
+MTT_Matrix_n := MTTNy$
+MTT_Matrix_m := MTTNx$
+LaTeX_Matrix()$
+
+MTT_Matrix := MTTD_o$ 
+MTT_Matrix_name := "MTTD_o"$
+MTT_Matrix_n := MTTNu$
+MTT_Matrix_m := MTTNu$
+LaTeX_Matrix()$
+
+write "%  - Observability matrix";
+MTT_Matrix := MTTObs$ 
+MTT_Matrix_name := "MTTObs"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := MTTNx$
+LaTeX_Matrix()$
+
+write "%  -Observability matrix - Observer form";
+MTT_Matrix := MTTObs_o$ 
+MTT_Matrix_name := "MTTObs_o"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := MTTNx$
+LaTeX_Matrix()$
+
+write "%  - Transformation matrix - Observer form";
+MTT_Matrix := MTTT_o$ 
+MTT_Matrix_name := "MTTT_o"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := MTTNx$
+LaTeX_Matrix()$
+
+
+SHUT "$1_smo.tex";
+quit;
+EOF

@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.184  1998/08/18 09:08:26  peterg
+## Now grabs components (specified in lbl file as alias) at the rbg stage
+## - this makes sure that they are there when needed.
+##
 ## Revision 1.183  1998/08/18 08:48:43  peterg
 ## Sorted out problem with ifeq ($REPTYPE,data) block - added else.
 ##
@@ -1389,7 +1393,7 @@ $1_simpar.txt:
 	echo 'LAST        = 10.0;       # Last time in simulation'; \
 	echo 'DT          = 0.1;        # Print interval'; \
 	echo 'STEPFACTOR  = 1;          # Integration steps per print interval'; \
-	echo 'METHOD      = "Implicit"; # Integration method'; \
+	echo 'METHOD      = Implicit;   # Integration method'; \
 	echo 'WMIN        = -1;         # Minimum frequency = 10^WMIN'; \
 	echo 'WMAX        = 2;          # Maximum frequency = 10^WMAX'; \
 	echo 'WSTEPS      = 100;        # Number of frequency steps'; \

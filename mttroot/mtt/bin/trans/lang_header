@@ -8,6 +8,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1999/02/16 04:14:53  peterg
+## Small change to modeline generation
+##
 ## Revision 1.7  1999/01/20 22:19:21  peterg
 ## Puts emacs mode line at top of .m files
 ##
@@ -31,6 +34,18 @@
 ##
 ###############################################################
 
+# Args
+while [ -n "`echo $1 | grep '^-'`" ]; do
+  case $1 in
+    -noglobal)
+	noglobal=noglobal;
+	;;
+    *)
+	echo $1 is an unknown option
+        exit;;
+  esac
+  shift
+done
 
 # Set up the language specific stuff
 system=$1
@@ -42,7 +57,7 @@ extras=$6
 
 case $language in
     m)
-	modeline='% -*-octave-*- Put Emacs into octave-mode';
+	modeline='% -*-octave-*- Put Emacs into octave-mode%';
 	ext='m';
 	Lc='#';
 	Rc='#';
@@ -160,7 +175,9 @@ EOF
 fi
 
 # Globals
-sympar2global_txt2lang $1 $language
+if [ -z "$noglobal" ]; then
+    sympar2global_txt2lang $1 $language
+fi
 
 ## if [ "$language" = "c" ] || [ "$language" = "m" ]; then
 ##   if [ "$rep" != "sm" ]&&[ "$rep" != "dm" ]&&[ "$rep" != "switch" ]; then

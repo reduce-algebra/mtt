@@ -9,6 +9,12 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.85  2003/06/25 12:46:06  gawthrop
+## Input only changed one per print interval
+## No effect if stepfactor=1
+## Fixes bug when _input.m is compiled using -stdin option
+## and stepfactor>1
+##
 ## Revision 1.84  2003/04/17 20:57:29  geraint
 ## Added -sort option to allow direct generation of ode2odes.m using sese.m
 ## instead of ode/csex.
@@ -341,7 +347,7 @@ fi
 if [ -n "$4" ]; then
     algebraic_solver=$4
 else
-  algebraic_solver="Reduce_Solver"
+  algebraic_solver="noAlgebraicSolver"
 fi
 
 insertor=\<\<			# help emacs sh-mode handle C++ lines

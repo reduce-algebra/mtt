@@ -1,0 +1,69 @@
+#! /bin/sh 
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: ssk2ctf_r
+# Controller gain k and observer gain l to controller TF
+# P.J.Gawthrop  Feb 1998
+# Copyright (c) P.J.Gawthrop 1998
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+# Inform user
+echo Creating $1_ctf.r
+
+# Remove the old log file
+rm -f ssk2ctf_r.log
+
+# Use reduce to accomplish the transformation
+reduce >ssk2ctf_r.log << EOF
+
+in "$1_def.r";
+in "$1_ssk.r";
+in "$1_ssl.r";
+in "$1_sm.r";
+
+%Read the formatting function
+in "$MTTPATH/trans/reduce_matrix.r";
+
+
+OFF Echo;
+OFF Nat;
+
+
+
+%State matrices of the compensator
+A_d := MTTA - MTTL*MTTC - MTTB*MTTK;
+B_d := -MTTL;
+C_d := -MTTK;
+D_d := 0;
+
+%Transfer function
+MTTGc := C_d*((s*MTTI - A_d)^(-1))*B_d;
+
+%Create the output file
+OUT "$1_ctf.r"; 
+%Write out the matrices.
+
+write "%  - Compensator TF";
+MTT_Matrix := MTTGc$
+MTT_Matrix_name := "MTTGc"$
+MTT_Matrix_n := MTTNu$
+MTT_Matrix_m := MTTNy$
+Reduce_Matrix()$
+
+
+SHUT "$1_ctf.r";
+quit;
+
+EOF
+
+# Now invoke the standard error handling.
+mtt_error_r ssk2ctf_r.log

@@ -6,11 +6,15 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  2000/12/28 18:08:28  peterg
+# %% To RCS
+# %%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 t_3 = 1000;
 
 # Set the inputs
 ## Removed by MTT on Mon Nov 27 15:18:54 GMT 2000: u(1) =	 t_3 + 0.1*t_3*(t>1) -  0.2*t_3*(t>5); # SimpleGasTurbine (T3)
-simplegasturbine_fuel_1_t3_1_u	= t_3 + 0.1*t_3*(t>1) -  0.2*t_3*(t>5); 
+## Removed by MTT on Wed Jun 11 15:42:11 BST 2003: simplegasturbine_fuel_1_t3_1_u	= t_3 + 0.1*t_3*(t>1) -  0.2*t_3*(t>5); 
 
+simplegasturbine__fuel__t3__u	= t_3 + 0.1*t_3*(t>1) -  0.2*t_3*(t>5); 

@@ -6,6 +6,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.2  2000/05/20 15:44:26  peterg
+# %% Split from old numpar file
+# %%
 # %% Revision 1.1  2000/05/20 15:43:27  peterg
 # %% Initial revision
 # %%
@@ -15,3 +18,4 @@
 l = 	1.0; # Default value
 m = 	1.0; # Default value
 j = 	m*l*l/12.0; # Uniform rod
+mg	= m*9.81;

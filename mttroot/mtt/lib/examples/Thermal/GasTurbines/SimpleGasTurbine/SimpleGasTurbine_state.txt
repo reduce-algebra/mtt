@@ -6,10 +6,14 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  2000/12/28 18:08:28  peterg
+# %% To RCS
+# %%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 # Set the states
 ## Removed by MTT on Mon Nov 27 15:20:21 GMT 2000: x(1) =	 j_s/k ; # SimpleGasTurbine (j_s)
 
-simplegasturbine_shaft_1_j_s	= j_s/k ;
+## Removed by MTT on Wed Jun 11 15:41:26 BST 2003: simplegasturbine_shaft_1_j_s	= j_s/k ;
+simplegasturbine__shaft__j_s	= j_s/k;

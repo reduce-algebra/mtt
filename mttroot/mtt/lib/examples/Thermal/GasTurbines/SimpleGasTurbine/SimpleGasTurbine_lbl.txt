@@ -6,8 +6,9 @@
 #DESCRIPTION Saravanamutto. However, unlike those examples, the system is
 #DESCRIPTION written with dynamics in mind.
 
-#ALIAS	Comb	CompressibleFlow/Comb
+## Explicitly copy appropriate components
 #ALIAS	Pump	CompressibleFlow/Pump
+#ALIAS	Comb	CompressibleFlow/Comb
 
 #PAR t_2
 #PAR t_3
@@ -35,6 +36,9 @@
 # ###############################################################
 # ## $Id$
 # ## $Log$
+# ## Revision 1.5  2000/12/28 18:08:28  peterg
+# ## To RCS
+# ##
 # ## Revision 1.4  1998/07/30 15:27:42  peterg
 # ## Use #VAR inplace of dummy component.
 # ##

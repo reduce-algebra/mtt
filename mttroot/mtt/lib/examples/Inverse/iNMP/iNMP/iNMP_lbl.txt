@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  2000/05/20 16:42:42  peterg
+% %% New SS format
+% %%
 % %% Revision 1.1  1999/03/09 00:10:07  peterg
 % %% Initial revision
 % %%
@@ -42,5 +45,5 @@
 	r_s		lin	flow,r_s
 
 % Component type SS
-	e1	SS		SS	external,internal
-	e2	SS		SS	external,0
+	e1		SS	external,internal
+	e2		SS	external,0

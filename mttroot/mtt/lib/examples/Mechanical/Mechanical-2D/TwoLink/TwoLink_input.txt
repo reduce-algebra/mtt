@@ -6,9 +6,15 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  1998/07/27 10:44:59  peterg
+# %% Initial revision
+# %%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # Set the inputs
-u(1) =	(t<1.0);		# Torque on Joint 1
-u(2) =	-(t>10.0)&&(t<11.0);	# Torque on Joint 2
-u(3) =	0.0;			# Gravity
+## Removed by MTT on Tue Jun 10 17:24:08 BST 2003: u(1) =	(t<1.0);		# Torque on Joint 1
+## Removed by MTT on Tue Jun 10 17:24:08 BST 2003: u(2) =	-(t>10.0)&&(t<11.0);	# Torque on Joint 2
+## Removed by MTT on Tue Jun 10 17:24:08 BST 2003: u(3) =	0.0;			# Gravity
+twolink__f_a1	= (t<1.0);		# Torque on Joint 1
+twolink__f_a2	= -(t>10.0)&&(t<11.0);	# Torque on Joint 2
+

@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.4  2000/05/19 17:35:34  peterg
+% %% -c
+% %%
 % %% Revision 1.3  1999/02/22 09:18:33  peterg
 % %% Removed -c
 % %%
@@ -22,8 +25,8 @@ mtt TwoLink struc tex
 mtt TwoLink sympar tex
 mtt TwoLink dae tex
 mtt TwoLink cse tex
-mtt TwoLink rfe tex
+## mtt TwoLink rfe tex
 
 mtt TwoLink input txt
 mtt TwoLink numpar txt
-mtt -c TwoLink odeso ps
+mtt -i euler TwoLink odeso ps

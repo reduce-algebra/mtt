@@ -7,11 +7,16 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.2  1998/07/27 11:27:05  peterg
+# %% Reformatted
+# %%
 # Revision 1.1  1997/08/15  08:04:01  peterg
 # Initial revision
 #
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # Set the inputs
-u(1) =	0.0;			# no torque at joint
-u(2) =	9.81;			# g
+## Removed by MTT on Tue Jun 10 17:17:50 BST 2003: u(1) =	0.0;			# no torque at joint
+## Removed by MTT on Tue Jun 10 17:17:50 BST 2003: u(2) =	9.81;			# g
+pendulum__f_a	= 0.0;		# No joint torque
+pendulum__gravity__force	= 9.81;	# g

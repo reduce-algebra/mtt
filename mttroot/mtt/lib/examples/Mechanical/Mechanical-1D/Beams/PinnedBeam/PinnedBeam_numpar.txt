@@ -7,6 +7,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  2000/12/28 17:59:05  peterg
+# %% To RCS
+# %%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 ## Number of lumps
@@ -28,3 +31,4 @@ dz = BeamLength/Lumps;	        # Incremental length
 dm = rhoA*dz;			# Incremental mass
 dk = EI/dz;			# Incremental stiffness
 dr = 0;				# Damping
+

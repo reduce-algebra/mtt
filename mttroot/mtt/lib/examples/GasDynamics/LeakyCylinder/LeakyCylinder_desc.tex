@@ -6,6 +6,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2000/12/28 17:44:35  peterg
+% %% To RCS
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
    The acausal bond graph of system \textbf{LeakyCylinder} is
@@ -15,14 +18,16 @@
 
 This example roughly corresponds to the Example in section 12.4.3
 (Fig. 12.17) of Karnopp, Margolis and Rosenberg (1990). It is a pseudo bond
-graph representation based on the ``thermal acummulator'' of  section
+graph representation based on the ``thermal accumulator'' of  section
 12.4.1 and the ``isentropic nozzle'' of section 12.4.2 of that book.
 
-
-
-
-
-%%% Local Variables: 
-%%% mode: latex
-%%% TeX-master: t
-%%% End: 
+[
+Notes added by PJG 10 June 03. 
+\begin{enumerate}
+\item The parameters/states used in the simulation (odeso) are
+  meaningless at the moment.
+\item The steady-state parameters (sspar.r) need to be calculated; at
+  the moment, the state mattrices (sm) are in terms of the
+  steady-state states.  
+\end{enumerate}
+]

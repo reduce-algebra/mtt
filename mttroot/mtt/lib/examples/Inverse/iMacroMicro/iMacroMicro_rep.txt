@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2000/12/28 17:49:22  peterg
+% %% To RCS
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 mtt iMacroMicro abg tex
@@ -16,6 +19,6 @@ mtt iMacroMicro tf tex
 mtt iMacroMicro numpar txt
 mtt iMacroMicro lmfr ps 
 mtt iMacroMicro lpfr ps 
-%mtt iMacroMicro sro ps 
-%mtt -c iMacroMicro odeso ps 
+mtt iMacroMicro sro ps 
+mtt iMacroMicro odeso ps 
 

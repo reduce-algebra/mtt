@@ -6,6 +6,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  2000/12/28 17:54:15  peterg
+# %% To RCS
+# %%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # Parameters
@@ -19,7 +22,7 @@ r_2 = 	1.0; # szRC2c
 r_2s = 	1.0; # szRC2c
 
 # Initial states
-x(1) = 	0.0; # szRC2c (c_1)
-x(2) = 	0.0; # szRC2c (c_1s)
-x(3) = 	0.0; # szRC2c (c_2)
-x(4) = 	0.0; # szRC2c (c_2s)
+## Removed by MTT on Tue Jun 10 16:38:56 BST 2003: x(1) = 	0.0; # szRC2c (c_1)
+## Removed by MTT on Tue Jun 10 16:38:56 BST 2003: x(2) = 	0.0; # szRC2c (c_1s)
+## Removed by MTT on Tue Jun 10 16:38:56 BST 2003: x(3) = 	0.0; # szRC2c (c_2)
+## Removed by MTT on Tue Jun 10 16:38:56 BST 2003: x(4) = 	0.0; # szRC2c (c_2s)

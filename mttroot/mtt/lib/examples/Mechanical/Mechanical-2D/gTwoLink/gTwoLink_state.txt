@@ -5,11 +5,20 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/07/27 06:59:25  peterg
+## Initial revision
+##
 ###############################################################
 
 # Set the states
-mttx(1) 	= 0.0; 	# J (gTwoLink_rod1)
-mttx(2) 	= 0.0; 	# 3 (gTwoLink_rod1_th)
-mttx(3) 	= 0.0; 	# J (gTwoLink_rod2)
-mttx(4) 	= pi/4;	# 3 (gTwoLink_rod2_th)
-mttx(5) 	= 0.0; 	# 2 (gTwoLink_g)
+## Removed by MTT on Wed Jun 11 14:22:12 BST 2003: mttx(1) 	= 0.0; 	# J (gTwoLink_rod1)
+## Removed by MTT on Wed Jun 11 14:22:12 BST 2003: mttx(2) 	= 0.0; 	# 3 (gTwoLink_rod1_th)
+## Removed by MTT on Wed Jun 11 14:22:12 BST 2003: mttx(3) 	= 0.0; 	# J (gTwoLink_rod2)
+## Removed by MTT on Wed Jun 11 14:22:12 BST 2003: mttx(4) 	= pi/4;	# 3 (gTwoLink_rod2_th)
+## Removed by MTT on Wed Jun 11 14:22:12 BST 2003: mttx(5) 	= 0.0; 	# 2 (gTwoLink_g)
+gtwolink__g__mtti	= 0.0; 
+gtwolink__rod1__j	= 0.0; 
+gtwolink__rod1__th__mttc	= 0.0;
+gtwolink__rod2__j	= 0.0; 
+gtwolink__rod2__th__mttc	= pi/4;
+

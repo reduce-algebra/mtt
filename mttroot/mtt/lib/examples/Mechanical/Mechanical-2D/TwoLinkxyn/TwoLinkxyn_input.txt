@@ -6,9 +6,15 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  2000/12/28 18:03:12  peterg
+# %% To RCS
+# %%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # Set the inputs
-u(1) =	(t<1.0);
-u(2) =	0.0; # 
-u(3) =	0.0; # gravity
+## Removed by MTT on Wed Jun 11 14:14:40 BST 2003: u(1) =	(t<1.0);
+## Removed by MTT on Wed Jun 11 14:14:40 BST 2003: u(2) =	0.0; # 
+## Removed by MTT on Wed Jun 11 14:14:40 BST 2003: u(3) =	0.0; # gravity
+twolinkxyn__f_a1	= (t<1.0);
+twolinkxyn__f_a2	= 0.0;
+twolinkxyn__g__force	= 0.0;

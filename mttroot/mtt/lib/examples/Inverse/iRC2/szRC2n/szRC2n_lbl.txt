@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2000/12/28 17:54:46  peterg
+% %% To RCS
+% %%
 % %% Revision 1.1  2000/05/20 16:45:37  peterg
 % %% Initial revision
 % %%
@@ -35,4 +38,4 @@
 	u_s		SS	external,internal
 	y_s		SS	external,0
 	zero		SS	0,0
-	u		SS	external,external
+	u		SS	external,internal

@@ -6,6 +6,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  2001/10/05 11:24:35  gawthrop
+## Updated for new mtt features - input.txt etc
+##
 ## Revision 1.1  2000/05/19 07:12:04  peterg
 ## Initial revision
 ##
@@ -16,6 +19,7 @@
 
 
 
-weirs_f	= 1.0*(t<10); # Added by MTT on Fri Oct 05 10:48:01 BST 2001
+## Removed by MTT on Tue Jun 10 10:53:48 BST 2003: weirs_f	= 1.0*(t<10); # Added by MTT on Fri Oct 05 10:48:01 BST 2001
 
 
+weirs__f	= 1.0*(t<10);

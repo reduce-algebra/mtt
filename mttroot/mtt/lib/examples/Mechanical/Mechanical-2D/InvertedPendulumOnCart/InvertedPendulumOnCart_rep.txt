@@ -7,6 +7,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/12/28 18:00:45  peterg
+## To RCS
+##
 ###############################################################
 
 mtt InvertedPendulumOnCart abg tex			# The system description
@@ -18,10 +21,10 @@ mtt InvertedPendulumOnCart dae tex	        # The system dae
 ## mtt InvertedPendulumOnCart sspar tex		# Steady-state parameters
 ## mtt InvertedPendulumOnCart ss tex 		# Steady state
 ## mtt InvertedPendulumOnCart dm tex		# Descriptor matrices (of linearised system)
-mtt InvertedPendulumOnCart sm tex		# State matrices (of linearised system)
+## mtt InvertedPendulumOnCart dm tex		# State matrices (of linearised system)
 ## mtt InvertedPendulumOnCart tf tex		# Transfer function (of linearised system)
 ## mtt InvertedPendulumOnCart lmfr ps		# log modulus of frequency response (of linearised system)
-mtt InvertedPendulumOnCart simpar tex		# Simulation parameters
-mtt InvertedPendulumOnCart numpar tex		# Numerical simulation parameters
-mtt InvertedPendulumOnCart input tex		# Simulation input
-mtt -c InvertedPendulumOnCart odeso ps		# Simulation output
+## mtt InvertedPendulumOnCart simpar tex		# Simulation parameters
+## mtt InvertedPendulumOnCart numpar tex		# Numerical simulation parameters
+## mtt InvertedPendulumOnCart input tex		# Simulation input
+## mtt InvertedPendulumOnCart odeso ps		# Simulation output

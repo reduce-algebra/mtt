@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2000/12/28 17:54:15  peterg
+% %% To RCS
+% %%
 % %% Revision 1.1  2000/05/20 16:44:55  peterg
 % %% Initial revision
 % %%
@@ -34,4 +37,4 @@
 % Component type SS
 	u_s		SS	external,external
 	zero		SS	0,0
-	u		SS	external,external
+	u		SS	external,internal

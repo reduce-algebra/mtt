@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  2000/12/28 18:03:41  peterg
+% %% To RCS
+% %%
 % %% Revision 1.1  1999/02/22 09:18:53  peterg
 % %% Initial revision
 % %%
@@ -15,8 +18,6 @@ mtt gTwoLink struc tex
 mtt gTwoLink sympar tex
 mtt gTwoLink dae tex
 mtt gTwoLink cse tex
-mtt gTwoLink rfe tex
-mtt gTwoLink ode tex
 mtt gTwoLink input txt
 mtt gTwoLink numpar txt
-mtt -c gTwoLink odeso ps
+mtt -i euler gTwoLink odeso ps

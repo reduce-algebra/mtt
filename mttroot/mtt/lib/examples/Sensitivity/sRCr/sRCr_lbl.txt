@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  2000/12/28 18:04:59  peterg
+% %% To RCS
+% %%
 % %% Revision 1.1  1999/07/29 05:18:59  peterg
 % %% Initial revision
 % %%
@@ -25,13 +28,13 @@
 % ---- Component labels ----
 
 % Component type sSe
-	e1       lin		external;0	
+	e1       slin		external;0	
 
 % Component type sDe
 	e2
 
 % Component type sC
-	c	 lin;lin	effort,c;0
+	c	 slin		effort,c;0
 
 % Component type sR
-	r	 lin;lin	flow,r;1
+	r	 slin		flow,r;1

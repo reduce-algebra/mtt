@@ -6,11 +6,20 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  2000/05/20 15:50:57  peterg
+# %% Initial revision
+# %%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # Initial states
-x(1) = 	0.0; # Initial state for TwoLinkxyn_rod1 (J)
-x(2) = 	0.0; # Initial state for TwoLinkxyn_rod1_th (3)
-x(3) = 	0.0; # Initial state for TwoLinkxyn_rod2 (J)
-x(4) = 	3.142/4; # Initial state for TwoLinkxyn_rod2_th (3) - 45 deg.
-x(5) = 	0.0; # Initial state for TwoLinkxyn_g (2)
+## Removed by MTT on Wed Jun 11 14:15:48 BST 2003: x(1) = 	0.0; # Initial state for TwoLinkxyn_rod1 (J)
+## Removed by MTT on Wed Jun 11 14:15:48 BST 2003: x(2) = 	0.0; # Initial state for TwoLinkxyn_rod1_th (3)
+## Removed by MTT on Wed Jun 11 14:15:48 BST 2003: x(3) = 	0.0; # Initial state for TwoLinkxyn_rod2 (J)
+## Removed by MTT on Wed Jun 11 14:15:48 BST 2003: x(4) = 	3.142/4; # Initial state for TwoLinkxyn_rod2_th (3) - 45 deg.
+## Removed by MTT on Wed Jun 11 14:15:48 BST 2003: x(5) = 	0.0; # Initial state for TwoLinkxyn_g (2)
+twolinkxyn__g__mtti	= 0.0;
+twolinkxyn__rod1__j	= 0.0;
+twolinkxyn__rod1__th__mttc	= 0.0;
+twolinkxyn__rod2__j	= 0.0;
+twolinkxyn__rod2__th__mttc	= 3.142/4;
+

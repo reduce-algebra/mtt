@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.56  2003/04/17 20:07:33  geraint
+## Added rule to create _sese.m
+##
 ## Revision 1.55  2002/10/30 01:15:20  gawthrop
 ## Now gives correct-size matrices for dm rep.
 ##
@@ -337,6 +340,7 @@ case $rep in
         declareinputs=yes
         declarestates=yes
 	declareswitches=yes
+        zeromatrices='open';
 	;;
     numpar)
 	states=no;
@@ -394,6 +398,7 @@ case $rep in
 	parameters=yes;
         output='mtta'
         args=$eqnargs
+        zeromatrices='a';
 	;;
     smxax)
 	states=no;
@@ -401,6 +406,7 @@ case $rep in
 	parameters=yes;
         output='mttax'
         args=$eqnargs
+        zeromatrices='ax';
 	;;
     state)
 	states=no;
@@ -578,6 +584,12 @@ for name in $zeromatrices; do
 	    ;;
 	y)
 	    N=$Ny; M=1
+	    ;;
+	open)
+	    N=$Nx; M=1
+	    ;;
+	ax)
+	    N=$Nx; M=1
 	    ;;
 	*)
 	    

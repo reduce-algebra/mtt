@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.13  1998/08/11 09:32:07  peterg
+## Added comments at procedure begin and end.
+##
 ## Revision 1.12  1998/07/30 11:30:42  peterg
 ## Included zeros function
 ##
@@ -103,10 +106,14 @@ Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
     ode2odes)
 	echo "PROGRAM $Sys_rep;"
 	echo "TYPE"
-	echo "    StateVector  =ARRAY[1..$Nx] OF REAL;"
-	echo "    InputVector  =ARRAY[1..$Nu] OF REAL;"
-	echo "    OutputVector =ARRAY[1..$Ny] OF REAL;"
-	echo "    StateMatrix  =ARRAY[1..$Nx,1..$Nx] OF REAL;"
+	echo "    StateVector  = ARRAY[1..$Nx] OF REAL;"
+	echo "    InputVector  = ARRAY[1..$Nu] OF REAL;"
+	echo "    OutputVector = ARRAY[1..$Ny] OF REAL;"
+	echo "    StateMatrix  = ARRAY[1..$Nx,1..$Nx] OF REAL;"
+	echo "    glnparray = StateVector;"
+	echo "    glmparray = StateVector;"
+	echo "    glnpbynp = StateMatrix;"
+	echo "    glmpbynp = StateMatrix;"
 	echo "    IntegrationMethod = 1..3;"
 	echo "VAR"
         echo "    MTTt,mttLAST,mttDT,mttDDT   : REAL;"

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.204  1999/03/15 05:53:33  peterg
+## Put in user-defined representations
+##
 ## Revision 1.203  1999/03/08 03:51:12  peterg
 ## Version 3.5 for Linux Red Hat 5.2 (Newcastle)
 ##
@@ -2073,8 +2076,7 @@ $1_sms.c: $1_sm.c $1_def.r $1_sympar.r
 ifeq ($computation,octave)
 $1_odes.dat2: $1_ode2odes.m $1_ode.m $1_numpar.m $1_switch.m  \
              $1_def.m $1_input.m $1_state.m $1_simpar.m
-	echo Creating $1_odes.dat2
-	time $MATRIX -q $1_ode2odes.m> $1_odes.dat2 
+	time octave_ode2odes $1
 endif
 
 ifeq ($computation,c)
@@ -2177,10 +2179,10 @@ $1_$2.tex: $1_$2.txt
  endif
 
 #Conversion of dat2 files  to dat format
-$1_odeso.dat: $1_odes.dat2
+$1_odeso.dat: $1_odes.dat2 $1_def.r
 	echo Creating $1_odeso.dat
 	dat22dat $1 odeso
-$1_odes.dat: $1_odes.dat2
+$1_odes.dat: $1_odes.dat2 $1_def.r
 	echo Creating $1_odes.dat
 	dat22dat $1 odes
 

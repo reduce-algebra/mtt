@@ -12,6 +12,11 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.37  2000/09/14 08:43:32  peterg
+## Add additional directional informatiuon to rbonds:
+## 	cols 7-8 Arrow end directional bond
+## 	cols 9-10 Arrow end directional bond
+##
 ## Revision 1.36  1999/11/19 04:00:26  peterg
 ## Changed a comment to be more accurate.
 ##
@@ -479,9 +484,11 @@ function write_fig() {
       field_1 = $1
       }
 
-    printf field_1   >> fig_file
+    printf("%s",field_1)   >> fig_file
       for (i=2; i<=NF; i++)
 	printf(" %s", $i)  >> fig_file;
+    if (NF==1) 
+	printf(" ")   >> fig_file; # Put space after header fields
     printf("\n") >> fig_file
     }
 
@@ -490,7 +497,9 @@ function write_fig() {
 	printf("%s", $1)  >> head_file;
         for (i=2; i<=NF; i++)
 	  printf(" %s", $i)  >> head_file;
-    printf("\n") >> head_file
+	if (NF==1) 
+	    printf(" ")   >> head_file; # Put space after header fields
+	printf("\n") >> head_file
     }
 # Bonds
   if (isa_bond) {
@@ -511,9 +520,16 @@ function write_fig() {
 
 # Components & ports
   if ( isa_component||isa_port ) {
-        for (i=1; i<=NF; i++)
-	printf(" %s", $i)  >> cmp_file;
-    printf("\n") >> cmp_file
+      for (i=1; i<=NF; i++)
+	  printf(" %s", $i)  >> cmp_file;
+      printf("\n") >> cmp_file
+	  }
+
+# Ports
+  if ( isa_port_component ||isa_port) {
+      for (i=1; i<=NF; i++)
+	  printf(" %s", $i)  >> port_file;
+      printf("\n") >> port_file
 }
 }
 
@@ -566,6 +582,7 @@ BEGIN {
   c_file = sprintf("%s_cmp.m", sys_name);
   fig_file = sprintf("%s_fig.fig", sys_name);
   cmp_file = sprintf("%s_cmp.fig", sys_name);
+  port_file = sprintf("%s_port.fig", sys_name);
   bnd_file = sprintf("%s_bnd.fig", sys_name); 
   head_file = sprintf("%s_head.fig", sys_name);
 

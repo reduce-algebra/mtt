@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.1  1996/11/05  09:19:28  peterg
+# Initial revision
+#
 ###############################################################
 
 #Inform user
@@ -28,8 +31,8 @@ reduce >cse_r2tex.log << EOF
 %Read the definitions file
 in "$1_def.r";
 
-%Read the symbolic parameter file
-in "$1_sympar.r";
+%Read thesimplification file
+in "$1_simp.r";
 
 %Read the constrained-state equations file
 in "$1_cse.r";
@@ -39,59 +42,6 @@ OFF Nat;
 %%%%OFF Exp; ON GCD;
 
 
-%Change some names - rather yuccy
-MTTx1 := MTTx!_1;
-MTTx2 := MTTx!_2;
-MTTx3 := MTTx!_3;
-MTTx4 := MTTx!_4;
-MTTx5 := MTTx!_5;
-MTTx6 := MTTx!_6;
-MTTx7 := MTTx!_7;
-MTTx8 := MTTx!_8;
-MTTx9 := MTTx!_9;
-
-MTTdx1 := MTTdx!_1;
-MTTdx2 := MTTdx!_2;
-MTTdx3 := MTTdx!_3;
-MTTdx4 := MTTdx!_4;
-MTTdx5 := MTTdx!_5;
-MTTdx6 := MTTdx!_6;
-MTTdx7 := MTTdx!_7;
-MTTdx8 := MTTdx!_8;
-MTTdx9 := MTTdx!_9;
-
-MTTu1 := MTTu!_1;
-MTTu2 := MTTu!_2;
-MTTu3 := MTTu!_3;
-MTTu4 := MTTu!_4;
-MTTu5 := MTTu!_5;
-MTTu6 := MTTu!_6;
-MTTu7 := MTTu!_7;
-MTTu8 := MTTu!_8;
-MTTu9 := MTTu!_9;
-
-MTTdu1 := MTTdu!_1;
-MTTdu2 := MTTdu!_2;
-MTTdu3 := MTTdu!_3;
-MTTdu4 := MTTdu!_4;
-MTTdu5 := MTTdu!_5;
-MTTdu6 := MTTdu!_6;
-MTTdu7 := MTTdu!_7;
-MTTdu8 := MTTdu!_8;
-MTTdu9 := MTTdu!_9;
-
-
-
-
-MTTy1 := MTTy!_1;
-MTTy2 := MTTy!_2;
-MTTy3 := MTTy!_3;
-MTTy4 := MTTy!_4;
-MTTy5 := MTTy!_5;
-MTTy6 := MTTy!_6;
-MTTy7 := MTTy!_7;
-MTTy8 := MTTy!_8;
-MTTy9 := MTTy!_9;
 
 %ON Rounded;
 %Precision 5;

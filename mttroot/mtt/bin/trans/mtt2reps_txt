@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  2000/04/05 08:34:30  peterg
+## removed output tab
+##
 ## Revision 1.8  2000/04/05 08:04:01  peterg
 ## Minor reorganisation
 ##
@@ -61,7 +64,7 @@ for rep in $representations ; do
       sort -u | sed 's/[()]//g'` 
 
       Title='('$title')'
-      echo -e  $rep $Title  $sep $language
+      echo $rep $Title  $sep $language
      
 done
 

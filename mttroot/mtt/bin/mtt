@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.211  1999/08/17 04:10:38  peterg
+## Removed the -u switch from cp - it doesnt work on non GNU cps
+##
 ## Revision 1.210  1999/08/02 12:52:12  peterg
 ## Removed redundant .p copying.
 ##
@@ -1268,7 +1271,7 @@ fi
 # Tidy mode - operate in the directory MTT-work
 if [ "$tidy" = "tidy" ]; then
    mkdir -p MTT_work
-   cp -p  Makefile *.* .* MTT_work # 2>/dev/null
+   cp -p -u  Makefile *.* .* MTT_work # 2>/dev/null
    cd MTT_work
    
    if [ -z "$directory" ]; then
@@ -1294,7 +1297,7 @@ if [ "$tidy" = "tidy" ]; then
           mv $1_$2 ..
       else
           echo Copying  $1_$2.$3
-          cp  -p $1_$2.$3 ..
+          cp  -p -u $1_$2.$3 ..
       fi
       if [ "$PLOTTYPE" = "multiple" ]; then
         echo Copying  $1_$2$__ARGS.ps

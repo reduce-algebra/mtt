@@ -16,7 +16,7 @@ EOF
 }
 
 preserve=''
-while [ "`echo $1 | grep '^-'`" ]; do
+while [ -n "`echo $1 | grep '^-'`" ]; do
     case $1 in
 	-p)
 	    preserve='-p'

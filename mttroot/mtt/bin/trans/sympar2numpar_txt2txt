@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1998/01/29 17:06:36  peterg
+## Better annotation
+##
 ## Revision 1.7  1997/09/18 17:10:18  peterg
 ## Changed comments pertaining to the parameters to use the new column 2
 ## of the sympar file (the system type).
@@ -51,7 +54,7 @@ cat $MTTPATH/trans/rcs_header.txt  >> $1_numpar.txt
 
 #Write out the variables 
 echo "# Parameters" >> $1_numpar.txt
-awk '{i++; print tolower($1) " = \t1.0; \# Parameter " $1 " for " $2}' $1_sympar.txt \
+awk '{i++; print tolower($1) " = \t1.0; \# " $2}' $1_sympar.txt \
 >> $1_numpar.txt
 
 #Write out the initial states
@@ -59,7 +62,7 @@ echo  >> $1_numpar.txt
 echo "# Initial states" >> $1_numpar.txt
 awk '{
   if ($1=="state") 
-    print "x(" $2 ") = \t0.0; \# Initial state for system" $4 " (Component " $3 ")"
+    print "x(" $2 ") = \t0.0; \# " $4 " (" $3 ")"
 }' \
  $1_struc.txt >> $1_numpar.txt
 

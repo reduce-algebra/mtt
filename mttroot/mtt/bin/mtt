@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.317  2001/07/24 00:55:17  gawthrop
+## Resolved clashes -- marked with ## >>>
+##
 ## Revision 1.316  2001/07/22 19:24:03  geraint
 ## Multiple '-v' increases verbosity.
 ##
@@ -1370,7 +1373,7 @@ if [ -z "$1" ]; then
     echo '         -dc Maximise derivative (not integral) causality'
     echo '         -dc Maximise derivative (not integral) causality'
     echo '         -i <implicit|euler|rk4>   Use implicit, euler or rk4 integration'
-    echo '         -ae <reduce|hybrd|hooke>   Solve algebraic equations with Reduce, hybrd (fsolve) or "Hooke and Jeeves"'
+    echo '         -ae <reduce|hybrd|hooke>   Solve algebraic equations with Reduce, hybrd (fsolve) or Hooke and Jeeves'
     echo '         -o ode is same as dae'
     echo '         -oct use oct files in place of m files where appropriate'
     echo '         -opt optimise code generation'

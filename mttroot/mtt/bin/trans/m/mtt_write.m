@@ -1,14 +1,14 @@
 function mtt_write(t,x,y,nx,ny);
 
-  printf("%g ", t);
+  printf("%e ", t);
   for i=1:ny
-    printf("%g ", y(i));
+    printf("%e ", y(i));
   end
   printf("# ");
 
-  printf("%g ", t);
+  printf("%e ", t);
   for i=1:nx
-    printf("%g ", x(i));
+    printf("%e ", x(i));
   end
   printf("\n");
 

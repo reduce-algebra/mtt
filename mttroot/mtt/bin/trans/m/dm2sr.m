@@ -10,6 +10,9 @@ function sr = dm2sr(A,B,C,D,E,T);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1996/08/11 10:37:40  peter
+% %% Corrected mistake in step-response calculation.
+% %%
 % %% Revision 1.1  1996/08/11 09:42:40  peter
 % %% Initial revision
 % %%
@@ -32,7 +35,7 @@ sr = zeros(N,NN);
 i = 0;
 for t = T'
   i=i+1;
-  SR = C*( A\(exp(A*t)-1) )*B + D*ones(size(t));
+  SR = C*( A\(expm(A*t)-one) )*B + D;
   sr(i,:) = reshape(SR, 1,NN);
 end;
 

@@ -5,6 +5,10 @@ function [bonds,components] = rbg2abg(rbonds,rstrokes,rcomponents,rports,infofil
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.7  1996/11/01 18:01:57  peterg
+% %% Rationalised port ordering.
+% %% Fixed port bug.
+% %%
 % %% Revision 1.6  1996/08/25 08:27:14  peter
 % %% Now checks ports correctely - I hope.
 % %%
@@ -135,6 +139,11 @@ for i = 1:n_components
 	if k~=0
 	  mtt_info(port_error,fnum);
 	  mtt_info(sprintf('\t it must have 0 or %1.0f ports\n', n), fnum);
+	  port_str = sprintf('\t the ports are: ');
+	  for kk=1:k
+	    port_str=sprintf('%s %1.0f', port_str, port_number(kk));
+	  end;
+	  mtt_info(port_str, fnum);
 	end;
       end;
       

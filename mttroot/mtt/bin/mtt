@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.33  1996/11/01 12:34:45  peterg
+## Added browser - mtt_help
+##
 ## Revision 1.32  1996/10/31 20:48:41  peterg
 ## Revised html generation.
 ## Stopped deletion of rep.txt file.
@@ -116,11 +119,21 @@
 ## Initial revision
 ##
 ###############################################################
-echo
-echo 'MTT (Model Transformation Tools) version 2.0++'
-echo 'This is free software with ABSOLUTELY NO WARRANTY.'
-echo 'Type `mtt warranty'\' 'for details.'
-echo
+
+#Look for a command line argument
+if [ -n "`echo $1 | grep '-'`" ]; then
+  arg=$1
+  shift
+fi
+
+#Print header if not in quiet (-q) mode.
+if [ "$arg" != "-q" ]; then
+  echo
+  echo 'MTT (Model Transformation Tools) version 2.0++'
+  echo 'This is free software with ABSOLUTELY NO WARRANTY.'
+  echo 'Type `mtt warranty'\' 'for details.'
+  echo
+fi
 
 if [ "$1" = "" ]; then
   echo 'Usage: mtt help'

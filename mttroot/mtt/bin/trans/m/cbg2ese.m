@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 # ###############################################################
 # ## $Id$
 # ## $Log$
+# ## Revision 1.27  1998/08/25 07:16:49  peterg
+# ## Modified to data struture representation
+# ##
 # ## Revision 1.26  1998/08/24 14:53:55  peterg
 # ## Uses new _cbg structure.
 # ##
@@ -154,9 +157,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 # Evaluate the system function to get the bonds
   eval(["CBG = ", cbg_name, ";"]);
   #eval(["[bonds,status,system_type,components] = ", cbg_name, ";"]);
-  abg_name = [system_type, "_abg"];
-  cmp_name = [system_type, "_cmp"];
-  alias_name = [system_type, "_alias"];
+#  abg_name = [system_type, "_abg"];
+#  cmp_name = [system_type, "_cmp"];
+#  alias_name = [system_type, "_alias"];
 
 # No longer needed - cbg now has components:  
 #  eval(["[junk,components]=", abg_name, ";"]);
@@ -190,12 +193,14 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   endif;
 
 
-  field=["ports";"subsystems"];	# Do for both ports and subsystems -
+  fields=["ports";"subsystems"];	# Do for both ports and subsystems -
 				# ports first
   for i=1:2
-    if struct_contains(CBG,field(i,:));
-      eval(["CBG_field = CBG.",field(i,:), ";"]);
+    field=deblank(fields(i,:));
+    if struct_contains(CBG,field);
+      eval(["CBG_field = CBG.",field, ";"]);
       for [subsystem,comp_name] = CBG_field
+i,comp_name
 				#comp = nozeros(components(i,:));
     	comp = subsystem.connections;
     	bond_list = abs(comp);
@@ -203,16 +208,16 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 				# Convert from arrow orientated to component orientated causality
     	comp_bonds = CBG.bonds(bond_list,:).*direction;
 	
-    	disp(["---- ", field(i,:), "Component ---"]);    
+    	disp(["---- ", field, " ---"]);    
 				# Get the component details
 				#eval([ "[comp_type,comp_name,cr,args,repetitions] = ", cmp_name, "(i)"]);
     	
 				# Alias the args list -- if not at top level
     	message = sprintf("\tfor component  %s (%s) within %s",\
 			  comp_name,subsystem.type,full_name);    
-    	if struct_contains(subsystem,"alias")
-	  subsystem.arg = alias_args(subsystem.arg,subsystem.alias,";",message,infofilenum)
-	  subsystem.cr = alias_args(subsystem.cr,subsystem.alias,";",message,infofilenum)
+    	if struct_contains(CBG,"alias")
+	  subsystem.arg = alias_args(subsystem.arg,CBG.alias,";",message,infofilenum)
+	  subsystem.cr = alias_args(subsystem.cr,CBG.alias,";",message,infofilenum)
     	endif;
 
 	
@@ -363,7 +368,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	  end;
     	end;
       endfor			# [subsystem,comp_name] = CBG_field
-    endif			# struct_contains(CBG,field(i,:))
+    endif			# struct_contains(CBG,field)
   endfor			# i=1:2
   # Close the files
   fclose(ese_file);

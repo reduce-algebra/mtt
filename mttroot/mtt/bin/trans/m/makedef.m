@@ -5,6 +5,9 @@ function makedef(structure,deffilenum);
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## %% $Id$
   ## %% $Log$
+  ## %% Revision 1.7  2000/10/20 13:16:29  peterg
+  ## %% Reformated
+  ## %%
   ## %% Revision 1.6  1996/12/07 18:21:57  peterg
   ## %% Now uses fopen + file number
   ## %%
@@ -66,9 +69,7 @@ function makedef(structure,deffilenum);
   if zero_outputs>0
     fprintf(deffilenum, 'matrix MTTyz(%1.0f,1);\n', zero_outputs);
     fprintf(deffilenum, 'matrix MTTui(%1.0f,1);\n', zero_outputs);
-  endif
-
-  if internal_inputs>0
+  elseif internal_inputs>0
     fprintf(deffilenum, 'matrix MTTui(%1.0f,1);\n', inputs);
   endif
 

@@ -35,13 +35,6 @@ error ()
     exit 1
 }
 
-# should be root for some of these commands
-if [ ! `whoami` = "root" ]; then
-    echo root password required
-    exec su -p -c "$0 $*"
-    error "root authorisation failed"
-fi
-
 # use -email and -name to change
 DEBFULLNAME=${DEBFULLNAME:-"Geraint Paul Bevan"}
 DEBEMAIL=${DEBEMAIL:-"geraint@users.sourceforge.net"}

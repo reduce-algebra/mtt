@@ -203,19 +203,21 @@ function [bonds,components,n_vector_bonds] = \
       if ((! strcmp(comp.type, "zero")) & (! strcmp(comp.type, "one")))
 	alias = eval(sprintf("%s_alias", comp.type));
 	if (is_struct(alias))
-	  for [bond, bond_name] = comp
-	    if (struct_contains(alias, "bond.label"))
-	      old_name = bond.label;
-	      new_name = eval(sprintf("alias.%s", old_name));
-	      bond.label = new_name;
-	      mtt_info(sprintf("Aliasing [%s] on %s (%s) to [%s]",
-			       old_name, comp_name, comp.type, new_name),
-		       infofile);
+	  for [bond, bond_name] = comp;
+	    if (isstruct(bond))
+	      if (struct_contains(alias, bond.label))
+		old_name = bond.label;
+		new_name = eval(sprintf("alias.%s", old_name));
+		bond.label = new_name;
+		mtt_info(sprintf("Aliasing [%s] on %s (%s) to [%s]",
+				 old_name, comp_name, comp.type, new_name),
+			 infofile);
+	      endif
 	    endif
 	    eval(sprintf("comp.%s = bond;", bond_name));
 	  endfor
 	endif
-	eval(sprintf("objects.%s = comp;", comp_name));
+	eval(sprintf("objects.comp.%s = comp;", comp_name));
       endif
     endfor
   endif

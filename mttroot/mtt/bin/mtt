@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.314  2001/07/13 04:19:03  gawthrop
+## Now loads _subs.r with _cr.r file when using -cr option
+##
 ## Revision 1.313  2001/06/13 14:53:59  gawthrop
 ## MTT now gas the double-colon option in the abg.fig file
 ## eg R:r:a^2+3*b
@@ -35,6 +38,17 @@
 ## Revision 1.310  2001/05/08 08:30:12  gawthrop
 ## Added line to reverse the x^y --> pow(x,y) in default  _simp file to
 ## prettyfy LaTeX
+##
+## Revision 1.309.2.3  2001/07/13 04:02:31  geraint
+## Implemented numerical algebraic solution for _ode2odes.oct.
+##
+## Revision 1.309.2.2  2001/06/05 03:20:39  geraint
+## added -ae option to select algebraic equation solution method.
+##
+## Revision 1.309.2.1  2001/05/04 04:07:24  geraint
+## Numerical solution of algebraic equations.
+## sys_ae.cc written for unsolved inputs.
+## Solution of equations using hybrd from MINPACK (as used by Octave fsolve).
 ##
 ## Revision 1.309  2001/04/28 03:15:03  geraint
 ## Fixed comment (interfered with "mtt help representations").
@@ -1110,6 +1124,9 @@ verbose=' -s'
 # Default integration method
 integration_method=implicit;
 
+# Default algebraic equation solver
+algebraic_solver=Reduce_Solver;
+
 # Default no info
 info_switch=''
 
@@ -1178,6 +1195,29 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 			echo $1 is an unknown integration method - use euler, rk4 or implicit;
                         exit;;
 		esac;;
+	-ae )
+                mtt_switches="$mtt_switches $1";
+		case $2 in
+		    fsolve | hybrd)
+			mtt_switches="$mtt_switches $2";
+			algebraic_solver=Hybrd_Solver;
+			shift;
+			;;
+		    hooke)
+			mtt_switches="$mtt_switches $2";
+			algebraic_solver=HJ_Solver;
+			shift;
+			;;
+		    reduce)
+			mtt_switches="$mtt_switches $2";
+			algebraic_solver=Reduce_Solver;			
+			Solve='-A';
+			shift;
+			;;
+		    *)
+			echo $1 is an unknown solver - use hybrd, hooke or reduce;
+			exit;;
+	        esac;;
 	-s )
                 sensitivity_switch='-s';
                 mtt_switches="$mtt_switches $1";
@@ -1316,6 +1356,7 @@ if [ -z "$1" ]; then
     echo '         -dc Maximise derivative (not integral) causality'
     echo '         -dc Maximise derivative (not integral) causality'
     echo '         -i <implicit|euler|rk4>   Use implicit, euler or rk4 integration'
+    echo '         -ae <reduce|hybrd|hooke>   Solve algebraic equations with Reduce, hybrd (fsolve) or "Hooke and Jeeves"'
     echo '         -o ode is same as dae'
     echo '         -oct use oct files in place of m files where appropriate'
     echo '         -opt optimise code generation'
@@ -1458,6 +1499,7 @@ if [ "$1" = "Clean" ] && [ "$2" = "" ]; then
   rm -f *_ode2odes.* *.dat2 MTT.core
   rm -f *_modpar.txt *_modpar.r
   rm -f *_ICD.txt *_ICD.c *_ICD.cc *_ICD.m
+  rm -f *_ae.r *_ae.m *_ae.cc *_ae.oct
   rm -fR *_rep MTT_work
   exit
 fi
@@ -1494,6 +1536,7 @@ if [ "$2" = "Clean" ] && [ "$3" = "" ]; then
   rm -f $1_ode2odes.* $1.dat2
   rm -f $1_modpar.txt $1_modpar.r
   rm -f $1_ICD.txt $1_ICD.c $1_ICD.cc $1_ICD.m
+  rm -f $1_ae.r $1_ae.m $1_ae.cc $1_ae.oct
   rm -fR $1_rep MTT_work
   exit
 fi
@@ -1951,6 +1994,9 @@ $1_%.cc:  $1_%.m
 mtt_%.cc: ${MTT_LIB}/cc/mtt_%.cc
 	cp ${MTT_LIB}/cc/mtt_\$*.cc mtt_\$*.cc
 
+mtt_%.hh: ${MTT_LIB}/cc/mtt_%.hh
+	cp ${MTT_LIB}/cc/mtt_\$*.hh mtt_\$*.hh
+
 ## .o files
 .PRECIOUS: $1_%.o
 $1_%.o: $1_%.cc $1_def.h $1_sympar.h $1_cr.h
@@ -2224,14 +2270,14 @@ endif
 # Dummy target
 FORCE:
 
-$1_ode2odes_common.m    : $1_input.m   $1_logic.m   $1_numpar.m   $1_simpar.m   $1_state.m
+$1_ode2odes_common.m    : $1_ae.m   $1_input.m   $1_logic.m   $1_numpar.m   $1_simpar.m   $1_state.m
 	@echo > /dev/null
-$1_ode2odes_common.cc   : $1_input.cc  $1_logic.cc  $1_numpar.cc  $1_simpar.cc  $1_state.cc
+$1_ode2odes_common.cc   : $1_ae.cc  $1_input.cc  $1_logic.cc  $1_numpar.cc  $1_simpar.cc  $1_state.cc
 	@echo > /dev/null
-$1_ode2odes_common.o    : $1_input.o   $1_logic.o   $1_numpar.o   $1_simpar.o   $1_state.o
+$1_ode2odes_common.o    : $1_ae.o   $1_input.o   $1_logic.o   $1_numpar.o   $1_simpar.o   $1_state.o
 	@echo "Creating $1_ode2odes_common.o"
 	ar -cr \$@ \$^
-$1_ode2odes_common.oct  : $1_input.oct $1_logic.oct $1_numpar.oct $1_simpar.oct $1_state.oct
+$1_ode2odes_common.oct  : $1_ae.oct $1_input.oct $1_logic.oct $1_numpar.oct $1_simpar.oct $1_state.oct
 	@echo > /dev/null
 
 $1_ode2odes_euler.m  $1_ode2odes_rk4.m    : $1_ode.m     $1_odeo.m
@@ -2254,6 +2300,11 @@ $1_ode2odes_implicit.o  : $1_cseo.o    $1_csex.o   $1_smxa.o   $1_smxax.o   mtt_
 $1_ode2odes_implicit.oct: $1_cseo.oct  $1_csex.oct $1_smxa.oct $1_smxax.oct mtt_implicit.oct
 	@echo > /dev/null
 
+mtt_Solver.cc:	mtt_Solver.hh
+$1_ode2odes_${algebraic_solver}.cc:	mtt_Solver.cc mtt_${algebraic_solver}.hh mtt_${algebraic_solver}.cc
+$1_ode2odes_${algebraic_solver}.o:	mtt_Solver.o mtt_${algebraic_solver}.o
+	@echo "Creating $1_ode2odes_${algebraic_solver}.o"
+	ar -cr \$@ \$^
 
 #SUMMARY numpar	numerical parameter declaration (m) 
 $1_numpar.m:  $1_numpar.txt $1_sympars.txt
@@ -2438,6 +2489,15 @@ $1_dae.c: $1_def.r $1_dae.r  $1_sympar.r
 $1_dae.tex: $1_dae.r $1_simp.r
 	dae_r2tex $partition $1; latex_tidy $1_dae.tex
 
+#SUMMARY ae	algebraic equations - unknown inputs (r)
+#SUMMARY ae	algebraic equations - unknown inputs (m)
+#SUMMARY ae	algebraic equations - unknown inputs (cc)
+
+$1_ae.r: $1_cse.r
+	touch $1_ae.r
+$1_ae.m: $1_ae.r
+	mtt_r2m $1 ae
+
 #SUMMARY cse	constrained-state equations (r)
 #SUMMARY cse*	constrained-state equations (m)
 #SUMMARY cse*	constrained-state equations (oct)
@@ -2552,7 +2612,7 @@ ifeq ($using_oct,yes)
 	touch $1_ode2odes.m # Create a dummy which wont' be used
 	mtt $mtt_switches -q -u $1 ode2odes oct
 else
-	make_ode2odes $1 m $integration_method
+	make_ode2odes $1 m $integration_method $algebraic_solver
 endif
 endif
 ifneq ($integration_method,implicit)
@@ -2564,7 +2624,7 @@ ifeq ($using_oct,yes)
 	touch $1_ode2odes.m # Create a dummy which wont' be used
 	mtt $mtt_switches -q -u $1 ode2odes oct
 else
-	make_ode2odes $1 m $integration_method
+	make_ode2odes $1 m $integration_method $algebraic_solver
 endif
 
 endif
@@ -2574,26 +2634,26 @@ endif
 #SUMMARY ode2odes Simulation function (oct)
 #SUMMARY ode2odes Simulation function (exe)
 $1_ode2odes.exe: $1_def.h $1_sympar.h\
-		 $1_ode2odes.o $1_ode2odes_common.o $1_ode2odes_${integration_method}.o
+		 $1_ode2odes.o $1_ode2odes_common.o $1_ode2odes_${integration_method}.o $1_ode2odes_${algebraic_solver}.o
 	echo Creating $1_ode2odes.exe
 	${MTT_CXX} ${MTT_CXXFLAGS} -o $1_ode2odes.exe\
-	$1_ode2odes.o $1_ode2odes_common.o $1_ode2odes_${integration_method}.o\
+	$1_ode2odes.o $1_ode2odes_common.o $1_ode2odes_${integration_method}.o $1_ode2odes_${algebraic_solver}.o\
 	${MTT_LDFLAGS} ${MTT_CXXLIBS}
 
-$1_ode2odes.o: $1_ode2odes.cc $1_ode2odes_common.o $1_ode2odes_${integration_method}.o
+$1_ode2odes.o: $1_ode2odes.cc $1_ode2odes_common.o $1_ode2odes_${integration_method}.o $1_ode2odes_${algebraic_solver}.o
 	echo Creating $1_ode2odes.o
 	${MTT_CXX} ${MTT_CXXFLAGS} ${MTT_CXXINCS} -c $1_ode2odes.cc -DSTANDALONE
 
-$1_ode2odes.oct: $1_ode2odes.cc $1_ode2odes_common.oct $1_ode2odes_${integration_method}.oct
+$1_ode2odes.oct: $1_ode2odes.cc $1_ode2odes_common.oct $1_ode2odes_${integration_method}.oct $1_ode2odes_${algebraic_solver}.o
 	touch $1_ode2odes.m
 	echo Creating $1_ode2odes.oct
-	$MKOCTFILE $1_ode2odes.cc
+	$MKOCTFILE $1_ode2odes.cc mtt_${algebraic_solver}.cc mtt_Solver.cc
 
 $1_ode2odes.cc: $1_def.r $1_sympars.txt\
 		$1_ode2odes_common.m $1_ode2odes_common.cc\
-		$1_ode2odes_${integration_method}.m $1_ode2odes_${integration_method}.cc
+		$1_ode2odes_${integration_method}.m $1_ode2odes_${integration_method}.cc mtt_Solver.cc mtt_${algebraic_solver}.cc mtt_${algebraic_solver}.hh
 	touch $1_ode2odes.m
-	make_ode2odes $1 cc $integration_method
+	make_ode2odes $1 cc $integration_method $algebraic_solver
 
 #Conversion of m to p to c
 #SUMMARY ode	ordinary differential equations (c)

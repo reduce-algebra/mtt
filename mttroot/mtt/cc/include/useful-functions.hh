@@ -6,32 +6,29 @@
 
 #ifndef __cplusplus
 #define inline			/* strip */
-typedef double  doubleref_t;
-#else
-typedef double &doubleref_t;
 #endif // ! __cplusplus
 
 
 static inline double
-max (const doubleref_t x1, const doubleref_t x2)
+max (const double x1, const double x2)
 {
   return static_cast<double>((x1 >= x2) ? x1 : (x1 < x2) ? x2 : 0);
 }
 
 static inline double
-min (const doubleref_t x1, const doubleref_t x2)
+min (const double x1, const double x2)
 {
   return static_cast<double>((x1 <= x2) ? x1 : (x1 > x2) ? x2 : 0);
 }
 
 static inline double
-nonsingular (const doubleref_t x)
+nonsingular (const double x)
 {
   return static_cast<double>((x == 0) ? 1.0e-30 : x);
 }
 
 static inline double
-sign (const doubleref_t x)
+sign (const double x)
 {
   return static_cast<double>((x > 0) ? +1 : (x < 0) ? -1 : 0);
 }
@@ -52,7 +49,7 @@ nozeros (const ColumnVector v0, const double tol = 0.0)
   ColumnVector v (v0.length ());
   register int i, j;
   for (i = j = 0; i < v.length (); i++)
-    if (tol < abs (v0 (i)))
+    if (tol < std::abs (v0 (i)))
       {
 	v (j) = v0 (i);
 	j++;
@@ -80,7 +77,7 @@ zeros (const int r, const int c)
   Matrix m (r, c, 0.0);
   return m;
 }
-#endif __cplusplus
+#endif // __cplusplus
 
 
 

@@ -14,7 +14,7 @@ if [ -z "$relative_level" ]; then
   relative_level=0;    
 fi
 
-ls $2*_$3.$4  |\
+mtt_xargs.sh "ls" "$2*_$3.$4"  |\
 awk '{
   level=split($1,foo,"_")-2;
   maxlevel = current_level +  relative_level;

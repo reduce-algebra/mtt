@@ -16,6 +16,13 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.30  2001/07/12 04:02:53  gawthrop
+## Now fixes multiports for input and output as well as state
+##
+## Revision 1.29.2.1  2001/06/26 22:29:05  geraint
+## mtt_xargs.sh eliminates Arg list too long error for large models.
+## (UNIX xargs does not work if the environment is too large).
+##
 ## Revision 1.29  2001/03/29 19:24:14  gawthrop
 ## Can now use c representations of crs when using -c option
 ##
@@ -188,12 +195,12 @@ if [ -z "$partition" ]; then
   ## Don't partition
 
   # Create the composite ese file
-  cat $1_ese.r $1_*_ese.r $1_modpar.r  > $1_ese.tmp 2>> /dev/null
+  mtt_xargs.sh cat "$1_ese.r $1_*_ese.r $1_modpar.r"  > $1_ese.tmp 2>> /dev/null
 
   mv $1_ese.tmp $1_ese.r
 
   # Zap the sub ese files
-  rm -f $1_*_ese.r
+  mtt_xargs.sh "rm -f" "$1_*_ese.r"
 
   echo "END;" >> $1_ese.r
 
@@ -306,7 +313,7 @@ EOF
   ## Subsystems (Only works when no repetitions at this level)
   esefile=${subsystem}_ese.r
   echo Creating $esefile
-  cat ${subsystem}_1_ese.r ${subsystem}_1_*_ese.r > $esefile 2> /dev/null
+  mtt_xargs.sh cat "${subsystem}_1_ese.r ${subsystem}_1_*_ese.r" > $esefile 2> /dev/null
   echo "END;" >> $esefile
 
   ## Def file for subsystem

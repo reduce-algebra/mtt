@@ -1,5 +1,11 @@
 /* $Id$
  * $Log$
+ * Revision 1.2.2.1  2001/06/30 03:26:17  geraint
+ * gcc-3.0 compatibility.
+ *
+ * Revision 1.2  2001/03/19 02:28:53  geraint
+ * Branch merge: merging-ode2odes-exe back to MAIN.
+ *
  * Revision 1.1.2.2  2001/03/09 04:01:20  geraint
  * \ escapes newline.
  *
@@ -30,6 +36,8 @@
 #include "Bracket.hh"
 
 
+
+using namespace std;
 
 /*
  * use lbrace, etc. in expressions to automate nesting calculations

@@ -15,6 +15,12 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1.4.1  2001/06/26 00:57:21  geraint
+## Prints more useful name.
+##
+## Revision 1.1  2000/12/28 12:26:34  peterg
+## Put under RCS
+##
 ## Revision 1.1  1999/03/28 21:29:40  peterg
 ## Initial revision
 ##
@@ -32,7 +38,7 @@ printf("Time");
 }
 { 
   if ($1==which)
-    printf(" %s(%s)", $3, $5);
+    printf(" %s(%s)", $4, $5);
 }
 END{
 printf("\n");

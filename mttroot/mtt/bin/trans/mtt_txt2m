@@ -15,6 +15,16 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.13.4.2  2001/07/09 00:24:58  geraint
+# %% input rep: Removed input name mapping, left state name mapping.
+# %%
+# %% Revision 1.13.4.1  2001/06/26 01:01:28  geraint
+# %% Makes input and state names available for input rep.
+# %%
+# %% Revision 1.13  2001/02/05 03:33:18  geraint
+# %% Convert user-defined txt to lower-case in translation.
+# %% Required by logic.m (Octave is case sensitive).
+# %%
 # %% Revision 1.12  2000/11/08 11:20:49  peterg
 # %% removed the empty matrix stuff
 # %%
@@ -165,6 +175,13 @@ if [ "$representation" = "logic" ]; then
   echo >> $outfile
   echo "## Inputs" >> $outfile
   mtt_name2array $system input >> $outfile # Set up input by name
+  echo >> $outfile
+  echo "## States" >>$outfile
+  mtt_name2array $system state >> $outfile # Set up state by name
+fi
+
+## Special for input rep
+if [ "$representation" = "input" ]; then
   echo >> $outfile
   echo "## States" >>$outfile
   mtt_name2array $system state >> $outfile # Set up state by name

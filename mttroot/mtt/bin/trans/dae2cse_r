@@ -15,6 +15,23 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.15.2.4  2001/06/26 00:55:48  geraint
+## Writes algebraic equation Jacobian _aej.r (not used yet).
+##
+## Revision 1.15.2.3  2001/05/09 00:19:22  geraint
+## Fixed EOF error when MTTNYZ=0.
+##
+## Revision 1.15.2.2  2001/05/05 20:50:16  geraint
+## Fixed errors when MTTNx=0.
+##
+## Revision 1.15.2.1  2001/05/04 04:07:24  geraint
+## Numerical solution of algebraic equations.
+## sys_ae.cc written for unsolved inputs.
+## Solution of equations using hybrd from MINPACK (as used by Octave fsolve).
+##
+## Revision 1.15  2001/03/19 02:28:52  geraint
+## Branch merge: merging-ode2odes-exe back to MAIN.
+##
 ## Revision 1.14.2.1  2001/03/19 00:29:08  geraint
 ## Parse switches (-A) before calling def2write_r.
 ## Update $1_def.* instead of removing.
@@ -283,23 +300,55 @@ BEGIN
 
   % No algebraic variables left!
   MTTNYz := 0;
-END; % IF MTTNyz>0
+END; % IF MTTNyz>0 and $solve
 
+OUT "$1_ae.r";
+IF (MTTNyz>0) THEN % not $solve (or perhaps solution failed?)
+BEGIN
+    WRITE "MATRIX MTTyz(",MTTNyz,",1)";
+    WRITE "%File: $1_ae.r";
+    FOR i := 1:MTTNyz DO
+	WRITE "MTTyz(",i,",1) := ",MTTyz(i,1);
+END; % if MTTNyz>0 (and !$solve)
+WRITE ";END;";
+SHUT "$1_ae.r";
+
+OUT "$1_aej.r";
+IF (MTTNyz>0) THEN % as above
+BEGIN
+    WRITE "MATRIX MTTyzj(",MTTNyz,",",MTTNyz,")";
+    WRITE "%File: $1_aej.r";
+    FOR i := 1:MTTNyz DO
+	FOR j := 1:MTTNyz DO
+	BEGIN
+	   didj := df(MTTyz(i,1),mkid('mttui,j));
+	   IF (didj NEQ 0) THEN
+	      WRITE "MTTyzj(",i,",",j,") := ",didj;
+	END;
+END;
+WRITE ";END;";
+SHUT "$1_aej.r";
 
 % Create the matrix declarations
 OUT "$1_cse.r1";
-write "MATRIX MTTEdx(", MTTNx, ",", 1, ")$"; 
-write "MATRIX MTTE(", MTTNx, ",", MTTNx, ")$"; 
+write "%";
+IF (MTTNx > 0) THEN
+BEGIN
+    write "MATRIX MTTEdx(", MTTNx, ",", 1, ")$"; 
+    write "MATRIX MTTE(", MTTNx, ",", MTTNx, ")$"; 
+END;
 SHUT "$1_cse.r1";
 
 OUT "$1_csex.r1";
-write "MATRIX MTTEdx(", MTTNx, ",", 1, ")$"; 
+write "%File:$1_csex.r1";
+IF (MTTNx > 0) THEN
+    write "MATRIX MTTEdx(", MTTNx, ",", 1, ")$"; 
 SHUT "$1_csex.r1";
 
 IF MTTNy>0 THEN
 BEGIN
   OUT "$1_cseo.r1";
-  write "MATRIX MTTY(", MTTNy, ",", MTTNx, ")$"; 
+  write "MATRIX MTTY(", MTTNy, ",", 1, ")$"; 
   SHUT "$1_cseo.r1";
 END;
 

@@ -16,10 +16,16 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2.4.1  2001/06/28 22:58:27  geraint
+## Using mtt_xargs.sh to prevent Arg list too long error.
+##
+## Revision 1.2  1996/11/09 21:16:19  peterg
+## *** empty log message ***
+##
 # Revision 1.1  1996/10/21  12:34:47  peterg
 # Initial revision
 #
 ###############################################################
 
-(ls $2*_$3 \
+(mtt_xargs.sh "ls" "$2*_$3" \
 | sed "s/\(.*_*\)$3/$1 \1$3 > \1$4 /")

@@ -13,6 +13,16 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7.2.1  2001/05/04 04:07:24  geraint
+## Numerical solution of algebraic equations.
+## sys_ae.cc written for unsolved inputs.
+## Solution of equations using hybrd from MINPACK (as used by Octave fsolve).
+##
+## Revision 1.7  2001/04/11 09:44:26  gawthrop
+## Fixed cc and c problems to do with pow(x,y) and integers
+## mtt/lib/reduce/fix_c.r is included in rdae2dae and cse2smx_lang for
+## -c, -cc and -oct options
+##
 ## Revision 1.6  2000/11/29 20:48:53  peterg
 ## Zapped unnecessary Npar creation
 ##
@@ -80,8 +90,8 @@ case $rep in
         ms="1"
 	;;
     odeo)
-        matrices='Y Yz'
-        ns="$Ny $Nyz"
+        matrices='Y'
+        ns="$Ny"
         ms="1 1"
 	;;
     sm)

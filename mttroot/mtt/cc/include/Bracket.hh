@@ -1,5 +1,11 @@
 /* $Id$
  * $Log$
+ * Revision 1.1.4.1  2001/06/30 03:26:20  geraint
+ * gcc-3.0 compatibility.
+ *
+ * Revision 1.1  2000/12/28 09:47:29  peterg
+ * put under RCS
+ *
  * Revision 1.1  2000/10/31 04:29:11  geraint
  * Initial revision
  *
@@ -11,6 +17,7 @@
 #include <string>
 
 
+using namespace std;
 
 class Bracket
 {

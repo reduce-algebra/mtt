@@ -9,6 +9,27 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.58  2001/07/13 00:51:39  geraint
+## Fixed generation of odes.sg from .m and .oct simulations.
+## .cc, .m and .oct simulations now all write mtt_data (lower case).
+##
+## Revision 1.57.2.5  2001/07/13 04:02:31  geraint
+## Implemented numerical algebraic solution for _ode2odes.oct.
+##
+## Revision 1.57.2.4  2001/07/02 00:34:56  geraint
+## gcc-3.0 compatibility.
+##
+## Revision 1.57.2.3  2001/06/25 23:28:29  geraint
+## Generic mtt_rate and mtt_output - allows method independent calls.
+##
+## Revision 1.57.2.2  2001/06/05 03:20:40  geraint
+## added -ae option to select algebraic equation solution method.
+##
+## Revision 1.57.2.1  2001/05/04 04:07:24  geraint
+## Numerical solution of algebraic equations.
+## sys_ae.cc written for unsolved inputs.
+## Solution of equations using hybrd from MINPACK (as used by Octave fsolve).
+##
 ## Revision 1.57  2001/04/01 03:38:54  geraint
 ## Reset row to zero after write to file, ready for subsequent runs.
 ## Eliminates SIGSEGV in Octave when _ode2odes called multiple times.
@@ -226,6 +247,12 @@ else
   method=implicit  
 fi
 
+if [ -n "$4" ]; then
+    algebraic_solver=$4
+else
+  algebraic_solver="Reduce_Solver"
+fi
+
 echo Creating $filename with $method integration method
 
 # Find system constants
@@ -348,9 +375,9 @@ esac
 
 cat <<EOF  > $filename
 #include <octave/oct.h>
-#include <octave/ov-struct.h>
 #include <octave/load-save.h>
 #include <octave/lo-mappers.h>
+#include <octave/ov-struct.h>
 #include <octave/variables.h>
 
 #ifndef STANDALONE
@@ -360,9 +387,17 @@ cat <<EOF  > $filename
 #include "${sys}_def.h"
 #include "${sys}_sympar.h"
 
+#include "mtt_${algebraic_solver}.hh"
+
 #ifdef STANDALONE
 #include <csignal>
 #include <fstream>
+
+extern ColumnVector F${sys}_ae (
+	ColumnVector &x,
+	ColumnVector &u,
+	const double &t,
+	ColumnVector &par);
 
 extern ColumnVector F${sys}_input (
 	ColumnVector &x,
@@ -434,8 +469,29 @@ extern ColumnVector F${sys}_smxax (
 EOF
 fi
 cat <<EOF >> $filename
+
+void set_signal_handlers (void);
+
 #endif // STANDALONE
 
+ColumnVector
+mtt_ae (ColumnVector &x,
+	ColumnVector &u,
+	const double &t,
+	ColumnVector &par)
+{
+#ifdef STANDALONE
+    return F${sys}_ae(x,u,t,par);
+#else
+    static octave_value_list args, f;
+    args (0) = octave_value (x);
+    args (1) = octave_value (u);
+    args (2) = octave_value (t);
+    args (3) = octave_value (par);
+    f = feval ("${sys}_ae", args, 1);
+    return f(0).${vector_value} ();
+#endif
+}
 
 inline ColumnVector
 mtt_input (ColumnVector &x,
@@ -443,8 +499,11 @@ mtt_input (ColumnVector &x,
 	   const double &t,
 	   ColumnVector &par)
 {
+  static ${algebraic_solver} ae(mtt_ae,MTTNPAR,MTTNU,MTTNX,MTTNY,MTTNYZ);
+  static ColumnVector u  (MTTNU);
+
 #ifdef STANDALONE
-  return F${sys}_input (x, y, t, par);
+  u = F${sys}_input (x, y, t, par);
 #else
   static octave_value_list args, f;
   args (0) = octave_value (x);
@@ -452,8 +511,16 @@ mtt_input (ColumnVector &x,
   args (2) = octave_value (t);
   args (3) = octave_value (par);
   f = feval ("${sys}_input", args, 1);
-  return f(0).${vector_value} ();
+  u = f(0).${vector_value} ();
 #endif
+  if (MTTNYZ == 0)
+    {
+      return u;
+    }
+  else
+    {
+      return ae.solve(x,u,t,par);
+    }
 }
 
 inline ColumnVector
@@ -521,10 +588,10 @@ mtt_state (ColumnVector &x)
 }
 
 inline ColumnVector
-mtt_${ode} (ColumnVector &x,
-	    ColumnVector &u,
-	    const double &t,
-	    ColumnVector &par)
+mtt_rate (ColumnVector &x,
+	  ColumnVector &u,
+	  const double &t,
+	  ColumnVector &par)
 {
 #ifdef STANDALONE
   return F${sys}_${ode} (x, u, t, par);
@@ -540,7 +607,7 @@ mtt_${ode} (ColumnVector &x,
 }
 
 inline ColumnVector
-mtt_${odeo} (ColumnVector &x,
+mtt_output (ColumnVector &x,
 	     ColumnVector &u,
 	     const double &t,
 	     ColumnVector &par)
@@ -658,15 +725,18 @@ mtt_write (const double &t,
 	   ColumnVector &y,
 	   const int &nrows,
 	   const bool dump_data = false,
-	   ostream &file = cout)
+	   std::ostream &file = std::cout)
 {
   static Matrix data;
   static int row;
 
   if (dump_data)
     {
-       Matrix written_data = data.extract (0, 0, row-1, data.cols ()-1);
-       $save_ascii_data_function (file, written_data, "mtt_data");
+       if (row > 0)
+         {
+           Matrix written_data = data.extract (0, 0, row-1, data.cols ()-1);
+           $save_ascii_data_function (file, written_data, "mtt_data");
+	 }
        return;
     }
 
@@ -689,7 +759,7 @@ mtt_write (const double &t,
     {
 #ifdef STANDALONE
       $save_ascii_data_function (file, data, "mtt_data");
-//    cout << data << endl;
+//    std::cout << data << std::endl;
 #else // ! STANDALONE
   set_global_value ("MTT_data", data);
 #endif
@@ -698,25 +768,23 @@ mtt_write (const double &t,
 }
 
 #ifdef STANDALONE
-void dump_data (ostream &file)
+void dump_data (std::ostream &file)
 {
-  ColumnVector null (0.0);
+  ColumnVector null (0);
   mtt_write (0.0, null, null, 0, true, file);
 }
-
-void set_signal_handlers (void);
 
 void handle_signal (int signum)
 {
   // handle some signals to ensure data is written.
-  cerr << "# Writing data to MTT.core (signal " << signum << ")" << endl;
-  ofstream corefile ("MTT.core");
+  std::cerr << "# Writing data to MTT.core (signal " << signum << ")" << std::endl;
+  std::ofstream corefile ("MTT.core");
   dump_data (corefile);
   switch (signum)
     {
       case SIGFPE:
         // Intel chips do not raise SIGFPE for DIVZERO :-(
-        raise (SIGABRT);
+//        raise (SIGABRT);
         break;
       case SIGINT:
 	break;
@@ -725,7 +793,7 @@ void handle_signal (int signum)
 	raise (SIGQUIT);
 	break;
       default:
-        cerr << "# Warning: make_ode2odes needs updating!" << endl;
+        std::cerr << "# Warning: make_ode2odes needs updating!" << std::endl;
 	signal (signum, SIG_DFL);
 	raise (signum);
         break;
@@ -745,9 +813,7 @@ int main (void) {
   set_signal_handlers ();
 #else
 DEFUN_DLD (${sys}_ode2odes, args, ,
-"Octave ode2odes representation of system with $method integration method
-Usage: mtt_data = ${sys}_ode2odes (x0, par, simpar)
-")
+"Octave ode2odes representation of system with $method integration method\nUsage: mtt_data = ${sys}_ode2odes (x0, par, simpar)\n")
 {
   static octave_value_list retval;
 #endif // STANDALONE
@@ -832,7 +898,7 @@ Usage: mtt_data = ${sys}_ode2odes (x0, par, simpar)
   for (register int j = 0, i = 1; i <= ilast; i++)
     {
       u	= mtt_input (x, y, t, par);
-      y	= mtt_${odeo} (x, u, t, par);
+      y	= mtt_output (x, u, t, par);
       if (0 == j)
 	{
            mtt_write (t, x, y, nrows);
@@ -856,16 +922,16 @@ cat << EOF >> $filename
           x2 (x),
           x3 (x);
 
-        k1 = ddt * mtt_${ode} (x , u, t , par); x1 += k1 * 0.5;
-        k2 = ddt * mtt_${ode} (x1, u, t1, par); x2 += k2 * 0.5;
-        k3 = ddt * mtt_${ode} (x2, u, t1, par); x3 += k3;
-        k4 = ddt * mtt_${ode} (x3, u, t2, par);
+        k1 = ddt * mtt_rate (x , u, t , par); x1 += k1 * 0.5;
+        k2 = ddt * mtt_rate (x1, u, t1, par); x2 += k2 * 0.5;
+        k3 = ddt * mtt_rate (x2, u, t1, par); x3 += k3;
+        k4 = ddt * mtt_rate (x3, u, t2, par);
         dx = (k1 + 2.0 * (k2 + k3) + k4) / (6.0 * ddt);
       }
 EOF
 else
 cat << EOF >> $filename
-      dx = mtt_${ode} (x, u, t, par);
+      dx = mtt_rate (x, u, t, par);
 EOF
 fi
 

@@ -9,6 +9,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1998/07/26 11:02:20  peterg
+## Put mtt or MTT  in front of variable names to avoid clashes with
+## globals
+##
 ## Revision 1.4  1998/07/25 20:14:00  peterg
 ## update code added for flexibility and octave efficiency
 ##
@@ -18,6 +22,9 @@
 # Bourne shell script: make_ode2odes
 
 # Copyright (c) P.J.Gawthrop July 1998.
+
+# Tell user
+echo  Creating $1_ode2odes.m
 
 Sys=$1
 
@@ -50,13 +57,20 @@ MTTu = $1_input(MTTx,MTTt);        # Evaluate initial input
 MTTy = $1_odeo(MTTx,MTTu,MTTt);    # Evaluate initial output
 mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny); # And write them
 
+
+mttA = $1_smx(MTTx,MTTu); # Set up A matrix - linearised system
+
+
 #Integration loop
 for MTTit = 1:MTTiLast
     for MTTi = 1:mttSTEPFACTOR
         [MTTu] = $1_input(MTTx,MTTt);# Input
         [MTTx] = $1_switch(MTTx); # Switches
         [MTTdx] = $1_ode(MTTx,MTTu,MTTt);
-        [MTTx] = mtt_update(MTTdx,MTTx,mttDDT,$Nx,mttMETHOD);
+        if mttMETHOD==3
+          mttA = $1_smx(MTTx,MTTu); # Set up A matrix - linearised system
+        end;
+        [MTTx] = mtt_update(MTTdx,MTTx,mttDDT,$Nx,mttMETHOD,mttA);
         [MTTy] = $1_odeo(MTTx,MTTu,MTTt);
 	MTTt = MTTt + mttDDT;
     end;

@@ -25,6 +25,12 @@ clean:
 	@./clean.sh
 	@rm -f clean.sh
 
+clean-conf:
+	@touch clean-conf.sh
+	@-chmod a+x clean-conf.sh
+	@./clean-conf.sh
+	@rm -f clean-conf.sh
+
 clean-doc:
 	@touch clean-doc.sh
 	@-chmod a+x clean-doc.sh
@@ -32,7 +38,7 @@ clean-doc:
 	@rm -f clean-doc.sh
 	@cd doc ; make -s clean
 
-distclean: clean clean-doc
+distclean: clean clean-conf clean-doc
 	@-rm -f build-stamp configure-stamp config.log mtt.sh
 
 install: build clean.sh
@@ -51,9 +57,13 @@ install-doc: clean-doc.sh
 clean.sh: FORCE
 	@echo '#! /bin/sh'						>>clean.sh
 	@echo '# This file is auto-generated - do not edit'		>>clean.sh
-	@echo 'rm -f  $(CONFDIR)/mtt.conf'				>>clean.sh
 	@echo 'rm -f  $(PROGDIR)/mtt'					>>clean.sh
 	@echo 'rm -fr $(INSTDIR)'					>>clean.sh
+
+clean-conf.sh: FORCE
+	@echo '#! /bin/sh'						>>clean-conf.sh
+	@echo '# This file is auto-generated - do not edit'		>>clean-conf.sh
+	@echo 'rm -f  $(CONFDIR)/mtt.conf'				>>clean-conf.sh
 
 clean-doc.sh: FORCE
 	@echo '#! /bin/sh'						>>clean-doc.sh

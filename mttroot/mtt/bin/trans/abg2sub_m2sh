@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  2000/03/17 09:53:10  peterg
+## Removed irritating echo Using "$1_sub.sh"
+##
 ## Revision 1.1  2000/03/15 21:23:20  peterg
 ## Initial revision
 ##
@@ -41,7 +44,8 @@ sort -u > mtt_tmp1
 grep -v '^[01]' < mtt_tmp1 > mtt_tmp4
 
 # Get a list of all standard simple components
-ls $MTTPATH/lib/comp/simple |\
+echo ls $MTT_LIB/comp/simple
+ls $MTT_LIB/comp/simple |\
   awk '/_cause.m/{split($1,a,"_");print(a[1])}'  >mtt_tmp2
 
 # Get a list of all standard compound components

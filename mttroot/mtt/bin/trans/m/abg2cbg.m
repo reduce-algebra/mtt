@@ -17,6 +17,9 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.15  1997/01/05 12:25:59  peterg
+% %% More informative message about port bonds incompatible with  ports
+% %%
 % %% Revision 1.14  1996/12/31 16:20:42  peterg
 % %% Just write causality information at top level -- it gets a bit
 % %% voluminous if written at deeper levels.
@@ -178,9 +181,6 @@ while( ci_index>0)
 	bond_list = abs(comp);
 	direction = sign(comp)'*[1 1];
 
-	% Convert from arrow orientated to component orientated causality
-	comp_bonds = bonds(bond_list,:).*direction;
-	
 	% Get the component details
 	eval([ '[comp_type,name,cr,arg] = ', system_type, '_cmp(i);' ]);
 
@@ -194,7 +194,10 @@ while( ci_index>0)
       
 	% Component causality procedure name
 	cause_name = [comp_type, '_cause'];
-      
+	
+        % Bonds on this component (arrow-orientated)
+      	comp_bonds = bonds(bond_list,:);
+
       % Invoke  the appropriate causality procedure
       if exist(cause_name)~=2 % Try a compound component
 	[comp_bonds,s] = abg2cbg(name, comp_type, full_name, comp_bonds, ...
@@ -212,15 +215,20 @@ while( ci_index>0)
 	end;
 
       else % its a simple component
+	% Convert from arrow orientated to component orientated causality
+	comp_bonds = comp_bonds.*direction;
+	
 	disp(['---', name, ' (', cause_name, ') ---']);
-	% comp_bonds
+        % Evaluate the built-in causality procedure
 	eval([ '[comp_bonds,status(i)] = ', cause_name, '(comp_bonds);' ]);
-	% comp_bonds
+
+       % and convert from component orientated to arrow orientated causality
+       comp_bonds = comp_bonds.*direction; 
+
       end;
       
       % Update the full bonds list
-      % and convert from component orientated to arrow orientated causality
-      bonds(bond_list,:) = comp_bonds.*direction; 
+      bonds(bond_list,:) = comp_bonds; 
     end;
     end;
     

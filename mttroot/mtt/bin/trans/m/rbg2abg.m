@@ -5,6 +5,9 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.33  1998/07/02 17:16:06  peterg
+% %% Commented out redundent code -- obsolete due to new default mechanism
+% %%
 % %% Revision 1.32  1998/07/02 15:12:05  peterg
 % %% Added hard error reporting
 % %% Added error when two unlabled bonds point in.
@@ -154,6 +157,11 @@ end;
 
 % Find the number of ports refered to within the component
 [n_ports,columns] = size(port_coord)
+
+% If port_name is empty, make it a empty string
+if (length(port_name)==0)
+  port_name="";
+end
 
 % Determine coordinates of the arrow end of the bond and the other end
 other_end_1 = rbonds(:,1:2);

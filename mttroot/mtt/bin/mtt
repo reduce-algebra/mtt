@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.295  2001/03/23 11:21:29  gawthrop
+## Show -pdf oprion in help list
+##
 ## Revision 1.294  2001/03/19 02:28:52  geraint
 ## Branch merge: merging-ode2odes-exe back to MAIN.
 ##
@@ -1832,11 +1835,11 @@ if [ -n "$sensitivity" ]; then
 fi
 
 ## Check octave version
-if [ `octave --version | awk -F\. '{print $2}'` ]; then
-    define_octave_dev="-DOCTAVE_DEV"
-else
-    define_octave_dev=""
-fi
+case `$MATRIX --version | awk -F\. '{print $2}'` in
+    0) define_octave_dev="";;			# stable 
+    1) define_octave_dev="-DOCTAVE_DEV";;	# development
+    *) define_octave_dev="-DOCTAVE_DEV";;
+esac
 
 ################################
 # This is the main mtt programme
@@ -2069,9 +2072,7 @@ $1_simpar.m: $1_simpar.txt $1_def.r $1_sympar.txt
 
 
 #SUMMARY numpar	numerical parameter declaration -- default (txt) 
-$1_numpar.txt : FORCE
-	mtt -q $1 sympar txt
-	mtt -q $1 def r
+$1_numpar.txt : $1_sympar.txt $1_def.r
 ifeq ($target,$1_numpar.txt)
 	mtt_update $1 numpar update
 else
@@ -2079,10 +2080,7 @@ else
 endif
 
 #SUMMARY state	numerical state declaration  -- default (txt)
-$1_state.txt : FORCE
-	mtt -q $1 struc txt
-	mtt -q $1 sympar txt
-	mtt -q $1 def r
+$1_state.txt : $1_struc.txt $1_sympar.txt $1_def.r
 ifeq ($target,$1_state.txt)
 	mtt_update $1 state update
 else
@@ -2090,9 +2088,7 @@ else
 endif
 
 #SUMMARY input	numerical state declaration  -- default (txt)
-$1_input.txt : FORCE
-	mtt -q $1 struc txt
-	mtt -q $1 sympar txt
+$1_input.txt : $1_struc.txt $1_sympar.txt
 ifeq ($target,$1_input.txt)
 	mtt_update $1 input update
 else
@@ -2100,10 +2096,7 @@ else
 endif
 
 #SUMMARY logic	Dynamic switch logic (txt)
-$1_logic.txt : FORCE
-	mtt -q $1 def r
-	mtt -q $1 struc txt
-	mtt -q $1 sympar txt
+$1_logic.txt : $1_def.r $1_struc.txt $1_sympar.txt
 ifeq ($target,$1_logic.txt)
 	mtt_update $1 logic update
 else

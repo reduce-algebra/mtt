@@ -8,6 +8,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/03/26 08:37:59  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:
@@ -24,7 +27,7 @@
 	rho
 
 % Component type SS
-	[Hy_in]		external	external
-	[Hy_out]	external	external
-	[P]		external	external
-	[T]		external	external
+	[Hy_in]		SS	external,external
+	[Hy_out]	SS	external,external
+	[P]		SS	external,external
+	[T]		SS	external,external

@@ -16,6 +16,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1999/04/20 00:55:40  peterg
+## Changed <= to < in switchopen.m
+## Removed switch.m generation - redundant
+##
 ## Revision 1.7  1999/04/02 06:30:37  peterg
 ## New _switchopen
 ## Removed switcha
@@ -67,7 +71,7 @@ lang_header $1 switchopen m 'mttx' '[open]' > $1_switchopen.m
 awk '{
   if ($1=="#"){
     printf("#== open - boolean vector of open switches ==#\n")
-    printf("[open] = zero_vector(%i); # Default to not open\n", Nx);
+    printf("[open] = zero_state(%i); # Default to not open\n", Nx);
     
   }
   else{

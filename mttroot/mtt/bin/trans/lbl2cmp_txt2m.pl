@@ -16,7 +16,7 @@ sub usage;
 sub read_cmp_file;
 sub read_cmp_line;
 sub name_anonymous_component;
-sub port_or_component;
+sub port_or_component_or_junction;
 sub read_lbl_file;
 sub read_lbl_line;
 sub write_header;
@@ -58,13 +58,15 @@ sub usage() {
 }
 
 sub read_cmp_file() {
-    my ($line, $name, $type, $type_rep, $name_rep, $rep, $i, %anon_index);
+    my ($line, $name, $type, $class, $rep, $i);
 
     my (@c_name, %c_type, %c_rep, $i_c);
+    my (@j_name, %j_type, %j_rep, $i_j);
     my (@p_name, %p_type, %p_rep, $i_p);
 
-    $i_c = 0;
-    $i_p = 0;
+    $i_c = 0;			# component counter
+    $i_j = 0;			# junction counter
+    $i_p = 0;			# port counter
 
     open (CMP, $cmp) or die ("MTT: lbl2cmp_txt2m, cannot open $cmp");
     
@@ -84,22 +86,33 @@ sub read_cmp_file() {
 	($type, $name, $rep) = read_cmp_line($line);
 	$name = name_anonymous_component($type) if ($name eq '');
 	
-	if (port_or_component ($type, $name) eq "port") {
+	$class = port_or_component_or_junction ($type, $name);
+	if ($class eq "port") {
 	    $i_p++;
 	    $p_name[$i_p]  = $name;
 	    $p_type{$name} = $type;
 	    $p_rep{$name}  = $rep;
-	} else {
+	} elsif ($class eq "component") {
 	    $i_c++;
 	    $c_name[$i_c]  = $name;
 	    $c_type{$name} = $type;
 	    $c_rep {$name} = $rep;
+	} elsif ($class eq "junction") {
+	    $i_j++;
+	    $j_name[$i_j]  = $name;
+	    $j_type{$name} = $type;
+	    $j_rep {$name} = $rep;
+	} else {
+	    die "MTT: lbl2cmp_txt2m.pl, read_cmp_file: unclassified component";
 	}
     }
     close (CMP);
 
     $i = 0;
-    while ($i < $i_p) {
+ 
+    # assign ports (SS:[])
+   my $offset = 0;
+    while ($i < ($offset + $i_p)) {
 	$i++;
 	$name = $p_name[$i];
 	$component_name[$i] = $name;
@@ -108,12 +121,27 @@ sub read_cmp_file() {
 	$component_cr  {$name} = '';
 	$component_arg {$name} = '';
     }
-    while ($i < ($i_p + $i_c)) {
+
+    # then assign components (including SS)
+    $offset = $i_p;
+    while ($i < ($offset + $i_c)) {
 	$i++;
-	$name = $c_name[${i}-${i_p}];
+	$name = $c_name[${i}-${offset}];
 	$component_name[$i] = $name;
 	$component_type{$name} = $c_type{$name};
 	$component_rep {$name} = $c_rep{$name};
+	$component_cr  {$name} = '';
+	$component_arg {$name} = '';
+    }
+
+    # then assign junctions
+    $offset = $i_p + $i_c;
+    while ($i < ($offset + $i_j)) {
+	$i++;
+	$name = $j_name[${i}-${offset}];
+	$component_name[$i] = $name;
+	$component_type{$name} = $j_type{$name};
+	$component_rep {$name} = $j_rep{$name};
 	$component_cr  {$name} = '';
 	$component_arg {$name} = '';
     }
@@ -152,21 +180,22 @@ sub name_anonymous_component() {
     return ($name);
 }
 
-sub port_or_component() {
+sub port_or_component_or_junction() {
     my ($type, $name) = @_;
     my $retval;
-    if ($type ne "SS") {
-	$retval = "component";
-    } else {
-	print "port_or_component: name='${name}'\n";
+    if ($type eq "SS") {
 	$_ = $name;
 	if (/\[.+\]/) {
 	    $retval = "port";
 	} else {
 	    $retval = "component";
 	}
+    } elsif (($type eq "0") or ($type eq "1")) {
+	$retval = "junction";
+    } else {
+	$retval = "component";
     }
-    print "port_or_component: type='$type', name='$name' class='$retval'\n" if defined ($debug);
+    print "port_or_component_or_junction: type='$type', name='$name' class='$retval'\n" if defined ($debug);
     return ($retval);
 }
 

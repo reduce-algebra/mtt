@@ -1,5 +1,5 @@
 %% Label file for system AEf (AEf_lbl.txt)
-%SUMMARY AEf  Flow input amplifier with effort output
+%SUMMARY AEf  Effort input amplifier with flow output
 %DESCRIPTION Made from AE with GY on output
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/07/29 04:19:43  peterg
+% %% Initial revision
+% %%
 % %% Revision 1.2  1999/03/05 08:25:11  peterg
 % %% Changed default to lin.
 % %%

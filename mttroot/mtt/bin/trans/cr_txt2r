@@ -16,6 +16,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  2000/02/25 09:10:12  peterg
+## Changed -e to -f in if [ -f "$crf" ]; then
+##  -- cuased probs on SUN
+##
 ## Revision 1.9  2000/02/16 15:58:17  peterg
 ## Set level='' not $2
 ##
@@ -111,9 +115,11 @@ else
     for cr in $crs; do
         crf=$cr'_cr.r'
 	if [ -f "$crf" ]; then
-	   printf "\045 (%s exists)\n" $crf >> $crfile
+##	   printf "\045 (%s exists)\n" $crf >> $crfile
+	   echo "% ($crf exists)\n"  >> $crfile
 	else
-	   printf 'in "%s.cr";\n' $cr >> $crfile
+##	   printf 'in "%s.cr";\n' $cr >> $crfile
+	   echo 'in "'$cr.cr'";\n' >> $crfile
 	fi
     done
 ##  fi

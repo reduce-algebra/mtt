@@ -114,6 +114,7 @@ GetOptions ('diagram_name=s' => \$diagram_name,
 	    'debug' => \$debug,
 	    'create_component_list' => \$create_component_list,
 	    'create_abg' => \$create_abg,
+	    'create_ibg' => \$create_ibg,
 	    'abg_file=s' => \$abg_file,
 	    'ibg_file=s' => \$ibg_file,
 	    'change_flow_causality=s' => \$change_flow_causality,
@@ -138,9 +139,12 @@ $doc = $dom->parsefile($dia_input_file);
 $objects = get_objects_node($doc,"Bond Graph");
 
 get_component_data($objects);
+
 get_bond_data($objects);
 
 create_component_list() if ($create_component_list);
+name_anonymous_components();
+
 if ($create_abg) {
     open (OUT,">$abg_file") ||
 	die "Cannot open $abg_file for writing.\n";
@@ -180,15 +184,19 @@ exit 0;
 
 #----------------------------SUBROUTINES-------------------------------------
 sub create_component_list {
-    my ($name,@line,$i);
+    my ($type, $name);
 
     print_debug("CREATING unique_raw_list...\n");
     open (RAW,">$component_list_file") ||
 	die "Cannot open $component_list_file for writing.\n";
 
-    foreach (values(%component_id_tag)) {
+    foreach my $val (values(%component_id_tag)) {	
+	$_ = $val;
 	id_cleaner();
-	print RAW $_ . "\n" if (/:/);
+	$val = $_;
+	($type, $name) = split (/:/) ;
+	$type = $type ? $type : $val;
+	print RAW $val . "\n" if (($type ne "1") and ($type ne "0"));
     }
     close(RAW);
 }
@@ -411,7 +419,7 @@ sub output_abg {
 }
 
 sub output_ibg {
-    my (%components,$key,$component,$type,$name,
+    my ($key,$component,$type,$name,
 	%reverse_mtt_bond_id_index,$mtt_bond_id,$dia_bond_id,
 	@bonds,
 	$bond_id,$start,$end,$id,
@@ -419,22 +427,7 @@ sub output_ibg {
 	$tail,$tail_component,$tail_type,$tail_name,
 	$start_label,$end_label,
 	$head_label,$tail_label,
-	$effort_causality,$flow_causality,
-	$anon_id);
-
-    # copy component_id_tag and assign names to anonymous components
-    %components = %component_id_tag;
-
-    $anon_id = 0;
-    while (($id, $component) = each(%components)) {
-	$component =~ s/\#//g;
-	($type, $name) = split (/:/, $component);
-	if (! $name) {
-	    $component = "${component}:mtt${component}_${anon_id}";
-	}
-	$anon_id++;
-	$components{$id} = $component;
-    }
+	$effort_causality,$flow_causality);
 
     output_ibg_header();
 
@@ -480,8 +473,8 @@ sub output_ibg {
 	    $tail_label = $end_label;
 	}
 
-	$head_component = $components{$head};
-	$tail_component = $components{$tail};
+	$head_component = $component_id_tag{$head};
+	$tail_component = $component_id_tag{$tail};
 
 	$effort_causality = $bond_id_effort_causality{$dia_bond_id};
 	$flow_causality   = $bond_id_flow_causality  {$dia_bond_id};
@@ -558,6 +551,22 @@ sub get_component_data {
       $component_id_tag{$id} = $string->getData;
   }
     die "There are no components!\n" unless keys(%component_id_tag) > 0;
+}
+
+sub name_anonymous_components {
+    my ($id, $component, $type, $name, $anon_id);
+    $anon_id = 0;
+    while (($id, $component) = each(%component_id_tag)) {
+	$_ = $component;
+	id_cleaner();
+	$component = $_;
+	($type, $name) = split (/:/, $component);
+	if (! $name) {
+	    $component = "${component}:mtt${component}_${anon_id}";
+	    $anon_id++;
+	}
+	$component_id_tag{$id} = $component;
+    }    
 }
 
 # Dia stores its attributes in a strange way, not using typical xml attributes.

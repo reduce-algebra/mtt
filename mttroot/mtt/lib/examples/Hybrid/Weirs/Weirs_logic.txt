@@ -6,6 +6,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  2001/10/05 11:24:35  gawthrop
+## Updated for new mtt features - input.txt etc
+##
 ## Revision 1.1  2000/05/19 07:13:29  peterg
 ## Initial revision
 ##
@@ -16,7 +19,7 @@
 
 
 # Set the switches
-## Removed by MTT on Fri Oct  5 11:28:40 BST 2001: weirs_w1_isw = (mttx(1)>1)|(mttx(2)>1);	# First weir - height 1
-## Removed by MTT on Fri Oct  5 11:28:40 BST 2001: weirs_w2_isw = (mttx(2)>2)|(mttx(3)>2);	# Second weir - height 2
-weirs_w1_1_isw_1_mtt_switch_logic	= (mttx(1)>1)|(mttx(2)>1); # First weir - height 1
-weirs_w2_1_isw_1_mtt_switch_logic	= (mttx(2)>2)|(mttx(3)>2); # Second weir - height 2
+# First weir - height 1
+# Second weir - height 2
+weirs_w1_isw_mtt_switch_logic	= ((weirs_tank1 > 1) | (weirs_tank2 > 1));
+weirs_w2_isw_mtt_switch_logic	= ((weirs_tank2 > 2) | (weirs_tank3 > 2));

@@ -1,0 +1,24 @@
+%SUMMARY iTanks: Inversion of a two-tanks system
+%DESCRIPTION This inverse system has no poles thus
+%DESCRIPTION the system itself has no (multivariable) zeros
+%% Label file for system iTanks (iTanks_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type SS
+	u1		SS	external,internal
+	u2		SS	external,internal
+	y1		SS	external,0
+	y2		SS	external,0

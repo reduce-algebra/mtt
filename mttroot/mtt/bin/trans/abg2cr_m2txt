@@ -13,7 +13,7 @@
 
 
 # Inform user
-if [ -f "$1_cr.txt" ]; then
+if [ "$1_cr.txt" -nt "$1_abg.m" ]; then
     echo "Using  $1_cr.txt"
     exit
 else

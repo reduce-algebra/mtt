@@ -16,6 +16,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.13  2002/04/28 18:41:26  geraint
+## Fixed [ 549658 ] awk should be gawk.
+## Replaced calls to awk with call to gawk.
+##
 ## Revision 1.12  2002/04/08 17:04:21  geraint
 ## Removed spurious "\n" from output.
 ##
@@ -77,10 +81,11 @@
 
 level='' ## Used to be $2 - now set to null.
 
+abgfile=$1_abg.m
 crfile=$1_cr.r
 CRFILE=$1_cr.r
 
-if [ -f "$crfile" ]; then
+if [ "$crfile" -nt "$abgfile" ]; then
     echo "Using    $crfile"
 else
     # Inform user

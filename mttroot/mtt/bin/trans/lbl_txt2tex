@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1999/02/17 21:42:19  peterg
+## Replaced print by printf to avoid extra nl in paragraph command.
+##
 ## Revision 1.7  1998/07/27 12:56:26  peterg
 ## Splits up | separated expressions.
 ##
@@ -81,12 +84,46 @@ EOF
         printf("\n");
         }
       }
-    END{if (NR==0) print "\\item This component has no aliases"
+    END{if (NR==0) print "\\item This component has no ALIAS declarations"
 }'  | sort >> $1_lbl.tex
 cat <<EOF >> $1_lbl.tex
 \end{description}
 EOF
 
+#Write out the VARS
+cat <<EOF >> $1_lbl.tex
+\paragraph{Variable declarations:}
+\begin{description}
+EOF
+    grep '[%|#][V|P]AR' $1_lbl.txt | sed 's/_/\\_/g' |\
+    awk '{
+        printf("\\item %s\n",$2)
+      }
+    END{if (NR==0) print "\\item This component has no PAR declarations"
+}'  | sort >> $1_lbl.tex
+cat <<EOF >> $1_lbl.tex
+\end{description}
+EOF
+
+
+#Write out the UNITS
+cat <<EOF >> $1_lbl.tex
+\paragraph{Units declarations:}
+\begin{description}
+EOF
+    grep '[%|#]UNITS' $1_lbl.txt | sed 's/_/\\_/g' |\
+    awk '{
+        printf("\\item [Port %s] has domain %s\n",$2, $3)
+	printf("\\begin{description}\n")
+        printf("\\item [Effort units] %s\n",$4)
+        printf("\\item [Flow units] %s\n",$5)
+	printf("\\end{description}\n")
+      }
+    END{if (NR==0) print "\\item This component has no UNITs declarations"
+}' >> $1_lbl.tex
+cat <<EOF >> $1_lbl.tex
+\end{description}
+EOF
 
 
 

@@ -1,0 +1,32 @@
+#! /bin/sh
+
+### abg2connections_m2dat
+## Creates connections.dat from abg.m
+## Copyright (C) 2004 by Geraint Paul Bevan
+
+  ###################################### 
+  ##### Model Transformation Tools #####
+  ######################################
+
+set -e
+
+sys=$1
+
+file=${sys}_connections.dat
+
+${MATRIX} <<EOF  >abg2connections_m.log
+
+abg = ${sys}_abg;
+
+${sys}_connections = abg2connections (abg);
+
+str = save_header_format_string;
+save_header_format_string =  ["# Model Transformation Tools\t", ...
+			      " -*-octave-*-\n", ...
+			      "# Created by abg2connections_m\n", ...
+			      str];
+
+save -ascii ${file} ${sys}_connections;
+
+EOF
+

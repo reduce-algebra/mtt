@@ -5,6 +5,9 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.19  1997/08/14  11:59:47  peterg
+% %% Vector ports added!!
+% %%
 % %% Revision 1.18  1997/08/14  11:01:42  peterg
 % %% Reordered algorithms as follows:
 % %% bond end coordinates
@@ -219,12 +222,17 @@ bonds = causality;
 [n_bonds,junk] = size(bonds);
 n_exp_ports=n_ports;
 exp_port_name="";
+exp_port_bond = [];
 %exp_comps = [];
 for i=1:n_ports
-  subport = split(port_name(i,:), ',');
+  port_name_i = port_name(i,:)
+  subport = split(port_name_i, ','); % Find the components of the vector port
   [n_subports,junk] = size(subport);
-  exp_port_name = [exp_port_name; subport(1,:)];
-  if n_subports>1
+
+  if n_subports==1 % an ordinary port
+    exp_port_name = [exp_port_name; subport(1,:)]; % Write out the only port
+    exp_port_bond = [exp_port_bond; port_bond(i)]; % and the port_bond
+  else % its a vector port
     % Check that there is a corresponding vector port at the other end of the
     % bond
     signed_bond_index = port_bond(i);
@@ -234,20 +242,29 @@ for i=1:n_ports
       other_subport = split(other_port_name, ',');
       [n_other_subports,junk] = size(other_subport);
       if n_other_subports~=n_subports
-	mtt_info(['Vector ports ', port_name(i,:), ' and ', other_port_name, 'are not compatible'],infofile);
+	mtt_info(['Vector ports ', port_name_i, ' and ', other_port_name, 'are not compatible'],infofile);
       end
     else 
-      mtt_info(['Vector port ', port_name(i,:), ' has no matching port'], infofile);
+      mtt_info(['Vector port ', port_name_i, ' has no matching port'], infofile);
     end;
     
     if other_bond_index>i %then its not been done yet
-      mtt_info(['Vector port: ', port_name(i,:)],infofile);
+      mtt_info(['Vector port: ', port_name_i],infofile);
       mtt_info(['matching: ', other_port_name],infofile);
       % Remove sign info.
       bond_index = abs(signed_bond_index);
       sig = sign(signed_bond_index);
-      % add first element of port list to the expanded list
+      
+      % Put the first element of each port list in the expanded list
+      exp_port_name = [exp_port_name; subport(1,:)];
       exp_port_name = [exp_port_name; other_subport(1,:)];
+      
+      % Add to the expanded port_bond list
+      exp_port_bond = [exp_port_bond; signed_bond_index; ...
+	-signed_bond_index];
+      
+      % Add the other names to the expanded list and augment the bonds,
+      % components and port_bond lists.
       for j=2:n_subports
 	% Add a new name (for each end) to give a non-vector list
 	exp_port_name = [exp_port_name; subport(j,:)];
@@ -257,11 +274,11 @@ for i=1:n_ports
 	bonds = [bonds; bonds(bond_index,:)];
 	n_bonds = n_bonds + 1;
       
-	% Add bond to the port_bond list
-	port_bond = [port_bond; sig*n_bonds]; %this end
-	port_bond = [port_bond; -sig*n_bonds]; %other end
+	% Add bond to the expanded port_bond list (ports at both ends)
+	exp_port_bond = [exp_port_bond; sig*n_bonds; -sig*n_bonds];
 
-	% Add a new bond to the component at both ends (taking note 
+
+	% Add the new bond to the component at both ends (taking note 
 	% of the direction).
 	arrow_index = comp_near_bond(bond_index,1);
 	components = add_bond(components, n_bonds, arrow_index);
@@ -275,8 +292,9 @@ end;
 
 %Replace old list by new
 port_name = exp_port_name
+port_bond = exp_port_bond
 
-%Resize the lists
+% Resize the lists
 [n_ports,junk] = size(port_name);
 
 port_name, components
@@ -332,9 +350,7 @@ for i = 1:n_components
 	unsorted_port_list(k,:) = port_name(port_index,:);
       end;
     end;
-  else % just use that provided by the component
-    %      unsorted_port_list = port_list;
-    %      k = n_comp_bonds;
+  else 
     k=0;
   end;
     
@@ -353,9 +369,9 @@ for i = 1:n_components
   n_unsorted_ports,n_comp_bonds
   % One port defaults:
   if (n_comp_bonds==1)&(n_unsorted_ports==0)
-    if (direction(1)<0) & ~strcmp(comp_type,'SS') % Wrong way for default
-      mtt_info(['One-port ', comp_name, ' (', comp_type, ') has the sign pointing the wrong way '], infofile);
-    end;
+    %if (direction(1)<0) & ~strcmp(comp_type,'SS') % Wrong way for default
+    % mtt_info(['One-port ', comp_name, ' (', comp_type, ') has the sign pointing the wrong way '], infofile);
+    %end;
     unsorted_port_list = port_list;
   end;
   
@@ -365,17 +381,17 @@ for i = 1:n_components
       mtt_info(['Two-port ', comp_name, ' (', comp_type, ') does not have though-pointing arrows'], infofile);
     end;
     if direction(1)==1 %in
-      mtt_info([comp_name, ' in'],infofile);
+      % mtt_info([comp_name, ' in'],infofile);
       unsorted_port_list = ['in';'out'];
     else %reverse the order
-      mtt_info([comp_name, ' out'],infofile);
+      % mtt_info([comp_name, ' out'],infofile);
       unsorted_port_list = ['out';'in'];
     end;
   end;
   
   % Recompute the number of unsorted ports
   [n_unsorted_ports,m_unsorted_ports] = size(unsorted_port_list);
-  if m_unsorted_ports<2
+  if m_unsorted_ports==0
     n_unsorted_ports = 0;
   end;
   

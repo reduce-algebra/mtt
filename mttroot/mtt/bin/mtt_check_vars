@@ -15,18 +15,33 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1997/07/27 13:12:03  peterg
+## Initial revision
+##
 ###############################################################
 
+#Look for a command line argument
+while [ -n "`echo $1 | grep '-'`" ]; do
+  case $1 in
+	-p )
+		print=print ;;
+	*)
+		echo "$1 is an invalid argument - ignoring" ;;
+  esac
+  shift
+done
 
-mtt_check_var "$MAKE" "MAKE"
-mtt_check_var "$MTTPATH" "MTTPATH"
-mtt_check_var "$MATRIX" "MATRIX"
-mtt_check_var "$RMATRIX" "RMATRIX"
-mtt_check_var "$SYMBOLIC" "SYMBOLIC"
-mtt_check_var "$FIG" "FIG"
-mtt_check_var "$PSVIEW" "PSVIEW"
-mtt_check_var "$HTMLVIEW" "HTMLVIEW"
-mtt_check_var "$DVIVIEW" "DVIVIEW"
+
+mtt_check_var "$MAKE" "MAKE" "$print"
+mtt_check_var "$MTTPATH" "MTTPATH" "$print"
+mtt_check_var "$MATRIX" "MATRIX" "$print"
+mtt_check_var "$RMATRIX" "RMATRIX" "$print"
+mtt_check_var "$SYMBOLIC" "SYMBOLIC" "$print"
+mtt_check_var "$FIG" "FIG" "$print"
+mtt_check_var "$PSVIEW" "PSVIEW" "$print"
+mtt_check_var "$HTMLVIEW" "HTMLVIEW" "$print"
+mtt_check_var "$DVIVIEW" "DVIVIEW" "$print"
+mtt_check_var "$CC" "CC" "$print"
 
 
 

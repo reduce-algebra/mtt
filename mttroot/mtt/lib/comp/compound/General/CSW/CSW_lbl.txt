@@ -7,6 +7,10 @@
 %DESCRIPTION     Name = 0 implies state=0 (open switch)
 %DESCRIPTION     Name = -1 implies state>0 (Diode)
 
+%ALIAS out	in
+%ALIAS $1	lin
+%ALIAS $1	effort,c_s
+
 %% Label file for system CSW (CSW_lbl.txt)
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -14,6 +18,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1997/09/11 09:00:52  peterg
+% %% More documentation.
+% %%
 % %% Revision 1.1  1997/06/16  10:55:20  peterg
 % %% Initial revision
 % %%
@@ -30,4 +37,8 @@
 
 
 % Component type C
-	MTT_SWITCH		$1	$1
+	MTT_SWITCH		lin	effort,c_s
+
+% Component type SS
+	[in]			SS	external,external
+  

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.18  2003/08/04 09:10:30  gawthrop
+## Now handles steady-state computation for _state.txt.
+##
 ## Revision 1.17  2002/04/28 18:41:27  geraint
 ## Fixed [ 549658 ] awk should be gawk.
 ## Replaced calls to awk with call to gawk.
@@ -83,10 +86,16 @@ fi
 ## Extract initial value from steady-state information
 initial_value() {
     i=$1
+    default=$2
     ssfile=${sys}_ss.r
     if [ "${rep}" = "state" ]; then
        if [ -f "${ssfile}" ]; then
-	value=`grep "MTTx($i" ${ssfile}| sed 's/ //g' | gawk -F '=' '{print substr($2,1,length($2)-2)}'`
+	count=`grep -c "^MTTx($i" ${ssfile}`; # See if its there
+	if [ $count = "1" ]; then
+	    value=`grep "^MTTx($i" ${ssfile}| sed 's/ //g' | gawk -F '=' '{print substr($2,1,length($2)-2)}'`	    
+	else
+	    value="0.0"
+	fi
        else
 	value=${default}   
        fi 
@@ -152,7 +161,7 @@ else
   i=0;
   for new in $info; do
     let i=$i+1;
-    initial_value $i;
+    initial_value $i ${default}
     echo $new $value  |\
     gawk '{printf("%s\t= %s; # Default\n",$1,$2)}' >> $textfile
   done

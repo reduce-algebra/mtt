@@ -28,6 +28,9 @@ global at_top_level
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.19  1998/07/08 11:33:54  peterg
+% %% Replace mtt_info by mtt_error when appropriate
+% %%
 % %% Revision 1.18  1998/07/08 11:30:45  peterg
 % %% Removed second (fileID) argument from mtt_info
 % %%
@@ -112,7 +115,7 @@ if (strcmp(cr,"SS"))		# Then its the standard file
 else				# Old style file
   effort_attribute = cr;
   flow_attribute = args;
-  mtt_info(sprintf("SS component: Hmm... looks like an old-style label file"));
+				# mtt_info(sprintf("SS component: Hmm... looks like an old-style label file"));
 end;
 
 % Default attributes

@@ -1,4 +1,4 @@
-function [T,y,u,X,Iterations] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q,\
+function [T,y,u,X,Iterations] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q,R,P,\
 					    Tau_u,Min_u,Max_u,Order_u, \
 					    Tau_y,Min_y,Max_y,Order_y, \
 					    W,x_0,Delta_ol,mu,test,movie)
@@ -12,19 +12,19 @@ function [T,y,u,X,Iterations] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q,\
   ## Copyright (C) 1999 by Peter J. Gawthrop
   ## 	$Id$	
   
-  if nargin<19			# No intermittent control
+  if nargin<21			# No intermittent control
     Delta_ol = 0;
   endif
 
-  if nargin<20			# Mu
+  if nargin<22			# Mu
     mu = 0;
   endif
 
-  if nargin<21
+  if nargin<23
     test=0
   endif
   
-  if nargin<22			# No movie
+  if nargin<24			# No movie
     movie = 0;
   endif
 

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.12  1998/07/21 08:47:59  peterg
+## Default null $2 (regexp) to '^' - ie match any line
+##
 ## Revision 1.11  1998/07/16 20:41:05  peterg
 ## Now uses new mtt_help
 ##
@@ -61,6 +64,7 @@ fi
 
 if [ "$topic" = "" ]; then
     echo 'Usage: mtt help representations'
+    echo '       mtt help simple'
     echo '       mtt help components'
     echo '       mtt help examples' 
     echo '       mtt help CRs'    
@@ -76,21 +80,29 @@ ext='_[cl]*.*[mt]'
 summary='[%#]SUMMARY'
 description='[%#]DESCRIPTION'
 alias='[%#]ALIAS'
+lbl="_lbl.txt"
 
 case $topic in
   components)
     key=$summary 
-    find_path=$MTT_COMPONENTS
+    find_path="$MTT_COMPONENTS"
     name=''
     sort='sort -u'
-    blurb="Components";;
+    blurb="components";;
+
+  simple)
+    key=$summary 
+    find_path="$MTT_COMPONENTS/simple"
+    name=''
+    sort='sort -u'
+    blurb="simple components";;
 
   crs) 
     key=$summary 
     find_path=$MTT_CRS
     name='*.cr'
     sort='sort -u'
-    blurb="Constitutive Relationships";;
+    blurb="constitutive relationships";;
 
   examples) 
     key=$summary 
@@ -109,14 +121,13 @@ case $topic in
     blurb="Representations";;
 
   *)
+    other=OTHER;
     key="$summary|$description|$alias" 
     find_path=$MTT_LIB
     name=$Topic
     all='all'
     sort='cat'
     blurb=$Topic;;     
-
-  
 esac
 
 subtopic=$2
@@ -124,15 +135,43 @@ if [ "$subtopic" = "" ]; then
   subtopic='.'
 fi;
 
-echo $blurb
 
-  mtt_find $find_path "$name" |\
-  awk '{print "cat " $1 "/" $2}'   | sh  |\
-  egrep $key | egrep $regexp  |\
+  if [  "$topic" = "representations" ]; then
+    echo $blurb
+    mtt2reps_txt
+  else
+    fullnames=`mtt_find $find_path "$name" | awk '{printf("%s/%s\n",$1,$2)}'`
+    N=`echo $fullnames | wc -w`;
+    if [ -z "$fullnames" ]; then
+	echo No $blurb found.
+    else
+    echo $N $blurb found.
+    for fullname in $fullnames; do
+        name=`basename $fullname`
+	if [ -n "$other" ]; then
+	cat $fullname | egrep $key 
+	else
+        info=`cat $fullname | egrep $key | awk '{for (i=2;i<=NF;i++) print $i}'`
+	category=`echo $fullname |   sed "s!$find_path/!!" ` 
+        category=`dirname $category`
+	echo $category $name $info
+	fi
+    done
+    fi
+  fi
+exit
+  awk '{print "cat " $1 "/" $2}'  | sh |\
+  egrep $key  | egrep $regexp  |\
   sed "s/$summary[	]*//" |\
   sed "s/$description[	]*/  /" |\
   sed "s/$alias[	]*/  Alias: /" |\
   sed "s!$find_path/!!" |\
   $sort
+
+
+
+
+
+
 
 

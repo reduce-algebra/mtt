@@ -26,6 +26,10 @@ function cbg2fig(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.9  1998/08/25 06:43:02  peterg
+% %% Revised (partially) for data strucures - needs to include graphic info
+% %% in abg file.
+% %%
 % %% Revision 1.8  1998/04/04 10:45:01  peterg
 % %% Don't do strokes on port bonds
 % %%
@@ -121,11 +125,20 @@ eval(["CBG = ", full_name, "_cbg;"]);
 cbonds=CBG.bonds;
 
 % Check sizes
-[N_components,Columns] = size(rcomponents);
+[Rows,Columns] = size(rcomponents);
 if (Columns ~= 13)
   error('Incorrect rcomponents matrix: must have 13 columns');
 end;
 M_components = Columns;
+
+[N_components, Columns] = size(CBG.subsystemlist);
+
+if struct_contains(CBG,'portlist')
+  [N_ports, Columns] = size(CBG.portlist);
+else
+  N_ports = 0;
+end
+
 
 % Rotation matrix
 rot = [0 -1; 1 0];
@@ -164,10 +177,10 @@ changed = changed_e|changed_f;
 
 index_e  = getindex(changed_e,1)'
 index_f  = getindex(changed_f,1)'
-index  = getindex(changed,1)';
+index_ef  = getindex(changed,1)';
 
 % Print the new strokes in fig format
-if index(1,1)>0
+if index_ef(1,1)>0
   for i = index_e % Do the effort stroke - opp. side to arrow
 
     if cbonds(i,1)==1 % Stroke at arrow end
@@ -214,31 +227,47 @@ if index(1,1)>0
 end;
 
 % Print all the components - coloured acording to causality.
-for i = 1:N_components
+for i = 1:N_ports+N_components
+  if i>N_ports			# Subsystem
+    comp_name = CBG.subsystemlist(i-N_ports,:);
+    eval(["comp_status = CBG.subsystems.", comp_name, ".status;"]);
+  else
+    comp_name = CBG.portlist(i,:);
+    eval(["comp_status = CBG.ports.", comp_name, ".status;"]);
+  end
+  
+
   fig_params = rcomponents(i,3:M_components);
   coords = rcomponents(i,1:2);
   
-#  if status(i)==-1  %Then under causal
-#    fig_params(3) = comp_colour_u;
-#    fig_params(6) = comp_font;
-#  end;
+  if comp_status==-1  %Then under causal
+    fig_params(3) = comp_colour_u;
+    fig_params(6) = comp_font;
+  end;
 
-#  if status(i)==1  %Then over causal
-#    fig_params(3) = comp_colour_o;
-#    fig_params(6) = comp_font;
-#  end;
+  if comp_status==1  %Then over causal
+    fig_params(3) = comp_colour_o;
+    fig_params(6) = comp_font;
+  end;
 
 
   %Now print the component in fig format
-  eval(['[comp_type,comp_name] = ', system_type, '_cmp(i);']);
+  eval(['[comp_type,comp_name] = ', system_type, '_cmp(i)']);
+  
+    if index(comp_name,"mtt")==1	# Its a dummy name
+      typename = comp_type;	# just show type
+    else
+      typename = [comp_type,":",comp_name];
+    endif;
 
   Terminator = [bs, '001'];   
   for j = 1:length(fig_params)
     fprintf(filenum, '%1.0f ', fig_params(j));
   end;
   
+
   fprintf(filenum, '%1.0f %1.0f ', coords(1), coords(2)); 
-  fprintf(filenum, '%s:%s%s\n', comp_type, comp_name, Terminator);
+  fprintf(filenum, '%s%s\n', typename, Terminator);
   
   % If it's a subsystem (ie not a component), do the fig file for that as
   % well

@@ -20,6 +20,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1997/05/10 08:12:23  peterg
+## Put second argument into _input.
+##
 ## Revision 1.7  1997/05/10 07:01:15  peterg
 ## _input called in outer loop only.
 ## time updated in outer loop only.
@@ -186,8 +189,6 @@ write "    for (i=1; i<=MTTNX; i++)"$
 write "      fprintf(fps, ""%5.4f "", x[i]);"$
 write "    fprintf(fps, ""\n"");"$
 
-write "    /* Set up system inputs */"$
-write "    $1_input(time,itime);"$
 
 write "/* Inner integration loop */"$
 write "    for (k=1; k<=STEPFACTOR; k++)"$
@@ -196,6 +197,9 @@ write "      for (i=1; i<=MTTNX; i++)"$
 write "        x[i] = x[i] + dx[i]*dt;"$
 write "      $1_ode();"$
 write "    }"$
+
+write "    /* Set up system inputs */"$
+write "    $1_input(time,itime);"$
 
 write "      time = time + DT;"$
 write "      itime = itime + 1;"$

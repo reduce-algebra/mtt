@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1998/07/25 15:06:17  peterg
+## Added DDT VAR
+##
 ## Revision 1.4  1998/07/25 15:05:54  peterg
 ## DD
 ##
@@ -93,6 +96,8 @@ Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
 	echo "    METHOD : STRING;"
         ;;
     *)	echo "PROCEDURE $Sys_rep;"
+	echo "VAR"
+	echo "    i,j :  INTEGER;"
         ;;
 esac) > $Filename
 

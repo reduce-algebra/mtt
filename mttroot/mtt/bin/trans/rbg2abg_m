@@ -11,6 +11,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.19  2002/04/28 18:55:03  geraint
+## Fixed [ 549658 ] awk should be gawk.
+## Replaced calls to awk with call to gawk.
+##
 ## Revision 1.18  2001/03/30 15:13:58  gawthrop
 ## Rationalised simulation modes to each return mtt_data
 ##
@@ -142,8 +146,8 @@ $MATRIX > rbg2abg_m.log  2>mtt_error.txt << EOF
   errorfile = fopen('mtt_error.txt', 'w');
 
   %Convert from the fig version of the bonds to a structured version
-  [rbonds,rstrokes,rcomponents,port_coord,port_name,port_list] = $1_rbg;
-  [n_ports, junk] = size(port_list);
+  [rbonds,rstrokes,rcomponents,port_coord,port_name,port_list] = $1_rbg
+  [n_ports, junk] = size(port_list)
  
   N_ports = 0;
   for i=1:n_ports		# Count the true number of ports.
@@ -151,8 +155,11 @@ $MATRIX > rbg2abg_m.log  2>mtt_error.txt << EOF
     N_ports = N_ports+n_sub;
   end;
  
- 
-  rbonds = rbonds(:,1:6);  # Strip  the directional information
+  [n_bonds,m_bonds] = size(rbonds);
+  if n_bonds>0
+    rbonds = rbonds(:,1:6);  # Strip  the directional information
+  endif
+
   [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coord,port_name,\
                                infofile,errorfile);
 

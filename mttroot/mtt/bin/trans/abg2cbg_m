@@ -13,6 +13,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.16  2001/07/26 04:07:28  gawthrop
+## Changed a to w on open (Geraint's suggestion)
+## Explictly close files
+##
 ## Revision 1.15  2001/07/23 23:24:02  gawthrop
 ## Now only writes to type.sh and cbg.m when causality is complete
 ##
@@ -170,7 +174,8 @@ $MATRIX << EOF  >abg2cbg_m.log  #2>mtt_error.txt
 
 EOF
 
-
+cat $typefile | sort -u > ${typefile}.tmp
+mv ${typefile}.tmp $typefile
 
 if [ "$info" = "info" ]; then
   cat $infofile

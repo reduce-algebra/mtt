@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.260  2000/09/14 09:59:08  peterg
+## Added -viewlevel switch
+##
 ## Revision 1.259  2000/09/11 08:21:27  peterg
 ## Introduced MML - but for _tf rep only.
 ##
@@ -1079,7 +1082,7 @@ if [ -z "$1" ]; then
     echo '         -d  <dir>  use directory <dir>'
     echo '         -dc Maximise derivative (not integral) causality'
     echo '         -dc Maximise derivative (not integral) causality'
-    echo '         -i [implicit,euler]   Use implicit or euler integration'
+    echo '         -i <implicit|euler>   Use implicit or euler integration'
     echo '         -o ode is same as dae'
     echo '         -oct use oct files in place of m files where appropriate'
     echo '         -opt optimise code generation'
@@ -1089,10 +1092,11 @@ if [ -z "$1" ]; then
     echo '         -s  try to generate sensitivity BG (experimental)'
     echo '         -ss use steady-state info to initialise simulations'
     echo '         -stdin read input data from standard input for  simulations'
+    echo '         -sub <subsystem> operate on this subsystem'
     echo '         -t  tidy mode (default)'
     echo '         -u  untidy mode (leaves files in current dir)'
     echo '         -v  verbose mode'
-    echo '         -viewlevel N View N levels of hierachy'
+    echo '         -viewlevel <N> View N levels of hierachy'
     echo '         --version print version and exit'
     echo '         --versions print version of mtt and components and exit'
     exit
@@ -1609,12 +1613,14 @@ target=$1_$2.$3
 # Create some strings
 Subsystem=$1$subsystem;
 
+Subsystem_=$Subsystem"_"
 Subsystem_ese=$Subsystem"_ese"
 Subsystem_def=$Subsystem"_def"
 Subsystem_rdae=$Subsystem"_rdae"
 Subsystem_dae=$Subsystem"_dae"
 Subsystem_subs=$Subsystem"_subs"
 Subsystem_cr=$Subsystem"_cr"
+Subsystem_cbg=$Subsystem"_cbg"
 
 #echo Target is $target, Subsystem is $Subsystem
 $MAKE -S $verbose  -f  -  $target << EOF
@@ -2036,8 +2042,8 @@ $1_type.sh: $1_cbg.m
 #SUMMARY cbg*	causal bond graph (ps)
 #SUMMARY cbg*	causal bond graph (view)
 #Causal bond graph: mfile to fig conversion
-$1_cbg.fig: $1_cbg.m $1_rbg.m $1_fig.fig $1_type.sh
-	cbg_m2fig $1
+$1_cbg.fig: $1_cbg.m  $1_fig.fig $1_type.sh
+	sh $1_type.sh 'echo cbg_m2fig ' ' ' ' ' | sh
 
 #SUMMARY ese	elementary system equations (r)
 #SUMMARY def	definitions - system orders etc. (r)
@@ -2686,7 +2692,7 @@ endif
 
 #Default view
 ifeq ($REPTYPE,bg)
-$1_$2.view : $1_$2.pview
+$1_$2.view : $Subsystem_$2.pview
 endif
 
 ifeq ($REPTYPE,data)
@@ -2709,9 +2715,9 @@ $1_$2.hview: $1_$2.html
 	$HTMLVIEW $1_$2/$1_$2.html&
 
 #View a ps file
-$1_$2.pview: $1_$2.ps
-	echo Creating view of $1_$2
-	mtt_multi $PSVIEW $1 $2 ps $viewlevel | sh 
+$Subsystem_$2.pview: $Subsystem_$2.ps
+	echo Creating view of $1_$2 - ps file
+	mtt_multi $PSVIEW $Subsystem $2 ps $viewlevel  | sh 
 
 #View a gdat file
 $1_$2.dview: $1_$2.gdat

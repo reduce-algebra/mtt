@@ -1,0 +1,130 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: cse2csm_r
+# Constrained-state equation to linear constrained-state matrices conversion
+# P.J.Gawthrop  6th September 1991, May 1994
+# Copyright (c) P.J.Gawthrop, 1991, 1994.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+# Inform user
+echo Creating $1_csm.r
+
+# Remove the old log file
+rm -f cse2csm_r.log
+
+# Use reduce to accomplish the transformation
+reduce >cse2csm_r.log << EOF
+
+in "$1_def.r";
+in "$1_cse.r";
+in "$1_cr.r";
+in "$1_sympar.r";
+
+OFF Echo;
+OFF Nat;
+
+% Find MTTA : the A matrix
+matrix MTTA(MTTNx,MTTNx);
+
+  FOR j := 1:MTTNx DO
+    BEGIN
+    xj := MTTX(j,1);
+    FOR i := 1:MTTNx DO
+      MTTA(i,j) := df(MTTEdx(i,1), xj, 1);
+    END;
+
+% Find MTTB : the B matrix
+matrix MTTB(MTTNx,MTTNu);
+
+  FOR j := 1:MTTNu DO
+    BEGIN
+    uj := MTTU(j,1);
+    FOR i := 1:MTTNx DO
+      MTTB(i,j) := df(MTTEdx(i,1), uj, 1);
+    END;
+
+% Find MTTC : the C matrix
+matrix MTTC(MTTNy,MTTNx);
+
+  FOR i := 1:MTTNy DO
+    FOR j := 1:MTTNx DO
+    BEGIN
+      xj := MTTX(j,1);
+      MTTC(i,j) := df(MTTY(i,1), xj, 1);
+    END;
+
+% Find MTTD : the D matrix
+matrix MTTD(MTTNy,MTTNu);
+
+  FOR i := 1:MTTNy DO
+    FOR j := 1:MTTNu DO
+    BEGIN
+      xj := MTTU(j,1);
+      MTTD(i,j) := df(MTTY(i,1), xj, 1);
+    END;
+
+%Substitute the ss values
+in "$1_ss.r";
+
+%Create the output file
+OUT "$1_csm.r";
+
+%Write out the matrices.
+IF MTTNx>0 THEN
+BEGIN
+  write "matrix MTTE(", MTTNx, ",", MTTNx, ");";
+  FOR i := 1:MTTNx DO
+   FOR j := 1:MTTNx DO IF MTTE(i,j) NEQ 0 THEN
+      write "MTTE(", i, ",", j, ") := ", MTTE(i,j);
+
+  write "matrix MTTA(", MTTNx, ",", MTTNx, ");";
+  FOR i := 1:MTTNx DO
+   FOR j := 1:MTTNx DO IF MTTA(i,j) NEQ 0 THEN
+      write "MTTA(", i, ",", j, ") := ", MTTA(i,j);
+END;
+
+IF MTTNx>0 THEN
+IF MTTNu>0 THEN
+BEGIN
+  write "matrix MTTB(", MTTNx, ",", MTTNu, ");";
+  FOR i := 1:MTTNx DO
+   FOR j := 1:MTTNu DO IF MTTB(i,j) NEQ 0 THEN
+      write "MTTB(", i, ",", j, ") := ", MTTB(i,j);
+END;
+
+%Write it out
+IF MTTNy>0 THEN
+IF MTTNx>0 THEN
+BEGIN
+  write "matrix MTTC(", MTTNy, ",", MTTNx, ");";
+  FOR i := 1:MTTNy DO
+    FOR j := 1:MTTNx DO IF MTTC(i,j) NEQ 0 THEN
+      write "MTTC(", i, ",", j, ") := ", MTTC(i,j);
+END;
+
+IF MTTNy>0 THEN IF MTTNu>0 THEN 
+BEGIN
+  write "matrix MTTD(", MTTNy, ",", MTTNu, ");";
+  FOR i := 1:MTTNy DO
+    FOR j := 1:MTTNu DO IF MTTD(i,j) NEQ 0 THEN
+      write "MTTD(", i, ",", j, ") := ", MTTD(i,j);
+END;
+
+write "END;";
+
+SHUT "$1_csm.r";
+
+EOF
+
+# Now invoke the standard error handling.
+mtt_error_r cse2csm_r.log

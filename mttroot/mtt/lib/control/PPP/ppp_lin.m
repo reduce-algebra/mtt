@@ -48,9 +48,9 @@ function [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,cond_uu] = ppp_l
   ## Default P (terminal weight)
   if nargin<10
     P = zeros(n_x,n_x);
-    P_weighting = 0
+    P_weighting = 0;
   else
-    P_weighting = 1
+    P_weighting = 1;
   endif
 
   ## Default condittion number

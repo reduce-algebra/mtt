@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1998/07/25 09:42:09  peterg
+## Just sets finrst input to 1 - rest to zero
+##
 ## Revision 1.7  1998/07/25 08:05:41  peterg
 ## Reverted to original default - not using SS mechanism
 ##
@@ -80,9 +83,9 @@ echo "# Set the inputs"  >> $1_input.txt
 awk '{
   if ($1=="input") {
     if ($2==1)
-      printf("MTTu(%s) = 1.0; \t\# %s (%s)\n", $2,$3,$4)
+      printf("mttu(%s) = 1.0; \t\# %s (%s)\n", $2,$3,$4)
     else
-      printf("MTTu(%s) = 0.0; \t\# %s (%s)\n", $2,$3,$4)
+      printf("mttu(%s) = 0.0; \t\# %s (%s)\n", $2,$3,$4)
   }
 }' Nu=$Nu  <$1_struc.txt >> $1_input.txt
 

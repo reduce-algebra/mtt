@@ -10,7 +10,7 @@ function ppp_RT_sim_compute (U)
   par = eval(sprintf("%s_numpar;", system_name_sim));
   t = [0:simpar_sim.dt:simpar_sim.last];
   n_t = length(t);
-  [n_x,n_y,n_u] = eval(sprintf("%s_def;", system_name_sim));
+  [n_x,n_y,n_u] = eval(sprintf("%s_def", system_name_sim));
   [n_U,junk] = size(A_u_sim);
 
   ## Set up u_star
@@ -21,6 +21,6 @@ function ppp_RT_sim_compute (U)
   [y_sim,x] = eval(sprintf("%s_sim(x_0_sim, par, simpar_sim, u_star);", \
 			   system_name_sim));
   x_0_sim  = x(n_t,:)';		# Extract state for next time
-  u_sim = (u_star*U);
+  u_sim = u_star(:,1:n_U)*U;
 endfunction
 

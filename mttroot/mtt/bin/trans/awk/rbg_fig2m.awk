@@ -12,6 +12,11 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.40  2001/06/11 19:43:50  gawthrop
+## MTT is now much more sophisticated in generating lbl files
+## Labels can contain maths
+## Repetative components are now broken
+##
 ## Revision 1.39  2001/05/09 08:50:02  gawthrop
 ## Uses _art.fig to transmit the art work to the cbg.fig rep.
 ##
@@ -273,7 +278,14 @@ function process_text() {
   str = substr(str,1,length(str)-4);
 
 # Zap maths
-  gsub(/[()-+*/]/,"",str); 
+  ##gsub(/[()-+*/]/,"",str); 
+
+# Loose the cr stuff (if present)
+  if (depth==0) {
+      N=split(str,a,delimiter);
+      if (N==3)
+	  str=sprintf("%s%s%s", a[1],delimiter,a[2]);
+    }
 
 # A component string contains only alphanumeric  _ and :
   isa_plain_component = match(str, component_regexp)==0;

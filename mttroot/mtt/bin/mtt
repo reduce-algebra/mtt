@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.144  1998/03/27 13:32:25  peterg
+## Removed sympar prerequisites from ss reps.
+##
 ## Revision 1.143  1998/03/22 21:14:03  peterg
 ## Added obspar.r representation
 ## Help now case insensitive
@@ -570,7 +573,8 @@ done
 #Print header if not in quiet (-q) mode.
 if [ "$quiet" != "quiet" ]; then
   echo
-  echo 'MTT (Model Transformation Tools) version 2.8++ ($Date$)'
+  echo 'MTT (Model Transformation Tools) version 2.9'
+  echo '($Date$)'
   echo 'This is free software with ABSOLUTELY NO WARRANTY.'
   echo 'Type `mtt warranty'\' 'for details.'
   echo
@@ -922,7 +926,7 @@ fi
 
 
 # Save up the argument list in a file; but only if argument has changed
-ARGS=$4; _ARGS=_$4
+ARGS=$4; _ARGS=-$4; __ARGS=`echo $_ARGS | tr ',' '-'`
 
 #DIFF doesn't like empty files - so put a blank if empty
 if [ -z "$ARGS" ]; then
@@ -1790,8 +1794,8 @@ $1_$2.ps: $1_$2.gdat
 
 ifeq ($PLOTTYPE,multiple)
 ifneq ($_ARGS,)
-	echo Creating $1_$2$_ARGS.ps
-	cp  $1_$2.ps $1_$2$_ARGS.ps
+	echo Creating $1_$2$__ARGS.ps
+	cp  $1_$2.ps $1_$2$__ARGS.ps
 endif
 endif
 
@@ -1850,6 +1854,10 @@ $1_$2.tview: $1_$2.dvi
 	echo Creating view of $1_$2
 	$DVIVIEW $1_$2.dvi&
 
+#Generate pdf
+$1_$2.pdf: $1_$2.ps
+	echo Creating $1_$2.pdf
+	ps2pdf $1_$2.ps $1_$2.pdf
 #Report generation
 $1_rep.make: $1_rep.txt $1_args.m
 	rep_txt2make $1 "$mtt_switches"

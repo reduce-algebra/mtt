@@ -18,13 +18,19 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1996/08/05 20:13:56  peter
+## Initial revision
+##
 ###############################################################
 
 
 # Remove the old log file
 rm -f cbg_m2fig.log
 rm -f mtt_info.txt
-cp $1_fig.fig $1_cbg.fig
+
+# The following sets up the fig header file for the system
+# and each sub system.
+ls $1_*_cbg.m | sed 's/\(.*_\)\(.*_\)cbg.m/cp \2fig.fig \1\2cbg.fig/' | sh
 
 
 #Inform user
@@ -34,15 +40,14 @@ echo Creating $1_cbg.fig
 $MATRIX > cbg_m2fig.log  2>> cbg_m2fig.log << EOF
 
   system_name = '$1';
-  system_type = '$1';
-  full_name = '';
   thick = 3; length = 250; red = 4; blue = 1; green = 12; font = 18;
   cbg2fig(system_name, ...
-          system_type, full_name, ...
+          '', '', ...
           length, thick, blue, ...
           font, green, red);
 EOF
 
+cp $1_$1_cbg.fig $1_cbg.fig
 
 
 

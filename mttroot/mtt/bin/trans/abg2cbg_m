@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  1998/01/23 13:29:54  peterg
+## $RMATRIX --> $MATRIX
+##
 # Revision 1.10  1996/12/04  21:51:02  peterg
 # Now uses filenum instead of line name.
 # Uses fopen
@@ -101,6 +104,16 @@
 # P.J.Gawthrop May 1996
 # Copyright (c) P.J.Gawthrop, 1996.
 
+while [ -n "`echo $1 | grep '^-'`" ]; do
+  case $1 in
+	-I )
+                info=info;;
+	*)
+		echo "$1 is an invalid argument - ignoring" ;;
+  esac
+  shift
+done
+
 infofile='mtt_info.txt'
 typefile="$1_type.sh"
 
@@ -116,7 +129,7 @@ echo Creating $1_cbg.m
 echo Creating $1_type.sh
 
 # Use matrix manipulation to accomplish the transformation
-$MATRIX  >abg2cbg_m.log  2>mtt_error.txt << EOF
+$MATRIX << EOF  >abg2cbg_m.log  2>mtt_error.txt
 
   infofile= '$infofile';
   typefile = '$typefile';
@@ -127,15 +140,19 @@ $MATRIX  >abg2cbg_m.log  2>mtt_error.txt << EOF
   system_name='$1';
 
   port_bonds = [];
+  port_direction = [];
   port_status = [];
-  [cbonds,status] = abg2cbg(system_name, '', '', port_bonds, port_status, ...
+  [cbonds,status] = abg2cbg(system_name, '', '', port_bonds, port_direction, port_status, ...
       typefilenum, infofilenum);
 
 EOF
 
-cat mtt_info.txt
+if [ "$info" = "info" ]; then
+  cat $infofile
+fi
 
 # cp $1_$1_cbg.m $1_cbg.m 2>> mtt_error.txt 
 
 # Print errors, if any.
 mtt_error mtt_error.txt
+

@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.47  2003/02/28 09:12:17  gawthrop
+  ## ## Two more columns in _stuc.txt: causality and subsystem name
+  ## ##
   ## ## Revision 1.46  2002/08/20 15:51:17  gawthrop
   ## ## Update to work with ident DIY rep
   ## ##
@@ -180,6 +183,8 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## system_name, system_type, full_name, repetition
   
   pc = "%";
+  sub_delim = "__";		# Subsystem delimiter
+  
   unit_error = "Component %s connects inconsistent ports with units %s and %s"  
   unit_info = "Component %s connects ports with units %s and %s"  
 
@@ -202,15 +207,15 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
     full_name_repetition = system_name;
     system_type = system_name;
   else
-    full_name = [full_name, "_", system_name];
+    full_name = [full_name, sub_delim, system_name];
 
     if (repetition>1)
       full_name_repetition = [full_name_repetition, \
-			      "_", system_name, "_", \
+			      sub_delim, system_name, sub_delim, \
 			      num2str(repetition)];
     else
       full_name_repetition = [full_name_repetition, \
-			      "_", system_name];
+			      sub_delim, system_name];
     endif
     
   end;
@@ -392,12 +397,12 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 		    pc, comp_name, subsystem.type);
 	    
 	    if (k>1)
-	      name_comp_name = sprintf("%s_%s_%d", ...
-				       full_name_repetition, \
+	      name_comp_name = sprintf("%s%s%s_%d", ...
+				       full_name_repetition, sub_delim, \
 				       comp_name, k);
 	    else
-	      name_comp_name = sprintf("%s_%s", ...
-				       full_name_repetition, \
+	      name_comp_name = sprintf("%s%s%s", ...
+				       full_name_repetition, sub_delim, \
 				       comp_name);
 	    endif
 	    
@@ -532,10 +537,10 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	    	value_change=value-old_structure(which_index);
 	    	for k=1:value_change
 		  fprintf(structure_file, ...
-			  "%s\t%i\t%s\t%s_%s\t%i\t%s\t%s\n", ...
+			  "%s\t%i\t%s\t%s%s%s\t%i\t%s\n", ...
 			  structure_name(which_index,:), value-k+1, ...
-			  comp_name, full_name_repetition, comp_name, \
-			  repetition, cause2name(-comp_bonds(1)), full_name_repetition );
+			  comp_name, full_name_repetition, sub_delim, comp_name, \
+			  repetition, cause2name(-comp_bonds(1)));
 	    	endfor;
  	      endfor;
  	    endif;

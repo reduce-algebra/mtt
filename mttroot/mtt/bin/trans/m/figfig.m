@@ -14,6 +14,9 @@ function figfig(filename,language,boxed,monochrome)
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.7  2002/08/20 15:51:17  gawthrop
+  ## Update to work with ident DIY rep
+  ##
   ## Revision 1.6  2001/05/24 07:44:36  gawthrop
   ## Minor updates ..
   ##
@@ -56,9 +59,8 @@ function figfig(filename,language,boxed,monochrome)
   
   replot;
   gset term x11
-  gset output 
+  gset output no
   replot;
-
 
   if boxed # Add a box - makes a visible bounding box
     fid = fopen(figfilename,"a+");

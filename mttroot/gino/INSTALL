@@ -1,0 +1,16 @@
+=======================================================================
+Prerequisites
+
+Octave and ginsh must be installed before installing gino
+
+
+=======================================================================
+Simple system installation
+
+$ tar xzf gino-<ver>.tar.gz
+$ cd gino-<ver>
+$ make clean
+$ make 
+
+As superuser
+# make install

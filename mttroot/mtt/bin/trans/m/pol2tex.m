@@ -1,18 +1,32 @@
-function tex = pol2tex(pol)
+function tex = pol2tex(pol,name,f)
   ## pol2tex: converts polynomial into LaTeX form.
-  ## tex = pol2tex(pol)
+  ## tex = pol2tex(pol,[name,f])
   
+  ## pol  polynomial (row vector)
+  ## name name of the variable (eg s or z)
+  ## f    format of the coefficients (eg %2.4f)
 
   ###############################################################
   ## Version control history
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.1  2001/05/10 11:44:40  gawthrop
+  ## Useful conversion functions
+  ##
   ## Revision 1.1  1999/03/25 01:33:51  peterg
   ## Initial revision
   ##
   ###############################################################
 
+  if nargin<2
+    name = "s"
+  endif
+  
+  if nargin<3
+    f = "%2.2f";
+  endif
+  
   n = length(pol);
   
   if pol(1) == 1
@@ -22,13 +36,14 @@ function tex = pol2tex(pol)
       tex = '1';
     endif
   else
-    tex = sprintf(" %1.2f", pol(1));
+    ff = sprintf(" %s",f);
+    tex = sprintf(ff, pol(1));
   endif
   
   if n>2
-    tex = sprintf("%ss^%1.f", tex, n-1);
+    tex = sprintf("%s{%s}^%i", tex, name, n-1);
   elseif n==2
-    tex = sprintf("%ss", tex);
+    tex = sprintf("%s{%s}", tex, name);
   else
     tex = sprintf("%s", tex);
   endif
@@ -39,11 +54,12 @@ function tex = pol2tex(pol)
     else
       plusminus = '+';
     endif
-    tex = sprintf("%s %s %1.2f", tex, plusminus, abs(pol(i)));
+    ff = sprintf("%%s %%s %s",f);
+    tex = sprintf(ff, tex, plusminus, abs(pol(i)));
     if i<n-1
-      tex = sprintf("%ss^%1.0f", tex, n-i);
+      tex = sprintf("%s{%s}^%i", tex, name, n-i);
     elseif i==n-1
-      tex = sprintf("%ss", tex); 
+      tex = sprintf("%s{%s}", tex, name); 
     else
       tex = sprintf("%s", tex);
     endif

@@ -13,6 +13,9 @@ function figfig(filename,language,boxed)
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.4  2001/05/08 15:18:12  gawthrop
+  ## Added trig and hyperbolic functions to argument exclusion list
+  ##
   ## Revision 1.3  2001/04/10 12:54:50  gawthrop
   ## Minor fixes for sensitivity versions
   ##
@@ -24,7 +27,7 @@ function figfig(filename,language,boxed)
   ###############################################################
 
   if nargin<3
-    boxed=1
+    boxed=1;
   endif
   
   figfilename = sprintf("%s.fig",filename);

@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  1996/08/19 09:03:13  peter
+## Parses repetative components: ie suffixed by *n.
+##
 ## Revision 1.9  1996/08/09 08:23:11  peter
 ## Fixed bug: ports not recognised.
 ##
@@ -345,7 +348,7 @@ BEGIN {
   repetition_regexp = "\*";
   q = "\047";
   terminator = "\\001";
-  component_regexp = "[^0-9a-zA-Z_:\*]";
+  component_regexp = "[^0-9a-zA-Z_:\*-]";
   port_regexp = "\[[0-9]*\]";
   nonport_regexp = "a-zA-Z";
     

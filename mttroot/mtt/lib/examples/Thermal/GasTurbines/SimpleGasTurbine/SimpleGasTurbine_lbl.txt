@@ -13,6 +13,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/05/18 15:46:02  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:
@@ -20,11 +23,15 @@
 %	Component-name	CR_name	arg1,arg2,..argn
 %	blank
 
+% Component type Comb
+	c1		none		m_c;v_c;r
+
 % Component type I
 	j_s		lin		flow,j_s
 
 % Component type Pump
-	p1		none		c_v;ideal_gas,r;alpha;k
+	p1		none		c_v;ideal_gas,r;alpha;effort,k_p
+
 
 % Component type SS
 	Work		0		external
@@ -34,10 +41,7 @@
 
 
 % Component type Turb
-	t1		none		c_v;ideal_gas,r;alpha;k
-
-% Component type Tank
-	c1		none		m_c;v_c;r;c_v
+	t1		none		c_v;ideal_gas,r;alpha;effort,k_t
 
 % Component type In
 	in

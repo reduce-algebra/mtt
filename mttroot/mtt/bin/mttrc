@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.28  2002/05/01 12:21:29  geraint
+## No longer uses save_ascii_data_for_plotting function to write data
+## - eliminates dependence on liboctinterp (and libncurses) for .cc.
+##
 ## Revision 1.27  2002/04/28 18:41:26  geraint
 ## Fixed [ 549658 ] awk should be gawk.
 ## Replaced calls to awk with call to gawk.
@@ -201,8 +205,8 @@ else
     # library paths
 
     OCTAVEVERS=`octave --version | gawk '{ print $4 }'`
-    LOCTAVE="-L${PREFIX}/lib/octave-${OCTAVEVERS} -loctave -lcruft"
-    LSYSTEM="-ldl -lm -lkpathsea -lreadline -lblas -llapack -lfftw -lg2c"
+    LOCTAVE="-L${PREFIX}/lib/octave-${OCTAVEVERS} -loctave -lcruft -loctave"
+    LSYSTEM="-ldl -lm -lncurses -lkpathsea -lreadline -lblas -llapack -lfftw -lg2c"
 
     # compiler options
 

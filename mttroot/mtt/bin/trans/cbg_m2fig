@@ -18,6 +18,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.5  1996/11/02  10:16:50  peterg
+# Changed stroke length to 150
+#
 # Revision 1.4  1996/08/25  09:28:59  peter
 # More error handling.
 #
@@ -48,7 +51,7 @@ rm -f mtt_info.txt
 echo Creating $1_cbg.fig
 
 # Use  matrix manipulation to accomplish the transformation
-$MATRIX > cbg_m2fig.log  2>>mtt_error.txt << EOF
+$RMATRIX > cbg_m2fig.log  2>>mtt_error.txt << EOF
 
   system_name = '$1';
   thick = 3; length = 150; red = 4; blue = 1; green = 12; font = 18;

@@ -7,14 +7,17 @@
 # Bourne shell script: sympar_txt2r
 
 # Label file to symbolic parameters conversion
-# P.J.Gawthrop August 1996
-# Copyright (c) P.J.Gawthrop, 1996.
+# P.J.Gawthrop March 1997
+# Copyright (c) P.J.Gawthrop, 1997.
 
 ###############################################################
 ## Version control history
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.2  1997/03/18  17:56:35  peterg
+# Cosmetic changes.
+#
 ###############################################################
 
 

@@ -20,6 +20,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.10  1997/05/10  10:05:15  peterg
+# Put _input in inner loop in front of call to _ode
+#
 ## Revision 1.9  1997/05/10 09:54:34  peterg
 ## Moved _input call to after the inner integration loop.
 ##
@@ -131,7 +134,6 @@ write "{"$
 
 write "/* Counters etc*/ "$
 write "  double time;"$
-write "  int itime;"$
 write "  double dt;"$
 write "  int i;"$
 write "  int k;"$
@@ -151,7 +153,6 @@ write "  $1_numpar();"$
 %Initialise main (Euler) integration loop
 write "/* Initialise main (Euler) integration loop */"$
 write "  time = 0.0;"$
-write "  itime = 0;"$
 write "  dt = DT/STEPFACTOR;"$
 write "  for (i=1; i<=MTTNX; i++)"$
 write "      x[i] = 0.0;"$
@@ -161,7 +162,7 @@ write "/* Set up system inputs */"$
 write "  for (i=1; i<=", MTTNu, "; i++)"$
 write "      u[i] = 1.0;"$
 
-write "  $1_input(0.0,0);"$
+write "  $1_input(0.0);"$
 
 write "    fprintf(fps, ""function data = ", "$1_odes \n"");"$
 write "    fprintf(fps, ""data = [\n"");"$
@@ -200,13 +201,12 @@ write "      for (i=1; i<=MTTNX; i++)"$
 write "        x[i] = x[i] + dx[i]*dt;"$
 
 write "      /* Set up system inputs */"$
-write "      $1_input(time,itime);"$
+write "      $1_input(time);"$
 write "      $1_ode();"$
 write "    }"$
 
 
 write "      time = time + DT;"$
-write "      itime = itime + 1;"$
 write "  }"$
 
 %Write to files

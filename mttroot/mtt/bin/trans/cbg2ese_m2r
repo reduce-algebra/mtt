@@ -16,6 +16,9 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.22  2000/11/12 17:18:30  peterg
+## Changed ' to "
+##
 ## Revision 1.21  2000/10/16 08:40:35  peterg
 ## Whoops! Must touch mtt_aliased
 ##
@@ -196,10 +199,12 @@ EOF
 
   ## Extra bits for the ese file to define connections
   for subsystem in $subsystems; do
-    echo Doing $subsystem
-    Ny=`mtt_getsize -internal $subsystem"_1" y`
-    Nu=`mtt_getsize -internal $subsystem"_1" u`
-    # echo Ny $Ny Nu $Nu Nx $Nx
+    echo Connecting $subsystem
+#    Ny=`mtt_getsize -internal ${subsystem}_1 y`
+#    Nu=`mtt_getsize -internal ${subsystem}_1 u`
+#    Nx=`mtt_getsize -internal ${subsystem}_1 u`
+#    echo Ny $Ny Nu $Nu Nx $Nx
+
 
     echo MATRIX "MTT_"$subsystem"_uc("$Nu",1);"  >> $1_def.r
 
@@ -228,4 +233,6 @@ sort -k 1,1 -k 2,2n junk >$structurefile
 
 # Now invoke the standard error handling.
 mtt_error mtt_error.txt
+
+
 

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  2000/11/04 12:32:43  peterg
+## Added more reps + more default reps
+##
 ## Revision 1.4  1999/03/02 22:02:16  peterg
 ## Octave-mode style
 ##
@@ -58,6 +61,7 @@ mtt $1 sympar tex	        # The system parameters
 ## mtt $1 lmfr ps		# log modulus of frequency response (of linearised system)
 ## mtt $1 simpar tex		# Simulation parameters
 ## mtt $1 numpar tex		# Numerical simulation parameters
+## mtt $1 state tex		# Simulation initial state
 ## mtt $1 input tex		# Simulation input
 ## mtt $1 logic tex		# Logic control
 ## mtt $1 odeso ps		# Simulation output

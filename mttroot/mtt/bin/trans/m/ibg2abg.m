@@ -18,8 +18,8 @@ function [bonds,components,n_vector_bonds] = \
     ## then copy the contents to an overall structure
 
     ## track (signed) vector bond number within each component
-    head.index = +i
-    tail.index = -i
+    head.index = +i;
+    tail.index = -i;
 
     ## extract type of component at each end
     head_type = deblank(split(bond.head.component, ":")(1,:));
@@ -48,17 +48,20 @@ function [bonds,components,n_vector_bonds] = \
       tail_comp_or_port = "comp";
     endif
 
-    eval(sprintf("comp_s.%s.%s.type = '%s'",
+    eval(sprintf("comp_s.%s.%s.type = '%s';",
 		 head_comp_or_port, head_name, head_type));
-    eval(sprintf("comp_s.%s.%s.type = '%s'",
+    eval(sprintf("comp_s.%s.%s.type = '%s';",
 		 tail_comp_or_port, tail_name, tail_type));
 
-    eval(sprintf("comp_s.%s.%s.bond%i = head", 
+    eval(sprintf("comp_s.%s.%s.bond%i = head;", 
 		 head_comp_or_port, head_name, i));
-    eval(sprintf("comp_s.%s.%s.bond%i = tail", 
+    eval(sprintf("comp_s.%s.%s.bond%i = tail;", 
 		 tail_comp_or_port, tail_name, i));
   endfor    
 
+  disp("--finished extracting data from ibg.m --")
+  comp_s
+    
   ## comp_s
   ##   comp
   ##     %s (name)
@@ -78,7 +81,7 @@ function [bonds,components,n_vector_bonds] = \
   if (struct_contains(comp_s, "comp"))
     for [comp, comp_name] = comp_s.comp
       n = size(struct_elements(comp))(1) - 1;
-      eval(sprintf("comp_s.comp.%s.n_bonds = %i",
+      eval(sprintf("comp_s.comp.%s.n_bonds = %i;",
 		   comp_name, n));
     endfor
   endif
@@ -86,10 +89,13 @@ function [bonds,components,n_vector_bonds] = \
   if (struct_contains(comp_s, "port"))
     for [port, port_name] = comp_s.port
       n = size(struct_elements(port))(1) - 1;
-      eval(sprintf("comp_s.port.%s.n_bonds = %i",
+      eval(sprintf("comp_s.port.%s.n_bonds = %i;",
 		   port_name, n));
     endfor
   endif
+
+  disp("-- finished counting number of bonds on components --")
+  comp_s
 
   ## comp_s
   ##   comp
@@ -127,7 +133,7 @@ function [bonds,components,n_vector_bonds] = \
 	      port_label = bond.label;
 	    endif
 	  endif
-	  eval(sprintf("comp.%s = bond", bond_name));
+	  eval(sprintf("comp.%s = bond;", bond_name));
 	endfor
 	
 	## attach labels to unlabelled ports
@@ -136,7 +142,7 @@ function [bonds,components,n_vector_bonds] = \
 	    if (index(bond_name, "bond") == 1)
 	      bond.label = "in";
 	    endif
-	    eval(sprintf("comp.%s = bond", bond_name));
+	    eval(sprintf("comp.%s = bond;", bond_name));
 	  endfor
 	elseif (n_named_ports == 1)
 	  mtt_info(sprintf("Defaulting all ports on junction %s to %s", \
@@ -145,7 +151,7 @@ function [bonds,components,n_vector_bonds] = \
 	    if (index(bond_name, "bond") == 1)
 	      bond.label = port_label;
 	    endif
-	    eval(sprintf("comp.%s = bond", bond_name));
+	    eval(sprintf("comp.%s = bond;", bond_name));
 	  endfor
 	elseif (n_named_ports != bond.n_bonds)
 	  mtt_error(sprintf("Junction must have 0,1 or %i port labels", \
@@ -166,11 +172,11 @@ function [bonds,components,n_vector_bonds] = \
 	      bond.label = mtt_strip_name(bond.label);
 	    endif
 	  endif
-	  eval(sprintf("comp.%s = bond", bond_name));
+	  eval(sprintf("comp.%s = bond;", bond_name));
 	endfor
       endif
       
-      eval(sprintf("comp_s.comp.%s = comp", comp_name));
+      eval(sprintf("comp_s.comp.%s = comp;", comp_name));
     endfor
   endif
 
@@ -192,13 +198,16 @@ function [bonds,components,n_vector_bonds] = \
 			       old_name, comp_name, comp.type, new_name),
 		       infofile);
 	    endif
-	    eval(sprintf("comp.%s = bond", bond_name));
+	    eval(sprintf("comp.%s = bond;", bond_name));
 	  endfor
 	endif
-	eval(sprintf("comp_s.%s = comp", comp_name));
+	eval(sprintf("comp_s.%s = comp;", comp_name));
       endif
     endfor
   endif
+
+  disp("-- finished expanding aliases --")
+  comp_s
 
   ## comp_s
   ##   comp
@@ -224,13 +233,13 @@ function [bonds,components,n_vector_bonds] = \
 	if (index(bond_name, "bond") == 1)
 	  [sub_bonds, n_sub_bonds] = split_port(bond.label);
 	  for i = 1:n_sub_bonds
-	    eval(sprintf("bond.subbond%i.label = '%s'",
+	    eval(sprintf("bond.subbond%i.label = '%s';",
 			 i, deblank(sub_bonds(i,:))))
 	  endfor
 	endif
-	eval(sprintf("comp.%s = bond", bond_name));
+	eval(sprintf("comp.%s = bond;", bond_name));
       endfor
-      eval(sprintf("comp_s.comp.%s = comp", comp_name));
+      eval(sprintf("comp_s.comp.%s = comp;", comp_name));
     endfor
   endif
 
@@ -240,24 +249,18 @@ function [bonds,components,n_vector_bonds] = \
 	if (index(bond_name, "bond") == 1)
 	  [sub_bonds, n_sub_bonds] = split_port(bond.label);
 	  for i = 1:n_sub_bonds
-	    eval(sprintf("bond.subbond%i.label = '%s'",
+	    eval(sprintf("bond.subbond%i.label = '%s';",
 			 i, deblank(sub_bonds(i,:))));
 	  endfor
 	endif
-	eval(sprintf("port.%s = bond", bond_name));
+	eval(sprintf("port.%s = bond;", bond_name));
       endfor
-      eval(sprintf("comp_s.port.%s = comp", port_name));
+      eval(sprintf("comp_s.port.%s = port;", port_name));
     endfor
   endif
 
-  ######################################################
-  ## check that both ends of each bond are compatible ##  
-  ######################################################
-
-  for [bond, bond_name] = bonds
-    ## FIXME:
-    1;
-  endfor
+  disp("-- finished creating sub-bonds --")
+  comp_s
 
   ## comp_s
   ##   comp
@@ -309,10 +312,10 @@ function [bonds,components,n_vector_bonds] = \
 
     ## create strings to reference each component
     head_str = sprintf("comp_s.%s.%s.bond%i",
-		       head_comp_or_port, head_name, i);
+		       head_comp_or_port, head_name, i)
     tail_str = sprintf("comp_s.%s.%s.bond%i",
-		       tail_comp_or_port, tail_name, i);
-    
+		       tail_comp_or_port, tail_name, i)
+
     head_bond = eval(head_str);
     tail_bond = eval(tail_str);
     
@@ -330,34 +333,34 @@ function [bonds,components,n_vector_bonds] = \
     ## assign bond number
     for i = 1:head.n_subs
       ++unique_bond_number;
-      eval(sprintf("%s.subbond%i.index = +%i",
+      eval(sprintf("%s.subbond%i.index = +%i;",
 		   head_str, i, unique_bond_number));
-      eval(sprintf("%s.subbond%i.index = -%i",
+      eval(sprintf("%s.subbond%i.index = -%i;",
 		   tail_str, i, unique_bond_number));
 
       ## write causality for bond
       if (strcmp(bond.causality.effort, "head"))
-	eval(sprintf("causality(%i,1) = +1", unique_bond_number));
+	eval(sprintf("causality(%i,1) = +1;", unique_bond_number));
       elseif (strcmp(bond.causality.effort, "tail"))
-	eval(sprintf("causality(%i,1) = -1", unique_bond_number));
+	eval(sprintf("causality(%i,1) = -1;", unique_bond_number));
       else
-	eval(sprintf("causality(%i,1) = 0", unique_bond_number));
+	eval(sprintf("causality(%i,1) = 0;", unique_bond_number));
       endif
 
       if (strcmp(bond.causality.flow, "head"))
-	eval(sprintf("causality(%i,2) = -1", unique_bond_number));
+	eval(sprintf("causality(%i,2) = -1;", unique_bond_number));
       elseif (strcmp(bond.causality.flow, "tail"))
-	eval(sprintf("causality(%i,2) = +1", unique_bond_number));
+	eval(sprintf("causality(%i,2) = +1;", unique_bond_number));
       else
-	eval(sprintf("causality(%i,2) = 0", unique_bond_number));
+	eval(sprintf("causality(%i,2) = 0;", unique_bond_number));
       endif
       
     endfor
   endfor
-  
-  ## causality matrix is called "bonds"
-  bonds = causality;
 
+  disp("-- finished assigning unique numbers to bonds --")
+  comp_s
+  
   ## comp_s
   ##   comp
   ##     %s (name)
@@ -375,6 +378,10 @@ function [bonds,components,n_vector_bonds] = \
   ##         label
   ##         subbond%i
   ##           index
+
+  ## causality matrix is called "bonds"
+  bonds = causality
+  disp("-- finished writing bonds matrix --")  
 
   #################################
   ## map component data to cmp.m ##
@@ -404,8 +411,11 @@ function [bonds,components,n_vector_bonds] = \
     else
       comp_or_port = "comp";
     endif
-    eval(sprintf("comp_s.%s.%s.index = cmp", comp_or_port, this_name));
+    eval(sprintf("comp_s.%s.%s.index = cmp;", comp_or_port, this_name));
   endfor
+
+  disp("-- finished getting component indices from cmp.m --")
+  comp_s
 
   ## comp_s
   ##   comp
@@ -436,6 +446,9 @@ function [bonds,components,n_vector_bonds] = \
       n_vector_bonds(comp.index) = comp.n_bonds;
     endfor
   endif
+
+  disp("-- finished writing n_vector_bonds --")
+  n_vector_bonds
 
   ###########################################
   ## Write connections matrix (components) ##
@@ -471,12 +484,15 @@ function [bonds,components,n_vector_bonds] = \
 	if (index(bond_name, "bond") == 1)
 	  for [sub_bond, sub_bond_name] = bond
 	    if (index(sub_bond_name, "subbond") == 1)
-	      components(port.index, ++counter) = subbond.index;
+	      components(port.index, ++counter) = sub_bond.index;
 	    endif
 	  endfor
 	endif
       endfor
     endfor
   endif
+
+  disp("-- finished writing components matrix --")
+  components
 
 endfunction

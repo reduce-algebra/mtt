@@ -16,6 +16,9 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.16  2003/08/19 14:11:23  gawthrop
+@comment  Links to legal stuff
+@comment
 @comment  Revision 1.15  2003/08/19 14:01:45  gawthrop
 @comment  Added legal appendices
 @comment
@@ -310,8 +313,8 @@ original English.
 
 @titlepage
 @title MTT: Model Transformation Tools
-@subtitle December 2000
-@subtitle For version 4.9.
+@subtitle August 2003
+@subtitle For version 5.0.
 @author Peter Gawthrop
 @page
 @vskip 0pt plus 1filll
@@ -3021,7 +3024,7 @@ by MTT. They have special SS components, Named SS components
 encapsulating system.
 
 Like any other system, they are described by a graphical Bond Graph description
-(@pxref{Language fig (abg.fig) }), and a label file (@pxref{Labels (lbl)}).
+(@pxref{Language fig (abg.fig)}), and a label file (@pxref{Labels (lbl)}).
 
 By convention, all of the files describing a component live in a
 directory with the same name as the component.
@@ -3602,7 +3605,7 @@ supported -- you are encouraged to convert them ASAP.
 * Language tex (desc.tex)::     
 @end menu
 
-@node SS component labels , Other component labels, Labels (lbl), Labels (lbl)
+@node SS component labels, Other component labels, Labels (lbl), Labels (lbl)
 @comment  node-name,  next,  previous,  up
 @subsection SS component labels 
 @cindex SS component labels 
@@ -3676,7 +3679,7 @@ r_a     lin     effort,r_a
 n       lin     effort,n
 @end example
 
-@strong{MTT} supports parameter-passing to  (@pxref{Parameter passing })
+@strong{MTT} supports parameter-passing to  (@pxref{Parameter passing})
 subsystems.
 
 @menu
@@ -4618,6 +4621,9 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.16  2003/08/19 14:11:23  gawthrop
+# %% Links to legal stuff
+# %%
 # %% Revision 1.15  2003/08/19 14:01:45  gawthrop
 # %% Added legal appendices
 # %%
@@ -6080,7 +6086,7 @@ esac
 @cindex Documentation
 
 
-@node Component library ,  , New (DIY) representations, Extending MTT
+@node Component library,  , New (DIY) representations, Extending MTT
 @comment  node-name,  next,  previous,  up
 @section Component library
 @cindex Component library

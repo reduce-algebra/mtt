@@ -1,6 +1,9 @@
 ## Figures.m
 ## Makes figures for the rc_PPP exasmple.
 ## $Log$
+## Revision 1.1  2000/05/19 13:15:38  peterg
+## Initial revision
+##
 ## Revision 1.2  2000/05/17 17:02:58  peterg
 ## Fixed documentation
 ##
@@ -37,7 +40,7 @@ plot(t_s1,y,t_s1,x);
 
 ## Sensitivity system simulation parameters
 x_0s = srcPPP_state;
-pars  = srcPPP_numpar;
+pars  = srcPPP_numpar
 sympars  = srcPPP_sympar;
 
 ## Simulate the sensitivity system
@@ -56,7 +59,7 @@ N = 5;				# Number of open-loop intervals in simulation
 w = 1;				# Setpoint
 
 ## Linear system
-[A,B,C,D] = rcPPP_sm;
+[A,B,C,D] = rcPPP_sm(par);
 Q = 1;
 w = 1;
 ppp_lin_plot (A,B(:,1),C(1,:),D(1,1),A_u,A_w,tau,Q,w,x_0);
@@ -71,6 +74,7 @@ extras.alpha = 0.1;
 extras.verbose = 0;
 
 ##  -- with no optimisation using linear PPP with continuation
+disp("Linear PPP at time zero with continuation trajectories")
 extras.U_initial = "linear";
 extras.U_next = "continuation";
 extras.criterion = 1e-5;
@@ -78,13 +82,15 @@ extras.max_iterations = 0;
 [y_c,x,u_c,t,U,U_c,U_l] = ppp_nlin_sim (system_name,A_u,tau,t_ol,N,w,extras);
 
 ##  -- with no optimisation using linear PPP at each step
+disp("Linear PPP at each step")
 extras.U_initial = "linear";
 extras.U_next = "linear";
 extras.criterion = 1e-5;
 extras.max_iterations = 0;
 [y_l,x,u_l,t,U,U_c,U_l] = ppp_nlin_sim (system_name,A_u,tau,t_ol,N,w,extras);
 
-##  -- with no optimisation using nonlinear PPP with continuation
+##  -- with optimisation using nonlinear PPP with continuation
+disp("Nonlinear PPP");
 extras.U_initial = "zero";
 extras.U_next = "continuation";
 extras.criterion = 1e-5;
@@ -125,5 +131,5 @@ ty_l = [t' y_l'] ;
 ty = [t' y'] ; 
 tu =  [t' u']; 
 gplot ty_c title "Continuation", ty_l title "Linear", ty title "Optimisation"
-psfig("rcPPP_ylco");
+psfig("rcPPP_nppp");
  

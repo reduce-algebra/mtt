@@ -14,6 +14,11 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.190  1998/09/02 11:48:51  peterg
+## VERSION 3.2 (Swansea)
+## abg data structure now uses explicti port and subsystem lists so that
+## processing is in predetermined order.
+##
 ## Revision 1.189  1998/08/31 10:49:15  peterg
 ## Minor changes to -abg operation
 ##
@@ -1429,6 +1434,7 @@ $1_simpar.txt:
 	echo 'WMIN        = -1;         # Minimum frequency = 10^WMIN'; \
 	echo 'WMAX        = 2;          # Maximum frequency = 10^WMAX'; \
 	echo 'WSTEPS      = 100;        # Number of frequency steps'; \
+	echo 'INPUT       = 1;          # Index of the input'; \
         )> $1_simpar.txt
 
 #SUMMARY simpar	simulation information (m)

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1998/04/07 08:12:12  peterg
+## Added affine form.
+##
 ## Revision 1.4  1998/04/07 05:45:12  peterg
 ## Reverted to an older version due to untraceable bug in new version
 ##
@@ -171,31 +174,46 @@ END;
 % Try and split the obs function into affine form (O(x,u) = o(x) + h(x)u)
 affine := 1;
 MTTNuu := (MTTGPCNu+1)*MTTNu;
+write "1 affine := ", affine, ";";
 
-IF affine=1 THEN
-BEGIN
+%IF (affine=1) THEN
+%BEGIN
   MATRIX MTTObs_o(MTTNyy,1);
   MATRIX MTTObs_h(MTTNyy,MTTNuu);
+write "2 affine := ", affine, ";";
   FOR i := 1:MTTNyy DO
   BEGIN
+write "3 affine := ", affine, ";";
     MTTObs_o(i,1) := MTTYY(i,1);
-    FOR j := 1:MTTNuu DO
+    k := 0;
+    FOR j := 1:MTTNu DO
+    FOR jj := 0:MTTGPCNu DO
     BEGIN
-      %Expand as polynomial in uj
-      coeffs := coeff(MTTObs_o(i,1), MTTu(j,1));
+      k := k+1;
+      %Expand as polynomial in u_j^[jj]
+      coeffs := coeff(MTTObs_o(i,1), MTTUU(j,jj+1));
       MTTObs_o(i,1) := first(coeffs);
       IF length(coeffs)>1 THEN
-        MTTObs_h(i,j) := second(coeffs);
-      IF length(coeffs)>2 THEN affine := 0;
+        MTTObs_h(i,k) := second(coeffs);
+      IF length(coeffs)>2 THEN 
+        affine := -1;
     END;
   END;
-END;
-
+%END;
 
 
 %%Create the _obs.r file
 OUT "$1_obs.r";
-affine := affine;
+
+IF affine=1 THEN
+  write "affine := 1; % The O function is affine in u"
+ELSE
+  write "affine := 0; % The O function is not affine in u";
+
+
+write "% The matrix sizes";
+write "MTTNyy := ", MTTNyy, ";";
+write "MTTNuu := ", MTTNuu, ";";
 
 mtt_matrix := MTTYY$
 mtt_matrix_n := MTTNyy$

@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.5  1997/05/22  11:12:34  peterg
+# Chaged figure label.
+#
 ## Revision 1.4  1997/05/22 07:36:35  peterg
 ## \ref --> \Ref
 ##
@@ -61,10 +64,10 @@ BEGIN {
     if( match("ps",Language)>0) {
       printf("This representation is given as Figure \\Ref{fig:%s}.\n", Rep_lang);
       print "  \\begin{figure}";
-      printf("    \\epsfig{file=%s_%s.%s,width=\\linewidth}\n", \
+      printf("   \\shadowbox{ \\epsfig{file=%s_%s.%s,width=0.9\\linewidth} }\n", \
 	     system_name, Representation, Language);
       printf("    \\caption{System \\textbf{%s}, representation %s}\n", system_name, Representation);
-      printf("    \\label{fig:%s_%s}\n", system_name, Representation);
+      printf("    \\label{fig:%s}\n", Rep_lang);
       print "  \\end{figure}";
     }
   }

@@ -13,13 +13,21 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1999/03/15 23:27:16  peterg
+## Initial revision
+##
 ###############################################################
 
 
 echo Creating $1_odes.dat2
-$MATRIX -q <<EOF >octave_ode2odes.log
+$MATRIX  <<EOF >octave_ode2odes.log 2>mtt_error.txt
   global MTT_data
   $1_ode2odes;
+  if is_complex(MTT_data)
+    mtt_error("octave_ode2odes: Simulated data is complex - something is wrong!");
+    MTT_data = real(MTT_data);
+  endif;
   save -ascii $1_odes.dat2 MTT_data
 EOF
 
+mtt_error mtt_error.txt

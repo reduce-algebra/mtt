@@ -107,9 +107,13 @@ fi
 # copy sources to working directory
 cd ${tmpdir}
 if [ "${sources}" = "${default_sources}" ]; then
-    cvs -z3 -d:pserver:anonymous@cvs.mtt.sf.net:/cvsroot/mtt co mttroot
+    cvs -z3 -d:pserver:anonymous@cvs.mtt.sf.net:/cvsroot/mtt export -D now mttroot/mtt
 else
-    cp -a ${sources} .
+    mkdir -p ./mttroot
+    cp -a ${sources}/mtt ./mttroot/mtt
+    for dir in $(find . -type d -name CVS); do
+	rm -r $dir
+    done
 fi
 
 # generate tarball of sources
@@ -150,9 +154,13 @@ fi
 # copy sources to working directory
 cd ${tmpdir}
 if [ "${sources}" = "${default_sources}" ]; then
-    cvs -z3 -d:pserver:anonymous@cvs.mtt.sf.net:/cvsroot/mtt co mttroot
+    cvs -z3 -d:pserver:anonymous@cvs.mtt.sf.net:/cvsroot/mtt export -D now mttroot/mtt/lib/examples
 else
-    cp -a ${sources} .
+    mkdir -p ./mttroot/mtt/lib/
+    cp -a ${sources}/mtt/lib/examples ./mttroot/mtt/lib
+    for dir in $(find . -type d -name CVS); do
+	rm -r $dir
+    done
 fi
 
 # generate tarball of sources

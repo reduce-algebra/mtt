@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.60  2000/11/10 09:38:30  peterg
+## Got rid of sys_name functions with no ()
+##
 ## Revision 1.59  2000/11/10 09:29:31  peterg
 ## Changed the name regexp to be at least 3 characters long
 ##  - avoids problem translating som state files - but needs more work
@@ -259,7 +262,7 @@ Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
 	echo "                       mttpar : ParameterVector);"
 	;;
     logic)
-	echo "PROCEDURE $Sys_rep(VAR open : StateVector;"
+	echo "PROCEDURE $Sys_rep(VAR mttopen : StateVector;"
 	echo "                       mttx : StateVector;"
 	echo "                       mttu : InputVector;"
 	echo "                       mttt : REAL;"
@@ -405,6 +408,7 @@ sed "s/$space\[\($non_space\)\]$spaces=$spaces\($mttfun_name\)(\($args\))/\2(\1,
 sed "s/$space\[\($non_space\)\]$spaces=$spaces\($mttfun_name\)/\2(\1)/" |\
 sed "s/$space\[\($non_space\)\]$spaces=$spaces\(zeros\)(\($args\))/\2(\1,\3)/" |\
 sed "s/$space\($non_space\)$spaces=$spaces\($fun_name\)(\($args\))/\2(\1,\3)/" |\
+sed "s/,)/)/" |\
 awk '
 function printvar(Name,N) {
   if (N<1) return;

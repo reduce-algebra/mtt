@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.6  1997/03/22  15:15:44  peterg
+# Ignores symbolic ($i) crs.
+#
 # Revision 1.5  1997/03/20  12:05:31  peterg
 # Now just writes out the cr name.
 #
@@ -57,33 +60,7 @@ symbols = "";
   if ( (match($1,comment)==0) && (NF>=3) ) {
     cr = $2;
     first_char = substr(cr,1,1);
-    if ( (matches(not_a_cr,cr )==0) \
-	 && (match(not_a_cr,$3)==0) \
-	 && (match($3,"\\$")==0) \
-	 && (match(first_char,numeric)==0) \
-	 && (length(cr )>0) \
-	 && (matches(symbols,cr ) ==0) ) {
-      symbol_count++;
-      symbols = sprintf("%s %s", symbols, cr );
-    }
-  }
-}
-END {
-# create the _cr file
-
-  if (symbol_count>0) {
-    split(symbols,symbol);
-    for (i = 1; i <= symbol_count; i++) {
-      #printf("$MTTPATH/lib/cr/r/%s.cr ", symbol[i]);
-      printf("%s\n", symbol[i]);
-    }
-  }
-
-
-
-
-
-
-
-
+    if ( (matches(not_a_cr,cr)==0) && (match(cr,numeric)==0) )
+	 print cr;
+	 }
 }

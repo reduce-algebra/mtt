@@ -17,6 +17,12 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.363  2002/11/30 13:39:50  gawthrop
+## Split abg2lbl_fig2txt into two parts:
+##   abg2cmp_fig2txt
+##   cmp2lbl_txt
+## and incorporated into mtt
+##
 ## Revision 1.362  2002/09/19 08:12:53  gawthrop
 ## Merged version after documentation update
 ##
@@ -2331,8 +2337,11 @@ $1_args.m:
 	touch $1_args.m
 
 #Create list of components
-$1_cmp.txt: $1_abg.fig
-	abg2cmp_fig2txt $1 
+%_cmp.txt:: %_abg.dia
+	abg2cmp_dia2txt \$*
+
+%_cmp.txt: %_abg.fig
+	abg2cmp_fig2txt \$* 
 
 #Create skeleton files (with titles) if not already there
 #SUMMARY lbl*	label file (txt)
@@ -2692,8 +2701,12 @@ ifeq ($start_at_abg,yes)
 $1_sub.sh: $1_abg.m
 	abg2sub_m2sh $1
 else
-$1_sub.sh: $1_abg.fig
-	abg2sub_fig2sh $1
+# include .dia as dependency to prevent this rule being used when .fig exists
+%_sub.sh: %_cmp.txt %_abg.dia
+	cmp2sub_txt2sh \$*
+
+%_sub.sh: %_abg.fig
+	abg2sub_fig2sh \$*
 endif
 
 #SUMMARY sub LaTeX subsystem list (tex)
@@ -2710,10 +2723,13 @@ endif
 #Raw bond graph to acausal bond graph: mfile
 
 ifneq ($start_at_abg,yes)
-$1_abg.m: $1_rbg.m $1_alias.m $1_cmp.m $1_icd.m
-	cmp2sub_m2sh $1
-	(sh $1_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
-	rbg2abg_m $info_switch $1
+%_abg.m: %_abg.dia %_lbl.txt
+	abg_dia2m \$*
+
+%_abg.m: %_rbg.m %_alias.m %_cmp.m %_icd.m
+	cmp2sub_m2sh \$*
+	(sh \$*_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
+	rbg2abg_m $info_switch \$*
 endif
 
 #SUMMARY cbg*	causal bond graph (m)

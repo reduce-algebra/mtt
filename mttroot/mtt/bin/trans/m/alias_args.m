@@ -5,6 +5,10 @@ function args = alias_args(args,alias,delim,message,FileID)
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/07/27 10:24:20  peterg
+## Included , in the the list of seperators (SEPS)
+## This makes it substitute for bits of args separated by commas.
+##
 ## Revision 1.1  1998/07/03 18:29:40  peterg
 ## Initial revision
 ##
@@ -12,7 +16,7 @@ function args = alias_args(args,alias,delim,message,FileID)
 
 
   if is_struct(alias)
-    if length(args>0)
+    if !isempty(args)
       Args = split(args,delim); args="";
       [N,M]= size(Args);
       for i=1:N

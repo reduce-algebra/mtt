@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.12  1996/08/24  16:30:12  peter
+# Fixed error in nonport_regexp.
+#
 ## Revision 1.11  1996/08/19 10:48:57  peter
 ## Added `-' to the component regexp.
 ##
@@ -421,8 +424,8 @@ END {
   for (i = 1; i <= i_port_component; i++) {
     port_type = "SS";
     name = sprintf("[%1.0f]", i);
-    cr   = i;
-    arg  = "";
+    cr   = "MTT_port";
+    arg  = i;
 
     if (length(x_port[i])==0)
       printf(warning_p);
@@ -434,6 +437,7 @@ END {
       printf("\tname = %s%s%s;\n", q, name, q) >> c_file;
       printf("\tcr = %s%s%s;\n", q, cr, q) >> c_file;
       printf("\targ = %s%s%s;\n", q, arg, q) >> c_file;
+      printf("\trepetitions = 1;\n") >> c_file;
       print "end" >> c_file
 	}
     

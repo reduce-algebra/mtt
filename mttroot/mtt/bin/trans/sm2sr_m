@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  1996/08/19 15:34:14  peter
+## Now based on state - not descriptor matrices.
+##
 ## Revision 1.9  1996/08/18 12:01:45  peter
 ## Unified format of time responses.
 ##
@@ -51,6 +54,7 @@ echo Creating $1_sro.m
 rm -f sm2sr_m.log
 rm -f $1_sr.m
 rm -f $1_sro.m
+rm -f mtt_error
 
 if [ "$2" = "" ]; 
 then
@@ -62,7 +66,10 @@ fi
 
 PARAMS="$PARAMS ;"
 
-$MATRIX << EOF > sm2sr_m.log
+$MATRIX << EOF > sm2sr_m.log 2>mtt_error
+
+  % Read in the numeric system parameters
+  $1_numpar;
 
   [nx,ny,nu,nz,nyz] = $1_def;
   t=0;	%Just in case it appears in the parameter list.
@@ -88,7 +95,7 @@ $MATRIX << EOF > sm2sr_m.log
     T=T';
   end;
 
-  [A,B,C,D] = $1_sm($1_numpar);
+  [A,B,C,D] = $1_sm;
   [y,x] = sm2sr(A,B,C,D,T,u0,x0);
 
   if nx>0
@@ -100,3 +107,14 @@ $MATRIX << EOF > sm2sr_m.log
 
 EOF
 
+err_length=$(wc -c <mtt_error)
+
+# Test for errors and print if any
+if [ $err_length != "0" ]
+then
+  echo MTT has failed with the following errors '...'
+  cat mtt_error
+  exit 1
+else
+  exit 0
+fi

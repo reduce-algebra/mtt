@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1998/07/27 20:32:51  peterg
+## Now gives immediate warnings
+##
 ## Revision 1.2  1998/07/25 16:35:43  peterg
 ## Sorted out log files etc
 ##
@@ -45,9 +48,9 @@ echo Creating $1_$2.c
 p2c -V  $1_$2.p  | grep Warning # > mtt_p2c.log 2>> mtt_p2c.log
 cat $1_$2.log >> mtt_p2c.log
 
-# zap the PASCAL_MAIN which we don't want. 
+# zap the PASCAL_MAIN which we don't want and change p2c.h include.
 mv $1_$2.c mtt_junk
-grep -v 'PASCAL_MAIN' < mtt_junk > $1_$2.c
+grep -v 'PASCAL_MAIN' < mtt_junk  | sed 's@<p2c/p2c.h>@"p2c.h"@' >$1_$2.c
 
 if [ -n "$info" ]; then
     cat mtt_p2c.log

@@ -1,0 +1,42 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: struc2switch_txt
+
+# Structure file - generate a file for switching on states
+# P.J.Gawthrop May 1997
+# Copyright (c) P.J.Gawthrop, 1997.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+
+
+echo Creating  $1_switch.txt
+
+rm -f $1_switch.txt
+# This is the main transformation using gawk
+gawk '
+{ 
+   if ($1=="state") {i++; if ($3=="MTT_Switch")  print $4};
+}
+' < $1_struc.txt| sort >> $1_switch.txt
+
+echo Creating  $1_switch.eh
+
+
+
+
+
+
+
+
+

@@ -9,6 +9,12 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.84  2003/04/17 20:57:29  geraint
+## Added -sort option to allow direct generation of ode2odes.m using sese.m
+## instead of ode/csex.
+##
+## "mtt -sort rc odeso view" works without Reduce installed!!!
+##
 ## Revision 1.83  2002/08/07 14:27:14  geraint
 ## Changes to make "-i dassl" work again.
 ##
@@ -402,21 +408,25 @@ global MTT_data
 
   mttj = 0;
     for it = 1:ilast		#Integration loop
-    [u] = ${sys}_input(x,y,t,par);	# Input
 EOF
+
+cat <<EOF >> $filename
+    if mttj==0
+      [u] = ${sys}_input(x,y,t,par);	# Input
+EOF
+
 if [ "$method" = "sorted_euler" ]; then
 cat <<EOF >> $filename
-    [dx,y] = ${sys}_sese(x,u,t,par); # Output
+      [dx,y] = ${sys}_sese(x,u,t,par); # Output
 EOF
 else
 cat <<EOF >> $filename
-    [y] = ${sys}_$odeo(x,u,t,par);  # Output 
-
+      [y] = ${sys}_$odeo(x,u,t,par);  # Output 
 EOF
 fi
+
 cat <<EOF >> $filename
-    if mttj==0
-     mtt_write(t,x,y,$Nx,$Ny,simpar.first);   # Write it out
+      mtt_write(t,x,y,$Nx,$Ny,simpar.first);   # Write it out
     endif
 EOF
 

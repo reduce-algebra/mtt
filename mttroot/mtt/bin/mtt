@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.119  1998/02/05 15:04:25  peterg
+## Fixed problem with book in tidy mode.
+##
 ## Revision 1.118  1998/02/05 12:00:11  peterg
 ## Tidy mode now default.
 ## It seems to work ok but not for book type documents.
@@ -634,7 +637,6 @@ if [ "$2" = "rep" ]; then
       if [ -n "$isMTT_work" ]; then
 	dotdot='../'
       fi  
-echo $dotdot$1
   
      isdirectory=`file $dotdot$1 | awk '{print $2}' | grep directory`
      if [ -n "$isdirectory" ]; then
@@ -749,7 +751,7 @@ fi
 # Tidy mode - operate in the directory MTT-work
 if [ "$tidy" = "tidy" ]; then
    mkdir -p MTT_work
-   cp -u -f *_*.* MTT_work
+   cp -u  *_*.* MTT_work 2>/dev/null
    cd MTT_work
    Directory=$directory/MTT_work
      mtt -u -q  $mtt_switches -S $Directory  $1 $2 $3 $4

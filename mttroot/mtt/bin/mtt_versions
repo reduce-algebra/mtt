@@ -1,0 +1,37 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: mtt_versions
+
+# P.J.Gawthrop May 1998
+# Copyright (c) P.J.Gawthrop 1998
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+echo Versions of mtt and its components on `date`
+
+mtt_version mtt
+
+mtt_version awk
+mtt_version cat
+#mtt_version echo
+mtt_version gcc
+#mtt_version gnuplot
+mtt_version grep
+mtt_version make
+mtt_version octave
+mtt_version sed
+mtt_version sh
+
+
+
+
+

@@ -1,0 +1,74 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: ode2odesol_m
+
+# Transforms descriptor matrix rep to step response
+
+# Copyright (c) P.J.Gawthrop, 1996.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+echo Creating $1_odesol.m
+rm -f ode2odesol_m.log
+
+if [ "$2" = "" ]; 
+then
+  PARAMS='t=[0:0.1:10]; x0=zeros(6,1);'
+  echo Using default parameter $PARAMS
+else
+  PARAMS=$2;
+fi
+
+PARAMS="$PARAMS ;"
+
+
+$MATRIX << EOF > ode2odesol_m.log
+
+  [nx,ny,nu,nz,nyz] = $1_def;
+  $PARAMS
+
+  %Defaults
+  if exist('t')==0
+    t=[0:0.1:10]
+  end;
+
+  if exist('u0')==0
+    u0 = ones(nu,1);
+  end;
+
+  if exist('x0')==0
+    x0 = zeros(nx,1);
+  end;
+
+  [n,m]=size(t);
+  if m>n
+    t=t';
+  end;
+
+x = lsode('$1_ode', x0, t);
+
+i=0;
+for tt=t'
+  i=i+1;
+  y(i) = $1_odeo(x(i,:),t);
+end;
+
+
+write_matrix([t,y], '$1_odesol');
+
+EOF
+
+
+
+
+
+

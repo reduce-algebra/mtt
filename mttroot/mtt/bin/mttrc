@@ -15,6 +15,23 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.17.2.4  2001/03/06 03:48:43  geraint
+## Print additional environment variable for "mtt -p".
+## MTT_LDFLAGS defaults to " " to avoid installation warning.
+##
+## Revision 1.17.2.3  2001/03/01 05:05:53  geraint
+## Minor revisions.
+##
+## Revision 1.17.2.2  2001/02/23 03:53:53  geraint
+## Minor revisions. (ode2odes.exe works on GNU/Linux and ~GNU/Irix)
+##
+## Revision 1.17.2.1  2001/02/22 06:41:40  geraint
+## Initial merge of ode2odes.exe into main mtt.
+## standalone_rep.make deleted: rules moved to mtt, variables to mttrc.
+##
+## Revision 1.17  2000/12/27 16:46:13  peterg
+## Stripped the mtt- from paths
+##
 ## Revision 1.16  2000/12/27 15:16:44  peterg
 ## If then else format
 ##
@@ -134,4 +151,44 @@ else
   
   # Oct file generation - use version with no optimisation.
   export MKOCTFILE=$MTT_LIB/octave/mkoctfile
+
+  # ode2odes.exe stuff
+
+    # local system
+
+    PLAT="i686-pc-linux-gnu"
+    PREFIX="/usr/local"
+    GCCVERS="2.95.2"
+    SRCOCTAVE="/cvs/octave"
+
+#    PLAT="mips-sgi-irix6.5"
+#    PREFIX="/usr/people/bevangp/GNU"
+#    GCCVERS="2.95.2"
+#    SRCOCTAVE="${PREFIX}/../build/octave-2.1.33"
+
+    # include paths
+
+    IOCTAVE="-I${PREFIX}/include/octave"
+
+    # library paths
+
+    LOCTAVE="-L${PREFIX}/lib/octave -loctave -lcruft -loctinterp"
+    LKPATHSEA="-L${SRCOCTAVE}/kpathsea -lkpathsea"
+    LREADLINE=" -L${SRCOCTAVE}/readline -lreadline"
+    LSYSTEM="-ldl -lm -lncurses"
+    LF2C="-L${PREFIX}/lib/gcc-lib/${PLAT}/${GCCVERS} -lg2c"
+
+    # compiler options
+
+    DEBUG="-g"
+    OPTIM="-O3"
+    FLAGS="-fno-rtti -fno-exceptions -fno-implicit-templates"
+
+    # exported variables
+
+    export MTT_CXX="g++"
+    export MTT_CXXFLAGS="${DEBUG} ${OPTIM} ${FLAGS}"
+    export MTT_CXXLIBS="${LOCTAVE} ${LKPATHSEA} ${LREADLINE} ${LF2C} ${LSYSTEM}"
+    export MTT_CXXINCS="-I. ${IOCTAVE}"
+    export MTT_LDFLAGS=" "
 fi

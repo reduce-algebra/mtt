@@ -1,6 +1,13 @@
 #! /bin/sh
 # $Id$
 # $Log$
+# Revision 1.2.2.1  2001/03/16 03:56:54  geraint
+# Convert variable names to lower case.
+#
+# Revision 1.2  2001/02/05 13:03:19  geraint
+# Restrict scope of variables to file (static).
+# Warn GCC that variables may be unused.
+#
 # Revision 1.7  2001/01/09 15:43:50  geraint
 # Warn gcc that variables may be unused.
 #
@@ -43,7 +50,7 @@ OUT=${SYS}_sympar.h
 
 declare_sys_param ()
 {
-cat ${IN} | awk '{printf ("static double %s MTT_UNUSED;\t// %s\n", $1, $2)}'
+cat ${IN} | awk '{printf ("static double %s MTT_UNUSED;\t// %s\n", tolower($1), $2)}'
 }
 
 declare_temp_vars ()

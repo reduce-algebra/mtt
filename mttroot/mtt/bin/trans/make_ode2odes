@@ -9,6 +9,33 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.51.2.7  2001/03/17 09:51:07  geraint
+## Implemented Runge-Kutta IV fixed-step method (-i rk4).
+##
+## Revision 1.51.2.6  2001/03/16 03:56:13  geraint
+## Removed psignal/siginfo.h - problematic and unnecessary.
+##
+## Revision 1.51.2.5  2001/03/12 23:16:37  geraint
+## Minor improvements to signal handling (.exe).
+##
+## Revision 1.51.2.4  2001/03/12 03:59:30  geraint
+## SIGINT  (C-c C-c) now causes simulation data to be dumped to MTT.core.
+## SIGQUIT (C-c C-\) as for SIGINT, then raises default SIGQUIT.
+## SIGFPE  as for SIGINT, then raises default SIGABRT.
+##
+## Revision 1.51.2.3  2001/03/07 04:06:55  geraint
+## Irix: catch SIGFPE and write data before aborting (.exe).
+## GNU/Linux: nada.
+##
+## Revision 1.51.2.2  2001/03/02 00:45:21  geraint
+## Separated Euler and Implicit methods in .cc code and dependencies.
+##
+## Revision 1.51.2.1  2001/03/01 05:05:53  geraint
+## Minor revisions.
+##
+## Revision 1.51  2001/02/19 06:33:19  geraint
+## Removed operation form loop.
+##
 ## Revision 1.50  2001/02/18 09:18:49  geraint
 ## Removed temporary Matrices from mtt_implicit.cc
 ##
@@ -235,8 +262,21 @@ global MTT_data;
     if mttj==0
      mtt_write(t,x,y,$Nx,$Ny);   # Write it out
     endif
+EOF
+
+if [ "$method" = "rk4" ]; then
+cat << EOF >> $filename
+    [k1] = ddt * ${sys}_${ode}(x,u,t,par);
+    [k2] = ddt * ${sys}_${ode}(x+k1/2,u,t+ddt/2,par);
+    [k3] = ddt * ${sys}_${ode}(x+k2/2,u,t+ddt/2,par);
+    [k4] = ddt * ${sys}_${ode}(x+k3,u,t+ddt,par);
+    [dx] = [k1 + 2.0 * [k2 + k3] + k4] / (6.0 * ddt);
+EOF
+else
+cat << EOF >> $filename
     [dx] = ${sys}_$ode(x,u,t,par);	# State derivative
 EOF
+fi
 
 if [ "$method" = "implicit" ]; then
 cat<< EOF >> $filename
@@ -282,7 +322,7 @@ fi
 cat <<EOF  > $filename
 #include <octave/oct.h>
 #include <octave/ov-struct.h>
-#include <octave/oct-map.h>
+#include <octave/load-save.h>
 #include <octave/lo-mappers.h>
 #include <octave/variables.h>
 
@@ -294,21 +334,29 @@ cat <<EOF  > $filename
 #include "${sys}_sympar.h"
 
 #ifdef STANDALONE
-extern ColumnVector Fmtt_euler (
+#include <csignal>
+#include <fstream>
+
+extern ColumnVector F${sys}_input (
 	ColumnVector &x,
-	const ColumnVector &dx,
-	const double &ddt,
-	const int &nx,
-	const ColumnVector &open_switches);
- 
-extern ColumnVector Fmtt_implicit (
+	ColumnVector &y,
+	const double &t,
+	ColumnVector &par);
+
+extern ColumnVector F${sys}_logic (
 	ColumnVector &x,
-	ColumnVector &dx,
-	Matrix &AA,
-	ColumnVector &AAx,
-	const double &ddt,
-	const int &nx,
-	const ColumnVector &open_switches);
+	ColumnVector &u,
+	const double &t,
+	ColumnVector &par);
+
+extern ColumnVector F${sys}_numpar (
+	void);
+
+extern Octave_map F${sys}_simpar (
+     	void);
+
+extern ColumnVector F${sys}_state (
+	ColumnVector &x);
 
 extern ColumnVector F${sys}_${ode} (
 	ColumnVector &x,
@@ -322,17 +370,27 @@ extern ColumnVector F${sys}_${odeo} (
 	const double &t,
 	ColumnVector &par);
 
-extern ColumnVector F${sys}_input (
+EOF
+if [ "$method" != "implicit" ]; then
+cat <<EOF >> $filename
+extern ColumnVector Fmtt_euler (
 	ColumnVector &x,
-	ColumnVector &y,
-	const double &t,
-	ColumnVector &par);
-
-extern ColumnVector F${sys}_numpar (
-	void);
-
-extern Octave_map F${sys}_simpar (
-     	void);
+	const ColumnVector &dx,
+	const double &ddt,
+	const int &nx,
+	const ColumnVector &open_switches);
+ 
+EOF
+else
+cat <<EOF >> $filename
+extern ColumnVector Fmtt_implicit (
+	ColumnVector &x,
+	ColumnVector &dx,
+	Matrix &AA,
+	ColumnVector &AAx,
+	const double &ddt,
+	const int &nx,
+	const ColumnVector &open_switches);
 
 extern Matrix F${sys}_smxa (
 	ColumnVector &x,
@@ -346,16 +404,94 @@ extern ColumnVector F${sys}_smxax (
 	const double &t,
 	ColumnVector &par);
  
-extern ColumnVector F${sys}_state (
-	ColumnVector &x);
-
-extern ColumnVector F${sys}_logic (
-	ColumnVector &x,
-	ColumnVector &u,
-	const double &t,
-	ColumnVector &par);
+EOF
+fi
+cat <<EOF >> $filename
 #endif // STANDALONE
 
+
+inline ColumnVector
+mtt_input (ColumnVector &x,
+	   ColumnVector &y,
+	   const double &t,
+	   ColumnVector &par)
+{
+#ifdef STANDALONE
+  return F${sys}_input (x, y, t, par);
+#else
+  static octave_value_list args, f;
+  args (0) = octave_value (x);
+  args (1) = octave_value (y);
+  args (2) = octave_value (t);
+  args (3) = octave_value (par);
+  f = feval ("${sys}_input", args, 1);
+  return f(0).${vector_value} ();
+#endif
+}
+
+inline ColumnVector
+mtt_logic (ColumnVector &x,
+	   ColumnVector &u,
+	   const double &t,
+	   ColumnVector &par)
+{
+#ifdef STANDALONE
+  return F${sys}_logic (x, u, t, par);
+#else
+  static octave_value_list args, f;
+  args (0) = octave_value (x);
+  args (1) = octave_value (u);
+  args (2) = octave_value (t);
+  args (3) = octave_value (par);
+  f = feval ("${sys}_logic", args, 1);
+  return f(0).${vector_value} ();
+#endif
+}
+
+inline ColumnVector
+mtt_numpar (void)
+{
+#ifdef STANDALONE
+  return F${sys}_numpar ();
+#else
+  static octave_value_list args, f;
+  f = feval ("${sys}_numpar", args, 1);
+  return f(0).${vector_value} ();
+#endif
+}
+
+inline Octave_map
+mtt_simpar (void)
+{
+#ifdef STANDALONE
+  return F${sys}_simpar ();
+#else
+  static octave_value_list args;
+  static Octave_map f;
+  f["first"]		= feval ("${sys}_simpar", args, 1)(0).map_value ()["first"];
+  f["dt"]		= feval ("${sys}_simpar", args, 1)(0).map_value ()["dt"];
+  f["last"]		= feval ("${sys}_simpar", args, 1)(0).map_value ()["last"];
+  f["stepfactor"]     	= feval ("${sys}_simpar", args, 1)(0).map_value ()["stepfactor"];
+  f["wmin"]		= feval ("${sys}_simpar", args, 1)(0).map_value ()["wmin"];
+  f["wmax"]		= feval ("${sys}_simpar", args, 1)(0).map_value ()["wmax"];
+  f["wsteps"]		= feval ("${sys}_simpar", args, 1)(0).map_value ()["wsteps"];
+  f["input"]		= feval ("${sys}_simpar", args, 1)(0).map_value ()["input"];
+  return (f);
+#endif
+}
+
+inline ColumnVector
+mtt_state (ColumnVector &x)
+{
+#ifdef STANDALONE
+  return F${sys}_state (x);
+#else
+  static octave_value_list args, f;
+  args (0) = octave_value (x);
+  f = feval ("${sys}_state", args, 1);
+  return f(0).${vector_value} ();
+#endif
+}
 
 inline ColumnVector
 mtt_${ode} (ColumnVector &x,
@@ -395,6 +531,33 @@ mtt_${odeo} (ColumnVector &x,
 #endif
 }
 
+EOF
+if [ "$method" != "implicit" ];then
+cat <<EOF >> $filename
+inline ColumnVector
+mtt_euler (ColumnVector &x,
+	   const ColumnVector &dx,
+	   const double &ddt,
+	   const int &nx,
+	   const ColumnVector &open_switches)
+{
+#ifdef STANDALONE
+  return Fmtt_euler (x, dx, ddt, nx, open_switches);
+#else
+  static octave_value_list args, f;
+  args (0) = octave_value (x);
+  args (1) = octave_value (dx);
+  args (2) = octave_value (ddt);
+  args (3) = octave_value ((double)nx);
+  args (4) = octave_value (open_switches);
+  f = feval ("mtt_euler", args, 1);
+  return f(0).${vector_value} ();
+#endif
+}
+
+EOF
+else
+cat <<EOF >> $filename
 inline ColumnVector
 mtt_implicit (ColumnVector &x,
 	      ColumnVector &dx,
@@ -417,78 +580,6 @@ mtt_implicit (ColumnVector &x,
   args (6) = octave_value (open_switches);
   f = feval ("mtt_implicit", args, 1);
   return f(0).${vector_value} ();
-#endif
-}
-
-inline ColumnVector
-mtt_euler (ColumnVector &x,
-	   const ColumnVector &dx,
-	   const double &ddt,
-	   const int &nx,
-	   const ColumnVector &open_switches)
-{
-#ifdef STANDALONE
-  return Fmtt_euler (x, dx, ddt, nx, open_switches);
-#else
-  static octave_value_list args, f;
-  args (0) = octave_value (x);
-  args (1) = octave_value (dx);
-  args (2) = octave_value (ddt);
-  args (3) = octave_value ((double)nx);
-  args (4) = octave_value (open_switches);
-  f = feval ("mtt_euler", args, 1);
-  return f(0).${vector_value} ();
-#endif
-}
-
-inline ColumnVector
-mtt_input (ColumnVector &x,
-	   ColumnVector &y,
-	   const double &t,
-	   ColumnVector &par)
-{
-#ifdef STANDALONE
-  return F${sys}_input (x, y, t, par);
-#else
-  static octave_value_list args, f;
-  args (0) = octave_value (x);
-  args (1) = octave_value (y);
-  args (2) = octave_value (t);
-  args (3) = octave_value (par);
-  f = feval ("${sys}_input", args, 1);
-  return f(0).${vector_value} ();
-#endif
-}
-
-inline ColumnVector
-mtt_numpar (void)
-{
-#ifdef STANDALONE
-  return F${sys}_numpar ();
-#else
-  static octave_value_list args, f;
-  f = feval ("${sys}_numpar", args, 1);
-  return f(0).${vector_value} ();
-#endif
-}
-
-inline Octave_map
-mtt_simpar (void)
-{
-#ifdef STANDALONE
-  return F${sys}_simpar ();
-#else
-  static octave_value_list args;
-  static Octave_map f;
-  f["first"]		= feval ("${sys}_simpar", args, 1)(0).map_value ()["first"];
-  f["dt"]		= feval ("${sys}_simpar", args, 1)(0).map_value ()["dt"];
-  f["last"]		= feval ("${sys}_simpar", args, 1)(0).map_value ()["last"];
-  f["stepfactor"]     	= feval ("${sys}_simpar", args, 1)(0).map_value ()["stepfactor"];
-  f["wmin"]		= feval ("${sys}_simpar", args, 1)(0).map_value ()["wmin"];
-  f["wmax"]		= feval ("${sys}_simpar", args, 1)(0).map_value ()["wmax"];
-  f["wsteps"]		= feval ("${sys}_simpar", args, 1)(0).map_value ()["wsteps"];
-  f["input"]		= feval ("${sys}_simpar", args, 1)(0).map_value ()["input"];
-  return (f);
 #endif
 }
 
@@ -530,47 +621,28 @@ mtt_smxax (ColumnVector &x,
 #endif
 }
 
-inline ColumnVector
-mtt_state (ColumnVector &x)
-{
-#ifdef STANDALONE
-  return F${sys}_state (x);
-#else
-  static octave_value_list args, f;
-  args (0) = octave_value (x);
-  f = feval ("${sys}_state", args, 1);
-  return f(0).${vector_value} ();
-#endif
-}
-
-inline ColumnVector
-mtt_logic (ColumnVector &x,
-	   ColumnVector &u,
-	   const double &t,
-	   ColumnVector &par)
-{
-#ifdef STANDALONE
-  return F${sys}_logic (x, u, t, par);
-#else
-  static octave_value_list args, f;
-  args (0) = octave_value (x);
-  args (1) = octave_value (u);
-  args (2) = octave_value (t);
-  args (3) = octave_value (par);
-  f = feval ("${sys}_logic", args, 1);
-  return f(0).${vector_value} ();
-#endif
-}
-
+EOF
+fi
+cat <<EOF >> $filename
 
 inline void
 mtt_write (const double &t,
 	   ColumnVector &x,
 	   ColumnVector &y,
-	   const int &nrows)
+	   const int &nrows,
+	   const bool dump_data = false,
+	   ostream &file = cout)
 {
   static Matrix data;
   static int row;
+
+  if (dump_data)
+    {
+       Matrix written_data = data.extract (0, 0, row-1, data.cols ()-1);
+       save_ascii_data_for_plotting (file, written_data, "MTT_data");
+       return;
+    }
+
   const int nx = x.length (), ny = y.length ();
   register int col = 0;
 
@@ -587,19 +659,65 @@ mtt_write (const double &t,
   row++;
 
   if (nrows == row)
+    {
 #ifdef STANDALONE
-    cout << data << endl;
+      save_ascii_data_for_plotting (file, data, "MTT_data");
+//    cout << data << endl;
 #else // ! STANDALONE
   set_global_value ("MTT_data", data);
 #endif
-
+    }
 }
 
 #ifdef STANDALONE
+void dump_data (ostream &file)
+{
+  ColumnVector null (0.0);
+  mtt_write (0.0, null, null, 0, true, file);
+}
+
+void set_signal_handlers (void);
+
+void handle_signal (int signum)
+{
+  // handle some signals to ensure data is written.
+  cerr << "# Writing data to MTT.core (signal " << signum << ")" << endl;
+  ofstream corefile ("MTT.core");
+  dump_data (corefile);
+  switch (signum)
+    {
+      case SIGFPE:
+        // Intel chips do not raise SIGFPE for DIVZERO :-(
+        raise (SIGABRT);
+        break;
+      case SIGINT:
+	break;
+      case SIGQUIT:
+	signal (SIGQUIT, SIG_DFL);
+	raise (SIGQUIT);
+	break;
+      default:
+        cerr << "# Warning: make_ode2odes needs updating!" << endl;
+	signal (signum, SIG_DFL);
+	raise (signum);
+        break;
+    }
+  corefile.close ();
+  set_signal_handlers ();
+}
+
+void set_signal_handlers (void)
+{
+  signal (SIGFPE,	handle_signal);
+  signal (SIGINT,	handle_signal);
+  signal (SIGQUIT,	handle_signal);
+}
+
 int main (void) {
+  set_signal_handlers ();
 #else
 DEFUN_DLD (${sys}_ode2odes, args, ,
-"Octave ode2odes representation of system 
+"Octave ode2odes representation of system with $method integration method
 Usage: ${sys}_ode2odes (x, par, simpar)
 ")
 {
@@ -672,6 +790,11 @@ Usage: ${sys}_ode2odes (x, par, simpar)
   const int	ilast	= static_cast<int> (round ((last - first) / ddt)) + 1;
   const int	nrows	= static_cast<int> (round ((last - first) / dt)) + 1;
 
+  for (register int i = 0; i < MTTNU; i++)
+    {
+      u (i) = 0.0;
+    }
+
   for (register int j = 0, i = 1; i <= ilast; i++)
     {
       y	= mtt_${odeo} (x, u, t, par);
@@ -680,8 +803,37 @@ Usage: ${sys}_ode2odes (x, par, simpar)
 	{
            mtt_write (t, x, y, nrows);
 	}
+EOF
+if [ "$method" = "rk4" ]; then
+cat << EOF >> $filename
+      {
+        static ColumnVector
+          k1 (MTTNX,0.0),
+          k2 (MTTNX,0.0),
+          k3 (MTTNX,0.0),
+          k4 (MTTNX,0.0);
+
+        const double
+          t1 = t + ddt/2.0,
+          t2 = t + ddt;
+
+        ColumnVector
+          x1 (x),
+          x2 (x),
+          x3 (x);
+
+        k1 = ddt * mtt_${ode} (x , u, t , par); x1 += k1 * 0.5;
+        k2 = ddt * mtt_${ode} (x1, u, t1, par); x2 += k2 * 0.5;
+        k3 = ddt * mtt_${ode} (x2, u, t1, par); x3 += k3;
+        k4 = ddt * mtt_${ode} (x3, u, t2, par);
+        dx = (k1 + 2.0 * (k2 + k3) + k4) / (6.0 * ddt);
+      }
+EOF
+else
+cat << EOF >> $filename
       dx = mtt_${ode} (x, u, t, par);
 EOF
+fi
 
 if [ "$method" = "implicit" ]; then
 cat <<EOF >> $filename

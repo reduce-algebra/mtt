@@ -19,8 +19,8 @@ endif
 
 all:	$(sys)_$(rep).cc
 
-parser: parse_m2cc.cc
-	g++ $< $(CFLAGS) -o parser
+parser.exe: parse_m2cc.cc
+	g++ $< $(CFLAGS) -o ${MTTPATH}/trans/parser.exe -I${MTTPATH}/../cc/include
 
 ifeq ($(rep),ode2odes)
 $(sys)_ode2odes.cc: ode2odes.cc

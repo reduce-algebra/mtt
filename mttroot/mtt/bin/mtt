@@ -15,6 +15,34 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.293.2.8  2001/03/19 01:35:31  geraint
+## Reverted forced update check to main branch form, ready for merge.
+##
+## Revision 1.293.2.7  2001/03/17 09:51:06  geraint
+## Implemented Runge-Kutta IV fixed-step method (-i rk4).
+##
+## Revision 1.293.2.6  2001/03/03 06:50:38  geraint
+## Added #SUMMARY lines for ode2odes.
+##
+## Revision 1.293.2.5  2001/03/03 00:27:14  geraint
+## Fixed ar options to work with GNU ar. Allow mtt to create dependencies for mtt_%.cc when making mtt_%.oct.
+##
+## Revision 1.293.2.4  2001/03/02 00:45:21  geraint
+## Separated Euler and Implicit methods in .cc code and dependencies.
+##
+## Revision 1.293.2.3  2001/03/01 05:05:53  geraint
+## Minor revisions.
+##
+## Revision 1.293.2.2  2001/02/23 03:53:53  geraint
+## Minor revisions. (ode2odes.exe works on GNU/Linux and ~GNU/Irix)
+##
+## Revision 1.293.2.1  2001/02/22 06:41:40  geraint
+## Initial merge of ode2odes.exe into main mtt.
+## standalone_rep.make deleted: rules moved to mtt, variables to mttrc.
+##
+## Revision 1.293  2001/02/06 04:39:08  geraint
+## Added _standalone.exe representation.
+##
 ## Revision 1.292  2001/02/05 17:27:40  gawthrop
 ## Make sure _def.r exists before creating _state.txt
 ##
@@ -1064,8 +1092,12 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 			integration_method=implicit;
                         mtt_switches="$mtt_switches implicit";
 			;;
+		    rk4)
+			integration_method=rk4;
+			mtt_switches="$mtt_switches rk4";
+			;;
 		    *)
-			echo $1 is an unknown integration method - use euler or implicit;
+			echo $1 is an unknown integration method - use euler, rk4 or implicit;
                         exit;;
 		esac;;
 	-s )
@@ -1202,7 +1234,7 @@ if [ -z "$1" ]; then
     echo '         -d  <dir>  use directory <dir>'
     echo '         -dc Maximise derivative (not integral) causality'
     echo '         -dc Maximise derivative (not integral) causality'
-    echo '         -i <implicit|euler>   Use implicit or euler integration'
+    echo '         -i <implicit|euler|rk4>   Use implicit, euler or rk4 integration'
     echo '         -o ode is same as dae'
     echo '         -oct use oct files in place of m files where appropriate'
     echo '         -opt optimise code generation'
@@ -1795,6 +1827,13 @@ if [ -n "$sensitivity" ]; then
   sys_abg=$sys"_abg"
 fi
 
+## Check octave version
+if [ `octave --version | awk -F\. '{print $2}'` ]; then
+    define_octave_dev="-DOCTAVE_DEV"
+else
+    define_octave_dev=""
+fi
+
 ################################
 # This is the main mtt programme
 ################################
@@ -1808,18 +1847,32 @@ $MAKE -S $verbose  -f  -  $target << EOF
 
 # MTT implicit rules
 ## .oct files
-ifneq ($2,ode2odes)
-%.oct:  %.cc $1_def.h $1_sympar.h $1_cr.h
-	echo Creating $1_$2.oct; $MKOCTFILE  $< 
-endif
+$1_%.oct:  $1_%.cc $1_def.h $1_sympar.h $1_cr.h
+	echo Creating $1_\$*.oct; $MKOCTFILE  $1_\$*.cc
 
+.PRECIOUS: mtt_%.oct
+mtt_%.oct: mtt_%.cc
+	echo Compiling \$<
+	${MKOCTFILE} $define_octave_dev \$<
 
 ## .cc files
 .PRECIOUS: %.cc # Don't let mtt delete them
-ifneq ($2,ode2odes)
-%.cc:  %.m
-	mtt_m2cc.sh  $1 $2 cat 
-endif
+$1_%.cc:  $1_%.m
+	mtt_m2cc.sh  $1 \$* cat 
+
+mtt_%.cc: ${MTT_LIB}/cc/mtt_%.cc
+	cp ${MTT_LIB}/cc/mtt_\$*.cc mtt_\$*.cc
+
+## .o files
+.PRECIOUS: $1_%.o
+$1_%.o: $1_%.cc $1_def.h $1_sympar.h $1_cr.h
+	echo Compiling $1_\$*.cc
+	${MTT_CXX} ${MTT_CXXFLAGS} ${MTT_CXXINCS} -c $< -DSTANDALONE
+
+.PRECIOUS: mtt_%.o
+mtt_%.o: mtt_%.cc
+	echo Compiling mtt_\$*.cc
+	${MTT_CXX} ${MTT_CXXFLAGS} ${MTT_CXXINCS} -c $< -DSTANDALONE $define_octave_dev
 
 # Generates code to write reduce code
 $1_ode_write.r: $1_def.m
@@ -2056,6 +2109,37 @@ endif
 # Dummy target
 FORCE:
 
+$1_ode2odes_common.m    : $1_input.m   $1_logic.m   $1_numpar.m   $1_simpar.m   $1_state.m
+	@echo > /dev/null
+$1_ode2odes_common.cc   : $1_input.cc  $1_logic.cc  $1_numpar.cc  $1_simpar.cc  $1_state.cc
+	@echo > /dev/null
+$1_ode2odes_common.o    : $1_input.o   $1_logic.o   $1_numpar.o   $1_simpar.o   $1_state.o
+	@echo "Creating $1_ode2odes_common.o"
+	ar -cr \$@ \$^
+$1_ode2odes_common.oct  : $1_input.oct $1_logic.oct $1_numpar.oct $1_simpar.oct $1_state.oct
+	@echo > /dev/null
+
+$1_ode2odes_euler.m  $1_ode2odes_rk4.m    : $1_ode.m     $1_odeo.m
+	@echo > /dev/null
+$1_ode2odes_euler.cc $1_ode2odes_rk4.cc   : $1_ode.cc    $1_odeo.cc
+	@echo > /dev/null
+$1_ode2odes_euler.o  $1_ode2odes_rk4.o    : $1_ode.o     $1_odeo.o   mtt_euler.o
+	@echo "Creating \$@"
+	ar -cr \$@ \$^
+$1_ode2odes_euler.oct   : $1_ode.oct   $1_odeo.oct mtt_euler.oct
+	@echo > /dev/null
+
+$1_ode2odes_implicit.m  : $1_cseo.m    $1_csex.m   $1_smxa.m   $1_smxax.m
+	@echo > /dev/null
+$1_ode2odes_implicit.cc : $1_cseo.cc   $1_csex.cc  $1_smxa.cc  $1_smxax.cc
+	@echo > /dev/null
+$1_ode2odes_implicit.o  : $1_cseo.o    $1_csex.o   $1_smxa.o   $1_smxax.o   mtt_implicit.o
+	@echo "Creating $1_ode2odes_implicit.o"
+	ar -cr \$@ \$^
+$1_ode2odes_implicit.oct: $1_cseo.oct  $1_csex.oct $1_smxa.oct $1_smxax.oct mtt_implicit.oct
+	@echo > /dev/null
+
+
 #SUMMARY numpar	numerical parameter declaration (m) 
 $1_numpar.m:  $1_numpar.txt $1_sympars.txt
 	mtt_txt2m $1 numpar
@@ -2200,7 +2284,7 @@ $1_struc.m: $1_struc.txt
 	struc_txt2m $1
 $1_def.m: $1_def.r
 	def_r2m $1; matlab_tidy $1_def.m;
-$1_def.h: $1_def.m
+$1_def.h: $1_def.m $1_sympar.txt
 	def_m2h.sh $1
 
 #SUMMARY rdae	raw differential-algebraic equations (r)
@@ -2348,45 +2432,51 @@ $1_ode2odes.m : $1_def.r $1_sympars.txt \
                 $1_simpar.m $1_numpar.m $1_state.m $1_input.m \
                 $1_csex.m $1_cseo.m  $1_logic.m
 ifeq ($using_oct,yes)
-	mtt $mtt_switches -q -u $1 smxa oct
-	mtt $mtt_switches -q -u $1 smxax oct
-	mtt $mtt_switches -q -u $1 simpar oct
-	mtt $mtt_switches -q -u $1 numpar oct
-	mtt $mtt_switches -q -u $1 state oct
-	mtt $mtt_switches -q -u $1 input oct
-	mtt $mtt_switches -q -u $1 csex oct
-	mtt $mtt_switches -q -u $1 cseo oct
-	mtt $mtt_switches -q -u $1 logic oct
-	make_ode2odes $1 cc $integration_method
-	echo Creating $1_ode2odes.oct
-	mkoctfile $1_ode2odes.cc
 	touch $1_ode2odes.m # Create a dummy which wont' be used
+	mtt $mtt_switches -q -u $1 ode2odes oct
 else
 	make_ode2odes $1 m $integration_method
 endif
 endif
-ifeq ($integration_method,euler)
+ifneq ($integration_method,implicit)
 $1_ode2odes.m : $1_def.r $1_sympars.txt\
 		$1_simpar.m $1_numpar.m $1_state.m $1_input.m \
 		$1_ode.m $1_odeo.m  $1_logic.m
 ifeq ($using_oct,yes)
-	mtt $mtt_switches -q -u $1 simpar oct
-	mtt $mtt_switches -q -u $1 numpar oct
-	mtt $mtt_switches -q -u $1 state oct
-	mtt $mtt_switches -q -u $1 input oct
-	mtt $mtt_switches -q -u $1 ode oct
-	mtt $mtt_switches -q -u $1 odeo oct
-	mtt $mtt_switches -q -u $1 logic oct
-	make_ode2odes $1 cc $integration_method
-	echo Creating $1_ode2odes.oct
-	mkoctfile $1_ode2odes.cc
+	echo "*** Warning: Shouldn't be here! Creating dummy $1_ode2odes.m"
 	touch $1_ode2odes.m # Create a dummy which wont' be used
+	mtt $mtt_switches -q -u $1 ode2odes oct
 else
 	make_ode2odes $1 m $integration_method
 endif
 
 endif
 
+#SUMMARY ode2odes Simulation function (m)
+#SUMMARY ode2odes Simulation function (cc)
+#SUMMARY ode2odes Simulation function (oct)
+#SUMMARY ode2odes Simulation function (exe)
+$1_ode2odes.exe: $1_def.h $1_sympar.h\
+		 $1_ode2odes.o $1_ode2odes_common.o $1_ode2odes_${integration_method}.o
+	echo Creating $1_ode2odes.exe
+	${MTT_CXX} ${MTT_CXXFLAGS} -o $1_ode2odes.exe\
+	$1_ode2odes.o $1_ode2odes_common.o $1_ode2odes_${integration_method}.o\
+	${MTT_LDFLAGS} ${MTT_CXXLIBS}
+
+$1_ode2odes.o: $1_ode2odes.cc $1_ode2odes_common.o $1_ode2odes_${integration_method}.o
+	echo Creating $1_ode2odes.o
+	${MTT_CXX} ${MTT_CXXFLAGS} ${MTT_CXXINCS} -c $1_ode2odes.cc -DSTANDALONE
+
+$1_ode2odes.oct: $1_ode2odes.cc $1_ode2odes_common.oct $1_ode2odes_${integration_method}.oct
+	touch $1_ode2odes.m
+	echo Creating $1_ode2odes.oct
+	$MKOCTFILE $1_ode2odes.cc
+
+$1_ode2odes.cc: $1_def.r $1_sympars.txt\
+		$1_ode2odes_common.m $1_ode2odes_common.cc\
+		$1_ode2odes_${integration_method}.m $1_ode2odes_${integration_method}.cc
+	touch $1_ode2odes.m
+	make_ode2odes $1 cc $integration_method
 
 #Conversion of m to p to c
 #SUMMARY ode	ordinary differential equations (c)
@@ -2431,7 +2521,7 @@ $1_ode2odes.p : $1_ode2odes.m $1_def.r $1_smxa.p $1_smxax.p\
 		$1_csex.p $1_cseo.p  $1_logic.p
 	mtt_m2p $1_ode2odes.m $integration_method $stdin
 endif
-ifeq ($integration_method,euler)
+ifneq ($integration_method,implicit)
 $1_ode2odes.p : $1_ode2odes.m $1_def.r\
 		$1_simpar.p $1_numpar.p $1_state.p $1_input.p \
 		$1_ode.p $1_odeo.p  $1_logic.p
@@ -2732,8 +2822,13 @@ $1_sms.c: $1_sm.c $1_def.r $1_sympar.r
 	sm2sms_r2c $1
 
 ifeq ($computation,octave)
+ifeq ($using_oct,yes)
+$1_odes.dat2: $1_ode2odes.oct
+	time octave_ode2odes $1
+else
 $1_odes.dat2: $1_ode2odes.m
 	time octave_ode2odes $1
+endif
 endif
 
 ifeq ($computation,c)

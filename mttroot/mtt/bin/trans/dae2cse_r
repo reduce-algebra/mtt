@@ -15,6 +15,13 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.14.2.1  2001/03/19 00:29:08  geraint
+## Parse switches (-A) before calling def2write_r.
+## Update $1_def.* instead of removing.
+##
+## Revision 1.14  2000/12/28 12:24:35  peterg
+## *** empty log message ***
+##
 ## Revision 1.13  2000/10/11 08:52:46  peterg
 ## Creates csex (cse with dxe only) rep.
 ##
@@ -71,11 +78,6 @@
 ##
 ###############################################################
 
-# Create the reduce output code
-def2write_r $1 cse      
-def2write_r $1 csex  # Version without E matrix
-def2write_r $1 cseo
-
 #Explicit solution option
 solve=0
 while [ -n "`echo $1 | grep '^-'`" ]; do
@@ -87,6 +89,11 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
   esac
   shift
 done
+
+# Create the reduce output code
+def2write_r $1 cse      
+def2write_r $1 csex  # Version without E matrix
+def2write_r $1 cseo
 
 if [ "$solve" = "1" ]; then
     echo "Creating $1_cse.r (with explicit solution of algebraic equations)"
@@ -379,7 +386,7 @@ cat $1_csex.r1 $1_csex.r2  > $1_csex.r
 cat $1_cseo.r1 $1_cseo.r2  > $1_cseo.r
 
 if [ "$solve" = "1" ]; then
-    echo "Setting MTTNyz=0 in $1_def.r and removing other $1_def files"
+    echo "Setting MTTNyz=0 in $1_def.r and updating other $1_def files"
     awk '{
      if ($1=="MTTNyz") 
        print "MTTNyz := 0;" 
@@ -388,8 +395,13 @@ if [ "$solve" = "1" ]; then
   # Make sure it preserves the time stamp!!
   # and remove dependent reps
    touch -r $1_def.r mtt_junk
-   rm $1_def.*
    mv mtt_junk $1_def.r
+   for file in `ls $1_def.*`; do
+      if [ $file != $1_def.r ]; then
+          ext=`echo $file|awk -F\. '{print $2}'`
+          mtt -q $1 def $ext
+      fi
+   done
 fi
 
 

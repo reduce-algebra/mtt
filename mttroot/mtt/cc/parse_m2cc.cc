@@ -1,5 +1,14 @@
 /* $Id$
  * $Log$
+ * Revision 1.1.2.2  2001/03/09 04:01:20  geraint
+ * \ escapes newline.
+ *
+ * Revision 1.1.2.1  2001/03/09 02:59:26  geraint
+ * got_comment: (char)c no longer compared to (int)EOF.
+ *
+ * Revision 1.1  2000/12/28 09:46:05  peterg
+ * put under RCS
+ *
  * Revision 1.1  2000/10/31 04:29:50  geraint
  * Initial revision
  *
@@ -201,11 +210,9 @@ void got_comment (void)
   char c;
   cout << " // ";
   cin >> c;
-  while (c != '\n' && c != EOF)
-    {
-      cout << c;
-      cin >> c;
-    }
+  do {
+    cout << c;
+  } while (c != '\n' && cin >> c);
   cout << endl
        << indent () << ';' << endl
        << indent ();
@@ -311,6 +318,18 @@ int main (void)
 		   << indent ();
 	    }
 	  buf = "";
+	  break;
+	case '\\':
+	  cin >> c;
+	  if ('\n' == c)
+	    {
+	      buf += '\n';
+	    }
+	  else
+	    {
+	      buf += '\\';
+	      buf += c;
+	    }
 	  break;
 	default:
 	  buf += c;

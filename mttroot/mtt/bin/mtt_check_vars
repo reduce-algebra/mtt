@@ -15,6 +15,13 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8.2.1  2001/03/06 03:48:43  geraint
+## Print additional environment variable for "mtt -p".
+## MTT_LDFLAGS defaults to " " to avoid installation warning.
+##
+## Revision 1.8  2000/12/27 13:11:42  peterg
+## *** empty log message ***
+##
 ## Revision 1.7  2000/08/04 15:48:30  peterg
 ## Added PDF
 ##
@@ -75,6 +82,11 @@ mtt_check_var "$HTMLVIEW" "HTMLVIEW" "$print" "MTT"
 mtt_check_var "$DVIVIEW" "DVIVIEW" "$print" "MTT"
 mtt_check_var "$CC" "CC" "$print" "MTT"
 mtt_check_var "$LATEX2HTML" "LATEX2HTML" "$print" "MTT"
-
+mtt_check_var "$MKOCTFILE" "MKOCTFILE" "$print" "MTT"
+mtt_check_var "$MTT_CXX" "MTT_CXX" "$print" "MTT"
+mtt_check_var "$MTT_CXXFLAGS" "MTT_CXXFLAGS" "$print" "MTT"
+mtt_check_var "$MTT_CXXLIBS" "MTT_CXXLIBS" "$print" "MTT"
+mtt_check_var "$MTT_CXXINCS" "MTT_CXXINCS" "$print" "MTT"
+mtt_check_var "$MTT_LDFLAGS" "MTT_LDFLAGS" "$print" "MTT"
 
 

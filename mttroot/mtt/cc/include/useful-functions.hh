@@ -1,24 +1,46 @@
+#ifndef HAVE_USEFUL_FUNCTIONS_HH
+#define HAVE_USEFUL_FUNCTIONS_HH
 
-template <class T>
-inline T max (const T &x1, const T &x2)
+
+#ifdef __CPLUSPLUS
+template <class class_t>
+#else
+#define inline			// strip from pre-processed file
+#define class_t double
+#endif // __CPLUSPLUS
+
+
+// == Template functions ==
+
+static inline class_t
+max (const class_t &x1, const class_t &x2)
 {
-  return (x1 >= x2) ? x1 : (x2 < x1) ? x2 : 0;
+  return ((x1 >= x2) ? x1 : (x1 < x2) ? x2 : 0);
 }
 
-template <class T>
-inline T min (const T &x1, const T &x2)
+static inline class_t
+min (const class_t &x1, const class_t &x2)
 {
-  return (x1 <= x2) ? x1 : (x2 > x1) ? x2 : 0;
+  return ((x1 <= x2) ? x1 : (x1 > x2) ? x2 : 0);
 }
 
-inline Matrix
+static inline class_t
+sign (const class_t &x)
+{
+  return ((x > 0) ? +1 : (x < 0) ? -1 : 0);
+}
+
+
+// == Octave functions ==
+
+static inline Matrix
 ones (const int r = 1, const int c = 1)
 {
   Matrix m (r, c, 1.0);
   return m;
 }
 
-inline ColumnVector
+static inline ColumnVector
 nozeros (const ColumnVector v0, const double tol = 0.0)
 {
   ColumnVector v (v0.length ());
@@ -39,26 +61,18 @@ nozeros (const ColumnVector v0, const double tol = 0.0)
     }
 }
 
-inline ColumnVector
+static inline ColumnVector
 zeros (const int r)
 {
   ColumnVector v (r, 0.0);
   return v;
 }
 
-inline Matrix
+static inline Matrix
 zeros (const int r, const int c)
 {
   Matrix m (r, c, 0.0);
   return m;
 }
 
-template <class T>
-inline int
-sign (T x)
-{
-  return
-    (0 < x) ? +1 :
-    (0 > x) ? -1 :
-    0;
-}
+#endif // HAVE_USEFUL_FUNCTIONS_HH

@@ -16,6 +16,10 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.28  2001/02/05 17:19:52  gawthrop
+## Now gives unique names to the states of multiports. Second name
+## onwards labeled with port number
+##
 ## Revision 1.27  2000/12/05 12:09:56  peterg
 ## Changed function name to name()
 ##
@@ -181,7 +185,7 @@ if [ -z "$partition" ]; then
   ## Don't partition
 
   # Create the composite ese file
-  cat $1_ese.r $1_*_ese.r  > $1_ese.tmp 2>> /dev/null
+  cat $1_ese.r $1_*_ese.r $1_modpar.r  > $1_ese.tmp 2>> /dev/null
 
   mv $1_ese.tmp $1_ese.r
 

@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  2000/09/15 09:01:41  peterg
+## Updated internal comments
+##
 ## Revision 1.9  2000/05/16 18:56:58  peterg
 ## Now realised that libp2c.a avoids many probs - so simplified it.
 ##
@@ -80,6 +83,7 @@ cat <<EOF  >$1_$2.c
 
 /* Compile with gcc -lm -lp2c $1_$2.c -o $1_$2.out */
 /* Note that p2c must be correctly installed so that p2c.h and libp2c.a are accessible */
+#include "$1.h"
 EOF
 
 #cat<<EOF >>$1_$2.c
@@ -105,4 +109,5 @@ if [ -n "$info" ]; then
     cat mtt_p2c.log
 fi
 
-
+# Remove the garbage
+rm -f mtt_junk.c

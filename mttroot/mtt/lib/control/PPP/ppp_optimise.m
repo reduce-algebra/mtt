@@ -29,6 +29,9 @@ function [par,Par,Error,Y,iterations,x] = \
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.11  2002/05/20 13:32:36  gawthrop
+  ## Sanity check on y_0
+  ##
   ## Revision 1.10  2002/05/13 16:01:09  gawthrop
   ## Addes Q weighting matrix
   ##
@@ -120,25 +123,31 @@ function [par,Par,Error,Y,iterations,x] = \
 	(abs(err)>extras.criterion)&&\
 	(iterations<extras.max_iterations)
 
-    iterations = iterations + 1; # Increment iteration counter
+    iterations = iterations + 1 # Increment iteration counter
 
     [y,y_par,x] = eval(sim_command); # Simulate
-    [N_data,N_y] = size(y);
+    [N_data,N_y] = size(y)
 
     if (N_y!=n_y)
       mess = sprintf("n_y (%i) in data not same as n_y (%i) in model", n_y,N_y);
       error(mess);
     endif
 
-    if ( (N_data-n_data)<1 )
-      error(sprintf("y_0 (%i) must be shorter than y (%i)", n_data, N_data));
+    ## Use the last part of the simulation to compare with data
+    ## ### Removed #### And shift back by one data point
+#     if ( (N_data-n_data)<1 )
+#       error(sprintf("y_0 (%i) must be shorter than y (%i)", n_data, N_data));
+#     endif
+    
+    y = y(N_data-n_data+1:N_data,:);
+    y_par = y_par(N_data-n_data+1:N_data,:);
+
+    if extras.visual==1
+      ## Plot
+      title("Optimisation data");
+      plot([y y_0])
     endif
     
-    ## Use the last part of the simulation to compare with data
-    ## And shift back by one data point
-    y = y(N_data-n_data:N_data-1,:);
-    y_par = y_par(N_data-n_data:N_data-1,:);
-
     ##Evaluate error, cost derivative J and cost second derivative JJ
     err = 0; 
     J = zeros(n_th,1);

@@ -1,4 +1,4 @@
-PROCEDURE svdcmp(VAR a: glmpbynp; m,n,mp,np: integer;
+PROCEDURE svdcmp(VAR a: glmpbynp; m,n: integer;
 		 VAR w: glnparray; VAR v: glnpbynp);
 
 
@@ -8,6 +8,11 @@ PROCEDURE svdcmp(VAR a: glmpbynp; m,n,mp,np: integer;
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.3  1998/08/12 11:08:03  peterg
+% % Put in pythag routine to compute z = sqrt(y^2 + z^2) (as in book)
+% % Save loop index l as ll when jumping from loop - using l itself is
+% % undefined
+% %
 % % Revision 1.2  1998/08/12 11:05:33  peterg
 % % Taken from NR share library nrpas13 as SVDCMP.PAS
 % % and renamed svdcmp.p

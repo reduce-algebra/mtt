@@ -1,5 +1,5 @@
 PROCEDURE svbksb(u: glmpbynp; w: glnparray; v: glnpbynp;
-       m,n,mp,np: integer; b: glmparray; VAR x: glnparray);
+       m,n: integer; b: glmparray; VAR x: glnparray);
 {
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -7,6 +7,10 @@ PROCEDURE svbksb(u: glmpbynp; w: glnparray; v: glnpbynp;
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.2  1998/08/12 11:09:54  peterg
+% % Taken from NR share library nrpas13 as  SVBKSB.PAS
+% % and renamed  svbksb.p
+% %
 % % Revision 1.1  1998/08/12 11:09:02  peterg
 % % Initial revision
 % %

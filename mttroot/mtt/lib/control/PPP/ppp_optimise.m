@@ -28,6 +28,10 @@ function [par,Par,Error,Y,iterations] = \
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.2  2001/04/04 08:36:25  gawthrop
+  ## Restuctured to be more logical.
+  ## Data is now in columns to be compatible with MTT.
+  ##
   ## Revision 1.1  2000/12/28 11:58:07  peterg
   ## Put under CVS
   ##
@@ -36,12 +40,13 @@ function [par,Par,Error,Y,iterations] = \
 
   ## Copyright (C) 1999,2000 by Peter J. Gawthrop
 
-  sim_command = sprintf("%s_ssim(x_0,par,simpar,u,i_s)", system_name)
-  ## Extract indices
-  i_t = free(:,1); # Parameters
-  i_s = free(:,2)'; # Sensitivities
+  sim_command = sprintf("%s_ssim(x_0,par,simpar,u,i_s)", system_name);
 
-  if nargin<9
+  ## Extract indices
+  i_t = free(:,1);		# Parameters
+  i_s = free(:,2)';		# Sensitivities
+
+  if nargin<8
     extras.criterion = 1e-5;
     extras.max_iterations = 10;
     extras.v = 1e-5;
@@ -55,7 +60,8 @@ function [par,Par,Error,Y,iterations] = \
   error_old = inf;
   error_old_old = inf;
   error = 1e50;
-  reduction = 1e50;
+  reduction = inf;
+  predicted_reduction = 0;
   par = par_0;
   Par = par_0;
   step = ones(n_th,1);
@@ -65,6 +71,20 @@ function [par,Par,Error,Y,iterations] = \
   v = extras.v;			# Levenverg-Marquardt parameter.
   r = 1;			# Step ratio
 
+  if extras.verbose		# Diagnostics
+    printf("Iteration: %i\n", iterations);
+    printf("  error:  %g\n", error);
+    printf("  reduction:  %g\n", reduction);
+    printf("  prediction: %g\n", predicted_reduction);
+    printf("  ratio:      %g\n", r);
+    printf("  L-M param:  %g\n", v);
+    printf("  parameters: ");
+    for i_th=1:n_th
+      printf("%g ", par(i_t(i_th)));
+    endfor
+    printf("\n");
+  endif
+  
   while (abs(reduction)>extras.criterion)&&\
 	(abs(error)>extras.criterion)&&\
 	(iterations<extras.max_iterations)
@@ -96,20 +116,6 @@ function [par,Par,Error,Y,iterations] = \
 	v = v/2;
       endif
 
-      if extras.verbose
-	printf("Iteration: %i\n", iterations);
-	printf("  error:  %g\n", error);
-	printf("  reduction:  %g\n", reduction);
-	printf("  prediction: %g\n", predicted_reduction);
-	printf("  ratio:      %g\n", r);
-	printf("  L-M param:  %g\n", v);
-	printf("  parameters: ");
-	for i_th=1:n_th
-	  printf("%g ", par(i_t(i_th)));
-	endfor
-	printf("\n");
-      endif
-    
       if reduction<0		# Its getting worse
 	par(i_t) = par(i_t) + step; # rewind parameter
 	error = error_old;	# rewind error
@@ -131,6 +137,22 @@ function [par,Par,Error,Y,iterations] = \
     Error = [Error error];	# Save error
     Par = [Par par];		# Save parameters
     Y = [Y y];			# Save output
+
+    if extras.verbose		# Diagnostics
+      printf("Iteration: %i\n", iterations);
+      printf("  error:  %g\n", error);
+      printf("  reduction:  %g\n", reduction);
+      printf("  prediction: %g\n", predicted_reduction);
+      printf("  ratio:      %g\n", r);
+      printf("  L-M param:  %g\n", v);
+      printf("  parameters: ");
+      for i_th=1:n_th
+	printf("%g ", par(i_t(i_th)));
+      endfor
+      printf("\n");
+    endif
+    
+
   endwhile
 
 endfunction

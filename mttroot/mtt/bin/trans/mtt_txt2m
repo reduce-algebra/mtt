@@ -15,6 +15,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.12  2000/11/08 11:20:49  peterg
+# %% removed the empty matrix stuff
+# %%
 # %% Revision 1.11  2000/10/17 09:55:21  peterg
 # %% Added logic rep
 # %%
@@ -119,6 +122,8 @@ system=$1
 representation=$2
 outfile=$1_$2.m
 
+tolower () { tr [A-Z] [a-z] ;}
+
 # Inform user
 echo Creating $outfile
 
@@ -212,7 +217,7 @@ doublequote = "\042";
      -e 's/x(/mttx(/g' \
      -e 's/u(/mttu(/g' \
      -e 's/mttmtt/mtt/g' \
- >> $outfile
+| tolower >> $outfile
 
 if [ -n "$arraycode" ]; then
   new_style=`strip_comments < $1_$2.txt| grep "$name(">/dev/null; echo $?`
@@ -231,9 +236,10 @@ fi
 if [ "$representation" = "logic" ]; then
   echo >> $outfile
   echo "## Open switches" >> $outfile
-  switch_txt2m $system >> $outfile
+  switch_txt2m $system | tolower >> $outfile
 fi
 
 # End of the function
 echo '## END Code' >> $outfile
 echo 'endfunction' >> $outfile
+

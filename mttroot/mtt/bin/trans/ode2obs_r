@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1996/08/25 08:38:14  peter
+## Error handling added.
+##
 ## Revision 1.1  1996/08/25 08:37:44  peter
 ## Initial revision
 ##
@@ -55,12 +58,14 @@ FOR i := 1:MTTNu DO
 END;
 
 IF MTTGPCNu>0 THEN
-FOR i := 1:MTTNu DO
-  MTTUU(i+MTTNu,1) := MTTdU(i,1);
+BEGIN
+  FOR i := 1:MTTNu DO
+    MTTUU(i+MTTNu,1) := MTTdU(i,1);
+  END;
 END;
 
 MTTU := MTTU;
-MTTdU := MTTdU;
+%  MTTdU := MTTdU; ---- removed temporarily, needs def file change? 
 MTTUU := MTTUU;
 
 %Create the Y vector of output derivatives.
@@ -165,22 +170,6 @@ quit;
 
 EOF
 
-
-#Reduce writes errors to std output with ***** in front.
-grep '\*\*\*\*\*' ode2obs_r.log >mtt_error
-# Test for errors and print if any
-err_length=$(wc -c <mtt_error)
-if [ $err_length != "0" ]
-then
-  echo MTT has failed with the following errors '...'
-  cat mtt_error
-  exit 1
-else
-  exit 0
-fi
-
-
-
-
-
+# Now invoke the standard error handling.
+mtt_error_r ode2obs_r.log
 

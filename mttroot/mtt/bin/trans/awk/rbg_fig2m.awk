@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.25  1998/04/03 15:07:20  peterg
+## Now correctly write 0/1 port names
+##
 ## Revision 1.24  1998/04/03 14:02:50  peterg
 ## Added 0 and 1 to list of possible ports
 ##
@@ -507,7 +510,7 @@ BEGIN {
   port_regexp = "^\[[a-zA-Z0-9_,]*\]";
   nonport_regexp = "[a-zA-Z]";
   PORT_regexp = "^PORT .*=";  
-  port_component_regexp = "SS|0|1";
+  port_component_regexp = "SS";
   isa_fig_file = 0;
   min_line_length = 10;
   object = 0;

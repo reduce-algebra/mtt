@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  1998/11/17 17:10:22  peterg
+## Read in the constitutive relationship file as well
+##
 ## Revision 1.9  1998/08/27 07:06:25  peterg
 ## Just genrate xj once.
 ##
@@ -69,6 +72,7 @@ reduce << EOF  >ode2smx_lang.log
 
 lang := $lang;
 
+in "$1_subs.r";
 in "$1_def.r";
 in "$1_ode.r";
 in "$1_cr.r";

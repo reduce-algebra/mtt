@@ -12,6 +12,11 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.17  1997/01/02  11:21:17  peterg
+# Now assumes all components bonds etc at depth zero in fig file.
+# Ie anything at depth>0 is ignored.
+# Thanks to Donald for suggesting this.
+#
 ## Revision 1.16  1996/12/30 20:00:29  peterg
 ## Fixed bent-bond bug.
 ## NB unfixed problems:
@@ -340,7 +345,36 @@ else {
 
 function write_fig() {
 # Create _fig.fig file from _abg file - not components
-  if ( (isa_fig_file)&&((object!=text)||(isa_component==0))) {
+# and write out the components in a _cmp.fig file
+# and write out the bonds in a _bnd.fig file
+
+#Everything except components
+  if ( ((object!=text)||(isa_component==0)) ) {
+    #Replace the data_symbol
+    if (exact_match($1,data_symbol)) {
+      field_1 = out_data_symbol
+	}
+    else {
+      field_1 = $1
+      }
+
+    printf field_1   >> fig_file
+      for (i=2; i<=NF; i++)
+	printf(" %s", $i)  >> fig_file;
+    printf("\n") >> fig_file
+    }
+
+# Header
+  if ( NF<3 ) {
+	printf("%s", $1)  >> head_file;
+        for (i=2; i<=NF; i++)
+	  printf(" %s", $i)  >> head_file;
+    printf("\n") >> head_file
+    }
+# Bonds
+  if (isa_bond) {
+
+    #Replace the data_symbol
     if (exact_match($1,data_symbol)) {
       field_1 = out_data_symbol
 	}
@@ -348,11 +382,18 @@ function write_fig() {
       field_1 = $1
 	}
 
-    printf field_1   >> fig_file
+    printf field_1   >> bnd_file
       for (i=2; i<=NF; i++)
-	printf(" %s", $i)  >> fig_file;
-    printf("\n") >> fig_file
+	printf(" %s", $i)  >> bnd_file;
+    printf("\n") >> bnd_file
       }
+
+# Components
+  if ( (isa_component==1) ) {
+        for (i=1; i<=NF; i++)
+	printf(" %s", $i)  >> cmp_file;
+    printf("\n") >> cmp_file
+}
 }
 
 function process_fig() {
@@ -378,25 +419,34 @@ function process_fig() {
       }
 
 # Process bond
-  if ( \
-(data_line)&& zero_depth &&\
+isa_bond = (zero_depth &&\
        (object==polyline)&& \
        (sub_type==sub_polyline)&& \
        (style==firm_style) \
-       ) {
+       );   
+
+if ( isa_bond && data_line)
+{
     process_bond()
       }   
 
-  write_fig()
+if (isa_fig_file){
+     write_fig()
+    }
 
     }
 
 BEGIN {
   sys_name = ARGV[1];
   delete ARGV[1];
+
   b_file = sprintf("%s_rbg.m", sys_name);
   c_file = sprintf("%s_cmp.m", sys_name);
   fig_file = sprintf("%s_fig.fig", sys_name);
+  cmp_file = sprintf("%s_cmp.fig", sys_name);
+  bnd_file = sprintf("%s_bnd.fig", sys_name);
+  head_file = sprintf("%s_head.fig", sys_name);
+
   warning_f = "WARNING %s \t in fig file but not lbl file  - using\n";
   warning_l = "WARNING %s \t in lbl file but not fig file  - ignoring\n";
   warning_p = "WARNING system ports are not consecutively numbered\n";

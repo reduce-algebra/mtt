@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.13  2000/11/09 17:19:52  peterg
+## Geraint's pow() mods
+##
 ## Revision 1.12  2000/11/09 16:09:46  peterg
 ## Declare dummy variables (mtt_s1 etc)
 ##
@@ -100,7 +103,15 @@ case $rep in
         output=mtty
         args=$eqnargs
 	;;
-    input)
+    dm)
+	states=no;
+	inputs=no;
+	parameters=yes;
+        output='mtta,mttb,mttc,mttd,mtte'
+        args=mttpar
+        zeromatrices='a b c d e';
+	;;
+   input)
 	states=yes;
 	inputs=no;
 	parameters=yes;
@@ -155,9 +166,10 @@ case $rep in
 	inputs=no;
 	parameters=yes;
         output='mtta,mttb,mttc,mttd'
-        args=mttpar
+        args=mttpar;
+        zeromatrices='a b c d';
 	;;
-    smxa)
+     smxa)
 	states=no;
         inputs=no;
 	parameters=yes;
@@ -241,9 +253,36 @@ if [ "$rep" = "simpar" ]; then
    output=${output}${map}    # Output is simpar_map in this case
 fi
 
+function zero_matrices(){
+## Set matrices to zero
+echo
+echo '## Set matrices to zero'
+for name in $zeromatrices; do
+    case $name in
+	a)
+	    N=$Nx; M=$Nx
+	    ;;
+	b)
+	    N=$Nx; M=$Nu
+	    ;;
+	c)
+	    N=$Ny; M=$Nx
+	    ;;
+	d)
+	    N=$Ny; M=$Nu
+	    ;;
+	e)
+	    N=$Nx; M=$Nx
+	    ;;
+	*)
+	    
+    esac
+    echo "   mtt$name = zeros($N,$M);"
+done
+}
 function declare_dummies(){
 # Get the dummies
-dummies="mtt_s"
+dummies="mtt_tmp"
 rm -f mtt_dummies
 for dummy in $dummies; do
     awk '{
@@ -326,6 +365,8 @@ fi
 if [ "$declaredummies" = "yes" ]; then
   declare_dummies
 fi
+
+zero_matrices;
 
 }
 

@@ -6,8 +6,13 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  2000/12/28 17:56:50  peterg
+# %% To RCS
+# %%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # Set the inputs
-u(1) =	1.0 - 2.0*(t>5.0) + 2.0*(t>15.0);; # t1s input torque
-u(2) =	1.0 - 2.0*(t>5.0) + (t>15.0); # t2s input torque
+## Removed by MTT on Mon Aug 18 18:15:41 BST 2003: u(1) =	1.0 - 2.0*(t>5.0) + 2.0*(t>15.0);; # t1s input torque
+## Removed by MTT on Mon Aug 18 18:15:41 BST 2003: u(2) =	1.0 - 2.0*(t>5.0) + (t>15.0); # t2s input torque
+itwolink__t1s	=	1.0 - 2.0*(t>5.0) + 2.0*(t>15.0); # t1s input torque
+itwolink__t2s	=	1.0 - 2.0*(t>5.0) + (t>15.0); # t2s input torque

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.12  1998/07/30 11:30:42  peterg
+## Included zeros function
+##
 ## Revision 1.11  1998/07/29 14:18:34  peterg
 ## Reorganised rep dependednt output
 ##
@@ -216,12 +219,12 @@ BEGIN{
           printf("{%s %s_switch.p}\n",inc,sys)
           for (k=1;k<=j;k++) printf("%s\n", comment[k])
           printf("\n")
-          printf("\nBEGIN\n")
+          printf("\nBEGIN{%s}\n", Sys_rep)
         }
         else{
           for (k=1;k<=j;k++) printf("%s\n", comment[k])
           printf("\n")
-          printf("\nBEGIN\n")
+          printf("\nBEGIN{%s}\n", Sys_rep)
        }
         doing_header = 0;
       }
@@ -234,6 +237,8 @@ BEGIN{
       else {
         if ($1=="if") {
           sub(/==/, "=", $0)
+            gsub(/&&/," AND ",$0)
+            gsub(/\|\|/," OR ",$0)
           printf("%s THEN BEGIN\n", $0)
         }
         else{ 
@@ -242,8 +247,10 @@ BEGIN{
           sub(/=/,":=",$0)
           printf("%s DO BEGIN\n", $0) 
           }
-          else {
+          else{
             sub(/=/,":=",$0)
+            sub(/endif/,"END{IF}",$0)
+            sub(/endfor/,"END{FOR}",$0)
             gsub(/\^/,"**",$0)
             gsub(/&&/," AND ",$0)
             gsub(/\|\|/," OR ",$0)
@@ -262,10 +269,10 @@ END{
     }
     else
       if (rep=="ode2odes")
-        print "END."
+                printf("END{%s}.\n", Sys_rep)
       else
-        print "END;"
-}' sys=$sys rep=$rep Nx=$Nx Nu=$Nu Ny=$Ny |\
+        printf("END{%s};\n", Sys_rep)
+}' sys=$sys Sys_rep=$Sys_rep rep=$rep Nx=$Nx Nu=$Nu Ny=$Ny |\
 sed 's/(\([ijk0-9,]*\))/\[\1\]/g'  |\
 sed 's/(\(MTT[ijk0-9,]*\))/\[\1\]/g' \
 >> $Filename

@@ -15,6 +15,11 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1998/11/18 11:34:24  peterg
+## Cleaned up to:
+##   work properly for no globals
+##   no need to repeat las global
+##
 ## Revision 1.4  1998/07/26 10:44:08  peterg
 ## Now strips comment lines first
 ##
@@ -43,7 +48,7 @@ awk '
 }
 END{
   if (globals_exist)
-    print ";"
+    print " ;"
 }' 
 
 # Now invoke the standard error handling.

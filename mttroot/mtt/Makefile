@@ -15,7 +15,13 @@ configure-stamp:
 	@touch configure-stamp
 
 build: configure mtt.sh build-stamp
+
+build-cc:
 	@cd cc ; make -s build
+
+build-doc:
+	@cd doc ; make -s all
+
 build-stamp:
 	@touch build-stamp
 
@@ -24,6 +30,12 @@ clean:
 	@-chmod a+x clean.sh
 	@./clean.sh
 	@rm -f clean.sh
+
+clean-cc:
+	@touch clean-cc.sh
+	@-chmod a+x clean-cc.sh
+	@./clean-cc.sh
+	@rm -f clean-cc.sh
 
 clean-conf:
 	@touch clean-conf.sh
@@ -38,17 +50,20 @@ clean-doc:
 	@rm -f clean-doc.sh
 	@cd doc ; make -s clean
 
-distclean: clean clean-conf clean-doc
+distclean: clean clean-cc clean-conf clean-doc
 	@-rm -f build-stamp configure-stamp config.log mtt.sh
 
-install: build clean.sh
+install: build clean.sh clean-conf.sh
 	@install -d $(INSTDIR) $(CONFDIR) $(PROGDIR)
 	@install -d $(INSTDIR)/bin $(INSTDIR)/cc $(INSTDIR)/lib
 	@install bin/mttrc $(CONFDIR)/mtt.conf
 	@install mtt.sh bin/xmtt $(PROGDIR)
+
+install-cc: build-cc clean-cc.sh
+	@install -d $(INSTDIR)/bin/trans
 	@install cc/parse_m2cc.exe $(INSTDIR)/bin/trans
 
-install-doc: clean-doc.sh
+install-doc: build-doc clean-doc.sh
 	@install -d $(DOCDIR) $(INFODIR)
 	@cd doc ; DOCPATH=$(DOCDIR) INFOPATH=$(INFODIR) make -s install-doc
 
@@ -59,6 +74,11 @@ clean.sh: FORCE
 	@echo '# This file is auto-generated - do not edit'		>>clean.sh
 	@echo 'rm -f  $(PROGDIR)/mtt $(PROGDIR)/xmtt'			>>clean.sh
 	@echo 'rm -fr $(INSTDIR)'					>>clean.sh
+
+clean-cc.sh: FORCE
+	@echo '#! /bin/sh'						>>clean-cc.sh
+	@echo '# This file is auto-generated - do not edit'		>>clean-cc.sh
+	@echo 'rm -f  $(INSTDIR)/bin/trans/parse_m2cc.exe'		>>clean-cc.sh
 
 clean-conf.sh: FORCE
 	@echo '#! /bin/sh'						>>clean-conf.sh

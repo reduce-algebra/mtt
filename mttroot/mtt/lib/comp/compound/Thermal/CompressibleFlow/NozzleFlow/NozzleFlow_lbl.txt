@@ -1,0 +1,32 @@
+%SUMMARY NozzleFlow Subsonic ideal gas nozzle flow with polytropic expansion
+%DESCRIPTION Polytropic expansion coefficient n=gamma=c_p/c_v for isentropic expansion.
+ 
+
+%ALIAS $1	R	Ideal gas constant
+%ALIAS $2	n	Index of polytropic expansion
+
+%% Label file for system NozzleFlow (NozzleFlow_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type R
+	r		NozzleFlow	R,n
+
+% Component type SS
+	[Area]		SS	external,external
+	[MassFlow]	SS	external,external
+	[P1]		SS	external,external
+	[P2]		SS	external,external
+	[T1]		SS	external,external

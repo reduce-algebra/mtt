@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1997/05/09 14:20:49  peterg
+## Dont declare MTTVAR array when there are no variables.
+##
 # Revision 1.3  1997/03/19  16:39:12  peterg
 # Put in the correct date.
 #
@@ -37,7 +40,7 @@ echo  >> $1_sympar.r
 #Count the lines in the file
 lines=`grep -c  '.' $1_sympar.txt`
 
-if [ -z "$lines" ]; then
+if [ -n "$lines" ]; then
     echo "MATRIX MTTVAR($lines,1);"   >> $1_sympar.r
 fi
 echo "MTTNVAR := $lines;"   >> $1_sympar.r

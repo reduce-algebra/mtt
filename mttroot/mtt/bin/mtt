@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.259  2000/09/11 08:21:27  peterg
+## Introduced MML - but for _tf rep only.
+##
 ## Revision 1.258  2000/09/11 08:17:28  peterg
 ## Extended _simp.r to incude default switches
 ##
@@ -1007,6 +1010,9 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 optimise='-optimise';;
 	-partition ) mtt_switches="$mtt_switches $1";
                      partition='-partition';;
+	-viewlevel )  mtt_switches="$mtt_switches $1 $2";
+                      viewlevel=$2;
+                      shift;;
         --version)                
                   echo 'MTT version' $version; exit;;
         --versions)                
@@ -1073,12 +1079,12 @@ if [ -z "$1" ]; then
     echo '         -d  <dir>  use directory <dir>'
     echo '         -dc Maximise derivative (not integral) causality'
     echo '         -dc Maximise derivative (not integral) causality'
-    echo '         -i implicit   Use implicit integration'
-    echo '         -i euler      Use Euler integration'
+    echo '         -i [implicit,euler]   Use implicit or euler integration'
     echo '         -o ode is same as dae'
     echo '         -oct use oct files in place of m files where appropriate'
     echo '         -opt optimise code generation'
     echo '         -p  print environment variables'
+    echo '         -partition partition hierachical system'
     echo '         -r  reset time stamp on representation'
     echo '         -s  try to generate sensitivity BG (experimental)'
     echo '         -ss use steady-state info to initialise simulations'
@@ -1086,6 +1092,7 @@ if [ -z "$1" ]; then
     echo '         -t  tidy mode (default)'
     echo '         -u  untidy mode (leaves files in current dir)'
     echo '         -v  verbose mode'
+    echo '         -viewlevel N View N levels of hierachy'
     echo '         --version print version and exit'
     echo '         --versions print version of mtt and components and exit'
     exit
@@ -2704,7 +2711,7 @@ $1_$2.hview: $1_$2.html
 #View a ps file
 $1_$2.pview: $1_$2.ps
 	echo Creating view of $1_$2
-	$PSVIEW $1_$2.ps &
+	mtt_multi $PSVIEW $1 $2 ps $viewlevel | sh 
 
 #View a gdat file
 $1_$2.dview: $1_$2.gdat

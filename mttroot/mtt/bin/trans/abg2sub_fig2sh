@@ -14,18 +14,22 @@
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.1  2001/06/11 19:47:49  gawthrop
+  ## Makes the sub.sh file directly from the abg.fig file
+  ## Used for making lbl files (abg2lbl_fig2txt)
+  ##
   ##
   ###############################################################
 
 # Copyright (C) 1996--2001 by Peter J. Gawthrop
 
-if [ -f "$1_sub.sh" ]; then
-    echo Using "$1_sub.sh"
-    exit
-else
+#if [ -f "$1_sub.sh" ]; then
+#    echo Using "$1_sub.sh"
+#    exit
+#else
     #Inform user
     echo Creating $1_sub.sh    
-fi
+#fi
 
 
 echo '# Commands to generate subsystem representations'>  $1_sub.sh

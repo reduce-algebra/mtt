@@ -29,6 +29,9 @@ function [par,Par,Error,Y,iterations,x] = \
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.14  2002/08/20 16:14:35  gawthrop
+  ## Include Q in documentation
+  ##
   ## Revision 1.13  2002/08/20 15:43:45  gawthrop
   ## Works with ident DIY rep
   ##
@@ -75,7 +78,7 @@ function [par,Par,Error,Y,iterations,x] = \
   ## Copyright (C) 1999,2000,2001,2002 by Peter J. Gawthrop
 
   ## Simulation command
-  sim_command = sprintf("%s_ssim(x_0,par,simpar,u,i_s)", system_name);
+  sim_command = sprintf("%s_ssim(x_0,par,simpar,u,i_s);", system_name);
 
   ## Extract indices
   i_t = free(:,1);		# Parameters

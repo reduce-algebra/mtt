@@ -15,6 +15,11 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1998/11/10 08:54:34  peterg
+## Put in "IF MTTNx>0 THEN" to prevent probs when Nx=0
+##  -- still a couple of apparent error messages - but answers now
+## correct
+##
 ## Revision 1.7  1998/10/05 10:46:15  peterg
 ## Commented out redundant MTTY := MTTY + MTTEyx*MTTEdX;
 ##
@@ -240,7 +245,8 @@ IF MTTNx>0 THEN
 BEGIN
   write "matrix MTTEdX(", MTTNx, ",1)";
 END;
-MTTEdX := MTTEdX;
+IF MTTNx>0 THEN
+  MTTEdX := MTTEdX;
 
 IF MTTNy>0 THEN
 BEGIN
@@ -260,7 +266,8 @@ IF MTTNx>0 THEN
 BEGIN
   write "matrix MTTE(", MTTNx, ",", MTTNx, ")";
 END;
-MTTE := MTTE;
+IF MTTNx>0 THEN
+  MTTE := MTTE;
 
 IF MTTNz>0 THEN
 BEGIN
@@ -268,6 +275,8 @@ BEGIN
   BEGIN
     write "matrix MTTEyx(", MTTNy, ",", MTTNx, ")";
   END;
+
+IF MTTNx>0 THEN
   MTTEyx := MTTEyx;
 %%%%%  MTTdU := MTTdU;
 END;

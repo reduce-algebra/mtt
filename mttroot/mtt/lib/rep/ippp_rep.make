@@ -11,6 +11,10 @@
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.5  2002/12/12 17:18:42  geraint
+  ## Fixed [ 647664 ] Namespace clash: LANG
+  ## Prepended MTT_ to SYS, OPTS and LANG environment variables.
+  ##
   ## Revision 1.4  2001/04/23 15:06:21  gawthrop
   ## Removed stdin bug workaround
   ##
@@ -58,7 +62,7 @@ $(MTT_SYS)_outputs.pdf: $(MTT_SYS)_parameters.pdf
 
 s$(MTT_SYS)_ode2odes.m: 
 	echo Starting creation of s$(MTT_SYS)_ode2odes.m with options $(MTT_OPTS)
-	mtt -q $(MTT_OPTS) -stdin -s s$(MTT_SYS) ode2odes oct
+	mtt -q $(MTT_OPTS) -stdin -s s$(MTT_SYS) ode2odes m
 
 s$(MTT_SYS)_ssim.m: s$(MTT_SYS)_def.m
 	mtt -q $(MTT_OPTS) -s s$(MTT_SYS) ssim m

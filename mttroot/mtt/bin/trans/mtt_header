@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  2000/10/11 08:01:42  peterg
+## Added noglobal fudge
+##
 ## Revision 1.1  2000/10/10 21:02:27  peterg
 ## Initial revision
 ##
@@ -36,6 +39,10 @@ Npar=`wc -l $system\_sympar.txt | awk '{print $1}'`
 # Representation-specific stuff
 case $rep in
     cse)
+	states=yes;
+        inputs=yes;
+	;;
+    csex)
 	states=yes;
         inputs=yes;
 	;;

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.30  2002/05/02 11:10:11  geraint
+## s/loctave/loctinterp/
+##
 ## Revision 1.29  2002/05/02 11:03:46  geraint
 ## Reinstated -liboctinterp and -lncurses; needed by xleftdiv.
 ##
@@ -208,7 +211,7 @@ else
     # library paths
 
     OCTAVEVERS=`octave --version | gawk '{ print $4 }'`
-    LOCTAVE="-L${PREFIX}/lib/octave-${OCTAVEVERS} -loctave -lcruft -loctinterp"
+    LOCTAVE="-L${PREFIX}/lib/octave-${OCTAVEVERS} -loctave -lcruft -loctinterp -Wl,--rpath,${PREFIX}/lib/octave-${OCTAVEVERS}"
     LSYSTEM="-ldl -lm -lncurses -lkpathsea -lreadline -lblas -llapack -lfftw -lg2c"
 
     # compiler options

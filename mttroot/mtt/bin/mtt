@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.297  2001/03/29 19:20:45  gawthrop
+## Can now use c representations of crs when using -c option
+##
 ## Revision 1.296  2001/03/27 01:07:34  geraint
 ## Improved determination of Octave version for ode2odes.exe creation.
 ## Removed FORCE check_update of .txts.
@@ -1252,7 +1255,7 @@ if [ -z "$1" ]; then
     echo '         -partition partition hierachical system'
     echo '         -pdf generate pdf in place of ps'
     echo '         -r  reset time stamp on representation'
-    echo '         -s  try to generate sensitivity BG (experimental)'
+    echo '         -s  generate sensitivity BG (use mtt -s sSys rep lang)'
     echo '         -ss use steady-state info to initialise simulations'
     echo '         -stdin read input data from standard input for  simulations'
     echo '         -sub <subsystem> operate on this subsystem'
@@ -1836,8 +1839,8 @@ fi
 
 
 if [ -n "$sensitivity" ]; then
-  sys=`echo $1 | cut -c 2-`
-  sys_abg=$sys"_abg"
+  sys_s=`echo $1 | cut -c 2-`
+  sys_abg=${sys_s}_abg
 fi
 
 ## Check octave version
@@ -1852,7 +1855,7 @@ esac
 ################################
 
 
-##echo Target is $target, Subsystem is $Subsystem, options are $mtt_switches
+echo Target is $target, Subsystem is $Subsystem, options are $mtt_switches
 $MAKE -S $verbose  -f  -  $target << EOF
 
 # Cancel implicit rules I don't want
@@ -1894,7 +1897,7 @@ $1_ode_write.r: $1_def.m
 ifeq ("$sensitivity","sensitivity")
 ifeq ("$level","0")
 $1_abg.fig: $sys_abg.fig
-	abg2sensitivity_fig $sys
+	abg2sensitivity_fig $sys_s
 else # Either find the sensitivity model or fetch the model and create sensitivity model
 $1_abg.fig:
 	mtt -q -u $mtt_switches compcopy $1 || abg2sensitivity_fig $sys
@@ -2280,7 +2283,7 @@ $1_cbg.fig: $1_cbg.m  $1_fig.fig $1_type.sh
 #SUMMARY struc	structure - list of inputs, outputs and states (tex)
 #SUMMARY struc*	structure - list of inputs, outputs and states (view)
 #Elementary system equations + definitions
-${sys}_ese.r: $1_cbg.m 
+${sys}_ese.r: ${sys}_cbg.m 
 	   cbg2ese_m2r $partition $info_switch $Subsystem; #ese_tidy $1
 
 $1_def.r: $1_ese.r

@@ -1,133 +1,137 @@
 function structure = cbg2ese(system_name, system_type, system_cr, ...
-    system_args, full_name, full_name_repetition, ...
-    repetition,...
-    structure, structure_file,infofilenum)
-# Set up globals to count the component inputs and outputs. This relies on
-# the named SS (the ports) being in the correct order. Using globals here
-# avoids changing the common argument list for all _eqn files for something
-# which is only used for named SS components.
+			     system_args, full_name, full_name_repetition, ...
+			     repetition,...
+			     structure, structure_file,infofilenum)
+  ## Set up globals to count the component inputs and outputs. This relies on
+  ## the named SS (the ports) being in the correct order. Using globals here
+  ## avoids changing the common argument list for all _eqn files for something
+  ## which is only used for named SS components.
   global local_u_index
   global local_y_index
   global at_top_level
-# 
-#     ###################################### 
-#     ##### Model Transformation Tools #####
-#     ######################################
-# 
-# Matlab function  cbg2ese.m
-# Acausal bond graph to causal bond graph: mfile format
-# Structure matrix [states,nonstates,inputs,outputs,zero_outputs]
-
-# ###############################################################
-# ## Version control history
-# ###############################################################
-# ## $Id$
-# ## $Log$
-# ## Revision 1.31  1998/09/24 12:57:44  peterg
-# ## Now ignores aliasing if no arguments given.
-# ##
-# ## Revision 1.30  1998/09/02 11:14:23  peterg
-# ## Revised to use ordered lists of subsystems and ports
-# ##
-# ## Revision 1.29  1998/08/25 09:22:34  peterg
-# ## Correctely recognises port SSs its now easy -- they are in there own
-# ## field
-# ##
-# ## Revision 1.28  1998/08/25 08:31:42  peterg
-# ## Fixed bug - didn't find the ports - use deblank
-# ##
-# ## Revision 1.27  1998/08/25 07:16:49  peterg
-# ## Modified to data struture representation
-# ##
-# ## Revision 1.26  1998/08/24 14:53:55  peterg
-# ## Uses new _cbg structure.
-# ##
-# ## Revision 1.25  1998/07/28 19:05:12  peterg
-# ## Sttill has vector SS port bug?
-# ##
-# ## Revision 1.24  1998/07/27 10:26:02  peterg
-# ## No change - but fixed bug in alias_args
-# ##
-# ## Revision 1.23  1998/07/08 12:33:51  peterg
-# ## Reinstated the infofilenum parameter.
-# ##
-# ## Revision 1.22  1998/07/04 07:10:27  peterg
-# ## Don't evaluate alias if no constitutive relationship or args and write
-# ## message.
-# ##
-# ## Revision 1.21  1998/07/03 18:58:58  peterg
-# ## Put arg alias stuff within function alias_args
-# ## Called recursively to handle arithmetic expressions
-# ##
-# ## Revision 1.20  1998/07/03 14:39:09  peterg
-# ## Added info messages a bit busy now!
-# ##
-# ## Revision 1.19  1998/04/12 11:58:19  peterg
-# ## Rename port components by changing name_r to [name_r
-# ##
-# ## Revision 1.18  1998/04/11 18:59:16  peterg
-# ## at_top_level now global - passed to SS components
-# ##
-# ## Revision 1.17  1998/04/04 10:47:31  peterg
-# ## Uses (coerced) components from _cbg file - _abg not now used here.
-# ##
-# ## Revision 1.16  1998/03/06 09:38:58  peterg
-# ## Now writes correct structure file for multiport C & I
-# ##
-# ## Revision 1.15  1997/12/16 18:24:33  peterg
-# ## Added unknown_input to structure list
-# ##
-# ## Revision 1.14  1997/08/26 07:51:10  peterg
-# ## Now counts the local input and outputs by order of appearence rather
-# ## than by port number - it therfore handles ports with bicausality correctely.
-# ##
-# ## Revision 1.13  1997/05/19 16:45:56  peterg
-# ## Fixed ISW bug -- deleted spurious ISW_eqn.m file
-# ##
-# ## Revision 1.12  1997/04/15  09:17:26  peterg
-# ## Added the structure file - contains details of states etc.
-# ## 
-# ## Revision 1.11  1996/12/07 18:20:11  peterg
-# ## Replaces null argument by a default and tells user.
-# ##
-# ## Revision 1.10  1996/12/07 17:37:07  peterg
-# ## Now handles numbered SS ports appearing at top level.
-# ##
-# ## Revision 1.9  1996/12/04 21:49:47  peterg
-# ## Compares full-name with empty string (instead of testing for zero
-# ## length)
-# ##
-# ## Revision 1.8  1996/08/30  16:36:08  peter
-# ## More info written to ese files.
-# ##
-# ## Revision 1.7  1996/08/30 11:23:13  peter
-# ## Argument substitution implemented.
-# ##
-# ## Revision 1.6  1996/08/27  08:04:52  peterg
-# ## Handles complex components and repetative components.
-# ##
-# ## Revision 1.5  1996/08/24  15:02:23  peter
-# ## Writes `END;' to keep reduce happy.
-# ##
-# ## Revision 1.4  1996/08/19 09:03:41  peter
-# ## Handles repeating components.
-# ##
-# ## Revision 1.3  1996/08/18 20:08:02  peter
-# ## Included additional structure: structure(5) = zero_outputs.
-# ##
-# ## Revision 1.2  1996/08/08 18:08:11  peter
-# ## Sorted out file naming sceme
-# ##
-# ## Revision 1.1  1996/08/08 15:53:23  peter
-# ## Initial revision
-# ##
-# #############################################################
-
+  ## 
+  ##     ###################################### 
+  ##     ##### Model Transformation Tools #####
+  ##     ######################################
+  ## 
+  ## Matlab function  cbg2ese.m
+  ## Acausal bond graph to causal bond graph: mfile format
+  ## Structure matrix [states,nonstates,inputs,outputs,zero_outputs]
+  
+  ## ###############################################################
+  ## ## Version control history
+  ## ###############################################################
+  ## ## $Id$
+  ## ## $Log$
+  ## ## Revision 1.32  1998/11/16 13:01:19  peterg
+  ## ## Fixed problem with repetitions>1 due to new data structures -- now
+  ## ## computes initial next_bond correctly
+  ## ##
+  ## ## Revision 1.31  1998/09/24 12:57:44  peterg
+  ## ## Now ignores aliasing if no arguments given.
+  ## ##
+  ## ## Revision 1.30  1998/09/02 11:14:23  peterg
+  ## ## Revised to use ordered lists of subsystems and ports
+  ## ##
+  ## ## Revision 1.29  1998/08/25 09:22:34  peterg
+  ## ## Correctely recognises port SSs its now easy -- they are in there own
+  ## ## field
+  ## ##
+  ## ## Revision 1.28  1998/08/25 08:31:42  peterg
+  ## ## Fixed bug - didn't find the ports - use deblank
+  ## ##
+  ## ## Revision 1.27  1998/08/25 07:16:49  peterg
+  ## ## Modified to data struture representation
+  ## ##
+  ## ## Revision 1.26  1998/08/24 14:53:55  peterg
+  ## ## Uses new _cbg structure.
+  ## ##
+  ## ## Revision 1.25  1998/07/28 19:05:12  peterg
+  ## ## Sttill has vector SS port bug?
+  ## ##
+  ## ## Revision 1.24  1998/07/27 10:26:02  peterg
+  ## ## No change - but fixed bug in alias_args
+  ## ##
+  ## ## Revision 1.23  1998/07/08 12:33:51  peterg
+  ## ## Reinstated the infofilenum parameter.
+  ## ##
+  ## ## Revision 1.22  1998/07/04 07:10:27  peterg
+  ## ## Don't evaluate alias if no constitutive relationship or args and write
+  ## ## message.
+  ## ##
+  ## ## Revision 1.21  1998/07/03 18:58:58  peterg
+  ## ## Put arg alias stuff within function alias_args
+  ## ## Called recursively to handle arithmetic expressions
+  ## ##
+  ## ## Revision 1.20  1998/07/03 14:39:09  peterg
+  ## ## Added info messages a bit busy now!
+  ## ##
+  ## ## Revision 1.19  1998/04/12 11:58:19  peterg
+  ## ## Rename port components by changing name_r to [name_r
+  ## ##
+  ## ## Revision 1.18  1998/04/11 18:59:16  peterg
+  ## ## at_top_level now global - passed to SS components
+  ## ##
+  ## ## Revision 1.17  1998/04/04 10:47:31  peterg
+  ## ## Uses (coerced) components from _cbg file - _abg not now used here.
+  ## ##
+  ## ## Revision 1.16  1998/03/06 09:38:58  peterg
+  ## ## Now writes correct structure file for multiport C & I
+  ## ##
+  ## ## Revision 1.15  1997/12/16 18:24:33  peterg
+  ## ## Added unknown_input to structure list
+  ## ##
+  ## ## Revision 1.14  1997/08/26 07:51:10  peterg
+  ## ## Now counts the local input and outputs by order of appearence rather
+  ## ## than by port number - it therfore handles ports with bicausality correctely.
+  ## ##
+  ## ## Revision 1.13  1997/05/19 16:45:56  peterg
+  ## ## Fixed ISW bug -- deleted spurious ISW_eqn.m file
+  ## ##
+  ## ## Revision 1.12  1997/04/15  09:17:26  peterg
+  ## ## Added the structure file - contains details of states etc.
+  ## ## 
+  ## ## Revision 1.11  1996/12/07 18:20:11  peterg
+  ## ## Replaces null argument by a default and tells user.
+  ## ##
+  ## ## Revision 1.10  1996/12/07 17:37:07  peterg
+  ## ## Now handles numbered SS ports appearing at top level.
+  ## ##
+  ## ## Revision 1.9  1996/12/04 21:49:47  peterg
+  ## ## Compares full-name with empty string (instead of testing for zero
+  ## ## length)
+  ## ##
+  ## ## Revision 1.8  1996/08/30  16:36:08  peter
+  ## ## More info written to ese files.
+  ## ##
+  ## ## Revision 1.7  1996/08/30 11:23:13  peter
+  ## ## Argument substitution implemented.
+  ## ##
+  ## ## Revision 1.6  1996/08/27  08:04:52  peterg
+  ## ## Handles complex components and repetative components.
+  ## ##
+  ## ## Revision 1.5  1996/08/24  15:02:23  peter
+  ## ## Writes `END;' to keep reduce happy.
+  ## ##
+  ## ## Revision 1.4  1996/08/19 09:03:41  peter
+  ## ## Handles repeating components.
+  ## ##
+  ## ## Revision 1.3  1996/08/18 20:08:02  peter
+  ## ## Included additional structure: structure(5) = zero_outputs.
+  ## ##
+  ## ## Revision 1.2  1996/08/08 18:08:11  peter
+  ## ## Sorted out file naming sceme
+  ## ##
+  ## ## Revision 1.1  1996/08/08 15:53:23  peter
+  ## ## Initial revision
+  ## ##
+  ## #############################################################
+  
   system_name, system_type, full_name,
-
+  
   pc = "%";
-
-# Set up the names corresponding to the structure matrix.
+  
+  ## Set up the names corresponding to the structure matrix.
   structure_name = [
 		    "state        ",
 		    "nonstate     ",
@@ -135,12 +139,12 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 		    "output       ",
 		    "zero_output  ",
 		    "unknown_input"];
-
-	
-# Are we at the top level of the heirarchy?
+  
+  
+  ## Are we at the top level of the heirarchy?
   at_top_level = strcmp(full_name, "");
-
-# Create the (full) system name
+  
+  ## Create the (full) system name
   if at_top_level
     full_name = system_name;
     full_name_repetition = system_name;
@@ -152,50 +156,50 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   end;
   
   
-
+  
   cbg_name = [full_name, "_cbg"];
   if exist(cbg_name)~=2		# Return if cbg file doesn't exist
     disp([cbg_name, " does not exist"]);
     return
   end;
   
-# Setup files
+  ## Setup files
   ese_name = [full_name_repetition, "_ese.r"];
   ese_file = fopen(ese_name, "w");
-
+  
   fprintf(ese_file, "\n%s%s Equation file for system %s (file %s)\n", ...
 	  pc, pc, full_name_repetition, ese_name);
   fprintf(ese_file, "%s%s Generated by MTT\n\n", pc, pc);
-
-# Evaluate the system function to get the bonds
+  
+  ## Evaluate the system function to get the bonds
   eval(["CBG = ", cbg_name, ";"]);
-  #eval(["[bonds,status,system_type,components] = ", cbg_name, ";"]);
-#  abg_name = [system_type, "_abg"];
-#  cmp_name = [system_type, "_cmp"];
-#  alias_name = [system_type, "_alias"];
-
-# No longer needed - cbg now has components:  
-#  eval(["[junk,components]=", abg_name, ";"]);
-
-  # Find number of bonds
+  ##eval(["[bonds,status,system_type,components] = ", cbg_name, ";"]);
+  ##  abg_name = [system_type, "_abg"];
+  ##  cmp_name = [system_type, "_cmp"];
+  ##  alias_name = [system_type, "_alias"];
+  
+  ## No longer needed - cbg now has components:  
+  ##  eval(["[junk,components]=", abg_name, ";"]);
+  
+  ## Find number of bonds
   [n_bonds,columns] = size(CBG.bonds);
   if (columns ~= 2)&(n_bonds>0)
     error("Incorrect bonds matrix: must have 2 columns");
   endif;
-
-#  # Find number of components
-#  [n_components,columns] = size(components);
-#  n_components = n_components
   
-  # Set up the first dummy bond number - needed for repetative components
-#  next_bond = max(max(abs(components)))+1;
-    next_bond = n_bonds+1;
-
-  # Set up the counters for the labelled SS. These are, by definition,
-  # encountered first and so the counters will not be messed up by subsystems.
+  ##  ## Find number of components
+  ##  [n_components,columns] = size(components);
+  ##  n_components = n_components
+  
+  ## Set up the first dummy bond number - needed for repetative components
+  ##  next_bond = max(max(abs(components)))+1;
+  next_bond = n_bonds+1;
+  
+  ## Set up the counters for the labelled SS. These are, by definition,
+  ## encountered first and so the counters will not be messed up by subsystems.
   local_u_index = 0;
   local_y_index = 0;
-
+  
   if (length(system_args)==0)
     mtt_info(sprintf("No arguments given so no argument aliasing done for system %s(%s)",\
 		     system_name,system_type), infofilenum);
@@ -203,17 +207,17 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   else
     AliasingArguments=1;
   endif;
-
+  
   if (length(system_cr)==0)
     mtt_info(sprintf("No cr given so no cr aliasing done for system %s(%s)",\
 		     system_name,system_type), infofilenum);
     AliasingCRs=0;
   else
     AliasingCRs=1;  endif;
-
-
+  
+  
   fields=["ports";"subsystems"]; # Do for both ports and subsystems -
-				# ports first
+  ## ports first
   lists=["portlist";"subsystemlist"];
   for i=1:2
     field=deblank(fields(i,:));
@@ -239,7 +243,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	    subsystem.arg = alias_args(subsystem.arg,CBG.alias,";",message,infofilenum)
     	  endif;
 	endif;
-
+	
 	if AliasingCRs	# Alias the CR list if appropriate
     	  message = sprintf("\tfor component  %s (%s) within %s",\
 			    comp_name,subsystem.type,full_name);    
@@ -248,13 +252,13 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
     	  endif;
 	endif;
 	
-			# Substitute positional ($1 etc) arguments
+	## Substitute positional ($1 etc) arguments
     	subsystem.cr = subs_arg(subsystem.cr,system_cr, ...
 				"lin",full_name,subsystem.type,comp_name,infofilenum);
     	subsystem.arg = subs_arg(subsystem.arg,system_args, ...
 				 "1",full_name,subsystem.type,comp_name,infofilenum);
     	
-				# change name of 0 and 1 components -- matlab doesn't like numbers here
+	## change name of 0 and 1 components -- matlab doesn't like numbers here
     	if strcmp(subsystem.type,"0")
 	  subsystem.type = "zero";
     	endif;
@@ -298,17 +302,17 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	    
 	  endif;
 	  
-				# Invoke the appropriate equation-generating procedure
+	  ## Invoke the appropriate equation-generating procedure
 	  name_r = full_name_repetition;
 	  eqn_name = [subsystem.type, "_eqn"]
 	  
-	  if exist(eqn_name)~=2 # Try a compound component
+	  if exist(eqn_name)~=2 ## Try a compound component
 	    disp("---PUSH---"); bond_list, comp_name, subsystem.type
 	    structure = cbg2ese(comp_name, subsystem.type, subsystem.cr, subsystem.arg, ...
 				full_name, full_name_repetition, ...
 				k, structure,  structure_file, infofilenum);
 	    
-				# Link up the bonds
+	    ## Link up the bonds
 	    fprintf(ese_file, ...
 		    "\n\t%s Equations linking up subsystem %s (%s)\n\n", ...
 		    pc, comp_name, subsystem.type);
@@ -319,9 +323,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 		   pc, comp_name, subsystem.type);
 	    bond_list
 	    
-	    u_index = 0; y_index = 0; # Count the inputs and outputs
+	    u_index = 0; y_index = 0; ## Count the inputs and outputs
 	    for port_number=1:length(bond_list)
-				# Effort
+	      ## Effort
 	      if comp_bonds(port_number,1)==1 # Source
 	     	u_index = u_index + 1;
 	     	fprintf(ese_file, "%s_MTTu%d := %s;\n", ...
@@ -333,7 +337,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 		 	varname(name_r, ...
 				bond_list(port_number),1), name_comp_name, y_index);
 	      end;
-				# Flow
+	      ## Flow
 	      if comp_bonds(port_number,2)==-1 # Source
 	     	u_index = u_index + 1;
 	     	fprintf(ese_file, "%s_MTTu%d := %s;\n", ...
@@ -353,27 +357,27 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 		    pc, comp_name, subsystem.type,k);
 	    
 	    
-#				# Is it a named port? (Name begins with [)
-#            Named_Port = (comp_name(1)=="[");
+	    ##				# Is it a named port? (Name begins with [)
+	    ##            Named_Port = (comp_name(1)=="[");
 	    
 	    if strcmp(field,"ports") #Add [ to start of name
 	      name_r = ["[" name_r];
 	    endif;
 	    
-				# Save the current structure
+	    ## Save the current structure
 	    old_structure = structure;
 	    
-				# Generate the simple component equations
+	    ## Generate the simple component equations
 	    eval(["structure = ", ...
 		  eqn_name, ...
 		  "(name_r,bond_list,comp_bonds, ...
 		    direction,subsystem.cr,subsystem.arg,structure,ese_file);" ]);
 	    
-				# If structure has changed, write info to structure file.
+	    ## If structure has changed, write info to structure file.
 	    structure_change = structure-old_structure;
 	    
-				# The following line is to avoid probs with multiport C or I
-				# it needs changing to handle multi ports correctly
+	    ## The following line is to avoid probs with multiport C or I
+	    ## it needs changing to handle multi ports correctly
 	    structure_changes = sum(structure_change);
 	    
 	    structure_change = structure_change>zeros(size(structure_change));
@@ -397,9 +401,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
       endfor			# [subsystem,comp_name] = CBG_field
     endif			# struct_contains(CBG,field)
   endfor			# i=1:2
-  # Close the files
+  ## Close the files
   fclose(ese_file);
-
+  
 endfunction
 
 

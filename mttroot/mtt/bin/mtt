@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.380  2003/08/06 14:44:51  gawthrop
+## Don't include -q or -u in long file names via ${__ARGS}
+##
 ## Revision 1.379  2003/08/06 10:33:42  gawthrop
 ## User now warned not to use -c which is unsupported.
 ##
@@ -2348,6 +2351,9 @@ $1_%.oct:  $1_%.cc $1_def.h $1_sympar.h $1_cr.h
 $1_%.pdf:  $1_%.ps
 	echo Creating $1_\$*.pdf; ps2pdf  $1_\$*.ps $1_\$*.pdf
 
+## eps from ps (NB ps files are actually eps anyway)
+$1_%.eps:  $1_%.ps
+	echo Creating $1_\$*.eps; cp  $1_\$*.ps $1_\$*.eps
 
 .PRECIOUS: mtt_%.oct
 .PRECIOUS: $1_%.oct

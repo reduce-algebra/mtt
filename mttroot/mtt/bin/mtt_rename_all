@@ -1,0 +1,30 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: mtt_rename_all
+
+# P.J.Gawthrop Jan 1998
+# Copyright (c) P.J.Gawthrop 1998
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+old_name=$1
+new_name=$2
+
+mtt_rename $old_name $new_name _abg.fig
+mtt_rename $old_name $new_name _desc.tex
+mtt_rename $old_name $new_name _input.txt
+mtt_rename $old_name $new_name _lbl.txt
+mtt_rename $old_name $new_name _numpar.txt
+mtt_rename $old_name $new_name _odes.h
+mtt_rename $old_name $new_name _rep.txt
+mtt_rename $old_name $new_name _simp.r
+mtt_rename $old_name $new_name _sspar.r

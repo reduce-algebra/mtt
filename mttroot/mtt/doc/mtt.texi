@@ -16,6 +16,9 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.9  2002/07/05 13:29:34  geraint
+@comment  Added notes about generating dynamically linked functions for Octave and Matlab.
+@comment
 @comment  Revision 1.8  2002/07/04 21:34:12  geraint
 @comment  Updated gnuplot view description to describe Tcl/Tk interface instead of obsolete txt method.
 @comment
@@ -2416,15 +2419,7 @@ and saved to file (in PostScript format) using the command
 mtt [options] rc gnuplot view
 @end example
 
-This will cause a menu to be displayed, from which states and outputs may be selected for viewing. Clicking on a @emph{parameter name} will cause a new window to be opened displaying the time history of the selected parameter. Selecting the @emph{print} option in the main window provides the option of saving to file a plot of the last selected parameter. Clicking on the @emph{title bar} of the main window (``Outputs'' or ``States'') will alter the order in which the parameter names are displayed.
-
-It should be noted that unlike other representations, if a simulation has been previously run in a directory, this command will @emph{not} cause @strong{MTT} to re-run a simulation, even if any of the input files have been changed.
-
-If it is desired to re-run a simulation, it is advisable to run the command 
-
-@example
-mtt [options] rc odeso view ; mtt [options] rc gnuplot view
-@end example
+This will cause a menu to be displayed, from which states and outputs may be selected for viewing. Clicking on a @emph{parameter name} will, by default, cause the time history of the selected parameter to be displayed.
 
 As with @strong{xMTT} (@pxref{Menu-driven interface}), the Wish Tcl/Tk interpreter must be installed to make use of this feature.
 
@@ -4576,6 +4571,9 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.9  2002/07/05 13:29:34  geraint
+# %% Added notes about generating dynamically linked functions for Octave and Matlab.
+# %%
 # %% Revision 1.8  2002/07/04 21:34:12  geraint
 # %% Updated gnuplot view description to describe Tcl/Tk interface instead of obsolete txt method.
 # %%

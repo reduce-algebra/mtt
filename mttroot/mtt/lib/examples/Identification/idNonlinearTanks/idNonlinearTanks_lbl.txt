@@ -1,0 +1,26 @@
+%% Label file for system idNonlinearTanks (NonlinearTanks_lbl.txt)
+%SUMMARY NonlinearTanks
+%DESCRIPTION <Detailed description here>
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Component type C
+	t1		conical		rho,g,V_1
+	t2		conical		rho,g,V_2
+
+% Component type R
+	p1		discharge	alpha,beta
+	p2		discharge	alpha,beta
+
+% Component type Sf
+        u		SS		external
+
+% Component type De
+        y		SS		external
+

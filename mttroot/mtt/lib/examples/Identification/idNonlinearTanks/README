@@ -1,0 +1,10 @@
+This is the example from:
+@Article{Gaw00c,
+  author =       {Peter J Gawthrop},
+  title =        {Sensitivity Bond Graphs},
+  journal =      JFI,
+  year =         {2000}
+}
+
+
+NB Compile with -i euler

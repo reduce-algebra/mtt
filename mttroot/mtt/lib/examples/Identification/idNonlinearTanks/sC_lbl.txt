@@ -1,0 +1,29 @@
+%% Label file for system sC (sC_lbl.txt)
+%SUMMARY sC
+%DESCRIPTION 
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS	in	actual,sensitivity
+
+% Argument aliases
+%ALIAS	$1	rho,g,V_0,V_0s
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+	c	sconical 	rho,g,V_0,V_0s
+
+% Component type SS
+	[actual]	SS		external,external
+	[sensitivity]	SS		external,external

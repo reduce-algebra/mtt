@@ -14,6 +14,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1999/03/15 21:55:36  peterg
+## Does away with the # symbol in the file - uses _de to get Nx Ny
+## instead
+##
 ###############################################################
 
 
@@ -21,7 +25,6 @@
 Nx=`grep "MTTNx " <$1_def.r | awk '{print $3}' | sed 's/;//'`
 Ny=`grep "MTTNy " <$1_def.r | awk '{print $3}' | sed 's/;//'`
 
-echo $Nx $Ny
 case $2 in
     odeso)
 	First=1; let Last=$First+$Ny
@@ -34,12 +37,13 @@ case $2 in
         ;;
 esac
 
-echo $First $Last
 echo Creating $1_$2.dat
 
 awk '{
+  if (index($1,"#") != 1){
     for (i=First;i<=Last;i++)
 	printf("%s ", $i);
     printf("\n"); 
+  }
 }' First=$First Last=$Last <$1_odes.dat2  > $1_$2.dat
 

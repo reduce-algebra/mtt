@@ -15,6 +15,9 @@ function  structure = AF_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1996/09/11 13:35:14  peter
+% %% New equation.m method used.
+% %%
 % %% Revision 1.1  1996/08/30 18:38:57  peter
 % %% Initial revision
 % %%
@@ -46,14 +49,18 @@ outcause = -1;
 incause = -1;
 
 if f_2 == 1 				% Unicausal: f_2 := f_1
-  outnumber = bond_number(2);
-  innumber = bond_number(1);
+  outbond = bond_number(2);
+  inbond = bond_number(1);
+  outport = 2;
+  inport = 1;
 else 	                                % Bicausal: f_1 := f_2      
-  outnumber = bond_number(1);
-  innumber = bond_number(2);
+  outbond = bond_number(1);
+  inbond = bond_number(2);
+  outport = 1;
+  inport = 2;
 end
 
-% $$$ oneeqn(name,outnumber,outcause,innumber,incause,cr,args,eqnfile);
+
 eqn =  equation(name,cr,args,outbond,outcause,outport, ...
                              inbond,incause,inport);
 fprintf(eqnfile, '%s',eqn);

@@ -14,6 +14,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1998/02/26 10:21:51  peterg
+## Revised to take account of new (??) wc output - now echos the file
+## name (??)
+##
 ## Revision 1.3  1998/02/25 21:35:00  peterg
 ## Put "" round if argument in case $err_length is null.
 ##
@@ -31,7 +35,8 @@ error_file=$1;
 err_length=`wc -c <$error_file | awk '{print $1}'`
 if [ "$err_length" != "0" ]
 then
-  echo MTT has failed with the following errors '...'
+  echo An MTT transformation has generated the following messages 
+  echo which may not be important
   cat $error_file
   exit 1
 else

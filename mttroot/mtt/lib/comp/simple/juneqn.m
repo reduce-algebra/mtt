@@ -16,6 +16,10 @@ function  juneqn(name,bond_number,bonds,direction,cr,args,jun,filenumber)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1996/12/05 10:02:45  peterg
+% %% Explicit generation of strong-causality equations -- oneequation not
+% %% used now.
+% %%
 % %% Revision 1.2  1996/08/08  18:09:10  peter
 % %% Changed to finenumber format.
 % %%
@@ -27,7 +31,7 @@ function  juneqn(name,bond_number,bonds,direction,cr,args,jun,filenumber)
 
 % Same causality as junction
 column =  (3-jun)/2; 
-[causing_bond,n,other_bonds,m] = getindex(bonds(:,column),jun);
+[causing_bond,n,other_bonds,m] = getindex(bonds(:,column),jun)
 for i=other_bonds'
   fprintf(filenumber, '%s \t:=\t%s;\n', ...
       varname(name, bond_number(i),jun), ...
@@ -38,10 +42,10 @@ end;
 
 % Opposite causality to junction
 column =  (3+jun)/2;
-[caused_bond,n,other_bonds,m] = getindex(bonds(:,column),jun);
+[caused_bond,n,other_bonds,m] = getindex(bonds(:,column),jun)
 fprintf(filenumber, '%s\t:= \n',  varname(name, bond_number(caused_bond),-jun));
 for i=other_bonds'
-  term_sign = -direction(caused_bond,column)*direction(i,column);
+  term_sign = -direction(caused_bond,column)*direction(i,column)
   fprintf(filenumber, '\t\t%s %s\n', sign2name(term_sign), ...
       varname(name, bond_number(i),-jun));
 end;

@@ -14,6 +14,9 @@ function ports = comp_ports(comp_type,N)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.8  1998/06/29 12:16:05  peterg
+% %% Whoops - FP bonds are p and f (in that order)
+% %%
 % %% Revision 1.7  1998/06/29 12:13:36  peterg
 % %% Changed FP ports to f and p
 % %%
@@ -44,30 +47,35 @@ two_ports = '-TF-GY-AE-AF-FMR-RS-EBTF-';
 N_ports   = '-R-C-I-';
 comp_type = ['-', comp_type, '-'];
 
-if length(findstr(comp_type,junctions))==1
-  ports = ['[undefined]'];
-elseif length(findstr(comp_type,one_ports))==1
-  ports = ['[in]'];
-elseif length(findstr(comp_type,two_ports))==1
-  ports = ['[in]';'[out]'];
-elseif length(findstr(comp_type,'[-EMTF-]'))==1
-  ports = ['[in]';'[out]';'[mod]'];
-elseif length(findstr(comp_type,'[-FP-]'))==1
-  ports = ['[p]';'[f]'];
-elseif length(findstr(comp_type,'[-PS-]'))==1
-  ports = ['[in]';'[out]';'[power]'];
-elseif length(findstr(comp_type,N_ports))==1
-  if N==1
-    ports = ['[in]'];
-  elseif N==2
-    ports = ['[in]';'[out]'];
-  elseif N>2
-    ports = '[1]';
-    for i=2:N
-      ports = [ports; sprintf("[%i]",i)];
-    end;
+#if length(findstr(comp_type,junctions))==1
+#  ports = ['[undefined]'];
+#elseif length(findstr(comp_type,one_ports))==1
+#  ports = ['[in]'];
+#elseif length(findstr(comp_type,two_ports))==1
+#  ports = ['[in]';'[out]'];
+#elseif length(findstr(comp_type,'[-EMTF-]'))==1
+#  ports = ['[in]';'[out]';'[mod]'];
+#elseif length(findstr(comp_type,'[-FP-]'))==1
+#  ports = ['[p]';'[f]'];
+#elseif length(findstr(comp_type,'[-PS-]'))==1
+#  ports = ['[in]';'[out]';'[power]'];
+#elseif length(findstr(comp_type,N_ports))==1
+#  if N==1
+#    ports = ['[in]'];
+#  elseif N==2
+#    ports = ['[in]';'[out]'];
+#  elseif N>2
+#    ports = '[1]';
+#    for i=2:N
+#      ports = [ports; sprintf("[%i]",i)];
+#    end;
+#  end;
+#end;
+ 
+# All the above is now done in the alias files
+  ports = '[1]';
+  for i=2:N
+    ports = [ports; sprintf("[%i]",i)];
   end;
-end;
 
-
-
+endfunction

@@ -8,6 +8,9 @@ function [bonds,status] = juncause(bonds,jun,cause)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/08/09  08:29:04  peter
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -20,7 +23,7 @@ if n>1 % over causal
 elseif n==1 %causal
   status = 0;
   bonds(other_bonds(:,1),j) = -jun*ones(m,1);
-else  % undercausal - try other way
+elseif n==0  % undercausal - try other way
   [causing_bond, n,other_bonds,m] = getindex(bonds(:,j),-jun);
   if n==n_bonds % over causal
     status = 1;

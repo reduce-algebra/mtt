@@ -17,6 +17,9 @@ function [bonds,status] = AE_cause(bonds);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1996/11/01 11:40:30  peterg
+% %% Documentation.
+% %%
 % %% Revision 1.1  1996/08/30 19:05:21  peter
 % %% Initial revision
 % %%
@@ -72,5 +75,5 @@ if (f_1==-1)|(f_2==1) % Conflict
 end;
  
  bonds = [e_1 f_1
-           e_2 f_2];
+           e_2 f_2]
 

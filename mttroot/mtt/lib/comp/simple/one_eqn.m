@@ -15,9 +15,13 @@ function  structure = one_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/12/05 10:00:49  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
+disp("one-eqn")
+name,bond_number,bonds,direction,cr,args
 if nargin<7
   eqnfile = 'stdout';
 end;

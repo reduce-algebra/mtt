@@ -9,8 +9,8 @@ function [bonds,status] = SS_cause(bonds)
 % [bonds,status] = SS_cause(bonds)
 
 %SUMMARY SS: source-sensor component
-%DESCRIPTION one-port source sensor component
-%DESCRIPTION when the name is [i], acts as ith port of a system.
+%DESCRIPTION multi-port source sensor component
+%DESCRIPTION when the name is [name], acts as port `name' of a system.
 %DESCRIPTION may be bicausal
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -18,6 +18,9 @@ function [bonds,status] = SS_cause(bonds)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1996/11/01 14:41:14  peterg
+% %% Check correct bonds
+% %%
 % %% Revision 1.1  1996/11/01 12:18:38  peterg
 % %% Initial revision
 % %%
@@ -26,16 +29,25 @@ function [bonds,status] = SS_cause(bonds)
 
 % Copyright (c) P.J. Gawthrop, 1996.
 
-% Check that there is exactly one bonds.
-if check_bonds(bonds,1,'SS')==0
-  return
-end
+## Check that there is exactly one bonds.
+##if check_bonds(bonds,1,'SS')==0
+##  return
+##end
 
-if (bonds(1)==0)|(bonds(2)==0) % Under causal
-  status = -1;
-else                          % causal
-  status = 0;
+disp("Starting SS_cause");
+
+[n_bonds,junk] = size(bonds);
+Status=zeros(n_bonds,1);
+for i=1:n_bonds
+  if (bonds(i,1)==0)|(bonds(i,2)==0) % Under causal
+    Status(i) = -1;
+  else                          % causal
+    Status(i) = 0;
+ end;
 end;
+status=min(Status);
+
+
 
 
 

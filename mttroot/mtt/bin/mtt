@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.394  2004/08/28 22:14:12  geraint
+## Removed -ibg option: now the default method.
+##
 ## Revision 1.393  2004/08/26 16:20:17  geraint
 ## Creates postscript files of either dia or fig bond graphs.
 ##
@@ -1420,7 +1423,7 @@ verbosity=0
 integration_method=implicit;
 
 # Default algebraic equation solver
-algebraic_solver=Reduce_Solver;
+algebraic_solver=noAlgebraicSolver;
 
 # Default no info
 info_switch=''
@@ -2968,8 +2971,13 @@ $1_dae.tex: $1_dae.r $1_simp.r
 #SUMMARY ae	algebraic equations - unknown inputs (m)
 #SUMMARY ae	algebraic equations - unknown inputs (cc)
 
+ifeq ($algebraic_solver,noAlgebraicSolver)
+$1_ae.r:
+else
 $1_ae.r: $1_cse.r
-	touch $1_ae.r
+endif
+	touch \$@
+
 $1_ae.m: $1_ae.r
 	mtt_r2m $1 ae
 

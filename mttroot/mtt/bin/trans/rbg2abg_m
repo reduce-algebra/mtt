@@ -11,6 +11,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1996/08/24 14:58:56  peter
+## Fixed missprint - mtt_err --> mtt_error
+##
 ## Revision 1.2  1996/08/24 14:33:07  peter
 ## Error handling included.
 ##
@@ -89,10 +92,8 @@ $MATRIX > rbg2abg_m.log  2>mtt_error << EOF
   mat2mfile(components, 'components', filename);
   fprintf(filename, 'n_ports = %1.0f;\n', n_ports);
 
-
 EOF
 
-touch mtt_info.txt
 cat mtt_info.txt
 
 # Test for errors and print if any

@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.393  2004/08/26 16:20:17  geraint
+## Creates postscript files of either dia or fig bond graphs.
+##
 ## Revision 1.392  2004/08/26 12:50:12  geraint
 ## Replaced some implicit rules with explicit tests and patterns.
 ## Better than having make search through every possible implicit rule.
@@ -1579,9 +1582,6 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-abg )
                 mtt_switches="$mtt_switches $1";
                 start_at_abg='yes';;
-        -ibg )
-		mtt_switches="$mtt_switches $1";
-		use_ibg='yes';;
 	-stdin )
                 mtt_switches="$mtt_switches $1";
                 stdin=stdin;;
@@ -1689,7 +1689,6 @@ if [ -z "$1" ]; then
     echo '         -D  debug -- leave log files etc'
     echo '         -I  prints more information'
     echo '         -abg start at abg.m representation'
-    echo '         -ibg use intermediate representation to transform rbg to abg (EXPERIMENTAL)'
     echo '         -c  c-code generation'
     echo '         -cc C++ code generation'
     echo '         -cr Use cr before resolving equations'

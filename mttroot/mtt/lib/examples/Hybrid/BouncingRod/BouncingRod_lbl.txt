@@ -1,5 +1,8 @@
-%SUMMARY BouncingRod: <brief description here>
-%DESCRIPTION <Detailed description here>
+%SUMMARY BouncingRod: Two-dimensional bouncing rod
+%DESCRIPTION A uniform rod bounces on a compliant surface -- the
+%DESCRIPTION CSW component is used.
+
+
 %% Label file for system BouncingRod (BouncingRod_lbl.txt)
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -7,6 +10,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1997/07/06 16:18:37  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:

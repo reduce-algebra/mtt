@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.43  2001/11/11 08:32:00  geraint
+  ## ## fflush (structure_file).
+  ## ##
   ## ## Revision 1.42  2001/04/23 16:23:30  gawthrop
   ## ## Now stips ; from bottlom level argument list - allows aliasing of
   ## ## parts of a,b,c (eg a,b by using a,b;c
@@ -505,12 +508,12 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 			  "%s\t%i\t%s\t%s_%s\t%i\n", ...
 			  structure_name(which_index,:), value-k+1, ...
 			  comp_name, full_name_repetition, comp_name, repetition);
-		  fflush (structure_file);
 	    	endfor;
  	      endfor;
  	    endif;
 	  endif
 	endfor
+	fflush (structure_file);
 
 	## component interface definition
 	if struct_contains(CBG,"icd")

@@ -19,6 +19,9 @@ function structure =  SS_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.6  1996/12/05 09:49:09  peterg
+% %% Explicit computation of port number from string.
+% %%
 % %% Revision 1.5  1996/12/04 21:27:53  peterg
 % %% Replaced str2num by sprintf
 % %%
@@ -47,8 +50,8 @@ function structure =  SS_eqn(name,bond_number,bonds,direction,cr,args, ...
 %     cr contains 'MTT_port'
 %     arg contains port number
 
-effort_attribute = cr
-flow_attribute = args
+effort_attribute = cr;
+flow_attribute = args;
 
 if length(effort_attribute)==0
   effort_attribute = 'external';

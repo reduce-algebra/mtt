@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.130  1998/02/19 13:40:24  peterg
+## Removed prerequisit from sspar.r target.
+##
 ## Revision 1.129  1998/02/12 08:18:42  peterg
 ## VERSION 2.8 (St. Annes)
 ##
@@ -549,7 +552,8 @@ if [ -z "$1" ]; then
     echo '       mtt hinfo            -- hypertext manual'
     echo '       mtt manual           -- dvi manual'
     echo '       mtt warranty'
-    echo '       mtt clean'
+    echo '       mtt clean           -- cleans up intermediate files'
+    echo '       mtt Clean           -- cleans up all files'
     echo '       mtt <system_name> clean'
     echo '       mtt copy <system_name> <path_name>'
     echo '       mtt rename <old_name> <new_name>'
@@ -622,7 +626,14 @@ EOF
 fi
 
 # Clean up 
-if [ "$1" = "clean" ] && [ "$2" = "" ]; then
+if [ "$1" = "clean" ]; then
+  echo 'Removing intermediate files'
+  rm -fr MTT_work
+  exit
+fi
+
+# The big clean up
+if [ "$1" = "Clean" ] && [ "$2" = "" ]; then
   echo 'Removing all generated files for all systems'
   rm -f *.log  mtt_info.txt warning.txt
   rm -f *_abg.m *_abg.ps *_args.* *_cr.r *_cr.txt *_abg.tex
@@ -647,7 +658,7 @@ if [ "$1" = "clean" ] && [ "$2" = "" ]; then
 fi
 
 # Clean up named system
-if [ "$2" = "clean" ] && [ "$3" = "" ]; then
+if [ "$2" = "Clean" ] && [ "$3" = "" ]; then
   echo 'Removing all generated files for system ' $1
   rm -f *.log  mtt_info.txt warning.txt
   rm -f $1_abg.m $1_abg.ps $1_args.* $1_cr.r $1_cr.txt $1_abg.tex
@@ -843,7 +854,7 @@ if [ "$tidy" = "tidy" ]; then
      mtt -u -q  $mtt_switches -S "$Directory"  $1 $2 $3 $4
 
    if [ "$3" != "view" ]; then
-     echo Copying " " $1_$2.$3
+     # echo Copying " " $1_$2.$3
      cp -u $1_$2.$3 ..
    fi
 
@@ -1170,7 +1181,8 @@ $1_sub.sh: $1_cmp.m
 	cmp2sub_m2sh $1
 
 #SUMMARY sub LaTeX subsystem list (tex)
-#SUMMARY sub LaTeX subsystem list (tex)
+#SUMMARY sub subsystem list (ps)
+#SUMMARY sub subsystem list (view)
 $1_sub.tex: $1_sub.sh
 ifeq ($documenttype,section)
 	sub_sh2tex $1
@@ -1523,6 +1535,8 @@ $1_daeso.m: $1_daes.m
 $1_odeso.sdat: $1_odeso.dat $1_struc.txt
 	odeso_dat2sdat $1
 
+$1_odes.sdat: $1_odes.dat $1_struc.txt
+	odes_dat2sdat $1
 
 #SUMMARY odess	ode numerical steady-states - states (m)
 #SUMMARY odess	ode numerical steady-states - states (dat)

@@ -17,6 +17,12 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.374  2003/04/17 20:57:27  geraint
+## Added -sort option to allow direct generation of ode2odes.m using sese.m
+## instead of ode/csex.
+##
+## "mtt -sort rc odeso view" works without Reduce installed!!!
+##
 ## Revision 1.373  2003/04/17 20:07:32  geraint
 ## Added rule to create _sese.m
 ##
@@ -1544,9 +1550,9 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                      partition='-partition';
                 ;;
 	-pdf )   mtt_switches="$mtt_switches $1";
-                 ps=pdf; 
-                 eps=pdf;
-                 pdf='-pdf';
+                 ## ps=pdf; 
+                 ## eps=pdf;
+                 ## pdf='-pdf';
                  psview=$PDFVIEW;
                 ;;
 	-dr )   mtt_switches="$mtt_switches $1"; shift
@@ -2315,6 +2321,11 @@ $MAKE -S ${trace} $verbose $verbose_make -f  -  $target << EOF
 ## .oct files
 $1_%.oct:  $1_%.cc $1_def.h $1_sympar.h $1_cr.h
 	echo Creating $1_\$*.oct; $MKOCTFILE ${MTT_CXXINCS} -DCODEGENTARGET=OCTAVEDLD $1_\$*.cc
+
+## pdf files from ps (new version)
+$1_%.pdf:  $1_%.ps
+	echo Creating $1_\$*.pdf; ps2pdf  $1_\$*.ps $1_\$*.pdf
+
 
 .PRECIOUS: mtt_%.oct
 .PRECIOUS: $1_%.oct

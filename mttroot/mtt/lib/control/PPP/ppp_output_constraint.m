@@ -51,7 +51,7 @@ function [Gamma,gamma] = ppp_output_constraint (A,B,C,D,x_0,A_u,Tau,Min,Max,Orde
   for i=1:n_U
     U = zeros(n_U,1); U(i,1) = 1; # Set up U_i
     y_i = ppp_ystar (A,B,C,D,x_0,A_u,U,Tau);# Compute y* for ith input for each tau
-    y_i = y_i(:,i_y:n_y:n_y*n_tau); # Pluck out output i_y
+    y_i = y_i(i_y,:); # Pluck out output i_y
     Gamma = [Gamma [-y_i';y_i']]; # Put in parts for Min and max
   endfor
 

@@ -1,4 +1,0 @@
-/home/peterg/mtt_new/mtt/lib/xfig/Basic  Basic
-/home/peterg/mtt_new/mtt/lib/comp/compound/Electrical Electrical
-/home/peterg/mtt_new/mtt/lib/comp/compound/Thermal Thermal
-

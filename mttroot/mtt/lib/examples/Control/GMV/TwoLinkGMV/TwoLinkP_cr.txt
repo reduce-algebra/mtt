@@ -1,3 +1,0 @@
-lcos
-lin
-lsin

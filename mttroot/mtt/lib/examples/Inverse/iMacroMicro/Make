@@ -1,7 +1,0 @@
-%Makes the figures for the paper/report.
-mtt macmic cbg ps
-mtt imacmic cbg ps
-mtt imacmic sm  m
-mtt imacmic numpar m
-
-octave figures.m

@@ -1,7 +1,0 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Startup file for Octave for use with MTT
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-implicit_str_to_num_ok = 1;
-empty_list_elements_ok = 1;
-

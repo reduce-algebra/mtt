@@ -1,7 +1,0 @@
-#!/bin/sh
-# Vectorises the matrix output of reduce ie converts (n,1) to (n)
-# Copyright (C) 2000 by Peter J. Gawthrop
-
-sed 's/mtt\([a-z]*\)(\([0-9]*\),1)/mtt\1(\2)/g'
-
-

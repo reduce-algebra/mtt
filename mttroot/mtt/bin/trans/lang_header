@@ -8,6 +8,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  2000/04/08 10:23:38  peterg
+## Added -noglobal option
+##
 ## Revision 1.8  1999/02/16 04:14:53  peterg
 ## Small change to modeline generation
 ##
@@ -40,6 +43,9 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
     -noglobal)
 	noglobal=noglobal;
 	;;
+    -parameters)
+	parameters=parameters;
+	;;
     *)
 	echo $1 is an unknown option
         exit;;
@@ -64,6 +70,14 @@ case $language in
 	Lb='(';
 	Rb=')';
 	;;
+    p)
+	modeline='% -*-octave-*- Put Emacs into octave-mode%';
+	ext='m';
+	Lc='#';
+	Rc='#';
+	Lb='[';
+	Rb=']';
+	;;
     c)
 	ext='c';
 	Lc='/*';
@@ -82,10 +96,6 @@ case $language in
 	echo Language $language not supported - sorry; exit 1
 esac
 
-# Appropriate emacs mode line
-cat <<EOF
-$modeline
-EOF
 
 ######### Octave (matlab) code
 if [ "$language" = m ]; then
@@ -98,6 +108,7 @@ function $output = $1_$rep($args);
 %
 EOF
 fi
+
 
 ######### c code
 if [ "$language" = c ]; then
@@ -114,6 +125,10 @@ NB Arrays are be defined to be one larger than expected
 
 EOF
 
+# Appropriate emacs mode line
+cat <<EOF
+$modeline
+EOF
 
 # Declarations
 $MATRIX -q  <<EOF 
@@ -177,6 +192,17 @@ fi
 # Globals
 if [ -z "$noglobal" ]; then
     sympar2global_txt2lang $1 $language
+else
+cat<<EOF
+global ...
+mtt_no_globals ..
+;
+EOF
+fi
+
+# Explicit parameters
+if [ -n "$parameters" ]; then
+    sympar2par_txt2m $1 
 fi
 
 ## if [ "$language" = "c" ] || [ "$language" = "m" ]; then

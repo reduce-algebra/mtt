@@ -7,6 +7,10 @@ function  structure = AE_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1996/08/30 19:03:10  peter
+% %% Added argument check.
+% %% Added extra name argument.
+% %%
 % %% Revision 1.2  1996/08/30 13:23:11  peter
 % %% Added bond number check
 % %%
@@ -36,20 +40,29 @@ f_2 = bonds(2,2);
       varname(name,bond_number(1), -1));
   
   
-LHS_cause = 1;
-RHS_cause = 1;
+outcause = 1;
+incause = 1;
 
 if e_2 == -1 				% Unicausal: e_2 := e_1
-  LHS_number = bond_number(2);
-  RHS_number = bond_number(1);
+  outbond = bond_number(2);
+  inbond = bond_number(1);
+  outport = 2;
+  inport = 1;
 else 	                                % Bicausal: e_1 := e_2      
-  LHS_number = bond_number(1);
-  RHS_number = bond_number(2);
+  outbond = bond_number(1);
+  inbond = bond_number(2);
+  outport = 1;
+  inport = 2;
 end
 
-oneeqn(name,LHS_number,LHS_cause,RHS_number,RHS_cause,cr,args,eqnfile);
 
- 
+eqn =  equation(name,cr,args,outbond,outcause,outport, ...
+                             inbond,incause,inport);
+fprintf(eqnfile, '%s',eqn);
+
+			  
+			  
+			  
 
 
 

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.140  1998/03/09 10:23:30  peterg
+## PS view now runs as a background process.
+##
 ## Revision 1.139  1998/03/07 16:04:23  peterg
 ## Added some more txt view reps: input, lbl, numpar, state
 ##
@@ -585,6 +588,7 @@ if [ -z "$1" ]; then
     echo '       mtt manual           -- dvi manual'
     echo '       mtt warranty'
     echo '       mtt clean           -- cleans up intermediate files'
+    echo '       mtt rclean          -- recursively cleans up intermediate files'
     echo '       mtt Clean           -- cleans up all generated files'
     echo '       mtt <system_name> clean'
     echo '       mtt copy <system_name> <path_name>'
@@ -661,6 +665,13 @@ fi
 if [ "$1" = "clean" ]; then
   echo 'Removing intermediate files'
   rm -fr MTT_work
+  exit
+fi
+
+# Recursively clean up
+if [ "$1" = "rclean" ]; then
+  echo 'Removing intermediate files recursively'
+  dir2paths '.' | awk '{print "mtt -q -d " $1 " clean " $2}' | sh
   exit
 fi
 
@@ -935,6 +946,8 @@ case $2 in
 	numpar )
 		REPTYPE='txt' ;;
 	state )
+		REPTYPE='txt' ;;
+	simpar )
 		REPTYPE='txt' ;;
 	odes)
 		REPTYPE='data'; PLOTTYPE='multiple' ;;
@@ -1233,6 +1246,11 @@ $1_odes.h:
 $1_sspar.r: 
 	struc2sspar_txt2r $1
 
+#SUMMARY sspar	steady-state parameters (tex)
+#SUMMARY sspar	steady-state parameters (view)
+$1_sspar.tex: $1_sspar.r
+	txt2tex $1 sspar r
+
 #SUMMARY rep	report (txt)
 #SUMMARY rep	report (tex)
 #SUMMARY rep	report (view)
@@ -1248,6 +1266,9 @@ $1_rep.txt:
 	echo "# Outline report file for system $1 ($1_rep.txt)"; \
 	cat $MTTPATH/trans/m/rcs_header.txt; \
 	echo "mtt $1 abg tex"; \
+	echo "mtt $1 struc tex"; \
+	echo "mtt $1 sympar tex"; \
+	echo "mtt $1 dae tex"; \
 	)> $1_rep.txt
 endif
 

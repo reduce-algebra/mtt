@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1999/09/07 03:21:02  peterg
+% %% Aliased to out as well as in
+% %%
 % %% Revision 1.1  1999/03/03 22:02:04  peterg
 % %% Initial revision
 % %%
@@ -14,7 +17,7 @@
 
 
 % Port aliases
-%ALIAS	in	in|out
+%ALIAS	in|out	in
 
 % Argument aliases
 

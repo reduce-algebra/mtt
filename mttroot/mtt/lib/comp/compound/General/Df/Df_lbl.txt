@@ -8,6 +8,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1999/09/07 03:20:34  peterg
+% %% Aliased to out as well as in
+% %%
 % %% Revision 1.1  1999/03/03 22:05:16  peterg
 % %% Initial revision
 % %%
@@ -15,7 +18,7 @@
 
 
 % Port aliases
-%ALIAS	in	in|out
+%ALIAS	in|out	port
 
 % Argument aliases
 
@@ -27,5 +30,5 @@
 % ---- Component labels ----
 
 % Component type SS
-	[in]	SS		external,external
+	[port]	SS		external,external
 	y	SS		0,external

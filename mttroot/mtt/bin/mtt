@@ -5,6 +5,7 @@
      ######################################
 
 # Bourne shell script: mtt
+# This is the main shell script for MTT
 
 # P.J.Gawthrop Oct 1989, Dec 1989, 1990, 1991, Oct 1993, Dec 1993, Jan 1994, Dec 95, Nov 1996.
 # Copyright (c) P.J.Gawthrop, 1989, 1990, 1991, 1993, 1994, 1995, 1996, 1997,1998,1999
@@ -16,6 +17,11 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.312  2001/06/11 19:43:49  gawthrop
+## MTT is now much more sophisticated in generating lbl files
+## Labels can contain maths
+## Repetative components are now broken
+##
 ## Revision 1.311  2001/05/26 18:36:43  gawthrop
 ## Further modifications. Now works on rcPPP
 ##  -- next jobs:

@@ -16,6 +16,9 @@ function structure =  cieqn(name, bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1997/12/04 13:48:00  peterg
+% %% Added sign info to take account of direction of bonds.
+% %%
 % %% Revision 1.1  1997/04/09  10:18:26  peterg
 % %% Initial revision
 % %%
@@ -42,13 +45,14 @@ state_cause = zeros(ports,1); % State causality
 
 for outport = 1:ports
 
-  % Sort out direction
-  if direction(outport,1) == 1
-    sign = '+';
-  else
-    sign = '-';
-  end;
-  
+#  % Sort out direction
+#  if direction(outport,1) == 1
+#    sign = '+';
+#  else
+#    sign = '-';
+#  end;
+
+  sign = '+';  
   LHS_number = bond_number(outport);
   if bonds(outport,1) == -CorI % Integral causality on this port
     state = structure(1)+1;

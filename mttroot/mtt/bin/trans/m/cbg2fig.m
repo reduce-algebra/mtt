@@ -26,6 +26,9 @@ function cbg2fig(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.10  1998/12/14 15:27:32  peterg
+% %% Added separate handling of ports ( poss zero)
+% %%
 % %% Revision 1.9  1998/08/25 06:43:02  peterg
 % %% Revised (partially) for data strucures - needs to include graphic info
 % %% in abg file.
@@ -269,23 +272,28 @@ for i = 1:N_ports+N_components
   fprintf(filenum, '%1.0f %1.0f ', coords(1), coords(2)); 
   fprintf(filenum, '%s%s\n', typename, Terminator);
   
-  % If it's a subsystem (ie not a component), do the fig file for that as
-  % well
-  if comp_type=='0'
-    comp_type='zero';
-  end
-  if comp_type=='1'
-    comp_type='one';
-  end
+#   % If it's a subsystem (ie not a component), do the fig file for that as
+#   % well
+#   if comp_type=='0'
+#     comp_type='zero';
+#   endif
   
-  if (exist([comp_type,'_cause'])==0)
-    cbg2fig(comp_name, ...
-	comp_type, full_name, ...
-        stroke_length, stroke_thickness, stroke_colour, ...
-        comp_font, comp_colour_u, comp_colour_o);
-  end;
+#   if comp_type=='1'
+#     comp_type='one';
+#   endif
+  
+  
+#   if (exist([comp_type,'_cause'])==0)
+#     cbg2fig(comp_name, ...
+# 	comp_type, full_name, ...
+#         stroke_length, stroke_thickness, stroke_colour, ...
+#         comp_font, comp_colour_u, comp_colour_o);
+#   endif
+
+endfor
+
 	   
-end;
+
 
 % Close the file
 fclose(filenum);

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.207  1999/04/02 07:17:37  peterg
+## Upped version to 3.6 -- the new implicit solver with switches
+##
 ## Revision 1.206  1999/04/02 06:28:54  peterg
 ## New implicit method - solves numerical prob with ISW
 ##
@@ -704,7 +707,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='3.6'
+version='3.8'
 
 # MTT recursion level is zero unless explicitly set
 level=0
@@ -1441,12 +1444,8 @@ $1_sympar.tex: $1_sympar.txt
 #SUMMARY switch	Dynamic switch information (txt)
 $1_switch.txt: $1_struc.txt
 	struc2switch_txt $1
-$1_switch.m: $1_switch.txt $1_sympars.txt
+$1_switchopen.m: $1_switch.txt $1_sympars.txt
 	switch_txt2m $1
-$1_switcha.m: $1_switch.m
-	touch $1_switcha.m
-$1_switchopen.m: $1_switch.m
-	touch $1_switchopen.m
 
 #SUMMARY sympars sympar + dynamic switch information (txt)
 $1_sympars.txt: $1_sympar.txt $1_switch.txt
@@ -1819,15 +1818,11 @@ $1_odeo.p : $1_def.r $1_odeo.m
 	mtt_m2p $1_odeo.m
 $1_smx.p : $1_def.r $1_smx.m
 	mtt_m2p $1_smx.m
-$1_switch.p : $1_def.r $1_switch.m
-	mtt_m2p $1_switch.m
-$1_switcha.p : $1_def.r $1_switcha.m
-	mtt_m2p $1_switcha.m
 $1_switchopen.p : $1_def.r $1_switchopen.m
 	mtt_m2p $1_switchopen.m
 $1_ode2odes.p : $1_ode2odes.m $1_def.r\
                 $1_simpar.p $1_numpar.p $1_state.p $1_input.p \
-                $1_ode.p $1_odeo.p  $1_switch.p $1_switcha.p  $1_switchopen.p
+                $1_ode.p $1_odeo.p  $1_switchopen.p
 	mtt_m2p $1_ode2odes.m
 
 $1_ode2odes.c: $1_ode2odes.p 
@@ -2084,7 +2079,7 @@ $1_sms.c: $1_sm.c $1_def.r $1_sympar.r
 	sm2sms_r2c $1
 
 ifeq ($computation,octave)
-$1_odes.dat2: $1_ode2odes.m $1_ode.m $1_numpar.m $1_switch.m  \
+$1_odes.dat2: $1_ode2odes.m $1_ode.m $1_numpar.m $1_switchopen.m  \
              $1_def.m $1_input.m $1_state.m $1_simpar.m
 	time octave_ode2odes $1
 endif

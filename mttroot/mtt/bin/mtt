@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.239  2000/04/11 18:08:33  peterg
+## Fixed cse.tex bug
+##
 ## Revision 1.238  2000/04/10 10:06:41  peterg
 ## Sorted out implicit rules for p2oct conversion
 ##
@@ -1407,7 +1410,7 @@ fi
 # Tidy mode - operate in the directory MTT-work
 if [ "$tidy" = "tidy" ]; then
    mkdir -p MTT_work
-   cp -p -u  Makefile *.* .* MTT_work  2>/dev/null
+   cp -p -u  Makefile Make *.* .* MTT_work  2>/dev/null
    cd MTT_work
    if [ -z "$directory" ]; then
      Directory=''
@@ -1946,7 +1949,7 @@ $1_cse.r: $1_dae.r $1_def.r $1_sympar.r $1_subs.r
 #$1_cse.m: $1_def.r $1_cse.r $1_sympar.r  $1_subs.r 
 #	cse_r2m $1; matlab_tidy $1_cse.m
 $1_cse.m: $1_def.m $1_cse.r $1_sympars.txt
-	mtt_r2m $1 cse;  matlab_tidy $1_cse.m; matlab_tidy $1_cseo.m; 
+	mtt_r2m -parameters -noglobal $1 cse;  matlab_tidy $1_cse.m; matlab_tidy $1_cseo.m; 
 $1_cseo.m: $1_cse.m
 	touch $1_cseo.m
 $1_cse.tex: $1_cse.r  $1_sympar.r $1_simp.r
@@ -2199,7 +2202,7 @@ $1_smx.r: $1_def.r $1_def.m $1_ode.r $1_subs.r
 		ode2smx_lang $1 r; tidy $1_smx.r
 
 $1_smx.m: $1_def.r $1_def.m $1_cse.r $1_sympars.txt $1_subs.r
-		cse2smx_lang $1 smx m
+		cse2smx_lang -parameters -noglobal $1 smx m
 
 $1_smxa.m: $1_def.r $1_def.m $1_cse.r $1_sympars.txt $1_subs.r
 		cse2smx_lang $1 smxa m

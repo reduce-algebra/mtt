@@ -2,12 +2,18 @@ PROCEDURE mtt_sparse(	 b	 : glnarray;
 			 n,iters : INTEGER;
 		     VAR x	 : glnarray);
 
+{ This file is derived from the NUMERICAL RECIPES PASCAL SHAREWARE DISKETTE.
+ Please read the README file in $MTTPATH/trans/p
+ }
 {*
 ###############################################################
 ## Version control history
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1998/08/15 13:49:19  peterg
+## iters now passed as an argument.
+##
 ## Revision 1.4  1998/08/15 09:33:25  peterg
 ## Deleted the commented out stuff
 ##

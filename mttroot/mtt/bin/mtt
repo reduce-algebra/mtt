@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.92  1997/09/11 17:08:46  peterg
+## Added spreadsheet version of odeso
+##
 ## Revision 1.91  1997/09/11 08:21:08  peterg
 ## copy utility split into two:
 ## copy: copies examples (copies the entire directory)
@@ -708,7 +711,7 @@ $1_sympar.txt: $1_sub.sh
 	sh $1_sub.sh "mtt -q -l $level+1 " ' sympar txt' # and recreate them
  
 	if [ "$level" = "0" ]; then \
-	  sort -u MTT_sympar.txt> $1_sympar.txt; \
+	  sort -u +1 +0 MTT_sympar.txt> $1_sympar.txt; \
 	fi
 endif
 ifeq ($switches,1)
@@ -725,7 +728,7 @@ $1_sympar.txt: $1_sub.sh $1_struc.txt
 	sh $1_sub.sh "mtt -q -l $level+1 " ' sympar txt' # and recreate them
  
 	if [ "$level" = "0" ]; then \
-	  sort -u MTT_sympar.txt> $1_sympar.txt1; \
+	  sort -u +1 +0 MTT_sympar.txt> $1_sympar.txt1; \
 	  struc2switch_txt $1; \
 	  echo "Appending switch declarations"; \
 	  cat $1_sympar.txt1 $1_switch.txt> $1_sympar.txt; \

@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.15  1996/12/30 19:23:35  peterg
+##  Allows for bent bonds - ie bonds with more than 2 line segments.
+##
 ## Revision 1.14  1996/12/21 19:47:53  peterg
 ## Changed \* to \\*
 ##
@@ -300,7 +303,6 @@ else {
 	bonds[i_bond] = sprintf("%s %s %s %s %s %s", \
 				$2, $3, $(NF-3),$(NF-2),$(NF-1),$NF);
 }
-
       }
       
 #Save up arrow coords 

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1998/03/22 21:13:17  peterg
+## Fixed bug in above
+##
 ## Revision 1.7  1998/03/22 20:21:11  peterg
 ## $topic now converted to lower case.
 ##
@@ -39,6 +42,7 @@
 ###############################################################
 
 topic=`echo $1 | tr [A-Z] [a-z]`
+Topic=$1
 
 if [ "$topic" = "" ]; then
     echo 'Usage: mtt help representations'
@@ -91,10 +95,10 @@ case $topic in
   *)
     key="\"$summary|$description\"" 
     find_path=$MTT_LIB
-    name=$topic$ext
+    name=$Topic$ext
     all=''
     sort='cat'
-    blurb=$topic;;     
+    blurb=$Topic;;     
   
 esac
 

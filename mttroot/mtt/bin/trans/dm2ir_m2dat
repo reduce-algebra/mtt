@@ -16,15 +16,18 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1996/08/10 14:15:03  peter
+## Initial revision
+##
 ###############################################################
 
 echo Creating $1_ir.dat
 
-$MATRIX << EOF | awk '$1 !~ /[A-Za-z]/ && NF>0 {print} '  >$1_ir.dat
+$MATRIX << EOF | awk '$1 !~ /[A-MO-Zb-cf-z]/ && NF>0 {print} '  >$1_ir.dat
 
   tmax=2; tstep=tmax/100;
   T = [0:tstep:tmax]';
-  [A,B,C,D,E] = $1_dm;
+  [A,B,C,D,E] = $1_dm($1_numpar);
   y = dm2ir(A,B,C,D,E,T);
 
   [Ny,Nu]=size(D);

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.109  1998/01/06  09:20:02  peterg
+# Made LATEX2HTML an environment variable.
+#
 # Revision 1.108  1997/12/19  08:48:55  peterg
 # Lille modifications - bicausal algebraic loops supported
 #
@@ -463,6 +466,7 @@ if [ -z "$1" ]; then
     echo '       mtt clean'
     echo '       mtt <system_name> clean'
     echo '       mtt copy <system_name> <path_name>'
+    echo '       mtt rename <old_name> <new_name>'
     echo '       mtt <system_name> <representation> vc'
     echo '       mtt <system_name> <representation> <language>'
     echo '       mtt <system_name> <representation> <language> <parameters>'
@@ -584,6 +588,12 @@ if [ "$2" = "abg" ] && [ "$3" = "fig" ]; then
   mtt_check_var "$FIG" FIG
   echo Editing $1_$2.$3
   ($FIG $1_$2.$3; cp $1_abg.fig $1_$1_abg.fig) &
+  exit
+fi
+
+# Rename a system
+if [ "$1" = "rename" ]; then
+  mtt_rename_all $2 $3
   exit
 fi
 

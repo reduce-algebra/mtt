@@ -16,6 +16,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.20  2000/08/30 10:43:17  peterg
+## Simplified version using GENTRAN matrix :=: matrix
+## lang_matrix is no longer used at all
+##
 ## Revision 1.19  2000/08/28 20:17:59  peterg
 ## Put in Winfried Neun's bug fix
 ## -- prevents segmentation violation using optimised gentran when matrix
@@ -89,6 +93,11 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	parameters='-parameters';
         par='mttpar'
 	;;
+    -optimise)
+	optimise='LOAD SCOPE; ON GENTRANOPT;';
+        iname='INAME mtt_o;';
+	;;
+
     *)
 	echo $1 is an unknown option
         exit;;
@@ -116,18 +125,20 @@ cat <<EOF >mtt_setreduce.r
 
 % Load the general translator package
 LOAD GENTRAN;
-LOAD SCOPE;
-GENTRANLANG!* := '$codegenerator;
-ON GENTRANSEG; % Segmentation
-ON GENTRANOPT; % Code optimise using scope
+GENTRANLANG!* := '$codegenerator; %'
+ON GENTRANSEG; % Segmentation 
+% Optimise
+$optimise 
 
 ON GETDECS;    % Create decrarations automatically
-DEFTYPE!* := 'REAL; % and default to real
+DEFTYPE!* := 'REAL; % and default to real '
 OFF GENDECS;  % No declarations
 MAXEXPPRINTLEN!* := 80;
 TEMPVARNUM!* := 1;
-TEMPVARNAME!* := 'mtt_s;
-INAME(mtt_o);
+TEMPVARNAME!* := 'mtt_s; % '
+
+$iname
+
 % Matrix output function
 %in"$MTTPATH/trans/lang_matrix.r";
 
@@ -160,7 +171,10 @@ END;
 EOF
 
 #Inform user
-echo Creating $outfile.m
+if [ -n "$optimise" ]; then
+    blurb=' using code optimisation'
+fi
+echo Creating $outfile.m $blurb
 
 
 
@@ -171,7 +185,7 @@ rm -f mtt_r2m.log
 if [ "$rep" = "ode" ]||[ "$rep" = "cse" ]; then
   #echo Creating $1_odea.$ext
   outfileo=$outfile"o"
-  echo Creating $outfileo.m
+  echo Creating $outfileo.m $blurb
 
   #rm -f $1_odea.$ext.1;
 

@@ -25,6 +25,10 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
     -matrix)
 	matrix='yes';
 	;;
+    -optimise)
+	optimise='LOAD SCOPE; ON GENTRANOPT;';
+        iname='INAME mtt_o;';
+	;;
     *)
 	echo $1 is an unknown option
         exit;;
@@ -74,7 +78,11 @@ esac
 
 
 # Inform user
-echo Creating $1_$rep.$lang $blurb
+if [ -n "$optimise" ]; then
+    blurbopt=' using code optimisation'
+fi
+
+echo Creating $1_$rep.$lang $blurb $blurbopt
 #echo Creating $1_smxx.$lang
 #echo Creating $1_smxtx.$lang
 
@@ -101,18 +109,35 @@ OFF Echo;
 
 % Load the general translator package
 LOAD GENTRAN;
-LOAD SCOPE;
 GENTRANLANG!* := 'Pascal;
 ON GENTRANSEG; % Segmentation
-ON GENTRANOPT; % Code optimise using scope
+
 OFF GENDECS;  % No declarations
 MAXEXPPRINTLEN!* := 80;
 TEMPVARNUM!* := 1;
 TEMPVARNAME!* := 'mtt_s;
+%% '
+% Optimise
+$optimise
 
-% Matrix output function
-%in"$MTTPATH/trans/lang_matrix.r";
 
+ON GETDECS;    % Create decrarations automatically
+DEFTYPE!* := 'REAL; % and default to real
+
+%%% The following is a bug fix  from ZIB to fix 
+%%% segmentation violation problem
+symbolic procedure maxtype type;
+% ------------------------------------------------------------------- ;
+% A type may be a pair (l u) wher l is the minimum type for a variable;
+% and  u is the maximum type. This procedure returns the maximum type.;
+% ------------------------------------------------------------------- ;
+   if atom type
+   then type
+   else if pairp cdr type then cadr type else car type;
+
+% This fix handles the case that the type is a list with ONE entry.
+% Should never happen ?? W.N.
+%%%%%% End of bug fix
 
 %Set up output according to the language.
  OFF NAT;
@@ -141,13 +166,13 @@ TEMPVARNAME!* := 'mtt_s;
         IF ($nmatrix EQ 1) THEN
         BEGIN
           %% Write a  with full indexing
-          INAME(mtt_o); % Set temp name
+          $iname
           GENTRAN mtta(i,j) ::=: aa_ij;
         END;
         IF (($nmatrix EQ 0) AND ($nrep EQ 1)) THEN
         BEGIN
           %% Write a  with vector indexing
-          INAME(mtt_o); % Set temp name
+          $iname
           GENTRAN mtta(ij) ::=: aa_ij;
         END;
         mttAAx_i := mttAAx_i + aa_ij*xj;
@@ -155,7 +180,7 @@ TEMPVARNAME!* := 'mtt_s;
       IF (mttAAx_i NEQ 0) THEN
         IF (($nrep EQ 0) OR ($nrep EQ 2)) THEN
         BEGIN
-          INAME(mtt_o); % Set temp name
+          $iname
           GENTRAN mttax(i) ::=: mttAAx_i;
         END;
   END;

@@ -5,6 +5,9 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.28  1998/07/02 12:36:05  peterg
+% %% Removed debugging lines
+% %%
 % %% Revision 1.27  1998/07/02 12:24:02  peterg
 % %% Expand port aliases
 % %%
@@ -211,26 +214,61 @@ for i = 1:n_components
   direction = -sign(bond_end-1.5*one);
   signed_bond_list = bond_list.*direction;
   components = add_bond(components,signed_bond_list',i);
-  % Unalias all the ports on this component - if not a junction
+  
+  # Unalias all the ports on this component - if not a junction
+  unlabelled_ports = 0;  
+  in_bonds = 0;
   if ((comp_type!="0")&&(comp_type!="1"))
     eval( ["alias = ", comp_type, '_alias';]); # Get aliases
     if is_struct(alias)		# are there any aliases
       for j=1:n_comp_bonds
       	port_name_index = getindex(port_bond,signed_bond_list(j));
-      	if port_name_index>0	# There is a port on this bond
+        port_direction = -sign(signed_bond_list(j));
+
+      	if port_name_index==0	# There is no port on this bond - so try
+				# to default
+	  unlabelled_ports++;
+	  if(unlabelled_ports==1)
+	    if port_direction>0
+	      in_bonds++;
+	      port_name_i = "in";
+	    else
+	      port_name_i = "out";
+	    end;
+	  elseif (unlabelled_ports==2)
+	    if port_direction>0
+	      if (++in_bonds>1)
+	      	mtt_info(["More than one unlabelled in port on component " \
+			  comp_name " (" comp_type ")"],fnum);
+	      else
+	      port_name_i = "in";
+	      end
+	    else
+	      port_name_i = "out";
+	    end;
+	  else
+	      mtt_info(["More than two unlabelled ports on component " \
+			comp_name " (" comp_type ")"],fnum);
+          end
+	  mtt_info(["Defaulting to port name " port_name_i " on component " \
+		    comp_name " (" comp_type ")" ],fnum);
+	  port_name = [port_name; ["[" port_name_i "]"]];	# add to list
+	  [port_name_index,junk] = size(port_name); # the corresponding index
+        else  
       	  port_name_i = deblank(port_name(port_name_index,:));
-          port_name_i = port_name_i(2:length(port_name_i)-1) # strip []
-	  if struct_contains(alias,port_name_i) # Is this an alias?
-	    eval(["new_port_name_i = alias.",port_name_i]);
-	    mtt_info(["Expanding port name " port_name_i " of component " \
-		      comp_name " (" comp_type ") to ", new_port_name_i],fnum);
-	    port_name = replace_name(port_name, \
-				       ["[",new_port_name_i,"]"], port_name_index);
-	  end 
+	  port_name_i = port_name_i(2:length(port_name_i)-1) # strip []
+	end;
+        if struct_contains(alias,port_name_i) # Is this an alias?
+	  eval(["new_port_name_i = alias.",port_name_i]);
+	  mtt_info(["Expanding port name " port_name_i " of component " \
+		    comp_name " (" comp_type ") to ", new_port_name_i],fnum);
+	  port_name = replace_name(port_name, \
+				   ["[",new_port_name_i,"]"], port_name_index);
       	end
       end
     end
-  end
+  end;
+
 end;
 
 components

@@ -16,7 +16,6 @@ else
     lang="r"
 fi
 
-
 # Inform user
 echo Creating $1_smx.$lang
 #echo Creating $1_smxx.$lang
@@ -24,10 +23,10 @@ echo Creating $1_smx.$lang
 
 # Remove the old log file
 rm -f cse2smx_r.log
-
 rm -f $1_smx.$lang
 rm -f $1_smxx.$lang
 rm -f $1_smxtx.$lang
+rm -f $1_smx.body
 
 # Use reduce to accomplish the transformation
 reduce << EOF  >cse2smx_lang.log
@@ -47,7 +46,7 @@ OFF Echo;
 LOAD GENTRAN;
 GENTRANLANG!* := 'Pascal;
 ON GENTRANSEG;
-MAXEXPPRINTLEN!* := 80;
+MAXEXPPRINTLEN!* := 120;
 TEMPVARNUM!* := 1;
 TEMPVARNAME!* := 'mtt_t;
 
@@ -57,7 +56,7 @@ in"$MTTPATH/trans/lang_matrix.r";
 
 %Set up output according to the language.
  OFF NAT;
- GENTRANOUT "$1_smx.$lang";
+ GENTRANOUT "$1_smx.body";
 
 % Set up output according to the language.
     IF (lang = r) THEN 
@@ -74,11 +73,13 @@ in"$MTTPATH/trans/lang_matrix.r";
     mttAAx_i := 0;
     FOR j := 1:MTTNx DO
     BEGIN
+      ij := i + MTTNx*(j-1);
       xj := mkid(mttx,j);
       a_ij := df(MTTEdx(i,1), xj, 1);
-      aa_ij := MTTE(i,j) - mttdt*a_ij;
+      aa_ij := MTTE(i,j) - mttt*a_ij;
       IF (aa_ij NEQ 0) THEN
-        GENTRAN mtta(i,j) ::=: aa_ij;
+%%%        GENTRAN mtta(i,j) ::=: aa_ij;
+        GENTRAN mtta(ij) ::=: aa_ij;
         mttAAx_i := mttAAx_i + aa_ij*xj;
       END;
       IF (mttAAx_i NEQ 0) THEN
@@ -86,16 +87,48 @@ in"$MTTPATH/trans/lang_matrix.r";
   END;
 
 %Shut the  output according to the language.
- GENTRANSHUT "$1_smx.$lang";
+ GENTRANSHUT "$1_smx.body";
 
 
 EOF
 
 if [ "$lang" = "m" ]; then
-  mv $1_smx.$lang  mtt_junk
-  lang_header $1 smx m 'mttx,mttu,mttdt' '[mtta,mttax]' > $1_smx.m
-  cat mtt_junk | mtt_p2m >> $1_smx.m
-  rm -f mtt_junk
+  lang_header $1 smx m 'mttx,mttu,mttt,mttpar' '[mtta,mttax]' > $1_smx.m
+
+  echo '#====== Start of code ======#' >> $1_smx.m
+
+  cat $1_smx.body | mtt_p2m >> $1_smx.m
+
+  ## Now do the separate files 
+  ## smxa
+  echo Creating $1_smxa.$lang
+  lang_header $1 smxa m 'mttx,mttu,mttt,mttpar' '[mtta]' > $1_smxa.m
+
+  echo '#====== Start of code ======#' >> $1_smxa.m
+
+  ## This needs more work
+  cat $1_smx.body | grep 'mtta\[' | mtt_p2m >> $1_smxa.m
+
+  ## smxax
+  echo Creating $1_smxax.$lang
+  lang_header $1 smxax m 'mttx,mttu,mttt,mttpar' '[mttax]' > $1_smxax.m
+
+  echo '#====== Start of code ======#' >> $1_smxax.m
+
+  ## This needs more work
+  cat $1_smx.body |\
+  awk '{
+    if (match($1,"mtt")) {
+      printing=0
+      if (match($1,"mttax\\["))
+        printing=1;
+     }
+    if (printing) print $0 
+  }' | mtt_p2m >> $1_smxax.m
+
+
+
+  #rm -f $1_smx.body
 
 #  mv $1_smxx.$lang  mtt_junk
 #  lang_header $1 smxx m 'mttx,mttu,mttxx,mttdt' '[mttax]' > $1_smxx.m

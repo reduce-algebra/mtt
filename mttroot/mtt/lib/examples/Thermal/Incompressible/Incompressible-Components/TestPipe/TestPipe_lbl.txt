@@ -1,0 +1,26 @@
+%SUMMARY TestPipe
+%DESCRIPTION <Detailed description here>
+%% Label file for system TestPipe (TestPipe_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+%ALIAS Pipe IncompressibleFlow/Pipe
+
+% Component type Pipe
+	pipe		lin		rho;c_p;lin,r
+
+% Component type SS
+	Hy_in		external	external
+	Hy_out		external	external
+	Th_in		external	external
+	Th_out		external	external

@@ -19,6 +19,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.15  1996/08/18 12:01:01  peter
+## Unified format of time responses.
+##
 ## Revision 1.14  1996/08/16 14:52:24  peter
 ## Added two alternative view options - dview and pview.
 ##
@@ -169,7 +172,8 @@ make -s  -f -  $1_$2.$3 << EOF
 $1_args.m:
 	touch $1_args.m
 
-#Create acausal bond graph figure using xfig 
+#Create acausal bond graph figure using xfig
+#.PHONY: $1_abg.fig 
 $1_abg.fig:
 	$FIG $1_abg.fig 
 
@@ -222,6 +226,16 @@ $1_sspar.r:
 	echo Creating $1_sspar.r
 	echo "%% Reduce steady-state parameter file for $1 ($1_sspar.r)" \
 	> $1_sspar.r
+
+$1_rep.txt:
+	echo Creating $1_rep.txt
+	( \
+	echo "%% Outline report file for system $1 ($1_rep.txt)"; \
+	echo "abg ps"; \
+	echo "lbl txt"; \
+	echo "cbg ps"; \
+	echo "dae tex"; \
+	)> $1_rep.txt
 
 #Raw bond graph: fig file to mfile
 $1_rbg.m: $1_abg.fig $1_lbl.txt
@@ -388,7 +402,7 @@ $1_$2.gdat: $1_$2.dat
 
 #Generic conversion of Latex to latex document
 $1_$2.doc: $1_$2.tex
-	showtex $1 $2
+	tex2doc $1 $2
 
 #Generic conversion of LaTeX doc to dvi
 $1_$2.dvi: $1_$2.doc
@@ -445,19 +459,14 @@ $1_$2.tview: $1_$2.dvi
 	
 
 #Report generation
-$1_rep.tex: $1_sum.tex $1_dae.tex $1_lbl.txt $1_sympar.r $1_cr.r \
-            $1_abg.ps
-	echo Creating $1_rep.tex 
-	make_report $1 > $1_rep.tex
-
-
-$1_rep.dvi: $1_rep.tex 	
-	echo Creating $1_rep.dvi 
-	latex $1_rep; latex $1_rep
-
-$1_rep.ps: $1_rep.dvi
-	echo Creating $1_rep.ps 
-	dvips -o $1_rep.ps $1_rep
+$1_rep.make: $1_rep.txt
+	rep_txt2make $1
+$1_rep.tex: $1_rep.make $(cat $1_rep.make)
+	rep_txt2tex $1;
+#$1_rep.make: $1_rep.tex
+#	touch $1_rep.make
+#$1_rep.rep: $1_rep.make
+#	sh<$1_rep.make; cp $1_rep.tex $1_rep.doc
 
 $1_rep.html: $1_rep.dvi
 	echo Creating $1_rep.html 

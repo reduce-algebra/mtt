@@ -10,6 +10,9 @@ function  fr = dm2fr(A,B,C,D,E,W,u0)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1996/08/15 11:53:44  peter
+% %% Now has u0 input vector
+% %%
 % %% Revision 1.2  1996/08/15 10:24:28  peter
 % %% Includes u0 argument.
 % %%
@@ -32,7 +35,7 @@ i = 0;
 for w = W'
   i = i+1;
   FR = C*( (E*j*w - A) \ B ) + D;
-  fr(i,:) = FR';
+  fr(i,:) = conj(FR');
 end;
 
 

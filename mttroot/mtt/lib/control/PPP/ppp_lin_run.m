@@ -59,6 +59,10 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
     p_c.T = 10;			# Last time point.
   endif
 
+  if !struct_contains(p_c,"Iterations")
+    p_c.Iterations = 5;		# Number of interations, total =T*Iterations
+  endif
+
   if !struct_contains(p_c,"augment")
     p_c.augment = 0;		# Augment basis funs with constant
   endif
@@ -179,7 +183,7 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   endif
 
   ## Initial control U
-  U = zeros(p_c.n_U,1);	
+  U = zeros(p_c.n_U,1)	
 
 
   ## Short sample interval
@@ -188,7 +192,7 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   ## Observer design
   G = eye(n_x);		# State noise gain 
   sigma_x = eye(n_x);		# State noise variance
-  Sigma = p_o.sigma*eye(n_y);	# Measurement noise variance
+  Sigma = p_o.sigma*eye(n_y)	# Measurement noise variance
   
   if strcmp(p_o.method, "intermittent")
     Ad = expm(A*p_c.delta_ol);		# Discrete-time transition matrix
@@ -236,7 +240,8 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   e_e = [];
   tick = time;
   i=0;
-  for j=1:4
+
+  for j=1:p_c.Iterations
     for k=1:I
       tim=time;			# Timing
       i++;
@@ -297,7 +302,6 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
 	y = [y;y_i'];
 	u = [u;u_i'];
       endif
-      
 
       if strcmp(p_o.method, "intermittent")
 	y_e = [y_e; y_new'];

@@ -16,6 +16,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1999/03/15 07:29:25  peterg
+## Fixed various obscure reduce bugs
+## THIS NEEDS A MAJOR REWRITE!!!!
+##
 ## Revision 1.5  1998/08/13 16:25:07  peterg
 ## Removed some documentation form odeo.m
 ##
@@ -44,8 +48,7 @@ Lb='(';
 Rb=')';
 
 outfile=$1"_"$rep
-echo $outfile
-rm -fv $outfile.[123]
+
 #Set up gentran
 cat <<EOF >mtt_setreduce.r
 % Set up the code generator
@@ -83,34 +86,35 @@ if [ "$rep" = "ode" ]; then
   #echo Creating $1_odea.$ext
   outfileo=$outfile"o"
   echo Creating $outfileo.m
-   rm ode odeo
+
   #rm -f $1_odea.$ext.1;
 
   #Header
   lang_header $1 $rep $ext 'mttx,mttu,t' mttdx > $1_ode.p
-  lang_header $1 odeo $ext 'mttx,mttu,t' mtty > $1_odeo.p
+  lang_header $1 odeo $ext 'mttx,mttu,t' mtty  > $1_odeo.p
 
+rm -f mtt_ode mtt_odeo
   # Use reduce to accomplish the transformation
 $SYMBOLIC  > mtt_r2m.log <<EOF
   %Set up the code generator
   in"mtt_setreduce.r";
       
   % The body of the ode function
-    GENTRANOUT "ode";
+    GENTRANOUT "mtt_ode";
     mtt_matrix := MTTdX$
     mtt_matrix_n := MTTNx$
     mtt_matrix_m := 1$
     lang_matrix();
-    GENTRANSHUT "ode";
+    GENTRANSHUT "mtt_ode";
     
  
       % The body of the odeo function
-     GENTRANOUT "odeo";
+     GENTRANOUT "mtt_odeo";
      mtt_matrix := MTTy$
      mtt_matrix_n := MTTNy$
      mtt_matrix_m := 1$
      lang_matrix(); 
-     GENTRANSHUT "odeo";
+     GENTRANSHUT "mtt_odeo";
 
 END;;
 
@@ -199,13 +203,15 @@ EOF
 ##  end;
 ##EOF
 
-sed 's/mtt_matrix/mttdx/' <ode  >> $1_ode.p
-sed 's/mtt_matrix/mtty/'  <odeo >> $1_odeo.p
+sed 's/mtt_matrix/mttdx/' <mtt_ode  >> $1_ode.p
+sed 's/mtt_matrix/mtty/'  <mtt_odeo >> $1_odeo.p
+
+rm -f mtt_odeo mtt_ode
 
 # Convert from Pascal syntax to Octave syntax 
-   mtt_p2m<$1_odeo.p > $1_odeo.m 
-   mtt_p2m<$1_ode.p > $1_ode.m 
-#  mv $1_odea.m mtt_junk; mtt_p2m<mtt_junk > $1_odea.m
+ mtt_p2m<$1_odeo.p > $1_odeo.m 
+
+#rm -f    $1_odeo.p
 
 fi
   
@@ -213,13 +219,13 @@ if [ "$rep" = "sm" ]||[ "$rep" = "dm" ]; then
 
 if [ "$rep" = "sm" ]; then
    #Header
-  lang_header $1 $rep $ext '' [mtta,mttb,mttc,mttd] > $outfile.A
+  lang_header $1 $rep $ext '' [mtta,mttb,mttc,mttd] > $outfile.p
   Symbols='a b c d'    
 fi
 
 if [ "$rep" = "dm" ]; then
    #Header
-  lang_header $1 $rep $ext '' [mtta,mttb,mttc,mttd,mtte] > $outfile.A
+  lang_header $1 $rep $ext '' [mtta,mttb,mttc,mttd,mtte] > $outfile.p
   Symbols='a b c d e'    
 fi
 
@@ -269,14 +275,19 @@ else
   esac
     
 fi
-    $SYMBOLIC  << EOF >mtt_r2m.log
+
+# Set up the matrices
+
+    rm -f mtt_zero.m
+
+ $SYMBOLIC  << EOF >mtt_r2m.log
 
     %Set up the code generator
     in"mtt_setreduce.r";
-
-    out "$outfile.2";
-     write "mtt$Symbol = zeros(", $N, ",", $M, ");";
-    shut "$outfile.2";
+    
+   OUT "mtt_zero.m";
+     write  "mtt$Symbol = zeros(", $N, ",", $M , ");" ;
+  SHUT  "mtt_zero.m";
 
     GENTRANOUT "$outfile.1";
     mtt_matrix := MTT$Symbol;
@@ -286,10 +297,12 @@ fi
     GENTRANSHUT "$outfile.1";
 EOF
 
-echo "%$Symbol matrix#" > $outfile.$Symbol
-cat "$outfile.2"  >> $outfile.$Symbol
+
+echo "%$Symbol matrix#" >> $outfile.p
+cat mtt_zero.m >> $outfile.p
+
 sed "s/mtt_matrix/mtt$Symbol/" < $outfile.1 |\
-grep -v '=0\.0;'  >> $outfile.$Symbol
+grep -v '=0\.0;'  >> $outfile.p
 
 done
 
@@ -297,11 +310,11 @@ done
 fi 
 
 # Convert from Pascal syntax to Octave syntax
-cat $outfile.?  | mtt_p2m > $outfile
+ mtt_p2m <$outfile.p > $outfile.m
 
-#rm -f $outfile.?  
-  
-  
+rm -f $outfile.p  
+rm -f mtt_zero.m
+rm -f $outfile.1  
   
 
 

@@ -14,6 +14,11 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.136  1998/03/04 16:34:19  peterg
+## New local (_cr.r) and generic (.cr) CR structure.
+## CR and lbl now have view mode.
+## CRS in abg_tex.
+##
 ## Revision 1.135  1998/02/25 22:09:48  peterg
 ## Added simpar representation.
 ##
@@ -1290,14 +1295,17 @@ $1_struc.m: $1_struc.txt
 $1_def.m: $1_def.r
 	def_r2m $1; matlab_tidy $1_def.m;
 
+#SUMMARY rdae	raw differential-algebraic equations (r)
 #SUMMARY dae	differential-algebraic equations (r)
 #SUMMARY dae	differential-algebraic equations (m)
 #SUMMARY dae	differential-algebraic equations (tex)
 #SUMMARY dae	differential-algebraic equations (view)
 #SUMMARY dae	differential-algebraic equations (ps)
 #Differential-algebraic equations
-$1_dae.r: $1_ese.r $1_cr.r $1_sympar.r $1_params.r
-	ese2dae_r $1; tidy $1_dae.r
+$1_rdae.r: $1_ese.r $1_def.r
+	ese2rdae_r $1; tidy $1_rdae.r
+$1_dae.r: $1_cr.r $1_rdae.r $1_def.r
+	rdae2dae_r $1; tidy $1_dae.r
 $1_dae.m: $1_def.r $1_dae.r  $1_sympar.r 
 	dae_r2m $1; matlab_tidy $1_dae.m; matlab_tidy $1_daeo.m
 $1_dae.c: $1_def.r $1_dae.r  $1_sympar.r

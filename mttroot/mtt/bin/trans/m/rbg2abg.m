@@ -7,6 +7,9 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.45  1999/10/19 02:13:31  peterg
+  ## ## Now assigns correct bonds to the new junction port names
+  ## ##
   ## ## Revision 1.44  1999/10/19 00:05:44  peterg
   ## ## Now defaults junction ports when only one specified (for vector junctions)
   ## ##
@@ -557,7 +560,12 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
     ##Find the port list for this component
     if exist([comp_type, '_cause'])==0
       eval(["ABG = ",comp_type, "_abg;"]);
-      port_list = ABG.portlist;
+      if struct_contains (ABG, "portlist")
+	port_list = ABG.portlist;
+      else
+	error(sprintf("Component %s has no ports", comp_type));
+        port_list = [];
+      endif
     else
       port_list=comp_ports(comp_type,n_comp_bonds)
     endif

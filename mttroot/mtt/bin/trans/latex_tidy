@@ -14,6 +14,14 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.20  2002/08/20 19:33:21  geraint
+## Minor bug fixes and enhancements (I hope):
+##
+## Delimited expressions within function calls to prevent denominators from continuing beyond commas.
+## Allow latex to adjust size of parentheses according to expression within.
+## Replaced ^ with \uparrow (less misleading - latex maths doesn't understand operator precedence or words).
+## Replaced abs(x) with |x| when x does not contain brackets.
+##
 ## Revision 1.19  2002/08/19 14:37:05  geraint
 ## Fixed eta, beta, theta, Theta and zeta.
 ##
@@ -123,7 +131,7 @@ sed \
     -e "s/mttpar//g" \
     -e "s/!/\\\/g" \
     -e "s/\\$//g" \
-    -e "s/abs(\([^()]*\))/| \1 |/g" \
+    -e "s/abs(\([^()]*\))/|{ \1 }|/g" \
     -e "s/(\([^(),]*\),/( { \1 } ,/g" \
     -e "s/,\([^(),]*\),/, { \1 } ,/g" \
     -e "s/,\([^(),]*\))/, { \1 } )/g" \

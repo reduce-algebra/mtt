@@ -3,6 +3,9 @@ PROCEDURE mtt_solve_lud(VAR x     : StateVector;
 		        B     : StateVector;
 			n     : integer);
 
+(*$I $MTTPATH/trans/p/mtt_ludcmp.p *)
+(*$I $MTTPATH/trans/p/mtt_lubksb.p *)
+
 {
 Linear equation solution via LU factorisation
 
@@ -11,6 +14,9 @@ Linear equation solution via LU factorisation
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.2  1998/08/17 15:56:10  peterg
+% % Uses LU decomposition - much faster than SVD when N>100
+% %
 % % Revision 1.1  1998/08/17 12:52:16  peterg
 % % Initial revision
 % %
@@ -31,10 +37,8 @@ VAR
    d	 : real;
    Index : StateVector;
 
-(*$I mtt_ludcmp.p *)
-(*$I mtt_lubksb.p *)
 
-BEGIN{mtt_solve}
+BEGIN{mtt_solve_lud}
    (* decompose matrix A using LU decomposition *)
    mtt_ludcmp(A,n,Index,d);
    
@@ -45,7 +49,7 @@ BEGIN{mtt_solve}
    FOR i := 1 TO n DO
       x[i] := B[i];
    
-END{mtt_solve};
+END{mtt_solve_lud};
 
 
 

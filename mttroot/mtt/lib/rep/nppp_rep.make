@@ -35,13 +35,10 @@ ${SYS}_nppp.view: ${SYS}_nppp.ps
 ${SYS}_nppp.ps: ${SYS}_nppp.fig
 	nppp_rep.sh ${SYS} ps
 
-${SYS}_nppp.fig: ${SYS}_nppp.gdat
-	nppp_rep.sh ${SYS} fig
-
 ${SYS}_nppp.gdat: ${SYS}_nppp.dat2
 	nppp_rep.sh ${SYS} gdat
 
-${SYS}_nppp.dat2: ${nppp_reps}
+${SYS}_nppp.fig ${SYS}_nppp.dat2: ${nppp_reps}
 	nppp_rep.sh ${SYS} dat2
 
 ${SYS}_nppp.m: 

@@ -157,26 +157,24 @@ function [y,u,t] = ${sys}_nppp (last, ppp_names, par_names, A_u, A_w, w, Q, extr
   y_open = y(j,:);
   u_open = u(j,:);
 
-  ##if extras.visual
-    ## Plots
-    gset grid; xlabel "Time (sec)"; title "${sys}"
-    ty = [t y] ; 
-    tu =  [t u]; 
-  
-    ty_open = [T_open y_open];
-    tu_open = [T_open u_open];
-  
-    gplot  tu \
-        title "u", tu_open with impulses title "Sample times"
-    figfig("${sys}_u","eps");
-  
-    gplot  ty \
-        title "y", ty_open with impulses title "Sample times"
-    figfig("${sys}_y","eps");
-  
-    system("gv ${sys}_y.eps&");
-    system("gv ${sys}_u.eps&");
-  ##endif
+  ## Plots
+
+    gset nokey
+    gset format x "%i"
+    gset format y "%4.1f"
+    gset term fig monochrome portrait fontsize 20 size 20 20 metric \
+	     thickness 4
+    gset output "${sys}_nppp.fig"
+
+    title("");
+    grid;
+    xlabel("Time (s)");
+    ylabel("u");
+    subplot(2,1,2); plot(t,u,'-',  T_open, u_open,"^");  
+    grid;
+    ylabel("y");
+    subplot(2,1,1); plot(t,y,'-', T_open, y_open,"^"); 
+
 endfunction
 
 EOF
@@ -252,8 +250,8 @@ case ${lang} in
         ## Make the code
         make_nppp;
 	;;
-    dat2)
-	## The dat2 language (output data)
+    dat2|fig)
+    ## The dat2 language (output data) & fig file
 	make_dat2; 
 	;;
     gdat)
@@ -261,9 +259,9 @@ case ${lang} in
 	dat22dat ${sys} ${rep} 
         dat2gdat ${sys} ${rep}
 	;;
-    fig)
-	gdat2fig ${sys}_${rep}
-	;;
+#    fig)
+#	gdat2fig ${sys}_${rep}
+#	;;
     ps)
 	fig2dev -Leps ${sys}_${rep}.fig > ${sys}_${rep}.ps
 	;;

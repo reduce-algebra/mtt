@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.46  2002/08/20 15:51:17  gawthrop
+  ## ## Update to work with ident DIY rep
+  ## ##
   ## ## Revision 1.45  2002/05/22 09:15:03  gawthrop
   ## ## Non-repetitive components no longer use _1 in names
   ## ##
@@ -529,9 +532,10 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	    	value_change=value-old_structure(which_index);
 	    	for k=1:value_change
 		  fprintf(structure_file, ...
-			  "%s\t%i\t%s\t%s_%s\t%i\n", ...
+			  "%s\t%i\t%s\t%s_%s\t%i\t%s\t%s\n", ...
 			  structure_name(which_index,:), value-k+1, ...
-			  comp_name, full_name_repetition, comp_name, repetition);
+			  comp_name, full_name_repetition, comp_name, \
+			  repetition, cause2name(-comp_bonds(1)), full_name_repetition );
 	    	endfor;
  	      endfor;
  	    endif;

@@ -4,8 +4,15 @@
 %DESCRIPTION Parameter 3: alpha = (n-1)/n, n coefficient of polytropic
 %DESCRIPTION expansion.
 %DESCRIPTION Parameter 4: k_t pump constant: mass flow = k_t*shaft speed
-%ALIAS	in  Th_in,Hy_in
-%ALIAS	out Th_out,Hy_out
+
+%ALIAS	in Thermal_in,Hydraulic_in
+%ALIAS	out Thermal_out,Hydraulic_out
+
+%ALIAS	Th_in  Thermal_in
+%ALIAS	Hy_in  Hydraulic_in
+
+%ALIAS	Th_out  Thermal_out
+%ALIAS	Hy_out  Hydraulic_out
 
 %% Label file for system Turb (Turb_lbl.txt)
 
@@ -14,6 +21,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1998/07/02 10:55:24  peterg
+% %% Lower case in out
+% %%
 % %% Revision 1.2  1998/07/02 10:51:10  peterg
 % %% Added port aliases
 % %%
@@ -36,11 +46,11 @@
 	poly		Poly		$3
 
 % Component type SS
-	[Hy_in]		external	external
-	[Hy_out]	external	external
+	[Hydraulic_in]	external	external
+	[Hydraulic_out]	external	external
 	[Shaft]		external	external
-	[Th_in]		external	external
-	[Th_out]	external	external
+	[Thermal_in]	external	external
+	[Thermal_out]	external	external
 	T		external	0
 
 % Component type TF

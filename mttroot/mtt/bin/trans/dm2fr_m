@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  1998/02/26 15:12:26  peterg
+## Removed parameter stuff
+##
 # Revision 1.8  1996/08/30  14:54:36  peter
 # Took back lock.
 #
@@ -64,15 +67,29 @@ echo Creating $1_nifr.m
 
 $MATRIX << EOF > dm2fr_m.log 2>mtt_error.txt
 
+# Data
   $1_numpar;
 
+# Simulation parameters
+  $1_simpar;
+
   [nx,ny,nu,nz,nyz] = $1_def
-%  $PARAMS
 
   %Defaults
-  if exist('W')==0
-    W = logspace(-1,2,100)';
+  
+  if exist('mttWMIN')==0
+    mttWMIN = -1;
   end;
+
+  if exist('mttWMAX')==0
+    mttWMAX = 2;
+  end;
+
+  if exist('mttWSTEPS')==0
+    mttWSTEPS = 100;
+  end;
+
+  W = logspace(mttWMIN,mttWMAX,mttWSTEPS)';
 
   if exist('u0')==0
     u0 = zeros(nu,1);

@@ -16,6 +16,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.12  2001/04/11 07:36:10  gawthrop
+## Now uses system_cr.h in place of system.h in .c rep -
+##   compatible with older code
+##
 ## Revision 1.11  2001/03/29 19:24:14  gawthrop
 ## Can now use c representations of crs when using -c option
 ##
@@ -64,6 +68,11 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
   esac
   shift
 done
+
+## Create p2crc with various configs.
+cat > p2crc <<EOF
+EatNotes [221]   # No warning messages about symbols
+EOF
 
 # Inform user
 echo Creating $1_$2.c

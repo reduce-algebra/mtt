@@ -1,10 +1,15 @@
-function args = alias_args(args,alias,delim,message,FileID)
+function args = alias_args(args,alias,delim,message,FileID,sys_name)
 
 ###############################################################
 ## Version control history
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  2000/09/14 13:35:43  peterg
+## appended '(' and ')' to SEPS
+##   -- otherwise first argument after '(' doesn't get substituted
+## (Fixed by Geraint)
+##
 ## Revision 1.3  1998/08/11 14:09:05  peterg
 ## Replaced incorrect length(args>0) with !isempty(args)
 ##
@@ -29,12 +34,14 @@ function args = alias_args(args,alias,delim,message,FileID)
           eval(["new_arg = alias.", arg_,";"]);
   	  mtt_info(["Replacing ", arg, "\t by ",\
 		    new_arg, message],FileID);
+  	  mtt_save_alias(arg,sys_name);
+
           arg = new_arg;
         end
         SEPS = ",+-*/()";
         for j = 1:length(SEPS)
 	  if length(findstr(arg,SEPS(j)))>0
-	    arg = alias_args(arg,alias,SEPS(j),message,FileID);
+	    arg = alias_args(arg,alias,SEPS(j),message,FileID,sys_name);
 	  end 
 	end;
         args = sprintf("%s%s%s", args, delim, arg);

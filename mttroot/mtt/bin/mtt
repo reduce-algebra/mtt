@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.47  1996/12/07 20:50:16  peterg
+## *** empty log message ***
+##
 ## Revision 1.46  1996/12/05 10:48:51  peterg
 ## Put sympar in clean list.
 ## sympar now sucks in params.r file
@@ -484,8 +487,7 @@ $1_input.m:
 	echo "% Set up system definitions"; \
 	echo "[nx,ny,nu,nz,nyz] = $1_def;"; \
 	echo "% Change the following lines as you wish"; \
-	echo "u = zeros(nu,1);"; \
-	echo "u(1) = 1;"; \
+	echo "u = ones(nu,1);"; \
         )> $1_input.m
 
 #SUMMARY sspar	steady-state definition (r)

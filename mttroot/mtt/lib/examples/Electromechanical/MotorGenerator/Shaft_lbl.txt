@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2000/12/28 17:43:16  peterg
+% %% To RCS
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -14,8 +17,8 @@
 
 
 % Unit definitions
-%UNITS in  rotational N*m rad/s
-%UNITS out rotational N*m rad/s
+%UNITS in  rotational N*m radians/s
+%UNITS out rotational N*m radians/s
 
 % Argument aliases
 %ALIAS	$1	c_s

@@ -1,0 +1,83 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: obs_r2tex
+# Reduce constrained-state matrices to LaTex constrained-state matrices.
+# P.J.Gawthrop  9 Sep 1991, May 1994
+# Copyright (c) P.J.Gawthrop, 1991, May 1994, 1996.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+# Revision 1.3  1997/06/13  13:50:11  peterg
+# Matrices in amstex format
+#
+# Revision 1.2  1997/04/18  12:54:00  peterg
+# No longer does labels.
+#
+# Revision 1.1  1996/08/19  15:19:23  peter
+# Initial revision
+#
+###############################################################
+
+
+# Inform user
+echo Creating $1_obs.tex
+
+# Remove the old log file
+rm -f obs_r2tex.log
+
+# Use reduce to accomplish the transformation
+reduce >obs_r2tex.log << EOF
+
+%Read the definitions file
+in "$1_def.r";
+
+%Read the obs file
+in "$1_obs.r";
+
+%Read the Obs function parameters
+in "$1_obspar.r";
+
+%Read the simplification parameters
+in "$1_simp.r";
+
+%Read the formatting function
+in "$MTTPATH/trans/latex_matrix.r";
+
+OFF Echo;
+OFF Nat;
+OFF EXP;
+
+OUT "$1_obs.tex";
+
+% Write the obs vector (YY)
+MTT_Matrix := MTTYY$ 
+MTT_Matrix_name := "MTTO"$
+MTT_Matrix_n := (MTTGPCNY+1)*MTTNy$
+MTT_Matrix_m := 1$
+LaTeX_Matrix()$
+
+% Write the affine form
+IF affine=1 THEN 
+BEGIN
+  MTT_Matrix := MTTObs_o$ 
+  MTT_Matrix_name := "MTTO_o"$
+  MTT_Matrix_n := (MTTGPCNY+1)*MTTNy$
+  MTT_Matrix_m := 1$
+  LaTeX_Matrix()$
+
+  MTT_Matrix := MTTObs_h$ 
+  MTT_Matrix_name := "MTTO_h"$
+  MTT_Matrix_n := (MTTGPCNy+1)*MTTNy$
+  MTT_Matrix_m := (MTTGPCNu+1)*MTTNu$
+  LaTeX_Matrix()$
+END;
+SHUT "$1_obs.tex";
+quit;
+EOF

@@ -11,6 +11,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  1997/08/05 08:38:23  peterg
+## Added n-ports to the argument list in the comment.
+##
 ## Revision 1.6  1996/12/04 21:52:01  peterg
 ## Uses filenum and fopen instead of filename.
 ##
@@ -86,6 +89,7 @@ echo Creating $1_abg.m
 $MATRIX > rbg2abg_m.log  2>mtt_error.txt << EOF
   name = '$1'
   infofile = 'mtt_info.txt';
+
   %Convert from the fig version of the bonds to a structured version
   [rbonds,rstrokes,rcomponents,port_coord,port_name,port_list] = $1_rbg;
   [n_ports, junk] = size(port_list);

@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.334  2002/05/01 14:10:22  gawthrop
+## Added -dr foo (reads from dir foo) option
+##
 ## Revision 1.333  2002/04/28 18:41:26  geraint
 ## Fixed [ 549658 ] awk should be gawk.
 ## Replaced calls to awk with call to gawk.
@@ -2089,12 +2092,12 @@ $MAKE -S ${trace} $verbose $verbose_make -f  -  $target << EOF
 # MTT implicit rules
 ## .oct files
 $1_%.oct:  $1_%.cc $1_def.h $1_sympar.h $1_cr.h
-	echo Creating $1_\$*.oct; $MKOCTFILE  $1_\$*.cc
+	echo Creating $1_\$*.oct; $MKOCTFILE -DCODEGENTARGET=OCTAVEDLD $1_\$*.cc
 
 .PRECIOUS: mtt_%.oct
 mtt_%.oct: mtt_%.cc
 	echo Compiling \$<
-	${MKOCTFILE} $define_octave_dev \$<
+	${MKOCTFILE} -DCODEGENTARGET=OCTAVEDLD $define_octave_dev \$<
 
 ## .cc files
 .PRECIOUS: %.cc # Don't let mtt delete them
@@ -2111,12 +2114,12 @@ mtt_%.hh: ${MTT_LIB}/cc/mtt_%.hh
 .PRECIOUS: $1_%.o
 $1_%.o: $1_%.cc $1_def.h $1_sympar.h $1_cr.h
 	echo Compiling $1_\$*.cc
-	${MTT_CXX} ${MTT_CXXFLAGS} ${MTT_CXXINCS} -c $< -DSTANDALONE
+	${MTT_CXX} ${MTT_CXXFLAGS} ${MTT_CXXINCS} -c $< -DCODEGENTARGET=STANDALONE
 
 .PRECIOUS: mtt_%.o
 mtt_%.o: mtt_%.cc
 	echo Compiling mtt_\$*.cc
-	${MTT_CXX} ${MTT_CXXFLAGS} ${MTT_CXXINCS} -c $< -DSTANDALONE $define_octave_dev
+	${MTT_CXX} ${MTT_CXXFLAGS} ${MTT_CXXINCS} -c $< -DCODEGENTARGET=STANDALONE $define_octave_dev
 
 # Generates code to write reduce code
 $1_ode_write.r: $1_def.m
@@ -2764,12 +2767,12 @@ $1_ode2odes.exe: $1_def.h $1_sympar.h\
 
 $1_ode2odes.o: $1_ode2odes.cc $1_ode2odes_common.o $1_ode2odes_${integration_method}.o $1_ode2odes_${algebraic_solver}.o
 	echo Creating $1_ode2odes.o
-	${MTT_CXX} ${MTT_CXXFLAGS} ${MTT_CXXINCS} -c $1_ode2odes.cc -DSTANDALONE
+	${MTT_CXX} ${MTT_CXXFLAGS} ${MTT_CXXINCS} -c $1_ode2odes.cc -DCODEGENTARGET=STANDALONE
 
 $1_ode2odes.oct: $1_ode2odes.cc $1_ode2odes_common.oct $1_ode2odes_${integration_method}.oct $1_ode2odes_${algebraic_solver}.o
 	touch $1_ode2odes.m
 	echo Creating $1_ode2odes.oct
-	$MKOCTFILE $1_ode2odes.cc mtt_${algebraic_solver}.cc mtt_Solver.cc mtt_AlgebraicSolver.cc
+	$MKOCTFILE -DCODEGENTARGET=OCTAVEDLD $1_ode2odes.cc mtt_${algebraic_solver}.cc mtt_Solver.cc mtt_AlgebraicSolver.cc
 
 $1_ode2odes.cc: $1_def.r $1_sympars.txt\
 		$1_ode2odes_common.m $1_ode2odes_common.cc\

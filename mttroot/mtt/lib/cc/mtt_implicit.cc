@@ -7,7 +7,14 @@
 #define	VECTOR_VALUE vector_value
 #endif // OCTAVE_DEV
 
-#ifdef STANDALONE
+// Code generation directives
+#define STANDALONE 0
+#define OCTAVEDLD  1
+#if (! defined (CODEGENTARGET))
+#define CODEGENTARGET STANDALONE
+#endif // (! defined (CODEGENTARGET))
+
+#if (CODEGENTARGET == STANDALONE)
 ColumnVector Fmtt_implicit (      ColumnVector	&x,
 				  ColumnVector	&dx,
 			          Matrix	&AA,
@@ -16,7 +23,7 @@ ColumnVector Fmtt_implicit (      ColumnVector	&x,
 			    const int		&Nx,
 			    const ColumnVector	&openx)
 {
-#else // !STANDALONE
+#elif (CODEGENTARGET == OCTAVEDLD)
 DEFUN_DLD (mtt_implicit, args, ,
 	   "implicit integration method")
 {
@@ -27,7 +34,7 @@ DEFUN_DLD (mtt_implicit, args, ,
   const  double		t	= args(4).double_value ();
   const  int		Nx	= (int) (args(5).double_value ());
   const  ColumnVector	openx	= args(6).VECTOR_VALUE ();
-#endif // STANDALONE
+#endif // (CODEGENTARGET == STANDALONE)
 
   register int row, col;
 
@@ -63,9 +70,9 @@ DEFUN_DLD (mtt_implicit, args, ,
 	}
     }
 
-#ifdef STANDALONE
+#if (CODEGENTARGET == STANDALONE)
   return x;
-#else // !STANDALONE
+#elif (CODEGENTARGET == OCTAVEDLD)
   return octave_value (x);
-#endif // STANDALONE
+#endif // (CODEGENTARGET == STANDALONE)
 }

@@ -27,7 +27,7 @@ MTT::Hybrd_Solver::Solve (void)
   
   NLFunc fcn(&Hybrd_Solver::f_hybrd);
   NLEqn	 eqn(Solver::_ui,fcn);
-  eqn.set_tolerance(1.0e-3);
+  eqn.set_tolerance(1.0e-20);
   Solver::_ui = eqn.solve(info);
 
   switch (info)

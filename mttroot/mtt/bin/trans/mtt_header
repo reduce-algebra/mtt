@@ -12,6 +12,11 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.43  2002/04/30 23:27:00  geraint
+## Replaced octave_map with columnvector in simpar.cc. Not quite as descriptive but
+## standardises the interfaces somewhat and reduces the dependency on liboctinterp
+## (and thus libreadline, libkpathsea, libncurses, etc).
+##
 ## Revision 1.42  2002/04/28 18:41:27  geraint
 ## Fixed [ 549658 ] awk should be gawk.
 ## Replaced calls to awk with call to gawk.
@@ -729,7 +734,7 @@ get_extra_fields ()
 write_DLD_header()
 {
     cat <<EOF
-#ifndef STANDALONE
+#if (CODEGENTARGET == OCTAVEDLD)
 #include <octave/oct.h>
 #include <octave/toplev.h>
 #include <math.h>
@@ -743,7 +748,7 @@ DEFUN_DLD (${system}_${rep}, args, ,
 {
 
   octave_value_list retval;
-#endif // ! STANDALONE
+#endif // (CODEGENTARGET == OCTAVEDLD)
 
 EOF
 }
@@ -753,7 +758,7 @@ map_DLD_inputs ()
 {
     s=${1:-""}					# comma separated input list
     if [ -z ${s:-""} ];then return; fi
-    printf "#ifndef STANDALONE\n"
+    printf "#if (CODEGENTARGET == OCTAVEDLD)\n"
     c=`get_field ${s} 0`			# count of inputs
     i=0
     printf "  if (${c} != args.length ()) usage (\"${fun_name} expected ${c} argument(s): ${s}\");\n\n"
@@ -771,7 +776,7 @@ map_DLD_inputs ()
 		;;
 	esac
     done
-    printf "#endif // ! STANDALONE\n\n"
+    printf "#endif // (CODEGENTARGET == OCTAVEDLD)\n\n"
 }	
 
 
@@ -798,7 +803,7 @@ return_DLD_outputs ()
 
 \/\/ END Code
 
-#ifndef STANDALONE
+#if (CODEGENTARGET == OCTAVEDLD)
 EOF
     while [ ${i} -lt ${c} ]; do
 	j=${i}
@@ -809,7 +814,7 @@ EOF
     cat <<EOF
   return (retval);
 }
-#endif // ! STANDALONE
+#endif // (CODEGENTARGET == OCTAVEDLD)
 EOF
 }
 
@@ -818,7 +823,14 @@ write_standalone_header ()
     get_arg_specific_stuff ${output}
     cat <<EOF
 
-#ifdef STANDALONE
+// Code generation directives
+#define STANDALONE 0
+#define OCTAVEDLD  1
+#if (! defined (CODEGENTARGET))
+#define CODEGENTARGET STANDALONE
+#endif // (! defined (CODEGENTARGET))
+
+#if (CODEGENTARGET == STANDALONE)
 #include <octave/oct.h>
 #include "useful-functions.hh"
 #include "${system}_cr.h"
@@ -847,17 +859,17 @@ EOF
     cat <<EOF
 )
 {
-#endif // STANDALONE
+#endif // (CODEGENTARGET == STANDALONE)
 EOF
 }
 
 return_standalone_output ()
 {
     cat <<EOF
-#ifdef STANDALONE
+#if (CODEGENTARGET == STANDALONE)
   return ${output};
 }
-#endif // STANDALONE
+#endif // (CODEGENTARGET == STANDALONE)
 EOF
 }
 

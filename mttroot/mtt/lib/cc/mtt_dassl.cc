@@ -11,19 +11,25 @@
 #define VECTOR_VALUE vector_value
 #endif  // OCTAVE_DEV
 
+// Code generation directives
+#define STANDALONE 0
+#define OCTAVEDLD  1
+#if (! defined (CODEGENTARGET))
+#define CODEGENTARGET STANDALONE
+#endif // (! defined (CODEGENTARGET))
 
-#ifdef STANDALONE
+#if (CODEGENTARGET == STANDALONE)
 extern ColumnVector
 Fmtt_residual (const ColumnVector &X, const ColumnVector &DX, double t, int &ires);
-#endif // STANDALONE
+#endif // (CODEGENTARGET == STANDALONE)
 
 
 ColumnVector
 mtt_residual (const ColumnVector &X, const ColumnVector &DX, double t, int &ires)
 {
-#ifdef STANDALONE
+#if (CODEGENTARGET == STANDALONE)
   return Fmtt_residual (X, DX, t, ires);
-#else // !STANDALONE
+#elif (CODEGENTARGET == OCTAVEDLD)
   static octave_value_list args, f;
   args(0) = octave_value (X);
   args(1) = octave_value (DX);
@@ -31,11 +37,11 @@ mtt_residual (const ColumnVector &X, const ColumnVector &DX, double t, int &ires
   args(3) = octave_value (ires);
   f = feval ("mtt_residual", args, 1);
   return f(0).VECTOR_VALUE ();
-#endif // STANDALONE
+#endif // (CODEGENTARGET == STANDALONE)
 }
 
 
-#ifdef STANDALONE
+#if (CODEGENTARGET == STANDALONE)
 ColumnVector
 Fmtt_dassl (	  ColumnVector	&x,
 	    const ColumnVector	&u,
@@ -47,7 +53,7 @@ Fmtt_dassl (	  ColumnVector	&x,
 	    const int		Nyz,
 	    const ColumnVector	&openx)
 {
-#else // !STANDALONE
+#elif (CODEGENTARGET == OCTAVEDLD)
 DEFUN_DLD (mtt_dassl, args, ,
 	   "dassl integration method")
 {
@@ -60,7 +66,7 @@ DEFUN_DLD (mtt_dassl, args, ,
   const int		Nx	= static_cast<int> (args(6).double_value());
   const int		Nyz	= static_cast<int> (args(7).double_value());
   const ColumnVector	openx	= args(8).VECTOR_VALUE();
-#endif // STANDALONE
+#endif // (CODEGENTARGET == STANDALONE)
 
   static DAEFunc fdae(mtt_residual);
   static ColumnVector XX (Nx+Nyz);
@@ -79,9 +85,9 @@ DEFUN_DLD (mtt_dassl, args, ,
       x (i) = 0.0;
       
 
-#ifdef STANDALONE
+#if (CODEGENTARGET == STANDALONE)
   return x;
-#else
+#elif (CODEGENTARGET == OCTAVEDLD)
   return octave_value (x);
-#endif
+#endif // (CODEGENTARGET == STANDALONE)
 }

@@ -6,14 +6,21 @@
 #define	VECTOR_VALUE vector_value
 #endif // OCTAVE_DEV
 
-#ifdef STANDALONE
+// Code generation directives
+#define STANDALONE 0
+#define OCTAVEDLD  1
+#if (! defined (CODEGENTARGET))
+#define CODEGENTARGET STANDALONE
+#endif // (! defined (CODEGENTARGET))
+
+#if (CODEGENTARGET == STANDALONE)
 ColumnVector Fmtt_euler (      ColumnVector	&x,
 			 const ColumnVector	&dx,
 			 const double		&ddt,
 			 const int		&Nx,
 			 const ColumnVector	&openx)
 {
-#else // !STANDALONE
+#elif (CODEGENTARGET == OCTAVEDLD)
 DEFUN_DLD (mtt_euler, args, ,
 	   "euler integration method")
 {
@@ -22,7 +29,7 @@ DEFUN_DLD (mtt_euler, args, ,
   const double		ddt	= args(2).double_value ();
   const int		Nx	= static_cast<int> (args(3).double_value ());
   const ColumnVector   	openx	= args(4).VECTOR_VALUE ();
-#endif // STANDALONE
+#endif // (CODEGENTARGET == STANDALONE)
 
   register int i, n;
   
@@ -38,9 +45,9 @@ DEFUN_DLD (mtt_euler, args, ,
 	  x (i) += dx (i) * ddt;
 	}
     }
-#ifdef STANDALONE
+#if (CODEGENTARGET == STANDALONE)
   return x;
-#else // !STANDALONE  
+#elif (CODEGENTARGET == OCTAVEDLD)
   return octave_value (x);
-#endif // STANDALONE
+#endif // (CODEGENTARGET == STANDALONE)
 }

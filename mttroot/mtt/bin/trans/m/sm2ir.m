@@ -1,5 +1,5 @@
 function [Y,X] = sm2ir(A,B,C,D,T,u0,x0);
-% sm2ir - Constrained-state matrix to impulse response.
+% sm2ir - state matrix to impulse response.
 %
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %     %%%%% Model Transformation Tools %%%%%
@@ -17,6 +17,9 @@ function [Y,X] = sm2ir(A,B,C,D,T,u0,x0);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1996/12/05 10:17:34  peterg
+% %% Put in version control history.
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -50,15 +53,16 @@ Y = zeros(N,Ny);
 X = zeros(N,Nx);
 
 dt = T(2)-T(1);% Assumes fixed interval
-expAdt = expm(A*dt); % Compute matrix exponential
-expAt = one;
+##expAdt = expm(A*dt); % Compute matrix exponential
+##expAt = one;
 i = 0;
 x = (B*u0+x0);
 for t = T'
   i=i+1;
   if Nx>0
-    % expAt = expm(A*t);
-    x = expAdt*x;
+    ##expAt = expm(A*t);
+    ##x = expAdt*x;
+     x = expm(A*t)*(B*u0+x0);
     X(i,:) = x';
     if Ny>0
       y = C*x;

@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Makes subsystem structure files for partitioning
+# Copyright (C) 2000 by Peter J. Gawthrop
+
+sys=$1
+rep=$2
+lang=$3
+
+echo Creating structure files for subsystems
+# Get subsystems
+  subsystems=`mtt_get_subsystems -strip ${sys}`;
+
+for subsystem in $subsystems; do
+  grep $subsystem < ${sys}_struc.txt > ${sys}_${subsystem}_struc.txt
+done

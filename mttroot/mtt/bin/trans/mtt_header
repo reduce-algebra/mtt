@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.33  2001/05/26 15:46:38  gawthrop
+## Updated to account for new nonlinear ppp
+##
 ## Revision 1.32  2001/05/24 07:42:12  gawthrop
 ## Included and updated the missing tf_r2m
 ##
@@ -286,6 +289,13 @@ case $rep in
         output=mttx
         args=mttpar
         declarestates=yes
+	;;
+    sim)
+	states=no;
+        inputs=no;
+	parameters=no;
+        output='y,x'
+        args='x0,par,simpar,u'
 	;;
     ssim)
 	states=no;

@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2000/12/28 17:31:27  peterg
+% %% To RCS
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -34,17 +37,18 @@
 %	     blank
 
 % ---- Component labels ----
-	ppp_1	lin		ppp_1;ppp_1s
-	ppp_2	lin		ppp_2;ppp_2s
+% Component type Ae
+	ppp_1	slin		ppp_1;ppp_1s
+	ppp_2	slin		ppp_2;ppp_2s
 
 % Component type CS
-	c	lin		effort,c;x_0;cs;x_0s
+	c	slin		effort,c;x_0;cs;x_0s
 
 % Component type De
 	y	SS		external
 
 % Component type R
-	r	lin		flow,r;rs
+	r	slin		flow,r;rs
 
 % Component type Se
 	u1	SS		external;0

@@ -16,6 +16,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.310  2001/05/08 08:30:12  gawthrop
+## Added line to reverse the x^y --> pow(x,y) in default  _simp file to
+## prettyfy LaTeX
+##
 ## Revision 1.309  2001/04/28 03:15:03  geraint
 ## Fixed comment (interfered with "mtt help representations").
 ##
@@ -2624,21 +2628,25 @@ endif
 $1_ode2odes.c: $1_ode2odes.p 
 	mtt_p2c $info_switch $1 ode2odes
 
-#SUMMARY sim Octave simulation function (m)
+##SUMMARY sim Octave simulation function (m)
 
-ifeq ($computation,octave)
-$1_sim.m: $1_def.r $1_sympar.txt $1_cse.m $1_cseo.m $1_smxa.m $1_smxax.m $1_numpar.m $1_state.m
+#ifeq ($computation,octave)
+#$1_sim.m: $1_def.r $1_sympar.txt $1_cse.m $1_cseo.m $1_smxa.m $1_smxax.m $1_numpar.m $1_state.m
 	mtt_make_sim $1 $integration_method $computation 
-endif
+#endif
 
-ifeq ($computation,c)
-$1_sim.m: $1_def.r $1_sympar.txt $1_ode2odes.out $1_numpar.m $1_state.m
-	mtt_make_sim $1 $integration_method $computation 
-endif
+#ifeq ($computation,c)
+#$1_sim.m: $1_def.r $1_sympar.txt $1_ode2odes.out $1_numpar.m $1_state.m
+#	mtt_make_sim $1 $integration_method $computation 
+#endif
 
 #SUMMARY ssim Octave sensitivity simulation function (m)
 $1_ssim.m: $1_def.r
 	make_ssim $1 m
+
+#SUMMARY sim Octave simulation function (m)
+$1_sim.m: $1_def.r
+	make_sim $1 m
 
 #SUMMARY obs	observer equations for CGPC (r)
 #SUMMARY obs*	observer equations for CGPC (m)

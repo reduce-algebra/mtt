@@ -24,33 +24,29 @@ function [y,x,u,t,UU,UU_c,UU_l] = ppp_nlin_sim (system_name,i_ppp,i_par,A_u,w_s,
 
   ## System details -- defines simulation within ol interval
   par = eval(sprintf("%s_numpar;", system_name));
-  simpar = eval(sprintf("%s_simpar;", system_name))
-  x_0 = eval(sprintf("%s_state(par);", system_name))
+  simpar = eval(sprintf("%s_simpar;", system_name));
+  x_0 = eval(sprintf("%s_state(par);", system_name));
   [n_x,n_y,n_u] = eval(sprintf("%s_def;", system_name));
 
   ## Sensitivity system details -- defines moving horizon simulation
-  simpars = eval(sprintf("%s_simpar;", s_system_name))
+  simpars = eval(sprintf("%s_simpar;", s_system_name));
   sympars = eval(sprintf("%s_sympar;", s_system_name));
   pars = eval(sprintf("%s_numpar;", s_system_name));
 
   ## Times
   ## -- within opt horizon
-  n_Tau = round(simpars.last/simpars.dt)
-  dtau = simpars.dt
+  n_Tau = round(simpars.last/simpars.dt);
+  dtau = simpars.dt;
   Tau = [0:n_Tau-1]'*dtau;
   [n_tau,n_w] = size(w_s);
   tau = Tau(n_Tau-n_tau+1:n_Tau);
   w = w_s(length(w_s));		# Final value of setpoint
 
   ## -- within ol interval
-  n_t = round(simpar.last/simpar.dt)
+  n_t = round(simpar.last/simpar.dt);
   dt = simpar.dt;
   t_ol = [0:n_t-1]'*dt;
   T_ol = n_t*dt;
-
-  ## Weight and moving-horizon setpoint
-#   weight = [zeros(n_y,n_Tau-n_tau), ones(n_y,n_tau)]; 
-#   w_s = w*ones(n_tau,1);
 
   ## Create input basis functions
   [n_U,junk] = size(A_u);
@@ -156,18 +152,13 @@ function [y,x,u,t,UU,UU_c,UU_l] = ppp_nlin_sim (system_name,i_ppp,i_par,A_u,w_s,
     opt_time = time-tick;  
     printf("Optimisation %i took %i iterations and %2.2f sec\n", i, \
 	   length(Error), opt_time);
-    ##title(sprintf("Moving horizon trajectories: Interval %i",i));
-    ##grid;
-    ##plot(tau,Y)
     
     ## Generate control
     u_ol = u_star_t*U;		# Not used - just for show
 
     ## Simulate system over one ol interval
-    ## (Assumes that first gain parameter is one)
-    ##U = [u_ol zeros(n_t,n_u-1)]; # Generate the vector input
-    [y_ol,y_s,x_ol] = eval(sprintf("%s_ssim(x_0s, pars, simpar, u_star_t);", s_system_name));
-    
+    [y_ol,ys_ol,x_ol] = eval(sprintf("%s_ssim(x_0s, pars, simpar, u_star_t);", s_system_name));
+
     x_0  = x_ol(n_t+1,:)';	# Extract state for next time
     y_ol = y_ol(1:n_t,:);	# Avoid extra points due to rounding error 
     x_ol = x_ol(1:n_t,:);	# Avoid extra points due to rounding error 

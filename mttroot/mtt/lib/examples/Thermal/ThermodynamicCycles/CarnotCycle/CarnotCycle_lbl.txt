@@ -10,10 +10,10 @@
 #PAR T_0
 #PAR V_0
 #PAR alpha
+#PAR TopTemp
+
 
 #NOTPAR ideal_gas
-#NOTPAR	alpha
-#NOTPAR	TopTemp
 
 ## Label file for system CarnotCycle (CarnotCycle_lbl.txt)
 
@@ -22,6 +22,11 @@
 # ###############################################################
 # ## $Id$
 # ## $Log$
+# ## Revision 1.3  2003/08/13 17:03:00  gawthrop
+# ## Updated for new MTT
+# ## Use FMR in place of R
+# ## Fixed bug in sspar
+# ##
 # ## Revision 1.2  1998/08/10 16:40:07  peterg
 # ## Added VARs and parametrs
 # ##

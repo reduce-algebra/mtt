@@ -6,6 +6,11 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.3  2003/08/13 17:03:10  gawthrop
+# %% Updated for new MTT
+# %% Use FMR in place of R
+# %% Fixed bug in sspar
+# %%
 # %% Revision 1.2  2000/12/28 18:14:40  peterg
 # %% To RCS
 # %%
@@ -24,3 +29,6 @@ c_v = 	718.0;			# Parameter c_v for CU
 gamma_g = 1.4;			# Parameter gamma for CU
 m_g = 	P_0*V_0/(T_0*(gamma_g-1)*c_v); # Parameter m for CU
 
+## Use in input.txt
+alpha	= 1.0; # Added by MTT on Thu Aug 14 11:42:15 BST 2003
+toptemp	= 1.0; # Added by MTT on Thu Aug 14 11:42:15 BST 2003

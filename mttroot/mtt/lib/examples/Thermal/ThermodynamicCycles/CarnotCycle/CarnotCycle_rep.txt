@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  2000/12/28 18:14:40  peterg
+% %% To RCS
+% %%
 % %% Revision 1.1  1999/02/21 02:15:05  peterg
 % %% Initial revision
 % %%
@@ -18,9 +21,9 @@ mtt -ss -o CarnotCycle ss tex
 mtt -ss -o CarnotCycle numpar txt
 mtt -ss -o CarnotCycle input txt
 
-mtt -ss -c -o CarnotCycle odeso ps 'CarnotCycle_cycle_V'
-mtt -ss -c -o CarnotCycle odeso ps 'CarnotCycle_cycle_P'
-mtt -ss -c -o CarnotCycle odeso ps 'CarnotCycle_cycle_S'
-mtt -ss -c -o CarnotCycle odeso ps 'CarnotCycle_cycle_T'
-mtt -ss -c -o CarnotCycle odeso ps 'CarnotCycle_cycle_V:CarnotCycle_cycle_P'
-mtt -ss -c -o CarnotCycle odeso ps 'CarnotCycle_cycle_S:CarnotCycle_cycle_T'
+mtt -ss -o CarnotCycle odeso ps 'CarnotCycle__cycle__V'
+mtt -ss -o CarnotCycle odeso ps 'CarnotCycle__cycle__P'
+mtt -ss -o CarnotCycle odeso ps 'CarnotCycle__cycle__S'
+mtt -ss -o CarnotCycle odeso ps 'CarnotCycle__cycle__T'
+mtt -ss -o CarnotCycle odeso ps 'CarnotCycle__cycle__V:CarnotCycle__cycle__P'
+mtt -ss -o CarnotCycle odeso ps 'CarnotCycle__cycle__S:CarnotCycle__cycle__T'

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.36  1996/11/03  21:19:02  peterg
+# Recursice generation of Constitutive Relationship files.
+#
 ## Revision 1.35  1996/11/02 10:19:19  peterg
 ## Constitutive Relationship generation from lbl file
 ##
@@ -140,8 +143,6 @@ while [ -n "`echo $1 | grep '-'`" ]; do
   shift
 done
 
-echo $level
-
 #Print header if not in quiet (-q) mode.
 if [ "$quiet" != "quiet" ]; then
   echo
@@ -159,6 +160,7 @@ if [ "$1" = "" ]; then
   echo '       mtt warranty'
   echo '       mtt clean'
   echo '       mtt <system_name> clean'
+  echo '       mtt copy <system_name> <path_name>'
   echo '       mtt <system_name> <representation> vc'
   echo '       mtt <system_name> <representation> <language>'
   echo '       mtt <system_name> <representation> <language> <parameters>'
@@ -173,17 +175,7 @@ if [ "$1" = "info" ]  && [ "$3" = "" ]; then
 fi
 
 if [ "$1" = "help" ]; then
-  if [ "$2" = "" ]; then
-    echo 'Usage: mtt help reps'
-    echo '       mtt help comps'
-    echo '       mtt help crs'
-    echo '       mtt help reps <string>'
-    echo '       mtt help comps <string>'
-    echo '       mtt help crs <string>'
-    echo '       mtt help <component or cr name>'
-  else
-    mtt_help $2 $3
-  fi
+  mtt_help $2 $3
   exit
 fi
 
@@ -252,6 +244,25 @@ fi
 if [ "$2" = "abg" ] && [ "$3" = "fig" ]; then
   echo Editing $1_$2.$3
   ($FIG $1_$2.$3; cp $1_abg.fig $1_$1_abg.fig) &
+  exit
+fi
+
+# Copy systems from the library
+if [ "$1" = "copy" ]; then
+  # check that its not here already
+  file_exists=`ls $2_abg.fig 2> /dev/null`
+  if [ -n "$file_exists" ]; then
+    if [ "$quiet" != "quiet" ]; then    
+      echo $2_abg.fig exists already - no action taken
+    fi
+  else
+    path_name=$3
+    if [ "$path_name" = "" ]; then
+      path_name=$MTTPATH/examples
+    fi
+    echo Copying system $2 to here
+    find $path_name -name "$2_*.*" -exec cp {} . \;
+  fi
   exit
 fi
 
@@ -344,6 +355,13 @@ gmake -s  -f -  $1_$2.$3 << EOF
 # Cancel implicit rules I don't want
 %.dvi: %.tex
 
+# If level>0, try and get subsystem files
+ifneq ($level,"0")
+$1_abg.fig:
+	mtt -q copy $1 $MTTPATH/comp/compound
+endif
+
+
 # Create an arg file if it doesn't exist
 $1_args.m:
 	touch $1_args.m
@@ -372,12 +390,11 @@ $1_cr.r: $1_sub.sh
 	else \
 	  echo >>  MTT_cr.r; \
 	  echo "%% CRs for subsystem $1" >>  MTT_cr.r; \
-	  cat $1_cr.r >> MTT_cr.r; \
+	  cat $1_cr.r >> MTT_cr.r; rm -f $1_cr.r; \
 	fi
 
-	echo Creating subsystem cr files for system $1 ...; \
-	sh $1_sub.sh "mtt -q -l $level+1 " ' cr r'; \
-	echo Finished creating subsystem cr files for system $1; \
+	sh $1_sub.sh "mtt -q -l $level+1 " ' cr r'
+
 
 	if [ "$level" = "0" ]; then \
 	  mv MTT_cr.r $1_cr.r; \
@@ -394,7 +411,7 @@ $1_simp.r:
         )> $1_simp.r
 
 #REPRESENTATION numpar	numerical parameter declaration (m) 
-$1_numpar.m: $1_sympar.r
+$1_numpar.m: $1_sympar.r $1_params.m
 	sympar2numpar_r2m $1
 
 #REPRESENTATION params	numerical parameter setting (m)
@@ -406,6 +423,16 @@ $1_numpar.m: $1_sympar.r
 	cat $MTTPATH/trans/m/rcs_header.txt; \
 	echo; \
         )> $1_params.m
+
+#REPRESENTATION params	symbolic parameter setting (r)
+ $1_params.r: 
+	echo Creating $1_params.r
+	( \
+	echo "%% Parameter file for system $1 ($1_params.r)"; \
+	echo "%% This file provides symbolic parameters for simplification";\
+	cat $MTTPATH/trans/m/rcs_header.txt; \
+	echo 'END;'; \
+        )> $1_params.r
 
 #REPRESENTATION input	input signal definition (m)
 $1_input.m:
@@ -427,7 +454,7 @@ $1_input.m:
 $1_sspar.r:
 	echo Creating $1_sspar.r
 	(\
-	echo "%% Reduce steady-state parameter file for $1 ($1_sspar.r)" \
+	echo "%% Reduce steady-state parameter file for $1 ($1_sspar.r)"; \
 	cat $MTTPATH/trans/m/rcs_header.txt; \
 	echo 'END;'; \
 	)> $1_sspar.r
@@ -459,15 +486,15 @@ $1_sub.sh: $1_cmp.m
 
 #REPRESENTATION sympar	symbolic parameters (r)
 # Lbl to sympar conversion
-$1_sympar.r: $1_lbl.txt
+$1_sympar.r: $1_lbl.txt $1_params.r
 	lbl2sympar_txt2r $1
+	# echo "IN \"$1_params.r\";" >> $1_sympar.r
+	echo 'END;' >> $1_sympar.r
 
 #REPRESENTATION abg	acausal bond graph (m)
 #Raw bond graph to acausal bond graph: mfile
 $1_abg.m: $1_rbg.m $1_sub.sh
-	echo Creating subsystem abg files for system $1 ...
-	sh $1_sub.sh 'mtt -q ' ' abg m'
-	echo Finished creating subsystem abg files for system $1
+	sh $1_sub.sh "mtt -q -l $level+1 " ' abg m'
 	rbg2abg_m $1
 
 
@@ -516,7 +543,7 @@ $1_cse.r: $1_dae.r $1_def.r $1_sympar.r
 	dae2cse_r $1; tidy $1_cse.r
 $1_cse.m: $1_def.r $1_cse.r $1_sympar.r
 	cse_r2m $1; matlab_tidy $1_cse.m
-$1_cse.tex: $1_cse.r  $1_sympar.r
+$1_cse.tex: $1_cse.r  $1_sympar.r $1_simp.r
 	cse_r2tex $1; latex_tidy $1_cse.tex
 
 #REPRESENTATION ode	ordinary differential equations (r)

@@ -110,7 +110,7 @@ function [epar,Y] = ${sys}_ident (y,u,t,par_names,Q,extras)
   xlabel("t");
   ylabel("y");
   [N,M] = size(Y);
-  plot(t,Y(:,M),"1;Estimated;", t,y,"3;Actual;");
+  plot(t,Y(:,M-n_y+1:M),"1;Estimated;", t,y,"3;Actual;");
   figfig("${sys}_ident_comparison");
 
   ## Create a table of the parameters

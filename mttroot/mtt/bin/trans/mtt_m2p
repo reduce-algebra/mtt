@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.63  2000/12/04 08:24:29  peterg
+## Added swithc logic declarations
+##
 ## Revision 1.62  2000/12/03 17:15:18  peterg
 ## *** empty log message ***
 ##
@@ -500,8 +503,10 @@ BEGIN{
           printvar("x",Nx);
           printvar("u",Nu);
           printvar("y",Ny);
-          printvar("_tmp",N_tmp);
-          printvar("_s",N_tmp);
+	  if ((rep=="ode")||(rep=="odeo")||(rep=="csex")||(rep=="cseo")||(rep=="smx")||(rep=="smxa")||(rep=="smxax")){
+	    printvar("_tmp",N_tmp);
+	    printvar("_s",N_tmp);
+	  }
           printf("VAR mtt_i, mtt_j : INTEGER;\n");
           #if ( (rep=="smxa")||(rep=="smxax") ) {
           #  printvar("_t",Nt);

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  2000/09/01 12:14:57  peterg
+## Added connecti9ng inputs
+##
 ## Revision 1.4  1998/04/07 15:06:46  peterg
 ## Correct log file name
 ##
@@ -67,6 +70,21 @@
 ##
 ###############################################################
 
+
+while [ -n "`echo $1 | grep '^-'`" ]; do
+  case $1 in
+	-I )
+                info=info;;
+	-partition )
+                partition=yes;
+                blurb='with partitioning';
+		;;
+	*)
+		echo "$1 is an invalid argument - ignoring" ;;
+  esac
+  shift
+done
+
 #Create the top-level system name
 topname=$1
 
@@ -86,7 +104,7 @@ esename=$sysname"_ese.r"
 logname=ese2rdae.log
 
 # Inform user
-echo Creating $daename
+echo Creating $daename $blurb
 
 # Remove the old log file
 rm -f $logname
@@ -139,19 +157,59 @@ MTT_Matrix_n := MTTNyz$
 MTT_Matrix_m := 1$
 Reduce_Matrix()$
 
-% Connecting inputs
-MTT_Matrix := MTTuc$ 
-MTT_Matrix_name := "MTTuc"$
-MTT_Matrix_n := MTTNuc$
-MTT_Matrix_m := 1$
-Reduce_Matrix()$
 
-
-write ";END;";
 SHUT "$daename";
 quit;
 
 EOF
+
+if [ -n "$partition" ]; then
+  rm -f mtt_junk
+  # Now for the subsystems
+  # Find subsystems
+  subsystems=`sh rc2_type.sh 'echo ' ' ' | awk '{if (NR>1) print $2}'`
+
+  for subsystem in $subsystems; do
+  echo Doing $subsystem
+  ucname="MTT_"$subsystem"_uc"
+
+  Nu=`mtt_getsize -internal $subsystem"_1" u`
+  echo Nu $Nu
+
+  # Use symbolic algebra to accomplish the transformation
+  $SYMBOLIC >$logname  << EOF
+
+  %Read the formatting function
+  in "$MTTPATH/trans/reduce_matrix.r";
+
+  % Definitions
+  in "$defname";
+
+  % Elementary system equations
+  in "$esename";
+
+  OFF Echo;
+  OFF Nat;
+ 
+  %Create the output file
+  OUT "mtt_junk";
+  % Connecting inputs
+  MTT_Matrix := $ucname $
+  MTT_Matrix_name := "$ucname" $
+  MTT_Matrix_n := $Nu $
+  MTT_Matrix_m := 1$
+  Reduce_Matrix()$
+
+  shut "mtt_junk";
+EOF
+  echo >> $1_rdae.r
+  echo %Connections for subsystem $subsystem  >> $1_rdae.r
+  cat mtt_junk >> $1_rdae.r
+  rm -rf mtt_junk
+  done
+fi
+
+echo "END;" >> $1_rdae.r
 
 # Now invoke the standard error handling.
 mtt_error_r $logname

@@ -1,19 +1,22 @@
-%SUMMARY ISW: Switched I component
-%DESCRIPTION ISW acts as an I component except when the -s -c option is used.
+%SUMMARY CSW: Switched C component
+%DESCRIPTION CSW acts as an C component except when the -s -c option is used.
 %DESCRIPTION When the -s -c option is used:
 %DESCRIPTION   The component label is used as a variable name (eg Name)
 %DESCRIPTION   In the ode simulation:
-%DESCRIPTION     Name = 1 implies normal I (closed switch)
+%DESCRIPTION     Name = 1 implies normal C (closed switch)
 %DESCRIPTION     Name = 0 implies state=0 (open switch)
 %DESCRIPTION     Name = -1 implies state>0 (Diode)
 
-%% Label file for system ISW (ISW_lbl.txt)
+%% Label file for system CSW (CSW_lbl.txt)
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1997/06/16  10:55:20  peterg
+% %% Initial revision
+% %%
 % %% Revision 1.1  1997/06/03 15:26:09  peterg
 % %% Initial revision
 % %%
@@ -26,5 +29,5 @@
 
 
 
-% Component type I
+% Component type C
 	MTT_SWITCH		$1	$1

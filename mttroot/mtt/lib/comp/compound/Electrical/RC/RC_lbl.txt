@@ -1,0 +1,36 @@
+%% Label file for system RC (RC_lbl.txt)
+%SUMMARY RC A Simple two-port RC circuit
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS	in	in
+%ALIAS	out	out
+
+% Argument aliases
+%ALIAS	$1	c
+%ALIAS	$2	r
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+% Component type C
+	c		lin	effort,c
+
+% Component type R
+	r		lin	flow,r
+
+% Component type SS
+	[in]	SS		external,external
+	[out]	SS		external,external

@@ -64,8 +64,8 @@ test = test
     Delta_ol = dt;
   endif
   t_last = t(length(t));
-  T_cl = 0:Delta_ol:t_last-Delta_ol; # Closed-loop time vector
-  T = 0:dt:t_last;		# Overall time vector
+  T_cl = 0:Delta_ol:2*t_last-Delta_ol; # Closed-loop time vector
+  T = 0:dt:2*t_last;		# Overall time vector
  
   ## Lengths thereof
   n_Tcl = length(T_cl);
@@ -104,7 +104,7 @@ test = test
 
   ## disp("Simulating ...");
   for t=T_cl			# Outer loop at Delta_ol
-
+    printf("%g\r",t);
     ##disp(sprintf("Time %g", t));
     ## Output constraints
     [Gamma_y,gamma_y] = ppp_output_constraints  (A,B,C,D,x,A_u,Tau_y,Min_y,Max_y,Order_y);

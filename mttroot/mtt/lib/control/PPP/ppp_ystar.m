@@ -24,8 +24,14 @@ function [ys,us,xs,xu,AA] = ppp_ystar (A,B,C,D,x_0,A_u,U,tau)
   ## Copyright (C) 1999 by Peter J. Gawthrop
   ## 	$Id$	
 
-
-  [n_x,n_u,n_y] = abcddim(A,B,C,D); # System dimensions
+  if (size(A)>0)
+    [n_x,n_u,n_y] = abcddim(A,B,C,D); # System dimensions
+  else
+    n_x = 0;
+    n_y = 0;
+    n_u = 0;
+  endif
+  
   no_system = n_x==0;
 
   [n,m] = size(A_u);		# Size of composite A_u matrix
@@ -117,7 +123,12 @@ function [ys,us,xs,xu,AA] = ppp_ystar (A,B,C,D,x_0,A_u,U,tau)
     xxt = expm(AA*t)*xx_0;	# Composite state
     xst = xxt(1:n_x);		# x star
     xut = xxt(n_x+1:n_xx);	# x star
-    yst = C*xst;		# y star
+    if length(C)>0
+      yst = C*xst;		# y star
+    else
+      yst = [];
+    endif
+    
     ust = Utilde*xut;		# u star
 
     xs = [xs xst];		# x star

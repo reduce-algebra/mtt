@@ -15,7 +15,7 @@ function A_m = ppp_inflate (A_v)
   
   n = N/M;			# Number of matrix elements in A_v
 
-  if round(n)<>n
+  if round(n)!=n
     error("A_v must be a column vector of square matrices");
   endif
   

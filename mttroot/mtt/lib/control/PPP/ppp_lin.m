@@ -169,7 +169,8 @@ function [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,cond_uu] = ppp_l
 
   ## Input weighting (scalar for the moment)
   if (n_u>1)
-    warning("Sorry, cant do n_u>1 just now");
+    warning("Sorry, cant do n_u>1 just now: exiting");
+    return
   endif
 
   ## Scale R

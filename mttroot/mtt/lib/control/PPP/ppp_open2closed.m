@@ -18,7 +18,7 @@ function [K_x T] = ppp_open2closed (A_u,A_c,k_x,x_0);
   n_o = is_square(A_u);
   n_c = is_square(A_c);
 
-  if (n_o==0)||(n_c==0)||(n_o<>n_c)
+  if (n_o==0)||(n_c==0)||(n_o!=n_c)
     error("A_u and A_c must be square and of the same dimension");
   endif
 

@@ -42,7 +42,8 @@ function  [name,T,y,u,ye,ue,J] = ppp_ex15 (ReturnName)
   Delta_ol = 0.5		# Intermittent time
 
   disp("Intermittent control simulation");
-  [T,y,u] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, \
+  R=1;P=0;
+  [T,y,u] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q,R,P, \
 			  [],[],[],[], \
 			  [],[],[],[],W,x_0,Delta_ol);
 size(T)

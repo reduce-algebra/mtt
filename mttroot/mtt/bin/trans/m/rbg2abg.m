@@ -7,6 +7,9 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.46  2000/09/11 08:22:02  peterg
+  ## ## Checks for absent port list in subsystem abg file.
+  ## ##
   ## ## Revision 1.45  1999/10/19 02:13:31  peterg
   ## ## Now assigns correct bonds to the new junction port names
   ## ##
@@ -223,8 +226,8 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
     [rows,cols]=size(near_bond);
     if rows>1
       error(sprintf ...
-	    ("A port is near to more than one bond at coordinates %g,%g\n", ...
-	     port_coord(i,1)/scale,  port_coord(i,2)/scale));
+	    ("A port is near to more than one bond at coordinates %g,%g %s\n", ...
+	     port_coord(i,1)/scale,  port_coord(i,2)/scale, deblank(port_name(i,:))));
     endif
     
 
@@ -360,7 +363,7 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
 				# index
 	  port_bond(port_name_index,:) = signed_bond; # add to port bond
 	else  
-	  port_name_i = mtt_strip_name(port_name(port_name_index,:));
+	  port_name_i = mtt_strip_name(port_name(port_name_index,:))
 	  ## port_name_i = deblank(port_name(port_name_index,:));
 	  ## port_name_i = port_name_i(2:length(port_name_i)-1) # strip []
 	endif
@@ -670,22 +673,3 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
   endfor
 
 endfunction
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

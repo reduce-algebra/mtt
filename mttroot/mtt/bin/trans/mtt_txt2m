@@ -15,6 +15,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.11  2000/10/17 09:55:21  peterg
+# %% Added logic rep
+# %%
 # %% Revision 1.10  2000/10/15 09:51:50  peterg
 # %% Set array code in input rep
 # %%
@@ -217,7 +220,7 @@ if [ -n "$arraycode" ]; then
   if [ "$new_style" = "1" ]; then
     echo >> $outfile
     echo "  ## Set up the $name vector"  >> $outfile
-    echo "  $name = []; # Default to empty matrix (Remove in mtt_m2p)"  >> $outfile
+    ## echo "  $name = []; # Default to empty matrix (Remove in mtt_m2p)"  >> $outfile
     mtt_name2array $1 $arraycode set   >> $outfile
   else
     echo "Old-style file detected: not creating array translations"  
@@ -228,15 +231,9 @@ fi
 if [ "$representation" = "logic" ]; then
   echo >> $outfile
   echo "## Open switches" >> $outfile
-  switch_txt2m Bounce >> $outfile
+  switch_txt2m $system >> $outfile
 fi
 
 # End of the function
 echo '## END Code' >> $outfile
 echo 'endfunction' >> $outfile
-
-
-
-
-
-

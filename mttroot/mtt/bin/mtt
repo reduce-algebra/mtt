@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.25  1996/08/30 20:03:45  peter
+## Removed dependencies from vc
+##
 ## Revision 1.24  1996/08/30 18:37:17  peter
 ## inor changes.
 ##
@@ -160,7 +163,7 @@ if [ "$1" = "clean" ] && [ "$2" = "" ]; then
   rm -f *_abg.m *_args.*
   rm -f *_rbg.* *_cmp.* *_fig.fig *_*cbg.* *_ese.* *_def.*
   rm -f *_dae*.* *_cse.* *_ode*.* *_obs.* *_rfe.* *_ss.*
-  rm -f *_dm.* *_csm.* *_sm.* *_tf.* *_sr*.* *_*fr.*
+  rm -f *_dm.* *_csm.* *_sm.* *_tf.* *_sr*.* *_ir*.* *_*fr.*
   rm -f *_rep.*
   rm -f mtt_error.txt mtt_info.txt
   exit
@@ -173,7 +176,7 @@ if [ "$2" = "clean" ] && [ "$3" = "" ]; then
   rm -f $1_abg.m $1_args.* 
   rm -f $1_rbg.* $1_cmp.* $1_fig.fig $1*_*cbg.* $1*_ese.* $1_def.*
   rm -f $1_dae*.* $1_cse.* $1_ode*.* $1_obs.* $1_rfe.* $1_ss.*
-  rm -f $1_dm.* $1_csm.* $1_sm.* $1_tf.* $1_sr*.* $1_*fr.*
+  rm -f $1_dm.* $1_csm.* $1_sm.* $1_tf.* $1_sr*.* $1_ir*.* $1_*fr.*
   rm -f $1_rep.*
   rm -f mtt_error.txt mtt_info.txt
   exit
@@ -216,6 +219,10 @@ case $2 in
 	daes)
 		REPTYPE='data' ;;
 	daeso)
+		REPTYPE='data' ;;
+	ir)
+		REPTYPE='data' ;;
+	iro)
 		REPTYPE='data' ;;
 	sr)
 		REPTYPE='data' ;;
@@ -455,6 +462,10 @@ $1_tf.tex: $1_def.r $1_tf.r $1_sympar.r $1_simp.r
 
 
 #Time responses
+$1_ir.m: $1_sm.m $1_numpar.m $1_args.m $1_def.m
+	sm2ir_m $1 '$ARGS'
+$1_iro.m: $1_ir.m
+	touch $1_iro.m
 $1_sr.m: $1_sm.m $1_numpar.m $1_args.m $1_def.m
 	sm2sr_m $1 '$ARGS'
 $1_sro.m: $1_sr.m

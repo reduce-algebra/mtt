@@ -1,0 +1,24 @@
+# Outline report file for system LiquidTurbine (LiquidTurbine_rep.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+mtt -o -ss LiquidTurbine abg tex
+mtt -o -ss LiquidTurbine struc tex
+mtt -o -ss LiquidTurbine sympar tex
+mtt -o -ss LiquidTurbine ss tex
+mtt -o -ss LiquidTurbine ode tex
+
+
+mtt -o -ss LiquidTurbine numpar txt
+mtt -o -ss LiquidTurbine input txt
+
+mtt -o -ss LiquidTurbine odeso ps 'LiquidTurbine_Heat'
+mtt -o -ss LiquidTurbine odeso ps 'LiquidTurbine_Work'
+mtt -o -ss LiquidTurbine odeso ps 'LiquidTurbine_in_Hy_in'
+mtt -o -ss LiquidTurbine odeso ps 'LiquidTurbine_out_Hy_out'
+mtt -o -ss LiquidTurbine odeso ps 'LiquidTurbine_out_Th_out'

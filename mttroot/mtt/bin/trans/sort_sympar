@@ -1,0 +1,37 @@
+#!/bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: sort_sympar
+# Sorts the symbolic parameters in a nice way.
+# P.J.Gawthrop March 1998
+# Copyright (c) P.J.Gawthrop, 1998.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+# Step 1: sort by variable name
+# Step 2: put all varables with same name on same line
+
+
+sort -k 1,1  | \
+awk '{
+    var = $1; sys = $2;
+    if (var==oldvar) {
+      oldsys=sprintf("%s,%s",oldsys,sys)
+    }
+    else{
+      if (length(oldvar)>0) print oldvar "\t" oldsys;
+      oldvar=var; oldsys=sys
+    }
+}
+END{
+    print oldvar "\t" oldsys;
+}' 

@@ -12,6 +12,14 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.16  1996/12/30 20:00:29  peterg
+## Fixed bent-bond bug.
+## NB unfixed problems:
+## 1. xfig writes multi line fields if more than about 5 segments.
+## 2. rbg2abg takes a multi-segment bond as a straignt line between the
+## end points - so computation of stroke and arrow directions may be
+## iffy.
+##
 ## Revision 1.15  1996/12/30 19:23:35  peterg
 ##  Allows for bent bonds - ie bonds with more than 2 line segments.
 ##
@@ -70,6 +78,7 @@
 #    field 1 = 2 (always 2)
 #    field 2 = 1 (polyline)
 #    field 3 = 0 (style is a firm line)
+#    field 7 = 0 (depth is zero [top level])
 #    field 14 = 0 (no forward arrow)
 #    field 15 = 0 (backward arrow) 
 #    field 16 = Number of point in line (points=segments+1)
@@ -144,14 +153,22 @@ function process_text() {
   for (i=15; i<=NF; i++) {
     str = sprintf("%s %s", str, $i)
       }
+
+# The depth is field 4
+  depth = $4; 
+
 # It is terminated by /001 - so delete this termination
   str = substr(str,1,length(str)-4);
 
 # A component string contains only alphanumeric  _ and :
   isa_plain_component = match(str, component_regexp)==0;
+# It must also be specified at depth 0
+  isa_plain_component = isa_plain_component && (depth==0);
 
 # A port is an integer within [] and no alpha characters
   isa_port = (match(str, port_regexp)>0)&&(match(str, nonport_regexp)==0);
+# It must also be specified at depth 0
+  isa_port = isa_port && (depth==0);
 
 # A port component is SS followed by : followed by a port string
   isa_port_component = 0;
@@ -160,7 +177,9 @@ function process_text() {
     isa_port_component = (exact_match(a[1], "SS"))&&
       (match(a[2], port_regexp)>0)
       }
-    
+# It must also be specified at depth 0
+  isa_port_component = isa_port_component && (depth==0);
+
 # A component is a plain or a port component
   isa_component = isa_plain_component||isa_port_component;
 
@@ -346,6 +365,7 @@ function process_fig() {
     object = $1;
     sub_type = $2;
     style = $3;
+    zero_depth = (($7==0)&&(object=polyline)) || (($4==0)&&(object=text));
     f_arrow = ($14==1)&&(object=polyline);
     b_arrow = ($15==1)&&(object=polyline);
     arrow = f_arrow||b_arrow;
@@ -359,7 +379,7 @@ function process_fig() {
 
 # Process bond
   if ( \
-(data_line)&& \
+(data_line)&& zero_depth &&\
        (object==polyline)&& \
        (sub_type==sub_polyline)&& \
        (style==firm_style) \

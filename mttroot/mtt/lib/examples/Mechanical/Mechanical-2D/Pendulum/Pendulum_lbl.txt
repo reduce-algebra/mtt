@@ -1,5 +1,11 @@
-%SUMMARY Pendulum example from Section 10.3 of "Metamodelling"
-%DESCRIPTION <Detailed description here>
+%SUMMARY pendulum: Pendulum example from Section 10.3 of "Metamodelling"
+%DESCRIPTION This is a heirachical version of the 
+%DESCRIPTION example from Section 10.3 of "Metamodelling".
+%DESCRIPTION It uses two compound components: ROD and GRA
+%DESCRIPTION ROD is essentially as described in Figure 10.2
+%DESCRIPTION GRAV represents gravity by a vertical accelleration
+%DESCRIPTION as in Section 10.9 of "Metamodelling".
+
 %% Label file for system pend (pend_lbl.txt)
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -7,6 +13,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% Revision 1.1  1996/11/09  18:44:58  peterg
+% Initial revision
+%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:
@@ -19,18 +28,19 @@ rod	none	l;l;j;m
 
 %Zero velocity sources
 v_x	internal	0
-v_y	internal	0
 
 %Zero force/torque sources
 F_x	0	internal
 F_y	0	internal
 F_a	0	internal
-F_cx	0	internal
 
 %Torque at end
 f_a	external external
 
 %Gravity
-F_cy	mg	internal
+gravity
+
+
+
 
 

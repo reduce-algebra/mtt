@@ -16,6 +16,10 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.24  2000/11/30 15:12:55  peterg
+## Zapped the declaration of subsystem connections - now in individual
+## .def files
+##
 ## Revision 1.23  2000/11/30 15:07:28  peterg
 ## Sorted out mtt_getsize
 ##
@@ -128,6 +132,7 @@ echo Creating $deffile
 echo Creating $structurefile
 
 # Use matrix manipulation to accomplish the transformation
+# This creates an ese file for every subsystem.
 $MATRIX << EOF > cbg2ese_m2r.log 2>mtt_error.txt
 
 infofile = "$infofile";;
@@ -154,12 +159,15 @@ structure = cbg2ese(system_name, system_type, system_cr, ...
 makedef(structure,deffilenum);
 EOF
 
+echo "END;" >> $1_def.r
+
 if [ "$info" = "info" ]; then
   cat $infofile
 fi
 
 if [ -z "$partition" ]; then
-  # Don't partition
+  ## Don't partition
+
   # Create the composite ese file
   cat $1_ese.r $1_*_ese.r  > $1_ese.tmp 2>> /dev/null
 
@@ -167,12 +175,19 @@ if [ -z "$partition" ]; then
 
   # Zap the sub ese files
   rm -f $1_*_ese.r
-else # Partition the system
-  # Find subsystems
-  subsystems=`mtt_get_subsystems $1`
 
-  # Top level  
-# The top-level definition file
+  echo "END;" >> $1_ese.r
+
+else # Partition the system
+
+  # Save up the full def file
+  mv $1_def.r mtt_all_def.r
+
+## Recreate def file from the ese file directly
+function makedef {
+
+echo Creating $1_def.r
+
 Nx=`mtt_getsize -external $1 dX`
 Nz=`mtt_getsize -external $1 z`
 Ny=`mtt_getsize -external $1 y`
@@ -200,7 +215,16 @@ octave -q <<EOF
   makedef(structure,deffilenum);  #Create definitions
 EOF
 
-  ## Extra bits for the ese file to define connections
+echo "END;" >> $1_def.r
+}
+  # Find subsystems
+  subsystems=`mtt_get_subsystems $1`
+
+  # Top level  
+  makedef $1;
+  echo "END;" >> $1_ese.r
+
+  ## Subsystems
   for subsystem in $subsystems; do
     echo Connecting $subsystem
 #    Ny=`mtt_getsize -internal ${subsystem}_1 y`
@@ -218,12 +242,30 @@ EOF
       printf("MTT_%s_uc(%i,1) := %s_1_MTTu%i;\n", "$subsystem", i, "$subsystem", i);
     endfor;
 EOF
-done
+  ## Subsystems (Only works when no repetitions at this level)
+  esefile=${subsystem}_ese.r
+  echo Creating $esefile
+  cat ${subsystem}_1_ese.r ${subsystem}_1_*_ese.r > $esefile 2> /dev/null
+  echo "END;" >> $esefile
+
+  ## Def file for subsystem
+  #makedef ${subsystem}
+  
+  echo Creating ${subsystem}_def.r
+  cp mtt_all_def.r ${subsystem}_def.r
+
+  echo Creating ${subsystem}_struc.txt
+  grep $subsystem < $1_struc.txt > ${subsystem}_struc.txt
+  echo "Creating indices (needs more work to convert subsystem indices)"
+  whichs="input output state"
+  for which in $whichs; do
+    indices=`mtt_get_subindex $subsystem $which`
+    echo "  $which $indices"
+  done
+  done
 
 fi
 
-echo "END;" >> $1_ese.r
-echo "END;" >> $1_def.r
 
 # Create the _alised file
 touch mtt_aliased.txt
@@ -236,6 +278,10 @@ sort -k 1,1 -k 2,2n junk >$structurefile
 
 # Now invoke the standard error handling.
 mtt_error mtt_error.txt
+
+
+
+
 
 
 

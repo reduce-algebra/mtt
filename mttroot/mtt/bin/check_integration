@@ -1,0 +1,17 @@
+#!/bin/sh
+
+## Check if obsolete method of specifiying integration method in use.
+if [ -f "$1_simpar.txt" ]; then
+  method_line=`grep -i METHOD  $1_simpar.txt`
+  if [ -n "`echo $method_line | grep -i euler`" ]; then
+     echo "$1_simpar.txt contains Euler method - please use mtt -i euler in future"
+     mtt_switches="$mtt_switches -i euler";
+  elif [ -n "`echo $method_line | grep -i implicit`" ]; then
+     echo "$1_simpar.txt contains Implicit method - please use mtt -i implicit in future"
+     mtt_switches="$mtt_switches -i implicit";
+  fi
+fi
+
+echo Invoking mtt $mtt_switches $1 $2 $3 $4
+
+mtt $mtt_switches $1 $2 $3 $4

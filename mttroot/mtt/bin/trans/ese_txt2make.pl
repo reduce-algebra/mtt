@@ -1,6 +1,6 @@
 #! /usr/bin/perl -w
 #
-#     ese_r2make.pl - sorts equations using Make
+#     ese_txt2make.pl - sorts equations using Make
 #     Copyright (C) 2004  Geraint Paul Bevan
 #
 #     This program is free software; you can redistribute it and/or modify
@@ -43,7 +43,7 @@ GetOptions ('sys=s'	=> \$sys,
 	    'outfile=s'	=> \$outfile);
 
 # default file names
-$infile	 = "${sys}_ese.r"	if ($infile  eq '');
+$infile	 = "${sys}_ese.txt"	if ($infile  eq '');
 $outfile = "${sys}_ese.make"	if ($outfile eq '');
 
 #-------------------------------------------------------------------------------
@@ -51,13 +51,13 @@ $outfile = "${sys}_ese.make"	if ($outfile eq '');
 #-------------------------------------------------------------------------------
 
 if ($debug) {
-    my $logfile = "ese_r2make_${sys}.log";
-    open (LOG, ">$logfile") or die ("MTT: ese_r2make, cannot open $logfile");
+    my $logfile = "ese_txt2make_${sys}.log";
+    open (LOG, ">$logfile") or die ("MTT: ese_txt2make, cannot open $logfile");
 }
 
 # First the elementary system equations are read
 # and placed in the "expressions" hash.
-read_ese_r ();
+read_ese_txt ();
 
 # Then the occurence of any lvalue in the expression
 # of any other is sought. 
@@ -73,20 +73,14 @@ close (LOG) if ($debug);
 #-------------------------------------------------------------------------------
 # subroutines
 #-------------------------------------------------------------------------------
-sub read_ese_r {
+sub read_ese_txt {
 
     open (ESE, $infile)
-	or die ("MTT Error:\nese_r2make, cannot open $infile\n");
+	or die ("MTT Error:\nese_txt2make, cannot open $infile\n");
 
-    $/ = ';';			# statements are terminated by ;
     while (<ESE>) {
 
 	chomp;
-	s/%.*\n//g;		# strip comments (% to end of line)
-	s/(\s)*//g;		# strip whitespace
-	s/^END$//;		# strip junk
-
-	next if /^(\s)*$/;	# skip blank lines
 
 	# separate the left and right side of equations
 	# and assign them to the expressions hash
@@ -135,7 +129,7 @@ sub write_make {
 	} elsif ($lvar =~ /^${sys}_/) {
 	    @list_of_tmpvars = (@list_of_tmpvars, $lvar);
 	} else {
-	    die "MTT Error:\nese_r2make, unclassified variable: $lvar\n";
+	    die "MTT Error:\nese_txt2make, unclassified variable: $lvar\n";
 	}
     }
     my @sorted_rates   = sort (@list_of_rates);
@@ -146,7 +140,7 @@ sub write_make {
 
     # write the header
     open (ESE, ">$outfile") or
-	die ("MTT Error:\nese_r2make, cannot open $outfile\n");
+	die ("MTT Error:\nese_txt2make, cannot open $outfile\n");
 
     my $date = localtime;
 

@@ -17,6 +17,14 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.20  1997/08/18 12:45:24  peterg
+% %% Replaced: comp_bonds = bonds(bond_list,:)
+% %% by: 	for kk = 1:n_comp
+% %% 	  comp_bonds(kk,:) = bonds(comp(kk),:);
+% %% 	end;
+% %%
+% %% to avoid an octave bug in 1.92.
+% %%
 % %% Revision 1.19  1997/08/18 11:23:59  peterg
 % %% Main component loop now misses out the ports (SS:[]) -- the causality
 % %% is merely passed through these components.
@@ -217,8 +225,9 @@ while( ci_index>0)
 	% a loop -- but check on V2.0
       	% comp_bonds = bonds(bond_list,:)
 	
-	for kk = 1:n_comp
-	  comp_bonds(kk,:) = bonds(comp(kk),:);
+	comp_bonds=[];
+	for kk = 1:n_bonds
+	  comp_bonds(kk,:) = bonds(bond_list(kk),:);
 	end;
 	
 
@@ -244,13 +253,12 @@ while( ci_index>0)
 	end;
 
       else % its a simple component
+	disp(['---', name, ' (', cause_name, ') ---']);
 	comp_bonds_in = comp_bonds
 
 	% Convert from arrow orientated to component orientated causality
 	comp_bonds = comp_bonds.*direction;
 	
-	disp(['---', name, ' (', cause_name, ') ---']);
-
         % Evaluate the built-in causality procedure
 	eval([ '[comp_bonds,status(i)] = ', cause_name, '(comp_bonds);' ]);
 

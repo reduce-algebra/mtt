@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.57  2004/06/20 10:18:00  gawthrop
+## Explicitly size vectors - avoid default row vector bug
+##
 ## Revision 1.56  2003/04/17 20:07:33  geraint
 ## Added rule to create _sese.m
 ##
@@ -291,6 +294,7 @@ case $rep in
 	parameters=yes;
         output='mttdx,mtte'
         args=$eqnargs
+	zeromatrices='dx,e'
 	;;
     csex)
 	states=yes;
@@ -329,6 +333,7 @@ case $rep in
 	  parameters=yes;
           declareinputs=yes
 	  declarestates=yes
+	  zeromatrices=u
         fi
 	;;
     logic)
@@ -354,6 +359,7 @@ case $rep in
 	parameters=yes;
         output='mttdx'
         args=$eqnargs
+	zeromatrices='dx'
 	;;
     odeo)
 	states=yes;
@@ -361,6 +367,7 @@ case $rep in
 	parameters=yes;
         output='mtty'
         args=$eqnargs
+	zeromatrices='y'
 	;;
     ode2odes)
 	states=no;
@@ -383,6 +390,7 @@ case $rep in
 	parameters=yes;
 	output="mttdx,mtty";
 	args=$eqnargs;
+	zeromatrices="dx,y";
 	;;
     sm)
 	states=no;
@@ -415,6 +423,7 @@ case $rep in
         output=mttx
         args=mttpar
         declarestates=yes
+	zeromatrices=x
 	;;
     sim)
 	states=no;
@@ -579,11 +588,20 @@ for name in $zeromatrices; do
 	e)
 	    N=$Nx; M=$Nx
 	    ;;
+	x)
+	    N=$Nx; M=1
+	    ;;
+	dx)
+	    N=$Nx; M=1
+	    ;;
 	edx)
 	    N=$Nx; M=1
 	    ;;
 	y)
 	    N=$Ny; M=1
+	    ;;
+	u)
+	    N=$Nu; M=1
 	    ;;
 	open)
 	    N=$Nx; M=1

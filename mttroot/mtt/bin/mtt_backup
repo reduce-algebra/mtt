@@ -1,20 +1,15 @@
 #!/bin/sh
 # Does a backup with date of selected files.
 
-#Name of archive
-if [ -z $2 ]; then
-    mtt="mtt"
-else
-    mtt="mtt-$2"
-fi
 
+while [ -n "`echo $1 | grep '^-'`" ]; do
 case $1 in
     -d)
-         filename=`date | awk '{printf("%s_%s%s_%s.tgz\n", mtt, $2,$3,$6)}' mtt=$mtt`;
+         format=date;
 	 shift
 	;;
     -v)
-         filename=`mtt --version | awk '{printf("%s-%s.tar.gz\n", mtt, $NF)}' mtt=$mtt`;
+         format=version;
 	 shift
 	;;
     -h)
@@ -22,16 +17,38 @@ case $1 in
 	 exit
 	;;
     *)
+         format=date;
+esac
+done
 
-         filename=`date | awk '{printf("$mtt$2_%s%s_%s.tgz\n", $2,$3,$6)}'`
+#Name of archive
+if [ -z "$1" ]; then
+    mtt="mtt"
+else
+    mtt="mtt-$1"
+fi
+
+## Create appropriate filename
+case $format in
+    date)
+         filename=`date | awk '{printf("%s_%s%s_%s.tgz\n", mtt, $2,$3,$6)}' mtt=$mtt`;
+	 shift
+	;;
+    version)
+         filename=`mtt --version | awk '{printf("%s-%s.tar.gz\n", mtt, $NF)}' mtt=$mtt`;
+	 shift
+	;;
+
+    *)
+
 esac
 
 echo Backup file $filename
 
-exit
+
 
 #Files to backup
-dir="mtt"
+dir=$mtt
 
 #Check whether archive exists here
 if [ -f "$filename" ]; then

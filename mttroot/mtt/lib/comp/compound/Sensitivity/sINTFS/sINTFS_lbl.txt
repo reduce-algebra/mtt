@@ -1,5 +1,5 @@
-%% Label file for system sINTF (sINTF_lbl.txt)
-%SUMMARY sINTF Sensitivity version of INTF
+%% Label file for system sINTFS (sINTFS_lbl.txt)
+%SUMMARY sINTFS Sensitivity version of INTF with initial state
 %DESCRIPTION <Detailed description here>
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -18,6 +18,8 @@
 %ALIAS	out	out_1,out_2
 
 % Argument aliases
+%ALIAS	$1      e_0
+%ALIAS	$2      k_s
 
 %% Each line should be of one of the following forms:
 %	     a comment (ie starting with %)
@@ -26,9 +28,9 @@
 
 % ---- Component labels ----
 
-% Component type INTF
-	intf_1
-	intf_2
+% Component type INTFS
+	intf_1    none	e_0
+	intf_2    none  k_s
 
 % Component type SS
 	[in_1]	SS		external,external

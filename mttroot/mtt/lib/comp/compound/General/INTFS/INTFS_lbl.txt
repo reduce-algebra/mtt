@@ -1,23 +1,26 @@
-%% Label file for system sINTF (sINTF_lbl.txt)
-%SUMMARY sINTF Sensitivity version of INTF
-%DESCRIPTION <Detailed description here>
+%% Label file for system INTF (INTF_lbl.txt)
+%SUMMARY	INTFS: flow integrator with explicit initial state
+%DESCRIPTION	Port [in]:	Flow to be integrated
+%DESCRIPTION	Port [out]:	Effort = integral of flow on port [in]
+
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
-% %% Revision 1.1  2000/12/28 10:32:30  peterg
-% %% Put under RCS
+% %% Revision 1.3  1998/07/16 07:35:10  peterg
+% %% Aliased version
 % %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 % Port aliases
-%ALIAS	in	in_1,in_2
-%ALIAS	out	out_1,out_2
+%ALIAS	in	Flow
+%ALIAS	out	Integrated_flow
 
 % Argument aliases
+%ALIAS	$1	e_0
 
 %% Each line should be of one of the following forms:
 %	     a comment (ie starting with %)
@@ -26,12 +29,10 @@
 
 % ---- Component labels ----
 
-% Component type INTF
-	intf_1
-	intf_2
+% Component type CS
+         unit                   lin             effort,1;e_0
 
 % Component type SS
-	[in_1]	SS		external,external
-	[in_2]	SS		external,external
-	[out_1]	SS		external,external
-	[out_2]	SS		external,external
+	[Flow]			SS		external,external
+	[Integrated_flow]	SS		external,external
+

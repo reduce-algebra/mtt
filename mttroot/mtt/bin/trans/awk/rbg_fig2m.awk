@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.42  2002/03/26 12:05:27  geraint
+## Escaped characters to eliminate awk warnings.
+##
 ## Revision 1.41  2001/06/13 10:41:06  gawthrop
 ## Further changes towards aouto creation of lbl files.
 ## Prettified lbl files
@@ -268,6 +271,17 @@ function fig_info() {
 		 $8, $9, $10, $11))
 	 }
 
+function type_name(type) {
+    if (type==1)
+      return "one"
+    else {
+      if (type==0)
+        return "zero"
+      else
+        return type
+    }
+}
+
 function process_text() {
 # The text string is field 14 onwards
   str = $14; 
@@ -408,9 +422,18 @@ label[i_label,3] = args
 
 # Unnamed component
     if (named_component==0) {
-      i_name++;
-      name = sprintf("mtt%i", i_name);
       type = str;
+
+      if (type in name_index) 
+        name_index[type]++
+      else
+        name_index[type] = 1;
+
+      if (name_index[type]==1)
+        name = sprintf("%s", type_name(type))
+      else
+        name = sprintf("%s%i", type_name(type), name_index[type]);
+
       i_label++;
       label[i_label,1] = name;
       label[i_label,2] = default_cr;
@@ -660,7 +683,6 @@ BEGIN {
   i_arrow = 0;
   i_label = 0;
   i_text = 0;
-  i_name = 0;
   i_port_component = 0;
 
   component_index = 0;

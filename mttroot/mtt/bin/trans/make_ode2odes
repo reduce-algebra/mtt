@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.53  2001/03/21 03:24:59  geraint
+## Calculate inputs before outputs (.cc).
+##
 ## Revision 1.52  2001/03/19 02:28:52  geraint
 ## Branch merge: merging-ode2odes-exe back to MAIN.
 ##
@@ -313,14 +316,20 @@ EOF
 make_cc() 
 {
 # get octave version
-octave_development=`octave --version | awk '{print $4}' | awk -F\. '{print $2}'`
-if [ $octave_development ]; then
-    vector_value=column_vector_value
-    feval_header=parse.h
-else
-    vector_value=vector_value
-    feval_header=toplev.h
-fi
+case `$MATRIX --version | awk -F\. '{print $2}'` in
+    0) # stable
+	vector_value=vector_value
+	feval_header=toplev.h
+	;;
+    1) # development
+	vector_value=column_vector_value
+	feval_header=parse.h
+	;;
+    *)
+	vector_value=column_vector_value
+	feval_header=parse.h
+	;;
+esac
 
 cat <<EOF  > $filename
 #include <octave/oct.h>

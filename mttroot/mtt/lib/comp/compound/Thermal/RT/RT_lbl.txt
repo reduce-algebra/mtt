@@ -7,8 +7,8 @@
 %DESCRIPTION % Component type RT
 %DESCRIPTION	r		lin	flow,r
 
-%ALIAS	in	ThermalIn
-%ALIAS	out	ThermalOut
+%ALIAS	ThermalIn	in
+%ALIAS	ThermalOut	out
 
 %ALIAS	$1	flow,r
 %ALIAS	$a1	lin
@@ -21,6 +21,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.7  2001/07/03 22:59:10  gawthrop
+% %% Fixed problems with argument passing for CRs
+% %%
 % %% Revision 1.6  2001/06/13 17:10:26  gawthrop
 % %% Alias for the cr (ie ALIAS	$1	lin)
 % %%
@@ -51,6 +54,10 @@
 % Component type R
 	r		lin		flow,r
 
+% Component type FP
+        fp1
+        fp2
+
 % Component type SS
-	[ThermalIn]		SS		external,external
-	[ThermalOut]		SS		external,external
+	[in]		SS		external,external
+	[out]		SS		external,external

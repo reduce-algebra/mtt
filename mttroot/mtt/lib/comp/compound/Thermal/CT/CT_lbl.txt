@@ -6,7 +6,7 @@
 %DESCRIPTION 	c		lin	effort,c
 
 %Port aliases
-%ALIAS		in|out		Thermal
+%ALIAS		Thermal|out	in
 
 %CR aliases
 %ALIAS          $1		effort,c_t
@@ -19,6 +19,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.7  2001/07/03 22:59:10  gawthrop
+% %% Fixed problems with argument passing for CRs
+% %%
 % %% Revision 1.6  2001/06/13 17:10:26  gawthrop
 % %% Alias for the cr (ie ALIAS	$1	lin)
 % %%
@@ -50,5 +53,8 @@
 % Component type C
 	c		lin		effort,c_t
 
+% Component type FP
+        fp
+
 % Component type SS
-	[Thermal]		SS	external,external
+	[in]		SS	external,external

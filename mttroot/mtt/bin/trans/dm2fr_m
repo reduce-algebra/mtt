@@ -15,6 +15,14 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1996/08/15 11:52:42  peter
+## Now creats a number of versions:
+## fr 	complex frequency response
+## lmfr 	log  magnitude of fr
+## lpfr  	phase of fr
+## nyfr  	real and imag parts - Nyquist style
+## nifr 	Nichols style.
+##
 ## Revision 1.3  1996/08/11 19:08:08  peter
 ## Parameter passing now enabled.
 ##
@@ -34,7 +42,7 @@ echo Creating $1_nifr.m
 
 if [ "$2" = "" ]; 
 then
-  PARAMS='w=logspace(-1,2,100); u0=ones(nu,1);'
+  PARAMS='W=logspace(-1,2,100); u0=ones(nu,1);'
   echo Using default parameter $PARAMS
 else
   PARAMS=$2;
@@ -46,27 +54,27 @@ $MATRIX << EOF > dm2fr_m.log
   $PARAMS
 
   %Defaults
-  if exist('w')==0
-    w = logspace(-1,2,100);
+  if exist('W')==0
+    W = logspace(-1,2,100);
   end;
 
   if exist('u0')==0
     u0 = ones(nu,1);
   end;
 
-  [n,m]=size(w);
+  [n,m]=size(W);
   if m>n
-    w=w';
+    W=W';
   end;
 
   [A,B,C,D,E] = $1_dm($1_numpar);
-  fr = dm2fr(A,B,C,D,E,w,u0);
-  lw = log10(w);
+  fr = dm2fr(A,B,C,D,E,W,u0);
+  lw = log10(W);
   lmfr = log10(abs(fr));
   pfr = angle(fr)*180/pi;
 
 % Complex frequency response
-  write_matrix([w fr], '$1_fr');
+  write_matrix([W fr], '$1_fr');
 
 % Log magnitude v log frequency
   write_matrix([lw lmfr], '$1_lmfr');

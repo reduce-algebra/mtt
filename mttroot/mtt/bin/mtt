@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.376  2003/05/09 09:46:35  gawthrop
+## Fixed html output of figures
+##
 ## Revision 1.375  2003/05/08 18:42:52  gawthrop
 ## Generate pdf from ps (using hyperref package for links etc)
 ##
@@ -1579,6 +1582,9 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
   shift
 done
 
+## Create switches string for adding to file names.
+  MTT_SWITCHES=`echo ${mtt_switches} | sed 's/ //g' | sed 's/^-u-q//'`
+
 #Print header if not in quiet (-q) mode.
 if [ "$quiet" != "quiet" ]; then
   echo
@@ -2131,6 +2137,7 @@ fi
 
 ## Arguments
 ARGS=$4; _ARGS=-$4; __ARGS=`echo $_ARGS | tr ',' '-'`
+__ARGS="${MTT_SWITCHES}${__ARGS}"
 
 # Save up the argument list in a file; but only if argument has changed
 #DIFF doesn't like empty files - so put a blank if empty
@@ -2366,6 +2373,11 @@ $1_%.o: $1_%.cc $1_def.h $1_sympar.h $1_cr.h
 mtt_%.o: mtt_%.cc
 	echo Compiling mtt_\$*.cc
 	${MTT_CXX} ${MTT_CXXFLAGS} ${MTT_CXXINCS} -c $< -DCODEGENTARGET=STANDALONE $define_octave_dev
+
+# Copy aliased subsystems
+$1_aliased_subsystems_copied: 
+	lbl2component $1 | sh || exit 1 # Grab specified components now
+	touch $1_aliased_subsystems_copied
 
 # Generates code to write reduce code
 $1_ode_write.r: $1_def.m
@@ -2741,7 +2753,6 @@ endif
 #SUMMARY rbg	raw bond graph (m)
 #Raw bond graph: fig file to mfile
 $1_rbg.m: $1_abg.fig  $1_lbl.txt
-	lbl2component $1 | sh || exit 1 # Grab specified components now
 	rbg_fig2m $1
 
 $1_cmp.m: $1_rbg.m
@@ -2761,7 +2772,7 @@ ifeq ($start_at_abg,yes)
 $1_sub.sh: $1_abg.m
 	abg2sub_m2sh $1
 else
-%_sub.sh: %_cmp.txt
+%_sub.sh: %_cmp.txt %_aliased_subsystems_copied
 	cmp2sub_txt2sh \$*
 endif
 
@@ -3576,6 +3587,7 @@ $1_$2.$ps : $1_$2.fig
 	fig2dev -L$eps $1_$2.fig > $1_$2.$ps
 else ## Multiple plots
 $1_$2.$ps : $1_$2.fig
+	mtt -q -r $1 $2 dat $4
 	echo Creating $1_$2$__ARGS.$ps
 	fig2dev -L$eps $1_$2$__ARGS.fig > $1_$2$__ARGS.$ps
 endif

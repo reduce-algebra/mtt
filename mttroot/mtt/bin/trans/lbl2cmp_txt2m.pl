@@ -43,7 +43,8 @@ my ($cmp, $lbl, $out);
 
 my $sys = '';
 
-GetOptions ('sys=s' => \$sys);
+GetOptions ('sys=s' => \$sys,
+	    'debug' => \$debug);
 
 die usage() if ($sys eq '');
 
@@ -119,7 +120,7 @@ sub read_cmp_line() {
 }
 
 sub name_anonymous_component() {
-    my $type = @_;
+    my $type = $_;
     my ($name, $num);
     if (defined ($anonymous_component_type_index{$type})) {
 	$num = ++$anonymous_component_type_index{$type};

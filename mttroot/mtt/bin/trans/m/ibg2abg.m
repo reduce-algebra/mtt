@@ -12,6 +12,7 @@ function [bonds,components,n_vector_bonds] = \
   
   ## loop over each bond in ibg.m file
   for [bond, bond_name] = bonds
+    ## get the bond number
     i = str2num(split(bond_name, "bond")(2,:));
 
     ## populate "head" and "tail" structures
@@ -48,21 +49,24 @@ function [bonds,components,n_vector_bonds] = \
       tail_comp_or_port = "comp";
     endif
 
-    eval(sprintf("comp_s.%s.%s.type = '%s';",
+    ## copy data to object structure (objects)
+    eval(sprintf("objects.%s.%s.type = '%s';",
 		 head_comp_or_port, head_name, head_type));
-    eval(sprintf("comp_s.%s.%s.type = '%s';",
+    eval(sprintf("objects.%s.%s.type = '%s';",
 		 tail_comp_or_port, tail_name, tail_type));
 
-    eval(sprintf("comp_s.%s.%s.bond%i = head;", 
+    eval(sprintf("objects.%s.%s.bond%i = head;", 
 		 head_comp_or_port, head_name, i));
-    eval(sprintf("comp_s.%s.%s.bond%i = tail;", 
+    eval(sprintf("objects.%s.%s.bond%i = tail;", 
 		 tail_comp_or_port, tail_name, i));
   endfor    
 
   disp("--finished extracting data from ibg.m --")
-  comp_s
+  objects
     
-  ## comp_s
+  ## object structure:
+  ##
+  ## objects
   ##   comp
   ##     %s (name)
   ##       type
@@ -73,31 +77,34 @@ function [bonds,components,n_vector_bonds] = \
   ##       type
   ##       bond%i
   ##         label
+  ##
+  ## "comp" contains components, subsystems and external SS
+  ## "port" contains internal SS:[...]
 
   ####################################################
   ## count number of vector bonds on each component ##
   ####################################################
 
-  if (struct_contains(comp_s, "comp"))
-    for [comp, comp_name] = comp_s.comp
+  if (struct_contains(objects, "comp"))
+    for [comp, comp_name] = objects.comp
       n = size(struct_elements(comp))(1) - 1;
-      eval(sprintf("comp_s.comp.%s.n_bonds = %i;",
+      eval(sprintf("objects.comp.%s.n_bonds = %i;",
 		   comp_name, n));
     endfor
   endif
   
-  if (struct_contains(comp_s, "port"))
-    for [port, port_name] = comp_s.port
+  if (struct_contains(objects, "port"))
+    for [port, port_name] = objects.port
       n = size(struct_elements(port))(1) - 1;
-      eval(sprintf("comp_s.port.%s.n_bonds = %i;",
+      eval(sprintf("objects.port.%s.n_bonds = %i;",
 		   port_name, n));
     endfor
   endif
 
   disp("-- finished counting number of bonds on components --")
-  comp_s
+  objects
 
-  ## comp_s
+  ## objects
   ##   comp
   ##     %s (name)
   ##       type
@@ -115,10 +122,17 @@ function [bonds,components,n_vector_bonds] = \
   ## ensure labels exist on all ports of each component ##
   ########################################################
 
-  if (struct_contains(comp_s, "comp"))
-    for [comp, comp_name] = comp_s.comp
+  if (struct_contains(objects, "comp"))
+    for [comp, comp_name] = objects.comp
       if (strcmp(comp.type, "0") | strcmp(comp.type, "1"))
-	
+
+	## convert type
+	if (strcmp(comp.type, "0"))
+	  comp.type = "zero";
+	elseif (strcmp(comp.type, "1"))
+	  comp.type = "one";
+	endif
+
 	## component is a junction
 	n_named_ports = 0;
 	
@@ -176,7 +190,7 @@ function [bonds,components,n_vector_bonds] = \
 	endfor
       endif
       
-      eval(sprintf("comp_s.comp.%s = comp;", comp_name));
+      eval(sprintf("objects.comp.%s = comp;", comp_name));
     endfor
   endif
 
@@ -184,9 +198,9 @@ function [bonds,components,n_vector_bonds] = \
   ## expand aliases ##
   ####################
 
-  if (struct_contains(comp_s, "comp"))
-    for [comp, comp_name] = comp_s.comp
-      if ((! strcmp(comp.type, "0")) & (! strcmp(comp.type, "1")))
+  if (struct_contains(objects, "comp"))
+    for [comp, comp_name] = objects.comp
+      if ((! strcmp(comp.type, "zero")) & (! strcmp(comp.type, "one")))
 	alias = eval(sprintf("%s_alias", comp.type));
 	if (is_struct(alias))
 	  for [bond, bond_name] = comp
@@ -201,15 +215,15 @@ function [bonds,components,n_vector_bonds] = \
 	    eval(sprintf("comp.%s = bond;", bond_name));
 	  endfor
 	endif
-	eval(sprintf("comp_s.%s = comp;", comp_name));
+	eval(sprintf("objects.%s = comp;", comp_name));
       endif
     endfor
   endif
 
   disp("-- finished expanding aliases --")
-  comp_s
+  objects
 
-  ## comp_s
+  ## objects
   ##   comp
   ##     %s (name)
   ##       type
@@ -227,8 +241,8 @@ function [bonds,components,n_vector_bonds] = \
   ## create sub-bonds according to labels ##
   ##########################################
 
-  if (struct_contains(comp_s, "comp"))
-    for [comp, comp_name] = comp_s.comp
+  if (struct_contains(objects, "comp"))
+    for [comp, comp_name] = objects.comp
       for [bond, bond_name] = comp
 	if (index(bond_name, "bond") == 1)
 	  [sub_bonds, n_sub_bonds] = split_port(bond.label);
@@ -239,12 +253,12 @@ function [bonds,components,n_vector_bonds] = \
 	endif
 	eval(sprintf("comp.%s = bond;", bond_name));
       endfor
-      eval(sprintf("comp_s.comp.%s = comp;", comp_name));
+      eval(sprintf("objects.comp.%s = comp;", comp_name));
     endfor
   endif
 
-  if (struct_contains(comp_s, "port"))
-    for [port, port_name] = comp_s.port
+  if (struct_contains(objects, "port"))
+    for [port, port_name] = objects.port
       for [bond, bond_name] = port
 	if (index(bond_name, "bond") == 1)
 	  [sub_bonds, n_sub_bonds] = split_port(bond.label);
@@ -255,14 +269,14 @@ function [bonds,components,n_vector_bonds] = \
 	endif
 	eval(sprintf("port.%s = bond;", bond_name));
       endfor
-      eval(sprintf("comp_s.port.%s = port;", port_name));
+      eval(sprintf("objects.port.%s = port;", port_name));
     endfor
   endif
 
   disp("-- finished creating sub-bonds --")
-  comp_s
+  objects
 
-  ## comp_s
+  ## objects
   ##   comp
   ##     %s (name)
   ##       type
@@ -311,9 +325,9 @@ function [bonds,components,n_vector_bonds] = \
     endif
 
     ## create strings to reference each component
-    head_str = sprintf("comp_s.%s.%s.bond%i",
+    head_str = sprintf("objects.%s.%s.bond%i",
 		       head_comp_or_port, head_name, i)
-    tail_str = sprintf("comp_s.%s.%s.bond%i",
+    tail_str = sprintf("objects.%s.%s.bond%i",
 		       tail_comp_or_port, tail_name, i)
 
     head_bond = eval(head_str);
@@ -365,9 +379,9 @@ function [bonds,components,n_vector_bonds] = \
   endfor
 
   disp("-- finished assigning unique numbers to bonds --")
-  comp_s
+  objects
   
-  ## comp_s
+  ## objects
   ##   comp
   ##     %s (name)
   ##       type
@@ -394,15 +408,15 @@ function [bonds,components,n_vector_bonds] = \
   #################################
 
   ## count number of components
-  if (struct_contains(comp_s, "comp"))
-    n_comps = size(struct_elements(comp_s.comp), 1)
+  if (struct_contains(objects, "comp"))
+    n_comps = size(struct_elements(objects.comp), 1)
   else
     n_comps = 0;
   endif
 
   ## count number of internal ports
-  if (struct_contains(comp_s, "port"))
-    n_ports = size(struct_elements(comp_s.port), 1)
+  if (struct_contains(objects, "port"))
+    n_ports = size(struct_elements(objects.port), 1)
   else
     n_ports = 0;
   endif
@@ -417,13 +431,13 @@ function [bonds,components,n_vector_bonds] = \
     else
       comp_or_port = "comp";
     endif
-    eval(sprintf("comp_s.%s.%s.index = cmp;", comp_or_port, this_name));
+    eval(sprintf("objects.%s.%s.index = cmp;", comp_or_port, this_name));
   endfor
 
   disp("-- finished getting component indices from cmp.m --")
-  comp_s
+  objects
 
-  ## comp_s
+  ## objects
   ##   comp
   ##     %s (name)
   ##       type
@@ -447,8 +461,8 @@ function [bonds,components,n_vector_bonds] = \
   ## write n_vector_bonds ##
   ##########################
 
-  if (struct_contains(comp_s, "comp"))
-    for [comp, comp_name] = comp_s.comp
+  if (struct_contains(objects, "comp"))
+    for [comp, comp_name] = objects.comp
       n_vector_bonds(comp.index,1) = comp.n_bonds;
     endfor
   endif
@@ -460,56 +474,74 @@ function [bonds,components,n_vector_bonds] = \
   ## Write connections matrix (components) ##
   ###########################################
   
-  if (struct_contains(comp_s, "comp"))
-    n_comps = size(struct_elements(comp_s.comp))(1);
+  if (struct_contains(objects, "comp"))
+    n_comps = size(struct_elements(objects.comp))(1);
   else
     n_comps = 0;
   endif
 
   components = zeros(n_comps, max(n_vector_bonds));
 
-  if (struct_contains(comp_s, "comp"))
-    for [comp, comp_name] = comp_s.comp
-      counter = 0;
-      for [bond, bond_name] = comp
-	if (index(bond_name, "bond") == 1)
-	  if (strcmp(bond.other_end_type, "SS"))
-	    for [sub_bond, sub_bond_name] = bond
-	      if (index(sub_bond_name, "subbond") == 1)
-		components(comp.index, ++counter) = sub_bond.index
-	      endif
-	    endfor
-	  endif
-	endif
-      endfor
-      for [bond, bond_name] = comp
-	if (index(bond_name, "bond") == 1)
-	  if (!strcmp(bond.other_end_type, "SS"))
-	    for [sub_bond, sub_bond_name] = bond
-	      if (index(sub_bond_name, "subbond") == 1)
-		components(comp.index, ++counter) = sub_bond.index
-	      endif
-	    endfor
-	  endif
-	endif
-      endfor
+  if (struct_contains(objects, "comp"))
+    for [comp, comp_name] = objects.comp
+      ## get portlist for component      
+      if exist([comp.type, '_cause']) == 0
+ 	eval(sprintf("ABG = %s_abg;", comp.type));
+ 	if struct_contains(ABG, "portlist")
+ 	  port_list = ABG.portlist;
+ 	else
+ 	  error(sprintf("Component %s has no ports", comp.type));
+ 	endif
+      else
+ 	port_list = comp_ports(comp.type, comp.n_bonds)
+      endif
+      ## but do what with it?
     endfor
   endif
+  disp("-- finished getting port_list --")
 
-  if (struct_contains(comp_s, "port"))
-    for [port, port_name] = comp_s.port
+  if (struct_contains(objects, "comp"))
+    for [comp, comp_name] = objects.comp
       counter = 0;
-      for [bond, bond_name] = port
-	if (index(bond_name, "bond") == 1)
-	  for [sub_bond, sub_bond_name] = bond
-	    if (index(sub_bond_name, "subbond") == 1)
-	      components(port.index, ++counter) = sub_bond.index;
-	    endif
-	  endfor
-	endif
+      for [bond, bond_name] = comp
+ 	if (index(bond_name, "bond") == 1)
+ 	  if (strcmp(bond.other_end_type, "SS"))
+ 	    for [sub_bond, sub_bond_name] = bond
+ 	      if (index(sub_bond_name, "subbond") == 1)
+ 		components(comp.index, ++counter) = sub_bond.index
+ 	      endif
+ 	    endfor
+ 	  endif
+ 	endif
+      endfor
+      for [bond, bond_name] = comp
+  	if (index(bond_name, "bond") == 1)
+ 	  if (!strcmp(bond.other_end_type, "SS"))
+ 	    for [sub_bond, sub_bond_name] = bond
+ 	      if (index(sub_bond_name, "subbond") == 1)
+ 		components(comp.index, ++counter) = sub_bond.index
+ 	      endif
+ 	    endfor
+ 	  endif
+  	endif
       endfor
     endfor
   endif
+  
+   if (struct_contains(objects, "port"))
+     for [port, port_name] = objects.port
+       counter = 0;
+       for [bond, bond_name] = port
+ 	if (index(bond_name, "bond") == 1)
+ 	  for [sub_bond, sub_bond_name] = bond
+ 	    if (index(sub_bond_name, "subbond") == 1)
+ 	      components(port.index, ++counter) = sub_bond.index;
+ 	    endif
+ 	  endfor
+ 	endif
+       endfor
+     endfor
+   endif
 
   disp("-- finished writing components matrix --")
   components

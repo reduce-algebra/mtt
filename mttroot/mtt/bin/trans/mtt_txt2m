@@ -15,6 +15,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.10  2000/10/15 09:51:50  peterg
+# %% Set array code in input rep
+# %%
 # %% Revision 1.9  2000/10/13 11:07:33  peterg
 # %% Started conversion to new style state, input ext
 # %%
@@ -114,24 +117,26 @@ representation=$2
 outfile=$1_$2.m
 
 # Inform user
-echo Creating $1_$2.m
+echo Creating $outfile
 
 #Create the rep  file complete with headers.
 case $representation in
-    simpar)
-       arraycode=no
+    input)
+      name=mttu
+      arraycode=$representation
+      ;;
+    logic)
+      name=mttx
       ;;
     numpar)
        name=mttpar
-       arraycode=yes
+      arraycode=$representation
+      ;;
+    simpar)
       ;;
     state)
       name=mttx
-      arraycode=yes
-      ;;
-    input)
-      name=mttu
-      arraycode=yes
+      arraycode=$representation
       ;;
     *)
       echo Representation $representation not supported
@@ -147,7 +152,19 @@ esac
 # Generate the header
 mtt_header $system $representation m  > $outfile
 
+## Special for logic rep
+if [ "$representation" = "logic" ]; then
+  echo >> $outfile
+  echo "## Inputs" >> $outfile
+  mtt_name2array $system input >> $outfile # Set up input by name
+  echo >> $outfile
+  echo "## States" >>$outfile
+  mtt_name2array $system state >> $outfile # Set up state by name
+fi
+
 # Write out the code from the txt file
+echo >> $outfile
+echo "## User defined code from $1_$2.txt" >> $outfile
 cat  $1_$2.txt | strip_comments | grep -v METHOD |\
 awk -F#  'BEGIN{
 quote = "\047";
@@ -194,20 +211,32 @@ doublequote = "\042";
      -e 's/mttmtt/mtt/g' \
  >> $outfile
 
-if [ "$arraycode" = "yes" ]; then
+if [ -n "$arraycode" ]; then
   new_style=`strip_comments < $1_$2.txt| grep "$name(">/dev/null; echo $?`
 
   if [ "$new_style" = "1" ]; then
     echo >> $outfile
     echo "  ## Set up the $name vector"  >> $outfile
     echo "  $name = []; # Default to empty matrix (Remove in mtt_m2p)"  >> $outfile
-    mtt_name2array $1 $2 set   >> $outfile
+    mtt_name2array $1 $arraycode set   >> $outfile
   else
     echo "Old-style file detected: not creating array translations"  
   fi
 fi
 
+## Special for logic rep
+if [ "$representation" = "logic" ]; then
+  echo >> $outfile
+  echo "## Open switches" >> $outfile
+  switch_txt2m Bounce >> $outfile
+fi
+
 # End of the function
 echo '## END Code' >> $outfile
 echo 'endfunction' >> $outfile
+
+
+
+
+
 

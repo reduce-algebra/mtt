@@ -13,6 +13,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  2000/10/13 08:07:24  peterg
+## Added state and input - it checks against sympar as well so that
+## defined variables may be used here.
+##
 ## Revision 1.5  2000/10/12 19:24:55  peterg
 ## Corrected output message
 ##
@@ -111,24 +115,23 @@ END{
 
 if [ -z "$update" ]; then
   if [ -f "mtt_in_text" ]; then
-    in_text=`cat mtt_in_text`
     echo "The following variables are defined in $textfile, but do not exist:"
-    echo $in_text
+    sort mtt_in_text | awk '{printf("\t%s\n",$1)}'
     echo Use mtt $sys $rep $ext to update
   fi
   if [ -f "mtt_in_info" ]; then
-    in_info=`cat mtt_in_info`
     echo "The following variables exist, but are not defined in $textfile:"
-    echo $in_info
+    sort mtt_in_info | awk '{printf("\t%s\n",$1)}'
     echo Use mtt $sys $rep $ext to update
   fi
   exit    
 fi
 answered=''
 if [ -f "mtt_in_text" ]; then
-  in_text=`cat mtt_in_text`
+  in_text=`sort mtt_in_text`
   echo "The following variables are defined in $textfile, but do not exist:"
-  echo $in_text    
+  sort mtt_in_text | awk '{printf("\t%s\n",$1)}'
+
 
   while [ -z "$answered" ]; do
     echo "Update $textfile (y/n)?"
@@ -152,9 +155,9 @@ fi
 
 answered=''
 if [ -f "mtt_in_info" ]; then
-  in_info=`cat mtt_in_info`
+  in_info=`sort mtt_in_info`
   echo "The following variables exist, but are not defined in $textfile:"
-  echo $in_info
+  sort mtt_in_info | awk '{printf("\t%s\n",$1)}'
 
   while [ -z "$answered" ]; do
     echo "Update $textfile (y/n)?"

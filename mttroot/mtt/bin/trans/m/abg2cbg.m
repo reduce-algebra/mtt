@@ -20,6 +20,9 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.50  2003/03/13 15:18:39  gawthrop
+  ## ## Now uses __ to delimit subsystems in names.
+  ## ##
   ## ## Revision 1.49  2001/07/26 05:02:53  geraint
   ## ## Now writes cbg.fig when under-causal (again).
   ## ##
@@ -293,7 +296,7 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
   
   ## Coerce the port (SS:[]) component bonds to have the same direction as
   ## of the bonds in the encapsulating system -- but not at top level
-  Flipped.ports="";Flipped.subs="";Flipped.cons="";
+  Flipped.ports="";Flipped.subs="";Flipped.cons=[];
   
   if (n_ports>0)&&(!at_top_level) # Coerce directions
     for i=1:n_ports

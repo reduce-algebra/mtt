@@ -5,6 +5,11 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.30  1998/07/02 13:40:50  peterg
+% %% Added extra ports names (due to defaults) to relevant lists:
+% %% 	port_name
+% %% 	port_bond
+% %%
 % %% Revision 1.29  1998/07/02 13:28:31  peterg
 % %% Added defaults in new form BEFORE alias expansion
 % %%
@@ -221,63 +226,68 @@ for i = 1:n_components
   # Unalias all the ports on this component - if not a junction
   unlabelled_ports = 0;  
   in_bonds = 0;
-  if ((comp_type!="0")&&(comp_type!="1"))
-    eval( ["alias = ", comp_type, '_alias';]); # Get aliases
-    if is_struct(alias)		# are there any aliases
-      for j=1:n_comp_bonds
-        signed_bond = signed_bond_list(j);
-      	port_name_index = getindex(port_bond,signed_bond);
-        port_direction = -sign(signed_bond);
-
-      	if port_name_index==0	# There is no port on this bond - so try
+  if ((comp_type!="0")&&(comp_type!="1")) # Don't do junctions
+    for j=1:n_comp_bonds
+      signed_bond = signed_bond_list(j);
+      port_name_index = getindex(port_bond,signed_bond);
+      port_direction = sign(signed_bond);
+      
+      if port_name_index==0	# There is no port on this bond - so try
 				# to default
-	  unlabelled_ports++;
-	  if(unlabelled_ports==1)
-	    if port_direction>0
-	      in_bonds++;
-	      port_name_i = "in";
-	    else
-	      port_name_i = "out";
-	    end;
-	  elseif (unlabelled_ports==2)
-	    if port_direction>0
-	      if (++in_bonds>1)
-	      	mtt_info(["More than one unlabelled in port on component " \
-			  comp_name " (" comp_type ")"],fnum);
-	      else
-	      port_name_i = "in";
-	      end
-	    else
-	      port_name_i = "out";
-	    end;
+	unlabelled_ports++;
+	if(unlabelled_ports==1)
+	  if port_direction>0
+	    in_bonds++;
+	    port_name_i = "in";
 	  else
-	      mtt_info(["More than two unlabelled ports on component " \
+	    port_name_i = "out";
+	  end;
+	elseif (unlabelled_ports==2)
+	  if port_direction>0
+	    if (++in_bonds>1)
+	      mtt_info(["More than one unlabelled in port on component " \
 			comp_name " (" comp_type ")"],fnum);
-          end
-	  mtt_info(["Defaulting to port name " port_name_i " on component " \
-		    comp_name " (" comp_type ")" ],fnum);
-	  port_name = [port_name; ["[" port_name_i "]"]];	# add to list
-	  [port_name_index,junk] = size(port_name); # the corresponding
-						    # index
-	  port_bond(port_name_index,:) = signed_bond; # add to port bond
-        else  
-      	  port_name_i = deblank(port_name(port_name_index,:));
-	  port_name_i = port_name_i(2:length(port_name_i)-1) # strip []
-	end;
-        if struct_contains(alias,port_name_i) # Is this an alias?
-	  eval(["new_port_name_i = alias.",port_name_i]);
-	  mtt_info(["Expanding port name " port_name_i " of component " \
-		    comp_name " (" comp_type ") to ", new_port_name_i],fnum);
-	  port_name = replace_name(port_name, \
-				   ["[",new_port_name_i,"]"], port_name_index);
+	    else
+	      port_name_i = "in";
+	    end
+	  else
+	    port_name_i = "out";
+	  end;
+	else
+	  mtt_info(["More than two unlabelled ports on component " \
+		    comp_name " (" comp_type ")"],fnum);
+        end
+	mtt_info(["Defaulting port name [" port_name_i "]\t on component " \
+		  comp_name " (" comp_type ")" ],fnum);
+	port_name = [port_name; ["[" port_name_i "]"]];	# add to list
+	[port_name_index,junk] = size(port_name); # the corresponding
+				# index
+	port_bond(port_name_index,:) = signed_bond; # add to port bond
+      else  
+      	port_name_i = deblank(port_name(port_name_index,:));
+	port_name_i = port_name_i(2:length(port_name_i)-1) # strip []
+      end;
+      
+      % Replace by alias -- if any
+    	eval( ["alias = ", comp_type, '_alias';]); # Get aliases
+    	if is_struct(alias)		# are there any aliases
+          if struct_contains(alias,port_name_i) # Is this an alias?
+	    eval(["new_port_name_i = alias.",port_name_i]);
+	    mtt_info(["Expanding  port name [" port_name_i "]\t on component " \
+		      comp_name " (" comp_type ")\t to [" new_port_name_i "]"],fnum);
+	    port_name = replace_name(port_name, \
+				     ["[",new_port_name_i,"]"], \
+				     port_name_index);
+	  end
       	end
       end
     end
   end;
+% At this point, every port should be labeled (port_name) and \
+% associated with a bond (port_bond).
+disp("--- Completed portnames and the corresponding bonds ---")
+port_name, port_bond
 
-end;
-
-components
 
 % Deduce causality from the strokes (if any) and create the list of bonds
 causality = zeros(n_bonds,2);
@@ -327,6 +337,7 @@ bonds = causality;
 
 % Now expand vector ports
 [n_bonds,junk] = size(bonds);
+n_ports=length(port_bond);
 n_exp_ports=n_ports;
 exp_port_name="";
 exp_port_bond = [];

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  1998/11/18 13:50:29  peterg
+## Removed writeing of EYz matrix
+##
 ## Revision 1.9  1998/11/18 10:53:38  peterg
 ## Put in some more "IF MTTNx>0 THEN" to avoid error messages when no
 ## states.
@@ -60,13 +63,22 @@
 ###############################################################
 
 
+
 #Explicit solution option
-Solving=$2;
-if [ "$Solving" = "Solving" ]; then
-    solve=1
+solve=0
+while [ -n "`echo $1 | grep '^-'`" ]; do
+  case $1 in
+	-A )
+                solve=1;;
+	*)
+		echo "$1 is an invalid argument - ignoring" ;;
+  esac
+  shift
+done
+
+if [ "$solve" = "1" ]; then
     echo "Creating $1_cse.r (with explicit solution of algebraic equations)"
 else
-    solve=0
     echo "Creating $1_cse.r"
 fi
 
@@ -229,10 +241,13 @@ BEGIN
     MTT_unknowns := append(MTT_unknowns,{MTTUi(i,1)});
 
   %Solve the algebraic equations symbolically
+    MTT_sol := solve(MTT_eqns,MTT_unknowns);
   %The result seems to be in an extra list - I don't know why
   % So remove the outer list with first.
+  % But only if more than one list element!
 
-  MTT_sol := first(solve(MTT_eqns,MTT_unknowns));
+  if MTTNyz>1 THEN
+    MTT_sol := first(MTT_sol);
 
   %Substitute back into the equations
   FOR i := 1:MTTNyz DO
@@ -301,6 +316,21 @@ SHUT "$1_cse.r";
 quit;
 
 EOF
+
+if [ "$solve" = "1" ]; then
+    echo "Setting MTTNyz=0 in $1_def.r and removing other $1_def files"
+    awk '{
+     if ($1=="MTTNyz") 
+       print "MTTNyz := 0;" 
+     else print $0
+    }' $1_def.r > mtt_junk
+  # Make sure it preserves the time stamp!!
+  # and remove dependent reps
+   touch -r $1_def.r mtt_junk
+   rm $1_def.*
+   mv mtt_junk $1_def.r
+fi
+
 
 # Now invoke the standard error handling.
 mtt_error_r dae2cse_r.log

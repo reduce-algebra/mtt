@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.23  1999/08/02 13:39:19  peterg
+## Replaced zero_vector by zero_input
+##
 ## Revision 1.22  1999/04/20 06:16:07  peterg
 ## Removed initialisation of AA and AAx
 ## Remove _switch calls -- uses _switchopen exclusively
@@ -104,7 +107,7 @@ MTTilast = round(mttlast/mttdt); # Total number of steps
 
 #Initialise
 MTTt = 0.0;
-[MTTu]  = zero_input($Nu);	# Zero the input
+####[MTTu]  = zero_input($Nu);	# Zero the input
 #if $Nx>0
   [MTTx] = $1_state;	        # Read in initial state
 #else

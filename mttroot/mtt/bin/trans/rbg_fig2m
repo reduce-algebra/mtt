@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  2000/09/14 08:41:51  peterg
+## *** empty log message ***
+##
 ## Revision 1.3  1997/03/19 09:50:24  peterg
 ## Now creates the sabg (stripped abg) file.
 ##
@@ -30,7 +33,10 @@
 # Inform user
 echo "Creating $1_rbg.m"
 echo "Creating $1_cmp.m"
+echo "Creating $1_head.fig"
 echo "Creating $1_fig.fig"
+echo "Creating $1_cmp.fig"
+echo "Creating $1_port.fig"
 echo "Creating $1_sabg.fig"
 
 
@@ -38,12 +44,14 @@ echo "Creating $1_sabg.fig"
 rm -f $1_fig.fig
 rm -f $1_head.fig
 rm -f $1_cmp.fig
+rm -f $1_port.fig
 rm -f $1_bnd.fig
 
 # Create blank files
 touch $1_fig.fig
 touch $1_head.fig
 touch $1_cmp.fig
+touch $1_port.fig
 touch $1_bnd.fig
 
 # The following horrible sed thing is to replace tab by ----

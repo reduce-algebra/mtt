@@ -16,20 +16,25 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.2  1996/08/08 18:08:37  peter
+## Sorted out file naming scheme.
+##
 ## Revision 1.1  1996/08/08 15:57:15  peter
 ## Initial revision
 ##
 ###############################################################
 
-infofile='stdout';
+infofile='mtt_info.txt';
 eqnfile="$1_ese.r";
 deffile="$1_def.r";
+
 # Remove the old log file
 rm -f cbg2ese_m.log
 rm -f $1_ese.r
 rm -f $1_def.r
-rm -f mtt_info.txt
+rm -f $infofile
 
+touch $infofile
 
 #Inform user
 echo Creating $eqnfile
@@ -45,10 +50,9 @@ deffile = '$1_def.r';
 structure = cbg2ese(system_name,'','',infofile)
 makedef(structure,deffile);
   
-
 EOF
 
-
+cat $infofile
 
 
 

@@ -6,6 +6,9 @@ function structure =  SS_eqn(bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1996/08/09 14:08:04  peter
+% %% Empty effort and flow attributes replaced by 'external'.
+% %%
 % %% Revision 1.2  1996/08/08 16:38:19  peter
 % %% Changed to filenumer type of fprintf
 % %%
@@ -35,6 +38,7 @@ end;
 
 inputs = structure(3);
 outputs = structure(4);
+zero_outputs = structure(5);
 
 % Effort
 if strcmp(effort_attribute, 'external')
@@ -52,10 +56,17 @@ elseif strcmp(effort_attribute, 'internal')
 else % named constant
   if bonds(1,1)==-1 % Source
     fprintf(filenum, '%s := %s;\n', ...
-        varname(bond_number,1), effort_attribute);
+	varname(bond_number,1), effort_attribute);
   else % Sensor
-  % THIS STILL NEEDS DOING!
-  mtt_info('Constant outputs not implemented yet!');
+    if strcmp(effort_attribute, 'zero') %Zero output
+      zero_outputs = zero_outputs + 1;
+      fprintf(filenum, 'MTTyz%1.0f := %s;\n', ...
+	  zero_outputs, varname(bond_number,1));
+      fprintf(filenum, '%s := MTTUi%1.0f;\n', ...
+	  varname(bond_number,-1), zero_outputs);
+    else
+      mtt_info([effort_attribute, ' not appropriate for an output ']);
+    end;
   end;
 end;
 
@@ -76,15 +87,22 @@ else % Named constant
     fprintf(filenum, '%s := %s;\n', ...
 	varname(bond_number,-1), flow_attribute);
   else % Sensor
-  % THIS STILL NEEDS DOING!
-  mtt_info('Zero outputs not implemented yet!');
+    if strcmp(flow_attribute, 'zero') %Zero output
+      zero_outputs = zero_outputs + 1;
+      fprintf(filenum, 'MTTyz%1.0f := %s;\n', ...
+	  zero_outputs, varname(bond_number,-1));
+      fprintf(filenum, '%s := MTTUi%1.0f;\n', ...
+	  varname(bond_number,1), zero_outputs);
+    else
+      mtt_info([effort_attribute, ' not appropriate for an output ']);
+    end;
   end;
 end;
 
   
 structure(3) = inputs;
 structure(4) = outputs;
-  
+structure(5) = zero_outputs;  
 
   
   

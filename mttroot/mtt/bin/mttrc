@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.40  2003/09/23 15:57:18  gawthrop
+## And back to gv
+##
 ## Revision 1.39  2003/09/22 17:38:56  gawthrop
 ## gv --> ghostview
 ##
@@ -235,35 +238,50 @@ else
   ##
   ## Configure environment for standalone compilation of files linked with Octave libraries
   ## (required for ode2odes.exe only)
-
-    # location of Octave directories on local system (usually /usr, /usr/local or /opt)
-
-    OCTAVEPREFIX="/usr"
-
-    # include paths for Octave
-
-    IOCTAVE="-I${OCTAVEPREFIX}/include/octave/ -I${OCTAVEPREFIX}/include/octave/octave"
-
-    # library paths for Octave
-
-    OCTAVEVERS=`octave --version | head -1 | gawk '{ print $4 }'`
-    LOCTAVE="-L${OCTAVEPREFIX}/lib/octave-${OCTAVEVERS} -loctave -lcruft -loctinterp -Wl,--rpath,${OCTAVEPREFIX}/lib/octave-${OCTAVEVERS}"
-    LSYSTEM="-ldl -lm -lncurses -lkpathsea -lreadline -lblas -llapack -lfftw -lg2c"
-    
-    # C++ compiler options
-
-    DEBUG="-g"
-    OPTIM="-O3"
-    FLAGS="-fno-rtti -fno-exceptions -fno-implicit-templates"
-
-    # exported variables
-
-    export MTT_CXX="g++"
-    export MTT_CXXFLAGS="${DEBUG} ${OPTIM} ${FLAGS}"
-    export MTT_CXXLIBS="${LOCTAVE} ${LSYSTEM}"
-    export MTT_CXXINCS="-I. -I${MTT_LIB}/cc ${IOCTAVE}"
-    export MTT_LDFLAGS=" "
-
+  
+  # location of Octave directories on local system (usually /usr, /usr/local or /opt)
+      
+  OCTAVEPREFIX="/usr"
+  
+  # include paths for Octave
+  
+  IOCTAVE="-I${OCTAVEPREFIX}/include/octave/ -I${OCTAVEPREFIX}/include/octave/octave"
+      
+  # include and library paths for Octave
+      
+  if [ -z `which ${MKOCTFILE}` ]; then
+      # Octave development stuff not installed
+      # C++ and .oct representations will not work
+      OCTAVE_INC_FLAGS=" "
+      OCTAVE_LIB_FLAGS=" "
+  else
+      OCTAVE_INC_FLAGS="`${MKOCTFILE} --print INCFLAGS`"
+      OCTAVE_LIB_FLAGS="\
+        `${MKOCTFILE} --print LFLAGS`              \
+        `${MKOCTFILE} --print LIBOCTAVE`           \
+        `${MKOCTFILE} --print LIBCRUFT`            \
+        `${MKOCTFILE} --print LIBOCTINTERP`        \
+        `${MKOCTFILE} --print BLAS_LIBS`           \
+        `${MKOCTFILE} --print FFTW_LIBS`           \
+        `${MKOCTFILE} --print LIBS`                \
+        `${MKOCTFILE} --print FLIBS`               \
+        `${MKOCTFILE} --print RLD_FLAG`"
+  fi
+      
+  # C++ compiler options
+      
+  DEBUG="-g"
+  OPTIM="-O3"
+  FLAGS="-fno-rtti -fno-exceptions -fno-implicit-templates"
+  
+  # exported variables
+      
+  export MTT_CXX="g++"
+  export MTT_CXXFLAGS="${DEBUG} ${OPTIM} ${FLAGS}"
+  export MTT_CXXLIBS="${OCTAVE_LIB_FLAGS}"
+  export MTT_CXXINCS="-I. -I${MTT_LIB}/cc ${OCTAVE_INC_FLAGS}"
+  export MTT_LDFLAGS=" "
+  
   ## End of Octave environment configuration
   ##
   #########################################################################################

@@ -2,6 +2,13 @@
 #ifndef HAVE_USEFUL_FUNCTIONS_HH
 #define HAVE_USEFUL_FUNCTIONS_HH
 
+/* Code generation directives */
+#define STANDALONE 0
+#define OCTAVEDLD  1
+#define MATLABMEX  2
+#if (! defined (CODEGENTARGET))
+#define CODEGENTARGET -1
+#endif /* (! defined (CODEGENTARGET)) */
 
 #ifndef __cplusplus
 #define inline			/* strip */
@@ -41,6 +48,7 @@ sign (const double x)
 
 
 /* Octave functions */
+#if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == OCTAVEDLD))
 #ifdef __cplusplus
 static Matrix
 ones (const int r = 1, const int c = 1)
@@ -84,6 +92,7 @@ zeros (const int r, const int c)
   return m;
 }
 #endif /* __cplusplus */
+#endif /* ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == OCTAVEDLD)) */
 
 
 

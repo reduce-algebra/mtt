@@ -1,4 +1,4 @@
-function  structure = TF_eqn(bond_number,bonds,direction,cr,args, ...
+function  structure = TF_eqn(name,bond_number,bonds,direction,cr,args, ...
                             structure,eqnfile);
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -6,25 +6,70 @@ function  structure = TF_eqn(bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/08/19 09:05:04  peter
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 			
-if nargin<6
+if nargin<8
   eqnfile = 'stdout';
 end;
 
-% Needs port labels etc...
+% Check that there are exactly two bonds.
+if check_bonds(bonds,2,'TF')==0
+  return
+end
+
+% There are 2 ports; extract the information
+e_1 = bonds(1,1);
+f_1 = bonds(1,2);
+e_2 = bonds(2,1);
+f_2 = bonds(2,2);
+
 
 % Effort
-if bonds(1,1)==1
-  oneeqn(bond_number(2),1,bond_number(1),1,cr,args,eqnfile);
+outcause = 1;
+incause = 1;
+if e_1==1
+  outbond = bond_number(2);
+  inbond =  bond_number(1);
+  outport = 2;
+  inport = 1;
 else
-  oneeqn(bond_number(1),1,bond_number(2),1,cr,args,eqnfile);
+  outbond = bond_number(1);
+  inbond =  bond_number(2);
+  outport = 1;
+  inport = 2;
 end;
 
+eqn =  equation(name,cr,args,outbond,outcause,outport, ...
+                             inbond,incause,inport);
+fprintf(eqnfile, '%s',eqn);
+
 % Flow
-if bonds(1,2)==-1
-  oneeqn(bond_number(2),-1,bond_number(1),-1,cr,args,eqnfile);
+outcause = -1;
+incause = -1;
+if f_1==-1
+  outbond = bond_number(2);
+  inbond =  bond_number(1);
+  outport = 2;
+  inport = 1;
 else
-  oneeqn(bond_number(1),-1,bond_number(2),-1,cr,args,eqnfile);
+  outbond = bond_number(1);
+  inbond =  bond_number(2);
+  outport = 1;
+  inport = 2;
 end;
+
+eqn =  equation(name,cr,args,outbond,outcause,outport, ...
+                             inbond,incause,inport);
+fprintf(eqnfile, '%s',eqn);
+
+
+
+
+
+
+
+

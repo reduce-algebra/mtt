@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.36  2000/05/19 17:48:16  peterg
+## Argument to state
+##
 ## Revision 1.35  2000/05/18 18:59:40  peterg
 ## Removed the First time stuff
 ##
@@ -129,19 +132,20 @@ fi
 
 echo  "Creating $1_ode2odes.m with $method integration method"
 
+# Find system constants
+Nx=`mtt_getsize $Sys x` # States
+Nu=`mtt_getsize $Sys u` # Inputs 
+Ny=`mtt_getsize $Sys y` # Inputs  
+
 if [ "$method" = "implicit" ]; then
     ode=cse
     odeo=cseo
+    algorithm="mtt_implicit(x,dx,AA,AAx,ddt,$Nx,open_switches)"
 else
     ode=ode
     odeo=odeo
+    algorithm="mtt_euler(x,dx,ddt,$Nx,open_switches)"
 fi
-
-# Find system constants
-Nx=`grep "MTTNx " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
-Nu=`grep "MTTNu " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
-Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
- 
 
 #cat << EOF > $1_ode2odes.m
 # Program $1_ode2odes
@@ -169,20 +173,39 @@ global MTT_data;
 
   ## Initialise
   t = 0.0;
-  ilast = round(simpar.last/simpar.dt)+1; # Total number of steps
+  ddt = simpar.dt/simpar.stepfactor;
+  ilast = round(simpar.last/ddt)+1; # Total number of steps
 
-  [u]  = zero_input(1);		# Zero the input
-
-  for it = 1:ilast		#Integration loop
-    [y] = $1_cseo(x,u,t,par);# Output 
+## Following remove due to p2c bug
+##  [u]  = zero_input(1);		# Zero the input
+  mttj = 0;
+    for it = 1:ilast		#Integration loop
+    [y] = $1_$odeo(x,u,t,par);# Output 
     [u] = $1_input(t,x,y);	# Input
-    mtt_write(t,x,y,$Nx,$Ny);   # Write it out
-    [dx] = $1_cse(x,u,t,par);	# State derivative
-    [AA] = $1_smxa(x,u,simpar.dt,par);	# (I-Adt) and (I-Adt)x
-    [AAx] = $1_smxax(x,u,simpar.dt,par); # (I-Adt) and (I-Adt)x
+    if mttj==0
+     mtt_write(t,x,y,$Nx,$Ny);   # Write it out
+    endif
+    [dx] = $1_$ode(x,u,t,par);	# State derivative
+EOF
+
+if [ "$method" = "implicit" ]; then
+cat<<EOF >> $1_ode2odes.m
+
+    [AA] = $1_smxa(x,u,ddt,par);	# (I-Adt) and (I-Adt)x
+    [AAx] = $1_smxax(x,u,ddt,par); # (I-Adt) and (I-Adt)x
+
+EOF
+fi
+
+cat <<EOF >> $1_ode2odes.m
     [open_switches] = $1_switchopen(x);	# Open switches
-    [x] = mtt_implicit(x,dx,AA,AAx,simpar.dt,$Nx,open_switches); # Implicit update
-    t = t + simpar.dt;
+    [x] = $algorithm; # Integration update
+    t = t + ddt;   # Time update
+    mttj = mttj+1;    # Increment counter
+    if mttj==simpar.stepfactor
+       mttj = 0;      # Reset counter
+    endif
+
   endfor;			# Integration loop
 
   t = MTT_data(:,1);
@@ -198,7 +221,7 @@ exit
 ### old stuff follows
 if [ "$method" = "euler" ]; then
 cat << EOF >> $1_ode2odes.m
-MTTddt = mttdt/mttstepfactor; # The small sample interval
+ddt = mttdt/mttstepfactor; # The small sample interval
 EOF
 fi
 
@@ -218,8 +241,8 @@ cat << EOF >> $1_ode2odes.m
       for MTTjt = 1:mttstepfactor
 	[MTTdx] = $1_$ode(MTTx,MTTu,MTTt,MTTpar); # State derivative
         [MTTopen] = $1_switchopen(MTTx);        # Open switches
-	[MTTx] = mtt_euler(MTTx,MTTdx,MTTddt,$Nx,MTTopen); # Euler update
-	MTTt = MTTt + MTTddt;
+	    [MTTx] = mtt_euler(MTTx,MTTdx,ddt,$Nx,MTTopen); # Euler update
+	MTTt = MTTt + ddt;
       endfor;
 #    endif;
 EOF
@@ -228,11 +251,11 @@ fi
 if [ "$method" = "implicit" ]; then
 cat << EOF >> $1_ode2odes.m
 #    if mttmethod==2		# Implicit 
-      [MTTdx] = $1_cse(MTTx,MTTu,MTTt,MTTpar); # State derivative
+      [MTTdx] = $1_$ode(MTTx,MTTu,MTTt,MTTpar); # State derivative
       [mttAA] = $1_smxa(MTTx,MTTu,mttdt,MTTpar);	# (I-Adt) and (I-Adt)x
       [mttAAx] = $1_smxax(MTTx,MTTu,mttdt,MTTpar);	# (I-Adt) and (I-Adt)x
       [MTTopen] = $1_switchopen(MTTx);        # Open switches
-      [MTTx] = mtt_implicit(MTTx,MTTdx,mttAA,mttAAx,mttdt,$Nx,MTTopen); # Implicit update
+      [MTTx] = $algorithm(MTTx,MTTdx,mttAA,mttAAx,mttdt,$Nx,MTTopen); # Implicit update
       MTTt = MTTt + mttdt;
 #    endif;
 EOF
@@ -246,7 +269,3 @@ cat << EOF >> $1_ode2odes.m
 endfor;				# Integration loop
 
 EOF
-
-
-
-

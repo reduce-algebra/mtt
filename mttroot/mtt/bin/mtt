@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.72  1997/05/06  13:54:21  peterg
+# Changed gcc arguments for the ode simulation -- all files now included
+# in the _odes.c file
+#
 # Revision 1.71  1997/05/03  15:50:18  peterg
 # c functions not included in gcc arg list -- they are now included in
 # the main prog.
@@ -972,7 +976,7 @@ $1_odes.m: $1_odes.c $1_ode.c $1_numpar.c $1_odes.h\
 	echo Creating $1_odeso.m
 	echo 'Compiling ...'
 	gcc $1_odes.c  -lm
-	echo 'Running  ...'; ./a.out; echo 'Done.'
+	echo 'Running  ...'; time ./a.out; echo 'Done.'
 
 
 $1_sms.m: $1_sms.c $1_sm.c $1_numpar.c $1_sms.h\
@@ -982,7 +986,7 @@ $1_sms.m: $1_sms.c $1_sm.c $1_numpar.c $1_sms.h\
 	echo Creating $1_smso.m
 	echo 'Compiling ...'
 	gcc $1_sms.c -lm
-	echo 'Running  ...'; ./a.out; echo 'Done.'
+	echo 'Running  ...'; time ./a.out; echo 'Done.'
 
 endif
 $1_odeso.m: $1_odes.m

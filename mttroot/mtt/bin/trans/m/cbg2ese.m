@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 # ###############################################################
 # ## $Id$
 # ## $Log$
+# ## Revision 1.28  1998/08/25 08:31:42  peterg
+# ## Fixed bug - didn't find the ports - use deblank
+# ##
 # ## Revision 1.27  1998/08/25 07:16:49  peterg
 # ## Modified to data struture representation
 # ##
@@ -326,10 +329,10 @@ i,comp_name
 		    pc, comp_name, subsystem.type,k);
 	    
 	    
-				# Is it a named port? (Name begins with [)
-            Named_Port = (comp_name(1)=="[");
+#				# Is it a named port? (Name begins with [)
+#            Named_Port = (comp_name(1)=="[");
 	    
-	    if Named_Port #Add [ to start of name
+	    if strcmp(field,"ports") #Add [ to start of name
 	      name_r = ["[" name_r];
 	    endif;
 	    

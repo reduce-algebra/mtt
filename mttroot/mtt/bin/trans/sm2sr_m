@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1996/08/15 16:23:39  peter
+## Uses T in place of t to avoid name clash within function.
+##
 ## Revision 1.7  1996/08/15 11:54:32  peter
 ## Now has optional initial condition.
 ##
@@ -41,7 +44,10 @@
 ###############################################################
 
 echo Creating $1_sr.m
+echo Creating $1_sro.m
 rm -f dm2sr_m.log
+rm -f $1_sr.m
+rm -f $1_sro.m
 
 if [ "$2" = "" ]; 
 then
@@ -80,9 +86,14 @@ $MATRIX << EOF > dm2sr_m.log
   end;
 
   [A,B,C,D,E] = $1_dm($1_numpar);
-  y = dm2sr(A,B,C,D,E,T,u0,x0);
+  [y,x] = dm2sr(A,B,C,D,E,T,u0,x0);
 
-  write_matrix([T y], '$1_sr');
+  if nx>0
+    write_matrix([T x], '$1_sr');
+  end;
+  if ny>0
+    write_matrix([T y], '$1_sro');
+  end;
 
 EOF
 

@@ -1,15 +1,19 @@
-function sr = dm2sr(A,B,C,D,E,T,u0,x0);
-% sr = dm2sr(A,B,C,D,E,T);
+function [Y,X] = dm2sr(A,B,C,D,E,T,u0,x0);
+% [Y,X] = dm2sr(A,B,C,D,E,T,u0,x0);
 % Descriptor matrix to impulse response.
 % NB At the moment - this assumes that E is unity .....
 % A,B,C,D,E - descriptor matrices
 % T vector of time points
+% u0 input gain vector: u = u0*unit step.
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.4  1996/08/15 08:34:08  peter
+% %% Added step gain (u0) and initial condition (x0)
+% %%
 % %% Revision 1.3  1996/08/11 19:33:24  peter
 % %% Replaced exp by expm - whoops!
 % %%
@@ -41,12 +45,22 @@ end;
 
 one = eye(Nx);
 
-sr = zeros(N,Ny);
+Y = zeros(N,Ny);
+X = zeros(N,Nx);
 i = 0;
 for t = T'
   i=i+1;
-  expAt = expm(A*t);
-  SR = C*( ( A\(expAt-one) )*B*u0 + expAt*x0) + D*u0;
-  sr(i,:) =SR';
+  if Nx>0
+    expAt = expm(A*t);
+    x = ( A\(expAt-one) )*B*u0 + expAt*x0;
+    X(i,:) = x';
+    if Ny>0
+      y = C*x + D*u0;
+      Y(i,:) = y';
+    end;
+  elseif Ny>0
+    y = D*u0;
+    Y(i,:) = y';
+  end;
 end;
 

@@ -19,6 +19,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.14  1996/08/16 14:52:24  peter
+## Added two alternative view options - dview and pview.
+##
 ## Revision 1.13  1996/08/16 08:24:31  peter
 ## Correctly chooses how to make a ps file using $REPTYPE.
 ##
@@ -127,11 +130,21 @@ case $2 in
 		REPTYPE='bg' ;;
 	cbg )
 		REPTYPE='bg' ;;
-	odesol)
+	odes)
 		REPTYPE='data' ;;
-	daesol)
+	odeso)
+		REPTYPE='data' ;;
+	odess)
+		REPTYPE='data' ;;
+	odesso)
+		REPTYPE='data' ;;
+	daes)
+		REPTYPE='data' ;;
+	daeso)
 		REPTYPE='data' ;;
 	sr)
+		REPTYPE='data' ;;
+	sro)
 		REPTYPE='data' ;;
 	lmfr)
 		REPTYPE='data' ;;
@@ -244,7 +257,7 @@ $1_sum.tex: $1_abg.pl
 $1_ese.r: $1_cbg.m
 	   cbg2ese_m2r $1
 $1_def.r: $1_ese.r
-	touch $1_ese.r
+	touch $1_def.r
 $1_def.m: $1_def.r
 	def_r2m $1; matlab_tidy $1_def.m;
 
@@ -328,10 +341,24 @@ $1_tf.tex: $1_def.r $1_tf.r $1_sympar.r $1_simp.r
 #Time responses
 $1_sr.m: $1_dm.m $1_numpar.m $1_args.m $1_def.m
 	dm2sr_m $1 '$ARGS'
-$1_odesol.m: $1_ode.m $1_numpar.m $1_args.m $1_def.m $1_input.m
-	ode2odesol_m $1 '$ARGS'
-$1_daesol.m: $1_dae.m $1_numpar.m $1_args.m $1_def.m $1_input.m
-	dae2daesol_m $1 '$ARGS'
+$1_sro.m: $1_sr.m
+	touch $1_sro.m
+$1_odes.m: $1_ode.m $1_numpar.m $1_args.m $1_def.m $1_input.m
+	ode2odes_m $1 '$ARGS'
+$1_odeso.m: $1_odes.m
+	touch $1_odeso.m
+$1_daes.m: $1_dae.m $1_numpar.m $1_args.m $1_def.m $1_input.m
+	dae2daes_m $1 '$ARGS'
+$1_daeso.m: $1_daes.m
+	touch $1_daeso.m
+
+#Numerical steady states
+$1_odess.m: $1_ode.m $1_numpar.m $1_args.m $1_def.m $1_input.m
+	ode2odess_m $1 '$ARGS'
+
+$1_odesso.m: $1_odess.m
+	touch $1_odesso.m
+
 
 #Frequency responses
 $1_fr.m: $1_dm.m $1_numpar.m $1_args.m $1_def.m
@@ -389,9 +416,17 @@ $1_$2.ps: $1_$2.dvi
 endif
 
 #Default view
-$1_$2.view: $1_$2.ps
-	echo Creating view of $1_$2
-	ghostview $1_$2.ps&
+ifeq ($REPTYPE,bg)
+$1_$2.view : $1_$2.pview
+endif
+
+ifeq ($REPTYPE,data)
+$1_$2.view : $1_$2.dview
+endif
+
+ifeq ($REPTYPE,tex)
+$1_$2.view : $1_$2.tview
+endif
 
 #View a ps file
 $1_$2.pview: $1_$2.ps
@@ -402,6 +437,11 @@ $1_$2.pview: $1_$2.ps
 $1_$2.dview: $1_$2.gdat
 	echo Creating view of $1_$2
 	gdat2view $1_$2 '$ARGS'&
+	
+#View a tex file
+$1_$2.tview: $1_$2.dvi
+	echo Creating view of $1_$2
+	xdvi $1_$2.dvi&
 	
 
 #Report generation

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.20  2001/04/10 13:08:19  gawthrop
+## Smoother translation to .cs using sh2csh
+##
 ## Revision 1.19  2001/03/30 15:13:49  gawthrop
 ## Rationalised simulation modes to each return mtt_data
 ##
@@ -157,7 +160,8 @@ else
   export ASCENDLIBRARY=$MTTPATH/ascend/lib
   
   # Oct file generation - use version with no optimisation.
-  export MKOCTFILE=$MTT_LIB/octave/mkoctfile
+  #export MKOCTFILE=$MTT_LIB/octave/mkoctfile # This for no optimisation
+    export MKOCTFILE=mkoctfile
 
   # ode2odes.exe stuff
 

@@ -1,22 +1,25 @@
 %% Label file for system RC (RC_lbl.txt)
 %SUMMARY RC A Simple two-port RC circuit
-
+%DESCRIPTION This simple example is used in the manual.
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/07/16 20:16:30  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 % Port aliases
-%ALIAS	in	in
-%ALIAS	out	out
+%ALIAS	in	Electrical_in	# The left-hand port
+%ALIAS	out	Electrical_out	# The right-hand port
 
 % Argument aliases
-%ALIAS	$1	c
-%ALIAS	$2	r
+%ALIAS	$1	c		# Capacitance
+%ALIAS	$2	r		# Resistance
 
 %% Each line should be of one of the following forms:
 %	     a comment (ie starting with %)
@@ -32,5 +35,5 @@
 	r		lin	flow,r
 
 % Component type SS
-	[in]	SS		external,external
-	[out]	SS		external,external
+	[Electrical_in]		SS		external,external
+	[Electrical_out]	SS		external,external

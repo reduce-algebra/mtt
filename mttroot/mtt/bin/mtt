@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.106  1997/12/11  10:59:07  peterg
+# Added debug -D switch + echos directory when -d switch used.
+#
 # Revision 1.105  1997/12/11  09:04:47  peterg
 # Reduced default rep.txt file to just abg.txt -- this is to document
 # components which may not be causally complete
@@ -423,7 +426,7 @@ done
 #Print header if not in quiet (-q) mode.
 if [ "$quiet" != "quiet" ]; then
   echo
-  echo 'MTT (Model Transformation Tools) version 2.5++ ($Date$)'
+  echo 'MTT (Model Transformation Tools) version 2.6 ($Date$)'
   echo 'This is free software with ABSOLUTELY NO WARRANTY.'
   echo 'Type `mtt warranty'\' 'for details.'
   echo

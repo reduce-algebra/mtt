@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  1996/09/12 18:41:48  peter
+## Standard error handling added.
+##
 ## Revision 1.6  1996/08/24 14:11:04  peter
 ## Global parameter passing.
 ##
@@ -42,6 +45,7 @@ if [ "$2" = "" ];
 then
   PARAMS='T=[0:0.1:10]; x0=zeros(nx,1);'
   echo Using default parameter $PARAMS
+  echo $PARAMS>$1_args.m
 else
   PARAMS=$2;
 fi

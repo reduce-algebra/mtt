@@ -15,13 +15,20 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/05/28 09:31:44  peterg
+## Cosmetic changes
+##
 ## Revision 1.1  1998/05/28 09:31:13  peterg
 ## Initial revision
 ##
 ###############################################################
 
-echo $1: `$1 --version | head -1`
 
+if [ -z "$2" ]; then
+    echo $1: `$1 --version | head -1`
+else
+    echo $1: $2
+fi
 
 
 

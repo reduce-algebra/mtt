@@ -8,6 +8,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1999/03/12 04:04:27  peterg
+% %% Single argument - the effort value e_s
+% %%
 % %% Revision 1.1  1999/03/03 21:55:46  peterg
 % %% Initial revision
 % %%
@@ -15,7 +18,7 @@
 
 
 % Port aliases
-%ALIAS	out	out
+%ALIAS	out|in	out
 
 % Argument aliases
 %ALIAS $1	e_s

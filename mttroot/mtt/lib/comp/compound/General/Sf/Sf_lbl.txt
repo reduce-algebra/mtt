@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1999/03/12 04:03:09  peterg
+% %% Single argument - the value of the flow
+% %%
 % %% Revision 1.1  1999/03/03 21:50:15  peterg
 % %% Initial revision
 % %%
@@ -14,7 +17,7 @@
 
 
 % Port aliases
-%ALIAS	out	out
+%ALIAS	out|in	out
 
 % Argument aliases
 %ALIAS	   $1	f_s

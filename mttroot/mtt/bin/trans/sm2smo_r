@@ -14,14 +14,32 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/01/22 13:25:22  peterg
+## Added END;; to output file.
+##
 ## Revision 1.1  1998/01/22 13:16:43  peterg
 ## Initial revision
 ##
 ###############################################################
 
+Nu=`mtt_getsize $1 u`
+Ny=`mtt_getsize $1 y`
 
+if [ "$Nu" = "1" ]; then
+  if [ "$Ny" = "1" ]; then
+    blurb=' for this siso system'    
+  else
+    blurb=" using first output of $Ny"
+  fi
+else
+  if [ "$Ny" = "1" ]; then
+    blurb=" using first input of $Nu"
+  else
+    blurb=" using first input of $Nu and using first output of $Ny"
+  fi
+fi
 # Inform user
-echo Creating $1_smo.r -- NOTE this is for SISO systems only.
+echo Creating $1_smo.r $blurb
 
 # Remove the old log file
 rm -f sm2smo_r.log
@@ -87,19 +105,19 @@ Reduce_Matrix()$
 MTT_Matrix := MTTB_o$ 
 MTT_Matrix_name := "MTTB_o"$
 MTT_Matrix_n := MTTNx$
-MTT_Matrix_m := MTTNu$
+MTT_Matrix_m := 1$
 Reduce_Matrix()$
 
 MTT_Matrix := MTTC_o$ 
 MTT_Matrix_name := "MTTC_o"$
-MTT_Matrix_n := MTTNy$
+MTT_Matrix_n := 1$
 MTT_Matrix_m := MTTNx$
 Reduce_Matrix()$
 
 MTT_Matrix := MTTD_o$ 
 MTT_Matrix_name := "MTTD_o"$
-MTT_Matrix_n := MTTNy$
-MTT_Matrix_m := MTTNu$
+MTT_Matrix_n := 1$
+MTT_Matrix_m := 1$
 Reduce_Matrix()$
 
 write "%  -Observability matrix";

@@ -70,7 +70,7 @@ function eqn =  equation(comp_type, name,cr,args,outbond,outcause,outport, ...
 
 
   ## Set up first line of RHS
-  RHS1 = sprintf("%s%s%s%s%s%s%s%s\n", ...
+  RHS1 = sprintf("%s%s%s%s%s%s%s%s", ...
 		 cr, lp, args, a_comma, cause_name, c_comma, port_name, c_comma);
 
 
@@ -87,9 +87,9 @@ function eqn =  equation(comp_type, name,cr,args,outbond,outcause,outport, ...
     endif
     
     if (i<nports) # Add a comma
-      RHS2 = sprintf("%s,\n",RHS2);
+      RHS2 = sprintf("%s,",RHS2);
     else
-      RHS2 = sprintf("%s\n",RHS2);
+      RHS2 = sprintf("%s",RHS2);
 
     endif
 
@@ -98,6 +98,6 @@ function eqn =  equation(comp_type, name,cr,args,outbond,outcause,outport, ...
   
   
   ## Set up equation
-  eqn = sprintf("%s := %s%s\t%s;\n", LHS, RHS1, RHS2, rp);
+  eqn = sprintf("%s := %s%s%s;\n", LHS, RHS1, RHS2, rp);
 
 endfunction

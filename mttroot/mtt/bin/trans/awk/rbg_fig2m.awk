@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.13  1996/12/21 19:47:23  peterg
+## Put back under VC
+##
 # Revision 1.12  1996/08/24  16:30:12  peter
 # Fixed error in nonport_regexp.
 #
@@ -351,7 +354,7 @@ BEGIN {
   default_args = "";
   delimiter = ":";
   repetition_delimiter = "*";
-  repetition_regexp = "\*";
+  repetition_regexp = "\\*";
   q = "\047";
   terminator = "\\001";
   component_regexp = "[^0-9a-zA-Z_:\*-]";

@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.56  2001/03/30 15:13:58  gawthrop
+## Rationalised simulation modes to each return mtt_data
+##
 ## Revision 1.55  2001/03/27 13:21:59  geraint
 ## Octave version compatibility for save_ascii_data(_for_plotting).
 ##
@@ -686,6 +689,7 @@ mtt_write (const double &t,
 #else // ! STANDALONE
   set_global_value ("MTT_data", data);
 #endif
+    row = 0;
     }
 }
 

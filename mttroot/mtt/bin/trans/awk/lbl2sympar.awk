@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.6  1996/12/07  20:02:43  peterg
+# Fixed symbolic parameter bug.
+#
 ## Revision 1.5  1996/12/07 18:06:50  peterg
 ## Now detects symbolic args ($1 etc) and ignores them.
 ##
@@ -84,13 +87,14 @@ symbols = "";
 END {
 # print the _sympar file
 
-  printf("MTTNVar := %1.0f;\n", symbol_count);
+#  printf("MTTNVar := %1.0f;\n", symbol_count);
 
   if (symbol_count>0) {
-    printf("MATRIX MTTVar(MTTNVar,1);\n");
+   # printf("MATRIX MTTVar(MTTNVar,1);\n");
     split(symbols,symbol);
     for (i = 1; i <= symbol_count; i++) {
-      printf("MTTVar(%1.0f,1) \t := %s;\n", i, symbol[i]);
+#      printf("MTTVar(%1.0f,1) \t := %s\n", i, symbol[i]);
+      printf("%s\n", symbol[i]);
     }
   }
 

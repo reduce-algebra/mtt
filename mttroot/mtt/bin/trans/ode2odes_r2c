@@ -20,6 +20,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.14  1998/05/13 08:57:27  peterg
+## Now uses simpar.h in place of odes.h
+##
 ## Revision 1.13  1998/02/24 13:34:45  peterg
 ## Back under RCS
 ##
@@ -166,7 +169,7 @@ write "  $1_state();"$
 
 %Initialise main (Euler) integration loop
 write "/* Initialise main (Euler) integration loop */"$
-write "  time = 0.0;"$
+write "  time = DT;"$
 write "  dt = DT/STEPFACTOR;"$
 %% write "  for (i=1; i<=MTTNX; i++)"$
 %% write "      x[i] = 0.0;"$

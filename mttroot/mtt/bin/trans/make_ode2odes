@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.12  1998/08/27 08:55:18  peterg
+## Mods to integration methods
+##
 ## Revision 1.11  1998/08/25 12:28:31  peterg
 ## Move initila switch to after initial input
 ##
@@ -70,12 +73,13 @@ MTTilast = round(mttlast/mttdt); # Total number of steps
 MTTt = 0.0;
 [MTTx] = $1_state;	        # Read in initial state
 [MTTu] = $1_input(MTTx,MTTt);	# Evaluate initial input
-[MTTx] = $1_switch(MTTx);       # Switches
 [MTTy] = $1_odeo(MTTx,MTTu,MTTt); # Evaluate initial output
 mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny); # And write them
 
 [mttAA]  = zero_matrix($Nx);	# Zero the A matrix
 [mttAAx] = zero_vector($Nx);	# Zero the AAx vector
+
+[MTTx] = $1_switch(MTTx);       # Switches
 
   if mttmethod==1		# Euler
     MTTddt = mttdt/mttstepfactor; # The small sample interval
@@ -95,6 +99,7 @@ for MTTit = 1:MTTilast
   if mttmethod==2		# Implicit 
     [MTTdx] = $1_ode(MTTx,MTTu,MTTt); # State derivative
     [mttAA,mttAAx] = $1_smx(MTTx,MTTu,mttdt);	# (I-Adt) and (I-Adt)x
+    [mttAA] = $1_switchA(mttAA,MTTx);	# Switches
     [MTTx] = mtt_implicit(MTTx,MTTdx,mttAA,mttAAx,mttdt,$Nx); # Implicit update
     MTTt = MTTt + mttdt;
   endif;

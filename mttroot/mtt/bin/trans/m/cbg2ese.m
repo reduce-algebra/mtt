@@ -1,5 +1,4 @@
-function structure = cbg2ese(system_name,bonds,eqnfile,infofile)
-% cbg2ese(system_name,bonds,infofile)
+function structure = cbg2ese(system_name, system_type, full_name, infofile)
 % 
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %     %%%%% Model Transformation Tools %%%%%
@@ -13,6 +12,9 @@ function structure = cbg2ese(system_name,bonds,eqnfile,infofile)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/08/08 15:53:23  peter
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -24,15 +26,30 @@ if nargin<4
   infofile = 'stdout';
 end;
 
-% Evaluate the system function to get the bonds
-fun_name = [system_name, '_cbg']
-if exist(fun_name)~=2
-  mtt_info(['m-file ', fun_name, ' does not exist'], infofile);
+% Create the (full) system name
+if length(full_name)==0
+  full_name = system_name;
+  system_type = system_name;
 else
-  eval(['bonds=', fun_name, ';']);
-  fun_name = [system_name, '_abg'];
-  eval(['[junk,components]=', fun_name, ';']);
+  full_name = [full_name, '_', system_name];
+end;
 
+full_name_type = [full_name, '_', system_type];
+ese_name = [system_name, '_ese.r'];
+cbg_name = [full_name_type, '_cbg'];
+abg_name = [system_type, '_abg'];
+cmp_name = [system_type, '_cmp'];
+% Return if cbg file doesn't exist
+if exist(cbg_name)~=2
+  return
+end;
+
+% Setup file
+filenum = fopen(ese_name, 'w');
+
+% Evaluate the system function to get the bonds
+  eval(['[junk,components]=', abg_name, ';']);
+  eval(['bonds=', cbg_name, ';']);
   % Find number of bonds
   [n_bonds,columns] = size(bonds);
   if (columns ~= 2)&(n_bonds>0)
@@ -52,7 +69,7 @@ else
     direction = sign(comp)'*[1 1];
     % Convert from arrow orientated to component orientated causality
     comp_bonds = bonds(bond_list,:).*direction;
-    eval([ '[comp_type,name,cr,args] = ', system_name, '_cmp(i);' ]);
+    eval([ '[comp_type,comp_name,cr,args] = ', cmp_name, '(i);' ]);
     % change name of 0 and 1 components -- matlab doesn't like numbers here
     if strcmp(comp_type,'0')
       comp_type = 'zero';
@@ -63,10 +80,21 @@ else
     % Invoke the appropriate equation-generating procedure
     eqn_name = [comp_type, '_eqn']
     if exist(eqn_name)~=2 % Try a compound component
-      cbg2ese(comp_type,comp_bonds,eqnfile);
+      cbg2ese(comp_name, comp_type, full_name, infofile);
     else % its a simple component
       eval(['structure = ', ...
-	    eqn_name, '(bond_list,comp_bonds,direction,cr,args,structure,eqnfile);' ]);
+	    eqn_name, '(bond_list,comp_bonds,direction,cr,args,structure,filenum);' ]);
     end;
   end;
-end;
+
+fclose(filenum);
+
+
+
+
+
+
+
+
+
+

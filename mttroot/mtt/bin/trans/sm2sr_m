@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.16  1998/08/11 13:31:05  peterg
+## Lowercase mttLAST etc
+##
 ## Revision 1.15  1998/07/27 20:31:40  peterg
 ## New simpar version
 ##
@@ -78,15 +81,15 @@ rm -f mtt_error
 $MATRIX << EOF > sm2sr_m.log 2>mtt_error.txt
 
   % Read in the numeric system parameters
-  $1_numpar;
+  mttpar = $1_numpar;
 
   % Read in the simulation parameters
-  $1_simpar;
+  simpar = $1_simpar;
 
   [nx,ny,nu,nz,nyz] = $1_def;
   t=0;	%Just in case it appears in the parameter list.
 
-  T=[0:mttdt:mttlast]'
+  T=[0:simpar.dt:simpar.last]'
 
   if exist('u0')==0
     u0 = ones(nu,1);
@@ -102,7 +105,7 @@ $MATRIX << EOF > sm2sr_m.log 2>mtt_error.txt
     T=T';
   end;
 
-  [A,B,C,D] = $1_sm;
+  [A,B,C,D] = $1_sm(mttpar);
   [y,x] = sm2sr(A,B,C,D,T,u0,x0);
 
   if nx>0

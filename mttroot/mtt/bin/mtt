@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.215  1999/11/15 22:45:31  peterg
+## Reorganised integration method using -i switch
+## Introduced -r (reset) switch
+##
 ## Revision 1.214  1999/11/14 21:27:11  peterg
 ## *** empty log message ***
 ##
@@ -801,6 +805,9 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 			echo $1 is an unknown integration method - use euler or implicit;
                         exit;;
 		esac;;
+	-s )
+                mtt_switches="$mtt_switches $1";
+		sensitivity=sensitivity ;;
 	-ss )
                 mtt_switches="$mtt_switches $1";
 		steadystate_computation=yes ;;
@@ -907,7 +914,8 @@ if [ -z "$1" ]; then
     echo '         -i implicit   Use implicit integration'
     echo '         -i euler      Use Euler integration'
     echo '         -p  print environment variables'
-    echo '         -r  reset time stamp on representation
+    echo '         -r  reset time stamp on representation'
+    echo '         -s  try to generate sensitivity BG (experimental)'
     echo '         -ss use steady-state info to initialise simulations'
     echo '         -t  tidy mode (default)'
     echo '         -u  untidy mode (leaves files in current dir)'
@@ -1390,11 +1398,21 @@ if [ $level = "0" ]; then
 fi
 
 if [ -n "$reset" ]; then
-echo $reset
-  echo Resetting $1_$2.$3;
-  touch $1_$2.$3;
+  if [ -f "$1_$2.$3" ]; then
+    echo Resetting time stamp on $1_$2.$3
+    touch $1_$2.$3
+  else
+    echo $1_$2.$3 does not exist - no action taken
+  fi
   exit;    
 fi
+
+
+if [ -n "$sensitivity" ]; then
+  sys=`echo $1 | cut -c 2-`
+  sys_abg=$sys"_abg"
+fi
+
 ################################
 # This is the main mtt programme
 ################################
@@ -1404,11 +1422,23 @@ $MAKE -S $verbose  -f  -  $1_$2.$3 << EOF
 # Cancel implicit rules I don't want
 %.dvi: %.tex
 
+ifeq ("$sensitivity","sensitivity")
+ifeq ("$level","0")
+$1_abg.fig: $sys_abg.fig
+	abg2sensitivity_fig $sys
+else
 # If level>0, try and get subsystem files
+$1_abg.fig:
+	mtt -q -u $mtt_switches compcopy $1 || abg2sensitivity_fig $sys|| exit 1
+endif
+else
 ifneq ("$level","0")
 $1_abg.fig:
-	mtt -q -u $mtt_switches compcopy $1 || exit 1 
+	mtt -q -u $mtt_switches compcopy $1
 endif
+
+endif
+
 
 
 # Create an arg file if it doesn't exist
@@ -1423,7 +1453,7 @@ $1_args.m:
 #SUMMARY lbl*	label file (tex)
 #SUMMARY lbl	label file (tex)
 $1_lbl.txt:
-	abg2lbl_fig2txt $1
+	abg2lbl_fig2txt $1 $sensitivity
 
 $1_lbl.tex: $1_lbl.txt
 	lbl_txt2tex $1
@@ -1795,7 +1825,6 @@ $1_abg.m: $1_rbg.m $1_alias.m $1_sub.sh
 #SUMMARY cbg*	causal bond graph (m)
 #Acausal bond graph to causal bond graph: mfile
 $1_cbg.m: $1_abg.m
-	echo abg2cbg_m  $info_switch  $1
 	abg2cbg_m  $info_switch $causality_switch $1
 
 $1_type.sh: $1_cbg.m

@@ -12,13 +12,22 @@
 # Inform user
 #echo "Creating $1_sympar.txt"
 
-rm -f mtt_error
 # Separation characters
 SEPS='=*;+/()-'
 # Replace by ,
 REPS=',,,,,,,,'
+
+SystemName=$2
+UseLabelFile=$3
+
+if [ -n "$UseLabelFile" ]; then ## Take input from lbl.txt
+     strip_comments < $1_lbl.txt | awk '{printf("%s %s \"%s\",\n",$1,$2,$3)}' > mtt_stripped_file
+else ## Take input from _abg.m
+     cat $1_abg.m | grep "arg =" | tr $SEPS $REPS > mtt_stripped_file
+fi
+rm -f mtt_error
 # This is the main transformation using gawk
-tr $SEPS $REPS <  $1_abg.m | \
+cat mtt_stripped_file | \
 awk '
 function exact_match(name1, name2) {
   return ((match(name1,name2)>0)&&(length(name1)==length(name2)))
@@ -51,12 +60,12 @@ BEGIN {
   if (match($1,var)>0) print $2 "\t" system_name;
 
    ## Implicit declarations from the arg list
-  if (match($1,"arg")>0) {
-    args=substr($3,2,length($3)-3);
+##  if (match($1,"arg")>0) {
+    args= substr($3,2,length($3)-3);
     if (length(args)>0)
       printf("%s\t%s\n", args,system_name)
-  }
-}' system_name=$2 |\
+##  }
+}' system_name=$SystemName |\
 grep -v '^\$' | mtt_strip_args |\
 sort -u #> $1_sympar.txt 2>mtt_error.txt
 

@@ -9,6 +9,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.72  2002/05/01 12:21:29  geraint
+## No longer uses save_ascii_data_for_plotting function to write data
+## - eliminates dependence on liboctinterp (and libncurses) for .cc.
+##
 ## Revision 1.71  2002/04/30 23:27:00  geraint
 ## Replaced octave_map with columnvector in simpar.cc. Not quite as descriptive but
 ## standardises the interfaces somewhat and reduces the dependency on liboctinterp
@@ -424,7 +428,6 @@ esac
 
 cat <<EOF  > $filename
 #include <octave/oct.h>
-#include <octave/load-save.h>
 #include <octave/lo-mappers.h>
 #include <octave/variables.h>
 

@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.202  1999/02/17 01:59:20  peterg
+## Now handles html copy correctely (ie mv directory to ..)
+## Fixed path probs with html
+##
 ## Revision 1.201  1999/02/16 03:50:09  peterg
 ## Removed explicit _smx targets
 ##
@@ -688,7 +692,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='3.4'
+version='3.5'
 
 # MTT recursion level is zero unless explicitly set
 level=0
@@ -1516,9 +1520,10 @@ $1_numpar.c:  $1_numpar.txt $1_sympar.c
 #SUMMARY input	numerical input declaration  -- default (txt)
 #SUMMARY state	numerical state declaration  -- default (txt)
 ifeq ($steadystate_computation,yes)
-$1_input.txt:
+$1_input.txt: 
 	mtt -q $1 ss r
 	mtt -q $1 struc txt
+	mtt -q $1 switch txt
 	struc2input_txt2txt -ss $1
 $1_state.txt:
 	mtt -q $1 ss r
@@ -1527,6 +1532,7 @@ $1_state.txt:
 else
 $1_input.txt: 
 	mtt -q $1 struc txt
+	mtt -q $1 switch txt
 	struc2input_txt2txt $1
 $1_state.txt: 
 	mtt -q $1 struc txt
@@ -2335,7 +2341,7 @@ make_status=$?
 # Tidy up.
 # echo Removing log files and other garbage
   rm -f  *_unique_raw_list *_raw_list
-  rm -f mtt_error.txt mtt_info.txt a.out 
+  rm -f mtt_error.txt mtt_info.txt 
   rm -f  mtt_info.txt warning.txt
 #  rm -f *_*.idx *_*.ind *_*.ilg  *_*.lof *_*.toc
 

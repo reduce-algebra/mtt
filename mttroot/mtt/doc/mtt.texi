@@ -16,6 +16,9 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.1  2001/06/04 08:18:52  gawthrop
+@comment  Putting documentation under CVS
+@comment
 @comment  Revision 1.66  2000/12/05 14:20:55  peterg
 @comment  Added the c++  anf m CR info.
 @comment
@@ -265,7 +268,7 @@ original English.
 @titlepage
 @title MTT: Model Transformation Tools
 @subtitle December 2000
-@subtitle For version 4.8.
+@subtitle For version 4.9.
 @author Peter Gawthrop
 @page
 @vskip 0pt plus 1filll
@@ -510,6 +513,7 @@ Aliases
 
 * Port aliases::                
 * Parameter aliases::           
+* CR aliases::                  
 * Component aliases::           
 
 Old-style labels (lbl)
@@ -2630,6 +2634,14 @@ information to be found in @xref{Labels (lbl)}. For example:
 @example
 R:r
 @end example
+@item type:label:cr
+Not only are the type and the label of the component given, but also the
+component cr. The type must be
+a valid name (@pxref{Valid names}.The name provides a link to more
+information to be found in @xref{Labels (lbl)}. For example:
+@example
+R:r:flow,r
+@end example
 @item type*n
 The name, together with the number @samp{n} of repetitions of the
 component, are given. This repetition only makes sense if the component
@@ -3190,8 +3202,11 @@ labeled on the Bond Graph @pxref{Acausal bond graph (abg)}.
 @strong{MTT} checks whether all  components labelled on the bond graph
 have labels and vice versa.
 
-If no lbl file exists, @strong{MTT} will create a valid one for you. If
-wish to create one to edit yourself, type
+If no lbl file exists, @strong{MTT} will create a valid one for you;
+including a default set of arguments and crs for both simplae and
+compound components.
+
+If wish to create one to edit yourself, type
 @example
 mtt system_name lbl txt
 @end example
@@ -3230,6 +3245,7 @@ An example lbl file (for the RC system is):
 
 The old-style lbl files (@pxref{Old-style labels (lbl)}) are NO LONGER
 supported -- you are encouraged to convert them ASAP.
+
 @menu
 * SS component labels ::        
 * Other component labels ::     
@@ -3465,6 +3481,7 @@ file
 @menu
 * Port aliases::                
 * Parameter aliases::           
+* CR aliases::                  
 * Component aliases::           
 @end menu
 
@@ -3526,7 +3543,7 @@ can appear in the bond graph containing that component with one bond
 labeled either [shaft] or [power] or [Power_Shaft], one unlabeled vector
 bond pointing in and one unlabeled vector bond pointing out.
 
-@node Parameter aliases, Component aliases, Port aliases, Aliases
+@node Parameter aliases, CR aliases, Port aliases, Aliases
 @comment  node-name,  next,  previous,  up
 @subsubsection Parameter aliases
 @cindex parameter aliases
@@ -3550,7 +3567,26 @@ Assigns four symbolic parameters to the corresponding strings These four
 parameters (@code{$1}--@code{$4}) can then be used for parameter
 passing(@pxref{Parameter passing}).
 
-@node Component aliases,  , Parameter aliases, Aliases
+@node CR aliases, Component aliases, Parameter aliases, Aliases
+@comment  node-name,  next,  previous,  up
+@subsubsection CR aliases
+@cindex CR aliases
+@pindex CR aliases
+
+CR aliases are of the form
+@example
+%ALIAS $an       actual parameter
+@end example
+where n is an integer (unique within the label file).
+For example
+@example
+%ALIAS  $a1  lin           
+@end example
+assigns the symbolic parameter to be lin. This parameter @code{$1} can
+then be used for passing a diofferent cr to the
+component (@pxref{Parameter passing}).
+
+@node Component aliases,  , CR aliases, Aliases
 @comment  node-name,  next,  previous,  up
 @subsubsection Component aliases
 @cindex component aliases
@@ -4163,6 +4199,9 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  2001/06/04 08:18:52  gawthrop
+# %% Putting documentation under CVS
+# %%
 # %% Revision 1.66  2000/12/05 14:20:55  peterg
 # %% Added the c++  anf m CR info.
 # %%

@@ -10,7 +10,7 @@
 
 %CR aliases
 %ALIAS          $1		effort,c_t
-%ALIAS          $1		lin
+%ALIAS          $a1		lin
 
 %% Label file for system CT (CT_lbl.txt)
 
@@ -19,6 +19,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.6  2001/06/13 17:10:26  gawthrop
+% %% Alias for the cr (ie ALIAS	$1	lin)
+% %%
 % %% Revision 1.5  2001/06/11 15:09:18  gawthrop
 % %% Removed spurious parameter
 % %%

@@ -17,6 +17,9 @@ function args_out = subs_arg(args,Args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.6  1998/07/27 09:53:44  peterg
+% %% No change
+% %%
 % %% Revision 1.5  1998/07/21 16:43:26  peterg
 % %% Now writes to an explicit fileID - otherwise we may run out of IDs.
 % %%
@@ -49,8 +52,15 @@ if strcmp(args,'')==0
       args_count = args_count+1;
     else % find argument number
       args_count = args_count+1;
+ 	
       ch = str2ch(args,args_count);    
-      i=0;
+      ## Modification for $p1 $a1 etc
+      if !((ch>='0') & (ch<='9')) # It's not numerical - so loose it
+	args_count = args_count+1;
+	ch = str2ch(args,args_count);    
+      endif
+
+     i=0;
       while (ch>='0') & (ch<='9')
 	i = 10*i + abs(ch)-abs('0');
 	if args_count==L

@@ -28,6 +28,9 @@ function [par,Par,Error,Y,iterations,x] = \
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.5  2001/06/06 07:54:38  gawthrop
+  ## Further fixes to make nonlinear PPP work ...
+  ##
   ## Revision 1.4  2001/05/26 15:46:38  gawthrop
   ## Updated to account for new nonlinear ppp
   ##
@@ -112,6 +115,11 @@ function [par,Par,Error,Y,iterations,x] = \
     y = y(1+N_data-n_data:N_data,:);
     y_par = y_par(1+N_data-n_data:N_data,:);
 
+    if extras.verbose		# Diagnostics
+      printf("y and y_0\n");
+      [y,y_0]
+    endif
+    
     ##Evaluate error, cost derivative J and cost second derivative JJ
     error = 0; 
     J = zeros(n_th,1);

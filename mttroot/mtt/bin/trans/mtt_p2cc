@@ -74,7 +74,7 @@ grep typedef $sys_rep.C              >> $sys_rep.cc
 #Extract the rep code converting [] to () and deleting mtt variables etc
 #The awk part detects the begin and end of the relevant code.
 echo "/* Representation $rep information */" >> $sys_rep.cc
-awk '{
+gawk '{
   if ( (match($1,"}")==1)&&(NF>1)) writing=0;
   if ( (writing) && !(match($2,"mtt[a-z]")==1) ) print $0;
   if (match($1,"{")==1) writing=1;

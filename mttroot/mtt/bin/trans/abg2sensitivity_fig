@@ -22,7 +22,7 @@ fi
 
 echo Creating $sfilename   
 
-awk '
+gawk '
   function modulo10(x) {
     return x-int(x/10)*10
     }

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.16  2000/10/17 13:45:18  peterg
+## split up state and input - different defaults
+##
 ## Revision 1.15  2000/10/17 09:53:05  peterg
 ## More on logic rep
 ##
@@ -89,7 +92,7 @@ case $rep in
 	    textfile=$1_$2.$lang
 	    infofile=mtt_list.$lang
 	    moreinfofile=mtt_list_numpar.$lang
-            awk '{if ($1==rep) printf("%s\n", $4)}' rep=$2 \
+            gawk '{if ($1==rep) printf("%s\n", $4)}' rep=$2 \
             <$1_struc.txt >$infofile
 	    cat $infofile $1_sympar.$lang> $moreinfofile  
 	    default='1.0'
@@ -99,7 +102,7 @@ case $rep in
 	    textfile=$1_$2.$lang
 	    infofile=mtt_list.$lang
 	    moreinfofile=mtt_list_numpar.$lang
-            awk '{if ($1==rep) printf("%s\n", $4)}' rep=$2 \
+            gawk '{if ($1==rep) printf("%s\n", $4)}' rep=$2 \
             <$1_struc.txt >$infofile
 	    cat $infofile $1_sympar.$lang> $moreinfofile  
 	    default='0.0'
@@ -109,7 +112,7 @@ case $rep in
 	    textfile=$1_$2.$lang
 	    infofile=mtt_list.$lang
 	    moreinfofile=mtt_list_numpar.$lang
-            awk '{if ($3=="MTT_SWITCH") printf("%s_logic\n", $4)}' rep=$2 \
+            gawk '{if ($3=="MTT_SWITCH") printf("%s_logic\n", $4)}' rep=$2 \
             <$1_struc.txt >$infofile
 	    cat $infofile $1_sympar.$lang> $moreinfofile  
 	    default='1.0'
@@ -129,7 +132,7 @@ else
   info=`cut -f1 $infofile | sort`
   for new in $info; do
     echo $new $default  |\
-    awk '{printf("%s\t= %s; # Default\n",$1,$2)}' >> $textfile
+    gawk '{printf("%s\t= %s; # Default\n",$1,$2)}' >> $textfile
   done
   exit    
 fi
@@ -143,7 +146,7 @@ strip_comments <$infofile | tr 'A-Z' 'a-z' >mtt_info
 strip_comments <$moreinfofile  | tr 'A-Z' 'a-z' >mtt_moreinfo
 
 # Use awk to check file
-awk '{
+gawk '{
   if (FILENAME=="mtt_text") {
     gsub("[\t ]" ,""); # Remove whitespace
     split($0,a,"=");
@@ -170,12 +173,12 @@ END{
 if [ -z "$update" ]; then
   if [ -f "mtt_in_text" ]; then
     echo "The following variables are defined in $textfile, but do not exist:"
-    sort mtt_in_text | awk '{printf("\t%s\n",$1)}'
+    sort mtt_in_text | gawk '{printf("\t%s\n",$1)}'
     echo Use mtt $sys $rep $lang to update
   fi
   if [ -f "mtt_in_info" ]; then
     echo "The following variables exist, but are not defined in $textfile:"
-    sort mtt_in_info | awk '{printf("\t%s\n",$1)}'
+    sort mtt_in_info | gawk '{printf("\t%s\n",$1)}'
     echo Use mtt $sys $rep $lang to update
   fi
   exit    
@@ -184,7 +187,7 @@ answered=''
 if [ -f "mtt_in_text" ]; then
   in_text=`sort mtt_in_text`
   echo "The following variables are defined in $textfile, but do not exist:"
-  sort mtt_in_text | awk '{printf("\t%s\n",$1)}'
+  sort mtt_in_text | gawk '{printf("\t%s\n",$1)}'
 
 
   while [ -z "$answered" ]; do
@@ -212,7 +215,7 @@ fi
 answered=''
 if [ -f "mtt_in_info" ]; then
   echo "The following variables exist, but are not defined in $textfile:"
-  sort mtt_in_info | awk '{printf("\t%s\n",$1)}'
+  sort mtt_in_info | gawk '{printf("\t%s\n",$1)}'
 
   while [ -z "$answered" ]; do
     echo "Update $textfile (y/n)?"
@@ -224,7 +227,7 @@ if [ -f "mtt_in_info" ]; then
  	    for new in $in_info; do
                 echo Adding $new
                 echo $new $default  |\
-                awk '{printf("%s\t= %s; # Added by MTT on %s\n",$1,$2,strftime())}'\
+                gawk '{printf("%s\t= %s; # Added by MTT on %s\n",$1,$2,strftime())}'\
                 >> $textfile
                 changed=yes
 	    done

@@ -77,7 +77,7 @@ for sys in $systems; do
 done
 
 # Create the options menu
-mtt |  awk '{
+mtt |  gawk '{
   if (Options) {
     option=substr($1,2);
     label="";

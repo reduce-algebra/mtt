@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  2000/12/28 12:52:22  peterg
+## *** empty log message ***
+##
 ## Revision 1.3  1998/07/25 18:26:33  peterg
 ## *** empty log message ***
 ##
@@ -37,7 +40,7 @@ lang_header $1 numpar m '' MTTpar > $1_numpar.m
 #sympar2global_txt2m $1 >> $1_numpar.m
 
 #Write out the variables in m format.
-awk -F#  '{
+gawk -F#  '{
   if (NF==1) print $1
   if (NF==2)  print $1 "# " $2
 }' $1_numpar.txt |\

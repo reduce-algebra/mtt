@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.69  2002/04/17 13:46:58  geraint
+## #include <fstream> for -oct as well as -cc.
+##
 ## Revision 1.68  2002/04/15 10:54:31  geraint
 ## Statically declare outputs and initialise to zero.
 ## This is necessary to prevent spurious values from being output when no assignments are made (i.e. when "y(i) := 0 for all u"  (Reduce:see NERO)).
@@ -395,7 +398,7 @@ EOF
 make_cc() 
 {
 # get octave version
-case `$MATRIX --version | awk -F\. '{print $2}'` in
+case `$MATRIX --version | gawk -F\. '{print $2}'` in
     0) # stable
 	vector_value=vector_value
 	feval_header=toplev.h

@@ -22,7 +22,7 @@ n=`echo $2 | sed 's/,/ /g' |wc -w` ## Number of parameters
 
 ## Parameter information for reduce.
 parameters=`echo $2 | sed 's/,/ /g' |\
- awk '{
+ gawk '{
    for (i=1; i<=NF; i++) {
       printf("mttpar(%i,1) := %s;\n", i, $i);
       printf("mttcoef(%i,1) := %ss;\n", i, $i);
@@ -37,7 +37,7 @@ grep -v MTT_Sensitivity_Coefficients mtt_junk > $1_sympar.txt
 
 # Create the new sens coeffs at end of list.
 echo $2 | sed 's/,/ /g' |\
-awk '{
+gawk '{
    for (i=1; i<=NF; i++) {
       printf("%ss\tMTT_Sensitivity_Coefficients\n",$i);
    }
@@ -48,7 +48,7 @@ touch $1_sympar.txt
 matrix="matrix mttpar("$n",1); matrix mttcoef("$n",1);"
 
 # Number of states
-Nx=`grep "MTTNx " <$system_def | awk '{print $3}' | sed 's/;//'`
+Nx=`grep "MTTNx " <$system_def | gawk '{print $3}' | sed 's/;//'`
 
 #Inform user
 echo Creating $system_scse "(for parameters $2, $Nx states)"
@@ -233,7 +233,7 @@ mv -f $system_scse mtt_junk
 
 
 ##echo "Nx = $Nx"
-awk '{
+gawk '{
   ## Make sure all MTTn variables are followed by a space
   gsub(/mttx[0-9]*/, "& ");
 

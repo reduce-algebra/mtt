@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  2001/07/28 21:10:18  geraint
+## Generate warning instead of error if reserved word used.
+##
 ## Revision 1.9  2001/07/23 05:16:39  geraint
 ## Simple filter for Reduce reserved words in sympar.
 ##
@@ -51,7 +54,7 @@ echo Creating $filename
 
 # Create list of all sympars including those that are aliased
 sh $1_type.sh 'echo ' ' ' ' ' |\
-awk '{printf("abg2sympar_m2txt %s %s\n ", $1, $2)}' |\
+gawk '{printf("abg2sympar_m2txt %s %s\n ", $1, $2)}' |\
 sh | sort -u > mtt_all_sympar.txt
 
 # Sort the aliased list
@@ -67,10 +70,10 @@ sort -u mtt_unwanted.txt > mtt_unwanted_sort.txt
 
 # Compare it with the aliased list and show the differences
 diff mtt_all_sympar.txt mtt_unwanted_sort.txt |\
-awk '{if ($1=="<") printf("%s\t%s\n", $2,$3)}' > mtt_sympar.txt
+gawk '{if ($1=="<") printf("%s\t%s\n", $2,$3)}' > mtt_sympar.txt
 
 # Assume same name in different system is the same
-awk '{
+gawk '{
     if ($1==name){
 	sysname[i++]=$2
     }
@@ -103,12 +106,12 @@ END{
 
 reserved_words=`\
     cat ${MTT_LIB}/reduce/reserved_words.txt	|\
-    awk '{printf "%s ", $0}'			|\
+    gawk '{printf "%s ", $0}'			|\
     tr [a-z] [A-Z]`
 sympar_words=`\
     cat ${filename}				|\
     cut -f1					|\
-    awk '{printf "%s ", $0}'			|\
+    gawk '{printf "%s ", $0}'			|\
     tr [a-z] [A-Z]`
 flag=0
 for reserved_word in ${reserved_words}; do

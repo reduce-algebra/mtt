@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.25  2001/10/15 14:27:00  gawthrop
+## Now handles [1:N] style port labels
+##
 ## Revision 1.24  2001/08/02 03:24:48  geraint
 ## Replaced mtt_version.sh with mtt_banner.sh - I think this was the intent.
 ##
@@ -174,7 +177,7 @@ create_lbl_body()
 
 ## Find names of all components
 grep -v '\[[0-9]*:[0-9]*\]' $1_abg.fig  |\
-awk '/:/ {print $NF}'  | \
+gawk '/:/ {print $NF}'  | \
 sed 's/\\001//' | \
 sort | \
 tee $1_raw_list | \
@@ -187,7 +190,7 @@ sort -u> $1_unique_raw_list
 
 #Write out the outline lbl file
 grep -v  '\[[0-9]*\]'  $1_unique_raw_list | \
-awk --field-separator ':' '
+gawk --field-separator ':' '
  BEGIN {
     OldComponent="None";
     default_cr = "lin";
@@ -305,7 +308,7 @@ cat <<EOF
 ## Argument aliases
 EOF
 abg2sympar_m2txt ${system} ${system} use_label_file |\
-awk '{printf("#ALIAS\t$%i\t%s\n", ++i, $1)}'
+gawk '{printf("#ALIAS\t$%i\t%s\n", ++i, $1)}'
 }
 
 ## Main 

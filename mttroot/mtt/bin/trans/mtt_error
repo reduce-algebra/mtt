@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  2000/12/28 12:34:49  peterg
+## Put under RCS
+##
 ## Revision 1.7  1998/03/06 17:14:09  peterg
 ## Cospetic change to message
 ##
@@ -41,10 +44,10 @@
 error_file=$1;
 
 # Test for errors and print if any
-err_length=`wc -c <$error_file | awk '{print $1}'`
+err_length=`wc -c <$error_file | gawk '{print $1}'`
 if [ "$err_length" != "0" ]
 then
-  echo "INFORMATION: An MTT transformation has generated the following messages"
+    echo "INFORMATION: An MTT transformation has generated the following messages"
 #  echo "             (which may not be important)"
   cat $error_file
   exit 1

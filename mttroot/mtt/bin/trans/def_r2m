@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/07/25 10:21:37  peterg
+## Entirely rewritten
+##
 ## Revision 1.1  1998/07/25 07:10:41  peterg
 ## Initial revision
 ##
@@ -36,11 +39,11 @@ function  [nx,ny,nu,nz,nyz] = $1_def;
 EOF
 
 # Constants
-Nx=`grep "MTTNx " <$1_def.r | awk '{print $3}' | sed 's/;//'`
-Ny=`grep "MTTNy " <$1_def.r | awk '{print $3}' | sed 's/;//'`
-Nu=`grep "MTTNu " <$1_def.r | awk '{print $3}' | sed 's/;//'`
-Nz=`grep "MTTNz " <$1_def.r | awk '{print $3}' | sed 's/;//'`
-Nyz=`grep "MTTNyz " <$1_def.r | awk '{print $3}' | sed 's/;//'`
+Nx=`grep "MTTNx " <$1_def.r | gawk '{print $3}' | sed 's/;//'`
+Ny=`grep "MTTNy " <$1_def.r | gawk '{print $3}' | sed 's/;//'`
+Nu=`grep "MTTNu " <$1_def.r | gawk '{print $3}' | sed 's/;//'`
+Nz=`grep "MTTNz " <$1_def.r | gawk '{print $3}' | sed 's/;//'`
+Nyz=`grep "MTTNyz " <$1_def.r | gawk '{print $3}' | sed 's/;//'`
 
 
 cat<<EOF >> $1_def.m 

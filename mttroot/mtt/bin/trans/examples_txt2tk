@@ -10,7 +10,7 @@
 
 
 # Examples menu
-awk 'BEGIN{
+gawk 'BEGIN{
     basemenu=".exam.exam"
     oldmenu=basemenu
     OLDPATH="";

@@ -25,7 +25,7 @@ Nxx=`mtt_getsize $1 xx`
 Nu=`mtt_getsize $1 u`
 Ny=`mtt_getsize $1 y`
 
-Npar=`wc -l $1_sympar.txt | awk '{print $1}'`
+Npar=`wc -l $1_sympar.txt | gawk '{print $1}'`
 
 
 echo "PROCEDURE $1_$2;" > $1_$2.pas
@@ -40,14 +40,14 @@ echo "    ParameterVector  = ARRAY[1..$Npar] OF REAL;"  >>$1_$2.pas
 
 # Create the predefined vars
 echo "VAR"     >>$1_$2.pas
-awk '{
+gawk '{
        printf("%s,", $1)
      }
      END{print "JUNK : REAL;"}'< $1_sympar.txt     >>$1_$2.pas
 
 if [ "$2" = "ode2odes" ]; then
     first='PROCEDURE'
-    awk '
+    gawk '
     {
     if (writing) print $0;
     if (i++==0) writing=1
@@ -57,7 +57,7 @@ else
     first='BEGIN'
 
  # Convert VAR format in the headings
-    awk 'BEGIN{writing=1}
+    gawk 'BEGIN{writing=1}
     {
     if (match($1,"BEGIN")==1) writing=0;
     if (writing) print $0;
@@ -72,7 +72,7 @@ else
 fi
 
 # Write out the actual code until the begining of the procedure
-awk 'BEGIN{writing=0}
+gawk 'BEGIN{writing=0}
 {
   if (match($1,first)==1) writing=1;
   if (writing) print $0;
@@ -82,12 +82,12 @@ awk 'BEGIN{writing=0}
 
 # Write out the parameters
 echo {Parameters}   >>$1_$2.pas
-awk '{
+gawk '{
        printf("  %s \t:= mttpar[%i];\n", $1, ++i);
      }'< $1_sympar.txt  >>$1_$2.pas
 
 # Write out the actual code from the end of the procedure
-awk 'BEGIN{writing=0}
+gawk 'BEGIN{writing=0}
 {
   if (writing) print $0;
   if (match($1,begin)==1) writing=1;

@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.12  2002/04/08 17:04:21  geraint
+## Removed spurious "\n" from output.
+##
 ## Revision 1.11  2000/08/01 07:34:33  peterg
 ## Replaced printf by echo
 ##
@@ -93,21 +96,21 @@ else
     
     # Include subsystem CR files
     sh $1_sub.sh 'echo ' "_cr.r" |\
-    awk '{
+    gawk '{
       print "in \"" $1 "\";"
     }'  >> $crfile
 
 ##  if [ -z "$level" ]; then
 
     # Copy .cr files
-    awk '{
+    gawk '{
 	 if (NF>0) {
          print "mtt -q -u crcopy " $1; 
          }
     }' $1_cr.txt  | sh
 
     # Include the .cr files
-#    awk '{
+#    gawk '{
 #	 if (NF>0) {
 #         print "in \"" $1 ".cr\";"
 #         }

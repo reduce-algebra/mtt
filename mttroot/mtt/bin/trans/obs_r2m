@@ -18,7 +18,7 @@ rm -f $1_obs.m?
 rm -f $1_obsa.m
 
 # Is the system affine (look in the _obs.r file
-affine=`grep 'affine :=' $1_obs.r | awk '{print $3}' | sed 's/;//'`
+affine=`grep 'affine :=' $1_obs.r | gawk '{print $3}' | sed 's/;//'`
 
 
 # Use reduce to accomplish the transformation

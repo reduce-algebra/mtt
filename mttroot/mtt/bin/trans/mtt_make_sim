@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  2000/05/19 17:47:35  peterg
+## Fixed bug in oct version but still needs proper check
+##
 ## Revision 1.6  2000/05/17 17:20:49  peterg
 ## Fixed bugs with ny>1. Could be made faster by not generating y when
 ## y_sim >1
@@ -61,7 +64,7 @@ fi
 Nx=`mtt_getsize $Sys x` # States
 Nu=`mtt_getsize $Sys u` # Inputs 
 Ny=`mtt_getsize $Sys y` # Inputs 
-Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
+Npar=`wc -l $Sys\_sympar.txt | gawk '{print $1}'`
 
 # Header
 lang_header -noglobals $1 sim m 'x0,u,t,par,sensitivities' '[y,ys]' > $1_sim.m

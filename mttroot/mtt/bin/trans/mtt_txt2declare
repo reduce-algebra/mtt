@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  2000/10/14 09:32:50  peterg
+## struc version only does state and input
+##
 ## Revision 1.1  2000/10/14 09:26:48  peterg
 ## Initial revision
 ##
@@ -39,12 +42,12 @@ esac
 
 case $what in
     struc)
-	strip_comments < $sys"_"$what".txt" | awk '{if (($1=="state")||($1=="input"))
+	strip_comments < $sys"_"$what".txt" | gawk '{if (($1=="state")||($1=="input"))
                                                       print $4;
                                                    }' >mtt_names
 	;;
     sympar)
-      	strip_comments < $sys"_"$what".txt" | awk '{print $1}' >mtt_names
+      	strip_comments < $sys"_"$what".txt" | gawk '{print $1}' >mtt_names
 	;;
     *)
 	echo Argument 2 must be struc or sympar
@@ -55,7 +58,7 @@ cat<<EOF
 $first
 EOF
 #Write out the variables 
-awk '{
+gawk '{
   i++; 
   var[i] = tolower($1);
 }

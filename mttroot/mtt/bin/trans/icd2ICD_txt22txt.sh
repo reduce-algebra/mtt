@@ -23,7 +23,7 @@ EOF
 
 cat ${icd}		|\
     sed 's/[\,\;]/\ /g'	|\
-    awk '
+    gawk '
     ($2 != "null" && $6 == "input")  { printf ("Input:  %-30s %-30s Causality: Effort   Units: %s\n", $2, $1, $3) }
     ($4 != "null" && $7 == "input")  { printf ("Input:  %-30s %-30s Causality: Flow     Units: %s\n", $4, $1, $5) }
     ($2 != "null" && $6 == "output") { printf ("Output: %-30s %-30s Causality: Effort   Units: %s\n", $2, $1, $3) }

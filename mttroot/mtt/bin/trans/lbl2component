@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1998/07/28 11:23:31  peterg
+## Put / explicitly in awk.
+##
 ## Revision 1.2  1998/07/27 08:38:11  peterg
 ## Just look for / in the relevant field.
 ##
@@ -26,7 +29,7 @@
 # Regexp for an alias
 alias='^[#%]ALIAS'
 
-grep $alias $1_lbl.txt | awk '{if (match($3,"/")>0) print "mtt -q compcopy " $3}'
+grep $alias $1_lbl.txt | gawk '{if (match($3,"/")>0) print "mtt -q compcopy " $3}'
 
 
 

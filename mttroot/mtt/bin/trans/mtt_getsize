@@ -44,7 +44,7 @@ if [ "$2" = "xx" ]; then
   n=`mtt_getsize $1 x`
   N=`echo "$n * $n" | bc` 
 else
-  N=`grep "MTTN$2 " <$1_def.r | awk '{print $3}' | sed 's/;//'`
+  N=`grep "MTTN$2 " <$1_def.r | gawk '{print $3}' | sed 's/;//'`
 fi
 
 echo $N

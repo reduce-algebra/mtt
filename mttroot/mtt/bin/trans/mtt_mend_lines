@@ -6,7 +6,7 @@
 
 #sed 's/[^#]\(.*\)[^;]$/\1\\/' 
 
-awk '{
+gawk '{
   if ((match($1,"#")==0)&&(match($1,"global")==0)&&(match($1,"endfunction")==0)) {
     if(match($0,";")!=length($0))
       printf("%s \\\n",$0)

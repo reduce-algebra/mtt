@@ -33,11 +33,11 @@ fi
 ## Create appropriate filename
 case $format in
     date)
-         filename=`date | awk '{printf("%s_%s%s_%s.tgz\n", mtt, $2,$3,$6)}' mtt=$mtt`;
+         filename=`date | gawk '{printf("%s_%s%s_%s.tgz\n", mtt, $2,$3,$6)}' mtt=$mtt`;
 	 shift
 	;;
     version)
-         filename=`mtt --version | awk '{printf("%s-%s.tar.gz\n", mtt, $NF)}' mtt=$mtt`;
+         filename=`mtt --version | gawk '{printf("%s-%s.tar.gz\n", mtt, $NF)}' mtt=$mtt`;
 	 shift
 	;;
 
@@ -59,7 +59,7 @@ fi
 #echo Finding irrelevant files
 #find $dirs -name '*.*' -print |\
 #  grep 'dvi$\|ps$\|gif$\|log$\|dat$\|MTT_work\|core\|~$' >IGNORE
-#wc IGNORE | awk '{print "Ignoring", $1, "files"}'
+#wc IGNORE | gawk '{print "Ignoring", $1, "files"}'
 
 #echo examples >> IGNORE
 

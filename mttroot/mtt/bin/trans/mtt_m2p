@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.67  2002/04/18 17:02:15  gawthrop
+## foo=zeros(3,1) translated as zero_state(foo,3)
+##
 ## Revision 1.66  2001/03/30 15:13:58  gawthrop
 ## Rationalised simulation modes to each return mtt_data
 ##
@@ -227,9 +230,9 @@
 
 # Set up variables
 args=`echo $1 | sed 's/_/ /' | sed 's/\./ /'`
-Sys=`echo $args  | awk '{print $1}'`
-sys=`echo $Sys  | awk '{print tolower($1)}'`
-rep=`echo $args  | awk '{print $2}'`
+Sys=`echo $args  | gawk '{print $1}'`
+sys=`echo $Sys  | gawk '{print tolower($1)}'`
+rep=`echo $args  | gawk '{print $2}'`
 Sys_rep="$Sys""_""$rep"
 Sys_smx="$Sys""_smx"
 Sys_smxp="$Sys""_smx.p"
@@ -255,7 +258,7 @@ Nx=`mtt_getsize $Sys x` # States
 Nxx=`mtt_getsize $Sys xx` # States x States
 Nu=`mtt_getsize $Sys u` # Inputs 
 Ny=`mtt_getsize $Sys y` # Inputs 
-Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
+Npar=`wc -l $Sys\_sympar.txt | gawk '{print $1}'`
 
 
 #if [ "$rep" = "simpar" ]; then
@@ -381,7 +384,7 @@ Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
 	echo "    open_switches  : StateVector;"
 	echo "    numparfile, statefile, simparfile  : TEXT;"
         strip_comments <${Sys}_switch.txt |\
-          awk '{printf("%s_logic : REAL;\n", tolower($1))}' 
+          gawk '{printf("%s_logic : REAL;\n", tolower($1))}' 
 	echo ""
         mtt_txt2declare $Sys sympar p
         mtt_txt2declare $Sys struc p
@@ -436,7 +439,7 @@ grep -v '^[ ]*function'  |\
 grep -v '^[ ]*endfunction'  |\
 grep -v 'MTT_data'  |\
 sed "s/^$space%/#/" | sed "s/\([;)]$space\)%/\1#/" |\
-awk -F# '{printf("%s",$1) 
+gawk -F# '{printf("%s",$1) 
           if (NF>1) printf("{* %s *}", $2)
           printf("\n") 
          }' |\
@@ -447,7 +450,7 @@ sed "s/$space\($non_space\)$spaces=${spaces}zeros(\([0-9]*\),1)/zero_state(\1,\2
 sed "s/$space\($non_space\)$spaces=$spaces\($fun_name\)(\($args\))/\2(\1,\3)/" |\
 sed "s/,)/)/" |\
 fix_operators |\
-awk '
+gawk '
 function printvar(Name,N) {
   if (N<1) return;
   width = 10;

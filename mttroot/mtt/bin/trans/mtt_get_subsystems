@@ -14,14 +14,14 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 done
 
 subsystems=`sh $1_sub.sh "echo grep " " $1_abg.m" |\
-            sh | awk -F '.' '{print $3}'`
+            sh | gawk -F '.' '{print $3}'`
 
 if [ -n "$strip" ]; then
       echo $subsystems  
    else
       for subsystem in $subsystems; do
 	# echo -n $1_$subsystem' '
-        echo $1_$subsystem #| awk '{printf("%s ",$1)}'
+        echo $1_$subsystem #| gawk '{printf("%s ",$1)}'
     done
     echo
 fi

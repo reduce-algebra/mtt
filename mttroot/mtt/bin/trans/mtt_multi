@@ -8,14 +8,14 @@ rep=$3
 lang=$4
 relative_level=$5
 
-current_level=`echo $system | awk '{N=split($1,foo,"_"); print N-1}'`
+current_level=`echo $system | gawk '{N=split($1,foo,"_"); print N-1}'`
 
 if [ -z "$relative_level" ]; then
   relative_level=0;    
 fi
 
 mtt_xargs.sh "ls" "$2*_$3.$4"  |\
-awk '{
+gawk '{
   level=split($1,foo,"_")-2;
   maxlevel = current_level +  relative_level;
   if (level<=maxlevel) print command, $0, "&";

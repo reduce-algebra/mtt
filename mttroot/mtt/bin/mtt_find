@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  2000/10/03 18:29:57  peterg
+## *** empty log message ***
+##
 ## Revision 1.6  1998/07/17 19:47:35  peterg
 ## Minor changes
 ##
@@ -102,7 +105,7 @@ if [ -n "$foundpath" ]; then
 fi
 
 # Check exit status and return 
-hits=`wc mtt_junk | awk '{print $1}'`
+hits=`wc mtt_junk | gawk '{print $1}'`
 rm -f mtt_junk
 
 if [ $hits = "1" ]; then

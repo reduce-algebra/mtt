@@ -14,6 +14,9 @@
 ###############################################################
 ## $$Id$
 ## $Log$
+## Revision 1.2  2002/04/16 11:36:03  gawthrop
+## These were flagged with M on cvs update
+##
 ## Revision 1.1  2001/04/02 08:19:18  gawthrop
 ## Translates modulated parameters into reduce
 ##
@@ -32,7 +35,7 @@ inputs=`strip_comments < $1_modpar.txt |  cut -f2`
 
 for parameter in $parameters; do
     grep $1_${parameter}_ $1_struc.txt |\
-    awk 'BEGIN{
+    gawk 'BEGIN{
                name["input"] = "u";
                name["output"] = "y";
                name["state"] = "x";

@@ -63,7 +63,7 @@ write_worksheet_footer ()
 
 write_column_headings ()
 {
-    awk '{ printf ("  <sgw:Column No=\"%d\" Width=\"80\" Title=\"%s\" Format=\"0\" Precision=\"3\">\n  </sgw:Column>\n", NR-1,$0) }'
+    gawk '{ printf ("  <sgw:Column No=\"%d\" Width=\"80\" Title=\"%s\" Format=\"0\" Precision=\"3\">\n  </sgw:Column>\n", NR-1,$0) }'
 }
 
 write_output_headings ()
@@ -127,7 +127,7 @@ file=${sys}_odes.sg
 
 NX=`mtt_getsize ${sys} x`
 NY=`mtt_getsize ${sys} y`
-NTMP=`wc -l ${sys}_odes.dat2 | awk '{print $1}'`
+NTMP=`wc -l ${sys}_odes.dat2 | gawk '{print $1}'`
 NROW=`expr ${NTMP} - 4`		# 4 comment lines in mtt_data
 
 {

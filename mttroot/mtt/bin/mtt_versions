@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  2000/11/13 21:40:26  peterg
+## Sorted out the non-gnu
+##
 ## Revision 1.1  1998/05/28 09:24:41  peterg
 ## Initial revision
 ##
@@ -25,7 +28,7 @@ echo Versions of mtt and its components on `date`
 mtt_version mtt
 
 echo Doing the GNU components
-mtt_version awk
+mtt_version gawk
 mtt_version basename
 mtt_version cat
 mtt_version cp

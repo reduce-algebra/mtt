@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  2002/04/16 11:36:03  gawthrop
+## These were flagged with M on cvs update
+##
 ## Revision 1.1  2000/12/28 12:26:15  peterg
 ## Put under RCS
 ##
@@ -58,7 +61,7 @@ which=`name2index $1 "$3"`
 echo $1 $3 $which
 
 if [ -z "$DifferentX" ]; then
-awk '
+gawk '
 BEGIN{
   row=0; col=0;
 }
@@ -98,7 +101,7 @@ END {
 }'  which="$which" <$1_$2.dat >   $1_$2.gdat
 
 else
-awk '
+gawk '
 BEGIN{
   row=0; col=0;
 }

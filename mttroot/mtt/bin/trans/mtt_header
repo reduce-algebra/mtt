@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.41  2002/04/23 17:46:05  gawthrop
+## _sim.m now returns time as third argument
+##
 ## Revision 1.40  2002/04/17 16:23:59  geraint
 ## Partial fix for [ 545113 ] zeros missing in c++.
 ## Fixes -oct by removing duplicate initialisation (-c is still outstanding).
@@ -183,8 +186,8 @@ fi
 
 
 # get octave version
-octave_development=`octave --version | awk '{print $4}' | awk -F\. '{print $2}'`
-case `$MATRIX --version | awk -F\. '{print $2}'` in
+octave_development=`octave --version | gawk '{print $4}' | gawk -F\. '{print $2}'`
+case `$MATRIX --version | gawk -F\. '{print $2}'` in
     0) # stable
 	vector_value=vector_value
 	;;
@@ -445,7 +448,7 @@ get_sizes()
     Nu=`mtt_getsize $system u` # Inputs 
     Ny=`mtt_getsize $system y` # Outputs 
     Nyz=`mtt_getsize $system yz` # Zero outputs
-    ##Npar=`wc -l $system\_sympar.txt | awk '{print $1}'`
+    ##Npar=`wc -l $system\_sympar.txt | gawk '{print $1}'`
     }
 
 zero_matrices()
@@ -499,7 +502,7 @@ dummies="mtt_tmp"
 rm -f mtt_dummies
 for dummy in $dummies; do
     grep "${dummy}[0-9]*[ \t\n]*=" < ${fun_name}.m |\
-    awk '{ 
+    gawk '{ 
           if (match($1,dummy)==1)
              print $1
          }' dummy=$dummy >> mtt_dummies
@@ -525,13 +528,13 @@ cat <<EOF
 $Lc  Declarations of switches $Rc
 EOF
  strip_comments <${system}_switch.txt |\
- awk '{printf("  double %s_logic = 0;\n", tolower($1))}' 
+ gawk '{printf("  double %s_logic = 0;\n", tolower($1))}' 
 } # declare_switches
 
 declare_vars()
 {
 # Grab the names
-names=`awk '{if ($1==var_type) print tolower($4)}' var_type=$1 ${system}_struc.txt`
+names=`gawk '{if ($1==var_type) print tolower($4)}' var_type=$1 ${system}_struc.txt`
 
 # Comments
 cat <<EOF
@@ -676,10 +679,10 @@ get_field ()
 
     if [ 0 -eq ${i} ]; then			# return number of fields
 	echo ${s} |\
-	awk -F\, '{ print NF }'
+	gawk -F\, '{ print NF }'
     else					# return ith field
 	echo ${s} |\
-	awk -F\, -v i=${i} '{ print $i }'
+	gawk -F\, -v i=${i} '{ print $i }'
     fi
 }
 

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.19  2001/10/26 01:01:49  geraint
+## fixcc when rdae_is_dae (-cr).
+##
 ## Revision 1.18  2001/10/05 23:37:32  geraint
 ## Fixed assignment statement in ae.r when RHS=0.
 ##
@@ -452,7 +455,7 @@ cat $1_cseo.r1 $1_cseo.r2  > $1_cseo.r
 
 if [ "$solve" = "1" ]; then
     echo "Setting MTTNyz=0 in $1_def.r and updating other $1_def files"
-    awk '{
+    gawk '{
      if ($1=="MTTNyz") 
        print "MTTNyz := 0;" 
      else print $0
@@ -463,7 +466,7 @@ if [ "$solve" = "1" ]; then
    mv mtt_junk $1_def.r
    for file in `ls $1_def.*`; do
       if [ $file != $1_def.r ]; then
-          ext=`echo $file|awk -F\. '{print $2}'`
+          ext=`echo $file|gawk -F\. '{print $2}'`
           mtt -q $1 def $ext
       fi
    done

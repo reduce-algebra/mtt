@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.332  2002/04/26 23:19:00  geraint
+## Fixed path to info files for "mtt info".
+##
 ## Revision 1.331  2002/04/19 09:24:29  gawthrop
 ## 2 changes to ode2odes_out generation: only compiles the specified c
 ## file; outside the computation=c clause
@@ -1536,7 +1539,7 @@ fi
 # Recursively clean up
 if [ "$1" = "rclean" ]; then
   echo 'Removing intermediate files recursively'
-  dir2paths '.' | awk '{print "mtt -q -d " $1 " clean " $2}' | sh
+  dir2paths '.' | gawk '{print "mtt -q -d " $1 " clean " $2}' | sh
   exit
 fi
 
@@ -1623,7 +1626,7 @@ if [ "$2" = "rep" ]; then
 	dotdot='../'
       fi  
   
-     #isdirectory=`file $dotdot$1 | awk '{print $2}' | grep directory`
+     #isdirectory=`file $dotdot$1 | gawk '{print $2}' | grep directory`
      if [ -d "$dotdot$1" ]; then
 	documenttype=book
      fi
@@ -1719,7 +1722,7 @@ if [ "$1" = "compcopy" ]; then
       cp -u *_*.* ${destination}
     else
       comp_path=`mtt_find $source $2 path_only`
-      n_found=`echo $comp_path | wc | awk '{print $2}'`
+      n_found=`echo $comp_path | wc | gawk '{print $2}'`
 
       if [ "$n_found" = "1" ]; then
          echo Copying $2 from $comp_path to ${destination}
@@ -2034,7 +2037,7 @@ if [ -n "$sensitivity" ]; then
 fi
 
 ## Check octave version
-case `$MATRIX --version | awk -F\. '{print $2}'` in
+case `$MATRIX --version | gawk -F\. '{print $2}'` in
     0) define_octave_dev="";;			# stable 
     1) define_octave_dev="-DOCTAVE_DEV";;	# development
     *) define_octave_dev="-DOCTAVE_DEV";;

@@ -26,7 +26,7 @@ rm -f mtt_error
 
 # This is the main transformation using awk 
 # And remove crs with same name as system
-grep 'cr = ' $1_abg.m | awk '
+grep 'cr = ' $1_abg.m | gawk '
 BEGIN {
 # Include lin cr anyway.
 print "lin"

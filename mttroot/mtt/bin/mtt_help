@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.14  2000/10/03 18:29:26  peterg
+## crs now works after a fashion
+##
 ## Revision 1.13  2000/04/04 15:22:44  peterg
 ## Major changes: simple components now work
 ## Single components now work
@@ -150,12 +153,12 @@ case $topic in
     crs)
 	echo  $comment $blurb
         find $find_path -name "$name" -print |\
-        awk '{print "grep", key, $1}' key=$key | sh |\
+        gawk '{print "grep", key, $1}' key=$key | sh |\
         sed "s/$key //" | $sort
 	;;
     *)
 	
-    fullnames=`mtt_find $find_path "$name" | awk '{printf("%s/%s\n",$1,$2)}'`
+    fullnames=`mtt_find $find_path "$name" | gawk '{printf("%s/%s\n",$1,$2)}'`
     N=`echo $fullnames | wc -w`;
     if [ -z "$fullnames" ]; then
 	echo $comment No $blurb found.
@@ -166,7 +169,7 @@ case $topic in
 	if [ -n "$other" ]; then
 	cat $fullname | egrep $key 
 	else
-        info=`cat $fullname | egrep $key | awk '{for (i=2;i<=NF;i++) print $i}'`
+        info=`cat $fullname | egrep $key | gawk '{for (i=2;i<=NF;i++) print $i}'`
 	category=`echo $fullname |   sed "s!$find_path/!!" ` 
         category=`dirname $category`
 	echo $category $name $info
@@ -177,7 +180,7 @@ case $topic in
 exit
 
 
-  awk '{print "cat " $1 "/" $2}'  | sh |\
+  gawk '{print "cat " $1 "/" $2}'  | sh |\
   egrep $key  | egrep $regexp  |\
   sed "s/$summary[	]*//" |\
   sed "s/$description[	]*/  /" |\

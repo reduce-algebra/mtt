@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/12/28 12:18:40  peterg
+## Initial revision
+##
 ###############################################################
 
 
@@ -32,7 +35,7 @@ rm -f $infofile
 #Inform user
 echo Creating $1_sabg.txt
 
-awk '{\
+gawk '{\
     Depth=7;\
     print $Depth}' $1_abg.fig
 

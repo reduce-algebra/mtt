@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.12  2001/07/24 04:18:32  gawthrop
+## Fixed problem with shell expanding * (used as important rep marker)
+##
 ## Revision 1.11  2001/04/28 03:38:36  geraint
 ## Refined selection of matching patterns - checks for exact match.
 ##
@@ -51,18 +54,18 @@
 sep='|'; # Separates the languages from the rest.
 
 ## List of all representations (deleting the *)
-representations=`grep '#SUMMARY' $MTTPATH/mtt | awk '{sub("\*","+"); print $2'} | sort -u `
+representations=`grep '#SUMMARY' $MTTPATH/mtt | gawk '{sub("\*","+"); print $2'} | sort -u `
 
 
 for rep in $representations ; do
     Rep=`echo $rep | tr '+' '*'`
     ## Title should be same for all languages -- but extract the first non-empty version
       title=`grep '#SUMMARY' $MTTPATH/mtt | tr '\t' ' ' | grep "[ *]$Rep[ *]" | \
-      awk  '{if (NF>2) {for (i=3;i<NF-1;i++) printf("%s ",$i); NF1=NF-1; printf("%s\n",$NF1)}}' |\
+      gawk  '{if (NF>2) {for (i=3;i<NF-1;i++) printf("%s ",$i); NF1=NF-1; printf("%s\n",$NF1)}}' |\
       head -1`
       
     language=`grep '#SUMMARY' $MTTPATH/mtt |\
-      awk '
+      gawk '
         {
           if (index(rep,"*")==length(rep)){
             if ($2==rep) print $NF

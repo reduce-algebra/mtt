@@ -31,11 +31,11 @@ cat <<EOF >> ${ICD}
 ${comment} Inputs
 
 EOF
-for name in `cat ${txt} | awk '($1 == "Input:") { print $3 }'`
+for name in `cat ${txt} | gawk '($1 == "Input:") { print $3 }'`
 do
-    num=`grep ${name} ${struc} | awk '($1 == "input") { print $2 }'`
+    num=`grep ${name} ${struc} | gawk '($1 == "input") { print $2 }'`
     grep ^Input ${txt} |\
-	awk '($3 == name) { printf ("\tmttu%c%d%c\t= %s;\n", lb, num-offset, rb, $2) }'\
+	gawk '($3 == name) { printf ("\tmttu%c%d%c\t= %s;\n", lb, num-offset, rb, $2) }'\
 	lb=${lb} rb=${rb} name=${name} num=${num} offset=${offset} >> ${ICD}
 done
 
@@ -44,11 +44,11 @@ cat <<EOF >> ${ICD}
 ${comment} Outputs
 
 EOF
-for name in `cat ${txt} | awk '($1 == "Output:") { print $3 }'`
+for name in `cat ${txt} | gawk '($1 == "Output:") { print $3 }'`
 do
-    num=`grep ${name} ${struc} | awk '($1 == "output") { print $2 }'`
+    num=`grep ${name} ${struc} | gawk '($1 == "output") { print $2 }'`
     grep ^Output ${txt} |\
-	awk '($3 == name) { printf ("\t%-30s = mtty%c%d%c;\n", $2, lb, num-offset, rb) }'\
+	gawk '($3 == name) { printf ("\t%-30s = mtty%c%d%c;\n", $2, lb, num-offset, rb) }'\
 	lb=${lb} rb=${rb} name=${name} num=${num} offset=${offset} >> ${ICD}
 done
 

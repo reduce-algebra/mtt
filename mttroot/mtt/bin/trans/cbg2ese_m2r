@@ -16,6 +16,9 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.31  2001/07/13 04:54:04  geraint
+## Branch merge: numerical-algebraic-solution back to main.
+##
 ## Revision 1.30  2001/07/12 04:02:53  gawthrop
 ## Now fixes multiports for input and output as well as state
 ##
@@ -250,7 +253,7 @@ get_indices ()
 {
   sys=$1
   which=$2
-  awk '{if ($1==which) print $2}' which=$which < ${sys}_struc.txt
+  gawk '{if ($1==which) print $2}' which=$which < ${sys}_struc.txt
 }
 
 convert_indices ()
@@ -342,7 +345,7 @@ sort -k 1,1 -k 2,2n junk >$structurefile
 # Relabel states with multiple ports
 relabel_multiple_definitions(){
   mv $structurefile junk
-  awk '
+  gawk '
   BEGIN{
      var_type_index=1;  
      oldname="";

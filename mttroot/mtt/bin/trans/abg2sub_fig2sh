@@ -14,6 +14,9 @@
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.4  2002/04/22 10:25:47  gawthrop
+  ## Handles unnamed components & ingnores artwork
+  ##
   ## Revision 1.3  2001/10/15 14:27:34  gawthrop
   ## Now handles [1:N] style port labels
   ##
@@ -34,7 +37,7 @@
 get_valid_components()
 
 {
-awk '
+gawk '
 function modulo10(x) {
   return x-int(x/10)*10
     }
@@ -69,7 +72,7 @@ echo					>> $1_sub.sh
 get_valid_components $1 |\
 grep -v '\[[0-9]*:[0-9]*\]' |\
 grep -v '\[.*\]' |\
-awk '{if ($1==4) split($14,a,":"); print a[1]}'  |\
+gawk '{if ($1==4) split($14,a,":"); print a[1]}'  |\
 sed 's/\\001//' |\
 sort -u > mtt_tmp1
 
@@ -78,11 +81,11 @@ grep -v '^[01]' < mtt_tmp1 > mtt_tmp4
 
 # Get a list of all standard simple components
 ls $MTT_LIB/comp/simple |\
-  awk '/_cause.m/{split($1,a,"_");print(a[1])}'  >mtt_tmp2
+  gawk '/_cause.m/{split($1,a,"_");print(a[1])}'  >mtt_tmp2
 
 # Get a list of all standard compound components
 #ls $MTTPATH/comp/compound |\
-#  awk '/_abg.m/{split($1,a,"_");print(a[1])}'  >> mtt_tmp2
+#  gawk '/_abg.m/{split($1,a,"_");print(a[1])}'  >> mtt_tmp2
 
 # Sorted combined list
 cat mtt_tmp2 | \
@@ -92,7 +95,7 @@ cat mtt_tmp2 | \
 
 # Print the non-standard components
 comm mtt_tmp4 mtt_tmp3 |\
-  awk 'BEGIN{FS="\t"}{if (length($1)>0) print "$1" $1 "$2"}' \
+  gawk 'BEGIN{FS="\t"}{if (length($1)>0) print "$1" $1 "$2"}' \
   >>$1_sub.sh
 
 # Clean up mtt_tmp files

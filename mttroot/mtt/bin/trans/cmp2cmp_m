@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/12/28 12:20:04  peterg
+## Initial revision
+##
 ###############################################################
 
 # Inform user
@@ -27,7 +30,7 @@ cat $1_alias.txt $1_cmp.m > junk
 #echo "# Revised by MTT at `date`" #>> $1_cmp.m
 
 #Write out the variables 
-awk '
+gawk '
 BEGIN{
 alias_file=1
 Parameter_Regexp = "^_Parameter_"

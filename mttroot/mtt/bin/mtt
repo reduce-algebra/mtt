@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.126  1998/02/11 19:26:03  peterg
+## Added verbose (-v) mode.
+##
 ## Revision 1.125  1998/02/11 11:36:28  peterg
 ## Updated version control mode - make it untidy.
 ## cp --> cp -u after tidy-mode .
@@ -1653,7 +1656,8 @@ $1_$2.hview: $1_$2.html
 #View a ps file
 $1_$2.pview: $1_$2.ps
 	echo Creating view of $1_$2
-	multi_command $PSVIEW $1 $2.ps | sh
+#	multi_command $PSVIEW $1 $2.ps | sh
+	$PSVIEW $1_$2.ps
 
 #View a gdat file
 $1_$2.dview: $1_$2.gdat

@@ -23,21 +23,21 @@ PROCEDURE $1_input(VAR mttu : InputVector;
 
 {Created by MTT on $date for standard input to simulation}
 
-VAR t : REAL; ch: char;
+VAR t : REAL; Start:BOOLEAN;
 
 BEGIN{$1_input}
-
   {Zap comments}
-  REPEAT
-    read(ch);
-    IF ch="#" THEN 
-      readln;
-  UNTIL NOT (ch="#");
+  IF (input^ = chr("#")) THEN
+  BEGIN
+    readln;
+    WHILE (input^ = chr("#")) DO readln;
+  END;
 
   read(t); { Read, and discard, first column (time) }
   FOR mtti:=1 TO $Nu DO {Read the inputs}
     read(mttu[mtti]);
   readln; {Next line}
+
 
 END{$1_input};
 EOF

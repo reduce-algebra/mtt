@@ -17,6 +17,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.349  2002/05/20 10:29:59  gawthrop
+## -oct now forces an m target language to be oct
+## (if the rep is an the list: "ae input logic numpar simpar state")
+##
 ## Revision 1.348  2002/05/20 08:50:12  geraint
 ## Cleans _sfun_ae.mexglx.
 ##
@@ -2118,9 +2122,9 @@ if [ -f "$2_rep.make" ]; then
       filename=$1_$2.$3
    fi
     
-   if [ -f "$filename" ]; then
-      echo $filename exists
-   else
+   #if [ -f "$filename" ]; then
+   #   echo $filename exists
+   #else
      if [ -n "$Verbose" ]; then
       echo make -s -f $2_rep.make "SYS=$1" "LANG=$3" "ARG=$4" "OPTS=$mtt_switches" 
      fi
@@ -2129,7 +2133,7 @@ if [ -f "$2_rep.make" ]; then
          echo Copying  $1_$2$__ARGS.$ps
          cp  $1_$2$__ARGS.$ps ..
       fi
-   fi
+   #fi
     exit
 fi
 

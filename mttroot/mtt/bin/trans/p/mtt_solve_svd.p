@@ -1,8 +1,10 @@
-PROCEDURE mtt_solve(VAR x     : StateVector;
+PROCEDURE mtt_solve_svd(VAR x     : StateVector;
 			A     : StateMatrix;
 		    VAR B     : StateVector;
 			n     : integer;
 			Small : real);
+
+{Solve linear equation via svd}
 
 {
 
@@ -11,6 +13,9 @@ PROCEDURE mtt_solve(VAR x     : StateVector;
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.1  1998/08/17 12:38:52  peterg
+% % Initial revision
+% %
 % % Revision 1.2  1998/08/14 12:09:13  peterg
 % % A passed by value - its destroyed by SVDcm
 % %

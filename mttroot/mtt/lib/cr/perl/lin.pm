@@ -94,13 +94,13 @@ sub lin_amp (@) {
 	if (($out_port == 2) and
 	    ($in_port  == 1))
 	{			# uni-causal
-	    $retval = "((input)*(gain))";
+	    $retval = "(($input)*($gain))";
 	}
 
 	elsif (($out_port == 1) and
 	       ($in_port  == 2))
 	{			# bi-causal
-	    $retval = "((input)/(gain))";
+	    $retval = "(($input)/($gain))";
 	}
     }
     

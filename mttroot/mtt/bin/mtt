@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.210  1999/08/02 12:52:12  peterg
+## Removed redundant .p copying.
+##
 ## Revision 1.209  1999/07/27 03:50:13  peterg
 ## Fixed odeo.p bug.
 ## Fixed compound object bug in fig.
@@ -1265,7 +1268,7 @@ fi
 # Tidy mode - operate in the directory MTT-work
 if [ "$tidy" = "tidy" ]; then
    mkdir -p MTT_work
-   cp -u -p  Makefile *.* .* MTT_work 2>/dev/null
+   cp -p  Makefile *.* .* MTT_work # 2>/dev/null
    cd MTT_work
    
    if [ -z "$directory" ]; then
@@ -1291,7 +1294,7 @@ if [ "$tidy" = "tidy" ]; then
           mv $1_$2 ..
       else
           echo Copying  $1_$2.$3
-          cp -u -p $1_$2.$3 ..
+          cp  -p $1_$2.$3 ..
       fi
       if [ "$PLOTTYPE" = "multiple" ]; then
         echo Copying  $1_$2$__ARGS.ps
@@ -1338,7 +1341,12 @@ $1_args.m:
 	touch $1_args.m
 
 #Create skeleton files (with titles) if not already there
+#SUMMARY lbl*	label file (txt)
 #SUMMARY lbl	label file (txt)
+#SUMMARY lbl*	label file (view)
+#SUMMARY lbl	label file (view)
+#SUMMARY lbl*	label file (tex)
+#SUMMARY lbl	label file (tex)
 $1_lbl.txt:
 	abg2lbl_fig2txt $1
 

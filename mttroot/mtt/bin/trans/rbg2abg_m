@@ -11,6 +11,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.12  1998/07/28 19:07:48  peterg
+## Writes out N_ports as well as n_ports
+##
 ## Revision 1.11  1998/07/25 16:14:44  peterg
 ## *** empty log message ***
 ##
@@ -125,25 +128,36 @@ $MATRIX > rbg2abg_m.log  2>mtt_error.txt << EOF
   end;
  
 
-  [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coord,port_name,\
+  [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coord,port_name,\
                                infofile,errorfile);
 
   %Write the function m-file for the causal bond graph
-  filename = '$1_abg.m';
-  filenum = fopen(filename,'w');
-  c = '%';
-  fprintf(filenum, 'function [bonds,components,n_ports,N_ports] = $1_abg\n');
-  fprintf(filenum, '%s [bonds,components,n_ports] = $1_abg\n', c);
-  fprintf(filenum, '%s Acausal bond graph created by MTT on %s\n\n', ...
-                     c, date);
-  mat2mfile(bonds, 'bonds', filenum);
-  mat2mfile(components, 'components', filenum);
-  fprintf(filenum, 'n_ports = %1.0f;\n', n_ports);
-  fprintf(filenum, 'N_ports = %1.0f;\n', N_ports);
+  write_abg(name,bonds,components,n_vector_bonds);    
+
+#  filename = '$1_abg.m';
+#  filenum = fopen(filename,'w');
+#  c = '%';
+#  fprintf(filenum, 'function [bonds,components,n_ports,N_ports] = $1_abg\n');
+#  fprintf(filenum, '%s [bonds,components,n_ports] = $1_abg\n', c);
+#  fprintf(filenum, '%s Acausal bond graph created by MTT on %s\n\n', ...
+#                     c, date);
+#  mat2mfile(bonds, 'bonds', filenum);
+#  mat2mfile(components, 'components', filenum);
+#  fprintf(filenum, 'n_ports = %1.0f;\n', n_ports);
+#  fprintf(filenum, 'N_ports = %1.0f;\n', N_ports);
 
 EOF
 
+# Append any VAR declarations
+if [ -f "$1_lbl.txt" ]; then
+  echo "# Explicit variable declarations" >> $1_abg.m
+  grep '^[\s]*[%|#]VAR' $1_lbl.txt | tr '%' '#' >> $1_abg.m    
+fi
 
+## Close off the function
+echo "endfunction" >> $1_abg.m
+
+## Errors and info
 if [ "$info" = "info" ]; then
   cat mtt_info.txt    
 fi

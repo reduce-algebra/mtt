@@ -5,7 +5,7 @@ MTTFLAGS	= $(OPTS)
 
 all: $(SYS)_gnuplot.$(LANG)
 
-$(SYS)_gnuplot.view: $(SYS)_gnuplot.wish $(SYS)_odes.dat2
+$(SYS)_gnuplot.view: $(SYS)_gnuplot.wish
 	mtt $(OPTS) $(SYS) odes dat2
 	sh $(SYS)_gnuplot.wish | gnuplot -geometry 400x300 2> .gnuplot.log &
 

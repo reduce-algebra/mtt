@@ -12,6 +12,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.41  2001/06/13 10:41:06  gawthrop
+## Further changes towards aouto creation of lbl files.
+## Prettified lbl files
+##
 ## Revision 1.40  2001/06/11 19:43:50  gawthrop
 ## MTT is now much more sophisticated in generating lbl files
 ## Labels can contain maths
@@ -633,8 +637,8 @@ BEGIN {
   repetition_regexp = "\\*";
   q = "\047";
   terminator = "\\001";
-  component_regexp = "[^0-9a-zA-Z_:\*-]";
-  port_regexp = "^\[[a-zA-Z0-9_,]*\]";
+  component_regexp = "[^0-9a-zA-Z_:*-]";
+  port_regexp = "^[[a-zA-Z0-9_,]*]";
   nonport_regexp = "[a-zA-Z]";
   PORT_regexp = "^PORT .*=";  
   port_component_regexp = "SS";

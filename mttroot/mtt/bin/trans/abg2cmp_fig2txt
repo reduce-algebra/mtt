@@ -12,6 +12,10 @@
   ## Version control history
   ###############################################################
   ## $Log$
+  ## Revision 1.2  2002/12/06 11:47:49  gawthrop
+  ## Checks levels in fig file to extract genuine components
+  ## Puts comments at top of cmp.txt file
+  ##
   ## Revision 1.1  2002/12/01 14:54:39  gawthrop
   ## Replaces defunct abg2lbl_fig2txt
   ##
@@ -72,4 +76,4 @@ header > ${outfile}
 get_valid_components < ${infile} |\
    remove_port_labels |\
    remove_junctions |\
-   sort -u >> ${outfile}
+   sort >> ${outfile}

@@ -1,0 +1,39 @@
+#!/bin/sh
+# Writes argument list to standard output ready for use in calling lbl file
+
+  ###################################### 
+  ##### Model Transformation Tools #####
+  ######################################
+  
+  ###############################################################
+  ## Version control history
+  ###############################################################
+  ## $Id$
+  ## $Log$
+  ###############################################################
+
+# Copyright (C) 2001 by Peter J. Gawthrop
+
+if [ -f "$1_lbl.txt" ]; then
+grep '[#%]ALIAS' $1_lbl.txt |\
+
+awk '{
+  if (match($2,"\\$")==1){
+    i = substr($2,2);
+    arg[i] = $3
+    N++
+  }
+}
+END{
+    for (j=1;j<=N;j++){
+      if (length(arg[j])==0)
+        arg[j] = "??";
+    }
+    for (j=1;j<N;j++){
+      if (length(arg[j])==0)
+        arg[j] = "??";
+      printf("%s;", arg[j]);
+    }
+    printf("%s\n",arg[N]);
+}'
+fi

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.13  2001/06/04 08:13:37  gawthrop
+## Various changes to support PPP
+##
 ## Revision 1.12  2001/05/08 15:18:10  gawthrop
 ## Added trig and hyperbolic functions to argument exclusion list
 ##
@@ -159,11 +162,27 @@ awk --field-separator ':' '
 
     cr["CDx"] = "lin";  arg["CDx"]  = sprintf("%s%s", $2, s_arg);
 
+
+    cr["RS"] = lin;  arg["RS"]  = sprintf("flow,%s%s", $2, s_arg);
+
+
   ## Heading
   if (Component !~ OldComponent) print "\n% Component type", Component
 
   ## Component
-    print  "\t" $2 "\t" cr[Component] "\t\t" arg[Component];
+    printf("\t%s\t", Component);
+    if (Component in cr)
+      printf("%s\t\t", cr[Component])
+    else 
+      printf("none\t\t");
+
+   if (Component in arg)
+      printf("%s\t\t\n", arg[Component])
+    else {
+	print "lbl2args_txt2out", Component | "/bin/sh"; close("/bin/sh")
+    }
+
+    ##print  "\t" $2 "\t" cr[Component] "\t\t" arg[Component];
     OldComponent=Component;
   }
   END{

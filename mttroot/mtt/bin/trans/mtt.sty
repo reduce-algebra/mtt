@@ -12,6 +12,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1997/12/06 15:51:06  peterg
+% %% Cahged order of fig args to put file first.
+% %%
 % %% Revision 1.1  1997/05/19 16:48:10  peterg
 % %% Initial revision
 % %%
@@ -41,26 +44,26 @@
 \usepackage{epsfig}
 
 % Figure definition
- \newcommand{\fig}[3]{
+ \newcommand{\fig}[4]{
         \begin{figure}[htbp]
           \centerline{
              \shadowbox{
-                \epsfig{file=#1.ps,width=#2\textwidth}
+                \epsfig{file=#1.ps,width=#3\textwidth}
               }
             }
-            \caption{#3}
-            \label{#1}
+            \caption{#4}
+            \label{#2}
        \end{figure}
        }
 
 % Rotated figure definition
- \newcommand{\rfig}[3]{
+ \newcommand{\rfig}[4]{
         \begin{figure}[htbp]
           \centerline{
-            \epsfig{file=#1.ps,width=#2\textheight,angle=90}
+            \epsfig{file=#1.ps,width=#3\textheight,angle=90}
                  }
-            \caption{#3}
-            \label{#1}
+            \caption{#4}
+            \label{#2}
        \end{figure}
        }
 

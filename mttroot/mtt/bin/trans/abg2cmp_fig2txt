@@ -12,21 +12,64 @@
   ## Version control history
   ###############################################################
   ## $Log$
+  ## Revision 1.1  2002/12/01 14:54:39  gawthrop
+  ## Replaces defunct abg2lbl_fig2txt
+  ##
   ##
   ###############################################################
 
 system=$1
 infile=${system}_abg.fig
 outfile=${system}_cmp.txt
+date=`date`
 
 echo Creating ${outfile}
 
-## Find names of all components
-grep -v '\[[0-9]*:[0-9]*\]' ${infile}  |\
-gawk '/:/ {print $NF}'  | \
-sed 's/\\001//' | \
-sort -u> ${outfile}
+header() {
+    cat <<EOF
+## List of components contained in system ${system}
+## File ${outfile}
+## Created by mtt on ${date}
 
-## Create cmp.txt files beneath this one
-##mtt -q -u -l 1 ${system} sub sh # Create the list of subsystems
-##sh ${system}_sub.sh "abg2cmp_fig2txt " " " # Create the comp files
+EOF
+}
+get_valid_components()
+
+{
+gawk '
+function modulo10(x) {
+  return x-int(x/10)*10
+    }
+BEGIN{
+  polyline = 2;
+  text = 4;
+  compound_object = 6;
+  length_terminator=4;
+
+}
+{
+  object = $1;
+  zero_depth =  (modulo10($4)==0)&&(object==text);
+  if (zero_depth) {
+    print substr($NF,1,length($NF)-length_terminator)
+  }
+}' 
+
+}
+
+remove_port_labels() {
+  grep -v '^\[.*\]$'
+}
+
+remove_junctions() {
+  grep -v '^[01]$' 
+} 
+
+## Create header
+header > ${outfile}
+
+## Make list of components
+get_valid_components < ${infile} |\
+   remove_port_labels |\
+   remove_junctions |\
+   sort -u >> ${outfile}

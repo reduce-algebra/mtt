@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.375  2003/05/08 18:42:52  gawthrop
+## Generate pdf from ps (using hyperref package for links etc)
+##
 ## Revision 1.374  2003/04/17 20:57:27  geraint
 ## Added -sort option to allow direct generation of ode2odes.m using sese.m
 ## instead of ode/csex.
@@ -3605,7 +3608,7 @@ endif
 
 ifeq ($REPTYPE,tex)
 #Create html version of dvi file
-$1_$2.html: $1_$2.dvi $1_$2.doc
+$1_$2.html: $1_$2.doc
 	echo Creating $1_$2/$1_$2.html
 	$LATEX2HTML $1_$2.doc>latex2html.log 2>latex2html.log
 endif

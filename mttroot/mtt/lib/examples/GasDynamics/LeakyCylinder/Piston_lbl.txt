@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/03/04 10:01:38  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:
@@ -20,9 +23,9 @@
 	m_p		lin	flow,$1
 
 % Component type SS
-	[bottom]		external	external
-	[shaft]		external	external
-	[top]		external	external
+	[bottom]	SS	external,external
+	[shaft]		SS	external,external
+	[top]		SS	external,external
 
 % Component type TF
 	a_b		lin	flow,$2

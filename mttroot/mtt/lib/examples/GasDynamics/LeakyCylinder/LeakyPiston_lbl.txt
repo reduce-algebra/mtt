@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/03/04 10:00:11  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:
@@ -23,10 +26,10 @@
 	leak		lin	$4;$5;$6
 
 % Component type SS
-	[mass_b]		external	external
-	[mass_t]		external	external
-	[mechanical_b]		external	external
-	[mechanical_t]		external	external
-	[shaft]		external	external
-	[thermal_b]		external	external
-	[thermal_t]		external	external
+	[mass_b]	SS	external,external
+	[mass_t]	SS	external,external
+	[mechanical_b]	SS	external,external
+	[mechanical_t]	SS	external,external
+	[shaft]		SS	external,external
+	[thermal_b]	SS	external,external
+	[thermal_t]	SS	external,external

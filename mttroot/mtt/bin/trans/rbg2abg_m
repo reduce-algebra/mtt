@@ -11,6 +11,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.17  2000/12/05 12:04:03  peterg
+## Changed function name to name()
+##
 ## Revision 1.16  2000/12/05 09:04:08  peterg
 ## Fixed function () compatibility problem.
 ##
@@ -225,9 +228,3 @@ then
 else
     exit 1
 fi
-
-
-
-
-
-

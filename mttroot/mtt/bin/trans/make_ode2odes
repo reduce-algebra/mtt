@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.55  2001/03/27 13:21:59  geraint
+## Octave version compatibility for save_ascii_data(_for_plotting).
+##
 ## Revision 1.54  2001/03/27 01:14:27  geraint
 ## Improved determination of Octave version.
 ##
@@ -249,14 +252,15 @@ global MTT_data;
     [par] = mtt_numpar_update(par);
   endif
   if nargin<1
-    [x]  =  ${sys}_state(par); 
-    [x] = mtt_state_update(x);
+    [x0]  =  ${sys}_state(par); 
+    [x0] = mtt_state_update(x);
   endif
 
   ## Initialise
   t = 0.0;
   ddt = simpar.dt/simpar.stepfactor;
   ilast = round(simpar.last/ddt)+1; # Total number of steps
+  x = x0;
 
 ## Following removed due to p2c bug
 ##  [u]  = zero_input($Nu);		# Zero the input
@@ -307,10 +311,8 @@ cat <<EOF >> $filename
 
   endfor;			# Integration loop
 
-  t = MTT_data(:,1);
-  Y = MTT_data(:,2);
-  X  = MTT_data(:,4);
-
+## Create the output data
+    mtt_data = MTT_data;
 endfunction
 
 EOF
@@ -736,12 +738,12 @@ int main (void) {
 #else
 DEFUN_DLD (${sys}_ode2odes, args, ,
 "Octave ode2odes representation of system with $method integration method
-Usage: ${sys}_ode2odes (x, par, simpar)
+Usage: mtt_data = ${sys}_ode2odes (x0, par, simpar)
 ")
 {
   static octave_value_list retval;
 #endif // STANDALONE
-  static ColumnVector	x;
+  static ColumnVector	x0;
   static ColumnVector	par;
   static Octave_map	simpar;
 
@@ -760,7 +762,7 @@ Usage: ${sys}_ode2odes (x, par, simpar)
       last		= args (2).map_value ()["last"].double_value ();
       stepfactor     	= args (2).map_value ()["stepfactor"].double_value ();
       par    		= args (1).${vector_value} ();
-      x      		= args (0).${vector_value} ();
+      x0      		= args (0).${vector_value} ();
       break;
     case 2:
       first		= mtt_simpar ()["first"].double_value ();
@@ -768,7 +770,7 @@ Usage: ${sys}_ode2odes (x, par, simpar)
       last		= mtt_simpar ()["last"].double_value ();
       stepfactor     	= mtt_simpar ()["stepfactor"].double_value ();
       par    		= args (1).${vector_value} ();
-      x      		= args (0).${vector_value} ();
+      x0      		= args (0).${vector_value} ();
       break;
     case 1:
       first		= mtt_simpar ()["first"].double_value ();
@@ -776,7 +778,7 @@ Usage: ${sys}_ode2odes (x, par, simpar)
       last		= mtt_simpar ()["last"].double_value ();
       stepfactor     	= mtt_simpar ()["stepfactor"].double_value ();
       par    		= mtt_numpar ();
-      x      		= args (0).${vector_value} ();
+      x0      		= args (0).${vector_value} ();
       break;
     case 0:
 #endif // ! STANDALONE
@@ -785,7 +787,7 @@ Usage: ${sys}_ode2odes (x, par, simpar)
       last		= mtt_simpar ()["last"].double_value ();
       stepfactor     	= mtt_simpar ()["stepfactor"].double_value ();
       par    		= mtt_numpar ();
-      x      		= mtt_state (par);
+      x0      		= mtt_state (par);
 #ifndef STANDALONE
       break;
     default:
@@ -794,6 +796,7 @@ Usage: ${sys}_ode2odes (x, par, simpar)
     }
 #endif // STANDALONE
   static ColumnVector	dx (MTTNX);
+  static ColumnVector	x (MTTNX);
   static ColumnVector	u (MTTNU);
   static ColumnVector	y (MTTNY);
 
@@ -811,6 +814,11 @@ Usage: ${sys}_ode2odes (x, par, simpar)
   for (register int i = 0; i < MTTNY; i++)
     {
       y (i) = 0.0;
+    }
+
+  for (register int i = 0; i < MTTNX; i++)
+    {
+      x (i) = x0 (i);
     }
 
   for (register int j = 0, i = 1; i <= ilast; i++)
@@ -873,9 +881,12 @@ cat <<EOF >> $filename
 #ifdef STANDALONE
   return 0;
 #else
+/*  
   retval (0) = octave_value (y);
   retval (1) = octave_value (x);
   retval (2) = octave_value (t);
+*/
+  retval = octave_value (get_global_value ("MTT_data"));
   return (retval);
 #endif // STANDALONE
 }

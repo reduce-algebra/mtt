@@ -5,6 +5,9 @@ function mtt_write(t,x,y,nx,ny);
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1999/03/15 23:05:29  peterg
+## A complete rewrite - now puts into a Global matrix MTT_data
+##
 ## Revision 1.3  1999/03/15 21:57:00  peterg
 ## Removed the # symbol
 ##
@@ -15,20 +18,6 @@ global MTT_data
     MTT_data=[];
   endif
 
-MTT_data = [MTT_data; t,y',t,x'];
-
-
-
-#   printf("%e ", t);
-#   for i=1:ny
-#     printf("%e ", y(i));
-#   endfor
-
-#   printf("%e ", t);
-#   for i=1:nx
-#     printf("%e ", x(i));
-#   endfor
-#   printf("\n");
-
+  MTT_data = [MTT_data; t,y',t,x'];
 endfunction
 

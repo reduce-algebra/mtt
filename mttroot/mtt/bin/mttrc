@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.18  2001/03/19 02:28:52  geraint
+## Branch merge: merging-ode2odes-exe back to MAIN.
+##
 ## Revision 1.17.2.4  2001/03/06 03:48:43  geraint
 ## Print additional environment variable for "mtt -p".
 ## MTT_LDFLAGS defaults to " " to avoid installation warning.
@@ -157,7 +160,8 @@ else
     # local system
 
     PLAT="i686-pc-linux-gnu"
-    PREFIX="/usr/local"
+#    PREFIX="/usr/local"
+    PREFIX="/usr"
     GCCVERS="2.95.2"
     SRCOCTAVE="/cvs/octave"
 
@@ -172,6 +176,7 @@ else
 
     # library paths
 
+#    LOCTAVE="-L${PREFIX}/lib/octave -loctave -lcruft -loctinterp"
     LOCTAVE="-L${PREFIX}/lib/octave -loctave -lcruft -loctinterp"
     LKPATHSEA="-L${SRCOCTAVE}/kpathsea -lkpathsea"
     LREADLINE=" -L${SRCOCTAVE}/readline -lreadline"

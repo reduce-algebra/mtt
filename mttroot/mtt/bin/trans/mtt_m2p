@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.65  2001/02/09 02:56:46  geraint
+## Translate some binary operators
+## Allows use of ! in logic.txt
+##
 ## Revision 1.64  2001/02/03 14:00:01  gawthrop
 ## Geraint's temp. variable patch applied
 ##
@@ -360,7 +364,7 @@ Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
 	echo "VAR"
 	echo "    simpar                      : SimulationParameters;"
         echo "    t,ddt                       : REAL;"
-	echo "    x,dx,AAx                    : StateVector;"
+	echo "    x,x0,dx,AAx                 : StateVector;"
 	echo "    mttx,mttdx,mttAAx,mttedx    : StateVector;"
 	echo "    u,mttu                      : InputVector;"
 	echo "    y,mtty                      : OutputVector;"

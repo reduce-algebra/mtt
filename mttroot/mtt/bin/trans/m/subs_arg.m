@@ -17,6 +17,9 @@ function args_out = subs_arg(args,Args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.5  1998/07/21 16:43:26  peterg
+% %% Now writes to an explicit fileID - otherwise we may run out of IDs.
+% %%
 % %% Revision 1.4  1996/12/10 16:04:11  peterg
 % %% Changed file handling on mtt_info.
 % %%
@@ -59,6 +62,7 @@ if strcmp(args,'')==0
       end;
       arg_out = args2arg(Args,i);
 
+
       % Test for empty argument -- replace by default and tell user
       message = 'Argument %1.0f of component %s(%s) of system %s is undefined - \n replacing by %s';
       if strcmp(arg_out,'')
@@ -74,9 +78,3 @@ if strcmp(args,'')==0
     end;
   end;
 end;
-
-
-
-
-
-

@@ -15,6 +15,9 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.5  1996/08/08 18:06:18  peter
+% %% Unified file naming scheme
+% %%
 % %% Revision 1.4  1996/08/08 08:30:06  peter
 % %% The cbg filename contains the system name - this makes things easier
 % %% when setting up the m to fig translation and m to ese translation
@@ -95,9 +98,7 @@ end;
 status = -ones(n_components,1);
 total = 2*n_bonds;
 done = sum(sum(abs(bonds)))/total*100;
-% $$$ mtt_info(sprintf('Initial causality is %3.0f%s complete.', done, pc), infofile);
 
-% Set the causality of the ports
 old_done = inf;
 
 while done~=old_done
@@ -119,7 +120,7 @@ while done~=old_done
       comp_type = 'one';
     end;
     
-    % Component cuasality procedure name
+    % Component causality procedure name
     cause_name = [comp_type, '_cause'];
     
     % Invoke  the appropriate causality procedure
@@ -130,7 +131,10 @@ while done~=old_done
       status(i)=max(abs(s));
       disp('------------POP-----------------');
     else % its a simple component
+      disp(['---', name, ' (', cause_name, ') ---']);
+      comp_bonds
       eval([ '[comp_bonds,status(i)] = ', cause_name, '(comp_bonds);' ]);
+      comp_bonds
     end;
     
     % Update the full bonds list

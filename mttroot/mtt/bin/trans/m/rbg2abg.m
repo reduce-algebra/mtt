@@ -1,4 +1,5 @@
-function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coord,port_name,\
+function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,\
+				      port_coord,port_name,\
 				      infofile,errorfile)
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -6,6 +7,9 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.35  1998/07/08 15:35:15  peterg
+% %% Added errorfile argument
+% %%
 % %% Revision 1.34  1998/07/02 19:41:29  peterg
 % %% Fixed empty port string bug - set to null string.
 % %%
@@ -294,7 +298,7 @@ for i = 1:n_components
     	if is_struct(alias)		# are there any aliases
           if struct_contains(alias,port_name_i) # Is this an alias?
 	    eval(["new_port_name_i = alias.",port_name_i]);
-	    mtt_info(["Expanding  port name [" port_name_i "]\t on component " \
+	    mtt_info(["Aliasing name [" port_name_i "]\t on component " \
 		      comp_name " (" comp_type ")\t to [" new_port_name_i "]"],infofile);
 	    port_name = replace_name(port_name, \
 				     ["[",new_port_name_i,"]"], \
@@ -462,6 +466,19 @@ for i = 1:n_components
   else
     port_list=comp_ports(comp_type,n_comp_bonds);
   end;
+
+  [n_comp_ports,m_comp_ports] = size(port_list);
+  subport_list="";
+  for p=1:n_comp_ports		# Expand any vector ports
+    [subport,n_sub] = split_port(port_list(p,:), ','); # Find the components
+						  # of the vector port
+    if n_sub>1
+      mtt_info(sprintf("Expanding vector port %s of component type %s",\
+		       port_list(p,:), comp_type, infofile));	
+    end;
+    subport_list = [subport_list; subport];
+  end;
+  port_list = subport_list;	# Set the expanded port list.
   
 
   % Check that number of bonds on the component is the same as the number of
@@ -573,6 +590,8 @@ for j = 1:n_comp_bonds
     end;
   end;
 end;
+
+
 
 
 

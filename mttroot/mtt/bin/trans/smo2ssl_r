@@ -1,0 +1,87 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: smo2ssl_r
+# observer-form state matrices to Kobserver gain
+# P.J.Gawthrop  Jan 1998
+# Copyright (c) P.J.Gawthrop 1998
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+# Inform user
+echo Creating $1_ssl.r -- NOTE this is for SISO systems only.
+
+# Remove the old log file
+rm -f smo2ssl_r.log
+
+# Use reduce to accomplish the transformation
+reduce >smo2ssl_r.log << EOF
+
+in "$1_def.r";
+in "$1_smo.r";
+
+%Read the formatting function
+in "$MTTPATH/trans/reduce_matrix.r";
+
+OFF Echo;
+OFF Nat;
+
+
+%%%%  Observer design %%%%%
+% gain in Observer form:
+matrix MTTl_o(MTTNx,1);
+matrix alpha_o(9,1);
+alpha_o(1,1) := alpha_o1;
+alpha_o(2,1) := alpha_o2;
+alpha_o(3,1) := alpha_o3;
+alpha_o(4,1) := alpha_o4;
+alpha_o(5,1) := alpha_o5;
+alpha_o(6,1) := alpha_o6;
+alpha_o(7,1) := alpha_o7;
+alpha_o(8,1) := alpha_o8;
+alpha_o(9,1) := alpha_o9;
+
+for i := 1:MTTNx DO
+ MTTL_o(i,1) := alpha_o(i,1) + MTTA_o(i,1);
+
+% Gain in physical form
+MTTL := MTTT_o*MTTL_o;
+
+%Create the output file
+OUT "$1_ssl.r";
+
+%Write out the matrices.
+
+
+write "%  - Observer Gain matrix - observer form";
+MTT_Matrix := MTTL_o$ 
+MTT_Matrix_name := "MTTL_o"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := MTTNy$
+Reduce_Matrix()$
+
+write "%  - Gain matrix - physical form";
+MTT_Matrix := MTTL$ 
+MTT_Matrix_name := "MTTL"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := MTTNy$
+Reduce_Matrix()$
+
+write "END;";
+
+SHUT "$1_ssl.r";
+quit;
+
+EOF
+
+# Now invoke the standard error handling.
+mtt_error_r smo2ssl_r.log

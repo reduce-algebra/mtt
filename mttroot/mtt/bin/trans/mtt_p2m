@@ -6,14 +6,15 @@ sed 's/\[\([0-9,]*\)\]/(\1)/g' |\
 sed 's/:=/ = /' |\
 awk '{
   sub(/^[\ ]*/, "", $0)
+  sub(/\$$/, ";", $0)
   
-  if ((match($0,"=")>0)&&(match($NF,"[\#;]")==0)){
-    Previous = $0
+  if (match($NF,";")==0){
+    Previous[++i] = $0
   }
   else {
-    print Previous $0
-    Previous = ""
+    for (j=1;j<=i;j++) printf("%s", Previous[j]);
+    printf("%s\n", $0) 
+    i=0;
   }
 }'
-sed 's/\([^\.;\#]\)$/\1\\/'
 

@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.105  1997/12/11  09:04:47  peterg
+# Reduced default rep.txt file to just abg.txt -- this is to document
+# components which may not be causally complete
+#
 # Revision 1.104  1997/12/07  21:05:10  peterg
 # Removed a debbugging echo
 #
@@ -405,6 +409,8 @@ while [ -n "`echo $1 | grep '-'`" ]; do
 		switches=1 ;;
 	-d )
 		directory=$2; cd $directory; shift ;;
+	-D )
+		debug=debug ;;
 	-l )
                 mtt_switches="$mtt_switches $1";
 		level=$2; shift ;;
@@ -420,6 +426,12 @@ if [ "$quiet" != "quiet" ]; then
   echo 'MTT (Model Transformation Tools) version 2.5++ ($Date$)'
   echo 'This is free software with ABSOLUTELY NO WARRANTY.'
   echo 'Type `mtt warranty'\' 'for details.'
+  echo
+fi
+
+# Print current directory if in -d mode
+if [ -n "$directory" ]; then
+  echo Using directory $directory
   echo
 fi
 
@@ -451,6 +463,7 @@ if [ -z "$1" ]; then
     echo '         -o  ode and dae are the same'
     echo '         -s  use switch (ISW and CSW) components'
     echo '         -d  <dir>  use directory <dir>'
+    echo '         -D  debug -- leave log files etc'
     exit
   fi
 fi
@@ -1452,5 +1465,12 @@ EOF
 # echo Removing log files and other garbage
   rm -f  *_unique_raw_list *_raw_list
   rm -f mtt_error.txt mtt_info.txt a.out 
-  rm -f *.log  mtt_info.txt warning.txt
+  rm -f  mtt_info.txt warning.txt
 #  rm -f *_*.idx *_*.ind *_*.ilg  *_*.lof *_*.toc
+
+# Remove logs if not debugging
+if [ "$debug" != "debug" ]; then
+  rm -f *.log
+else
+  echo Debugging - log files retained
+fi

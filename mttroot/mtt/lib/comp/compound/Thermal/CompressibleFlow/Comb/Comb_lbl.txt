@@ -1,7 +1,14 @@
 %SUMMARY Comb: Combustion chamber model
 %DESCRIPTION 
-%ALIAS	in Th_in,Hy_in
-%ALIAS	out Th_out,Hy_out
+%ALIAS	in Thermal_in,Hydraulic_in
+%ALIAS	out Thermal_out,Hydraulic_out
+
+%ALIAS	Th_in  Thermal_in
+%ALIAS	Hy_in  Hydraulic_in
+
+%ALIAS	Th_out  Thermal_out
+%ALIAS	Hy_out  Hydraulic_out
+
 %% Label file for system Comb (Comb_lbl.txt)
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -9,6 +16,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1998/07/02 10:54:42  peterg
+% %% Lower case in out
+% %%
 % %% Revision 1.2  1998/07/02 10:49:32  peterg
 % %% Added port aliases
 % %%
@@ -25,11 +35,11 @@
 
 
 % Component type SS
-	[Hy_in]		external	external
-	[Hy_out]	external	external
+	[Hydraulic_in]	external	external
+	[Hydraulic_out]	external	external
 	[Heat]		external	external
-	[Th_in]		external	external
-	[Th_out]	external	external
+	[Thermal_in]	external	external
+	[Thermal_out]	external	external
 	P		external	0
 	T		external	0
 

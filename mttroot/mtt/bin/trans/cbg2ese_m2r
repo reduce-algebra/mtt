@@ -16,6 +16,9 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.3  1996/08/18 20:05:55  peter
+## Included zero outputs.
+##
 ## Revision 1.2  1996/08/08 18:08:37  peter
 ## Sorted out file naming scheme.
 ##
@@ -41,7 +44,7 @@ echo Creating $eqnfile
 echo Creating $1_def.r
 
 # Use matrix manipulation to accomplish the transformation
-$MATRIX > cbg2ese_m2r.log 2>> cbg2ese_m2r.log << EOF
+$MATRIX > cbg2ese_m2r.log << EOF
 
 infofile = '$infofile'
 system_name = '$1'

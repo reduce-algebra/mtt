@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.17  1998/08/27 07:38:40  peterg
+## About to change to new integration (Euler/Implicit only)
+##
 ## Revision 1.16  1998/08/19 08:46:00  peterg
 ## Now translates ; % to #
 ##
@@ -108,17 +111,10 @@ Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
 	echo "                       mttt : REAL);"
 	;;
     smx)
-	echo "PROCEDURE $Sys_rep(VAR mtta : StateMatrix;"
-	echo "                   VAR mttx : StateVector;"
-	echo "                   VAR mttu : InputVector;"
-	echo "                       mttdt : REAL);"
-	;;
-    smxx|smxtx)
-	echo "PROCEDURE $Sys_rep(VAR mttax : StateVector;"
-	echo "                       mttx  : StateVector;"
-	echo "                       mttu  : InputVector;"
-	echo "                       mttxx : StateVector;"
-	echo "                       mttdt : REAL);"
+	echo "PROCEDURE $Sys_rep(VAR mtta       : StateMatrix;"
+	echo "                   VAR mttax,mttx : StateVector;"
+	echo "                   VAR mttu       : InputVector;"
+	echo "                       mttdt      : REAL);"
 	;;
     ode2odes)
 	echo "PROGRAM $Sys_rep;"
@@ -225,8 +221,8 @@ BEGIN{
     {
       if (doing_header==1){
         if (rep=="ode2odes"){
-          printf("VAR ");
-          for (k=1;k<i;k++) printf("%s,",global[k])
+          printf("VAR \n");
+          for (k=1;k<i;k++) printf("  %s,\n",global[k])
           printf("%s : REAL;\n", global[i])
           printvar("x",Nx);
           printvar("u",Nu);
@@ -234,22 +230,9 @@ BEGIN{
           printvar("_t",Nt);
 
           printf("\n{%s %s_smx.p}\n",inc,sys)
-          printf("{%s %s_smxx.p}\n",inc,sys)
-          printf("{%s %s_smxtx.p}\n\n",inc,sys)
-
-          printf("\nPROCEDURE mtt_asub(VAR x,y : StateVector; n : INTEGER);\n");
-          printf("{Sparse update routine -- y = Ax}\n");
-          printf("BEGIN {asub}\n");
-          printf("  %s_smxx(y,mttx,mttu,x,mttdt);\n", Sys);
-          printf("END {asub};\n");
-          printf("\nPROCEDURE mtt_atsub(VAR x,y : StateVector; n : INTEGER);\n");
-          printf("{Sparse update routine -- y = ATx}\n");
-          printf("BEGIN {atsub}\n");
-          printf("  %s_smxtx(y,mttx,mttu,x,mttdt);\n", Sys);
-          printf("END {atsub};\n\n");
-
           printf("\n{%s sign.p}\n",inc,sys)
-          printf("{%s mtt_update.p}\n",inc)
+          printf("{%s mtt_euler.p}\n",inc)
+          printf("{%s mtt_implicit.p}\n",inc)
           printf("{%s mtt_write.p}\n",inc)
           printf("{%s zero_matrix.p}\n",inc)
           printf("{%s zero_vector.p}\n",inc)

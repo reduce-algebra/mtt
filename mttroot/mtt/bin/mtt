@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.146  1998/04/04 11:00:20  peterg
+## Modified various parts to allow coercing directions at ports
+##
 ## Revision 1.145  1998/04/03 11:17:44  peterg
 ## VERSION 2.9
 ##
@@ -902,7 +905,7 @@ fi
 # Tidy mode - operate in the directory MTT-work
 if [ "$tidy" = "tidy" ]; then
    mkdir -p MTT_work
-   cp -u -p  *.* MTT_work 2>/dev/null
+   cp -u -p  Makefile *.* MTT_work 2>/dev/null
    cd MTT_work
    
    if [ -z "$directory" ]; then
@@ -1441,7 +1444,7 @@ $1_ode.tex: $1_ode.r  $1_sympar.r $1_simp.r
 #SUMMARY obs	observer equations for CGPC (view)
 #SUMMARY obs	observer equations for CGPC (ps)
 #Observer functions for GPC
-$1_obs.r: $1_ode.r $1_def.r $1_obspar.r
+$1_obs.r: $1_ode.r $1_def.r $1_obspar.r $1_subs.r
 	ode2obs_r $1; tidy $1_obs.r
 $1_obs.m: $1_def.r $1_sympar.txt $1_obs.r $1_obspar.r $1_numpar.m
 	obs_r2m $1; matlab_tidy $1_obs.m
@@ -1643,8 +1646,8 @@ $1_ir.m: $1_sm.m $1_numpar.m $1_args.m $1_def.m
 	sm2ir_m $1 '$ARGS'
 $1_iro.m: $1_ir.m
 	touch $1_iro.m
-$1_sr.m: $1_sm.m $1_numpar.m $1_args.m $1_def.m
-	sm2sr_m $1 '$ARGS'
+$1_sr.m: $1_sm.m $1_numpar.m $1_simpar.m $1_def.m
+	sm2sr_m $1 
 $1_sro.m: $1_sr.m
 	touch $1_sro.m
 $1_odes.c: $1_ode.c $1_def.r $1_sympar.r

@@ -17,6 +17,7 @@
  */
 
 #include <fstream>
+#include <iostream>
 #include <list>
 #include <map>
 #include <string>
@@ -131,6 +132,7 @@ namespace cxxsim {
       std::string	cmp;	// component
       std::string	fnm;	// full name
       unsigned int	rpt;	// number of repetitions
+      std::string	cty;	// causality
     };
 
     typedef struct record record_t;
@@ -191,19 +193,19 @@ namespace cxxsim {
 
     unsigned int			i;
 
-    //    file.unsetf(ios::skipws);
-    file.setf(ios::skipws);
+    //    file.unsetf(std::ios::skipws);
+    file.setf(std::ios::skipws);
 
     // read lines from file (no max length, unlike std::getline)
     while (file >> c){
       s = "";
       while (c != ';' && file){
 	if (c == '%'){
-	  file.unsetf(ios::skipws);
+	  file.unsetf(std::ios::skipws);
 	  while ((c != '\n') && file){
 	    file >> c;			     // eat comment
 	  }
-	  file.setf(ios::skipws);
+	  file.setf(std::ios::skipws);
 	} else {
 	  if ((c != ' ') && (c != '\t')){    // strip whitespace
 	    s += c;
@@ -404,12 +406,12 @@ namespace cxxsim {
     record_t r;
     while (file >> r.variable >> r.component){
       if (r.variable.find("#") == 0){
-	file.unsetf(ios::skipws);
+	file.unsetf(std::ios::skipws);
 	char c = '\0';
 	while (c != '\n'){
 	  file >> c;
 	}
-	file.setf(ios::skipws);
+	file.setf(std::ios::skipws);
       } else {
 	L.push_back(r);
       }
@@ -471,7 +473,7 @@ namespace cxxsim {
     if (! file){
       std::cerr << "warning: no structure data found (empty file)" << std::endl;
     }
-    while (file >> r.vec >> r.num >> r.cmp >> r.fnm >> r.rpt){
+    while (file >> r.vec >> r.num >> r.cmp >> r.fnm >> r.rpt >> r.cty){
       if (r.vec == "input"){
 	p = &(this->Lu);
       } else if (r.vec == "state"){
@@ -638,7 +640,7 @@ int main(int argc, char *argv[])
 	      << "    " << system_name << "_ode(mttt,mttu,mttx,mttdx,mtty);"	<< std::endl
 	      << std::endl
 	      << "    // integrate states (euler)"				<< std::endl
-	      << "    for (i = 1; i < mttNx; i++){"				<< std::endl
+	      << "    for (i = 1; i <= mttNx; i++){"				<< std::endl
 	      << "      mttx[i] += mttdx[i] * mttdt;"				<< std::endl
 	      << "    }"							<< std::endl
 	      << std::endl
@@ -647,11 +649,11 @@ int main(int argc, char *argv[])
 	      << std::endl
 	      << "    // write: time outputs time states"			<< std::endl
 	      << "    std::cout << mttt << '\\t';"				<< std::endl
-	      << "    for (i = 1; i < mttNy; i++){"				<< std::endl
+	      << "    for (i = 1; i <= mttNy; i++){"				<< std::endl
 	      << "      std::cout << mtty[i] << ' ';"				<< std::endl 
 	      << "    }"							<< std::endl
 	      << "    std::cout << '\\t' << mttt;"				<< std::endl
-	      << "    for (i = 1; i < mttNx; i++){"				<< std::endl
+	      << "    for (i = 1; i <= mttNx; i++){"				<< std::endl
 	      << "      std::cout << ' ' << mttx[i];"				<< std::endl 
 	      << "    }"							<< std::endl
 	      << "    std::cout << std::endl;"					<< std::endl

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  1998/03/26 08:23:02  peterg
+## Use mixed case Topic for *) part of case sttement
+##
 ## Revision 1.8  1998/03/22 21:13:17  peterg
 ## Fixed bug in above
 ##
@@ -41,8 +44,8 @@
 ##
 ###############################################################
 
-topic=`echo $1 | tr [A-Z] [a-z]`
 Topic=$1
+topic=`echo $Topic | tr "[A-Z]" "[a-z]"`
 
 if [ "$topic" = "" ]; then
     echo 'Usage: mtt help representations'

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.54  1997/02/09 20:33:13  peterg
+## Replaced a.out with ./a.out
+##
 ## Revision 1.53  1997/02/09 20:30:04  peterg
 ## Copied from tweedledum.
 ##
@@ -648,7 +651,7 @@ $1_def.m: $1_def.r
 #Differential-algebraic equations
 $1_dae.r: $1_ese.r $1_cr.r $1_sympar.r
 	ese2dae_r $1; tidy $1_dae.r
-$1_dae.m: $1_def.r $1_dae.r  $1_sympar.r $1_numpar.m
+$1_dae.m: $1_def.r $1_dae.r  $1_sympar.r 
 	dae_r2m $1; matlab_tidy $1_dae.m; matlab_tidy $1_daeo.m
 $1_dae.c: $1_def.r $1_dae.r  $1_sympar.r
 	dae_r2c $1; c_tidy $1_dae.c
@@ -663,7 +666,7 @@ $1_dae.tex:	$1_dae.r $1_simp.r
 #Constrained-state equations
 $1_cse.r: $1_dae.r $1_def.r $1_sympar.r
 	dae2cse_r $1; tidy $1_cse.r
-$1_cse.m: $1_def.r $1_cse.r $1_sympar.r $1_numpar.m
+$1_cse.m: $1_def.r $1_cse.r $1_sympar.r 
 	cse_r2m $1; matlab_tidy $1_cse.m
 $1_cse.tex: $1_cse.r  $1_sympar.r $1_simp.r
 	cse_r2tex $1; latex_tidy $1_cse.tex
@@ -677,7 +680,7 @@ $1_cse.tex: $1_cse.r  $1_sympar.r $1_simp.r
 #Ordinary differential equations
 $1_ode.r: $1_cse.r $1_def.r $1_sympar.r
 	cse2ode_r $1; tidy $1_ode.r
-$1_ode.m: $1_def.r $1_ode.r $1_sympar.r $1_numpar.m
+$1_ode.m: $1_def.r $1_ode.r $1_sympar.r 
 	ode_r2m $1; matlab_tidy $1_ode.m; matlab_tidy $1_odeo.m
 $1_ode.c: $1_def.r $1_ode.r $1_sympar.r
 	ode_r2c $1
@@ -745,7 +748,7 @@ $1_dm.tex: $1_dm.r $1_sympar.r $1_simp.r
 #Linearised system: constrained-state matrices
 $1_csm.r: $1_cse.r $1_def.r $1_cr.r $1_ss.r $1_sympar.r
 	cse2csm_r $1; tidy $1_csm.r
-$1_csm.m: $1_def.r $1_csm.r $1_numpar.m
+$1_csm.m: $1_def.r $1_csm.r
 		csm_r2m $1;  matlab_tidy $1_csm.m
 $1_csm.tex: $1_csm.r  $1_sympar.r $1_simp.r
 	csm_r2tex $1; latex_tidy $1_csm.tex
@@ -758,7 +761,7 @@ $1_csm.tex: $1_csm.r  $1_sympar.r $1_simp.r
 #Linearised system: state matrices
 $1_sm.r: $1_csm.r $1_def.r $1_cr.r $1_ss.r $1_sympar.r
 	csm2sm_r $1; tidy $1_sm.r
-$1_sm.m: $1_def.r $1_sm.r $1_numpar.m
+$1_sm.m: $1_def.r $1_sm.r 
 		sm_r2m $1;  matlab_tidy $1_sm.m
 $1_sm.tex: $1_sm.r  $1_sympar.r $1_simp.r
 	sm_r2tex $1; latex_tidy $1_sm.tex
@@ -771,7 +774,7 @@ $1_sm.tex: $1_sm.r  $1_sympar.r $1_simp.r
 #Linearised system: transfer function
 $1_tf.r: $1_dm.r $1_sympar.r 
 	dm2tf_r $1; tidy $1_tf.r
-$1_tf.m: $1_def.r $1_tf.r $1_numpar.m
+$1_tf.m: $1_def.r $1_tf.r 
 	tf_r2m $1; matlab_tidy $1_tf.m
 $1_tf.tex: $1_def.r $1_tf.r $1_sympar.r $1_simp.r
 	tf_r2tex $1; latex_tidy $1_tf.tex

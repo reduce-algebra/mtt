@@ -16,6 +16,10 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.20  2003/10/23 18:14:43  geraint
+@comment  Added subsection with script for model-specific options.
+@comment  Fixed typo in url to mtt.sf.net.
+@comment
 @comment  Revision 1.19  2003/10/10 22:22:18  geraint
 @comment  typo.
 @comment
@@ -4685,6 +4689,10 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.20  2003/10/23 18:14:43  geraint
+# %% Added subsection with script for model-specific options.
+# %% Fixed typo in url to mtt.sf.net.
+# %%
 # %% Revision 1.19  2003/10/10 22:22:18  geraint
 # %% typo.
 # %%
@@ -6783,7 +6791,7 @@ use is obtained from:
 ZIB ( http://www.zib.de )
 @end quotation
 @ifhtml
-<A HREF="http://www.rrz.uni-koeln.de/REDUCE/">REDUCE</A> documentation.
+<A HREF="http://www.reduce-algebra.com">REDUCE</A> documentation.
 <A HREF="http://www.zib.de">ZIB</A> documentation.
 @end ifhtml
 

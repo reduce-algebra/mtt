@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1998/03/05 10:09:47  peterg
+## Corrected bug in writing "other" components
+##
 ## Revision 1.5  1998/03/02 09:26:18  peterg
 ## Now does default CR and args for the basic components only
 ## SS,I,R,C,GY,TF
@@ -44,23 +47,27 @@ rm -f abg2lbl_fig2txt.log
 rm -f $1_cbg.m
 rm -f $typefile
 rm -f $infofile
-
+rm -f mtt_junk*
 
 #Inform user
 echo Creating $1_lbl.txt
 
 	( \
+	echo "%% Label file for system $1 ($1_lbl.txt)"; \
 	echo "%SUMMARY $1"; \
 	echo "%DESCRIPTION <Detailed description here>"; \
-	echo "%% Label file for system $1 ($1_lbl.txt)"; \
 	cat $MTTPATH/trans/m/rcs_header.txt; \
-	echo "%% Each line should be of one of the following forms:"; \
-	echo "%	a comment (ie starting with %)"; \
-	echo "%	Component-name	CR_name	arg1,arg2,..argn"; \
-	echo "%	blank"; \
+        )>mtt_junk_top.txt
+
+	( \
 	echo; \
-        echo \
-        )> $1_lbl.txt
+	echo "%% Each line should be of one of the following forms:"; \
+	echo "%	     a comment (ie starting with %)"; \
+	echo "%	     component-name	cr_name	arg1,arg2,..argn"; \
+	echo "%	     blank"; \
+	echo; \
+	echo "% ---- Component labels ----"; \
+        )> mtt_junk_blurb.txt
 
 awk '/:/ {print $NF}' $1_abg.fig | \
 sed 's/\\001//' | \
@@ -76,30 +83,57 @@ sort -u> $1_unique_raw_list
 grep -v  '\[[0-9]*\]'  $1_unique_raw_list | \
 awk --field-separator ':' '
  { 
-   if (($1 !~ "0")&&($1 !~ "1")) 
+   if (($1 != "0")&&($1 != "1")) 
     { 
       if (Component !~ $1) print "\n% Component type", $1
 
-      if ($1 ~ "SS") 
-	print  "\t" $2 "\t\texternal\texternal";
+      if ($1 == "SS") {
+	port_alias[++j] = $2
+	print  "\t" $2 "\tSS\t\texternal,external";
+      }
 
-      else if ($1 ~ "R") 
+      else if ($1 == "R") {
+	alias[++i] = $2
 	print  "\t" $2"\t\tlin\tflow," $2;
+      }
 
-      else if ($1 ~ "I") 
+      else if ($1 == "I") {
+	alias[++i] = $2
 	print  "\t" $2"\t\tlin\tflow," $2;
+      }
 
-      else if ($1 ~ "C") 
+      else if ($1 == "C") {
+	alias[++i] = $2
 	print  "\t" $2"\t\tlin\teffort," $2;
+      }
 
-      else if ($1 ~ "TF") 
+      else if ($1 == "TF") {
+	alias[++i] = $2
 	print  "\t" $2"\t\tlin\tflow," $2;
+      }
 
-      else if ($1 ~ "GY") 
+      else if ($1 == "GY") {
+	alias[++i] = $2
 	print  "\t" $2"\t\tlin\tflow," $2;
+      }
       else
 	 print  "\t" $2;
-	}
-        Component=$1
- }' >>$1_lbl.txt
+      }
+      Component=$1
+  }
+  END{
+    print "\n% Port aliases" >> "mtt_junk_alias.txt";
+    for (k=1;k<=j;k++){
+      if (port_alias[k] ~ "\\["){ # Only do ports
+        port_name = substr(port_alias[k],2,length(port_alias[k])-2);
+        print "%ALIAS\t" port_name "\t" port_name >> "mtt_junk_alias.txt";
+      }
+    }
 
+    print "\n% Argument aliases" >> "mtt_junk_alias.txt";
+    for (k=1;k<=i;k++){
+      print "%ALIAS\t\$" k "\t" alias[k] >> "mtt_junk_alias.txt";
+    }
+ }' > mtt_junk_body.txt
+
+cat mtt_junk_top.txt mtt_junk_alias.txt mtt_junk_blurb.txt mtt_junk_body.txt > $1_lbl.txt

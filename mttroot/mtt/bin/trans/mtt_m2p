@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.44  2000/05/13 11:52:16  peterg
+## A now matrix in smxa rep
+##
 ## Revision 1.43  2000/05/11 19:35:16  peterg
 ## Major revisions for new paprameter passing versions
 ##
@@ -420,13 +423,13 @@ BEGIN{
           # printvar("y",Ny);
           printvar("_t",Nt);
 
-          printf("VAR mtt_i : INTEGER;\n");
+          printf("VAR mtt_i, mtt_j : INTEGER;\n");
           #if ( (rep=="smxa")||(rep=="smxax") ) {
           #  printvar("_t",Nt);
           #}
           printf("\nBEGIN{%s}\n", Sys_rep)
           if (rep=="smxa"){
-            printf("FOR mtt_i:= 1 to %i DO\n\tmtta[mtt_i] := 0;\n", Nx*Nx);
+            printf("FOR mtt_i:= 1 to %i DO\n\tFOR mtt_j:= 1 to %i DO\n\tmtta[mtt_i,mtt_j] := 0;\n", Nx,Nx);
           }
           if (rep=="smxax"){
             printf("FOR mtt_i:= 1 to %i DO\n\tmttax[mtt_i] := 0;\n", Nx);

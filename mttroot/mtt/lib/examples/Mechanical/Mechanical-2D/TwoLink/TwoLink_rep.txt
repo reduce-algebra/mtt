@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/01/19 14:15:52  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 mtt TwoLink abg tex
@@ -13,7 +16,7 @@ mtt TwoLink sympar tex
 mtt TwoLink dae tex
 mtt TwoLink cse tex
 mtt TwoLink rfe tex
-mtt TwoLink ode tex
+
 mtt TwoLink input txt
 mtt TwoLink numpar txt
 mtt -c TwoLink odeso ps

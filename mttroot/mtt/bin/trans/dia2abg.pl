@@ -103,7 +103,7 @@ my $component_list_file = '';
 my $debug = 0;
 my $create_component_list = 0;
 my $create_abg = 0;
-my $create_ibg = 1;
+my $create_ibg = 0;
 my $abg_file = '';
 my $ibg_file = '';
 my $change_flow_causality = '';
@@ -336,17 +336,46 @@ sub output_component {
 EOF
 }
 
-# This sort function allows components to be sorted in same order as
-# label file, and alphabetically for components not in label file.
-sub by_label_file {
-    my ($a_index,$b_index);
+sub sort_components {
+    my ($type1, $str1, $subsys_or_port1,
+	$type2, $str2, $subsys_or_port2,
+	$retval);
+    
+    $type1 = $component_id_type{$a};
+    $type2 = $component_id_type{$b};
 
-    $a_index = $component_label_data{id_to_name($a)}[0];
-    $b_index = $component_label_data{id_to_name($b)}[0];
-    $a_index = 1e9 unless defined($a_index);
-    $b_index = 1e9 unless defined($b_index);
+    $str1 = $component_id_tag{$a};
+    $str2 = $component_id_tag{$b};
 
-    return ($a_index <=> $b_index) || ($a_index cmp $b_index);
+    ($subsys_or_port1, $_) = id_to_name($a);
+    ($subsys_or_port2, $_) = id_to_name($b);
+
+    print "${str1}: ${subsys_or_port1}\n";
+    print "${str2}: ${subsys_or_port2}\n";
+
+    # 1 junctions go last
+    if (($type1 eq '1') and ($type2 ne '1')) {
+	$retval = +1;
+    } elsif (($type1 ne '1') and ($type2 eq '1')) {
+	$retval = -1;
+    # 0 junctions go before them
+    } elsif (($type1 eq '0') and ($type2 ne '0')) {
+	$retval = +1;
+    } elsif (($type1 ne '0') and ($type2 eq '0')) {
+	$retval = -1;
+    # ports go first
+    } elsif (($subsys_or_port1 ne 'ports') and
+	     ($subsys_or_port2 eq 'ports')) {
+	$retval = +1;
+    } elsif (($subsys_or_port1 eq 'ports') and
+	     ($subsys_or_port2 ne 'ports')) {
+	$retval = -1;
+    # sort by type:name
+    } else {
+	$retval = ($str1 cmp $str2);
+    }
+
+    return $retval;
 }
 
 sub output_abg {
@@ -358,7 +387,12 @@ sub output_abg {
 
     output_abg_header();
     
-    foreach my $id (keys(%component_id_tag)) {
+    # order component id's alphabetically by (type:name)
+    my (@id_list);
+    @id_list = keys (%component_id_tag);
+    @id_list = sort sort_components @id_list;
+
+    foreach my $id (@id_list) {
 	($subsys_or_port,$_) = id_to_name($id);
 	remove_brackets(); $NM = $_;
 
@@ -383,16 +417,10 @@ sub output_abg {
 	output_component($NM,$type,$cr,$arg,$rep,$stat,$connections,$subsys_or_port);
     }
     
-    # order component id's so that entries found in _lbl.txt file are
-    # in _lbl file order, and other entries follow.
-    my (@id_list);
-    @id_list = keys(%component_id_tag);
-    @id_list = sort by_label_file @id_list;
-
     # calculate string length of longest component name (for octave):
     $strlength=0;
-    foreach my $compname (@id_list) {
-	my $name = id_to_name($compname);
+    foreach my $id (@id_list) {
+	my $name = id_to_name($id);
 	$strlength = length($name) if length($name) > $strlength;
     };
 

@@ -1,4 +1,9 @@
 %SUMMARY wPipe Isentropic pipe with work transfer.
+
+%DESCRIPTION wPipe represents an ideal (energy conserving) pipe carrying a
+%DESCRIPTION fluid with work transfer. To ensure energy conservation, power bonds are used and
+%DESCRIPTION connected by (energy conserving) TF components.
+
 %DESCRIPTION Parameter 1: c_v - specific heat of fluid
 %DESCRIPTION Parameter 2: Parameter passed to Density component
 %DESCRIPTION Ports:
@@ -31,6 +36,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/07/03 17:38:20  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:
@@ -49,11 +57,11 @@
 	pv2p		lin		effort
 
 % Component type SS
-	[Hydraulic_in]	external	external
-	[Hydraulic_out]	external	external
-	[Shaft]		external	external
-	[Thermal_in]	external	external
-	[Thermal_out]	external	external
+	[Hydraulic_in]	SS	external,external
+	[Hydraulic_out]	SS	external,external
+	[Shaft]		SS	external,external
+	[Thermal_in]	SS	external,external
+	[Thermal_out]	SS	external,external
 
 % Component type TF
 	t2u		lin	effort,c_v

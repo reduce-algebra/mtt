@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.407  2005/02/17 18:36:38  geraint
+## Removed a bash-ism: replaced [[ conditional ]] with [ conditional ]
+##
 ## Revision 1.406  2005/01/06 15:36:06  geraint
 ## Tidied output of options.
 ##
@@ -2324,7 +2327,7 @@ if [ "$tidy" = "tidy" ] && [ "$level" = "0" ]; then
     # make sure that a system exists in this directory
     if [ "${sys}_${rep}.${lang}" != "${sys}_abg.dia" ] && [ "${sys}_${rep}.${lang}" != "${sys}_abg.fig" ]; then
 	nabgs=`ls ${sys}_abg.* 2>/dev/null | wc -l`
-	if [ $nabgs -eq 0 ]; then
+	if [ $nabgs -eq 0 ]&&[ -z "$sensitivity" ]; then
 	    echo "MTT Error: System $sys does not exist"
 	    exit -1;
 	fi

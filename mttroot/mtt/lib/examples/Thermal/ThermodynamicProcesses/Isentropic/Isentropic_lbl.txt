@@ -1,0 +1,27 @@
+%SUMMARY Isentropic: Isentropic thermodynamic process - ideal gas
+%DESCRIPTION A dynamic simulation of an isentropic process using
+%DESCRIPTION the Cycle component and the two-prt CU component.
+
+
+%% Label file for system Isentropic (Isentropic_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type Cycle
+	cycle	
+
+% Component type SS
+	Heat	SS	internal,0
+	Work	SS	internal,external

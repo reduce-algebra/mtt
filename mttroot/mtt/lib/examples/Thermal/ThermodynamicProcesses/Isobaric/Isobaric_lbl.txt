@@ -1,0 +1,26 @@
+%SUMMARY Isobaric: Isobaric thermodynamic process - ideal gas 
+%DESCRIPTION A dynamic simulation of an isobaric (constant pressure)
+%DESCRIPTION  process using the Cycle component and the two-port CU component.
+
+%% Label file for system Isobaric (Isobaric_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type Cycle
+	cycle	
+
+% Component type SS
+	Heat	SS	internal,external
+	Work	SS	P_0,internal

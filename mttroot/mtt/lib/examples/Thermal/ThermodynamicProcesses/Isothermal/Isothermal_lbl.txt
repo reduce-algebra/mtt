@@ -1,0 +1,26 @@
+%SUMMARY Isothermal: Isothermal thermodynamic process - ideal gas
+%DESCRIPTION A dynamic simulation of an isothermal process using
+%DESCRIPTION the Cycle component and the two-port CU component.
+
+%% Label file for system Isothermal (Isothermal_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type Cycle
+	cycle	
+
+% Component type SS
+	Heat		SS	t_0,internal
+	Work		SS	internal,external

@@ -1,4 +1,4 @@
-function Ustar = ppp_ustar (A_u,n_u,tau,order,packed)
+function Ustar = ppp_ustar (A_u,n_u,tau,order,packed,n_zero)
 
   ## usage:  Us = ppp_ustar(A_u,n_u,tau,order,packed)
   ##
@@ -8,6 +8,8 @@ function Ustar = ppp_ustar (A_u,n_u,tau,order,packed)
   ## If packed==1
   ##     Ustar = [Ustar(tau_1) Ustar(tau_2) ...]
   ## else Ustar = [Ustar(tau_1); Ustar(tau_2) ...]
+  ## n_zero extra zero columns appended
+
   ## Copyright (C) 1999 by Peter J. Gawthrop
   ## 	$Id$	
 
@@ -25,6 +27,10 @@ function Ustar = ppp_ustar (A_u,n_u,tau,order,packed)
   
   if nargin<5
     packed=1;
+  endif
+  
+  if nargin<6
+    n_zero=0;
   endif
   
 
@@ -60,5 +66,9 @@ function Ustar = ppp_ustar (A_u,n_u,tau,order,packed)
     endif
   endfor
 
-
+  if (n_zero>0)
+    [N,M] = size(Ustar);
+    Ustar = [Ustar zeros(N, n_zero)];
+  endif
+  
 endfunction

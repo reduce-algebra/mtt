@@ -24,6 +24,9 @@ function cbg2fig(system_name, ...
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## %% $Id$
   ## %% $Log$
+  ## %% Revision 1.12  2000/09/14 08:07:00  peterg
+  ## %% Reformated as an Octave function
+  ## %%
   ## %% Revision 1.11  2000/01/18 14:52:02  peterg
   ## %% Removed recursion --- maybe put back via a flag later
   ## %%
@@ -162,10 +165,12 @@ function cbg2fig(system_name, ...
   arrow_barb = which_end.*other_end_2 + (one-which_end).*other_end_1;
   arrow_vector =  arrow_barb-arrow_end;
   unit_arrow_vector = arrow_vector./(length2d(arrow_vector)*[1 1]);
-  bond_vector = (arrow_end - other_end);
-  unit_bond_vector = bond_vector./(length2d(bond_vector)*[1 1]);
-  unit_stroke_vector = (rot*unit_bond_vector')';
   
+  ## Extract directional information
+  arrow_end_direction = [rbonds(:,7), rbonds(:,8)];
+  other_end_direction = [rbonds(:,9), rbonds(:,10)];
+
+
   ## Get indices of bonds with changed causality -- but ignore the extra bonds
   ## due to vector bond expansion
   changed_e = bonds(1:n_bonds,1)~=cbonds(1:n_bonds,1);
@@ -188,13 +193,19 @@ function cbg2fig(system_name, ...
     for i = index_e		# Do the effort stroke - opp. side to arrow
 
       if cbonds(i,1)==1		# Stroke at arrow end
+	bond_vector = arrow_end_direction(i,:); # Directional vector
 	stroke_end_1 = arrow_end(i,:);
       else
+	bond_vector = other_end_direction(i,:); # Directional vector
 	stroke_end_1 = other_end(i,:);
       end;
+
+      ## Work out the direction for the stroke (right angles to bond)
+      unit_bond_vector = bond_vector./(length2d(bond_vector)*[1 1]);
+      unit_stroke_vector = (rot*unit_bond_vector')';
       
-      sig = sign(unit_arrow_vector(i,:)*unit_stroke_vector(i,:)');
-      stroke_end_2 = stroke_end_1 - stroke_length*sig*unit_stroke_vector(i,:);
+      sig = sign(unit_arrow_vector(i,:)*unit_stroke_vector');
+      stroke_end_2 = stroke_end_1 - stroke_length*sig*unit_stroke_vector;
       
 
       ## print the fig3 format firstline spec.
@@ -210,14 +221,19 @@ function cbg2fig(system_name, ...
     for i = index_f		# Do the flow stroke - same side as arrow
 
       if cbonds(i,2)==1		# Stroke at arrow end
+	bond_vector = arrow_end_direction(i,:); # Directional vector
 	stroke_end_1 = arrow_end(i,:);
       else
+	bond_vector = other_end_direction(i,:); # Directional vector
 	stroke_end_1 = other_end(i,:);
       end;
       
-      sig = sign(unit_arrow_vector(i,:)*unit_stroke_vector(i,:)');
-      stroke_end_2 = stroke_end_1 + stroke_length*sig*unit_stroke_vector(i,:);
+      ## Work out the direction for the stroke (right angles to bond)
+      unit_bond_vector = bond_vector./(length2d(bond_vector)*[1 1]);
+      unit_stroke_vector = (rot*unit_bond_vector')';
       
+      sig = sign(unit_arrow_vector(i,:)*unit_stroke_vector');
+      stroke_end_2 = stroke_end_1 + stroke_length*sig*unit_stroke_vector;
 
       ## print the fig3 format firstline spec.
       polyline = 2; 

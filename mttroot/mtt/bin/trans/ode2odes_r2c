@@ -20,6 +20,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.13  1998/02/24 13:34:45  peterg
+## Back under RCS
+##
 # Revision 1.12  1997/05/15  08:39:56  peterg
 # Don't initialise states - now done in numpar file.
 #
@@ -79,7 +82,7 @@ in "$1_def.r";
 MTTNVar := 0;
 
 %Read the symbolic parameters file
-in "$1_sympar.r";
+%%in "$1_sympar.r";
 
 ON BigFloat, NumVal;
 PRECISION 16; %Compatible with Matlab
@@ -113,10 +116,11 @@ write "#define MTTNY2 ", MTTNy+2 $
 write "#define MTTNU2 ", MTTNu+2 $
 
 write "#include <stdio.h>"$
-write "#include ""$1_odes.h"" "$
+write "#include ""$1_simpar.h"" "$
 write "#include ""$1_ode.c"" "$
 write "#include ""$1_input.c"" "$
 write "#include ""$1_numpar.c"" "$
+write "#include ""$1_state.c"" "$
 
 %External (global) variable list
 write "#include ""$1_sympar.h"" "$
@@ -155,6 +159,10 @@ write "fpso = fopen(""$1_odeso.m"", ""w"");  "$
 %Set up user-defined constants
 write "/* Set up user-defined constants */"$
 write "  $1_numpar();"$
+
+%Set up initial state
+write "/* Set up initial state */"$
+write "  $1_state();"$
 
 %Initialise main (Euler) integration loop
 write "/* Initialise main (Euler) integration loop */"$

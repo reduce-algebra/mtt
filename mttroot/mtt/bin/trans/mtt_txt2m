@@ -15,6 +15,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.6  2000/05/19 14:59:03  peterg
+# %% MTT --> mtt in fun output
+# %%
 # %% Revision 1.5  2000/05/19 14:05:10  peterg
 # %% Zero parameters in the numpar.m file
 # %%
@@ -121,6 +124,13 @@ case $representation in
       lang_header $1 numpar m '' mttpar > $1_numpar.m;
       echo "## Set parameters to zero" >> $1_numpar.m;
       sympar2par_txt2m $1 zero >> $1_numpar.m;
+      ;;
+    state)
+      lang_header $1 $2 m 'mttpar' mttx > $1_$2.m;
+      echo "  if nargin>0" >> $1_$2.m;
+      echo "  ## Set parameters" >> $1_$2.m;
+      sympar2par_txt2m $1 >> $1_$2.m;
+      echo "  endif" >> $1_$2.m;
       ;;
     *)
       echo "function $name = $1_$2$arg" > $1_$2.m

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1998/02/25 18:03:49  peterg
+## Removed the argument reading bits.
+##
 ## Revision 1.7  1997/08/29 07:58:17  peterg
 ## Changed MTT to mtt in the .m files.
 ##
@@ -60,7 +63,7 @@ MTTNVar := 0;
 %Read the parameter file
 in "$1_sympar.r";
 
-ON NERO;        % Suppress zero elements
+%ON NERO;        % Suppress zero elements
 
 %Define the common part of the functions.
 

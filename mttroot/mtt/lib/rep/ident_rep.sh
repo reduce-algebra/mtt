@@ -267,7 +267,7 @@ case ${lang} in
 	pss=`ls ${sys}_ident*.ps` 
         echo Viewing ${pss}
         for ps in ${pss}; do
-          gv ${ps}&
+          ${PSVIEW} ${ps}&
 	done
 	;;
     *)

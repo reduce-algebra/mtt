@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.44  2002/05/25 09:23:47  gawthrop
+## Self-naming components: name is mttTYPE or mttTYPE_2 ...
+##
 ## Revision 1.43  2002/05/22 10:33:18  gawthrop
 ## Nameless components are now named according to type - replaces old
 ## mtt1 etc style.
@@ -556,6 +559,9 @@ function write_fig() {
     }
 
 # Header
+  if ($1=="#FIG") 
+    printf("%s", $0)  >> head_file;
+
   if ( NF<3 ) {
 	printf("%s", $1)  >> head_file;
         for (i=2; i<=NF; i++)

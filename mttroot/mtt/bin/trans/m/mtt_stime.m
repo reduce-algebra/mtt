@@ -35,8 +35,10 @@ function [t,y,y_theta,x] = mtt_stime(system_name,theta,free);
       args = sprintf("%s %g",args, theta(j));
     endfor
 
-    command = sprintf("./%s_ode2odes.out %s > mtt_data.dat\n", system_name, args);
-    system(command);
+    ## Run system and replace NaN by 1e30 -- easier to handle
+    command = sprintf("./%s_ode2odes.out %s | sed \'s/NAN/1e30/g\' >mtt_data.dat\n", \
+    system_name, args);
+   system(command);
 
     ## Retrieve data
     load -force mtt_data.dat

@@ -56,6 +56,7 @@ function [theta,Theta,Error,Y,iterations] = mtt_optimise (system_name,y_s,theta_
     error_old_old = error_old;
     error_old = error;
     eval(sprintf("[t,y,y_theta] = mtt_s%s(system_name,theta,free);",method)); # Simulate system
+plot(t,y(:,2:3));
     error = 0; 
     J = zeros(n_th,1);
     JJ = zeros(n_th,n_th);

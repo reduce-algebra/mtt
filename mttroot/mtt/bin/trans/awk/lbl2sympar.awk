@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  1998/05/13 12:39:23  peterg
+## Added `unknown' to list od names to avoid
+##
 ## Revision 1.10  1998/03/26 13:03:23  peterg
 ## Changed SS field fudge.
 ##
@@ -75,15 +78,7 @@ symbols = "";
 }
 {
   if ( (match($1,comment)==0) && (NF>=3) ) {
-# The following line is a bad attempt to use parameters in SS fields
-# It assumes that at least one SS field is an SS_parameter
-    if (matches(SS_parameter,$3)) {
-      args = $2
-	}
-    else {
-      args = $3;
-    }
-    n_args = split(args,arg,arg_delimiter);
+    n_args = split($3,arg,arg_delimiter);
     for (i = 1; i <= n_args; i++) {
       first_char = substr(arg[i],1,1);
       if ( (matches(not_an_arg,arg[i])==0) \
@@ -91,27 +86,13 @@ symbols = "";
 	   && (match(arg[i],"\\$")==0) \
 	   && (length(arg[i])>0) \
 	   && (matches(symbols,arg[i]) ==0) ) {
-	symbol_count++;
-	symbols = sprintf("%s %s", symbols, arg[i]);
+	 print arg[i];
 	  }
     }
   }
 }
-END {
-# print the _sympar file
 
-#  printf("MTTNVar := %1.0f;\n", symbol_count);
 
-  if (symbol_count>0) {
-   #printf("MATRIX MTTVar(MTTNVar,1);\n");
-    split(symbols,symbol);
-    for (i = 1; i <= symbol_count; i++) {
-#      printf("MTTVar(%1.0f,1) \t := %s\n", i, symbol[i]);
-      printf("%s\t%s\n", symbol[i], name);
-    }
-  }
-
-}
 
 
 

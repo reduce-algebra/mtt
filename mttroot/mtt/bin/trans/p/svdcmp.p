@@ -1,12 +1,16 @@
 PROCEDURE svdcmp(VAR a: glmpbynp; m,n,mp,np: integer;
 		 VAR w: glnparray; VAR v: glnpbynp);
 
+
 {
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.1  1998/08/12 11:03:57  peterg
+% % Initial revision
+% %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 }
 

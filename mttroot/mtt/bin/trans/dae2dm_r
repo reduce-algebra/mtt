@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1996/08/18 20:03:51  peter
+## Initial revision
+##
 ###############################################################
 
 #Inform user
@@ -288,7 +291,12 @@ BEGIN
       write "MTTD(", i, ",", j, ") := ", MTTD(i,j);
 END;
 
+write "END;";
+
 SHUT "$1_dm.r";
 quit;
 
 EOF
+
+# Now invoke the standard error handling.
+mtt_error_r dae2dm_r.log

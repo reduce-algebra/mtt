@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.337  2002/05/08 14:51:03  geraint
+## Moved matlab/octave data type conversion functions to a separate file.
+##
 ## Revision 1.336  2002/05/07 23:50:34  geraint
 ## Preliminary support for Matlab dynamically linked shared objects:
 ## invoke with: mtt -cc sys rep mexglx
@@ -2795,6 +2798,14 @@ $1_ode2odes.oct: $1_ode2odes.cc $1_ode2odes_common.oct $1_ode2odes_${integration
 	touch $1_ode2odes.m
 	echo Creating $1_ode2odes.oct
 	$MKOCTFILE -DCODEGENTARGET=OCTAVEDLD $1_ode2odes.cc mtt_${algebraic_solver}.cc mtt_Solver.cc mtt_AlgebraicSolver.cc
+
+$1_ode2odes.mexglx: $1_ode2odes.cc $1_ode2odes_common.o $1_ode2odes_${integration_method}.o $1_ode2odes_${algebraic_solver}.o
+	touch $1_ode2odes.m
+	echo Creating $1_ode2odes.mexglx
+	${MTT_CXX} -DCODEGENTARGET=MATLABMEX -o $1_ode2odes.mexglx $1_ode2odes.cc \
+	$1_ode2odes_common.o $1_ode2odes_${integration_method}.o $1_ode2odes_${algebraic_solver}.o \
+	${MTT_MATLAB_FLAGS} ${MTT_CXXINCS} ${MTT_CXXLIBS} ${MTT_CXXFLAGS} \
+	${MTT_LIB}/cc/mtt_kpathsea.cc ${MTT_LIB}/cc/mtt_matlab_octave.cc
 
 $1_ode2odes.cc: $1_def.r $1_sympars.txt\
 		$1_ode2odes_common.m $1_ode2odes_common.cc\

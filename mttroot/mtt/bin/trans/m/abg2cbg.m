@@ -17,6 +17,9 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.12  1996/12/31 11:42:36  peterg
+% %% *** empty log message ***
+% %%
 % %% Revision 1.11  1996/12/07  17:10:48  peterg
 % %% Allows port SS at top level - ie takes it to be an ardianry SS at top
 % %% level.
@@ -129,11 +132,15 @@ if at_top_level==0
   if n_port_bonds~=n_ports
     mtt_info(sprintf('%1.0f port bonds incompatible with %1.0f ports', ...
 	n_port_bonds, n_ports), infofile);
-  else % Copy the port bonds
+  else % Copy the port bonds -- but only if not set already
     for i = 1:n_ports      % The port SSs come first
       j = abs(components(i,1)); % Get the bonds attached to the ports
-      direction = -sign(components(i,1)); 
-      bonds(j,:) = direction*port_bonds(i,:);
+      direction = -sign(components(i,1));
+      for k=1:2
+	if bonds(j,k)==0 % causality not set yet - so copy.
+	  bonds(j,k) = direction*port_bonds(i,k);
+	end;
+      end;
     end;
   end;
 end;

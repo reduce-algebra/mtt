@@ -1,0 +1,129 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: tf_r2tex
+# Reduce transfer-function matrices to LaTex transfer-function matrices.
+# P.J.Gawthrop 9 June 1990, 8 July 1990, April 1994.
+# Copyright (c) P.J.Gawthrop, 1990, 1994.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+## Revision 1.2  1996/12/20 08:59:40  peterg
+## Now writes out mtti instead of mtt_{i} -- lets latex_tidy do the
+## conversion.
+##
+## Revision 1.1  1996/11/05 11:01:51  peterg
+## Initial revision
+##
+###############################################################
+
+#Inform user
+echo Creating $1_tf.tex
+
+# Remove the old log file
+rm -f tf_r2tex.log
+
+# Use reduce to accomplish the transformation
+reduce >tf_r2tex.log << EOF
+
+%Read the definitions file
+in "$1_def.r";
+
+%Read the parameter file
+%%in "$1_sympar.r";
+
+%Read the formatting function
+in "$MTTPATH/trans/latex_matrix.r";
+
+%Read the transfer-function matrices file
+in "$1_tf.r";
+
+%Read the substitution file
+IN "$1_subs.r";
+
+%Read the simplification file
+in "$1_simp.r";
+
+OFF Echo;
+OFF Nat;
+
+OUT "$1_tf.tex";
+MTT_Matrix := MTTTF$ 
+MTT_Matrix_name := "MTTG"$
+MTT_Matrix_n := MTTNy$
+MTT_Matrix_m := MTTNu$
+LaTeX_Matrix()$
+
+%%  FOR Row := 1:MTTNy DO
+%%  BEGIN
+%%    FOR Col := 1:MTTNu DO
+%%    BEGIN
+%%      numerator := num(MTTtf(Row,Col));
+%%      denominator := den(MTTtf(Row,Col));
+%%      cnumerator := coeff(numerator, s);
+%%      cdenominator := coeff(denominator, s);
+%%      write "!begin{equation} !label{eq_$1_tf", Row, Col, "}";
+%%      IF MTTNy=1 AND MTTNu=1 
+%%                          THEN
+%%                          write "MTTTF(s) =  {"
+%%                          ELSE
+%%                          write "MTTTF", Row, Col, "(s) =  {";
+%%      IF numerator = 0
+%%       THEN write "0"
+%%       ELSE 
+%%       BEGIN
+%%           FOR i := 1:Length(cnumerator) DO
+%%           BEGIN
+%%             cof := part(cnumerator,i);
+%%               IF cof NEQ 0 THEN 
+%%               BEGIN
+%%                IF i>1 THEN write " + ";
+%%                IF cof NEQ 1 THEN 
+%%                 BEGIN
+%%                 IF Terms(cof)>1 THEN write "(", cof, ")"
+%%                                 ELSE write cof; 
+%%                 END
+%%                 ELSE IF i=1 THEN Write "1";
+%%
+%%               IF i=2 THEN write "s";
+%%               IF i>2 THEN write "s^", i-1;
+%%               END;
+%%           END;
+%%       END;
+%%
+%%       IF denominator NEQ 1 THEN
+%%       BEGIN
+%%       Write "!over";
+%%           FOR i := 1:Length(cdenominator) DO
+%%           BEGIN
+%%           cof := part(cdenominator,i);
+%%               IF cof NEQ 0 THEN 
+%%               BEGIN
+%%               IF i>1 THEN write " + ";
+%%               IF cof NEQ 1 THEN 
+%%               BEGIN
+%%                 IF Terms(cof)>1 THEN write "(", cof, ")"
+%%                                 ELSE write cof; 
+%%               END
+%%               ELSE IF i=1 THEN Write "1";
+%%
+%%             IF i=2 THEN write "s";
+%%             IF i>2 THEN write "s^", i-1;
+%%             END;
+%%           END;
+%%       END;
+%%       write "}";
+%%       write "!end{equation}";
+%%    END;
+%%  END;
+%%
+SHUT "$1_tf.tex";
+quit;
+EOF
+

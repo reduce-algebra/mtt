@@ -1,0 +1,93 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: ss_r2tex
+# Reduce transfer-function matrices to LaTex transfer-function matrices.
+# P.J.Gawthrop 9 June 1990, 8 July 1990, May 1994
+# Copyright (c) P.J.Gawthrop, 1990, 1994.
+
+
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# %% Version control history
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# %% $Id$
+# %% $Log$
+# %% Revision 1.2  1998/02/24 09:21:36  peterg
+# %% Put under rcs
+# %%
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+#Unform user
+echo Creating $1_ss.tex
+
+# Remove the old log file
+rm -f ss_r2tex.log
+
+# Use reduce to accomplish the transformation
+reduce >ss_r2tex.log << EOF
+
+
+%Read the definitions file
+in "$1_def.r";
+
+%Read the parameter file
+%%in "$1_sympar.r";
+
+%Read the substitution file
+in "$1_subs.r";
+
+%Read the simplifiy file
+in "$1_simp.r";
+
+%Read the CR file
+in "$1_cr.r";
+
+%Read the steady-state file
+in "$1_ss.r";
+
+%Read the formatting function
+in "$MTTPATH/trans/latex_matrix.r";
+
+OFF Echo;
+OFF Nat;
+%ON Rounded;
+%Precision 5;
+
+OUT "$1_ss.tex";
+write "%  - X0";
+MTT_Matrix := MTTX$ 
+MTT_Matrix_name := "MTTX"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := 1$
+LaTeX_Matrix()$
+
+write "%  - U";
+MTT_Matrix := MTTU$ 
+MTT_Matrix_name := "MTTU"$
+MTT_Matrix_n := MTTNu$
+MTT_Matrix_m := 1$
+LaTeX_Matrix()$
+
+
+write "%  - Y";
+MTT_Matrix := MTTY$ 
+MTT_Matrix_name := "MTTY"$
+MTT_Matrix_n := MTTNy$
+MTT_Matrix_m := 1$
+LaTeX_Matrix()$
+
+write "%  - dX";
+MTT_Matrix := MTTdX$ 
+MTT_Matrix_name := "MTTdX"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := 1$
+LaTeX_Matrix()$
+
+SHUT "$1_ss.tex";
+quit;
+EOF

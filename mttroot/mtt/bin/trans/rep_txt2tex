@@ -1,0 +1,194 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: rep_txt2tex
+# Converts the text file dercribing a report to a report.
+# P.J.Gawthrop August 1996
+# Copyright (c) P.J.Gawthrop, 1996.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+## Revision 1.15  2000/04/06 10:57:12  peterg
+## Removed debug line
+##
+## Revision 1.14  2000/04/06 10:51:14  peterg
+## replaces $PWD by `pwd` for sh compatibility
+##
+## Revision 1.13  1999/10/19 23:47:27  peterg
+## Rewrote for the extra representations - but with .ps at the end
+## Need to retrofit old desc files using multiple figures
+##
+## Revision 1.12  1999/10/19 03:33:01  peterg
+## Temporaraly removed argument stripping
+##
+## Revision 1.11  1999/02/17 02:00:29  peterg
+## Absolute pathname for files.
+## Indirect include via \input
+##
+## Revision 1.10  1998/08/25 12:45:27  peterg
+## Added icad to languages
+##
+## Revision 1.9  1998/03/09 13:26:22  peterg
+## Removed `system' from part and section headers.
+##
+## Revision 1.8  1998/02/09 08:59:35  peterg
+## Minor debugging lines removed.
+##
+## Revision 1.7  1998/01/29 19:32:33  peterg
+## Removed a spurious X from the file -- tried to run  the X server !!!
+##
+## Revision 1.6  1997/12/04 22:08:52  peterg
+## Handles multiple odes.ps files
+##
+## Revision 1.5  1997/12/04 17:05:57  peterg
+## Now handles multiple odeso.ps files
+##
+## Revision 1.4  1997/08/25 09:15:48  peterg
+## Don't do sections for unrecognised languages.
+##
+# Revision 1.3  1997/06/27  13:28:25  peterg
+# New version using explicit command line arguments in the text file
+#
+## Revision 1.2  1997/05/19 16:11:36  peterg
+## Modified section headers.
+##
+# Revision 1.1  1996/08/18  20:00:38  peter
+# Initial revision
+#
+###############################################################
+
+documenttype=$2; 
+
+if [  "$documenttype" = "book" ]; then # do book version
+  # Inform user
+  echo "Creating $1_rep.tex (directory version)"
+  strip_comments < $1_rep.txt|\
+  awk '
+BEGIN{
+oldpart = ""
+}
+{
+  # Find directory name.
+  for (i=1;i<NF;i++){
+    if ($i=="-d") 
+       directory=$(i+1);
+  }
+  # Find next to last name
+  N=split(directory,a,"/");
+  if (N>1) 
+    part = a[N-1];
+  if (length(part)>0)
+    if (part!=oldpart)
+      printf("\\part{\\textbf{%s}}\n", part);
+  oldpart=part;
+  printf("\\chapter{\\textbf{%s}}\n", $(NF-2));
+  printf("\\label{chap:%s(%s)}\n", $(NF-2), directory);
+  printf("\\input{%s/%s_rep}\n\n", directory, $(NF-2));
+  }' > $1_rep.tex
+
+
+else # do article and section version
+
+if [ -z "$3" ]; then
+  directory="";
+else
+  directory=$3/;
+fi
+
+# Inform user
+echo "Creating $1_rep.tex"
+
+# Create the LaTeX file
+strip_comments <$1_rep.txt |\
+awk '
+{
+  ## Count the switches (noting that -i has an argument)
+  Switches=0;
+  for (i=2;i<=NF;i++) {
+    if (match($i,"-")==1) Switches++;
+    if (match($i,"-i")==1) Switches++;
+  }
+
+  System = $(Switches+2)
+  Representation = $(Switches+3);
+  Multiple = "odes odeso sms smso daes daeso";
+  Language = $(Switches+4);
+  Languages = "tex txt r m c h ps icad";
+  args = $(Switches+5);
+  quote = "\047";
+  args = gensub(quote, "", "g",  args);
+  args = gensub(/"/, "", "g",  args);
+#  args = substr(Args,2,length(Args)-2);
+#  if ( (length(Args)>0)&&(match(Multiple,Representation)>0)) {
+  if ( (length(args)>0)&&(match(Language,"ps")>0)) {
+    _Args = sprintf("-%s", args); 
+    __Args = sprintf("-%s", gensub(/_/, "-", "g", args) );
+    ___Args = sprintf("-%s", gensub(/,/, "-", "g", args) );
+  }
+  else
+  {
+  _Args = "";
+  __Args = "";
+  ___Args = "";
+  }
+#  print "DEBUG", Language, args, _Args, __Args
+  RepLang = sprintf("%s%s.%s", Representation, __Args, Language);
+  SysRepLang = sprintf("%s_%s", System, RepLang);
+  SysRep = sprintf("%s_%s%s", System, Representation, _Args);
+  filename = gensub(/,/, "-", "g", SysRep);
+  section_head = sprintf("\\textbf{%s.%s}: System %s, representation \\textbf{%s%s}, language \\textbf{%s}",
+   Representation,Language,System,Representation,__Args,Language);
+   
+# section headings
+    if (match(Languages,Language)>0) {
+    print "\n\n\\section{" section_head "}";
+    print "\\label{sec:" SysRepLang "}";
+    print "\\index{\\textbf{" System "} -- " Representation "}";
+    
+    print "\n\nMTT command:";
+    print "\\begin{verbatim}";
+      for (i=1;i<=NF;i++) printf("%s ", $i);
+    print "\n\\end{verbatim}";
+    }
+
+# tex files
+    if( match("tex",Language)>0) {
+      printf("  \\input{%s/%s_%s.%s}\n", PWD, System, Representation, Language);
+#      command = sprintf("sed s!fig{!fig{%s! < %s_%s.%s", Directory, System, Representation, Language);
+#      system(command);    
+}
+
+# text files
+    if( match("txt r m c h icad",Language)>0) {
+      print "  \\begin{verbatim}";
+      command = sprintf("cat %s_%s.%s", System, Representation, Language);
+      system(command);
+      print "  \\end{verbatim}";  
+    }
+# ps files
+    if( match("ps",Language)>0) {
+      printf("This representation is given as Figure \\Ref{fig:%s}.\n", SysRepLang);
+      FileName = sprintf("%s/%s", PWD, filename);
+      Label = sprintf("%s", SysRepLang);
+      Caption = sprintf("System \\textbf{%s}, representation %s%s", System, Representation, __Args);
+      printf("\\fig{%s}\n    {%s}\n    {0.9}\n    {%s}\n",FileName,Label,Caption);
+  }
+}
+END {
+
+}' system=$1 Directory=$directory PWD=`pwd` > $1_rep.tex
+
+fi
+
+
+
+
+
+
+

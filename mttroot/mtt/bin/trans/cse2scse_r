@@ -9,17 +9,36 @@
 # P.J.Gawthrop 10th May 199, 8th August 1991, April 1994, Dec 1994
 # Copyright (c) P.J.Gawthrop, 1999
 
+# 	$Id$	
 
-# The sensitivity parameter
-theta=$2
-thetas=$2"s"
+# Arguments
+system=$1; 
+system_def=$1_def.r
+system_cse=$1_cse.r
+system_scse=$1_scse.r
 
-echo $theta $thetas
+# Parameters
+n=`echo $2 | sed 's/,/ /g' |wc -w`
+echo $n_parameters
+
+parameters=`echo $2 | sed 's/,/ /g' |\
+ awk '{
+   for (i=1; i<=NF; i++) {
+      printf("mttpar(%i,1) := %s;\n", i, $i);
+      printf("mttcoef(%i,1) := %ss;\n", i, $i);
+   }
+  }'`
+
+matrix="matrix mttpar("$n",1); matrix mttcoef("$n",1);"
+
+echo $parameters
+echo $matrix
+
 # Number of states
-Nx=`grep "MTTNx " <$1_def.r | awk '{print $3}' | sed 's/;//'`
+Nx=`grep "MTTNx " <$system_def | awk '{print $3}' | sed 's/;//'`
 
 #Inform user
-echo "Creating $1_scse.r (for parameter $theta, $Nx states)"
+echo Creating $system_scse "(for parameters $2, $Nx states)"
 
 # Remove the old log file
 rm -f cse2scse_r.log
@@ -31,13 +50,18 @@ $SYMBOLIC  << EOF >cse2scse_r.log
 in "$MTTPATH/trans/reduce_matrix.r";
 
 %Read the definitions file
-in "$1_def.r";
-
-%Read the substitution file
-in "$1_subs.r";
+in "$system_def";
 
 %Read the constrained-state equations file
-in "$1_cse.r";
+in "$system_cse";
+
+% Declare the parameter matrix and fill it
+$matrix
+$parameters
+mtt_n_par := $n;
+
+MTTNx2 := 2*MTTNx;
+MTTNy2 := 2*MTTNy;
 
 % Compute the sensitivity E matrix
 matrix MTTssE(MTTNx,MTTNx);
@@ -45,9 +69,15 @@ clear MTTx; % Dont use - mkid is better
 
 FOR ii := 1:MTTNx DO
   FOR jj := 1:MTTNx DO
+  IF MTTE(ii,jj) NEQ 0 THEN IF MTTE(ii,jj) NEQ 1 THEN
   BEGIN
     % First with respect to theta...
-    MTTssE(ii,jj) := df(MTTE(ii,jj), $theta)*$thetas;
+    FOR kk := 1:mtt_n_par DO
+    BEGIN
+      mttpar_k := mttpar(kk,1);
+      mttcoef_k := mttcoef(kk,1);
+      MTTssE(ii,jj) := MTTssE(ii,jj) + df(MTTE(ii,jj), mttpar_k)*mttcoef_k;
+    END;
     % then with respect to x
     FOR i := 1:MTTNx DO
     BEGIN
@@ -59,13 +89,15 @@ FOR ii := 1:MTTNx DO
 
 % Compute the sensitivity of the RHS of the cse
 matrix MTTssEdx(MTTNx,1);
-
-
 FOR ii := 1:MTTNx DO
 BEGIN 
   % First with respect to theta
-  MTTssEdx(ii,1) := $thetas*df(MTTEdx(ii,1), $theta);
-  
+    FOR kk := 1:mtt_n_par DO
+    BEGIN
+      mttpar_k := mttpar(kk,1);
+      mttcoef_k := mttcoef(kk,1);
+      MTTssEdx(ii,1) := MTTssEdx(ii,1) + df(MTTEdx(ii,1), mttpar_k)*mttcoef_k;
+    END;
 % Then with respect to x
   FOR i := 1:MTTNx DO
   BEGIN
@@ -75,13 +107,33 @@ BEGIN
   END; 
 END; 
 
+% Sensitivity output function
+matrix MTTssY(MTTNy,1);
+FOR ii := 1:MTTNy DO
+BEGIN 
+  % First with respect to theta
+    FOR kk := 1:mtt_n_par DO
+    BEGIN
+      mttpar_k := mttpar(kk,1);
+      mttcoef_k := mttcoef(kk,1);
+      MTTssY(ii,1) := MTTssY(ii,1) + df(MTTY(ii,1), mttpar_k)*mttcoef_k;
+    END;
+% Then with respect to x
+  FOR i := 1:MTTNx DO
+  BEGIN
+    xi := mkid(MTTx,i);
+    sxi := mkid(MTTsx,i);
+    MTTssY(ii,1) := MTTssY(ii,1) + df(MTTY(ii,1), xi)*sxi;
+  END; 
+END; 
+
+
 % Now reorganise everything into composite system
 %  - odd rows are the system 
 %  - even rows are the sensitivity system
 % NB at this stage, the states are numbered incorrectly - sorted out below.
 
 %E matrix 
-MTTNx2 := 2*MTTNx;
 matrix MTTsE(MTTNx2,MTTNx2);
 FOR i := 1:MTTNx DO
   FOR j := 1:MTTNx DO
@@ -100,11 +152,31 @@ BEGIN
   MTTsEdX(2*i,1)   := MTTssEdx(i,1);
 END; 
 
+%Y matrix
+matrix MTTsY(MTTNy2,1);%dX matrix
+matrix MTTsEdX(MTTNx2,1);
+
+FOR i := 1:MTTNx DO
+BEGIN
+  MTTsEdX(2*i-1,1) := MTTEdx(i,1);
+  MTTsEdX(2*i,1)   := MTTssEdx(i,1);
+END; 
+
+
+FOR i := 1:MTTNy DO
+BEGIN
+  MTTsY(2*i-1,1) := MTTY(i,1);
+  MTTsY(2*i,1)   := MTTssY(i,1);
+END; 
+
+
+
+
 OFF nat;
 
-OUT "$1_scse.r";
+OUT "$system_scse";
 
-write "%File: $1_scse.r";
+write "%File: $system_scse";
 
 
 % E matrix
@@ -122,15 +194,15 @@ MTT_Matrix_m := 1$
 Reduce_Matrix()$
 
 % Output
-MTT_Matrix := MTTY$ 
-MTT_Matrix_name := "MTTY"$
-MTT_Matrix_n := MTTNy$
+MTT_Matrix := MTTsY$ 
+MTT_Matrix_name := "MTTsY"$
+MTT_Matrix_n := MTTNy2$
 MTT_Matrix_m := 1$
 Reduce_Matrix()$
 
 write "END;";
 
-SHUT "$1_scse.r";
+SHUT "$system_scse";
 quit;
 EOF
 
@@ -139,7 +211,7 @@ mtt_error_r cse2scse_r.log
 
 
 ## Now reorganise the  states
-mv -f $1_scse.r mtt_junk
+mv -f $system_scse mtt_junk
 
 
 ##echo "Nx = $Nx"
@@ -159,7 +231,7 @@ awk '{
 
   }
   print $0
-}' Nx=$Nx <mtt_junk > $1_scse.r
+}' Nx=$Nx <mtt_junk > $system_scse
 
 
 

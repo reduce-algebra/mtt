@@ -1,0 +1,31 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: tex2doc
+# Encapsulates a tex file in a document.
+
+# P.J.Gawthrop August 1996
+# Copyright (c) P.J.Gawthrop, 1996.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+# Inform user
+echo "Creating $1_$2.doc"
+
+# This is the main transformation using gawk
+gawk -f $MTTPATH/tex2doc.awk $1_$2.txt  > $1_$2.doc
+
+
+
+
+
+
+

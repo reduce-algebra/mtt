@@ -1,0 +1,96 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: latex_tidy
+# Tidies up LaTex format files
+# P.J.Gawthrop 12 June 1990, Dec 1994
+# Copyright (c) P.J.Gawthrop, 1990, 1994
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+cat $1 | \
+tr "[A-Z]" "[a-z]" | \
+sed -e "s/\// \\\over /g" \
+    -e "s/mttex/\\\chi/g" \
+    -e "s/mttdx/\\\dot x/g" \
+    -e "s/mttdz/\\\dot z/g" \
+    -e "s/mttdu/\\\dot u_/g" \
+    -e "s/dot_/ \\\dot /g" \
+    -e "s/mtta/A/g" \
+    -e "s/mttb/B/g" \
+    -e "s/mttc/C/g" \
+    -e "s/mttd/D/g" \
+    -e "s/mtte/E/g" \
+    -e "s/mttg/G/g" \
+    -e "s/mtti/I/g" \
+    -e "s/mttm/M/g" \
+    -e "s/mtto/O/g" \
+    -e "s/mttv/V/g" \
+    -e "s/mttx0/X_0/g" \
+    -e "s/mttx1/x_1/g" \
+    -e "s/mttx2/x_2/g" \
+    -e "s/mttx3/x_3/g" \
+    -e "s/mttx4/x_4/g" \
+    -e "s/mttx5/x_5/g" \
+    -e "s/mttx6/x_6/g" \
+    -e "s/mttui0/v_0/g" \
+    -e "s/mttui1/v_1/g" \
+    -e "s/mttui2/v_2/g" \
+    -e "s/mttui3/v_3/g" \
+    -e "s/mttui4/v_4/g" \
+    -e "s/mttui5/v_5/g" \
+    -e "s/mttui6/v_6/g" \
+    -e "s/mttui7/v_7/g" \
+    -e "s/mttui8/v_8/g" \
+    -e "s/mttui9/v_9/g" \
+    -e "s/mttu/u_/g" \
+    -e "s/mtty0/y_0/g" \
+    -e "s/mttu0/u_0/g" \
+    -e "s/mttx/x/g" \
+    -e "s/mttz/z/g" \
+    -e "s/mttu/u/g" \
+    -e "s/mttyy/Y/g" \
+    -e "s/mtty/y/g" \
+    -e "s/mttw/w/g" \
+    -e "s/mtttf/G/g" \
+    -e "s/mttpar//g" \
+    -e "s/\*\*/\^/g" \
+    -e "s/\*/ /g" \
+    -e "s/!/\\\/g" \
+    -e "s/\\$//g" \
+    -e "s/(/{(/g" \
+    -e "s/)/)}/g" \
+    -e "s/\left/\left (/g" \
+    -e "s/\right/\right )/g" \
+    -e "s/sqrt/\\\sqrt/g" \
+    -e "s/theta/\\\theta/g" \
+    -e "s/tau/\\\tau/g" \
+    -e "s/alpha/\\\alpha/g" \
+    -e "s/beta/\\\beta/g" \
+    -e "s/epsilon/\\\epsilon/g" \
+    -e "s/lambda/\\\lambda/g" \
+    -e "s/mu/\\\mu/g" \
+    -e "s/phi/\\\phi/g" \
+    -e "s/rho/\\\rho/g" \
+    -e "s/sigma/\\\sigma/g" \
+    -e "s/omega/\\\omega/g" \
+    -e "s/zeta/\\\zeta/g" \
+    -e "s/sin/\\\sin/g" \
+    -e "s/cos/\\\cos/g" \
+    -e "s/23/{23}/g" \
+    -e "s/+-/ -/g" |\
+cat -s  | \
+sed -e "s/ $//g" | \
+tr  -s '\012' '\012' \
+>junk
+
+mv junk $1
+

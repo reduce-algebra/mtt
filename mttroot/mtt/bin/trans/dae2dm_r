@@ -1,0 +1,294 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: dae2dm_r
+# Differential-algebraic equation to linear descriptor matrices conversion
+# P.J.Gawthrop  8th May 1991, 7 June 1991, April 1994.
+# Copyright (c) P.J.Gawthrop, 1991, 1994.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+#Inform user
+echo Creating $1_dm.r
+
+# Remove the old log file
+rm -f dae2dm_r.log
+
+# Use reduce to accomplish the transformation
+reduce >dae2dm_r.log << EOF
+
+in "$1_def.r";
+in "$1_dae.r";
+in "$1_cr.r";
+in "$1_sympar.r";
+
+OFF Echo;
+OFF Nat;
+
+
+%Total number of descriptor variables
+MTTN := MTTNx + 2*MTTNz + MTTNyz;
+
+IF MTTN>0 THEN
+BEGIN
+% Find MTTE : the E matrix
+matrix MTTE(MTTN,MTTN);
+
+% First row partition
+IF MTTNx>0 THEN 
+    FOR j := 1:MTTNx DO
+      MTTE(j,j) := 1;
+
+% Second row partition
+  IF MTTNz>0 THEN 
+     FOR j := 1:MTTNz DO
+      MTTE(j+MTTNx, j+MTTNx) := 1;
+
+% Find MTTA : the A matrix
+matrix MTTA(MTTN,MTTN);
+
+% First row partition: x
+IF MTTNx>0 THEN 
+  BEGIN
+  FOR j := 1:MTTNx DO
+    BEGIN
+    xj := MTTX(j,1);
+    FOR i := 1:MTTNx DO
+      MTTA(i,j) := df(MTTdX(i,1), xj, 1);
+    END;
+
+  IF MTTNz>0 THEN 
+     FOR j := 1:MTTNz DO
+       BEGIN
+       dzj := MTTdz(j,1);
+       FOR i := 1:MTTNx DO
+         MTTA(i, j + MTTNx + MTTNz) := df(MTTdX(i,1), dzj, 1);
+       END;
+
+  IF MTTNyz>0 THEN 
+     FOR j := 1:MTTNyz DO
+       BEGIN
+       uij := MTTUi(j,1);
+       FOR i := 1:MTTNx DO
+         MTTA(i, j + MTTNx + 2*MTTNz) := df(MTTdX(i,1), uij, 1);
+       END;
+  END;
+
+% Second row partition: z
+IF MTTNz>0 THEN 
+  FOR j := 1:MTTNz DO
+    MTTA(j + MTTNx, j + MTTNx + MTTNz) := 1;
+
+% Third row partition
+IF MTTNz>0 THEN 
+  BEGIN
+  IF MTTNx>0 THEN 
+  FOR j := 1:MTTNx DO
+    BEGIN
+    xj := MTTX(j,1);
+    FOR i := 1:MTTNz DO
+      MTTA(i + MTTNx + MTTNz,j) := df(MTTZ(i,1), xj, 1);
+    END;
+
+   FOR j := 1:MTTNz DO
+	MTTA(j + MTTNx + MTTNz, j + MTTNx) := -1;
+
+   FOR j := 1:MTTNz DO
+     BEGIN
+     dzj := MTTdz(j,1);
+     FOR i := 1:MTTNz DO
+       MTTA(i + MTTNx + MTTNz, j + MTTNx + MTTNz) := df(MTTZ(i,1), dzj, 1);
+     END;
+
+  IF MTTNyz>0 THEN 
+     FOR j := 1:MTTNyz DO
+       BEGIN
+       uij := MTTUi(j,1);
+       FOR i := 1:MTTNz DO
+         MTTA(i+MTTNx+MTTNz, j+MTTNx+2*MTTNz) := df(MTTZ(i,1), uij, 1);
+       END;
+  END;
+
+
+% Fourth row partition
+IF MTTNyz>0 THEN 
+  BEGIN
+  IF MTTNx>0 THEN 
+  FOR j := 1:MTTNx DO
+    BEGIN
+    xj := MTTX(j,1);
+    FOR i := 1:MTTNyz DO
+      MTTA(i + MTTNx + 2*MTTNz,j) := df(MTTYz(i,1), xj, 1);
+    END;
+
+  IF MTTNz>0 THEN 
+  FOR j := 1:MTTNz DO
+    BEGIN
+     dzj := MTTdz(j,1);
+    FOR i := 1:MTTNyz DO
+      MTTA(i + MTTNx + 2*MTTNz, j + MTTNx + MTTNz) := df(MTTYz(i,1), dzj, 1);
+    END;
+
+  IF MTTNyz>0 THEN 
+     FOR j := 1:MTTNyz DO
+       BEGIN
+       uij := MTTUi(j,1);
+       FOR i := 1:MTTNyz DO
+         MTTA(i+MTTNx+2*MTTNz, j+MTTNx+2*MTTNz) := df(MTTYz(i,1), uij, 1);
+       END;
+  END;
+
+% Find MTTB : the B matrix
+matrix MTTB(MTTN,MTTNu);
+
+IF MTTNu>0 THEN
+BEGIN
+
+% First row partition
+IF MTTNx>0 THEN 
+  BEGIN
+  FOR j := 1:MTTNu DO
+    BEGIN
+    uj := MTTU(j,1);
+    FOR i := 1:MTTNx DO
+      MTTB(i,j) := df(MTTdX(i,1), uj, 1);
+    END;
+  END;
+
+% Third row partition
+IF MTTNz>0 THEN 
+  BEGIN
+  FOR j := 1:MTTNu DO
+    BEGIN
+    uj := MTTU(j,1);
+    FOR i := 1:MTTNz DO
+      MTTB(i + MTTNx + MTTNz ,j) := df(MTTZ(i,1), uj, 1);
+    END;
+  END;
+
+% Fourth row partition
+IF MTTNyz>0 THEN 
+  BEGIN
+  FOR j := 1:MTTNu DO
+    BEGIN
+    uj := MTTU(j,1);
+    FOR i := 1:MTTNyz DO
+      MTTB(i + MTTNx + 2*MTTNz,j) := df(MTTYz(i,1), uj, 1);
+    END;
+  END;
+
+END;
+
+% Find MTTC : the C matrix
+matrix MTTC(MTTNy,MTTN);
+IF MTTNy>0 THEN
+BEGIN
+
+% First column partition
+IF MTTNx>0 THEN 
+  BEGIN
+  FOR i := 1:MTTNy DO
+    FOR j := 1:MTTNx DO
+    BEGIN
+      xj := MTTX(j,1);
+      MTTC(i,j) := df(MTTY(i,1), xj, 1);
+    END;
+  END;
+
+% Third column partition
+IF MTTNz>0 THEN 
+  BEGIN
+  FOR i := 1:MTTNy DO
+    FOR j := 1:MTTNz DO
+    BEGIN
+      dzj := MTTdZ(j,1);
+      MTTC(i, j + MTTNx + MTTNz) := df(MTTY(i,1), dzj, 1);
+    END;
+  END;
+
+% Fourth column partition
+IF MTTNyz>0 THEN 
+  BEGIN
+  FOR i := 1:MTTNy DO
+    FOR j := 1:MTTNyz DO
+    BEGIN
+      uij := MTTUi(j,1);
+      MTTC(i, j + MTTNx + 2*MTTNz) := df(MTTY(i,1), uij, 1);
+    END;
+  END;
+
+END;
+END; %of MTTN>0
+
+% Find MTTD : the D matrix
+matrix MTTD(MTTNy,MTTNu);
+IF MTTNy>0 THEN
+IF MTTNu>0 THEN
+BEGIN
+  FOR i := 1:MTTNy DO
+    FOR j := 1:MTTNu DO
+    BEGIN
+      uj := MTTU(j,1);
+      MTTD(i,j) := df(MTTY(i,1), uj, 1);
+    END;
+END;
+
+%Substitute the ss values
+in "$1_ss.r";
+
+%Create the output file
+OUT "$1_dm.r";
+
+%Write out the matrices.
+IF MTTN>0 THEN
+BEGIN
+  write "matrix MTTE(", MTTN, ",", MTTN, ");";
+  FOR i := 1:MTTN DO
+   FOR j := 1:MTTN DO IF MTTE(i,j) NEQ 0 THEN
+      write "MTTE(", i, ",", j, ") := ", MTTE(i,j);
+
+  write "matrix MTTA(", MTTN, ",", MTTN, ");";
+  FOR i := 1:MTTN DO
+   FOR j := 1:MTTN DO IF MTTA(i,j) NEQ 0 THEN
+      write "MTTA(", i, ",", j, ") := ", MTTA(i,j);
+END;
+
+IF MTTN>0 THEN
+IF MTTNu>0 THEN
+BEGIN
+  write "matrix MTTB(", MTTN, ",", MTTNu, ");";
+  FOR i := 1:MTTN DO
+   FOR j := 1:MTTNu DO IF MTTB(i,j) NEQ 0 THEN
+      write "MTTB(", i, ",", j, ") := ", MTTB(i,j);
+END;
+
+%Write it out
+IF MTTNy>0 THEN
+IF MTTN>0 THEN
+BEGIN
+  write "matrix MTTC(", MTTNy, ",", MTTN, ");";
+  FOR i := 1:MTTNy DO
+    FOR j := 1:MTTN DO IF MTTC(i,j) NEQ 0 THEN
+      write "MTTC(", i, ",", j, ") := ", MTTC(i,j);
+END;
+
+IF MTTNy>0 THEN IF MTTNu>0 THEN 
+BEGIN
+  write "matrix MTTD(", MTTNy, ",", MTTNu, ");";
+  FOR i := 1:MTTNy DO
+    FOR j := 1:MTTNu DO IF MTTD(i,j) NEQ 0 THEN
+      write "MTTD(", i, ",", j, ") := ", MTTD(i,j);
+END;
+
+SHUT "$1_dm.r";
+quit;
+
+EOF

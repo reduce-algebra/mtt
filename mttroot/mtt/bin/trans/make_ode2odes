@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.59  2001/07/13 04:54:04  geraint
+## Branch merge: numerical-algebraic-solution back to main.
+##
 ## Revision 1.58  2001/07/13 00:51:39  geraint
 ## Fixed generation of odes.sg from .m and .oct simulations.
 ## .cc, .m and .oct simulations now all write mtt_data (lower case).
@@ -418,7 +421,7 @@ extern Octave_map F${sys}_simpar (
      	void);
 
 extern ColumnVector F${sys}_state (
-	ColumnVector &x);
+	ColumnVector &par);
 
 extern ColumnVector F${sys}_${ode} (
 	ColumnVector &x,
@@ -575,13 +578,13 @@ mtt_simpar (void)
 }
 
 inline ColumnVector
-mtt_state (ColumnVector &x)
+mtt_state (ColumnVector &par)
 {
 #ifdef STANDALONE
-  return F${sys}_state (x);
+  return F${sys}_state (par);
 #else
   static octave_value_list args, f;
-  args (0) = octave_value (x);
+  args (0) = octave_value (par);
   f = feval ("${sys}_state", args, 1);
   return f(0).${vector_value} ();
 #endif

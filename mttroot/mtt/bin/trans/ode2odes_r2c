@@ -20,6 +20,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.16  1998/05/14 08:25:52  peterg
+## Corrected time skew.
+##
 ## Revision 1.15  1998/05/14 08:20:29  peterg
 ## Start time at DT - the result at time zero is computed outside the
 ## loop
@@ -123,6 +126,7 @@ write "#define MTTNY2 ", MTTNy+2 $
 write "#define MTTNU2 ", MTTNu+2 $
 
 write "#include <stdio.h>"$
+write "#include ""sign.c"" "$
 write "#include ""$1_simpar.h"" "$
 write "#include ""$1_ode.c"" "$
 write "#include ""$1_input.c"" "$

@@ -1,0 +1,44 @@
+%SUMMARY Weir: Tank with weirs (hybrid)
+%DESCRIPTION Each weir is modeled by two {\bf ISW} components: 
+%DESCRIPTION one for flow left-right 
+%DESCRIPTION one for flow right-left. 
+%DESCRIPTION The switching is such that they become non-return valves 
+%DESCRIPTION when the left hand (respectively right-hand) level reaches 
+%DESCRIPTION an appropriate value
+%% Label file for system Weir (Weir_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type C
+	tank1		lin	effort,c_1
+	tank2		lin	effort,c_2
+	tank3		lin	effort,c_3
+
+% Component type ISW
+	weir1L		lin	flow,epsilon
+	weir1R		lin	flow,epsilon
+	weir2L		lin	flow,epsilon
+	weir2R		lin	flow,epsilon
+
+% Component type R
+	leak		lin	flow,r_l
+
+% Component type SS
+	f		internal	external
+
+	p1		external	0
+	p2		external	0
+	p3		external	0
+

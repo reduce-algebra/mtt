@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.2  1996/08/20  08:26:06  peter
+# Version control header added.
+#
 ###############################################################
 
 # Bourne shell script: matlab_tidy
@@ -18,8 +21,9 @@
 # Copyright (c) P.J.Gawthrop, 1990, 1994, 1995.
 
 #rm junk
+#tr "[A-Z]" "[a-z]" | \
+
 cat $1 | \
-tr "[A-Z]" "[a-z]" | \
 sed -e "s/      //" \
     -e "s/      //" \
     -e "s/\$\$//" \
@@ -42,10 +46,6 @@ sed -e "s/      //" \
     -e "s/mttx0/X_0/g" \
     -e "s/mttu0/u_0/g" \
     -e "s/mtty0/y_0/g" \
-    -e "s/mttdx/dX/g" \
-    -e "s/mttx/X/g" \
-    -e "s/mttu/u/g" \
-    -e "s/mtty/y/g" \
     -e "s/mtta/A/g" \
     -e "s/mttb/B/g" \
     -e "s/mttc/C/g" \

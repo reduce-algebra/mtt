@@ -20,6 +20,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.3  1997/05/01  11:15:33  peterg
+# Back under RCS
+#
 # Revision 1.2  1997/03/20  14:36:56  peterg
 # Includes the sympar.h file
 #
@@ -76,10 +79,10 @@ write "#include ""$1_sympar.h"" "$
 
 
 write "/* Declare standard arrays */"$
-write "double y[", MTTNy+1, "]; /* $1_ode output */"$
-write "double dx[", MTTNx+1, "]; /* $1_ode state derivative */"$ 
-write "double x[", MTTNx+1, "]; /* $1_ode state */"$ 
-write "double u[", MTTNu+1, "]; /* $1_ode input */"$
+write "float y[", MTTNy+1, "]; /* $1_ode output */"$
+write "float dx[", MTTNx+1, "]; /* $1_ode state derivative */"$ 
+write "float x[", MTTNx+1, "]; /* $1_ode state */"$ 
+write "float u[", MTTNu+1, "]; /* $1_ode input */"$
 
 
 write "/* Files */ "$
@@ -92,8 +95,8 @@ write "{"$
 
 
 write "/* Counters etc*/ "$
-write "  double time;"$
-write "  double dt;"$
+write "  float time;"$
+write "  float dt;"$
 write "  int i;"$
 write "  int k;"$
 

@@ -1,4 +1,4 @@
-function write_matrix(matrix,name);
+function write_matrix(matrix,name,extn);
 
 % Writes the matrix function file
 
@@ -7,6 +7,9 @@ function write_matrix(matrix,name);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.6  2000/12/27 16:06:17  peterg
+% %% *** empty log message ***
+% %%
 % %% Revision 1.5  1998/02/03 08:40:39  peterg
 % %% Fixed a horrible bug -- changed filename -> filenum
 % %%
@@ -25,7 +28,11 @@ function write_matrix(matrix,name);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-filename = [name, '.m'];
+if nargin<3
+  extn="m";
+endif
+
+filename = sprintf("%s.%s", name, extn);
 filenum = fopen(filename,'w');
 
 % Write the function m-file for the causal bond graph

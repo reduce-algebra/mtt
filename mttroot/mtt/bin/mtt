@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.185  1998/08/18 09:21:14  peterg
+## Removed "" from default simpar file.
+##
 ## Revision 1.184  1998/08/18 09:08:26  peterg
 ## Now grabs components (specified in lbl file as alias) at the rbg stage
 ## - this makes sure that they are there when needed.
@@ -635,7 +638,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='3.0++'
+version='3.1'
 
 # MTT recursion level is zero unless explicitly set
 level=0
@@ -768,17 +771,18 @@ if [ -z "$1" ]; then
     echo '       mtt <system_name> <representation> <language>'
     echo '       mtt <system_name> <representation> <language> <parameters>'
     echo 'Options: -q  quiet mode -- suppress MTT banner'
-    echo '         -v  verbose mode'
+    echo '         -A  solve algebraic equations symbolically'
+    echo '         -D  debug -- leave log files etc'
     echo '         -I  prints more information'
-    echo '         -p  print environment variables'
     echo '         -c  c-code generation'
-    echo '         -o  ode and dae are the same'
     echo '         -d  <dir>  use directory <dir>'
+    echo '         -d  <dir>  use directory <dir>'
+    echo '         -o  ode and dae are the same'
+    echo '         -p  print environment variables'
+    echo '         -ss use steady-state info to initialise simulations'
     echo '         -t  tidy mode (default)'
     echo '         -u  untidy mode (leaves files in current dir)'
-    echo '         -d  <dir>  use directory <dir>'
-    echo '         -D  debug -- leave log files etc'
-    echo '         -A  solve algebraic equations symbolically'
+    echo '         -v  verbose mode'
     echo '         --version print version and exit'
     echo '         --versions print version of mtt and components and exit'
     exit

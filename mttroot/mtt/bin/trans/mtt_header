@@ -12,6 +12,12 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.34  2001/05/26 18:36:43  gawthrop
+## Further modifications. Now works on rcPPP
+##  -- next jobs:
+##     add identification to ppp_nlin_sim
+##     create real-time ppp_nlin_run
+##
 ## Revision 1.33  2001/05/26 15:46:38  gawthrop
 ## Updated to account for new nonlinear ppp
 ##
@@ -187,6 +193,7 @@ case $rep in
 	parameters=yes;
         output=mttedx
         args=$eqnargs
+        zeromatrices='edx';
 	;;
     cseo)
 	states=yes;
@@ -194,6 +201,7 @@ case $rep in
 	parameters=yes;
         output=mtty
         args=$eqnargs
+        zeromatrices='y';
 	;;
     dm)
 	states=no;
@@ -398,10 +406,25 @@ for name in $zeromatrices; do
 	e)
 	    N=$Nx; M=$Nx
 	    ;;
+	edx)
+	    N=$Nx; M=1
+	    ;;
+	y)
+	    N=$Nx; M=1
+	    ;;
 	*)
 	    
     esac
-    echo "   mtt$name = zeros($N,$M);"
+
+    if [ "${language}" = "oct" ]; then
+      if [ "$M" = "1" ]; then
+        echo "   mtt$name = zeros($N);"
+      else
+        echo "   mtt$name = zeros($N,$M);"
+      fi
+    else
+      echo "   mtt$name = zeros($N,$M);"
+    fi
 done
 }
 
@@ -509,7 +532,6 @@ fi
 if [ "$declareswitches" = "yes" ]; then
   declare_switches
 fi
-
 
 zero_matrices;
 

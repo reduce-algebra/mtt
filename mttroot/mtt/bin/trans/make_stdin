@@ -1,0 +1,201 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+    ######################################
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+## Revision 1.27  1999/11/15 22:47:53  peterg
+## Generates method-specific code.
+##
+## Revision 1.26  1999/10/20 01:31:43  peterg
+## *** empty log message ***
+##
+## Revision 1.25  1999/08/29 06:55:26  peterg
+## Removed [MTTu]  = zero_input($Nu);	# Zero the input
+## to avoide the p2c bug ????
+##
+## Revision 1.24  1999/08/27 06:02:16  peterg
+## removed zero_input to avoid p2c bug
+##
+## Revision 1.23  1999/08/02 13:39:19  peterg
+## Replaced zero_vector by zero_input
+##
+## Revision 1.22  1999/04/20 06:16:07  peterg
+## Removed initialisation of AA and AAx
+## Remove _switch calls -- uses _switchopen exclusively
+##
+## Revision 1.21  1999/04/02 06:29:25  peterg
+## New implicit method - solves numerical prob with ISW
+##
+## Revision 1.20  1999/04/02 02:13:58  peterg
+## Back to RCS
+##
+## Revision 1.19  1999/03/30 21:39:25  peterg
+## In implicit approach, set derivatives to zero (when switch is off)
+## before update. This seems to stop numerical leakage though non-return
+## switches.
+##
+## Revision 1.18  1999/03/15 01:17:07  peterg
+## Removed some spurious debugging code
+##
+## Revision 1.17  1999/03/15 01:09:15  peterg
+## Fixed bugs when Nx=0 (no state)
+##
+## Revision 1.16  1999/03/06 02:28:38  peterg
+## Rearranged evaluation to: state - input - output - write
+##
+## Revision 1.15  1999/03/06 02:19:43  peterg
+## Changed args to _input
+##
+## Revision 1.14  1998/10/01 16:02:01  peterg
+## Integration with switches handled separately fro Euler and Implicit.
+##
+## Revision 1.13  1998/09/30 17:41:24  peterg
+## Implicit method now allows for switches via _switchA
+##
+## Revision 1.12  1998/08/27 08:55:18  peterg
+## Mods to integration methods
+##
+## Revision 1.11  1998/08/25 12:28:31  peterg
+## Move initila switch to after initial input
+##
+## Revision 1.10  1998/08/25 12:22:45  peterg
+## Put _switch after update and also at initilisation
+##
+## Revision 1.9  1998/08/15 13:46:59  peterg
+## New versions of integration routines
+##
+## Revision 1.8  1998/08/11 13:28:03  peterg
+## Lowercase mttLAST etc
+##
+## Revision 1.7  1998/07/30 11:29:54  peterg
+## Added implicit integration stuff
+##
+## Revision 1.6  1998/07/30 10:44:37  peterg
+## INcluded othe integration methods.
+##
+## Revision 1.5  1998/07/26 11:02:20  peterg
+## Put mtt or MTT  in front of variable names to avoid clashes with
+## globals
+##
+## Revision 1.4  1998/07/25 20:14:00  peterg
+## update code added for flexibility and octave efficiency
+##
+###############################################################
+
+
+# Bourne shell script: make_ode2odes
+
+# Copyright (c) P.J.Gawthrop July 1998.
+
+# Tell user
+Sys=$1
+method=$2
+echo  "Creating $1_ode2odes.m with $method integration method"
+
+if [ $method = "implicit" ]; then
+    ode=cse
+    odeo=cseo
+else
+    ode=ode
+    odeo=odeo
+fi
+
+# Find system constants
+Nx=`grep "MTTNx " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
+Nu=`grep "MTTNu " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
+Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
+ 
+
+cat << EOF > $1_ode2odes.m
+# Program $1_ode2odes
+EOF
+
+# Do the globals
+sympar2global_txt2m $1 >> $1_ode2odes.m
+
+# The rest of the program
+cat << EOF >> $1_ode2odes.m
+$1_simpar;			# Read in simulation parameters
+$1_numpar;			# Read in parameters
+MTTilast = round(mttlast/mttdt); # Total number of steps
+
+#Initialise
+MTTt = 0.0;
+
+[MTTu]  = zero_input($Nu);	# Zero the input
+
+[MTTx] = $1_state;	        # Read in initial state
+
+
+[MTTy] = $1_$odeo(MTTx,MTTu,MTTt); # Evaluate initial output
+[MTTu] = $1_input(MTTt,MTTx,MTTy);	# Evaluate initial input
+mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny); # And write them
+
+#[mttAA]  = zero_matrix($Nx);	# Zero the A matrix
+#[mttAAx] = zero_vector($Nx);	# Zero the AAx vector
+
+#if $Nx>0
+#  [MTTx] = $1_switch(MTTx);       # Switches
+#endif;
+
+EOF
+
+if [ "$method" = "euler" ]; then
+cat << EOF >> $1_ode2odes.m
+MTTddt = mttdt/mttstepfactor; # The small sample interval
+EOF
+fi
+
+
+cat << EOF >> $1_ode2odes.m
+for MTTit = 1:MTTilast		#Integration loop
+
+  if $Nx>0			# Dont if no states
+EOF
+
+if [ "$method" = "euler" ]; then
+cat << EOF >> $1_ode2odes.m
+#    if mttmethod==1		# Euler
+      for MTTjt = 1:mttstepfactor
+	[MTTdx] = $1_$ode(MTTx,MTTu,MTTt); # State derivative
+        [MTTopen] = $1_switchopen(MTTx);        # Open switches
+	[MTTx] = mtt_euler(MTTx,MTTdx,MTTddt,$Nx,MTTopen); # Euler update
+	MTTt = MTTt + MTTddt;
+      endfor;
+#    endif;
+EOF
+fi
+
+if [ "$method" = "implicit" ]; then
+cat << EOF >> $1_ode2odes.m
+#    if mttmethod==2		# Implicit 
+      [MTTdx] = $1_cse(MTTx,MTTu,MTTt); # State derivative
+      [mttAA,mttAAx] = $1_smx(MTTx,MTTu,mttdt);	# (I-Adt) and (I-Adt)x
+      [MTTopen] = $1_switchopen(MTTx);        # Open switches
+      [MTTx] = mtt_implicit(MTTx,MTTdx,mttAA,mttAAx,mttdt,$Nx,MTTopen); # Implicit update
+      MTTt = MTTt + mttdt;
+#    endif;
+EOF
+fi
+
+cat << EOF >> $1_ode2odes.m
+    else # NX is 0 - no states
+      MTTt = MTTt + mttdt;
+  endif;			# $Nx>0
+
+  [MTTy] = $1_$odeo(MTTx,MTTu,MTTt);     # Output 
+  [MTTu] = $1_input(MTTt,MTTx,MTTy);	# Input
+  mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny);    # Write it out
+endfor;				# Integration loop
+
+EOF
+
+
+
+

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  2000/11/27 10:13:25  peterg
+## Now passes though options as second argument
+##
 ## Revision 1.4  1998/04/14 18:17:15  peterg
 ## More messages about Makefile
 ##
@@ -50,7 +53,7 @@ if [ "$mtt_count" = "0" ]; then
   echo "Old version saved as $1_rep.txt.SAVE"
   mv $1_rep.txt $1_rep.txt.SAVE
   strip_comments < $1_rep.txt.SAVE |\
-  awk '{print "mtt", sys, $1, $2}' sys="$1" >$1_rep.txt
+  gawk '{print "mtt", sys, $1, $2}' sys="$1" >$1_rep.txt
 fi
 
 # Execute the commands - quietly and untidily!

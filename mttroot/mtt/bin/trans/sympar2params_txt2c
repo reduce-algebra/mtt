@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1997/03/20 15:17:45  peterg
+## All variables are in lower case.
+##
 # Revision 1.1  1997/03/20  10:25:55  peterg
 # Initial revision
 #
@@ -46,7 +49,7 @@ echo "$1_params()" >> $1_params.c
 echo '{' >> $1_params.c
 
 #Write out the variables in c format.
-awk '{i++; print tolower($1) " = \t1.0;"}' $1_sympar.txt  >> $1_params.c
+gawk '{i++; print tolower($1) " = \t1.0;"}' $1_sympar.txt  >> $1_params.c
 echo '}' >> $1_params.c
 
 # Now invoke the standard error handling.

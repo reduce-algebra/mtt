@@ -8,6 +8,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1998/08/17 09:42:26  peterg
+## Third argument gives the desired methods.
+##
 ## Revision 1.2  1998/08/15 14:07:11  peterg
 ## Don't do ImplicitL
 ##
@@ -83,7 +86,7 @@ octave -q <<EOF >HR$1.tmp1
     Max_Eig=max(eig(-A))
     STEPFACTOR=ceil( Max_Eig*$DT/2 )
 EOF
-    MinSTEPFACTOR=`awk '{if ($1=="STEPFACTOR") print $3}' HR$1.tmp1`
+    MinSTEPFACTOR=`gawk '{if ($1=="STEPFACTOR") print $3}' HR$1.tmp1`
     STEPFACTOR=$MinSTEPFACTOR
 	;;
     ImplicitS)
@@ -95,7 +98,7 @@ EOF
       SparseSTEPFACTOR=5*$n
     endif
 EOF
-     SparseSTEPFACTOR=`awk '{if ($1=="SparseSTEPFACTOR") print $3}' HR$1.tmp1`
+     SparseSTEPFACTOR=`gawk '{if ($1=="SparseSTEPFACTOR") print $3}' HR$1.tmp1`
 
 		STEPFACTOR=$SparseSTEPFACTOR
 	;;
@@ -114,7 +117,7 @@ esac
   echo "DT = $DT;                 # Added automatically" >>HR$1_simpar.txt
   mtt -q -c -o HR$1 odeso ps > junk 2>>junk #HR$1_$METHOD.tmp
   grep user junk |\
-     awk '{print System " &\t" METHOD " &\t"  DT " &\t"  STEPFACTOR " &\t" $2 "\\\\"}'\
+     gawk '{print System " &\t" METHOD " &\t"  DT " &\t"  STEPFACTOR " &\t" $2 "\\\\"}'\
       METHOD=$METHOD STEPFACTOR=$STEPFACTOR System=HR$1 DT=$DT >> HR$1_table.txt
 
   cp HR$1_odeso.ps  HR$1.$METHOD.$DT.ps

@@ -23,7 +23,7 @@ cat $MTTPATH/trans/rcs_header.m  >> $1_sspar.r
 echo  >> $1_sspar.r
 
 echo "% Steady-state states" >> $1_sspar.r
-awk '{
+gawk '{
   if ($1=="state") 
     print "MTTX" $2 " := \t0; % " $4 " (" $3 ")"
 }' \
@@ -31,7 +31,7 @@ awk '{
 
 
 echo "% Steady-state inputs" >> $1_sspar.r
-awk '{
+gawk '{
   if ($1=="input") 
     print "MTTU" $2 " := \t0; % " $4 " (" $3 ")"
 }' \

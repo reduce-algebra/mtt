@@ -6,6 +6,6 @@ file=$3
 
 notvar="[%|#]NOT[V|P]AR"
 grep ${notvar} ${type}_lbl.txt |\
-    awk '{ printf ("%s\t%s\n", $2, name) }' name=${name} \
+    gawk '{ printf ("%s\t%s\n", $2, name) }' name=${name} \
     >> ${file}
  

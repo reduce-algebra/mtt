@@ -11,6 +11,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.18  2001/03/30 15:13:58  gawthrop
+## Rationalised simulation modes to each return mtt_data
+##
 ## Revision 1.17  2000/12/05 12:04:03  peterg
 ## Changed function name to name()
 ##
@@ -163,7 +166,7 @@ test_units()
   grep '^[\s]*[#|%]UNITS' < ${lbl_file} >/dev/null
   if [ $? = "0" ]; then 
     grep '^[\s]*[#|%]UNITS' < ${lbl_file} |\
-    awk '{
+    gawk '{
       printf("mtt_units.sh %s %s %s %s %s\n", sys, $2, $3, $4, $5)
     }' sys=${sys}  | sh | grep ERROR
     if [ $? = "0" ]; then
@@ -179,7 +182,7 @@ test_units()
 
 check_ports_exist()
 {
- declared_ports=`grep '^[\s]*[#|%]UNITS' < ${lbl_file} | awk '{print $2}'`
+ declared_ports=`grep '^[\s]*[#|%]UNITS' < ${lbl_file} | gawk '{print $2}'`
   for declared_port in $declared_ports; do
     grep "${sys}\.ports\.${declared_port}\.type" ${abg_file} >/dev/null
     if [ $? = "1" ]; then
@@ -192,7 +195,7 @@ check_ports_exist()
 set_units()
 { 
   grep '^[\s]*[#|%]UNITS' < ${lbl_file} |\
-  awk '{
+  gawk '{
     printf("  %s.ports.%s.domain = \"%s\";\n", sys, $2, $3);
     printf("  %s.ports.%s.units.effort = \"%s\";\n", sys, $2, $4);
     printf("  %s.ports.%s.units.flow = \"%s\";\n", sys, $2, $5);

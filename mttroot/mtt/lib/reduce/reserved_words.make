@@ -10,6 +10,6 @@ cat $reduce_reserved_word_manual_page                   |\
     tr " " "\n"                                         |\
     sed 's/\{//g'                                       |\
     sed 's/\}//g'                                       |\
-    awk -F\" '(NF==3) { printf "%s\n",$2 }'             |\
+    gawk -F\" '(NF==3) { printf "%s\n",$2 }'            |\
     sort -u						\
 > $output

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1998/11/18 15:07:37  peterg
+## Space after all globals
+##
 ## Revision 1.5  1998/11/18 11:34:24  peterg
 ## Cleaned up to:
 ##   work properly for no globals
@@ -37,7 +40,7 @@
 
 #Write out the variables in matlab global format
 strip_comments <$1_sympars.txt  |\
-awk '
+gawk '
 {i++; 
   if ((i==1)&&(NF>0)) {
     printf ("global");

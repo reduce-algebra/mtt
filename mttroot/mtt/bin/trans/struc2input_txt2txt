@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.15  2000/12/28 12:44:31  peterg
+## *** empty log message ***
+##
 ## Revision 1.14  2000/10/16 08:28:56  peterg
 ## Tidied up:
 ## SS broken due to incorrect ss.r file
@@ -89,7 +92,7 @@ if [ -n "$steadystate_computation" ]; then
 echo Creating $1_input.txt - compute from steady-state information
 
 cat $1_ss.r  $1_struc.txt | sed 's/\$//' |\
-awk '{
+gawk '{
   if(match($1,"MTTu")>0) {
     j++
     split($0,a,"=");
@@ -107,7 +110,7 @@ else
 #Write out the defaults -- unit inputs
 echo Creating $1_input.txt - using defaults
 
-awk '{
+gawk '{
   if ($1=="input") {
       if ($2==1)
         printf("%s = \t%s; # MTT initial value\n", $4, default)
@@ -121,7 +124,7 @@ fi
 #  echo  >> $1_input.txt
 #  echo "# Set the switches"  >> $1_input.txt
 #  strip_comments<$1_switch.txt |\
-#  awk '{if (length($1)>0) print  tolower($1) "= (t>=0);"}'  >> $1_input.txt
+#  gawk '{if (length($1)>0) print  tolower($1) "= (t>=0);"}'  >> $1_input.txt
 
 
 

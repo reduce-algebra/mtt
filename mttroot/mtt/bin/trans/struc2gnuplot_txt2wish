@@ -91,7 +91,7 @@ proc "sort_list" "list sortorder" {
 EOF
 
 ## create states and outputs lists
-awk '
+gawk '
 ($1 == "state") {
     printf "lappend xl state:%s\n", $4
 }
@@ -130,7 +130,7 @@ pack .print  -expand false -fill x -side right
 ## map names to column numbers
 EOF
 
-awk '
+gawk '
 BEGIN {
     print "proc \"plot\" \"title\" {";
 }

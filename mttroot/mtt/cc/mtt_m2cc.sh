@@ -56,8 +56,8 @@ find_code ()
 {
     file_in=${1:-${IN}}
     portion=${2:-"body"}
-    head=`cat ${file_in} | awk '($2 == "BEGIN" && $3 == "Code") { print NR }'`
-    foot=`cat ${file_in} | awk '($2 == "END"   && $3 == "Code") { print NR }'`
+    head=`cat ${file_in} | gawk '($2 == "BEGIN" && $3 == "Code") { print NR }'`
+    foot=`cat ${file_in} | gawk '($2 == "END"   && $3 == "Code") { print NR }'`
     case ${portion} in
 	head)
 	    start=0
@@ -77,7 +77,7 @@ find_code ()
 	    ;;
     esac
     cat ${file_in} |\
-    awk --assign start=${start} --assign end=${end} '
+    gawk --assign start=${start} --assign end=${end} '
 	(start < NR && NR < end) { print $0 }'
 };
 

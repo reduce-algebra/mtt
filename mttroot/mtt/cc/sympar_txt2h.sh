@@ -1,6 +1,9 @@
 #! /bin/sh
 # $Id$
 # $Log$
+# Revision 1.4  2001/08/24 21:41:04  geraint
+# Fixed problem with declaration when there are no numerical parameters.
+#
 # Revision 1.3  2001/03/19 02:28:53  geraint
 # Branch merge: merging-ode2odes-exe back to MAIN.
 #
@@ -53,7 +56,7 @@ OUT=${SYS}_sympar.h
 
 declare_sys_param ()
 {
-cat ${IN} | awk '(NF>0){printf ("static double %s MTT_UNUSED;\t// %s\n", tolower($1), $2)}'
+cat ${IN} | gawk '(NF>0){printf ("static double %s MTT_UNUSED;\t// %s\n", tolower($1), $2)}'
 }
 
 declare_temp_vars ()

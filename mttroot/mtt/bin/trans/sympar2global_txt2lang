@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1998/11/18 11:55:51  peterg
+## Now uses sympar2global_txt2m for the m bit
+##
 ## Revision 1.5  1998/07/26 11:00:18  peterg
 ## Put in exits-- this all needs a good clean
 ##
@@ -66,7 +69,7 @@ fi
 
 if [ "$language" = "c" ]; then
   strip_comments <$1_sympars.txt  |\
-    awk '{
+    gawk '{
       i++; print "extern double", tolower($1) ";";
     }'
 exit
@@ -78,7 +81,7 @@ cat <<EOF
     private p = new $1_numpar();
 EOF 
   strip_comments <$1_sympars.txt  |\
-      awk '{
+      gawk '{
         i++; print "  float " tolower($1) " = p." tolower($1) ";";
       }'
 fi

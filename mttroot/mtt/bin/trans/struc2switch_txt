@@ -15,6 +15,11 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  2001/08/02 03:01:08  geraint
+## Stopped initialisation of mttopen from over-writing logic.txt contents.
+##  - comment removed from "sort" input (which put it last) because
+## initialisation is inserted in place of the comment by switch_txt2m.
+##
 ## Revision 1.5  2000/10/17 09:20:00  peterg
 ## *** empty log message ***
 ##
@@ -43,14 +48,14 @@ echo "# These are the switches deduced from ISW and CSW components"\
  > $1_switch.txt
 
 # This is the main transformation using awk
-awk '{ 
+gawk '{ 
    if ($1=="state") {i++; if ($3=="MTT_SWITCH")  print tolower($4) "\t" i};
 }
 END{
 }
 ' < $1_struc.txt| sort >> $1_switch.txt
 
-strip_comments < $1_switch.txt | wc -l | awk '{print $1 " switches found"}'
+strip_comments < $1_switch.txt | wc -l | gawk '{print $1 " switches found"}'
 
 
 

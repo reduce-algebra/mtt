@@ -15,6 +15,10 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.10  2000/10/16 08:20:23  peterg
+# %% New version with direct naming.
+# %% Note ss version is broken - ss.r file in wrong format
+# %%
 # %% Revision 1.9  2000/10/10 21:03:06  peterg
 # %% *** empty log message ***
 # %%
@@ -73,7 +77,7 @@ if [ -n "$steadystate_computation" ]; then
 echo Creating $1_state.txt - compute from steady-state information
 
 cat $1_ss.r  $1_struc.txt | sed 's/\$//' |\
-awk '{
+gawk '{
   if(match($1,"MTTx")>0) {
     j++
     split($0,a,"=");
@@ -91,7 +95,7 @@ else
 # Inform user
 echo Creating $1_state.txt - default states to $default
 
-awk '{
+gawk '{
   if ($1=="state") printf("%s \t= %s; # MTT initial value\n", $4, default)
 }' default=$default <$1_struc.txt >> $1_state.txt
     

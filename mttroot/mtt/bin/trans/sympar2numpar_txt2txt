@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.13  2000/10/16 08:09:25  peterg
+## Tidied up.
+##
 ## Revision 1.12  1999/03/02 22:01:21  peterg
 ## *** empty log message ***
 ##
@@ -67,13 +70,13 @@ cat $MTTPATH/trans/rcs_header.txt  >> $1_numpar.txt
 #Write out the variables
 echo "# Parameters" >> $1_numpar.txt
 strip_comments <$1_sympar.txt |\
-awk '{i++; if (NF>0) print tolower($1) " = \t1.0; \# " $2}'\
+gawk '{i++; if (NF>0) print tolower($1) " = \t1.0; \# " $2}'\
   >> $1_numpar.txt
 
 #Write out the initial states
 #echo  >> $1_numpar.txt
 #echo "# Initial states" >> $1_numpar.txt
-#awk '{
+#gawk '{
 #  if ($1=="state") 
 #    print "x(" $2 ") = \t0.0; \# " $4 " (" $3 ")"
 #}' \

@@ -15,10 +15,13 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/11/18 11:30:19  peterg
+## Now strips blank lines as well
+##
 ###############################################################
 
 
 sed 's/%/#/' |\
-awk --field-separator '#' '{if (length($1)>0) print $1}'  |\
-awk '{if (NF>0) print $0}'
+gawk --field-separator '#' '{if (length($1)>0) print $1}'  |\
+gawk '{if (NF>0) print $0}'
 

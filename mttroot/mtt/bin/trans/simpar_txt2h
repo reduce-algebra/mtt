@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/05/13 08:56:28  peterg
+## Initial revision
+##
 ###############################################################
 
 
@@ -38,7 +41,7 @@ echo  >> $1_simpar.h
 # Now do the parameters
 
 sed 's/ //g' $1_simpar.txt |\
- awk -F '=' '/=/ {print "#define", $1, $2}'   >> $1_simpar.h
+ gawk -F '=' '/=/ {print "#define", $1, $2}'   >> $1_simpar.h
 
 
 

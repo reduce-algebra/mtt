@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  2000/12/28 12:39:34  peterg
+## Put under RCS
+##
 ## Revision 1.4  2000/04/05 07:37:27  peterg
 ## *** empty log message ***
 ##
@@ -30,7 +33,7 @@
 sep='|'; # Separates the languages from the rest.
 
 # Create reps menu
-awk --field-separator=$sep '{
+gawk --field-separator=$sep '{
   
 # Find the rep and the title
   split($1,REP," ");

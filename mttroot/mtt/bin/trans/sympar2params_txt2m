@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1997/04/17 11:18:34  peterg
+## Write out the RCS header first!
+##
 # Revision 1.2  1997/04/16  11:40:31  peterg
 # Added global variables.
 #
@@ -46,7 +49,7 @@ sympar2global_txt2m $1 >> $1_params.m
 
 
 #Write out the variables in c format.
-awk '{i++; print tolower($1) " = \t1.0;"}' $1_sympar.txt  >> $1_params.m
+gawk '{i++; print tolower($1) " = \t1.0;"}' $1_sympar.txt  >> $1_params.m
 
 # Now invoke the standard error handling.
 # mtt_error mtt_error.txt

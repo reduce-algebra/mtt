@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.366  2002/12/06 21:56:21  geraint
+## Cosmetic change: removed commented-out lines.
+##
 ## Revision 1.365  2002/12/06 12:45:25  gawthrop
 ## Simplified rule for sub.sh: both fig and dia go via cmp.txt now.
 ##
@@ -2725,11 +2728,11 @@ endif
 #Raw bond graph to acausal bond graph: mfile
 
 ifneq ($start_at_abg,yes)
-%_abg.m: %_abg.dia %_lbl.txt
+%_abg.m: %_abg.dia %_lbl.txt %_alias.m
 	abg_dia2m \$*
+	(sh \$*_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
 
-%_abg.m: %_rbg.m %_alias.m %_cmp.m %_icd.m
-	cmp2sub_m2sh \$*
+%_abg.m: %_rbg.m %_alias.m %_sub.sh %_icd.m
 	(sh \$*_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
 	rbg2abg_m $info_switch \$*
 endif

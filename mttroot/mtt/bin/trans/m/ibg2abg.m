@@ -4,7 +4,7 @@ function [bonds,components,n_vector_bonds] = \
       ibg2abg(name,bonds,infofile,errorfile)
 
   ## write useful quantity of data to log
-  struct_levels_to_print = 5;
+  struct_levels_to_print = 4;
 
 
 
@@ -25,6 +25,10 @@ function [bonds,components,n_vector_bonds] = \
     head.type = deblank(split(bond.head.component, ":")(1,:));
     tail.name = deblank(split(bond.tail.component, ":")(2,:));
     tail.type = deblank(split(bond.tail.component, ":")(1,:));
+
+    ## capture directional info
+    head.end = "head";
+    tail.end = "tail";
 
     ## assign vector bond index
     head.index = i;
@@ -121,42 +125,50 @@ function [bonds,components,n_vector_bonds] = \
     endif
     
     ## assign unique number and causality to each sub-bond
-    for sub_bond = 1:head.n_sub_bonds
-      ++bond_number;
-
-      eval(sprintf("head.bond%i.index = %i", sub_bond, +bond_number));
-      eval(sprintf("tail.bond%i.index = %i", sub_bond, -bond_number));
-
-      ## effort causality
-      if (strcmp(bond.causality.effort, "head"))
-	causality(bond_number, 1) = +1;
-	head.causality = +1;
-      elseif (strcmp(bond.causality.effort, "tail"))
-	causality(bond_number, 1) = -1;
-	head.causality = -1;
-      else
-	causality(bond_number, 1) = 0;
-	head.causality = 0;
-      endif
-
-      ## flow causality
-      if (strcmp(bond.causality.flow, "head"))
-	causality(bond_number, 2) = -1;
-	tail.causality = -1;
-      elseif (strcmp(bond.causality.flow, "tail"))
-	causality(bond_number, 2) = +1;
-	tail.causality = +1;
-      else
-	causality(bond_number, 2) = 0;
-	tail.causality = 0;
-      endif
-
-      eval(sprintf("head.bond%i.port = deblank(head.sub_bonds(%i,:))",
-		   sub_bond, sub_bond));
-      eval(sprintf("tail.port%i.port = deblank(tail.sub_bonds(%i,:))",
-		   sub_bond, sub_bond));
-
-    endfor
+    if (! (head.is_junction | tail.is_junction))
+      for sub_bond = 1:head.n_sub_bonds
+	++bond_number;
+	
+	eval(sprintf("head.bond%i.index = %i", sub_bond, +bond_number));
+	eval(sprintf("tail.bond%i.index = %i", sub_bond, -bond_number));
+	
+	## effort causality
+	if (strcmp(bond.causality.effort, "head"))
+	  causality(bond_number, 1) = +1;
+	  head.causality = +1;
+	elseif (strcmp(bond.causality.effort, "tail"))
+	  causality(bond_number, 1) = -1;
+	  head.causality = -1;
+	else
+	  causality(bond_number, 1) = 0;
+	  head.causality = 0;
+	endif
+	
+	## flow causality
+	if (strcmp(bond.causality.flow, "head"))
+	  causality(bond_number, 2) = -1;
+	  tail.causality = -1;
+	elseif (strcmp(bond.causality.flow, "tail"))
+	  causality(bond_number, 2) = +1;
+	  tail.causality = +1;
+	else
+	  causality(bond_number, 2) = 0;
+	  tail.causality = 0;
+	endif
+	
+	eval(sprintf("head.bond%i.port = deblank(head.sub_bonds(%i,:))",
+		     sub_bond, sub_bond));
+	eval(sprintf("tail.port%i.port = deblank(tail.sub_bonds(%i,:))",
+		     sub_bond, sub_bond));
+	
+      endfor
+    else
+      ## save bond causality data within junction for later use
+      head.causality.effort = bond.causality.effort;
+      tail.causality.effort = bond.causality.effort;
+      head.causality.flow   = bond.causality.flow;
+      tail.causality.flow   = bond.causality.flow;
+    endif
 
     ## copy bond data to component structure (comp_s)
     if (head.is_port)
@@ -190,22 +202,32 @@ function [bonds,components,n_vector_bonds] = \
   if (struct_contains(comp_s, "comp"))
     for [comp, comp_name] = comp_s.comp
       if (strcmp(comp.type, "0") | strcmp(comp.type, "1"))
+
 	n_ports = size(struct_elements(comp), 1) - 2;
 	## subtracted 2 for name and type
 	n_named_ports = 0;
+
+	## get labelled ports
 	for [vec_bond, vec_bond_name] = comp
+	  if (! exist("vec_bond.label"))
+	    vec_bond.label = "[]";
+	  endif
 	  if (index(vec_bond_name, "vec_bond") == 1)
 	    if (! strcmp(vec_bond.label, "[]"))
 	      n_named_ports += 1;
 	      port_name = vec_bond.label;
 	    endif
 	  endif
+	  eval(sprintf("comp.%s = vec_bond", vec_bond_name));
 	endfor
+
+	## attach labels to unlabelled ports
 	if (n_named_ports == 0)
 	  for [vec_bond, vec_bond_name] = comp
 	    if (index(vec_bond_name, "vec_bond") == 1)
 	      vec_bond.label = "in";
 	    endif
+	    eval(sprintf("comp.%s = vec_bond", vec_bond_name));
 	  endfor
 	elseif (n_named_ports == 1)
 	  mtt_info(sprintf("Defaulting all ports on junction %s to %s",
@@ -214,27 +236,52 @@ function [bonds,components,n_vector_bonds] = \
 	    if (index(vec_bond_name, "vec_bond") == 1)
 	      vec_bond.label = port_name;
 	    endif
+	    eval(sprintf("comp.%s = vec_bond", vec_bond_name));
 	  endfor
 	elseif ((n_named_ports != 0) && (n_named_ports != n_ports))
 	  mtt_error(sprintf("Junction must have 0,1 or %i port labels", 
 			    n_ports), errorfile);	  
 	endif
+#	eval(sprintf("comp.%s.%s = vec_bond", comp_name, vec_bond_name))
+
+	## expand vector bonds
 	for [vec_bond, vec_bond_name] = comp
 	  if (index(vec_bond_name, "vec_bond") == 1)
 	    [sub_bonds, n_sub_bonds] = split_port(vec_bond.label)
 	    for sub_bond = 1:n_sub_bonds
 	      ++bond_number;
-	      
-	      S = sprintf("comp_s.comp.%s.%s", comp_name, \
-			  vec_bond_name);
-	      ## FIXME: multiply bond_number by direction in next line
-	      eval(sprintf("%s.bond%i.index = %i",
-			   S, sub_bond, bond_number));
-	      ## FIXME: do causality
+
+	      if (strcmp(vec_bond.end, "head"))
+		direction = +1;
+	      else
+		direction = -1;
+	      endif
+
+	      eval(sprintf("vec_bond.bond%i.index = %i",
+			   sub_bond, bond_number*direction));
+
+
+	      ## causality
+	      if (strcmp(vec_bond.causality.effort, "head"))
+		causality(bond_number, 1) = +1;
+	      elseif (strcmp(vec_bond.causality.effort, "tail"))
+		causality(bond_number, 1) = -1;
+	      else
+		causality(bond_number, 1) = 0;
+	      endif
+	      if (strcmp(vec_bond.causality.flow, "head"))
+		causality(bond_number, 2) = -1;
+	      elseif (strcmp(vec_bond.causality.flow, "tail"))
+		causality(bond_number, 2) = +1;
+	      else
+		causality(bond_number, 2) = 0;
+	      endif
 	    endfor
 	  endif
+	  eval(sprintf("comp.%s = vec_bond", vec_bond_name));
 	endfor
      endif
+     eval(sprintf("comp_s.comp.%s = comp", comp_name));
     endfor
   endif
   ## FIXME: add sub_bonds to junctions  
@@ -249,14 +296,14 @@ function [bonds,components,n_vector_bonds] = \
 
   ## count number of components
   if (struct_contains(comp_s, "comp"))
-    n_comps = size(struct_elements(comp_s.comp), 1);
+    n_comps = size(struct_elements(comp_s.comp), 1)
   else
     n_comps = 0;
   endif
 
   ## count number of internal ports
   if (struct_contains(comp_s, "port"))
-    n_ports = size(struct_elements(comp_s.port), 1);
+    n_ports = size(struct_elements(comp_s.port), 1)
   else
     n_ports = 0;
   endif
@@ -267,7 +314,7 @@ function [bonds,components,n_vector_bonds] = \
     ## determine if internal port (and fix name) or subsystem
     if (strcmp(this_type, "SS") & (index(this_name, "[") == 1))
       comp_or_port = "port";
-      this_name = mtt_strip_name(this_name);
+      this_name = mtt_strip_name(this_name)
     else
       comp_or_port = "comp";
     endif
@@ -275,7 +322,7 @@ function [bonds,components,n_vector_bonds] = \
   endfor
 
   disp("--- Finished reading _cmp.m ---");
-
+comp_s
   ##########################
   ## Write n_vector_bonds ##
   ##########################

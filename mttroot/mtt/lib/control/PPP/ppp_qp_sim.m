@@ -1,4 +1,7 @@
-function [T,y,u,X,Iterations] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max_u,Order_u, Tau_y,Min_y,Max_y,Order_y, W,x_0,Delta_ol,mu,movie)
+function [T,y,u,X,Iterations] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q,\
+					    Tau_u,Min_u,Max_u,Order_u, \
+					    Tau_y,Min_y,Max_y,Order_y, \
+					    W,x_0,Delta_ol,mu,movie)
 
   ## usage: [T,y,u,J] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max_u,Order_u, Tau_y,Min_y,Max_y,Order_y, W,x_0,movie)
   ## Needs documentation - see ppp_ex11 for example of use.
@@ -30,17 +33,11 @@ function [T,y,u,X,Iterations] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max
     error(sprintf("Initial state x_0 must be %ix1 not %ix%i",n_x,n_x0,m_x0));
   endif
   
-  ## Input constraints (assume same on all inputs)
-  Gamma_u=[];
-  gamma_u=[];
-  for i=1:n_u
-    [Gamma_i,gamma_i] = ppp_input_constraint (A_u,Tau_u,Min_u,Max_u,Order_u,i,n_u);
-    Gamma_u = [Gamma_u; Gamma_i];
-    gamma_u = [gamma_u; gamma_i];
-  endfor
+  ## Input constraints 
+  [Gamma_u, gamma_u] = ppp_input_constraints(A_u,Tau_u,Min_u,Max_u);
 
   ## Output constraints
-  [Gamma_y,gamma_y] = ppp_output_constraint  (A,B,C,D,x_0,A_u,Tau_y,Min_y,Max_y,Order_y);
+  [Gamma_y,gamma_y] = ppp_output_constraints(A,B,C,D,x_0,A_u,Tau_y,Min_y,Max_y,Order_y);
 
   ## Composite constraints - t=0
   Gamma = [Gamma_u; Gamma_y];
@@ -62,11 +59,25 @@ function [T,y,u,X,Iterations] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max
     T_ol = [0,dt];
     Delta_ol = dt;
   endif
-  T_cl = 0:Delta_ol:t(length(t))-Delta_ol; # Closed-loop time vector
+  t_last = 2*t(length(t));
+  T_cl = 0:Delta_ol:t_last-Delta_ol; # Closed-loop time vector
+  T = 0:dt:t_last;		# Overall time vector
+ 
+  ## Lengths thereof
   n_Tcl = length(T_cl);
   n_ol = length(T_ol);
-  
+  n_T = length(T);
 
+  ## Expand W with constant last value or truncate
+  [n_W,m_W] = size(W);
+
+  if m_W>n_T
+    W = W(:,1:n_T);
+  else
+    W = [W W(:,m_W)*ones(1,n_T-m_W+1)];
+  endif
+
+  ## Compute U*
   Ustar_ol = ppp_ustar(A_u,n_u,T_ol); # U* in the open-loop interval
 
   [n,m] = size(Ustar_ol);
@@ -86,19 +97,23 @@ function [T,y,u,X,Iterations] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max
   du = [];
   J = [];
   tick= time;
-  i = 0;
+
   ## disp("Simulating ...");
   for t=T_cl			# Outer loop at Delta_ol
+
     ##disp(sprintf("Time %g", t));
     ## Output constraints
-    [Gamma_y,gamma_y] = ppp_output_constraint  (A,B,C,D,x,A_u,Tau_y,Min_y,Max_y,Order_y);
+    [Gamma_y,gamma_y] = ppp_output_constraints  (A,B,C,D,x,A_u,Tau_y,Min_y,Max_y,Order_y);
     
     ## Composite constraints 
     Gamma = [Gamma_u; Gamma_y];
     gamma = [gamma_u; gamma_y];
     
+    ## Current Setpoint value
+    w = W(:,floor(t/dt)+1);
+    
     ## Compute U(t) via QP optimisation
-    [uu, U, iterations] = ppp_qp (x,W,J_uu,J_ux,J_uw,Us0,Gamma,gamma,mu); # Compute U
+    [uu, U, iterations] = ppp_qp (x,w,J_uu,J_ux,J_uw,Us0,Gamma,gamma,mu); # Compute U
 
     ## Compute the cost (not necessary but maybe interesting)
 #    [J_t] = ppp_cost (U,x,W,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww); # cost
@@ -127,7 +142,6 @@ function [T,y,u,X,Iterations] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max
   Elapsed_Time = tock-tick;
   y = C*X + D*u;		# System output
 
-  T = 0:dt:t+Delta_ol;		# Overall time vector
 
 endfunction
 

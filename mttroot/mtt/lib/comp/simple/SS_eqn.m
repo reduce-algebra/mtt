@@ -28,6 +28,9 @@ global at_top_level
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.17  1998/07/04 07:15:44  peterg
+% %% Back under RCS
+% %%
 % %% Revision 1.16  1998/04/11 19:07:16  peterg
 % %% Now do named ports as ordinary ports iff at top level.
 % %% --- not yet complete, need to pass necesssary info though to this
@@ -94,10 +97,20 @@ global at_top_level
 %     cr contains 'MTT_port'
 %     arg contains port number
 
-STDerr = 2; % Standard output
-
-effort_attribute = cr;
-flow_attribute = args;
+if (strcmp(cr,"SS"))		# Then its the standard file
+  a = split(args,",");
+  [N,M]=size(a);
+  if (N~=2)			# Must have 2 arguments
+    mtt_info(sprintf("SS should have 2 args not %i", N));
+  else
+    effort_attribute = a(1,:);
+    flow_attribute   = a(2,:);
+  end;
+else				# Old style file
+  effort_attribute = cr;
+  flow_attribute = args;
+  mtt_info(sprintf("SS component: Hmm... looks like an old-style label file"));
+end;
 
 % Default attributes
 if strcmp(effort_attribute,'')
@@ -189,7 +202,7 @@ else
       fprintf(filenum, 'MTTyz%d := %s;\n', ...
 	  zero_outputs, varname(name, bond_number,1));
     else
-      mtt_info([effort_attribute, ' not appropriate for an output '],STDerr);
+      mtt_info([effort_attribute, ' not appropriate for an output ']);
     end;
   end;
 end;
@@ -220,8 +233,7 @@ else % Named constant
       fprintf(filenum, 'MTTyz%d := %s;\n', ...
 	  zero_outputs, varname(name, bond_number,-1));
     else
-      mtt_info([flow_attribute, ' not appropriate for an output '], ...
-	  STDerr);
+      mtt_info([flow_attribute, ' not appropriate for an output ']);
     end;
   end;
 end;

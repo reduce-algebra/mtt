@@ -14,6 +14,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1996/12/12 16:03:19  peterg
+## Removed global argument stuff for y - its already done in the
+## translation.
+##
 ## Revision 1.5  1996/12/12 15:59:06  peterg
 ## Generic handling of subscript for y,u,ui
 ##
@@ -35,6 +39,8 @@
 cat $1 | \
 tr "[A-Z]" "[a-z]" | \
 sed -e "s/\// \\\over /g" \
+    -e "s/[0-9a-z_]*mtty/mtty/g" \
+    -e "s/[0-9a-z_]*mttu/mttu/g" \
     -e "s/mttex/\\\chi/g" \
     -e "s/mttdx/\\\dot x/g" \
     -e "s/mttdz/\\\dot z_/g" \
@@ -53,13 +59,13 @@ sed -e "s/\// \\\over /g" \
     -e "s/mttx\([0-9]*\)/x_{\1}/g" \
     -e "s/mttui\([0-9]*\)/v_{\1}/g" \
     -e "s/mttu\([0-9]*\)/u_{\1}/g" \
+    -e "s/mtty\([0-9]*\)/y_{\1}/g" \
+    -e "s/mttz\([0-9]*\)/z_{\1}/g" \
     -e "s/mtty0/y_0/g" \
     -e "s/mttu0/u_0/g" \
     -e "s/mttx/x/g" \
     -e "s/mttz/z/g" \
-    -e "s/[0-9a-z_]*mttu/u/g" \
     -e "s/mttyy/Y/g" \
-    -e "s/[0-9a-z_]*mtty/y_/g" \
     -e "s/mttw/w/g" \
     -e "s/mtttf/G/g" \
     -e "s/mttpar//g" \

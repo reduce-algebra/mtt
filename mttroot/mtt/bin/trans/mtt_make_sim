@@ -13,6 +13,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  2000/05/17 17:20:49  peterg
+## Fixed bugs with ny>1. Could be made faster by not generating y when
+## y_sim >1
+##
 ## Revision 1.5  2000/05/17 16:01:42  peterg
 ## Fixed bug for n_y>1
 ##
@@ -218,12 +222,11 @@ cat >> $1_sim.m <<EOF
     ti = t(i);
     ui = u(:,i);
     yi = $1_cseo(xi,ui,ti,par);    # Output 
-    if i>
     y(:,i) = yi;
     x(:,i) = xi;
     dxi = $1_cse(xi,ui,ti,par); # State derivative
     A = $1_smxa(xi,ui,dt,par);	# (I-Adt)
-    A = reshape(A,$Nx,$Nx);
+    #A = reshape(A,$Nx,$Nx);
     Ax = $1_smxax(xi,ui,dt,par);	# (I-Adt)x
     #open = eval(sprintf("%s_switchopen(x);", system_name));        # Open switches
     #x = mtt_implicit(x,dx,A,Ax,dt,$Nx,zeros(20,1)); # Implicit update

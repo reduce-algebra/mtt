@@ -3,14 +3,22 @@ PROCEDURE mtt_update(VAR xnew	: StateVector;
 			 DT	: REAL;
 			 Nx	: INTEGER;
 			 METHOD	: IntegrationMethod;
-		     VAR A	: StateMatrix);
+			 AA	: StateMatrix );
+
+{
+ ###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+}
 
 CONST
    Small = 0.000001;
    
 VAR
    i,j	 : INTEGER;
-   AA	 : StateMatrix;
    BB,Ax : StateVector;
    rsq	 : REAL;
    
@@ -21,38 +29,20 @@ BEGIN{mtt_update}
    IF Method=1 THEN {Euler}
       FOR i := 1 TO  Nx DO
 	 xnew[i] := xnew[i] + dx[i]*DT
-      ELSE IF (Method=2) OR (METHOD=3) THEN {Implicit}
-      BEGIN
-	 {Set up the solution matrices:
-	  AA = eye(Nx)-A*dt
-	  BB = x + dt*(dx - A*x)}
-	 FOR i := 1 TO  Nx DO
-	 BEGIN
-	    Ax[i] := 0.0;
-	    FOR j := 1 TO  Nx DO
-	    BEGIN
-	       AA[i,j] := -A[i,j]*DT;
-	       Ax[i] := Ax[i] + A[i,j]*x[j];
-	       IF i=j THEN
-		  AA[i,j] := AA[i,j] + 1.0;
-	    END
-	 END;
 	 
-	 FOR i := 1 TO  Nx DO
-	    BB[i] := x[i] + DT*(dx[i]-Ax[i]);
+      ELSE IF (Method=2) OR (METHOD=3) OR (METHOD=4) THEN {Implicit}
+      BEGIN {Implicit methods}
+	 mtt_asub(x,Ax,Nx); {Sparse computation of (1-A*dt)*x}
+	 FOR i := 1 TO  Nx DO {BB is (1-A*dt)*x +dx*dt}
+	    BB[i] := Ax[i]+ DT*dx[i];
 
 	 {Solve the equation AAx = B}
-	 mtt_solve(xnew,AA,BB,Nx,Small);
-      END
-      ELSE IF (METHOD=4) THEN {Sparse CG implicit}
-      BEGIN
-	 mtt_asub(x,Ax,Nx); {Sparse computation of (1-A*dt)*x}
-	 FOR i := 1 TO  Nx DO
-	    BB[i] := Ax[i]+ DT*dx[i];
-	 mtt_sparse(BB,Nx,xnew,rsq); {Sparse CG solution
-				  - using prev. xnew as starter}
-      END
-         ELSE
+	 IF (Method=2) OR (METHOD=3) THEN {Use SVD}
+	    mtt_solve(xnew,AA,BB,Nx,Small)
+	 ELSE {Sparse CG solution}
+	    mtt_sparse(BB,Nx,xnew,rsq);
+      END{Implicit methods}
+      ELSE
 	 Writeln("Method >4 is not defined");
    
 END{mtt_update};

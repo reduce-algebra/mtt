@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1998/08/13 16:25:07  peterg
+## Removed some documentation form odeo.m
+##
 ## Revision 1.4  1998/08/13 15:10:47  peterg
 ## Change temp var name to mtt_t1 etc
 ##
@@ -40,10 +43,9 @@ Rc='#';
 Lb='(';
 Rb=')';
 
-outfile=$1"_"$rep.$ext
-
-rm -f $outfile.*
-
+outfile=$1"_"$rep
+echo $outfile
+rm -fv $outfile.[123]
 #Set up gentran
 cat <<EOF >mtt_setreduce.r
 % Set up the code generator
@@ -65,67 +67,57 @@ in "$1_def.r";
 %Read the reduce  $REP   file
 in "$1_$rep.r";
 
-%Read the parameter file
-in "$1_sympar.r";
-
 EOF
 
 #Inform user
-echo Creating $outfile
+echo Creating $outfile.m
 
 
 
 # Remove the old log file
-rm -f mtt_r2lang.log
+rm -f mtt_r2m.log
 
 #Remove the temporary files
-rm -f $outfile.*
 
 if [ "$rep" = "ode" ]; then
   #echo Creating $1_odea.$ext
-  echo Creating $1_odeo.$ext
-  rm -f $1_odeo.$ext.1;
+  outfileo=$outfile"o"
+  echo Creating $outfileo.m
+   rm ode odeo
   #rm -f $1_odea.$ext.1;
 
   #Header
-  lang_header $1 $rep $ext 'mttx,mttu,t' mttdx > $outfile.1
+  lang_header $1 $rep $ext 'mttx,mttu,t' mttdx > $1_ode.p
+  lang_header $1 odeo $ext 'mttx,mttu,t' mtty > $1_odeo.p
 
   # Use reduce to accomplish the transformation
-  $SYMBOLIC >mtt_r2lang.log << EOF
-    
+$SYMBOLIC  > mtt_r2m.log <<EOF
   %Set up the code generator
   in"mtt_setreduce.r";
       
   % The body of the ode function
-    GENTRANOUT "$outfile.3";
+    GENTRANOUT "ode";
     mtt_matrix := MTTdX$
     mtt_matrix_n := MTTNx$
     mtt_matrix_m := 1$
-    mtt_matrix_name := 'MTTdX$
-    lang_matrix(); 
-    GENTRANSHUT "$outfile.3";
+    lang_matrix();
+    GENTRANSHUT "ode";
     
-%%      % The algebraic equations (if any)
-%%    GENTRANOUT "$1_odea.$ext.1";
-%%    mtt_matrix := MTTYz$
-%%    mtt_matrix_n := MTTNYz$
-%%    mtt_matrix_m := 1$
-%%    mtt_matrix_name := MTTYz$
-%%    lang_matrix(); 
-%%    GENTRANSHUT "$1_odea.$ext.1;
-      
-      
-      % Now do the y = g(x,t) function.
+ 
       % The body of the odeo function
-    GENTRANOUT "$1_odeo.$ext.1";
-    mtt_matrix := MTTy$
-    mtt_matrix_n := MTTNy$
-    mtt_matrix_m := 1$
-    mtt_matrix_name := MTTy$
-    lang_matrix(); 
-    GENTRANSHUT "$1_odeo.$ext.1";
-      
+     GENTRANOUT "odeo";
+     mtt_matrix := MTTy$
+     mtt_matrix_n := MTTNy$
+     mtt_matrix_m := 1$
+     lang_matrix(); 
+     GENTRANSHUT "odeo";
+
+END;;
+
+
 EOF
+
+     
 #  cat $1_odeo.$ext.1
 
 ##  # Algebraic bits
@@ -163,13 +155,7 @@ EOF
 ##  
 ##EOF
 ##  
-  cat <<EOF >> $outfile.2
   
-  $Lc The differential equations $Rc
-EOF
-  
-  sed 's/mtt_matrix/mttdx/' $outfile.3 > $outfile.4
-  rm -f $outfile.3
   
 ##  # Create the odea.$ext function
 ##  lang_header $1 odea $ext 'mttui' mttyz 'global mttxx mttt; mttx = mttxx; t=mttt;' > $1_odea.$ext
@@ -193,33 +179,34 @@ EOF
 ##  sed 's/mtt_matrix/mttyz/' $1_odea.$ext.1 >> $1_odea.$ext
   
   
-  # Create the odeo.$ext function
-  lang_header $1 odeo $ext 'mttx,mttu,t' mtty > $1_odeo.$ext
+  # Create the odeo function
   
-$MATRIX -q  <<EOF  >> $1_odeo.$ext
-    %System structure
-    [nx,ny,nu,nz,nyz] = $1_def;
-  if nyz>0
-    printf("$Lc====== Extract the internal input variables ======$Rc\n");
-    for i = 1:nyz
-      printf("  mttui$Lb%i$Rb = mttx$Lb%i$Rb;\n",i,i+nx);
-    end;
-    printf("\n");
-  
-    printf("$Lc====== Set up the internal input variables ======$Rc\n");
-    for i = 1:nyz
-      printf("  mttui%i = mttui$Lb%i$Rb;\n",i,i);
-    end;
-    printf("\n");
-  end;
-  
-EOF
+##$MATRIX -q  <<EOF  >> $1_odeo.p
+##    %System structure
+##    [nx,ny,nu,nz,nyz] = $1_def;
+##  if nyz>0
+##    printf("$Lc====== Extract the internal input variables ======$Rc\n");
+##    for i = 1:nyz
+##      printf("  mttui$Lb%i$Rb = mttx$Lb%i$Rb;\n",i,i+nx);
+##    end;
+##    printf("\n");
+##  
+##    printf("$Lc====== Set up the internal input variables ======$Rc\n");
+##    for i = 1:nyz
+##      printf("  mttui%i = mttui$Lb%i$Rb;\n",i,i);
+##    end;
+##    printf("\n");
+##  end;
+##EOF
 
-sed 's/mtt_matrix/mtty/' $1_odeo.$ext.1 >> $1_odeo.$ext
+sed 's/mtt_matrix/mttdx/' <ode  >> $1_ode.p
+sed 's/mtt_matrix/mtty/'  <odeo >> $1_odeo.p
 
-# Convert from Pascal syntax to Octave syntax
-  mv $1_odeo.m mtt_junk; mtt_p2m<mtt_junk > $1_odeo.m
+# Convert from Pascal syntax to Octave syntax 
+   mtt_p2m<$1_odeo.p > $1_odeo.m 
+   mtt_p2m<$1_ode.p > $1_ode.m 
 #  mv $1_odea.m mtt_junk; mtt_p2m<mtt_junk > $1_odea.m
+
 fi
   
 if [ "$rep" = "sm" ]||[ "$rep" = "dm" ]; then
@@ -299,20 +286,24 @@ fi
     GENTRANSHUT "$outfile.1";
 EOF
 
-echo "% $Symbol matrix" >$outfile.$Symbol
-cat "$outfile.2" >> $outfile.$Symbol
+echo "%$Symbol matrix#" > $outfile.$Symbol
+cat "$outfile.2"  >> $outfile.$Symbol
 sed "s/mtt_matrix/mtt$Symbol/" < $outfile.1 |\
-grep -v '=0\.0;' >> $outfile.$Symbol
+grep -v '=0\.0;'  >> $outfile.$Symbol
 
 done
 
-rm -f $outfile.[12]
-fi
+
+fi 
 
 # Convert from Pascal syntax to Octave syntax
 cat $outfile.?  | mtt_p2m > $outfile
 
-rm -f $outfile.?  
+#rm -f $outfile.?  
   
   
   
+
+
+
+

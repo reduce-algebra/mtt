@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/03/04 06:05:46  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -15,10 +18,10 @@
 %ALIAS	out	out
 
 % Argument aliases
-%ALIAS $1	params
+%ALIAS $1	g
 
 % CR aliases
-%ALIAS $1	cr
+%ALIAS $1	lin
 
 
 %% Each line should be of one of the following forms:
@@ -29,7 +32,7 @@
 % ---- Component labels ----
 
 % Component type AF
-	a	 cr	params
+	a	 lin	g
 
 % Component type SS
 	[in]	SS		external,external

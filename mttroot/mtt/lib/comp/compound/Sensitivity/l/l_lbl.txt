@@ -1,0 +1,33 @@
+%% Label file for system l (l_lbl.txt)
+%SUMMARY l Three port 1 junction with 2-bond vector ports :-)
+%DESCRIPTIlN <Detailed description here>
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS	in	A1,B1
+%ALIAS	out	A2,B2
+%ALIAS	out_2	A3,B3
+
+% Argument aliases
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+% Component type SS
+	[A1]	SS		external,external
+	[A2]	SS		external,external
+	[A3]	SS		external,external
+	[B1]	SS		external,external
+	[B2]	SS		external,external
+	[B3]	SS		external,external

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.36  1999/11/29 06:49:26  peterg
+## Upped number of mtt_tnn
+##
 ## Revision 1.35  1999/11/15 22:47:17  peterg
 ## Generates method-specific code for the ode2odeso rep.
 ##
@@ -139,18 +142,24 @@ Filename="$Sys""_""$rep.p"
 filename="$sys""_""$rep.p"
 
 Method=$2; # The integration method
+Stdin=$3;  # Using standard input
 
-# Inform user
-if [ -z "$Method" ]; then
-  echo Creating $Filename 
-else
-  echo Creating $Filename with $Method integration method 
+if [ -n "$Method" ]; then
+  MethodBlurb=" with $Method integration method"
 fi
 
+if [ -n "$Stdin" ]; then
+   StdinBlurb=" using standard input"
+fi
+
+# Inform user
+  echo Creating $Filename $MethodBlurb $StdinBlurb 
+
 # Find system constants
-Nx=`grep "MTTNx " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
-Nu=`grep "MTTNu " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
-Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
+Nx=`mtt_getsize $Sys x` # States
+Nu=`mtt_getsize $Sys u` # Inputs 
+Ny=`mtt_getsize $Sys y` # Inputs 
+Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
 
 #if [ "$rep" = "simpar" ]; then
 #    mtt -q $Sys smx p
@@ -171,25 +180,30 @@ Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
 	echo "PROCEDURE $Sys_rep(VAR mttdx: StateVector;"
 	echo "                       mttx : StateVector;"
 	echo "                       mttu : InputVector;"
-	echo "                       mttt : REAL);"
+	echo "                       mttt : REAL;"
+	echo "                       mttpar : ParameterVector);"
 	;;
     odeo)
 	echo "PROCEDURE $Sys_rep(VAR mtty : OutputVector;"
 	echo "                       mttx : StateVector;"
 	echo "                       mttu : InputVector;"
-	echo "                       mttt : REAL);"
+	echo "                       mttt : REAL;"
+	echo "                       mttpar : ParameterVector);"
 	;;
     cse)
 	echo "PROCEDURE $Sys_rep(VAR mttdx: StateVector;"
 	echo "                       mttx : StateVector;"
 	echo "                       mttu : InputVector;"
-	echo "                       mttt : REAL);"
+	echo "                       mttt : REAL;"
+	echo "                       mttpar : ParameterVector);"
 	;;
     cseo)
 	echo "PROCEDURE $Sys_rep(VAR mtty : OutputVector;"
 	echo "                       mttx : StateVector;"
 	echo "                       mttu : InputVector;"
-	echo "                       mttt : REAL);"
+	echo "                       mttt : REAL;"
+	echo "                       mttpar : ParameterVector);"
+
 	;;
     smx)
 	echo "PROCEDURE $Sys_rep(VAR mtta       : StateMatrix;"
@@ -205,6 +219,7 @@ Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
 	echo "    StateVector  = ARRAY[1..$Nx] OF REAL;"
 	echo "    InputVector  = ARRAY[1..$Nu] OF REAL;"
 	echo "    OutputVector = ARRAY[1..$Ny] OF REAL;"
+	echo "    ParameterVector = ARRAY[1..$Npar] OF REAL;"
 	echo "    StateMatrix  = ARRAY[1..$Nx,1..$Nx] OF REAL;"
 	echo "    glnparray    = StateVector;"
 	echo "    glmparray    = StateVector;"
@@ -219,6 +234,7 @@ Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
 	echo "    mttx,mttdx,mttxx,mttAAx     : StateVector;"
 	echo "    mttu                        : InputVector;"
 	echo "    mtty                        : OutputVector;"
+	echo "    mttpar                      : ParameterVector;"
 	echo "    mttAA, mttE                 : StateMatrix;"
 	echo "    MTTi,MTTj,MTTit,MTTjt,MTTiLast: INTEGER;"
 	echo "    mttSTEPFACTOR,mttWSTEPS,mttSTEPS,mttINPUT : INTEGER;"
@@ -363,11 +379,19 @@ BEGIN{
             gsub(/\|\|/," OR ",$0)
           printf("%s THEN BEGIN\n", $0)
         }
-        else{ 
+        else { 
+          if ((match($1,"mtt_write")>0)&&(length(Stdin)>0)) {
+           sub(/mtt_write/, "if NOT eof THEN mtt_write");
+          }
           if ($1=="for"){
-          sub(/:/," TO ",$0)
-          sub(/=/,":=",$0)
-          printf("%s DO BEGIN\n", $0) 
+            if (($2=="MTTit")&&(length(Stdin)>0)){
+	      printf("WHILE NOT eof DO BEGIN {Integration loop}")
+            }
+            else {
+              sub(/:/," TO ",$0)
+              sub(/=/,":=",$0)
+              printf("%s DO BEGIN\n", $0)
+            } 
           }
           else{
             sub(/=/,":=",$0)
@@ -396,7 +420,8 @@ END{
                 printf("END{%s}.\n", Sys_rep)
       else
         printf("END{%s};\n", Sys_rep)
-}' Sys=$Sys sys=$sys Sys_rep=$Sys_rep rep=$rep Nx=$Nx Nu=$Nu Ny=$Ny Method=$Method|\
+}' Sys=$Sys sys=$sys Sys_rep=$Sys_rep rep=$rep \
+   Nx=$Nx Nu=$Nu Ny=$Ny Method=$Method Stdin=$Stdin |\
 sed 's/(\([ijk0-9,]*\))/\[\1\]/g'    |\
 sed 's/(\(MTT[ijk0-9],[0-9]*\))/\[\1\]/g' |\
 sed 's/(\([0-9]*,MTT[ijk0-9]\))/\[\1\]/g' |\

@@ -44,6 +44,6 @@
 # Component type Cycle
 	cycle	none	ideal_gas;c_v;gamma_g;m_g	
 
-# Component type SS
-	Heat	SS	internal,external
-	Work	SS	internal,external
+# Component type Sf
+	Heat	SS	external
+	Work	SS	external

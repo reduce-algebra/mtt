@@ -11,6 +11,7 @@
 #PAR V_0
 #PAR S_0
 #PAR U_0
+#PAR big
 
 ### NB TopPressure should be computed within input.txt !!!
 #PAR TopPressure
@@ -45,8 +46,13 @@
 	cycle	none	ideal_gas;c_v;gamma_g;m_g	
 
 # Component type R
-	r		lin	flow,r
+	r		lin	flow,1
 
-# Component type SS
-	Heat	SS	internal,external
-	Work	SS	external,internal
+# Component type Sf
+	Heat	SS	external
+
+# Component type Se
+	Work	SS	external
+
+# Component type Sf
+	Switch	SS	external

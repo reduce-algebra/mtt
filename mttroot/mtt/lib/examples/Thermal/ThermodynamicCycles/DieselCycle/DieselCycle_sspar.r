@@ -6,23 +6,26 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.1  2000/12/28 18:15:21  peterg
+% % To RCS
+% %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 % Set a pressure of 1 bar
-P_0 := 10^5;
+%P_0 := 10^5;
 
 % Unit initial volume
-V_0 := 1;
+%V_0 := 1;
 
 % Internal energy
 U_0 := P_0*V_0/(gamma_g-1);
 
 % Set initial temperature of 300k
-T_0 := 300;
+%T_0 := 300;
 
 % Deduce the mass of gas
-m :=  U_0/(T_0*c_v);
+m_g :=  U_0/(T_0*c_v);
 
 % Entropy
 S_0 := U_0/T_0;

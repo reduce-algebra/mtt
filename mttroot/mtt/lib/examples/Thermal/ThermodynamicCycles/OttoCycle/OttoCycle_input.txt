@@ -21,23 +21,23 @@
 # Set the inputs
 
 if ((t>=0.0)&&(t<1.0))		#Compression
-  OttoCycle__Heat = 0.0;	# Entropy flow
-  OttoCycle__Work = -0.8;	# Volume rate-of-change
+  OttoCycle__Heat__u = 0.0;	# Entropy flow
+  OttoCycle__Work__u = -0.8;	# Volume rate-of-change
 endif;
 
 if ((t>=1.0)&&(t<2.0))		#Heating
-  OttoCycle__Heat = 1000;	# Entropy flow
-  OttoCycle__Work = 0.0;	# Volume rate-of-change
+  OttoCycle__Heat__u = 1000;	# Entropy flow
+  OttoCycle__Work__u = 0.0;	# Volume rate-of-change
 endif;
 
 if ((t>=2.0)&&(t<3.0))		#Expansion
-  OttoCycle__Heat = 0.0;	# Entropy flow
-  OttoCycle__Work = 0.8;	# Volume rate-of-change
+  OttoCycle__Heat__u = 0.0;	# Entropy flow
+  OttoCycle__Work__u = 0.8;	# Volume rate-of-change
 endif;
 
 if (t>=3.0)			#Cooling
-  OttoCycle__Heat = -1000;	# Entropy flow
-  OttoCycle__Work = 0.0;	# Volume rate-of-change
+  OttoCycle__Heat__u = -1000;	# Entropy flow
+  OttoCycle__Work__u = 0.0;	# Volume rate-of-change
 endif;
 
 

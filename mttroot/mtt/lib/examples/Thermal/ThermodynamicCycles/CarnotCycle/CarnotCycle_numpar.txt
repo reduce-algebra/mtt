@@ -6,6 +6,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.2  2000/12/28 18:14:40  peterg
+# %% To RCS
+# %%
 # %% Revision 1.1  1998/03/04 11:49:01  peterg
 # %% Initial revision
 # %%
@@ -17,11 +20,7 @@ V_0 = 1;
 T_0 = 300;
 
 # Parameters
-c_v = 	718.0; # Parameter c_v for CU
-gamma_g = 1.4; # Parameter gamma for CU
+c_v = 	718.0;			# Parameter c_v for CU
+gamma_g = 1.4;			# Parameter gamma for CU
 m_g = 	P_0*V_0/(T_0*(gamma_g-1)*c_v); # Parameter m for CU
-
-
-r = 	1.0; # Parameter r for CarnotCycle
-
 

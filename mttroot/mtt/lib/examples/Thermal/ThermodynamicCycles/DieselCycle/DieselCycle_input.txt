@@ -13,30 +13,29 @@
 
 
 # Set the inputs
-
 if ((t>=0.0)&&(t<1.0))		#Compression
-  dieselcycle__heat = 0.0;	# Entropy flow
-  r = 1e10;			# Big R to make a flow source 
-  dieselcycle__work = 0.8*r;	#- Volume rate-of-change
-  TopPressure = (gamma_g-1)*(x(1)/x(2))
+  dieselcycle__Heat__u = 0.0;	# Entropy flow
+  dieselcycle__switch__u = 1/big; # Large R to make a flow source 
+  dieselcycle__Work__u = 0.8/big;	#- Volume rate-of-change
 endif;
 
 if ((t>=1.0)&&(t<2.0))		#Heating
-  dieselcycle__heat = 1000;	# Entropy flow
-  r    = 1e4;			# small r constant pressure
-  dieselcycle__work = TopPressure; # Pressure source
+  TopPressure = (gamma_g-1)*(x(1)/x(2))
+  dieselcycle__Heat__u = 1000;	# Entropy flow
+  dieselcycle__switch__u = big; # small r constant pressure
+  dieselcycle__Work__u = TopPressure; # Pressure source
   Volume = x(4);
 endif;
 
 if ((t>=2.0)&&(t<3.0))		#Expansion
-  dieselcycle__heat = 0.0;	# Entropy flow
-  r = 1e10;			# Big R to make a flow source 
-  dieselcycle__work = -(1-Volume)*r; # Volume rate-of-change
+  dieselcycle__Heat__u = 0.0;	# Entropy flow
+  dieselcycle__switch__u = 1/big; # Large R to make a flow source 
+  dieselcycle__Work__u = -(1-Volume)*big; # Volume rate-of-change
 endif;
 
 if (t>=3.0)			#Cooling
   Pressure = (gamma_g-1)*x(1)/x(2);
-  dieselcycle__heat = -1000*(Pressure>1e5);	# Entropy flow
-  r = 1e10;			# Big R to make a flow source 
-  dieselcycle__work = 0.0*r;	# Volume rate-of-change
+  dieselcycle__Heat__u = -1000*(Pressure>1e5);	# Entropy flow
+  dieselcycle__switch__u = 1/big; # Large R to make a flow source 
+  dieselcycle__Work__u = 0.0;	# Zero volume rate-of-change
 endif;

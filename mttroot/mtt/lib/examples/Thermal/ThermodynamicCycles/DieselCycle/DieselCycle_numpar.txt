@@ -14,6 +14,8 @@
 # %%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+big = 1e5;			# Large number
+
 # Initial states -- needed to choose an approppriate mass
 P_0 = 1e5;
 V_0 = 1;
@@ -25,7 +27,6 @@ gamma_g = 1.4;			# Parameter gamma_g for CU
 m_g = 	P_0*V_0/(T_0*(gamma_g-1)*c_v);# Parameter m for CU
 
 ## Removed by MTT on Wed Aug  6 17:32:59 BST 2003: pressure	= 1.0; # Added by MTT on Wed Aug 06 17:31:21 BST 2003
-r	= 1.0; # Added by MTT on Wed Aug 06 17:31:21 BST 2003
 s_0	= 1.0; # Added by MTT on Wed Aug 06 17:31:21 BST 2003
 ## Removed by MTT on Wed Aug  6 17:32:59 BST 2003: ## Removed by MTT on Wed Aug  6 17:32:59 BST 2003: toppressure	= 1.0; # Added by MTT on Wed Aug 06 17:31:21 BST 2003
 u_0	= 1.0; # Added by MTT on Wed Aug 06 17:31:21 BST 2003

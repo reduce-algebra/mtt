@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.26  1996/09/10 17:04:47  peter
+## Added impulse response (ir) representation.
+##
 ## Revision 1.25  1996/08/30 20:03:45  peter
 ## Removed dependencies from vc
 ##
@@ -164,9 +167,8 @@ if [ "$1" = "clean" ] && [ "$2" = "" ]; then
   rm -f *_rbg.* *_cmp.* *_fig.fig *_*cbg.* *_ese.* *_def.*
   rm -f *_dae*.* *_cse.* *_ode*.* *_obs.* *_rfe.* *_ss.*
   rm -f *_dm.* *_csm.* *_sm.* *_tf.* *_sr*.* *_ir*.* *_*fr.*
-  rm -f *_rep.*
+  rm -f *_rep.* *_numpar.m
   rm -f mtt_error.txt mtt_info.txt
-  exit
 fi
 
 # Clean up named system
@@ -177,7 +179,7 @@ if [ "$2" = "clean" ] && [ "$3" = "" ]; then
   rm -f $1_rbg.* $1_cmp.* $1_fig.fig $1*_*cbg.* $1*_ese.* $1_def.*
   rm -f $1_dae*.* $1_cse.* $1_ode*.* $1_obs.* $1_rfe.* $1_ss.*
   rm -f $1_dm.* $1_csm.* $1_sm.* $1_tf.* $1_sr*.* $1_ir*.* $1_*fr.*
-  rm -f $1_rep.*
+  rm -f $1_rep.* $1_numpar.m
   rm -f mtt_error.txt mtt_info.txt
   exit
 fi
@@ -258,7 +260,7 @@ if [ "$3" = "vc" ]; then
 	simp )
 		VC='ok'
 		VCext='r' ;;
-	numpar )
+	params )
 		VC='ok'
 		VCext='m' ;;
 	input )
@@ -309,6 +311,16 @@ $1_simp.r:
 
 $1_numpar.m: $1_sympar.r
 	sympar2numpar_r2m $1
+
+$1_params.m: 
+	echo Creating $1_params.m
+	( \
+	echo "function u = $1_params(t)"; \
+	echo "%% Paramaters file for system $1 ($1_params.m)"; \
+	echo "%% This file provides the system params for simulation:";\
+	cat $MTTPATH/trans/m/rcs_header.txt; \
+	echo; \
+        )> $1_params.m
 
 $1_input.m:
 	echo Creating $1_input.m

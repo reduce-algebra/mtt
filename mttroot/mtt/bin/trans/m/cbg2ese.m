@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 # ###############################################################
 # ## $Id$
 # ## $Log$
+# ## Revision 1.31  1998/09/24 12:57:44  peterg
+# ## Now ignores aliasing if no arguments given.
+# ##
 # ## Revision 1.30  1998/09/02 11:14:23  peterg
 # ## Revised to use ordered lists of subsystems and ports
 # ##
@@ -186,6 +189,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   
   # Set up the first dummy bond number - needed for repetative components
 #  next_bond = max(max(abs(components)))+1;
+    next_bond = n_bonds+1;
 
   # Set up the counters for the labelled SS. These are, by definition,
   # encountered first and so the counters will not be messed up by subsystems.

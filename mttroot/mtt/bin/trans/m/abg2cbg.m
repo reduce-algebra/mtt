@@ -2,6 +2,7 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 					port_bonds,
 					port_bond_direction,
 					port_status,
+					derivative_causality,
 					typefile, infofile, errorfile)
 
 # abg2cbg - acausal to causal bg conversion
@@ -19,6 +20,11 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 # ###############################################################
 # ## $Id$
 # ## $Log$
+# ## Revision 1.42  1998/12/03 14:55:40  peterg
+# ## Now uses number of components with complete causality to measure
+# ## progress of algorithm -- Done.
+# ## This replaces bond count -- done.
+# ##
 # ## Revision 1.41  1998/11/20 10:52:28  peterg
 # ## Copies port bonds if the port bonds ARE set
 # ## -- replaces Copies port bonds if the component bonds are NOT set
@@ -382,6 +388,7 @@ name,subsystem
 		
 	    	[comp_bonds,subsystem.status] = abg2cbg(name, subsystem.type, full_name, 
 							comp_bonds, port_bond_direction, port_status, ...
+							derivative_causality, ...
 						    	typefile, infofile, errorfile);
 				#	# Create a single status from the status vector s
 				#	    if max(abs(s)) == 0 # Causal
@@ -434,7 +441,10 @@ name,subsystem
 	  disp("Set causality of a C or I which is not already set")
 	  eval(["ci_bond_index = ABG.",field,".",name,".connections;"]); # Get bonds
 	  ci_direction = sign(ci_bond_index);
-	  ci_bond_index = abs(ci_bond_index)
+	  ci_bond_index = abs(ci_bond_index);
+	  if derivative_causality
+	    prefered = -prefered;
+	  end;
 	  ABG.bonds(ci_bond_index,1:2) = prefered*ci_direction'*[1 1]
 	  eval(["ABG.subsystems.",name,".status=0"]); #set status of the C or I
     	endif

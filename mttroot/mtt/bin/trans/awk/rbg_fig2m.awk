@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1996/08/04 20:32:28  peter
+## Stopped complaint about missing lbl entry for port components
+##
 ## Revision 1.2  1996/08/04 20:05:25  peter
 ## Included port components - eg SS:[1]
 ##
@@ -90,6 +93,13 @@ function process_lbl() {
 	}
 }
 
+function fig_info() {
+# Grabs the fig-file information for a component
+  return(sprintf("%s %s %s %s %s %s %s %s %s %s %s ", \
+		 $1, $2, $3, $4, $5, $6, $7, \
+		 $8, $9, $10, $11))
+	 }
+
 function process_text() {
 # The text string is field 14 onwards
   str = $14; 
@@ -120,7 +130,18 @@ function process_text() {
   x_coord = $12;
   y_coord = $13;
 
-  if (isa_component) {
+# Do the port components
+  if (isa_port_component) {
+    i_port_component++;
+    # Port number is the bit between the []
+    port_number  = substr(a[2],2,length(a[2])-2);
+    x_port[port_number] = x_coord;
+    y_port[port_number] = y_coord;
+    info_port[port_number] = fig_info();
+  }
+
+# Do the plain components
+  if (isa_plain_component) {
     i_text++;
 
     named_component = (match(str,delimiter) > 0);
@@ -185,10 +206,8 @@ function process_text() {
     comp_type[name] = type;
     x[name] = x_coord;
     y[name] = y_coord;
-    info[name] =  sprintf("%s %s %s %s %s %s %s %s %s %s %s ", \
-			  $1, $2, $3, $4, $5, $6, $7, \
-			  $8, $9, $10, $11);
-  }    
+    info[name] =  fig_info();
+  }
 
   if (isa_port) {
     i_port++;
@@ -277,6 +296,8 @@ BEGIN {
   cbg_file = sprintf("%s_cbg1.fig", sys_name);
   warning_f = "WARNING %s \t in fig file but not lbl file  - using\n";
   warning_l = "WARNING %s \t in lbl file but not fig file  - ignoring\n";
+  warning_p = "WARNING system ports are not consecutively numbered\n";
+
   data_symbol = "----";
   default_cr = "";
   default_args = "";
@@ -304,6 +325,8 @@ BEGIN {
   i_label = 0;
   i_text = 0;
   i_name = 0;
+  i_port_component = 0;
+
 }
 {
 # Start of .fig file?
@@ -344,6 +367,30 @@ END {
 
   print  sprintf("rcomponents = [") >> b_file;
   j = 0;
+
+# Do the port componennts, in order, first
+  for (i = 1; i <= i_port_component; i++) {
+    port_type = "SS";
+    name = sprintf("[%1.0f]", i);
+    cr   = i;
+    arg  = "";
+
+    if (length(x_port[i])==0)
+      printf(warning_p);
+    else {
+      j++;
+      print x_port[i], y_port[i], info_port[i] >> b_file;
+      printf("if i==%1.0f\n", j) 	>> c_file;
+      printf("\tcomp_type = %s%s%s;\n", q, port_type, q) >> c_file;
+      printf("\tname = %s%s%s;\n", q, name, q) >> c_file;
+      printf("\tcr = %s%s%s;\n", q, cr, q) >> c_file;
+      printf("\targ = %s%s%s;\n", q, arg, q) >> c_file;
+      print "end" >> c_file
+	}
+    
+  }
+
+# Now do the ordinary components (in no particular order)
   for (i = 1; i <= i_label; i++) {
     name = label[i,1];
     cr   = label[i,2];

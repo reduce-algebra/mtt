@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.199  1998/12/03 16:53:50  peterg
+## Now completes causality using component, not bond, status.
+##
 ## Revision 1.198  1998/11/20 16:12:30  peterg
 ## Now copies aliased systems BEFORE generating rgb etc.
 ##
@@ -729,6 +732,9 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 		steadystate_computation=yes ;;
 	-d )
 		directory=$2; cd $directory; shift ;;
+	-dc )
+		mtt_switches="$mtt_switches $1";
+		causality_switch='-derivative' ;;
 	-S )
 		directory=$2;  shift;;
 	-D )
@@ -821,7 +827,7 @@ if [ -z "$1" ]; then
     echo '         -abg start at abg.m representation'
     echo '         -c  c-code generation'
     echo '         -d  <dir>  use directory <dir>'
-    echo '         -d  <dir>  use directory <dir>'
+    echo '         -dc Maximise derivative (not integral) causality'
     echo '         -o  ode and dae are the same'
     echo '         -p  print environment variables'
     echo '         -ss use steady-state info to initialise simulations'
@@ -1666,7 +1672,8 @@ $1_abg.m: $1_rbg.m $1_alias.m $1_sub.sh
 #SUMMARY cbg	causal bond graph (m)
 #Acausal bond graph to causal bond graph: mfile
 $1_cbg.m: $1_abg.m
-	abg2cbg_m  $info_switch $1
+	echo abg2cbg_m  $info_switch  $1
+	abg2cbg_m  $info_switch $causality_switch $1
 
 $1_type.sh: $1_cbg.m
 

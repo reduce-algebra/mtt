@@ -1,7 +1,32 @@
 #!/bin/sh
 # Gets the subsystems
 
+while [ -n "`echo $1 | grep '^-'`" ]; do
+  case $1 in
+	-strip )
+                strip=yes;
+		;;
+	*)
+		echo "$1 is an invalid argument - ignoring";
+                exit ;;
+  esac
+  shift
+done
+
 subsystems=`sh $1_type.sh 'echo ' ' ' | awk '{if (NR>1) print $2}'`
 
-echo $subsystems
+if [ -n "$strip" ]; then
+      echo $subsystems | sed "s/$1_//" | sed "s/ $1_/ /g"
+   else
+      echo $subsystems
+fi
+
+
+
+
+
+
+
+
+
 

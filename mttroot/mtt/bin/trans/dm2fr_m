@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.14  2000/05/20 15:35:18  peterg
+## Parameterised version
+##
 ## Revision 1.13  1998/09/03 09:12:32  peterg
 ## Removed debugging lines
 ##
@@ -85,24 +88,24 @@ $MATRIX << EOF > dm2fr_m.log 2>mtt_error.txt
 # Simulation parameters
   simpar=$1_simpar;
 
-  [nx,ny,nu,nz,nyz] = $1_def
+  [nx,ny,nu,nz,nyz] = $1_def;
 
   %Defaults
   
-  if exist('simpar.wmin')==0
+  if (struct_contains(simpar,"wmin")==0)
     simpar.wmin = -1;
   end;
 
-  if exist('simpar.wmax')==0
-    simpar.wmax = 2;
+  if (struct_contains(simpar,"wmax")==0)
+    simpar.wmax = 2
   end;
 
-  if exist('simpar.wsteps')==0
+  if (struct_contains(simpar,"wsteps")==0)
     simpar.wsteps = 100;
   end;
 
   W = logspace(simpar.wmin,simpar.wmax,simpar.wsteps)';
-  if exist('mttinput')==0
+  if (struct_contains(simpar,"mttinput")==0)
     mttinput = 1;
   end;
   mttu0 = zeros(nu,1);
@@ -125,13 +128,13 @@ $MATRIX << EOF > dm2fr_m.log 2>mtt_error.txt
   pfr = angle(fr)*180/pi;
 
 % Complex frequency response
-  write_matrix([W fr], '$1_fr');
+  write_matrix([W fr], "$1_fr");
 
 % Log magnitude v log frequency
-  write_matrix([lw lmfr], '$1_lmfr');
+  write_matrix([lw lmfr], "$1_lmfr");
 
 % Angle v log frequency
-  write_matrix([lw pfr], '$1_lpfr');
+  write_matrix([lw pfr], "$1_lpfr");
 
 % Nyquist style
   re = real(fr);
@@ -140,7 +143,7 @@ $MATRIX << EOF > dm2fr_m.log 2>mtt_error.txt
   for i = 2:ny
     nyq = [nyq re(:,i) im(:,i)];
   end;
-  write_matrix(nyq, '$1_nyfr');
+  write_matrix(nyq, "$1_nyfr");
 
 % Nichols style
   re = lmfr;
@@ -149,11 +152,11 @@ $MATRIX << EOF > dm2fr_m.log 2>mtt_error.txt
   for i = 2:ny
     nic = [nic im(:,i) re(:,i)];
   end;
-  write_matrix(nic, '$1_nifr');
+  write_matrix(nic, "$1_nifr");
 
 EOF
 
-# Now invoke the standard error handling.
+# Now invoke the standard error handling,"
 mtt_error mtt_error.txt
 
 

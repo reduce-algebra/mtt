@@ -19,6 +19,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.2  1996/08/05 19:50:55  peter
+## Put in fig.fig target.
+##
 ## Revision 1.1  1996/08/04 17:29:42  peter
 ## Initial revision
 ##
@@ -31,15 +34,9 @@ echo "     ###################################################"
 
 make  -s -f -  $1_$2.$3 << EOF
 
-#Create PostScript version of abg fig file
-$1_abg.ps: $1_abg.fig
-	echo Creating $1_abg.ps
-	fig2dev -Lps $1_abg.fig >$1_abg.ps
-
-#Create PostScript version of cbg fig file
-$1_cbg.ps: $1_cbg.fig
-	echo Creating $1_cbg.ps
-	fig2dev -Lps $1_cbg.fig >$1_cbg.ps
+#Create acausal bond graph figure using xfig 
+$1_abg.fig:
+	$FIG $1_abg.fig &
 
 #Create empty files (with titles) if not already there
 $1_lbl.txt:
@@ -195,15 +192,43 @@ $1_pkim.tex: $1_def.r $1_pkim.r $1_sympar.r
 	pkim_r2tex $1; latex_tidy $1_pkim.tex
 
 
-#Generic conversion of Latex to visual image
-$1_$2.view: $1_$2.tex
-	echo Creating view of $1_$2 
-	showtex $1 $2>$1_$2_view.log
+#Generic conversion of Latex to latex document
+$1_$2.doc: $1_$2.tex
+	showtex $1 $2
 
+#Generic conversion of LaTeX doc to dvi
+$1_$2.dvi: $1_$2.doc
+	echo Creating $1_$2.dvi
+	latex $1_$2.doc > /dev/null
+
+#Create PostScript version of abg fig file
+ifeq ('$2','abg')
+$1_abg.ps: $1_abg.fig
+	echo Creating $1_abg.ps
+	fig2dev -Lps $1_abg.fig >$1_abg.ps
+endif
+
+#Create PostScript version of cbg fig file
+ifeq ('$2','cbg')
+$1_cbg.ps: $1_cbg.fig
+	echo Creating $1_cbg.ps
+	fig2dev -Lps $1_cbg.fig >$1_cbg.ps
+endif
+
+#Generic conversion of dvi to ps
+ifneq ('$2','abg')
+ifneq ('$2','cbg')
+$1_$2.ps: $1_$2.dvi
+	echo Creating $1_$2.ps
+	dvips -o $1_$2.ps $1_$2.dvi 2> /dev/null
+endif
+endif
+
+#View a ps file
+$1_$2.view: $1_$2.ps
+	ghostview $1_$2.ps&
 
 #Report generation
-
-
 $1_rep.tex: $1_sum.tex $1_dae.tex $1_lbl.txt $1_sympar.r $1_cr.r \
             $1_abg.ps
 	echo Creating $1_rep.tex 

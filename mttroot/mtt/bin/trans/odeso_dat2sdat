@@ -1,0 +1,46 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: odeso_dat2sdat
+
+# Structure file - dat to sdat conversion
+# P.J.Gawthrop April 1997
+# Copyright (c) P.J.Gawthrop, 1997.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+
+# Inform user
+echo "Creating $1_odeso.sdat"
+
+rm -f mtt_error
+
+# This is the main transformation using gawk
+gawk '
+
+BEGIN{
+printf("Time");
+}
+{ if ($1=="output")
+    printf(" %s(%s)", $3, $5);
+}
+END{
+printf("\n");
+}
+'  SYSTEM=$1  < $1_struc.txt > $1_odeso.sdat 2>mtt_error.txt
+
+cat $1_odeso.dat >> $1_odeso.sdat 2>>mtt_error.txt
+
+# Now invoke the standard error handling.
+mtt_error mtt_error.txt
+
+

@@ -1,5 +1,5 @@
 Model {
-  Name			  "<mtt_model_name>"
+  Name			  "mdl"
   Version		  4.00
   SampleTimeColors	  off
   LibraryLinkDisplay	  "all"
@@ -27,8 +27,8 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "geraint"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Thu May 23 16:35:42 2002"
-  ModelVersionFormat	  "1.%<AutoIncrement:13>"
+  LastModifiedDate	  "Tue Jun 18 18:49:28 2002"
+  ModelVersionFormat	  "1.%<AutoIncrement:14>"
   ConfigurationManager	  "None"
   SimParamPage		  "Solver"
   StartTime		  "0.0"
@@ -154,8 +154,8 @@ Model {
     FontAngle		    "normal"
   }
   System {
-    Name		    "<mtt_model_name>"
-    Location		    [51, 441, 346, 574]
+    Name		    "mdl"
+    Location		    [61, 487, 356, 620]
     Open		    on
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
@@ -190,7 +190,7 @@ Model {
       RTWFileNameOpts	      "Auto"
       System {
 	Name			"MTT Model\n<mtt_model_name>"
-	Location		[45, 448, 1008, 720]
+	Location		[55, 494, 1018, 766]
 	Open			off
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
@@ -257,6 +257,22 @@ Model {
 	  }
 	}
 	Block {
+	  BlockType		  Memory
+	  Name			  "Memory"
+	  Position		  [870, 80, 900, 110]
+	  X0			  "0"
+	  InheritSampleTime	  off
+	  RTWStateStorageClass	  "Auto"
+	}
+	Block {
+	  BlockType		  Memory
+	  Name			  "Memory1"
+	  Position		  [860, 175, 890, 205]
+	  X0			  "0"
+	  InheritSampleTime	  off
+	  RTWStateStorageClass	  "Auto"
+	}
+	Block {
 	  BlockType		  "S-Function"
 	  Name			  "S-Function"
 	  Ports			  [4, 2]
@@ -309,13 +325,6 @@ Model {
 	  DstPort		  1
 	}
 	Line {
-	  SrcBlock		  "S-Function"
-	  SrcPort		  1
-	  Points		  [30, 0; 0, -70; -850, 0; 0, 105]
-	  DstBlock		  "MTT Plant Model"
-	  DstPort		  1
-	}
-	Line {
 	  SrcBlock		  "In1"
 	  SrcPort		  1
 	  DstBlock		  "S-Function"
@@ -323,8 +332,27 @@ Model {
 	}
 	Line {
 	  SrcBlock		  "S-Function"
-	  SrcPort		  2
+	  SrcPort		  1
+	  DstBlock		  "Memory"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Memory"
+	  SrcPort		  1
+	  Points		  [0, -55; -855, 0]
+	  DstBlock		  "MTT Plant Model"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Memory1"
+	  SrcPort		  1
 	  DstBlock		  "Out1"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "S-Function"
+	  SrcPort		  2
+	  DstBlock		  "Memory1"
 	  DstPort		  1
 	}
       }

@@ -15,9 +15,12 @@ function ch = str2ch(str,n)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/08/30  09:54:44  peter
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-implicit_str_to_num_ok = "true";
+implicit_str_to_num_ok = 'true';
 str = abs(str);
 
 if (n>0) &  (n<=length(str))

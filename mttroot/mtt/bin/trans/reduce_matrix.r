@@ -12,6 +12,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.1  1998/01/22 10:39:01  peterg
+% % Initial revision
+% %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -22,6 +25,7 @@ BEGIN
   IF MTT_Matrix_n>0 THEN
     IF MTT_Matrix_m>0 THEN
     BEGIN
+     write "clear ", MTT_Matrix_name, ";";
      write "MATRIX ", MTT_Matrix_name, "(", MTT_Matrix_n, ",",
                                             MTT_Matrix_m, ");";
     

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  2000/04/06 11:27:56  peterg
+## Removed the in _cr.r
+##
 ## Revision 1.5  1999/12/08 02:04:46  peterg
 ## Removed bug - uj := MTTU(j,1); not commented out
 ##
@@ -50,7 +53,7 @@ esac
 rm -f cse2csm_r.log
 
 # Use reduce to accomplish the transformation
-reduce >cse2csm_r.log << EOF
+$SYMBOLIC >cse2csm_r.log << EOF
 
 in "$1_def.r";
 in "$1_$rep.r";

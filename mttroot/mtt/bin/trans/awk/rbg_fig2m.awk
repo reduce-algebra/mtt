@@ -1,3 +1,4 @@
+
 ###################################### 
 ##### Model Transformation Tools #####
 ######################################
@@ -12,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.22  1997/08/09  14:42:39  peterg
+# Added underscore to port regexp
+#
 ## Revision 1.21  1997/08/04 12:49:17  peterg
 ## Modified to use named (as opposed to numbered) ports.
 ## Generates a list of component ports in the .rbg file.
@@ -193,6 +197,13 @@ function process_text() {
 
 # It must also be specified at depth 0
   isa_port = isa_port && (depth==0);
+
+# Vector port definitions
+  isa_PORT = ((match(str, PORT_regexp)>0) && (depth==0));
+
+  if (isa_PORT) {
+    print str
+  }
 
 # A port component is SS followed by : followed by a port string
   isa_port_component = 0;
@@ -484,9 +495,9 @@ BEGIN {
   q = "\047";
   terminator = "\\001";
   component_regexp = "[^0-9a-zA-Z_:\*-]";
-  port_regexp = "^\[[a-zA-Z0-9_]*\]";
+  port_regexp = "^\[[a-zA-Z0-9_,]*\]";
   nonport_regexp = "[a-zA-Z]";
-    
+  PORT_regexp = "^PORT .*=";  
   isa_fig_file = 0;
   min_line_length = 10;
   object = 0;
@@ -578,8 +589,11 @@ END {
     cr   = label[i,2];
     arg  = label[i,3];
     
-    if (length(x[name])==0)
-      printf(warning_l, name);
+    if (length(x[name])==0) {
+# print error unless its a port component
+      if (match(name,port_regexp)==0)
+        printf(warning_l, name);
+    }
     else {
       j++;
       print x[name], y[name], info[name] >> b_file;
@@ -605,7 +619,9 @@ END {
   printf("port_name = [\n") >> b_file;
   for (i = 1; i <= i_port; i++) {
     split(ports[i],a, " ");
-    printf("'%s'\n", a[3]) >> b_file;
+    # Remove the []
+    name = substr(a[3],2,length(a[3])-2);
+    printf("'%s'\n", name) >> b_file;
   }
   printf("];\n\n") >> b_file;
 
@@ -613,7 +629,7 @@ END {
 #  printf("n_ports = %1.0f;\n", i_port_component) >> b_file;
   printf("port_list = [\n") >> b_file;
   for (i = 1; i <= i_port_component; i++) 
-    printf("'[%s]'\n", port_labels[i]) >> b_file;
+    printf("'%s'\n", port_labels[i]) >> b_file;
   printf("];\n\n") >> b_file;
   
 }

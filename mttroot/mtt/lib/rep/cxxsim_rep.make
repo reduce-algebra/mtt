@@ -16,7 +16,7 @@
 CC=g++
 
 INCLUDE=-I. -I${MTT_LIB}/cr/hh
-OPTIMISE=-O0
+OPTIMISE=-O3
 WARNINGS=-Wall -ansi -pedantic
 
 ifeq ("","$(MTT_ARG)")

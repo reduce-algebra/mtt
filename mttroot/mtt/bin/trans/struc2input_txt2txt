@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  1998/08/10 14:23:58  peterg
+## Added -ss option
+##
 ## Revision 1.10  1998/07/27 11:10:38  peterg
 ## Put in octave-mode line for Emacs
 ##
@@ -49,11 +52,8 @@
 #Look for a command line argument
 # By default, don't look for BG switches
 
-switches=no
 while [ -n "`echo $1 | grep '-'`" ]; do
   case $1 in
-	-s )
-		switches=yes ;;
 	-ss )
 		steadystate_computation=yes ;;
 	*)
@@ -104,11 +104,10 @@ awk '{
 fi
 
 #Set some switches
-if [ "$switches" = "yes" ]; then
   echo  >> $1_input.txt
   echo "# Set the switches"  >> $1_input.txt
-  awk '{print  tolower($1) "= (t>=0);"}'< $1_switch.txt   >> $1_input.txt
-fi
+  strip_comments<$1_switch.txt |\
+  awk '{if (length($1)>0) print  tolower($1) "= (t>=0);"}'
 
 
 

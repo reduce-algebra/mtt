@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/02/22 10:01:42  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 mtt TwoLinkxyn abg tex
@@ -15,4 +18,4 @@ mtt TwoLinkxyn rfe tex
 mtt TwoLinkxyn ode tex
 mtt TwoLinkxyn input txt
 mtt TwoLinkxyn numpar txt
-mtt TwoLinkxyn odeso ps
+mtt -c TwoLinkxyn odeso ps

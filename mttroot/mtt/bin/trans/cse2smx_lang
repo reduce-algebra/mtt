@@ -1,3 +1,13 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: cse2csm_r
+# Constrained-state equation to linear constrained-state matrices conversion
+# Copyright (C) 2000 by Peter J. Gawthrop
+## Modified from eailier version
 
 # Language
 if [ -n "$2" ]; then

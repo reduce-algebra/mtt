@@ -6,11 +6,6 @@
 
 # Bourne shell script: mtt
 
-# Usage: mtt system_name  representation_name
-# E.g.: 
-# 	mtt dc mtf
-# converts dc to matlab transfer function form.
-#
 # P.J.Gawthrop Oct 1989, Dec 1989, 1990, 1991, Oct 1993, Dec 1993, Jan 1994, Dec 95
 # Copyright (c) P.J.Gawthrop, 1989, 1990, 1991, 1993, 1994, 1995, 1996.
 
@@ -19,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.20  1996/08/20 08:24:53  peter
+## Now with version control.
+##
 ## Revision 1.19  1996/08/19 15:33:22  peter
 ## Included new state matric (sm) rep.
 ## Generate step response (sr) from sm.
@@ -87,8 +85,12 @@ echo 'Type `mtt warranty'\' 'for details.'
 echo
 
 if [ "$1" = "" ]; then
-  echo 'Usage: mtt info'
+  echo 'Usage: mtt help'
+  echo '       mtt info'
+  echo '       mtt info topic'
+  echo '       mtt manual'
   echo '       mtt warranty'
+  echo '       mtt clean'
   echo '       mtt system_name clean'
   echo '       mtt system_name representation vc'
   echo '       mtt system_name representation language'
@@ -96,8 +98,22 @@ if [ "$1" = "" ]; then
   exit
 fi
 
-if [ "$1" = "info" ] && [$2 = ""]; then
-  info -f $MTTPATH/../doc/mtt.info
+
+if [ "$1" = "info" ]  && [ "$3" = "" ]; then
+  echo Invoking info
+  info -f $MTTPATH/../doc/mtt.info $2
+  exit
+fi
+
+if [ "$1" = "hinfo" ] && [$2 = ""]; then
+   echo Invoking $HTMLVIEW
+   (cd $MTTPATH/../doc; $HTMLVIEW ./mtt.html)&
+   exit
+fi
+
+if [ "$1" = "manual" ] && [$2 = ""]; then
+  echo Invoking $DVIVIEW
+  $DVIVIEW  $MTTPATH/../doc/mtt.dvi &
   exit
 fi
 
@@ -124,7 +140,20 @@ EOF
   exit
 fi
 
-if [ "$2" = "clean" ]; then
+# Clean up 
+if [ "$1" = "clean" ] && [ "$2" = "" ]; then
+  echo 'Removing all generated files for all systems'
+  rm -f *.log  mtt_info.txt warning.txt
+  rm -f *_abg.m *_args.* 
+  rm -f *_rbg.* *_cmp.* *_fig.fig *_*cbg.* *_ese.* *_def.*
+  rm -f *_dae*.* *_cse.* *_ode*.* *_obs.* *_rfe.* *_ss.*
+  rm -f *_dm.* *_csm.* *_sm.* *_tf.* *_sr*.* *_*fr.*
+  rm -f *_rep.*
+  exit
+fi
+
+# Clean up named system
+if [ "$2" = "clean" ] && [ "$3" = "" ]; then
   echo 'Removing all generated files for system ' $1
   rm -f *.log  mtt_info.txt warning.txt
   rm -f $1_abg.m $1_args.* 
@@ -149,7 +178,7 @@ cat > $1_args.new <<EOF
 $ARGS
 EOF
 
-DIFF=$(diff -bq $1_args.m $1_args.new)
+DIFF=$(diff -bq $1_args.m $1_args.new 2>/dev/null)
 
 if [ -n "$DIFF" ]; then
   mv $1_args.new $1_args.m
@@ -191,6 +220,8 @@ esac
 
 
 # Version control
+VC=''
+
 if [ "$3" = "vc" ]; then
   case $2 in
 	abg )
@@ -514,7 +545,7 @@ endif
 #View a ps file
 $1_$2.pview: $1_$2.ps
 	echo Creating view of $1_$2
-	ghostview $1_$2.ps&
+	$PSVIEW $1_$2.ps&
 
 #View a gdat file
 $1_$2.dview: $1_$2.gdat
@@ -524,13 +555,13 @@ $1_$2.dview: $1_$2.gdat
 #View a tex file
 $1_$2.tview: $1_$2.dvi
 	echo Creating view of $1_$2
-	xdvi $1_$2.dvi&
+	$DVIVIEW $1_$2.dvi&
 	
 
 #Report generation
 $1_rep.make: $1_rep.txt
 	rep_txt2make $1
-$1_rep.tex: $1_rep.make $(cat $1_rep.make)
+$1_rep.tex: $1_rep.make $(cat $1_rep.make 2>/dev/null)
 	rep_txt2tex $1;
 #$1_rep.make: $1_rep.tex
 #	touch $1_rep.make

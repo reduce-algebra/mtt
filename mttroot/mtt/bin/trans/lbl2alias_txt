@@ -4,7 +4,7 @@
      ##### Model Transformation Tools #####
      ######################################
 
-# Bourne shell script: lbl2alias_txt
+# Bourne shell script: lbl2alias_txt2txt
 # Creates the component aliases in text form
 
 # Copyright (c) P.J.Gawthrop 1998
@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/07/02 08:14:07  peterg
+## Initial revision
+##
 ###############################################################
 
 # Inform user

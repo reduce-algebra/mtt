@@ -19,6 +19,9 @@ function structure =  SS_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.5  1996/12/04 21:27:53  peterg
+% %% Replaced str2num by sprintf
+% %%
 % %% Revision 1.4  1996/08/18  20:06:21  peter
 % %% Included zero outputs.
 % %%
@@ -61,7 +64,9 @@ outputs = structure(4);
 zero_outputs = structure(5);
 
 if strcmp(effort_attribute, 'MTT_port') % Its a numbered port
-  port_number = sprintf('%1.0f',flow_attribute);
+  % Convert string to number
+  port_number = abs(flow_attribute)-abs('0');
+
   % Effort 
   if bonds(1,1)==-1 % Source
     fprintf(filenum, '%s := %s_MTTu%1.0f;\n', ...

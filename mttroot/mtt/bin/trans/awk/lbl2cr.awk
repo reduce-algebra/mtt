@@ -2,7 +2,7 @@
 ##### Model Transformation Tools #####
 ######################################
 
-# gawk script: lbl2sympar.awk
+# gawk script: lbl2cr.awk
 # Label file to symbolic parameters conversion
 # P.J.Gawthrop August 1996
 # Copyright (c) P.J.Gawthrop, 1996.
@@ -12,20 +12,7 @@
 ###############################################################
 ## $Id$
 ## $Log$
-## Revision 1.4  1996/08/30 18:45:32  peter
-## Removed header stuff.
-##
-## Revision 1.3  1996/08/30 10:30:54  peter
-## Switched order of args in matches.
-##
-## Revision 1.2  1996/08/30 09:35:10  peter
-## Fixed problem with global variable in function.
-##
-## Revision 1.1  1996/08/24 13:34:48  peter
-## Initial revision
-##
 ###############################################################
-
 
 
 function exact_match(name1, name2) {
@@ -48,38 +35,41 @@ function matches(names, name) {
 BEGIN {
 comment = "%";
 arg_delimiter = ",";
-not_an_arg = "effort flow state internal external zero";
+not_a_cr = "effort flow state internal external zero";
 numeric = "[0-9]";
 symbol_count = 0;
 symbols = "";
 }
 {
   if ( (match($1,comment)==0) && (NF>=3) ) {
-    args = $3;
-    n_args = split(args,arg,arg_delimiter);
-    for (i = 1; i <= n_args; i++) {
-      first_char = substr(arg[i],1,1);
-      if ( (matches(not_an_arg,arg[i])==0) \
-	   && (match(first_char,numeric)==0) \
-	   && (length(arg[i])>0) \
-	   && (matches(symbols,arg[i]) ==0) ) {
-	symbol_count++;
-	symbols = sprintf("%s %s", symbols, arg[i]);
-	  }
+    cr = $2;
+    first_char = substr(cr,1,1);
+    if ( (matches(not_a_cr,cr )==0) \
+	 && (match(not_a_cr,$3)==0) \
+	 && (match(first_char,numeric)==0) \
+	 && (length(cr )>0) \
+	 && (matches(symbols,cr ) ==0) ) {
+      symbol_count++;
+      symbols = sprintf("%s %s", symbols, cr );
     }
   }
 }
 END {
-# print the _sympar file
-
-  printf("MTTNVar := %1.0f;\n", symbol_count);
+# create the _cr file
 
   if (symbol_count>0) {
-    printf("MATRIX MTTVar(MTTNVar,1);\n");
     split(symbols,symbol);
+    printf("cat ");
     for (i = 1; i <= symbol_count; i++) {
-      printf("MTTVar(%1.0f,1) \t := %s;\n", i, symbol[i]);
+      printf("$MTTPATH/cr/r/%s.cr ", symbol[i]);
     }
   }
-  printf("END;\n\n");  
+
+
+
+
+
+
+
+
 }

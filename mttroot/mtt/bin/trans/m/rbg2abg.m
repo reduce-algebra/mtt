@@ -5,6 +5,9 @@ function [bonds,components] = rbg2abg(rbonds,rstrokes,rcomponents,rports,infofil
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.5  1996/08/24 19:21:26  peter
+% %% More specific error messages.
+% %%
 % %% Revision 1.4  1996/08/24 18:00:33  peter
 % %% Fixed bug with finding ports.
 % %%
@@ -98,16 +101,19 @@ for i = 1:n_components
 	b = bond_list(j); e = bond_end(j);
 	% Find all ports on this bond
 	[port_indices,m] = getindex(port_near_bond(:,1),b);
-	% Now find the one at this end
+	% Now find the one at this end  - if any
+	port_index = 0;
 	for l=1:m
-	  port_index = port_indices(l);
-	  if port_near_bond(port_index,2)==e
+	  if port_near_bond(port_indices(l),2)==e
+	    port_index = port_indices(l);
 	    break;
 	  end;
 	end;
-	% and put the corresponding number in the list
-	k=k+1;
-	port_number(k,1) = port_near_bond(port_index,3);
+	if port_index>0
+	  % and put the corresponding number in the list
+	  k=k+1;
+	  port_number(k,1) = port_near_bond(port_index,3);
+	end;
       end;
 
 	% Must have a lable for each port or non at all

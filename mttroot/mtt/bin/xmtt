@@ -15,9 +15,34 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/10/20 08:15:17  peterg
+## Initial revision
+##
 ###############################################################
 
-# Create the menu structure and pipe into wish
-reps_txt2tk < $MTTPATH/REPS | wish -name xmtt
+#Look for a command line argument
+while [ -n "`echo $1 | grep '^-'`" ]; do
+  case $1 in
+	-update )    echo Creating representation list for mtt;
+		mtt2reps_txt> $MTTPATH/REPS;
+		echo Creating examples list for mtt;
+		mtt -q help examples> $MTTPATH/EXAMPLES;;
+        -example )    examples='examples';; 
+	*)
+		echo "$1 is an invalid argument - ignoring" ;;
+  esac
+  shift
+done
+
+if [ -n "$examples" ]; then
+    mtt -q  copy $1; 
+    cd $1; 
+    xmtt
+    exit
+fi
+
+# Use wish
+reps_txt2tk | wish -name xmtt
+
 
 

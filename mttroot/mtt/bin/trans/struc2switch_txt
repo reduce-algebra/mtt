@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  2000/10/17 09:20:00  peterg
+## *** empty log message ***
+##
 ## Revision 1.4  1998/07/26 10:28:30  peterg
 ## Added a header line to avoid empty file and to trigger
 ## switch_txt2m to write initial stuff.
@@ -36,11 +39,11 @@
 echo Creating  $1_switch.txt
 
 rm -f $1_switch.txt
+echo "# These are the switches deduced from ISW and CSW components"\
+ > $1_switch.txt
+
 # This is the main transformation using awk
-awk 'BEGIN{
-printf("# These are the switches deduced from ISW and CSW components\n");
-}
-{ 
+awk '{ 
    if ($1=="state") {i++; if ($3=="MTT_SWITCH")  print tolower($4) "\t" i};
 }
 END{

@@ -7,6 +7,9 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.44  1999/10/19 00:05:44  peterg
+  ## ## Now defaults junction ports when only one specified (for vector junctions)
+  ## ##
   ## ## Revision 1.43  1999/10/18 04:08:46  peterg
   ## ## Now computes n_vector_bonds -- number apparent (maybe vector) bonds per component.
   ## ## Neeeded to vectorise junctions.
@@ -288,22 +291,25 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
 	port_name_index = getindex(port_bond,signed_bond_list(j));
 	if port_name_index>0
 	  junction_port_name = port_name(port_name_index,:);
+	  named_bond_index = j;
 	  junction_names++;
 	endif
       endfor
-      junction_names, junction_port_name
       if junction_names==1	# one named port
 	mtt_info(sprintf("Defaulting all ports on junction %s to %s", comp_name, junction_port_name));
 	## Make the other n-1 names the same.
-	for j=1:n_comp_bonds-1;
-	  port_name = [port_name; ["[" junction_port_name "]"]]; # add to list
-	  [port_name_index,junk] = size(port_name); # the corresponding index
-	  port_bond(port_name_index,:) = signed_bond_list(j); # add to port bond
+	junction_port_name = mtt_strip_name(junction_port_name);
+	for j=1:n_comp_bonds;
+	  if j!=named_bond_index
+	    port_name = [port_name; ["[" junction_port_name "]"]]; # add to list
+	    [port_name_index,junk] = size(port_name); # the corresponding index
+	    port_bond(port_name_index,:) = signed_bond_list(j); # add to port bond
+	  endif
 	endfor
       elseif (junction_names!=0)&&(junction_names!=n_comp_bonds) # not allowed
 	mtt_error(sprintf("Junction %s must have 0, 1 or %i port labels", comp_name,n_comp_bonds),errorfile);
       endif
-      
+      port_name = port_name
     else			# Not a junction
       for j=1:n_comp_bonds
 	signed_bond = signed_bond_list(j);
@@ -351,8 +357,9 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
 				# index
 	  port_bond(port_name_index,:) = signed_bond; # add to port bond
 	else  
-      	  port_name_i = deblank(port_name(port_name_index,:));
-	  port_name_i = port_name_i(2:length(port_name_i)-1) # strip []
+	  port_name_i = mtt_strip_name(port_name(port_name_index,:));
+	  ## port_name_i = deblank(port_name(port_name_index,:));
+	  ## port_name_i = port_name_i(2:length(port_name_i)-1) # strip []
 	endif
 	
 	

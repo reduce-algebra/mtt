@@ -24,6 +24,9 @@ function cbg2fig(system_name, system_type, full_name, ...
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## %% $Id$
   ## %% $Log$
+  ## %% Revision 1.15  2001/03/23 11:20:20  gawthrop
+  ## %% Fixed bug with vector components --NB takes geometric info from _rbg.fig
+  ## %%
   ## %% Revision 1.14  2000/09/14 12:07:15  peterg
   ## %% Fixed overwriting of ports.
   ## %%
@@ -249,15 +252,18 @@ function cbg2fig(system_name, system_type, full_name, ...
   ## Miss out the ports
   
   for i = N_rports+1:N_rcomponents
-    if i>N_ports			# Subsystem
-      comp_name = CBG.subsystemlist(i-N_ports,:);
-      eval(["comp_status = CBG.subsystems.", comp_name, ".status;"]);
-    else
-      comp_name = CBG.portlist(i,:);
-      eval(["comp_status = CBG.ports.", comp_name, ".status;"]);
-    end
+    eval(['[comp_type,comp_name] = ', system_type, '_cmp(i);']);
+    eval(["comp_status = CBG.subsystems.", comp_name, ".status;"]);
+
+#     if i>N_rports			# Subsystem
+#       comp_name = CBG.subsystemlist(i-N_rports,:);
+#       eval(["comp_status = CBG.subsystems.", comp_name, ".status;"]);
+#     else
+#       comp_name = CBG.portlist(i,:);
+#       eval(["comp_status = CBG.ports.", comp_name, ".status;"]);
+#     end
+
     
-   i,comp_name,N_rcomponents,N_rports
     fig_params = rcomponents(i,3:M_components);
     coords = rcomponents(i,1:2);
     
@@ -273,7 +279,6 @@ function cbg2fig(system_name, system_type, full_name, ...
 
 
     ## Now print the component in fig format
-    eval(['[comp_type,comp_name] = ', system_type, '_cmp(i);']);
     
     if index(comp_name,"mtt")==1 # Its a dummy name
       typename = comp_type;	# just show type
@@ -281,9 +286,16 @@ function cbg2fig(system_name, system_type, full_name, ...
       typename = [comp_type,":",comp_name];
     endif;
 
-    Terminator = [bs, '001'];   
+    Terminator = [bs, '001'];  
+    real_index = 8;
     for j = 1:length(fig_params)
-      fprintf(filenum, '%1.0f ', fig_params(j));
+      if j==real_index
+	fprintf(filenum, '%2.4f ', fig_params(j));
+      else
+	fprintf(filenum, '%i ', fig_params(j));
+      endif
+      
+
     endfor
     
     

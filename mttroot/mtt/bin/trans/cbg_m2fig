@@ -18,6 +18,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  2000/12/28 12:19:49  peterg
+## *** empty log message ***
+##
 ## Revision 1.10  2000/09/14 12:04:48  peterg
 ## New 2 parameter version
 ##
@@ -64,7 +67,7 @@ rm -f mtt_info.txt
 #sh $1_type.sh 'cp ' '_fig.fig ' '_cbg.fig'> mtt_error.txt
 
 # Copy the unchaging part of the figure file
-cp $1_fig.fig $2_cbg.fig
+cat $1_head.fig $1_port.fig $1_bnd.fig> $2_cbg.fig
 
 #Inform user
 echo Creating $2_cbg.fig -- component type $1

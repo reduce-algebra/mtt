@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.151  1998/05/23 16:18:37  peterg
+## ordinary differential equation.m files generated with the new ode2lang
+## method.
+##
 ## Revision 1.150  1998/05/19 19:47:37  peterg
 ## Updated the odesso representation to use simpar file.
 ##
@@ -585,6 +589,9 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-l )
                 mtt_switches="$mtt_switches $1";
 		level=$2; shift ;;
+	-A )
+                mtt_switches="$mtt_switches $1";
+                Solving='Solving';;
 	*)
 		echo "$1 is an invalid argument - ignoring" ;;
   esac
@@ -642,6 +649,7 @@ if [ -z "$1" ]; then
     echo '         -u  untidy mode (leaves files in current dir)'
     echo '         -d  <dir>  use directory <dir>'
     echo '         -D  debug -- leave log files etc'
+    echo '         -A  solve algebraic equations symbolically'
     exit
   fi
 fi
@@ -1431,7 +1439,7 @@ $1_dae.tex:	$1_dae.r $1_simp.r
 #SUMMARY cse	constrained-state equations (ps)
 #Constrained-state equations
 $1_cse.r: $1_dae.r $1_def.r $1_sympar.r
-	dae2cse_r $1; tidy $1_cse.r
+	dae2cse_r $1 "$Solving" ; tidy $1_cse.r
 $1_cse.m: $1_def.r $1_cse.r $1_sympar.r 
 	cse_r2m $1; matlab_tidy $1_cse.m
 $1_cse.tex: $1_cse.r  $1_sympar.r $1_simp.r
@@ -1453,7 +1461,7 @@ $1_ode.r: $1_dae.r
 	echo Copying $1_dae.r to $1_ode.r
 	cp $1_dae.r  $1_ode.r
 endif
-$1_ode.m: $1_def.r $1_ode.r $1_sympar.r 
+$1_ode.m: $1_def.m $1_ode.r $1_sympar.r 
 	ode_r2lang $1 m; \
         matlab_tidy $1_ode.m; \
         matlab_tidy $1_odea.m; \
@@ -1463,7 +1471,7 @@ $1_odea.m: $1_ode.m
 $1_odeo.m: $1_ode.m
 	touch $1_odeo.m
 $1_ode.c: $1_def.r $1_ode.r $1_sympar.r $1_sympar.c
-	ode_r2c $1
+	ode_r2c $1 
 $1_ode.tex: $1_ode.r  $1_sympar.r $1_simp.r
 	ode_r2tex $1; latex_tidy $1_ode.tex
 
@@ -1680,7 +1688,7 @@ $1_sr.m: $1_sm.m $1_numpar.m $1_simpar.m $1_def.m
 $1_sro.m: $1_sr.m
 	touch $1_sro.m
 $1_odes.c: $1_ode.c $1_def.r $1_sympar.r
-	ode2odes_r2c $1
+	ode2odes_r2c $1 
 $1_sms.c: $1_sm.c $1_def.r $1_sympar.r
 	sm2sms_r2c $1
 

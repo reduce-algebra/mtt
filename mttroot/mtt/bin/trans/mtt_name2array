@@ -1,0 +1,57 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: mtt_name2array
+
+# Generates array elements from names
+# Copyright (C) 2000 by Peter J. Gawthrop
+
+
+case $2 in
+    numpar)
+        name=mttpar
+	cat $1_sympar.txt>mtt_infile
+	;;
+    state)
+        name=mttx
+        cat $1_struc.txt |\
+        grep $2 |\
+	awk '{printf("%s\n", $4)}'>mtt_infile
+	;;
+    input)
+        name=mttu
+        cat $1_struc.txt |\
+        grep $2 |\
+	awk '{printf("%s\n", $4)}'>mtt_infile
+	;;
+    *)
+	echo Repesentation $2 not supported
+esac
+
+case $3 in
+    zero)
+	  strip_comments <mtt_infile | grep "$filter"  |\
+          awk '{
+          i++; printf(" %s = 0.0;\n", tolower($1));
+          }'
+	;;
+    set)
+	  strip_comments <mtt_infile  |\
+         awk '{
+           i++; printf("%s(%i)\t= %s;\n", name, i, tolower($1));
+         }' name=$name
+        ;;
+    *)
+         strip_comments <mtt_infile  |\
+         awk '{
+           i++; printf("  %s \t= %s(%i);\n", tolower($1), name, i);
+         }' name=$name
+	;;
+esac
+
+
+
+

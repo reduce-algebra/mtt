@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  2000/02/16 15:58:17  peterg
+## Set level='' not $2
+##
 ## Revision 1.8  1998/11/20 09:48:31  peterg
 ## Remove the _lower stuff -- see idf this works now.
 ##
@@ -87,7 +90,7 @@ else
       print "in \"" $1 "\";"
     }'  >> $crfile
 
-  if [ -z "$level" ]; then
+##  if [ -z "$level" ]; then
 
     # Copy .cr files
     awk '{
@@ -107,13 +110,13 @@ else
     crs=`cat $1_cr.txt`
     for cr in $crs; do
         crf=$cr'_cr.r'
-	if [ -e "$crf" ]; then
+	if [ -f "$crf" ]; then
 	   printf "\045 (%s exists)\n" $crf >> $crfile
 	else
 	   printf 'in "%s.cr";\n' $cr >> $crfile
 	fi
     done
-  fi
+##  fi
 echo 'END;' >> $crfile
 
 fi

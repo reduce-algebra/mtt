@@ -15,6 +15,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.301  2001/04/05 03:46:12  geraint
+## Added mtt_prepend.sh, -p preserves time attribute of base file
+## - eliminates error in dependencies due to update of ese.r by modpar.r.
+##
 ## Revision 1.300  2001/04/04 10:06:49  gawthrop
 ## New ssim (sensitiveity simulation) rep
 ##
@@ -2519,6 +2523,8 @@ $1_input.m : $1_def.r
 	make_stdin $1 m
 $1_input.p : $1_def.r
 	make_stdin $1 p
+$1_input.cc:
+	make_stdin $1 cc
 else
 $1_input.m:  $1_input.txt $1_sympars.txt
 	mtt_txt2m $1 input

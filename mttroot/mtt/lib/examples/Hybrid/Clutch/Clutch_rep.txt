@@ -1,0 +1,18 @@
+# Outline report file for system Clutch (Clutch_rep.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+mtt  -o Clutch abg tex
+mtt  -o Clutch struc tex
+mtt  -o Clutch ode tex
+mtt  -o Clutch dm tex
+
+mtt  -o Clutch simpar.txt
+mtt  -o Clutch imput.txt
+mtt  -o Clutch odeso ps
+

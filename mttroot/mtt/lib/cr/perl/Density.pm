@@ -3,7 +3,7 @@
 #-------------------------------------------------------------------------------
 
 
-package Density;
+package mtt::Density;
 
 #-------------------------------------------------------------------------------
 #		linear constitutive relationship with cosine modulation

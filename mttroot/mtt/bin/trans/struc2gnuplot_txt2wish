@@ -20,6 +20,7 @@ exec wish "\$0" "\$@"
 ## main window
 wm title . "MTT Viewer: ${sys}"
 set parameter ""
+set windownum 0
 
 # menu bar
 canvas .menubar
@@ -171,12 +172,16 @@ proc "plot_var" "title column" {
     puts "set term X11"
     global plottype
     if {"\$plottype" == "Multi Plot"} {
-	puts "replot '${dat2}' using 1:\$column title '\$title' with lines"
+	set plot "replot"
     } elseif {"\$plottype" == "New Window"} {
-	puts "! echo \"plot '${dat2}' using 1:\$column title '\$title' with lines\" | gnuplot -geometry 400x300 -persist"
+	global windownum
+	set windownum [ expr \$windownum + 1 ]
+	puts "set terminal x11 \$windownum"
+	set plot "plot"
     } else {
-	puts "plot '${dat2}' using 1:\$column title '\$title' with lines"
+	set plot "plot"
     }
+    puts "\$plot '${dat2}' using 1:\$column title '\$title' with lines"
 }
 
 proc "set_plot_options" "" {

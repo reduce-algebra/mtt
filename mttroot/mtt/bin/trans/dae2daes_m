@@ -1,0 +1,75 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: dae2daesol_m
+
+# Transforms descriptor matrix rep to step response
+
+# Copyright (c) P.J.Gawthrop, 1996.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+echo Creating $1_daesol.m
+rm -f dae2daesol_m.log
+
+if [ "$2" = "" ]; 
+then
+  PARAMS='T=[0:0.1:10];x0=zeros(10,1),dx0=zeros(10,1)'
+  echo Using default parameter $PARAMS
+else
+  PARAMS=$2;
+fi
+
+PARAMS="$PARAMS ;"
+
+
+$MATRIX << EOF > dae2daesol_m.log
+
+  [nx,ny,nu,nz,nyz] = $1_def;
+  t=0;  %Just in case its in the parameter list
+  $PARAMS
+
+  %Defaults
+  if exist('T')==0
+    T=[0:0.1:10]
+  end;
+
+  if exist('x0')==0
+    x0 = zeros(nx+nz,1);
+  end;
+
+  if exist('dx0')==0
+   dx0 = zeros(nx+nz,1);
+  end;
+
+  [n,m]=size(T);
+  if m>n
+    T=T';
+  end;
+
+x = dassl('$1_dae', x0, dx0,  T);
+
+i=0;
+for tt=T'
+  i=i+1;
+  y(i) = $1_daeo(x(i,:),tt);
+end;
+
+write_matrix([T,y], '$1_daesol');
+
+EOF
+
+
+
+
+
+

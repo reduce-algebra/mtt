@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.4  1996/11/09  20:38:45  peterg
+# Put in new lib pat
+#
 ## Revision 1.3  1996/11/04 14:51:14  peterg
 ## Added none to no cr list
 ##
@@ -65,9 +68,9 @@ END {
 
   if (symbol_count>0) {
     split(symbols,symbol);
-    printf("cat ");
     for (i = 1; i <= symbol_count; i++) {
-      printf("$MTTPATH/lib/cr/r/%s.cr ", symbol[i]);
+      #printf("$MTTPATH/lib/cr/r/%s.cr ", symbol[i]);
+      printf("%s\n", symbol[i]);
     }
   }
 

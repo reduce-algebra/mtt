@@ -1,0 +1,30 @@
+%SUMMARY VMe: Volumetric to mass flow and vv - energy bonds
+%DESCRIPTION Converts between P/Vdot energy bond to a Pv/mdot energy bond
+%DESCRIPTION Parameter 1: passed to the Density subcomponent
+%% Label file for system VMe (VMe_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type Density
+	density		none		$1
+
+% Component type EMTF
+	tf		lin		flow
+
+% Component type SS
+	[Hy_in]		external	external
+	[Hy_out]	external	external
+	[P]		external	external
+	[T]		external	external

@@ -14,6 +14,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1996/08/12 20:22:20  peter
+## Paramaters passed via an internal call to _numpar.
+## _args script can overide these parameters - sneaky.
+##
 ## Revision 1.1  1996/08/12 19:09:13  peter
 ## Initial revision
 ##
@@ -70,7 +74,6 @@ END;
 
 
 
-ON NERO;	% Suppress zero elements.
 
 %Fortran switches - one line expressions
 OFF echo;
@@ -80,20 +83,18 @@ fortwidth!* := 100$
 OFF period$
 
 MTTN := MTTNx + 2*MTTNz + MTTNyz;
-
 write "MTTA = zeros(", MTTN, ",", MTTN, ");";
-MTTA := MTTA;
-
 write "MTTB = zeros(", MTTN, ",", MTTNu, ");";
-MTTB := MTTB;
-
 write "MTTC = zeros(", MTTNy, ",", MTTN, ");";
-MTTC := MTTC;
-
 write "MTTD = zeros(", MTTNy, ",", MTTNu, ");";
-MTTD := MTTD;
-
 write "MTTE = zeros(", MTTN, ",", MTTN, ");";
+
+
+ON NERO;	% Suppress zero elements.
+MTTA := MTTA;
+MTTB := MTTB;
+MTTC := MTTC;
+MTTD := MTTD;
 MTTE := MTTE;
 
 SHUT "$1_dm.m";

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.33  1999/09/17 04:25:01  peterg
+## END --> END; in translation
+##
 ## Revision 1.32  1999/08/29 06:54:42  peterg
 ## Added code (mtt_parameters, get args etc) to allow arguments to the
 ## a.out file
@@ -192,7 +195,7 @@ fi
 	echo "    mttx,mttdx,mttxx,mttAAx     : StateVector;"
 	echo "    mttu                        : InputVector;"
 	echo "    mtty                        : OutputVector;"
-	echo "    mttAA                       : StateMatrix;"
+	echo "    mttAA, mttE                 : StateMatrix;"
 	echo "    MTTi,MTTj,MTTit,MTTjt,MTTiLast: INTEGER;"
 	echo "    mttSTEPFACTOR,mttWSTEPS,mttSTEPS,mttINPUT : INTEGER;"
 	echo "    mttMETHOD : IntegrationMethod;"
@@ -283,14 +286,15 @@ BEGIN{
           printf("VAR \n");
           for (k=1;k<i;k++) printf("  %s,\n",global[k])
           printf("%s : REAL;\n", global[i])
-          printvar("x",Nx);
-          printvar("u",Nu);
-          printvar("y",Ny);
+          # printvar("x",Nx);
+          # printvar("u",Nu);
+          # printvar("y",Ny);
           printvar("_t",Nt);
 
           printf("\n{%s $MTTPATH/trans/p/mtt_write.p}\n",inc)
           printf("{%s $MTTPATH/trans/p/sign.p}\n",inc)
           printf("{%s $MTTPATH/trans/p/mtt_euler.p}\n",inc)
+          printf("{%s $MTTPATH/trans/p/mtt_solve.p}\n",inc)
           printf("{%s $MTTPATH/trans/p/mtt_implicit.p}\n",inc)
           # printf("{%s $MTTPATH/trans/p/zero_matrix.p}\n",inc)
           printf("{%s $MTTPATH/trans/p/zero_input.p}\n",inc)
@@ -339,6 +343,7 @@ BEGIN{
             sub(/=/,":=",$0)
             sub(/endif/,"END;{IF}",$0)
             sub(/endfor/,"END;{FOR}",$0)
+            sub(/elseif/,"END ELSEIF BEGIN",$0)
             sub(/else/,"END ELSE BEGIN",$0)
             gsub(/\^/,"**",$0)
             gsub(/&&/," AND ",$0)

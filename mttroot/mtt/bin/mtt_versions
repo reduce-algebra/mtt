@@ -14,24 +14,47 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/05/28 09:24:41  peterg
+## Initial revision
+##
 ###############################################################
 
 echo Versions of mtt and its components on `date`
 
+## gnu standard --version
 mtt_version mtt
 
+echo Doing the GNU components
 mtt_version awk
+mtt_version basename
 mtt_version cat
-#mtt_version echo
+mtt_version cp
+mtt_version dirname
 mtt_version gcc
-#mtt_version gnuplot
 mtt_version grep
+mtt_version head
 mtt_version make
 mtt_version octave
 mtt_version sed
-mtt_version sh
+mtt_version tail
+mtt_version tr
 
+## Non standards
+echo Doing the non-GNU components
 
+echo Trying xfig ...
+xfig -help 2> mtt_junk; version=`grep Xfig mtt_junk`
+echo is OK and has version $version
 
+echo Trying fig2dev ...
+fig2dev -h > mtt_junk; version=`grep -i patchlevel mtt_junk`
+echo is OK and has version $version
+
+echo Trying reduce ...
+reduce >mtt_junk <<EOF
+bye;
+EOF
+version=`grep  REDUCE mtt_junk`
+echo is OK and has version $version
 
 

@@ -1,0 +1,5706 @@
+\input texinfo  
+@c %**start of header
+@setfilename mtt.info
+@settitle MTT: Model Transformation Tools
+@c %**end of header
+
+@finalout
+
+@c Here is what I use in the Info `dir' file:
+@c * Mtt: (mtt).                Model transformation tools.
+
+
+
+@comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@comment  Version control history
+@comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@comment  $Id$
+@comment  $Log$
+@comment  Revision 1.66  2000/12/05 14:20:55  peterg
+@comment  Added the c++  anf m CR info.
+@comment
+@comment  Revision 1.65  2000/11/27 15:36:15  peterg
+@comment  NOPAR --> NOTPAR
+@comment
+@comment  Revision 1.64  2000/11/16 14:22:48  peterg
+@comment  added UNITS declaration
+@comment
+@comment  Revision 1.63  2000/11/03 14:41:08  peterg
+@comment  Added PAR and NOPAR stuff
+@comment
+@comment  Revision 1.62  2000/10/17 17:53:34  peterg
+@comment  Added some simulation details
+@comment
+@comment  Revision 1.61  2000/09/14 17:13:06  peterg
+@comment  New options table
+@comment
+@comment  Revision 1.60  2000/09/14 17:09:20  peterg
+@comment  Tidied up valid name sections
+@comment  Tidied up defining represnetations table
+@comment  Verion 4.6
+@comment
+@comment  Revision 1.59  2000/08/30 13:09:00  peterg
+@comment  Updated option table
+@comment
+@comment  Revision 1.58  2000/08/01 13:30:19  peterg
+@comment  Version 4.4
+@comment  updated STEPFACTOR info
+@comment  describes octave and OCST interfaces
+@comment
+@comment  Revision 1.57  2000/07/20 07:55:44  peterg
+@comment  Version 4.3
+@comment
+@comment  Revision 1.56  2000/05/19 17:49:17  peterg
+@comment  Extended the user defined representation section -- new nppp rep.
+@comment
+@comment  Revision 1.55  2000/03/16 13:53:31  peterg
+@comment  Correct date
+@comment
+@comment  Revision 1.54  2000/03/15 21:22:57  peterg
+@comment  Updated to 4.1 -- old style SS no longer supported
+@comment
+@comment  Revision 1.53  1999/12/22 05:33:10  peterg
+@comment  Updated for 4.0
+@comment
+@comment  Revision 1.52  1999/11/23 00:25:11  peterg
+@comment  Added the sensitivity reps
+@comment
+@comment  Revision 1.51  1999/11/16 04:43:47  peterg
+@comment  Added start of sensitivity section
+@comment
+@comment  Revision 1.50  1999/11/16 00:30:35  peterg
+@comment  Updated simulation section
+@comment  Added vector components
+@comment
+@comment  Revision 1.49  1999/07/20 23:44:58  peterg
+@comment  V 3.8
+@comment
+@comment  Revision 1.48  1999/07/19 03:08:33  peterg
+@comment  Added documentation for (new) SS lbl fields
+@comment
+@comment  Revision 1.47  1999/03/09 01:42:22  peterg
+@comment  Rearranged the User interface section
+@comment
+@comment  Revision 1.46  1999/03/09 01:18:01  peterg
+@comment  Updated for 3.5 including xmtt
+@comment
+@comment  Revision 1.45  1999/03/03 02:39:26  peterg
+@comment  Minor updates
+@comment
+@comment  Revision 1.44  1999/02/17 06:52:14  peterg
+@comment  New level formula dor artwork
+@comment
+@comment  Revision 1.43  1998/11/25 16:49:24  peterg
+@comment  Put in subs.r documentation (was called params.r)
+@comment
+@comment  Revision 1.42  1998/11/24 12:24:59  peterg
+@comment  Added section on simulation output
+@comment  Version 3.4
+@comment
+@comment  Revision 1.41  1998/09/02 12:04:15  peterg
+@comment  Version 3.2
+@comment
+@comment  Revision 1.40  1998/08/27 08:36:39  peterg
+@comment  Removed in. methods except Euler anf implicit
+@comment
+@comment  Revision 1.39  1998/08/18 10:44:28  peterg
+@comment  Typo
+@comment
+@comment  Revision 1.38  1998/08/18 09:16:38  peterg
+@comment  Version 3.1
+@comment
+@comment  Revision 1.37  1998/08/17 16:14:30  peterg
+@comment  Version 3.1 - includes documentation on METHOD=IMPLICIT
+@comment
+@comment  Revision 1.36  1998/07/30 17:33:15  peterg
+@comment  VERSION 3.0
+@comment
+@comment  Revision 1.35  1998/07/22 11:00:53  peterg
+@comment  Correct date!
+@comment
+@comment  Revision 1.34  1998/07/22 11:00:13  peterg
+@comment  Version to BAe
+@comment
+@comment  Revision 1.33  1998/07/17 19:32:19  peterg
+@comment  Added more about aliases
+@comment
+@comment  Revision 1.32  1998/07/05 14:21:56  peterg
+@comment  Further additions (Carlisle-Glasgow)
+@comment
+@comment  Revision 1.31  1998/07/04 11:35:57  peterg
+@comment  Strarted new lbl description
+@comment
+@comment  Revision 1.30  1998/07/02 18:39:20  peterg
+@comment  Started 3.0
+@comment  Added alias and default sections.
+@comment
+@comment  Revision 1.29  1998/05/19 19:46:58  peterg
+@comment  Added the odess description
+@comment
+@comment  Revision 1.28  1998/05/14 09:17:22  peterg
+@comment  Added METHOD variable to the simpar file
+@comment
+@comment  Revision 1.27  1998/05/13 10:03:09  peterg
+@comment  Added unknown/zero SS label documentation.
+@comment
+@comment  Revision 1.26  1998/04/29 15:12:46  peterg
+@comment  Version 2.9.
+@comment
+@comment  Revision 1.25  1998/04/12 17:00:26  peterg
+@comment  Added new port features: coerced direction and top-level behaviour.
+@comment
+@comment  Revision 1.24  1998/04/05 18:27:20  peterg
+@comment  This was the 2.6 version
+@comment
+@comment Revision 1.23  1997/08/24  11:17:51  peterg
+@comment This is the released  version 2.5
+@comment
+@comment  Revision 1.22  1997/08/23 19:38:53  peterg
+@comment  Added simulation chapter.
+@comment
+@comment  Revision 1.21  1997/08/23 16:50:10  peterg
+@comment  Added desc section.
+@comment  Included named and vector ports
+@comment  Completed list of representations.
+@comment
+@comment Revision 1.20  1997/06/16  15:39:24  peterg
+@comment THis is the released 2.4 document.
+@comment
+@comment Revision 1.19  1997/06/16  09:48:23  peterg
+@comment Back under revision control (elm)
+@comment
+@comment  Revision 1.18  1997/06/14 20:27:41  peterg
+@comment  Added complex example section.
+@comment
+@comment  Revision 1.18  1997/06/13  14:51:07  peterg
+@comment  Added report section
+@comment 
+@comment  Revision 1.17  1997/05/09 15:06:02  peterg
+@comment  Changed to version 2.4.
+@comment
+@comment  Revision 1.16  1996/12/05 10:06:25  peterg
+@comment  Modified .octaverc : 'true' --> 1
+@comment
+@comment  Revision 1.15  1996/11/20 19:02:28  peterg
+@comment  Added some system admin stuff.
+@comment  Added section on simple models.
+@comment
+@comment Revision 1.14  1996/11/12  13:19:04  peterg
+@comment Put paths as section, not subsection.
+@comment
+@comment Revision 1.13  1996/11/11  16:53:14  peterg
+@comment Added params documentation
+@comment Sorted out table bug.
+@comment
+@comment  Revision 1.12  1996/11/10 20:29:31  peterg
+@comment  Added section on help -- needs more
+@comment
+@comment  Revision 1.11  1996/11/09 21:15:28  peterg
+@comment  Rewrite of quick start.
+@comment  Update of file structure.
+@comment
+@comment  Revision 1.10  1996/11/09 20:25:54  peterg
+@comment  Final v2.0.
+@comment
+@comment  Revision 1.9  1996/10/01 10:33:02  peter
+@comment  Cleaned up cross references.
+@comment
+@comment  Revision 1.8  1996/10/01 09:31:00  peter
+@comment  Added sections written in Hong Kong.
+@comment
+@comment  Revision 1.7  1996/09/16 09:49:47  peter
+@comment  Added ese section
+@comment
+@comment  Revision 1.6  1996/09/16 08:33:53  peter
+@comment  Added constitutive relationship section etc.
+@comment
+@comment  Revision 1.5  1996/09/15 20:20:56  peter
+@comment  Added abg and rbg stuff
+@comment
+@comment  Revision 1.4  1996/08/30 19:07:40  peter
+@comment  Added some admin stuff.
+@comment
+@comment  Revision 1.3  1996/08/30 07:50:16  peter
+@comment  Added file structure section.
+@comment
+@comment  Revision 1.2  1996/08/22 14:28:50  peter
+@comment  Added stuff about labels.
+@comment
+@comment  Revision 1.1  1996/08/22 11:52:59  peter
+@comment  Initial revision
+@comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+@ifinfo
+This file documents MTT a set of Model Transformation Tools.
+
+
+Copyright (C) Peter J. Gawthrop 1996, 1997, 1998, 1999
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+@end ignore
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+section entitled ``GNU General Public License'' is included exactly as
+in the original, and provided that the entire resulting derived work is
+distributed under the terms of a permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that the section entitled ``GNU General Public License'' may be
+included in a translation approved by the author instead of in the
+original English.
+@end ifinfo
+
+
+@titlepage
+@title MTT: Model Transformation Tools
+@subtitle December 2000
+@subtitle For version 4.8.
+@author Peter Gawthrop
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1996,1997,1998,1999,2000 Peter J. Gawthrop
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+section entitled ``GNU General Public License'' is included exactly in
+the original, and provided that the entire resulting derived work is
+distributed under the terms of a permission notice identical to this
+one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that the section entitled ``GNU General Public License'' may be
+included in a translation approved by the author instead of in the
+original English.
+
+General information  about MTT is available at URL
+@example
+http://mtt.sourceforge.net
+@end example
+@ifhtml
+<A
+HREF="http://mtt.sourceforge.net"> here</A>.
+@end ifhtml
+
+@end titlepage
+
+
+@ifinfo
+@node Top, Introduction, (dir), (dir)
+@top MTT
+@strong{MTT} is a set of Model Transformation Tools based on bond graphs.
+@strong{MTT} implements the theory to be found in the book ``Metamodelling: Bond
+Graphs and Dynamic Systems'' by Peter Gawthrop and Lorcan Smith
+published by Prentice Hall in 1996 (ISBN 0-13-489824-9).
+
+It implements two features not discussed in that book:
+@itemize @bullet
+@item 
+bicausal bond graphs and
+@item
+hierarchical bond graphs.
+@end itemize
+
+
+
+@contents
+
+@end ifinfo
+
+
+@c @include intro.texi
+@c Copyright (C) 1996 Peter J. Gawthrop
+@c This is part of the MTT manual.
+@c For copying conditions, see the file MTT.texi.
+
+@menu
+* Introduction::                
+* User interface::              
+* Creating Models::             
+* Simulation::                  
+* Sensitivity models::          
+* Representations::             
+* Extending MTT::               
+* Languages::                   
+* Language tools::              
+* Administration::              
+* Glossary::                    
+* Index::                       
+
+@detailmenu
+ --- The Detailed Node Listing ---
+
+Introduction
+
+* What is a Representation?::   
+* What is a Transformation?::   
+* Bond graphs::                 What is a bond graph?                
+* Variables::                   
+* Bonds::                       
+* Components::                  
+* Algebraic loops::             
+* Switched systems::            
+
+Components
+
+* Ports::                       
+* Constitutive relationship::   
+* Symbolic parameters::         
+* Numeric parameters::          
+
+User interface
+
+* Menu-driven interface::       
+* Command line interface::      
+* Options::                     
+* Utilities::                   
+
+Utilities
+
+* Help::                        
+* Copy::                        
+* Clean::                       
+* Version control::             
+
+Help
+
+* help representations::        
+* help components::             
+* help examples::               
+* help crs::                    
+* help <name>::                 
+
+Creating Models
+
+* Quick start::                 
+* Creating simple models::      
+* Creating complex models::     
+
+Creating complex models
+
+* Top level::                   
+
+Simulation
+
+* Steady-state solutions::      
+* Simulation parameters::       
+* Simulation input::            
+* Simulation logic::            
+* Simulation initial state::    
+* Simulation output::           
+
+Steady-state solutions 
+
+* Steady-state solutions - numerical(odess)::  
+* Steady-state solutions - symbolic (ss)::  
+
+Simulation parameters
+
+* Euler integration::           
+* Implicit integration::        
+
+Representations
+
+* Representation summary::      
+* Defining representations::    
+* Verbal description (desc)::   
+* Acausal bond graph (abg)::    
+* Stripped acausal bond graph (sabg)::  
+* Labels (lbl)::                
+* Description (desc)::          
+* Structure (struc)::           
+* Constitutive Relationship (cr)::  
+* Parameters::                  
+* Causal bond graph (cbg)::     
+* Elementary system equations::  
+* Differential-Algebraic Equations::  
+* Constrained-state Equations::  
+* Ordinary Differential Equations::  
+* Descriptor matrices::         
+* Report::                      
+
+Acausal bond graph (abg)
+
+* Language fig (abg.fig)::      
+* Language m (rbg.m)::          
+* Language m (abg.m)::          
+* Language tex (abg.tex)::      
+
+Language fig (abg.fig) 
+
+* icon library::                
+* bonds::                       
+* strokes::                     
+* components::                  
+* Simple components::           
+* SS components::               
+* Simple components - implementation::  
+* Compound components::         
+* Named SS components::         
+* Coerced bond direction::      
+* Port labels::                 
+* Vector port labels::          
+* Port label defaults::         
+* Vector components::           
+* artwork::                     
+* Valid names::                 
+
+Simple components
+
+* SS components::               
+* Simple components - implementation::  
+
+Compound components
+
+* Named SS components::      
+
+Language m (rbg.m)
+
+* Transformation abg2rbg_fig2m::  
+
+Language m (abg.m)
+
+* Arrow-orientated causality::  
+* Component-orientated causality::  
+* Transformation rbg2abg_m::    
+
+Stripped acausal bond graph (sabg)
+
+* Language fig (sabg.fig)::     
+* Stripped acausal bond graph (view)::  
+
+Labels (lbl)
+
+* SS component labels ::        
+* Other component labels ::     
+* Component names::             
+* Component constitutive relationship::  
+* Component arguments::         
+* Parameter declarations::      
+* Units declarations::          
+* Aliases::                     
+* Parameter passing::           
+* Old-style labels (lbl)::      
+
+Other component labels 
+
+* Component names::             
+* Component constitutive relationship::  
+* Component arguments::         
+* Aliases::                     
+* Parameter passing::           
+* Old-style labels (lbl)::      
+
+Aliases
+
+* Port aliases::                
+* Parameter aliases::           
+* Component aliases::           
+
+Old-style labels (lbl)
+
+* SS component labels (old-style)::  
+* Other component labels (old-style)::  
+* Parameter passing (old-style)::  
+
+Description (desc)
+
+* Language tex (desc.tex)::     
+
+Structure (struc)
+
+* Language txt (struc.txt)::    
+* Language tex (struc.tex)::    
+* Structure (view)::            
+
+Constitutive relationship (cr)
+
+* Predefined constitutive relationships::  
+* DIY constitutive relationships::  
+* Unresolved constitutive relationships::  
+* Unresolved constitutive relationships - Octave::  
+* Unresolved constitutive relationships - c++::  
+
+Predefined constitutive relationships
+
+* lin::                         
+* exotherm::                    
+
+Parameters
+
+* Symbolic parameters (subs.r)::  
+* Symbolic parameters for simplification (simp.r)::  
+* Numeric parameters (numpar)::  
+
+Numeric parameters (numpar)
+
+* Text form (numpar.txt)::      
+
+Causal bond graph (cbg)
+
+* Language fig (cbg.fig)::      
+* Language m (cbg.m)::          
+
+Language m (cbg.m)
+
+* Transformation abg2cbg_m::    
+
+Elementary system equations (ese)
+
+* Transformation cbg2ese_m2r::  
+
+Differential-Algebraic Equations (dae)
+
+* Differential-Algebraic Equations (reduce)::  
+* Differential-Algebraic Equations (m)::  
+
+Language reduce (dae.r)
+
+* Transformation ese2dae_r::    
+
+Language m (dae.m)
+
+* Transformation dae_r2m::      
+
+Constrained-state Equations (cse)
+
+* Constrained-state Equations (reduce)::  
+* Constrained-state Equations (view)::  
+
+Language reduce (cse.r)
+
+* Transformation dae2cse_r::    
+
+Ordinary Differential Equations
+
+* Ordinary Differential Equations (reduce)::  
+* Ordinary Differential Equations (m)::  
+* Ordinary Differential Equations (view)::  
+
+Language reduce (ode.r)
+
+* Transformation cse2ode_r::    
+
+Language m (ode.m)
+
+* Transformation ode_r2m::      
+
+Descriptor matrices (dm)
+
+* Descriptor matrices (reduce)::  
+* Descriptor matrices (m)::     
+
+Report (rep)
+
+* Report (text)::               
+* Report (view)::               
+
+Extending MTT
+
+* Makefiles::                   
+* New representations::         
+
+Languages
+
+* Fig::                         r
+* m::                           
+* Reduce::                      
+* c::                           
+
+Language tools
+
+* Views::                       
+* Xfig::                        
+* Text editors::                
+* Octave::                      
+* LaTeX::                       
+
+Octave
+
+* Octave control system toolbox (OCST)::  
+
+Administration
+
+* Software components::         
+* REDUCE setup::                
+* Octave setup::                
+* Paths::                       
+* File structure::              
+
+Octave setup
+
+* .octaverc::                   
+
+Paths
+
+* $MTTPATH::                    
+* $MTT_COMPONENTS::             
+* $MTT_CRS::                    
+* $MTT_EXAMPLES::               
+* $OCTAVE_PATH::                
+
+@end detailmenu
+@end menu
+
+@node Introduction, User interface, Top, Top
+@chapter Introduction
+
+@cindex MTT, purpose of
+
+@pindex MTT
+
+@strong{MTT} is a set of Model Transformation Tools based on bond
+graphs.  @strong{MTT} implements the theory to be found in the book
+``Metamodelling: Bond Graphs and Dynamic Systems'' by Peter Gawthrop and
+Lorcan Smith published by Prentice Hall in 1996 (ISBN 0-13-489824-9).
+
+It implements two features not discussed in that book:
+@itemize @bullet
+@item 
+bicausal bond graphs and
+@item
+hierarchical bond graphs.
+@end itemize
+
+In the context of software, it has been said that one good tool is worth many
+packages. UNIX is a good example of this philosophy: the user can put together
+applications from a range of ready made tools.
+This manual describes the application of this philosophy to dynamic
+system modeling embodied in @strong{MTT} - a set of Model Transformation Tools
+each of which implements a single transformation between system
+representations.
+
+
+System representations have two attributes. 
+@itemize @bullet
+@item
+ A Form: e.g. acausal bond graph, differential algebraic, linear
+                state-space etc.
+@item
+A Language: e.g. Fig, Matlab, LaTeX, Reduce, postscript etc.
+@end itemize
+
+Transformations in @strong{MTT} are accomplished using appropriate software (e.g.
+Octave/Matlab, Reduce) encapsulated in UNIX Bourne shell scripts. The
+relationships between the tools are encoded in a Make File; thus the
+user can specify a final representation and all the necessary
+intermediate transformations are automatically generated.
+
+@menu
+* What is a Representation?::   
+* What is a Transformation?::   
+* Bond graphs::                 What is a bond graph?                
+* Variables::                   
+* Bonds::                       
+* Components::                  
+* Algebraic loops::             
+* Switched systems::            
+@end menu
+
+
+@node What is a Representation?, What is a Transformation?, Introduction, Introduction
+@section What is a representation?
+
+@cindex Representations, what are they?
+
+@pindex Representations
+
+Physical systems have many representations. These include
+@itemize @bullet
+@item
+a schematic diagram,
+@item
+a block diagram,
+@item
+a bunch of equations,
+@item
+a single differential(-algebraic) equation,
+@item
+simulation code,
+@item
+linearised state-space (or descriptor) equations,
+@item
+transfer function (of the linearised system),
+@item
+frequency response  (of the linearised system),
+@item
+etc...
+@end itemize
+
+Each of these representations is related to other representations by an
+appropriate transformation (@pxref{What is a Transformation?}. In many cases, a
+modeler is presented with a physical system and needs to make a
+model. In particular, a model, in this context, is a representation of
+the system appropriate to a particular use, for example:
+@itemize @bullet
+@item
+simulation,
+@item
+control system design,
+@item
+optimisation
+@item
+etc.
+@end itemize
+
+Indeed, for a given physical system, the modeler would need to derive
+a number of models. This process can be viewed as a series of steps;
+each involving a transformation between representations (@pxref{What is a Transformation?}.
+
+
+In this context, the following considerations are relevant.
+@itemize @bullet
+@item
+There is a unique `core' representation of any system.
+There are many routes  from this core representation, each leading to
+an appropriate model.
+There are many possible routes  to this core representation
+from the physical system: the route chosen is a matter of convenience.
+@item
+Because the core representation is unique, it is easy to expand the
+tool-box to include additional transformations from the physical system
+to the core representation and additional transformations from the core
+representation to the mode.
+@item
+Transformation_1 probably cannot, and certainly should not, be
+completely automated.  Engineering insight, knowledge and experience is
+essential to capture the essence (with respect to the particular use) of
+the physical system whilst discarding irrelevant form.
+@item
+Representation_1 should be `close' in some sense to the Physical system.
+@item
+The core representation, and hence the representations leading to it,
+must contain enough information to generate all of the required models.
+@item
+Representations must be easily extensible: it must be possible to add
+extra components or attributes without restructuring the representation.
+@end itemize
+
+I happen to believe that Bond graphs (@pxref{Bond graphs}) provide the
+most convenient and powerful basis for the core representation.
+
+@node What is a Transformation?, Bond graphs, What is a Representation?, Introduction
+@comment  node-name,  next,  previous,  up
+@section What is a transformation?
+@cindex Transformations
+
+
+Each system representation  (@pxref{What is a Representation?} is related to other representations by an
+appropriate transformation as follows:
+@itemize @bullet 
+@item
+ Physical system
+@item
+ Transformation_1 ---> Representation_1
+@item
+ Transformation_2 ---> Representation_2
+@item
+ ...
+@item
+ Transformation_N ---> Core representation
+@item
+ Transformation_N+1 ---> Representation_N+1
+@item
+ Transformation_N+2 ---> Representation_N+2
+@item
+ ...
+@item
+ Transformation_N+M ---> Model
+@end itemize
+Thus modeling is seen as a sequence of transformations between
+representations.
+
+
+
+@node Bond graphs, Variables, What is a Transformation?, Introduction
+@section What is a bond graph?
+
+@cindex Bond graphs, what are they?
+
+@pindex Bond graphs
+
+Bond graphs provide a graphical high-level language for describing
+dynamic systems in a precise and unambiguous fashion. 
+They make a clear distinction between structure (how components are
+connected together), and behavior (the particular constitutive
+relationships, or physical laws, describing each component.
+
+They can describe a range of physical systems including:
+@itemize @bullet
+@item
+Electrical systems
+@item
+Mechanical systems
+@item
+Hydraulic systems
+@item
+Chemical process systems
+@end itemize
+
+More importantly, they can describe systems which contain subsystems
+drawn from all of these domains in a uniform manner.
+
+Bond graphs are made up of components (@pxref{Components}) connected by
+bonds (@pxref{Bonds}) which define the relationship between
+variables (@pxref{Variables}).
+
+@node Variables, Bonds, Bond graphs, Introduction
+@comment  node-name,  next,  previous,  up
+@section Variables
+@cindex Variables
+In bond graph terminology there are four sorts of variables:
+@itemize @bullet
+@item  @emph{effort} variables
+@item  @emph{flow} variables
+@item  @emph{integrated effort} variables
+@item  @emph{integrated flow} variables
+@end itemize
+
+Examples of  @emph{effort} variables are
+@itemize @bullet
+@item 
+voltage
+@item 
+pressure
+@item
+force
+@item
+torque
+@item
+temperature
+@end itemize
+
+Examples of  @emph{flow} variables are
+@itemize @bullet
+@item 
+current
+@item 
+volumetric flow rate
+@item
+velocity
+@item
+angular velocity
+@item
+heat flow
+@end itemize
+
+
+
+Examples of integrated  @emph{flow} variables are
+@itemize @bullet
+@item 
+charge
+@item 
+volume
+@item
+momentum
+@item
+angular momentum
+@item
+heat
+@end itemize
+
+
+
+@node Bonds, Components, Variables, Introduction
+@comment  node-name,  next,  previous,  up
+@section Bonds
+@cindex Bonds
+Bonds connect components (@pxref{Components}) together. Each bond
+carries two variables:
+@itemize @bullet
+@item an effort (@pxref{Variables}) variable and 
+@item a flow (@pxref{Variables}) variable.
+@end itemize
+Each bond has three notations associated with it:
+@itemize @bullet
+@item a half-arrow,
+@item a causal stroke and
+@item a causal half-stroke.
+@end itemize
+
+The half-arrow indicates two things:
+@itemize @bullet
+@item the direction of power (or pseudo power) flow and
+@item the side of the bond associated with the flow variable.
+@end itemize
+
+The causal stroke indicates two things:
+@itemize @bullet
+@item the effort variable is imposed at the same end as the stroke and
+@item the flow variable is imposed at the opposite end to the stroke.
+@end itemize
+
+The causal half-stoke indicates one thing:
+@itemize @bullet
+@item if it is on the effort side of the bond, the effort variable is 
+imposed at the same end as the stroke or
+@item if it is on the flow side of the bond, the flow variable is 
+imposed at the opposite end to the stroke.
+@end itemize
+
+
+
+@node Components, Algebraic loops, Bonds, Introduction
+@comment  node-name,  next,  previous,  up
+@section  Components
+@cindex Components
+
+Components provide the building blocks of a dynamic system when
+connected by bonds (@pxref{bonds}).
+Components have the following attributes:
+@vtable @code
+@item ports 
+        provide the connections to other components (@pxref{Ports})
+@item constitutive relationships
+        define how the port-variables are related (@pxref{Constitutive
+relationship})
+@end vtable
+
+
+@menu
+* Ports::                       
+* Constitutive relationship::   
+* Symbolic parameters::         
+* Numeric parameters::          
+@end menu
+
+@node Ports, Constitutive relationship, Components, Components
+@comment  node-name,  next,  previous,  up
+@subsection Ports
+@cindex ports
+Components have one or more ports. Each port carries two variables,
+and effort and a flow variable (@pxref{Variables}). Any pair of ports
+can be connected by a bond (@pxref{Bonds}); this connection is
+equivalent to saying that the effort variables at each port are
+identical and that the flow variables at each port are
+identical.
+
+Ports are implemented in @strong{MTT} using named SS components.
+(@pxref{Named SS components}).
+
+The direction of the named SS components.
+(@pxref{Named SS components}) 
+is coerced (@pxref{Coerced bond direction}) to have the same direction
+as the bons connected to the corresponding port. Thus the direction of
+the  direction of the named SS components has no significance unless the
+component is at the top level.
+
+@node Constitutive relationship, Symbolic parameters, Ports, Components
+@comment  node-name,  next,  previous,  up
+@subsection  Constitutive relationship
+@cindex Constitutive Relationship
+
+The constitutive relationship of a component defines how the port
+variables are related. This relationship may be linear
+or non-linear. This typically contains symbolic parameters
+(@pxref{Symbolic parameters}) which may be replaced, for the purposes
+of numerical analysis by numeric parameters
+(@pxref{Numeric parameters}).
+
+@node Symbolic parameters, Numeric parameters, Constitutive relationship, Components
+@comment  node-name,  next,  previous,  up
+@subsection Symbolic parameters
+@cindex Symbolic parameters
+The constitutive relationship of a system component (@pxref{Components})
+typically contains  symbolic parameters. For example a resistor may have
+a symbolic resistance r. It is convenient to leave such parameters as
+symbols when viewing equations or when performing symbolic analysis such
+as differentiation.
+
+However, @strong{MTT} allows replacement of symbolic parameters by
+numeric parameters (@pxref{Numeric parameters}) when appropriate.
+
+@node Numeric parameters,  , Symbolic parameters, Components
+@comment  node-name,  next,  previous,  up
+@subsection Numeric parameters
+@cindex Numeric parameters
+Numerical parameters are needed to give specific values to symbolic
+parameters (@pxref{Symbolic parameters}) for the purposes of numeric
+analysis;
+for example: simulation, graph plotting or use within a numerical
+package such as Octave (@pxref{Octave}).
+
+
+@node Algebraic loops, Switched systems, Components, Introduction
+@section Algebraic loops
+@cindex Algebraic loops
+Following Chapter 3 of the book, algebraic loops appear as under-causal
+components in the bond graph. It is up to the modeler to indicate how these loops
+are to be resolved by adding appropriate SS elements.
+
+For more information, refer to:
+``Metamodelling: Bond Graphs and Dynamic Systems'' by Peter Gawthrop and
+Lorcan Smith published by Prentice Hall in 1996 (ISBN 0-13-489824-9).
+
+@node Switched systems,  , Algebraic loops, Introduction
+@comment  node-name,  next,  previous,  up
+@section Switched systems
+@cindex Switched systems
+@cindex Hybrid systems
+@cindex logic
+
+Some systems contain switch-like components. For example an electrical
+system may contain on-off switches and diodes and a hydraulic system may
+shut-off valves and non-return valves. 
+
+Such systems are sometimes called hybrid systems. The modelling an
+simulation of such systems is the subject of current research.
+@strong{MTT} implements a simple pragmatic approach to the modelling and
+simulation of such systems via two new Bond Graph components:
+@vtable @code
+@item ISW     
+        a switched @code{I} component
+@item CSW     
+        a switched @code{C} component
+@end vtable
+
+These switches are user controlled through the logic representation
+(@pxref{Simulation logic}).
+
+@node User interface, Creating Models, Introduction, Top
+@comment  node-name,  next,  previous,  up
+@chapter User interface
+@cindex User interface
+@pindex User interface
+There are two user interfaces to  @strong{MTT}: a command line interface
+(@pxref{Command line interface}) and a menu-driven interface
+(@pxref{Menu-driven interface}).
+
+@menu
+* Menu-driven interface::       
+* Command line interface::      
+* Options::                     
+* Utilities::                   
+@end menu
+
+@node Menu-driven interface, Command line interface, User interface, User interface
+@comment  node-name,  next,  previous,  up
+@section Menu-driven interface
+@cindex Menu-driven interface
+@pindex Menu-driven interface
+The Menu-driven interface for @strong{MTT} is invoked as:
+@example
+xmtt
+@end example
+This will bring up a menu which should be self explanatory :-).
+Various messages will be echoed in the window from whence @strong{xMTT}
+was invoked.
+
+@node Command line interface, Options, Menu-driven interface, User interface
+@comment  node-name,  next,  previous,  up
+@section Command line interface
+@cindex Command line interface
+@pindex Command line interface
+The command line interface for @strong{MTT} is of the form:
+@example
+mtt [options] <system_name> <representation> <language>
+@end example
+@vtable @code
+@item [options]
+        the (optional) option switches  (@pxref{Options})
+@item <system_name>    
+        the name of the system being transformed 
+@item <representation>    
+        the mnemonic for the system representation (@pxref{Representation summary})
+@item <language>    
+        the mnemonic for language for the representation (@pxref{Languages})
+@end vtable
+for example
+@example
+mtt rc rep view
+@end example
+creates a view of the report describing system rc and
+@example
+mtt rc sm m
+@end example
+creates an m file (suitlable for Octave or Matlab) containing state
+matrices describing the system rc.
+@node Options, Utilities, Command line interface, User interface
+@comment  node-name,  next,  previous,  up
+@section Options
+@cindex Options
+
+@strong{MTT} has a number of optional switches to control its
+operation. These are invoked immediately after `mtt' on the command
+line; for example:
+@example
+mtt -o -s -c syst cbg view
+@end example
+invokes the @code{-o}, @code{-s}, and @code{-c} options.
+
+The available options are:
+@vtable @code
+@item -q
+        quiet mode -- suppress MTT banner
+@item -A 
+        solve algebraic equations symbolically
+@item -D 
+        debug -- leave log files etc
+@item -I 
+        prints more information
+@item -abg 
+       start at abg.m representation
+@item -c 
+        c-code generation
+@item -d 
+        <dir>  use directory <dir>
+@item -dc 
+       Maximise derivative (not integral) causality
+@item -dc 
+       Maximise derivative (not integral) causality
+@item -i 
+       <implicit|euler>   Use implicit or euler integration
+@item -o 
+       ode is same as dae
+@item -oct 
+       use oct files in place of m files where appropriate
+@item -opt 
+       optimise code generation
+@item -p 
+        print environment variables
+@item -partition 
+       partition hierachical system
+@item -r 
+        reset time stamp on representation
+@item -s 
+        try to generate sensitivity BG (experimental)
+@item -ss 
+       use steady-state info to initialise simulations
+@item -stdin 
+       read input data from standard input for  simulations
+@item -sub 
+       <subsystem> operate on this subsystem
+@item -t 
+        tidy mode (default)
+@item -u 
+        untidy mode (leaves files in current dir)
+@item -v 
+        verbose mode
+@item -viewlevel 
+       <N> View N levels of hierachy
+@item --version 
+       print version and exit
+@item --versions 
+       print version of mtt and components and exit
+@end vtable
+
+@node Utilities,  , Options, User interface
+@comment  node-name,  next,  previous,  up
+@section Utilities
+@cindex Utilities
+@pindex Utilities
+@strong{MTT} provides some utilities to help you keep track of model
+building and to keep things clean and tidy. The commands, and there
+purpose are:
+@ftable @code
+@item mtt help
+        Lists the help/browser commands
+@item mtt copy <system>
+        Copies the system (ie directory and enclosed files) to the
+current working directory.
+@item mtt rename <old_name> <new_name>
+        Renames all of the defining representations (@pxref{Defining
+representations}) and textually changes each file appropriately.
+@item mtt <system> clean
+        Remove all files generated by @strong{MTT} associated with
+system `system'.
+@item mtt clean
+        Remove all files generated by @strong{MTT} associated with
+all systems within the current directory.
+@item mtt system representation vc
+        Apply version control to representation `representation' of
+system `system'.
+@item mtt system vc
+        Apply version control to all representations (under version control)
+system `system'.
+@end ftable
+These are described in more detail in the following sections.
+
+@menu
+* Help::                        
+* Copy::                        
+* Clean::                       
+* Version control::             
+@end menu
+
+@node Help, Copy, Utilities, Utilities
+@comment  node-name,  next,  previous,  up
+@subsection Help
+@cindex Help
+@cindex browser
+@strong{MTT} implements a browser to keep track of all the systems,
+subsystems and constitutive relationships that you, and others may
+write. It is invoked in the following ways:
+@example
+       mtt help representations
+       mtt help components
+       mtt help examples 
+       mtt help crs
+       mtt help representations <match_string>
+       mtt help components <match_string>
+       mtt help examples  <match_string>
+       mtt help crs <match_string>
+       mtt help <component_or_example_or_CR_name>
+@end example
+
+@menu
+* help representations::        
+* help components::             
+* help examples::               
+* help crs::                    
+* help <name>::                 
+@end menu
+
+@node help representations, help components, Help, Help
+@comment  node-name,  next,  previous,  up
+@subsubsection help representations
+@cindex help
+@cindex representations
+
+The command 
+@example
+mtt help representations
+@end example
+lists all of the representations  (@pxref{Representations}) available in
+@strong{MTT}. These may change as the version number of @strong{MTT}
+increases.
+
+The command 
+@example
+mtt help representations <match_string>
+@end example
+lists those representation which contain the string @code{match_string}.
+This string can be any regular expression  (see standard Linux
+documentation under @code{awk}).
+For example
+@example
+mtt help representations descriptor
+@end example
+gives all representations containing the word @code{descriptor}.
+
+@node help components, help examples, help representations, Help
+@comment  node-name,  next,  previous,  up
+@subsubsection help components
+@cindex help
+@cindex components
+
+The command 
+@example
+mtt help components
+@end example
+lists all of the components  (@pxref{Components}) available in
+@strong{MTT}. These may change as the version number of @strong{MTT}
+increases.
+
+The command 
+@example
+mtt help components <match_string>
+@end example
+lists those component which contain the string @code{match_string}.
+This string can be any regular expression  (see standard Linux
+documentation under @code{awk}).
+For example
+@example
+mtt help components source
+@end example
+gives all components containing the word @code{component}.
+
+@node help examples, help crs, help components, Help
+@comment  node-name,  next,  previous,  up
+@subsubsection help examples
+@cindex help
+@cindex examples
+
+This command provides a good way to get started in @strong{MTT}. having
+found an interesting example, copy it to your working directory using
+@example
+mtt copy <example_name>
+@end example
+(@pxref{Copy})
+
+@example
+mtt help examples
+@end example
+lists all of the examples  available in
+@strong{MTT}. 
+This list will change as more examples are added.
+
+The command 
+@example
+mtt help examples <match_string>
+@end example
+lists those component which contain the string @code{match_string}.
+This string can be any regular expression  (see standard Linux
+documentation under @code{awk}).
+For example
+@example
+mtt help examples pharmokinetic
+@end example
+gives all examples containing the word @code{pharmokinetic}.
+
+@node help crs, help <name>, help examples, Help
+@comment  node-name,  next,  previous,  up
+@subsubsection help crs
+@cindex help
+@cindex crs
+
+The command 
+@example
+mtt help crs
+@end example
+lists all of the constitutive relationships   (@pxref{Constitutive
+relationship}) available in
+@strong{MTT}. These may change as the version number of @strong{MTT}
+increases.
+
+The command 
+@example
+mtt help crs <match_string>
+@end example
+lists those constitutive relationships which contain the string @code{match_string}.
+This string can be any regular expression  (see standard Linux
+documentation under @code{awk}).
+For example
+@example
+mtt help crs sin
+@end example
+gives all crs containing the word @code{sin}.
+
+@node help <name>,  , help crs, Help
+@comment  node-name,  next,  previous,  up
+@subsubsection help <name>
+@cindex help
+@cindex <name>
+
+The command 
+@example
+mtt help <name>
+@end example
+gives a detailed description of the entity called @code{name}.
+
+@node Copy, Clean, Help, Utilities
+@comment  node-name,  next,  previous,  up
+@subsection Copy
+@cindex Copy
+
+@strong{MTT} provides a way of copying examples to your working directory:
+@example
+mtt copy <example_name>
+@end example
+
+Use the  command
+@example
+mtt help examples
+@end example
+(@pxref{help examples}) to find something of interest.
+
+Note that components and constitutive relationships are automatically
+copied when required.
+
+@node Clean, Version control, Copy, Utilities
+@comment  node-name,  next,  previous,  up
+@subsection Clean
+@cindex Clean
+@strong{MTT} generates a lot of representations in a number of
+languages.
+Some of these you will edit yourself; others can always be recreated by
+@strong{MTT}. It makes sense, therefore to have a utility that removes
+all of these other files when you have finished actively working with a
+particular system. These are two versions:
+@enumerate
+@item
+@code{mtt system clean}
+@item
+@code{mtt clean}
+@end enumerate
+The first removes all files that can be regenerated with @strong{MTT}
+associated with system `system'; the second removes all such files
+associated with all systems in the current working directory.
+
+The files which remain after such a clean are the Defining
+representations (@pxref{Defining representations}).
+
+@node Version control,  , Clean, Utilities
+@comment  node-name,  next,  previous,  up
+@subsection Version control
+@cindex Version control
+
+When you are working on a modeling project, it is easy to forget what
+changes you made to a system and why you made them. Sometimes, you may
+regret some changes and wish to revert to an earlier version: even if
+you use .old files this may be difficult to achieve safely.
+
+These are very similar problems to those faced by software developers
+and can be solved in the same way: using version control.@strong{MTT}
+provides version control using the standard GNU Revision Control System
+(RCS). This is hidden from the user, but is fully complementary to
+direct use of RCS (e.g. via emacs vc commands) to the more experienced
+user who wishes to do so.
+
+The only files that you should ever change (i.e. the ones never
+overwritten by @strong{MTT}) are the Defining representations
+(@pxref{Defining representations}).
+
+All of the files, with the exception of @code{system_abg.fig}, 
+are initially created by @strong{MTT} and contain the RCS header for
+version control.
+
+
+The @strong{MTT} version control will automatically expand this part of
+the text to include all change comments that you give it -- so will
+direct use of RCS (e.g. via emacs vc commands)
+
+The @strong{MTT} version commands are as follows:
+@ftable @code
+@item mtt system representation vc
+        Apply version control to representation `representation' of
+system `system'.
+@item mtt system vc
+        Apply version control to all representations (under version control)
+system `system'.
+@end ftable
+
+The first is appropriate after you have made a revision to a single
+file.  It will prompt you for a change comment; this will be
+automatically included in the file header. In addition, enough
+information will be saved to enable any  version to be retrieved via
+RCS.
+
+The second is appropriate to record the state of the entire model. This
+assumes that all relevant files have been recorded by the first version
+of the command.  Once again, old versions of the entire model can be
+retrieved using the relevant RCS commands.
+
+A subdirectory `RCS' is created to hold this information. You need not
+bother about the contents, except that you must not delete any files
+within `RCS'.
+
+@node Creating Models, Simulation, User interface, Top
+@comment  node-name,  next,  previous,  up
+@chapter Creating Models
+@cindex  Creating Models
+
+@strong{MTT} helps you to analyse and transform system models --
+ultimately the process of capturing the real world in a model is up to
+you.  This chapter discusses the @strong{MTT} aspects of creating a
+model. For convenience, this is divided into creating simple models and
+creating complex models.
+
+@menu
+* Quick start::                 
+* Creating simple models::      
+* Creating complex models::     
+@end menu
+
+@node Quick start, Creating simple models, Creating Models, Creating Models
+@section Quick start
+@cindex Quick start
+@pindex Quick start
+
+It is probably worth a quick skim though @strong{MTT} to get a flavour of
+what it can do before plunging into the detail of the rest of this
+document. Here is a series of commands to do this.
+
+Copy an initial set of files describing the bond graph.
+@example
+mtt copy rc
+@end example
+@noindent 
+Move to it.
+@example
+cd rc
+@end example
+@noindent 
+@noindent 
+View the acausal bond graph (the system is called ``rc'').
+@example
+mtt rc abg view
+@end example
+@noindent 
+View the causal bond graph of the system.
+@example
+mtt rc cbg view
+@end example
+@noindent 
+View the corresponding ordinary differential equations (ode).
+@example
+mtt rc ode view
+@end example
+@noindent 
+View the system (output) step response
+@example
+mtt rc sro view
+@end example
+
+@noindent 
+An alternative (but more general) way of achieving the same result is
+@example
+mtt -c rc odeso view
+@end example
+
+@noindent 
+View the system transfer function
+@example
+mtt rc tf view
+@end example
+@noindent 
+View the log modulus frequency response of the system.
+@example
+mtt rc lmfr view
+@end example
+
+@noindent 
+View the log modulus frequency response of the system for 100
+logarithmically spaced frequencies in the range 0.1 to 10
+radians per second.
+@example
+mtt rc lmfr view 'W=logspace(-1,1,100);'
+@end example
+
+@strong{MTT} has a report generation ((@pxref{Report}) facility which
+can generate a hypertext description of the system.
+@example
+mtt rc rep hview
+@end example
+
+The report contents are specified by the rep representation
+(@pxref{Report}), in this case the corresponding file is:
+@example
+% %% Outline report file for system rc (rc_rep.txt)
+
+mtt rc abg tex
+mtt rc struc tex
+mtt rc cbg ps
+mtt rc ode tex
+mtt rc ode dvi
+mtt rc sm tex
+mtt rc tf tex
+mtt rc tf dvi
+mtt rc sro ps
+mtt rc lmfr ps
+mtt rc odes h
+mtt rc numpar txt
+mtt rc input txt
+mtt -c rc odeso ps
+mtt rc rep txt
+@end example
+A non-hypertext version can be viewed using:
+@example
+mtt rc rep view
+@end example
+
+Now have a go at modifying the bond graph.
+@example
+mtt rc abg fig
+@end example
+This brings up the bond graph in Xfig (@pxref{Xfig}).  Try creating a
+system with two rs and 2 cs.
+
+More examples can be found using
+@example
+mtt help examples
+@end example
+Details of an example can be found using
+@example
+mtt help <example_name>
+@end example
+and copied using
+@example
+mtt copy <example_name>
+@end example
+
+Lots of examples are available.
+@example
+mtt help examples
+@end example
+lists them and
+@example
+mtt copy <name>
+@end example
+gets you an example.
+
+@ifhtml
+A number of examples are to be found
+<A
+HREF="http://www.mech.gla.ac.uk/~peterg/software/MTT/examples/Examples/Examples.html"> here</A>.
+@end ifhtml
+
+@node Creating simple models, Creating complex models, Quick start, Creating Models
+@comment  node-name,  next,  previous,  up
+@section Creating simple models
+@cindex Creating simple models
+
+For then purposes of this section, simple models are those which are
+built up from bond graphs involving predefined components. In contrast,
+more complex systems (@pxref{Creating complex models}) need to be built
+up hierarchically.
+
+The recommended sequence of steps to create a simple model is:
+@enumerate
+@item Decide on a name for the system; let us call it `syst' for the
+  purposes of this discussion. 
+@item Invoke the Bond Graph editor to draw the acausal Bond Graph.
+@example
+  mtt syst abg fig
+@end example
+@item Draw the Bond Graph  (@pxref{Language fig (abg.fig)}), including
+  the bonds (@pxref{Bonds}), the components (@pxref{Components}) and any
+  artwork (@pxref{artwork}) to make the Bond Graph more readable. The
+  graphical editor xfig is (@pxref{Xfig}) is self-explanatory.
+  The icon library is helpful here (see @pxref{icon library}).
+@item Add causal strokes (@pxref{strokes}) where needed to define
+  causality. As a general rule, use the minimum number of strokes needed
+  to define the problem; this will often be only on the @code{SS} components.
+  (@pxref{SS components}).
+  
+  Save the bond graph.
+  
+@item View the corresponding causal bond graph.
+@example
+  mtt syst cbg view
+@end example
+@enumerate
+@item 
+    At this stage, @strong{MTT} will warn you that the labeled components do
+    not appear in the label file - this can safely be ignored.
+@item
+  @strong{MTT} will indicate the percentage of components which are
+    causally complete -- ideally this will be 100\%. Components which are
+    not causally complete will be listed.
+@item
+    A view of the causal bond graph will be created. The added causal
+    strokes are indicated in blue, undercausal components in green and
+    overcausal components in red.
+@item
+    If the bond graph is causally complete, proceed to the next step,
+    otherwise think hard and return to the first step.
+@end enumerate
+
+@item
+At this stage, no constitutive relationships have been
+defined. Nevertheless, @strong{MTT} will proceed in a semi-qualitative
+fashion by assuming that all constitutive relationships are unity (and
+therefore linear). It may be useful at this stage to view various
+derived representations to check the overall model properties before
+proceeding further. For example:
+@enumerate
+@item
+View the system Differential-algebraic equations
+@example
+mtt syst dae view
+@end example
+@item
+View the system state matrices
+@example
+mtt syst sm view
+@end example
+@item
+View the system transfer function
+@example
+mtt syst tf view
+@end example
+@item
+View the system step response
+@example
+mtt syst sro view
+@end example
+@end enumerate
+
+@item
+As well as creating the causal bond graph, @strong{MTT} has also
+generated templates for other text files 
+(@pxref{Defining representations})
+used to further specify the
+system.
+These can now be edited using your favorite text editor (@pxref{Text
+editors}).
+
+@item @strong{MTT} will now generate the representations
+(@pxref{Representation summary})that you desire.
+For example the system can be simulated by
+@example
+mtt syst odeso view
+@end example
+@strong{MTT} will complain if a component is named in the bond graph but
+not in the label file and vice versa. This mainly to catch typing errors.
+
+@end enumerate
+
+@node Creating complex models,  , Creating simple models, Creating Models
+@comment  node-name,  next,  previous,  up
+@section Creating complex models
+@cindex Creating complex models
+
+Complex models -- in distinction to simple models (@pxref{Creating
+simple models}) -- have a hierarchical structure. In particular, bond
+graph components can be created by specifying their bond
+graph. Typically, such components will have more than one port
+(@pxref{Ports}); within each component, ports are represented by
+named SS components (@pxref{Named SS components}); outwith
+each component, ports are unambiguously identified by 
+labels (@pxref{Port labels}) and vector labels (@pxref{Vector port labels}).
+
+Complex models are thus created by conceptually decomposing the system
+into simple subsystems, and then creating the corresponding bond graphs.
+The procedure for simple systems (@pxref{Creating simple models}) is
+then followed using the top level system (@pxref{Top level}); @strong{MTT} then recursively
+operates on the lower level systems.
+
+The report representation (@pxref{Report}) provides a convenient way of
+viewing a complex system.
+
+An example of such a system can be created as follows:
+@example
+mtt copy twolink
+mtt twolink rep hview
+@end example
+
+@ifhtml
+The result is <A
+HREF="./examples/twolink/twolink_rep/twolink_rep.html"> here</A>.
+@end ifhtml
+
+@menu
+* Top level::                   
+@end menu
+
+@node Top level,  , Creating complex models, Creating complex models
+@comment  node-name,  next,  previous,  up
+@subsection Top level
+@cindex Top level
+The top level of a complex model contains subsystems but is not, itself,
+contained by other systems. 
+It has the following special features:
+@itemize @bullet
+@item
+its name is used in the mtt command as the system name.
+@item
+all named SS componenents (@pxref{Named SS components}) are treated as
+ordinary SS components (@pxref{SS components}).
+@end itemize
+
+
+
+@c      node   next  prev  up
+@node Simulation, Sensitivity models, Creating Models, Top
+@chapter Simulation
+@cindex Simulation
+@pindex Simulation
+One purpose of modelling is to simulate the modeled dynamic
+system. Although this is just another transformation (@pxref{What is a
+Transformation?}) and therefore is covered in the appropriate chapter
+(@pxref{Representations}), it is important enough to be given its own
+chapter.
+
+Simulation is typically performed using an appropriate simulation
+language (which is often inappropriately conflated with modelling
+tools). @strong{MTT} provides a number of alternative routes to
+simulation based on the following representations (@pxref{Representations}):
+@ftable @code
+@item cse
+        constrained-state differential equation form
+@item ode
+        ordinary differential (or state-space) equations
+@c  @item dae
+@c          differential-algebraic (or generalised state-space) equations --
+@c  these may be linear or nonlinear.
+@end ftable
+in each case these equations may be
+linear or nonlinear.
+
+Special cases of numerical simulation, appropriate to @emph{linear}
+systems, are:
+@ftable @code
+@item   ir
+        impulse response - state 
+@item   iro
+        impulse response - output 
+@item   sr
+        impulse response - state 
+@item   sro
+        impulse response - output 
+@end ftable
+
+There are a number of languages (@pxref{Languages}) which can be used to describe these
+representations for the purposes of numerical simulation:
+@ftable @code
+@item m
+        @code{octave} a high-level interactive language for numerical
+        computation.
+@item c
+        @code{gcc} a c compiler.
+@end ftable
+
+There are a number solution algorithms available:
+@itemize @bullet
+@item
+explicit solution via the matrix exponential
+@item
+backward Euler integration (explicit)
+@item
+forward Euler integration (implicit)
+@c  @item
+@c  LSODE (Hindmarsh's ODE solver as implemented in Octave)
+@c  @item
+@c  DASSL (Petzold's DAE solver as implemented in Octave) (Unavailable just now)
+@end itemize
+
+ However, all combinations of representation, language and solution
+method are not supported by @strong{MTT} at the moment. Given a system
+`system', some recommended commands are:
+@ftable @code
+@item mtt system iro view
+        creates the impulse response of a @emph{linear} system via the
+system_sm.m representation using explicit solution via the matrix exponential.
+@item mtt system sro view
+        creates the step response of a @emph{linear} system via the system_sm.m
+representation using explicit solution via the matrix exponential.
+@c  @item mtt system odeso view
+@c          creates the step response of a @emph{nonlinear} system via the
+@c  system_ode.m representation using either METHOD=Euler or
+@c  METHOD=LSODE in the parameter file (@pxref{Simulation parameters}).
+@item mtt -c system odeso view
+        creates the response of a @emph{nonlinear} system via the
+system_ode.c representation using implicit integration.
+@item mtt -c -i euler system odeso view
+        creates the response of a @emph{nonlinear} system via the
+system_ode.c representation using euler integration.
+@end ftable
+
+Simulation parameters are described in the system_simpar.txt file
+(@pxref{Simulation parameters}).
+
+The steady-state solution of a system can also be
+``simulated''(@pxref{Steady-state solutions}).
+@menu
+* Steady-state solutions::      
+* Simulation parameters::       
+* Simulation input::            
+* Simulation logic::            
+* Simulation initial state::    
+* Simulation output::           
+@end menu
+
+@node Steady-state solutions, Simulation parameters, Simulation, Simulation
+@comment  node-name,  next,  previous,  up
+@section Steady-state solutions 
+@cindex Steady-state solutions
+
+@menu
+* Steady-state solutions - numerical(odess)::  
+* Steady-state solutions - symbolic (ss)::  
+@end menu
+
+@node Steady-state solutions - numerical(odess), Steady-state solutions - symbolic (ss), Steady-state solutions, Steady-state solutions
+@comment  node-name,  next,  previous,  up
+@subsection Steady-state solutions (odess)
+@cindex Steady-state solutions - numerical
+
+@strong{MTT} can compute the steady-state solutions of an ordinary
+differential equation; this used the octave function `fsolve'. The
+solution is computed as a function of time using the input specified in
+the input file. The simulation parameter file (@pxref{Simulation
+parameters}) is used to provide the time scales.
+
+For example
+@example
+mtt copy rc
+cd rc
+mtt rc odess view
+@end example
+
+@node Steady-state solutions - symbolic (ss),  , Steady-state solutions - numerical(odess), Steady-state solutions
+@comment  node-name,  next,  previous,  up
+@subsection Steady-state solutions (ss) 
+@cindex Steady-state solutions - symbolic
+A rudimentary form of steady-state solution exists in mtt.
+The steady states and inouts are supplied by the user in the file
+system_simpar.r and the corresponding output and sate derivative
+computed by @strong{MTT} using
+@example
+mtt system ss view
+@end example
+
+For example
+@example
+mtt copy rc
+cd rc
+mtt rc sspar view
+mtt rc ss view
+@end example
+
+
+@node Simulation parameters, Simulation input, Steady-state solutions, Simulation
+@comment  node-name,  next,  previous,  up
+@section Simulation parameters
+@cindex Simulation parameters
+
+Simulation parameters are set in the system_simpar.txt file. At the
+moment this sets the following variables:
+@itemize @bullet
+@item LAST
+        the last simulation time
+@item DT
+        the incremental time (for plotting)
+@item STEPFACTOR
+        the number of integration steps per DT -- thus the integration
+        interval is DT/STEPFACTOR
+@c ; for sparse implicit integration (@pxref{Sparse
+@c implicit integration}) the number of conjugate-gradient minimisation
+@c steps.
+@c  @item METHOD
+@c          The integration methods available appear in the following table
+@item WMIN
+        Minimum frequency = 10^WMIN
+@item WMAX
+        Maximum frequency = 10^WMAX
+@item WSTEPS
+        Number of Frequency steps.
+@item INPUT
+        The input index for frequency response
+@end itemize
+
+There are two integration algorithms
+@itemize @bullet
+@item Euler
+        basic Euler integration (@pxref{Euler integration}). This method
+is simple, but not recommended for stiff systems.
+@item Implicit
+        semi-implicit integration  (@pxref{Implicit integration}) - uses the smx representation to give
+        stability.
+@c @item ImplicitS
+@c         Sparse semi-implicit integration  (@pxref{Sparse implicit integration})
+@c -- takes advantage of the sparsity of the A matrix.
+@c @item LSODE
+@c         the variable step-size method that comes with Octave (@pxref{Octave}).
+@end itemize
+
+@menu
+* Euler integration::           
+* Implicit integration::        
+@end menu
+
+@node Euler integration, Implicit integration, Simulation parameters, Simulation parameters
+@comment  node-name,  next,  previous,  up
+@subsection Euler integration
+@cindex Euler integration
+Euler integration approximates the solution of the Ordinary Differential Equation 
+@example
+dx/dt = f(x,u)
+@end example
+by
+@example
+x := x + f(x,u)*DDT
+@end example
+where
+@example
+DDT = DT/STEPFACTOR
+@end example
+If the system is linear, stability is ensured if the integer STEPFACTOR
+is chosen to be greater than the real number
+@example
+(maximum eigenvalue of -A)*DT/2
+@end example
+where A is the nxn matrix appearing in
+@example
+f(x,u) = Ax + Bu
+@end example
+If the system is non linear, the linearised system matrix A should act
+as a guide to the choice of STEPFACTOR.
+
+@node Implicit integration,  , Euler integration, Simulation parameters
+@comment  node-name,  next,  previous,  up
+@subsection Implicit integration
+@cindex Implicit integration
+Implicit integration approximates the solution of the Ordinary Differential Equation 
+@example
+dx/dt = f(x,u)
+@end example
+by
+@example
+(I-A*DT)x := (I-A*DT)x + f(x,u)DT
+@end example
+where A is the linearised system matrix. This implies the solution of N
+(=number of states) linear equations at each sample interval. The OCTAVE
+version used the `\' operator to solve the set of linear equations, the
+C version uses LU decomposition.
+
+If the system is linear, stability is ensured unconditionaly. If the
+system is non-linear, then the method still works well.
+
+This method is nice in that choice of DT trades of accuracy against
+computation time without compromising stability. In addition, the
+correct stready-state values are achieved.
+
+This approach can also be used for constrained state equations of the
+form:
+@example
+E(x) dx/dt = f(x,u)
+@end example
+where E(x) is a state-dependent matrix. The approximate solution is then
+given by:
+@example
+(E(x)-A*DT)x := (E(x)-A*DT)x + f(x,u)DT
+@end example
+which reduces to the ordinary differential equation case when E(x)=I.
+
+The _smx representation includes the E matrix.
+
+@c @node Sparse implicit integration,  , Implicit integration, Simulation parameters
+@c @comment  node-name,  next,  previous,  up
+@c @subsection Sparse implicit integration
+@c @cindex Sparse implicit integration
+@c This is an experimental approach for large (N>50) systems.
+
+@c Implicit integration (@pxref{Implicit integration}) requires the
+@c solution of N linear equations at each step. This is an O(N^3) operation
+@c which can be time consuming for large (N>50) systems. However, the A
+@c matrix (and hence the (I-A*DT) matrix) is often sparse - most elements
+@c are zero.
+
+@c This method uses a conjugate-gradient optimisation method to solve the
+@c linear equations
+@c @example
+@c (I-A*DT)x := (I-A*DT)x + f(x,u)DT
+@c @end example
+@c by recasting them as the minimisation of the quadratic function
+@c @example
+@c [(I-A*DT)x_new - (I-A*DT)x_old + f(x,u)DT]^2
+@c @end example
+@c with respect to x_new. This is solved by the conjugate gradient method.
+@c MTT generates two representations _smxx.m and _smxtx to compute
+@c (I-A*DT)x and (I-A*DT)'x respectively making full use of the sparsity of
+@c the (I-A*DT) matrices to speed up the minimisation procedure.
+
+@c A fixed number of iterations (STEPFACTOR) are used in each optimisation
+@c to give a fixed simulation time. This must be chosen by the user, but
+@c between 5N and 10N seems ok. Note that the initial value of the
+@c optimisation is x_old.
+
+@node Simulation input, Simulation logic, Simulation parameters, Simulation
+@comment  node-name,  next,  previous,  up
+@section Simulation input
+@cindex Simulation input
+This is defined in the system_input.txt file. A default file is created
+automatically by @strong{MTT}. This is done explicitly by
+@example
+mtt system input txt
+@end example
+If the file already exists, the same command checks that all inputs are
+defined and that all defined inputs exist in the system and promts the
+user to correct discrepancies.
+
+Inputs are defined by the full system name appearing in the structure
+file (@pxref{Structure (struc)}). They can depend on states (again defined by
+name), time (defined by t) and parameters
+
+For example:
+@example
+system_pump_l_1_u	= 4e5*atm;
+system_pump_r_1_u	= 4e5*(t<10)*atm;
+system_ss_i	        = 0*kg;
+system_ss_o	        = 3e-3*kg;
+system_v_1_u	        = (t>10);
+system_v_ll_1_u         = 1;
+system_v_lr_1_u         = (t<10);
+system_v_ul_1_u         = 0;
+system_v_ur_1_u         = (t>10);
+@end example
+
+@node Simulation logic, Simulation initial state, Simulation input, Simulation
+@comment  node-name,  next,  previous,  up
+@section Simulation logic
+@cindex Simulation logic
+This is defined in the system_logic.txt file. A default file is created
+automatically by @strong{MTT}. This is done explicitly by
+@example
+mtt system logic txt
+@end example
+If the file already exists, the same command checks that the logic
+corresponding to all switch states (@pxref{Switched systems}) are
+defined and that all defined logic exists in the system and promts the
+user to correct discrepancies.
+
+Logical inputs are defined by the full system name corresponding to
+MTT_switch components appearing in the structure file (@pxref{Structure
+(struc)}) @emph{with `_logic' appended}. They can depend on states (again defined by name), time
+(defined by t) and parameters
+
+For example:
+@example
+bounce_ground_1_mtt_switch_logic	= bounce_intf_1_mtt3<0;
+@end example
+
+@node Simulation initial state, Simulation output, Simulation logic, Simulation
+@comment  node-name,  next,  previous,  up
+@section Simulation initial state
+@cindex Simulation initial state
+This is defined in the system_state.txt file. A default file is created
+automatically by @strong{MTT}. This is done explicitly by
+@example
+mtt system state txt
+@end example
+If the file already exists, the same command checks that all states are
+defined and that all defined states exist in the system and prompts the
+user to correct discrepancies.
+
+States are defined by the full system name appearing in the structure
+file (@pxref{Structure (struc)}). They can depend on parameters.
+For example
+@example
+system_c_l	= (1e4/k_l)/kg;
+system_c_ll	= (1e4/k_s)/kg;
+system_c_lr	= (1e4/k_s)/kg;
+system_c_u	= (1e4/k_l)/kg;
+@end example
+
+
+@c  The initial state of a simulation of is set in the @code{state}
+@c  representation with the language @code{txt}.
+
+@c  As usual, @strong{MTT} defaults this for you. There are two
+@c  possibilities
+@c  @itemize @bullet
+@c  @item
+@c  The -ss switch is not present: the states default to zero
+@c  @item
+@c  The -ss switch is present: the states default to those set in the
+@c  sspar.r file.
+@c  @end itemize
+
+@node Simulation output,  , Simulation initial state, Simulation
+@comment  node-name,  next,  previous,  up
+@section Simulation output
+@cindex Simulation output
+The view (@pxref{Views}) representation provides a graphical
+representation of the results of a simulation; the postscript language
+provides the same thing in a form that can be included in a document.
+
+These are two simulation output representations
+@ftable @code
+@item odes 
+        ordinary differential equation solution (states)
+@item odeso
+         ordinary differential equation solution (output)
+@end ftable    
+
+Particular output variables can be selected by adding a fourth argument
+in one of 2 forms
+@ftable @code
+@item 'name1;name2;..;namen' 
+        plot the variables with names na1 .. namen against time
+@item 'name1:name2'
+                plot the variable with  name2 against that with name 1
+@end ftable    
+
+An example of plotting a single variable against time is:
+@example
+mtt -o -c -ss OttoCycle odeso ps 'OttoCycle_cycle_V'
+@end example
+An example of plotting one variable against another is:
+@example
+mtt -o -c -ss OttoCycle odeso ps 'OttoCycle_cycle_V:OttoCycle_cycle_P'
+@end example
+
+@c      node   next  prev  up
+@node   Sensitivity models, Representations, Simulation, Top
+@chapter Sensitivity models
+@cindex Sensitivity models
+@pindex Sensitivity models
+
+The sensitivity model of a system is a set of equations giving the
+sensitivity of the system outputs with respect to system parameters.
+@strong{MTT} has built in methods for assisting with the development of
+such models.
+
+This feature is experimental at the moment, but the following example
+gives an idea of what can be achieved.
+@example
+mtt copy rc
+cd rc
+mtt -s src ode view
+mtt -s src odeso view
+@end example
+The sensitivity system src is automatically created from the system rc
+using the predefined sR and sC components together with vector junctions
+(@pxref{Vector components}).  The four outputs are the two system
+outputs plus the two sensitivity functions.
+
+An alternative route is to create the sensitivity functions by symbolic
+differentiation.
+The following sensitivity representations are available:
+@ftable @code
+@item   scse
+        sensitivity constrained-state equations
+@item   sm
+        sensitivity state matrices
+@item   scsm
+        sensitivity constrained-state matrices
+@end ftable
+
+
+
+@c      node   next  prev  up
+@node   Representations, Extending MTT, Sensitivity models, Top
+@chapter Representations
+@cindex Representations
+@pindex Representations
+@cindex Defining representations
+@cindex Representations, defining
+
+As discussed in @ref{What is a Representation?}, a system has many
+representations. The purpose of @strong{MTT} is to provide an easy way to
+generate such representation by applying the appropriate sequence of 
+transformations. The representations supported by @strong{MTT} are
+summarised in @ref{Representation summary}.
+
+There is a two-fold division of representations into those with which the user
+defines the system and its various attributes, and those which are
+derived from these. The @emph{defining representations} are listed in
+@ref{Defining representations}. 
+
+Each representation is implemented in one or more languages depending on
+its use. These languages are discussed in @ref{Languages} and are
+associated with appropriate tools for modifying or viewing the
+representations. 
+
+@menu
+* Representation summary::      
+* Defining representations::    
+* Verbal description (desc)::   
+* Acausal bond graph (abg)::    
+* Stripped acausal bond graph (sabg)::  
+* Labels (lbl)::                
+* Description (desc)::          
+* Structure (struc)::           
+* Constitutive Relationship (cr)::  
+* Parameters::                  
+* Causal bond graph (cbg)::     
+* Elementary system equations::  
+* Differential-Algebraic Equations::  
+* Constrained-state Equations::  
+* Ordinary Differential Equations::  
+* Descriptor matrices::         
+* Report::                      
+@end menu
+
+@node Representation summary, Defining representations, Representations, Representations
+@comment  node-name,  next,  previous,  up
+@section Representation summary
+@cindex Representation summary
+
+Some of the the representations 
+available in @strong{MTT} are (in alphabetical order):
+@ftable @code
+@item   abg
+        acausal bond graph 
+@item   cbg
+        causal bond graph 
+@item   cr
+        constitutive relationship for each subsystem 
+@item   cse
+        constrained-state equations 
+@item   csm
+        constrained-state matrices 
+@item   dae
+        differential-algebraic equations 
+@item   daes
+        dae solution - state 
+@item   daeso
+        dae solution - output 
+@item   def
+        definitions - system orders etc. 
+@item   desc
+        Verbal description of system 
+@item   dm
+        descriptor matrices 
+@item   ese
+        elementary system equations 
+@item   fr
+        frequency response 
+@item   input        
+        numerical input declaration 
+@item   ir
+        impulse response - state 
+@item   iro
+        impulse response - output 
+@item   lbl
+        label file 
+@item   lmfr
+        loglog modulus frequency response 
+@item   lpfr
+        semilog phase frequency response 
+@item   nifr
+        Nichols style frequency response 
+@item   numpar
+        numerical parameter declaration 
+@item   nyfr
+        Nyquist style frequency response 
+@item   obs
+        observer equations for CGPC 
+@item   ode
+        ordinary differential equations 
+@item   odes
+        ode solution - state 
+@item   odes
+        ODE simulation header file 
+@item   odeso
+        ode solution - output 
+@item   odess
+        ode numerical steady-states - states 
+@item   odesso
+        ode numerical steady-states - outputs 
+@item   rbg
+        raw bond graph 
+@item   rep
+        report 
+@item   rfe
+        robot-form equations 
+@item   sabg
+        stripped acausal bond graph 
+@item   simp
+        simplification information 
+@item   sm
+        state matrices 
+@item   smx
+        state matrices containing explicit states and inputs
+@item   sms
+        ode 
+@item   smss
+        SM simulation header file 
+@item   sr
+        step response - state 
+@item   sro
+        step response - output 
+@item   ss
+        steady-state equations 
+@item   sspar
+        steady-state definition 
+@item   struc
+        structure - list of inputs, outputs and states 
+@item   sub
+        Executable subsystem list 
+@item   sub
+        LaTeX subsystem list 
+@item   sympar
+        symbolic parameters 
+@item   tf
+        transfer function 
+@end ftable
+A complete list can be found via the @code{help representations} command
+(@pxref{help representations}). 
+
+Many of these representations have more than one language (@pxref{Representations}) associated
+with them.
+
+Some of these representations define the system (@pxref{Defining
+representations}).
+
+@node Defining representations, Verbal description (desc), Representation summary, Representations
+@comment  node-name,  next,  previous,  up
+@section Defining representations
+@cindex Defining representations
+
+The following representations define the system and therefore must,
+ultimately, be defined by the user. However, all of these are assigned
+default values by @strong{MTT} and may then be subsequently edited
+(@pxref{Text editors}) viewed or operated on by the appropriate tools
+(@pxref{Language tools}).
+@vtable @code
+@item system_abg.fig
+        the acausal bond graph (@pxref{Acausal bond graph (abg)})
+@item system_lbl.txt
+        the label file (@pxref{Labels (lbl)})
+@item system_desc.tex
+        the description file (@pxref{Description (desc)})
+@item system_simp.r
+        algebraic simplifications to make output more readable
+        (@pxref{Symbolic parameters for simplification (simp.r)})
+@item system_subs.r
+        algebraic substitutions to resolve, eq trig. identities
+        (@pxref{Symbolic parameters (subs.r)})
+@item system_simpar.txt
+        simulation parameters (@pxref{Simulation parameters})
+@item system_numpar.txt
+        numerical parameters (@pxref{Numeric parameters (numpar)})
+@item system_input.txt
+        the system input for simulations (@pxref{Simulation input})
+@item system_logic.txt
+        the  switching logic for simulations (@pxref{Simulation logic})
+@item system_sspar.r
+        defines the system steady-state (@pxref{Steady-state solutions - symbolic (ss)})
+@end vtable
+
+@node Verbal description (desc), Acausal bond graph (abg), Defining representations, Representations
+@comment  node-name,  next,  previous,  up
+@section Verbal description (desc)
+@cindex Verbal description (desc)
+
+Systems can be documented in LaTeX using the _desc.tex file. This file
+is included in the report (@pxref{Report}) if the abg tex option
+is included in the rep.txt file.  As usual, @strong{MTT} provides a
+default text file to be edited by the user (@pxref{Text editors}).
+
+
+@c      node   next  prev  up
+@node   Acausal bond graph (abg), Stripped acausal bond graph (sabg), Verbal description (desc), Representations
+@section Acausal bond graph (abg)
+@cindex Acausal bond graph (abg)
+@pindex Acausal bond graph (abg)
+
+The acausal bond graph is the main input to @strong{MTT}. It is up to you, as a
+system modeler, to distill the essential aspects of the system that you
+wish to model and capture this information in the form of a bond graph.
+
+The inexperienced modeler may wish to look in one of the standard
+textbooks and copy some bond graphs of  systems to get going.
+
+
+To create the acausal bond graph of system `sys' in language fig type:
+@example
+mtt sys abg fig
+@end example
+To create the acausal bond graph of system `sys' in language m type:
+@example
+mtt sys abg m
+@end example
+To view the acausal bond graph of system `sys' type:
+@example
+mtt sys abg view
+@end example
+
+@menu
+* Language fig (abg.fig)::      
+* Language m (rbg.m)::          
+* Language m (abg.m)::          
+* Language tex (abg.tex)::      
+@end menu
+
+@node Language fig (abg.fig), Language m (rbg.m), Acausal bond graph (abg), Acausal bond graph (abg)
+@subsection Language fig (abg.fig) 
+@cindex Language fig (abg.fig) 
+@pindex Language fig (abg.fig) 
+
+A bond graph is made up of:
+@ftable @code
+@item bonds
+        To connect components together.
+@item strokes
+        To indicate causality.
+@item components
+        Either simple or compound.
+@item artwork
+        Irrelevant to the system but useful to the user.
+@end ftable
+
+An icon library of bonds, components and other symbols is available
+within xfig (@pxref{icon library}).
+
+
+
+
+@menu
+* icon library::                
+* bonds::                       
+* strokes::                     
+* components::                  
+* Simple components::           
+* SS components::               
+* Simple components - implementation::  
+* Compound components::         
+* Named SS components::         
+* Coerced bond direction::      
+* Port labels::                 
+* Vector port labels::          
+* Port label defaults::         
+* Vector components::           
+* artwork::                     
+* Valid names::                 
+@end menu
+
+@node icon library, bonds, Language fig (abg.fig), Language fig (abg.fig)
+@subsubsection Icon library
+@cindex Icon
+@cindex library
+A number of predefined iconic symbols are available within xfig. 
+@example
+Click onto the library icon
+Click onto the library pull-down menu and select BondGraph
+Select iconic symbols from the presented list
+@end example
+
+@node bonds, strokes, icon library, Language fig (abg.fig)
+@subsubsection Bonds
+@cindex bonds
+@pindex bonds
+
+Bonds are represented by polylines with two segments. They must be the
+default style (i.e. plain not dashed or dotted). The shortest segment is
+taken to be the half-arrow. its positioning is significant because:
+@itemize @bullet
+@item
+It points in the direction of power flow; thus a bond normally points
+towards C, I and R components.
+@item
+the corresponding side of the bond indicates flow causality; the other
+side represents effort causality. This is significant when using casual
+half-strokes (@pxref{strokes}). Please adopt the convention of having
+the half-arrows below horizontal bonds and to the right of vertical bonds.
+@end itemize
+
+
+
+@c      node   next  prev  up
+@node strokes, components, bonds, Language fig (abg.fig)
+@subsubsection Strokes
+@cindex strokes
+@pindex strokes
+
+Causal strokes are represented by single-segment polylines.
+There are two sorts of strokes:
+@itemize @bullet
+@item
+@emph{Full} strokes: these are the usual bond-graph strokes and determine
+both the effort and flow causality in the usual way. The @emph{centre} of the
+stroke should be at about one end of the bond and be at right angles to
+it.
+@item
+@emph{Half} strokes: these are an innovation in @strong{MTT} and allow you to
+specify the effort and flow causality independently. The @emph{end} of the
+stroke should be at about one end of the bond and be at right angles to
+it. If the causal half-stroke is on the @emph{same} side as the half-arrow
+(@pxref{bonds}) then it determines @emph{flow} causality; if, on the other
+hand, it is on the @emph{opposite} side to the half-arrow
+(@pxref{bonds}) then it determines @emph{effort} causality.
+Two half strokes on the @emph{same}, but on @emph{opposite} sides of the
+bond are equivalent to a a full stroke at the same end of the bond.
+@end itemize
+
+@strong{MTT} is reasonably forgiving; but a neat diagram will be less ambiguous to
+you as well as to @strong{MTT}.
+
+Causality is indicated as follows:
+@itemize @bullet
+@item 
+@emph{Effort} is imposed at the @emph{same} end as the stroke.
+@item 
+@emph{Flow} is imposed at the @emph{opposite} end as the stroke.
+@end itemize
+
+
+
+@c      node   next  prev  up
+@node components, Simple components, strokes, Language fig (abg.fig)
+@subsubsection Components
+@cindex components
+@pindex components
+
+Components are represented by a text string in fig.  The recommended
+style is: 20pt, Times-Roman and centre justified.
+
+The component text string can be of the following forms:
+@ftable @code
+@item type
+Just the type of the component is indicated. Components may be either
+Simple components (@pxref{Simple components}) or Compound components
+(@pxref{Compound components}).  For example:
+@example
+R
+@end example
+@item type:label
+Both the type and the label of the component are given. The type must be
+a valid name (@pxref{Valid names}.The name provides a link to more
+information to be found in @xref{Labels (lbl)}. For example:
+@example
+R:r
+@end example
+@item type*n
+The name, together with the number @samp{n} of repetitions of the
+component, are given. This repetition only makes sense if the component
+has an even number of ports (@pxref{Port labels}); n copies of the component
+are concatenated with odd Named ports (@pxref{Port labels}) of the
+component being connected to the even Named ports of the previous
+component in the chain in numerical order.  This feature is particularly
+useful if the component is compound and can be used for, example to give
+a lumped approximation of a distributed system. For example:
+@example
+MySystem*25
+@end example
+@item type:label*n
+This complete form and is a combination of the simpler forms. For
+example:
+@example
+MySystem:MyLabel*25
+@end example
+
+@end ftable
+
+@node Simple components, SS components, components, Language fig (abg.fig)
+@comment  node-name,  next,  previous,  up
+@subsubsection Simple components
+@cindex Simple components
+
+The following simple components are defined in MTT.
+
+@ftable @code
+@item R
+         Standard one-port R
+@item C
+         Standard one-port I
+@item I
+         Standard one-port I
+@item SS
+        Source-sensor
+@item TF
+        Transformer
+@item GY
+        Gyrator
+@item AE
+        Effort amplifier
+@item AF
+        Flow amplifier
+@item CSW
+         Switched one-port I
+@item ISW
+         Switched one-port I
+@end ftable
+
+@menu
+* SS components::               
+* Simple components - implementation::  
+@end menu
+
+@node SS components, Simple components - implementation, Simple components, Language fig (abg.fig)
+@comment  node-name,  next,  previous,  up
+@subsubsection SS components
+@cindex SS components
+
+@iftex
+$$
+
+@end iftex
+
+
+@code{SS} components provide input and output variables for a system;
+Named SS components (@pxref{Named SS components}) provide this for
+subsystems.
+
+@node Simple components - implementation, Compound components, SS components, Language fig (abg.fig)
+@comment  node-name,  next,  previous,  up
+@subsubsection Simple components - implementation
+@cindex  Simple components - implementation
+
+Each simple component, with name NAME, is defined by two m files:
+@ftable @code
+@item NAME_cause.m
+        defines the possible causal patterns for the component
+@item NAME_eqn.m
+        defines the equations generated 
+@end ftable
+Only the experienced user would normally define simple components -
+Compound components (@pxref{Compound components}) are recommended for
+DIY components.
+
+@node Compound components, Named SS components, Simple components - implementation, Language fig (abg.fig)
+@comment  node-name,  next,  previous,  up
+@subsubsection Compound components
+@cindex  Compound components
+@cindex Named SS
+Compound components are systems described by bond graphs and implemented
+by MTT. They have special SS components, Named SS components
+(@pxref{Named SS components}), to indicate connections to the
+encapsulating system.
+
+Like any other system, they are described by a graphical Bond Graph description
+(@pxref{Language fig (abg.fig) }), and a label file (@pxref{Labels (lbl)}).
+
+By convention, all of the files describing a component live in a
+directory with the same name as the component.
+
+@menu
+* Named SS components::      
+@end menu
+
+@node Named SS components, Coerced bond direction, Compound components, Language fig (abg.fig)
+@comment  node-name,  next,  previous,  up
+@subsubsection Named SS components
+@cindex Named SS components
+
+Named SS components provide the link from the system which @emph{defines} 
+compound component to the system which @emph{uses} a compound
+component @pxref{Compound components}.
+A named SS components is of the form
+@code{SS:[name]};
+
+Where `name' is a name consisting of alphanumeric characters and
+underscore; for example:
+@example
+SS:[Mechanical_1]
+@end example
+Each such named SS provides one of the ports
+(@pxref{Ports}).
+The direction of the named SS components.
+(@pxref{Named SS components}) 
+is coerced (@pxref{Coerced bond direction}) to have the same direction
+as the bond connected to the corresponding port. Thus the direction of
+the  direction of the named SS components has no significance unless the
+component is at the top level of a system.
+
+If a named SS component exists at the top level (@pxref{Top level})
+and is treated as an
+ordinary SS component with the given direction and with the attributes
+specified in the label file (@pxref{Labels (lbl)}).
+
+@node Coerced bond direction, Port labels, Named SS components, Language fig (abg.fig)
+@comment  node-name,  next,  previous,  up
+@subsubsection Coerced bond direction
+@cindex Coerced bond direction
+@pindex Coerced bond direction
+Named SS components (@pxref{Named SS components}) provide the mechanism
+for declaring the ports (@pxref{Ports}) of a component. The
+corresponding bond has a direction. However, under some circumstances,
+it may be useful to reverse this direction. @strong{MTT} provides a
+coercion mechanism for this: the the direction of the bond attached to
+the named SS component (@pxref{Named SS components}) is replaced by the
+direction of the bond attached to the component port.
+
+@node Port labels, Vector port labels, Coerced bond direction, Language fig (abg.fig)
+@comment  node-name,  next,  previous,  up
+@subsubsection Port labels
+@cindex ports
+@pindex ports
+Most multi-port components have ports 
+@pxref{Ports})which display different
+behaviors; the exception to this is the junction (@code{0} and @code{1})
+components. For this reason, @strong{MTT} provides a method for unambiguously
+identifying the ports of a multi-port component by port labels.
+
+A port label is indicated by a name within parentheses of the form
+@code{[name]}, where `name' is a name consisting of alphanumeric
+characters and underscore; for example:
+@example
+[Mechanical_1]
+@end example
+This provides a label for corresponding to the component to which the
+nearest bond-end is attached.
+
+The following rules must be be obeyed:
+@itemize @bullet
+@item
+If a component has any port labels at all, there must be one for each
+port of the component.
+@c @item
+@c If a component is to be used repetitively (see @ref{components}), it
+@c must have an even number of ports and the odd ports are connected to the
+@c even points within the chain of components.
+@end itemize
+
+Port labels may be grouped into vector port labels (@pxref{Vector port
+labels}). Components with compatible (ie containing the same number of ports)
+vector ports may be connected by a @emph{single} bond
+(@pxref{Bonds}); such a bond implies the corresponding number of bonds
+(one for each element of the vector port label). All such bonds inherit
+the same direction and any @emph{explicit} causal strokes (@pxref{strokes})
+
+@node Vector port labels, Port label defaults, Port labels, Language fig (abg.fig)
+@comment  node-name,  next,  previous,  up
+@subsubsection Vector port labels
+@cindex vector port labels
+@cindex port labels
+Port labels (@pxref{Port labels}) may be grouped into vector port
+labels of the form @code{[name1,name2,name3]}. 
+@example
+[Mechanical_1,Electrical,Hydraulic_5]
+@end example
+
+@node Port label defaults, Vector components, Vector port labels, Language fig (abg.fig)
+@comment  node-name,  next,  previous,  up
+@subsubsection Port label defaults
+@cindex Port label defaults
+@pindex Port label defaults
+Whether impicitly or explicity, all ports of components (with the
+exception of 0 and 1 junctions) must have lables  (@pxref{Port
+labels}). However, these can be omitted from the bond graph in the
+following circumstances and default labels are supplied by @strong{MTT}.
+@enumerate
+@item A single unlabled inport defaults to [in]
+@item A single unlabled outport defaults to [out]
+@end enumerate
+
+These defaults may, in turn be aliases (@pxref{Aliases}) for port labels
+(@pxref{Port labels}) or vector port labels (@pxref{Vector port
+labels}).  Combining the default and alias mechanism is a powerful tool
+for creating uncluttered, yet complex, bond graph models.
+
+@node Vector components, artwork, Port label defaults, Language fig (abg.fig)
+@subsubsection Vector Components
+@cindex Vector components
+@pindex Vector components
+Vectors of components can be created in four cases:
+@code{0} junctions,
+@code{1} junctions,
+@code{SS} components and
+@code{SS} port components.
+
+
+In each case, the presence of a vector component is indicated by a
+single port label  (@pxref{Port labels}) containing numerals from 1 to
+the order of the vector. Thus a vector of 3 component is indicated by a
+port label of the form [1,2,3].
+
+Within the corresponding label file (@pxref{Labels (lbl)}), the
+components of a vector port can be accessed using _i where i is the
+corresponding index. Thus a port SS:[Electrical] appearing near the port
+label  [1,2,3] could contain the port alias (@pxref{Port aliases})
+@example
+%ALIAS  in Electrical_1,Electrical_2,Electrical_3
+@end example
+
+@node artwork, Valid names, Vector components, Language fig (abg.fig)
+@subsubsection Artwork
+@cindex artwork
+@pindex artwork
+You are encouraged to annotate your bond graphs extensively - this makes
+them an immediately readable document whilst retaining the precise and
+unambiguous expressive power of the bond graph.
+
+You may add any Fig (@pxref{Fig}) object to the bond graph as long as it
+will not be interpreted as part of the bond graph.  
+The reccommended way to acheive this is to put the  Bond Graph at depth
+0,10,20 etc (ie depth modulo 10 is zero) and artwork at any other depth. 
+@c  The recommended way to do this is to @emph{put all artwork at or below
+@c  Depth 1} in the figure. @strong{MTT} ignores all objects not at depth 0.
+
+
+For compatibility with earlier versions of @strong{MTT}, the following
+objects are ignored even at level 0. However, their use is strongly
+discouraged.
+@itemize @bullet
+@item
+Adding text is OK as long as it cannot be confused with components
+(@pxref{components}). In particular, you can include invalid component
+characters such as white space, @code{"}, @code{'}, @code{!} etc.
+@item
+Adding boxes, arcs etc is always OK.
+@item
+Adding dotted or dashes lines is always OK.
+@end itemize
+
+The stripped abg file (sabg) (@pxref{Stripped acausal bond graph
+(sabg)})
+shows only those parts of the diagram recognised by @strong{MTT} and is
+therefore useful for distinguishing artwork.
+ 
+@node Valid names,  , artwork, Language fig (abg.fig)
+@subsubsection Valid Names
+@cindex valid name
+@pindex valid name
+A valid name is a text string containing alphanumeric characters.  It
+must @strong{NOT} contain underscore @samp{_}, hyphen @samp{-}, @samp{:}
+or @samp{*}.
+
+
+
+@node Language m (rbg.m), Language m (abg.m), Language fig (abg.fig), Acausal bond graph (abg)
+@comment  node-name,  next,  previous,  up
+@subsection Language m (rbg.m)
+The raw bond graph of system `sys' is represented as
+ an m file with heading:
+@example
+function [rbonds, rstrokes,rcomponents,rports,n_ports] = sys_rbg
+@end example
+This representation is a half-way house between the fig 
+(@pxref{Language fig (abg.fig)}) and m 
+(@pxref{Language m (abg.m)}) representations. It contains the
+geometric information from the fig file in a form digestible by Octave
+(@pxref{Octave}).
+
+The five outputs of this function are:
+@itemize @bullet
+@item
+rbonds
+@item
+rstrokes
+@item
+rcomponents
+@item
+rports
+@item
+n_ports
+@end itemize
+
+@emph{rbonds} is  a matrix with
+@itemize @bullet
+@item
+one row for each bond (@pxref{bonds})
+@item
+columns 1 and 2 containing the x,y coordinates for one end of the bond
+@item
+columns 3 and 4 containing the x,y coordinates for the corner of the bond
+@item
+columns 5 and 6 containing the x,y coordinates for the other end of the bond
+@end itemize
+
+@emph{rstrokes} is  a matrix with (@pxref{strokes})
+@itemize @bullet
+@item
+one row for each stroke or half-stroke
+@item
+columns 1 and 2 containing the x,y coordinates for one end of the stroke
+@item
+columns 3 and 4 containing the x,y coordinates for the other end of the stroke
+@end itemize
+
+@emph{rcomponents} is  a matrix with (@pxref{components})
+@itemize @bullet
+@item
+one row for each component
+@item
+columns 1 and 2 containing the x,y coordinates of the component
+@item
+the remaining columns containing fig file information
+@end itemize
+
+@emph{rports} is  a matrix with (@pxref{Port labels})
+@itemize @bullet
+@item
+one row for each component port that is explicitly labeled
+@item
+columns 1 and 2 containing the x,y coordinates of the port label
+@item
+column 3 contains the port number.
+@end itemize
+
+@emph{n_ports} is the number of ports associated with the system -- i.e. the
+number of Named SS components (@pxref{Named SS components}).
+
+@menu
+* Transformation abg2rbg_fig2m::  
+@end menu
+
+@node Transformation abg2rbg_fig2m,  , Language m (rbg.m), Language m (rbg.m)
+@comment  node-name,  next,  previous,  up
+@subsubsection Transformation abg2rbg_fig2m
+@cindex Transformation abg2rbg_fig2m
+
+This transformation takes the acausal bond graph as a fig file 
+(@pxref{Language fig (abg.fig)}) and transforms it into a raw bond graph in
+m-file format (@pxref{Language m (rbg.m)}).
+
+This transformation is implemented in GNU awk (gawk).
+It scans both the fig file (@pxref{Language fig (abg.fig)})
+and the label file (@pxref{Labels (lbl)}) and generates the rbg
+ (@pxref{Language m (rbg.m)}) with components sorted according to the
+label file.
+It also generates a file sys_fig.fig containing details of the bond
+graph with the components removed.
+
+@node Language m (abg.m), Language tex (abg.tex), Language m (rbg.m), Acausal bond graph (abg)
+@comment  node-name,  next,  previous,  up
+@subsection Language m (abg.m)
+@cindex Language m (abg.m) 
+@cindex bonds
+@cindex components
+@cindex n_ports
+
+The acausal bond graph of system `sys' is represented as
+ an m file with heading:
+@example
+function [bonds,components,n_ports] = sys_abg
+@end example
+The three outputs of this function are:
+@itemize @bullet
+@item
+bonds
+@item
+components
+@item
+n_ports
+@end itemize
+
+@emph{bonds} is  a matrix with
+@itemize @bullet
+@item
+one row for each bond
+@item
+the first column contains the arrow-orientated 
+(@pxref{Arrow-orientated causality}) 
+causality of the @emph{effort} variable.
+@item
+the second column contains the arrow-orientated 
+(@pxref{Arrow-orientated causality}) 
+causality of the @emph{flow} variable.
+@end itemize
+
+@emph{components} is  a matrix with
+@itemize @bullet
+@item
+one row for each component
+@item
+one column for each bond impinging on the component. The
+@emph{magnitude} of each entry corresponds to the bond number (the
+appropriate row index of` bonds'); the sign is positive if the bond
+arrow points into the component and negative otherwise.
+@end itemize
+
+@emph{n_ports} is the number of ports associated with the system -- i.e. the
+number of Named SS components (@pxref{Named SS components}).
+
+@menu
+* Arrow-orientated causality::  
+* Component-orientated causality::  
+* Transformation rbg2abg_m::    
+@end menu
+
+@node  Arrow-orientated causality, Component-orientated causality, Language m (abg.m), Language m (abg.m)
+@comment  node-name,  next,  previous,  up
+@subsubsection  Arrow-orientated causality
+@cindex Arrow-orientated causality
+
+The  arrow-orientated causality convention assigns -1, 0 or 1 
+to both the effort and flow (@pxref{Variables}) sides of a bond 
+to represent the causal stroke (@pxref{strokes})
+as follows:
+@vtable @code
+@item 0
+        if there is no causality set.
+@item 1
+       if the causal stroke is at the arrow end of the bond.
+@item -1 
+     if the causal stroke is at the other end of the bond.
+@end vtable
+@pxref{Component-orientated causality}.
+
+@node  Component-orientated causality, Transformation rbg2abg_m, Arrow-orientated causality, Language m (abg.m)
+@comment  node-name,  next,  previous,  up
+@subsubsection  Component-orientated causality
+@cindex Component-orientated causality
+
+The  component-orientated causality convention assigns -1, 0 or 1 
+to both the effort and flow (@pxref{Variables}) sides of a bond 
+to represent the causal stroke (@pxref{strokes})
+as follows:
+@vtable @code
+@item 0
+        if there is no causality set.
+@item 1 
+      if the causal stroke is at the component end of the bond.
+@item -1
+      if the causal stroke is at the other end of the bond.
+
+@end vtable
+@pxref{Arrow-orientated causality}.
+
+@node Transformation rbg2abg_m,  , Component-orientated causality, Language m (abg.m)
+@comment  node-name,  next,  previous,  up
+@subsubsection Transformation rbg2abg_m
+@cindex Transformation rbg2abg_m
+This transformation takes the raw bond graph and, by doing some
+geometrical computation, determines the topology of the bond graph -- ie
+what is close to what.
+
+@node Language tex (abg.tex),  , Language m (abg.m), Acausal bond graph (abg)
+@comment  node-name,  next,  previous,  up
+@subsection Language tex (abg.tex)
+@cindex Language tex (abg.tex)
+
+For the purpose of producing a report (@pxref{Report}), @strong{MTT}
+generates a LaTeX (@pxref{LaTeX}) file describing the bond graph and its
+subsystems. Additional information may be supplied using the description
+representation (@pxref{Description (desc)}).
+
+@c      node   next  prev  up
+@node   Stripped acausal bond graph (sabg), Labels (lbl), Acausal bond graph (abg), Representations
+@section Stripped acausal bond graph (sabg)
+@cindex Stripped acausal bond graph (sabg)
+@pindex Stripped acausal bond graph (sabg)
+The stripped acausal bond graph is the acausal bond graph representation
+(@pxref{Acausal bond graph (abg)}) without the artwork
+(@pxref{artwork}). It is useful to check for mistakes by showing
+precisely what is recognised by @strong{MTT}.
+
+@menu
+* Language fig (sabg.fig)::     
+* Stripped acausal bond graph (view)::  
+@end menu
+
+@node Language fig (sabg.fig), Stripped acausal bond graph (view), Stripped acausal bond graph (sabg), Stripped acausal bond graph (sabg)
+@subsection Language fig (sabg.fig) 
+@cindex Language fig (sabg.fig) 
+@pindex Language fig (sabg.fig) 
+The stripped acausal bond graph can be generated as a fig (@pxref{Fig})
+file using
+@example
+mtt syst sabg fig
+@end example
+
+@node Stripped acausal bond graph (view),  , Language fig (sabg.fig), Stripped acausal bond graph (sabg)
+@subsection Stripped acausal bond graph (view)
+@cindex Language m (view)
+@cindex view  Constrained-state Equations
+This representation has the standard text view
+(@pxref{Views}).
+
+
+@node Labels (lbl), Description (desc), Stripped acausal bond graph (sabg), Representations
+@comment  node-name,  next,  previous,  up
+@section Labels (lbl)
+@cindex Labels
+@cindex lbl
+Bond graph components have optional labels. These provide pointers to
+further information relating to the component; this avoids clutter on
+the bond graph.
+
+The label file contains the following non-blank lines (blank lines are ignored)
+@itemize @bullet
+@item Summary - lines beginning with %SUMMARY
+@item Description - lines beginning with %DESCRIPTION
+@item Alias - lines beginning with %ALIAS
+@item Comments - lines beginning with % 
+@item Labels - other non-blank lines
+@end itemize
+
+Each lable contains three fields (in the following order) separated by
+white space and on one line:
+@enumerate
+@item The component name @pxref{Component names}. This must be a valid
+name  (@pxref{Valid names}.
+@item The component constitutive relationship @pxref{Component constitutive relationship}
+@item The component arguments @pxref{Component arguments}
+@end enumerate
+
+Not each component @pxref{components} needs a label, only those which are explicitly
+labeled on the Bond Graph @pxref{Acausal bond graph (abg)}.
+@strong{MTT} checks whether all  components labelled on the bond graph
+have labels and vice versa.
+
+If no lbl file exists, @strong{MTT} will create a valid one for you. If
+wish to create one to edit yourself, type
+@example
+mtt system_name lbl txt
+@end example
+An example lbl file (for the RC system is):
+@example
+%% Label file for system RC (RC_lbl.txt)
+%SUMMARY RC
+%DESCRIPTION <Detailed description here>
+% Port aliases
+%ALIAS  in      in
+%ALIAS  out     out
+
+% Argument aliases
+%ALIAS  $1      c
+%ALIAS  $2      r
+
+%% Each line should be of one of the following forms:
+%            a comment (ie starting with %)
+%            component-name     cr_name arg1,arg2,..argn
+%            blank
+
+% ---- Component labels ----
+
+% Component type C
+        c               lin     effort,c
+
+% Component type R
+        r               lin     flow,r
+
+% Component type SS
+        [in]    SS              external,external
+        [out]   SS              external,external
+
+@end example
+
+
+The old-style lbl files (@pxref{Old-style labels (lbl)}) are NO LONGER
+supported -- you are encouraged to convert them ASAP.
+@menu
+* SS component labels ::        
+* Other component labels ::     
+* Component names::             
+* Component constitutive relationship::  
+* Component arguments::         
+* Parameter declarations::      
+* Units declarations::          
+* Aliases::                     
+* Parameter passing::           
+* Old-style labels (lbl)::      
+@end menu
+
+@node SS component labels , Other component labels , Labels (lbl), Labels (lbl)
+@comment  node-name,  next,  previous,  up
+@subsection SS component labels 
+@cindex SS component labels 
+In addition to the label there are two information fields, @pxref{Labels
+(lbl)}. The first must be `SS', the second contains two information
+fields of the form info_field_1,info_field_2.
+
+These two information
+fields correspond to the effort and flow variables of the of the SS components as follows
+@vtable @code
+@item info_field_1
+        effort
+@item info_field_2
+        flow
+@end vtable
+Each of these two fields contains one of the following @emph{attributes}:
+@vtable @code
+@item external
+        indicates that the corresponding variable is a system input or
+output
+@item internal
+        indicates that the variable does not appear as a system output;
+        it is an error to label an input in this way.
+@item a number
+        the value of the input; or the value of the (imposed) output
+@item a symbol
+        the symbolic value of the input; or the value of the (imposed) output
+@item unknown
+        used for the SS method of solving algebraic loops. This
+        indicates that the corresponding system input (SS output) is to
+        be chosen to set the corresponding system output (SS input) to zero.
+@item zero
+        used for the SS method of solving algebraic loops. This
+        indicates that the corresponding system output (SS input) is to
+        be set to zero using the variable indicted by the corresponding
+        `unknown' label.
+@end vtable
+
+Some examples are:
+@example
+%% ss1 is both a source and sensor
+ss1     SS              external,external
+%% ss1 acts as a flow sensor - it imposes zero effort.
+ss2     SS              0,external
+@end example
+
+
+@node Other component labels , Component names, SS component labels , Labels (lbl)
+@comment  node-name,  next,  previous,  up
+@subsection Other component labels 
+@cindex Other component labels 
+
+In addition to the label there are two information fields,
+@pxref{Labels (lbl)}.
+They correspond to the constitutive relationship 
+(see @pxref{Constitutive relationship} and arguments of the
+component as follows
+@vtable @code
+@item info_field_1
+        constitutive relationship 
+@item info_field_2
+        parameters
+@end vtable
+
+Some examples are:
+@example
+%Armature resistance
+r_a     lin     effort,r_a
+
+%Gearbox ratio
+n       lin     effort,n
+@end example
+
+@strong{MTT} supports parameter-passing to  (@pxref{Parameter passing })
+subsystems.
+
+@menu
+* Component names::             
+* Component constitutive relationship::  
+* Component arguments::         
+* Aliases::                     
+* Parameter passing::           
+* Old-style labels (lbl)::      
+@end menu
+
+@node Component names, Component constitutive relationship, Other component labels , Labels (lbl)
+@comment  node-name,  next,  previous,  up
+@subsection Component names
+@cindex  Component names
+The component name field must contain a valid name  (@pxref{Valid names} corresponding to the
+name (the bit after the :) of each named component (@pxref{components})
+on  the bond graph (@pxref{Acausal bond graph (abg)}).
+
+@node Component constitutive relationship, Component arguments, Component names, Labels (lbl)
+@comment  node-name,  next,  previous,  up
+@subsection Component constitutive relationship
+@cindex  Component constitutive relationship
+The constitutive relationship field contains the name of a constitutive
+relationship for the component. There are three sorts of constitutive
+relationship recognised by @strong{MTT}:
+@enumerate
+@item A generic constitutive relationship such as @var{lin} (the generic
+linear constitutive relationship.
+@item A local constitutive relationship with the same name as the
+component type
+@item The @var{SS} constitutive relationship reserved for @var{SS}
+components.
+All labels for @var{SS} components must contain SS in this field.
+@end enumerate
+
+
+@node Component arguments, Parameter declarations, Component constitutive relationship, Labels (lbl)
+@comment  node-name,  next,  previous,  up
+@subsection Component arguments
+@cindex  Component arguments
+
+@node Parameter declarations, Units declarations, Component arguments, Labels (lbl)
+@comment  node-name,  next,  previous,  up
+@subsection Parameter declarations
+@cindex parameter declarations
+@pindex parameter declarations
+@pindex PAR 
+@pindex NOTPAR 
+@pindex VAR 
+@pindex NOTVAR 
+
+It is sometimes useful to use parameters (in addition to those implied by
+the Component arguments @pxref{Component arguments}) to compute values
+in, for example the numpar file. These can be declared in the label
+file;
+for examples , the two parameters par1 and par 2 can be declared as:
+@example
+#PAR par1
+#PAR par2
+@end example
+
+On the other hand, some CR arguments (eg foo and bar) may not correspond to
+parameters. These can be excluded from the sympar list  using
+the NOTPAR declaration
+@example
+#NOTPAR foo
+#NOTPAR bar
+@end example
+
+For comapability with old code, VAR may be used in place of PAR, but
+this usage is deprecated.
+
+@node Units declarations, Aliases, Parameter declarations, Labels (lbl)
+@comment  node-name,  next,  previous,  up
+@subsection Units declarations
+@cindex units declarations
+@pindex units declarations
+@pindex UNITS
+The units and domains of ports (@pxref{Ports}) are declared as:
+@example
+#UNITS Port_name domain effort_units flow_units
+@end example
+where "Port_name" is the name of the port, domain is one of:
+@vtable @code
+@item electrical
+         the electrical domain
+@item translational
+         the translational mechanical domain
+@item rotational
+         the rotational mechanical domain
+@item fluid
+         the fluid domain
+@item thermal
+         the thermal domain 
+@end vtable
+and effort_units and flow_units are corresponding units for the effort
+and the flow.
+
+Allowed units are those defined in the @strong{units} package.
+
+
+
+@strong{MTT} checks that units are 
+@itemize  @bullet
+@item defined consistently with the domain
+@item the same for connected ports when both ports have defined units.
+@end itemize
+No checks are done if one or both ends of a bond are not connected to a
+port with defined units.
+
+
+
+@node Aliases, Parameter passing, Units declarations, Labels (lbl)
+@comment  node-name,  next,  previous,  up
+@subsection Aliases
+@cindex aliases
+@pindex aliases
+
+Aliases provide a convenient mechanism for relabelling words appearing
+in the label file (@pxref{Labels (lbl)}). There are three contexts in
+which the alias mechanism is used:
+
+@enumerate
+@item renaming ports (@pxref{Port aliases}),
+@item renaming parameters (@pxref{Parameter aliases}) and
+@item renaming components (@pxref{Component aliases}).
+@end enumerate
+
+All three mechanisms use the same form of statement within the label
+file
+@example
+%ALIAS short_label       real_label
+@end example
+
+@strong{MTT} distinguishes between the three forms as follows:
+
+@itemize @bullet
+@item Parameter aliases: `short_label' starts with a `$'
+@item Component aliases: `real_label' contains the directory separator
+`/'
+@item Port aliases: neither of the above
+@end itemize
+
+@menu
+* Port aliases::                
+* Parameter aliases::           
+* Component aliases::           
+@end menu
+
+
+@node Port aliases, Parameter aliases, Aliases, Aliases
+@comment  node-name,  next,  previous,  up
+@subsubsection Port aliases
+@cindex port aliases
+@pindex port aliases
+Aliases provide a way of refering to (@pxref{Port labels}) or vector port labels (@pxref{Vector
+port labels}) on the bond graph using a short-hand notation. With in a
+component label file (@pxref{Labels (lbl)}) statements of the following
+forms can occur 
+
+@example
+%ALIAS short_label       real_label
+@end example
+
+When the component is used within another component, the short_lable may
+be used in place of the real_label.
+More than one alias per label can be used, for example
+
+@example
+%ALIAS short_label_1       real_label
+%ALIAS short_label_2       real_label
+%ALIAS short_label_3       real_label
+@end example
+
+The port can then be refered to in four ways: as real_label,
+short_label_1, short_label_2 or short_label_3.
+An alternative notation for the ALIAS statement in this case is
+
+@example
+%ALIAS short_label_1|short_label_2|short_label_3       real_label
+@end example
+
+The alias feature is particularly powerful in conjunction with vector
+port labels (@pxref{Vector port labels}) and the port label default 
+(@pxref{Port label defaults}) mechanisms. For example, a component with
+5 ports appearing in the lbl file as:
+
+@example
+        [Hydraulic_in]  external        external
+        [Hydraulic_out] external        external
+        [Power_Shaft]           external        external
+        [Thermal_in]    external        external
+        [Thermal_out]   external        external
+@end example
+
+together with the following statements in the label file:
+
+@example
+%ALIAS  in              Thermal_in,Hyydraulic_in
+%ALIAS  out             Thermal_out,Hydraulic_out
+%ALIAS  shaft|power     Power_Shaft
+@end example
+
+can appear in the bond graph containing that component with one bond
+labeled either [shaft] or [power] or [Power_Shaft], one unlabeled vector
+bond pointing in and one unlabeled vector bond pointing out.
+
+@node Parameter aliases, Component aliases, Port aliases, Aliases
+@comment  node-name,  next,  previous,  up
+@subsubsection Parameter aliases
+@cindex parameter aliases
+@pindex parameter aliases
+
+Parameter aliases are of the form
+@example
+%ALIAS $n       actual parameter
+@end example
+where n is an integer (unique within the label file).
+For example
+
+@example
+%ALIAS  $1              c_v
+%ALIAS  $2              density,ideal_gas,r
+%ALIAS  $3              alpha
+%ALIAS  $4              flow,k_p
+@end example
+
+Assigns four symbolic parameters to the corresponding strings These four
+parameters (@code{$1}--@code{$4}) can then be used for parameter
+passing(@pxref{Parameter passing}).
+
+@node Component aliases,  , Parameter aliases, Aliases
+@comment  node-name,  next,  previous,  up
+@subsubsection Component aliases
+@cindex component aliases
+@pindex component aliases
+
+Component aliases are of the form
+@example
+%ALIAS Component_name   Component_location       
+@end example
+
+An example appears in the following label file fragment
+@example
+...
+%ALIAS  wPipe   CompressibleFlow/wPipe
+%ALIAS  Poly    CompressibleFlow/Poly
+....
+
+@end example
+The two components `wPipe' and `Poly' are both to be found within the
+library `Compressible flow' and the respective subdirectories. This
+follows the @strong{MTT} convention that compound components
+(@pxref{Compound components}) live within a directory of the same name.
+ 
+
+@node Parameter passing, Old-style labels (lbl), Aliases, Labels (lbl)
+@comment  node-name,  next,  previous,  up
+@subsection Parameter passing
+@cindex Parameter passing
+@strong{MTT} supports parameter-passing to subsystems within label files
+(@pxref{Labels (lbl)}). Within a subsystem, explicit constitutive
+relationships and parameters (or groups thereof) can be replaced by
+postitional parameters such as @code{$1}, @code{$2} etc.  Although this
+can be done directly, it is recommended that this is done via the alias
+mechanism (@pxref{Parameter aliases}).
+
+In a subsystem
+@code{$i}, is replaced by the ith field of a colon @code{;} separated
+field in the calling label file. This field may include commas @code{,}
+and the four arithmetic operators @code{+}, @code{-}, @code{*} and
+@code{/}.
+
+For example, consider the following example label file fragment (associated with a
+component called Pump:
+@example
+...
+
+%ALIAS  $1              c_v
+%ALIAS  $2              density,ideal_gas,r
+%ALIAS  $3              alpha
+%ALIAS  $4              flow,k_p
+
+%ALIAS  wPipe   CompressibleFlow/wPipe
+%ALIAS  Poly    CompressibleFlow/Poly
+
+% Component type wPipe
+        pipe    none                    c_v;density,ideal_gas,r
+
+% Component type Poly
+        poly            Poly            alpha
+
+@end example
+
+The 4 parameters @code{$1}, @code{$2}, @code{$3}, and @code{$4} can be
+passed from a higher level component as in the following label file
+fragment:
+
+@example
+% Component type Pump
+        comp            none            c_v;rho,ideal_gas,r;alpha;effort,k_c
+        turb            none            c_v;rho,ideal_gas,r;alpha;effort,k_t
+@end example
+
+Thus in component `comp':
+@itemize @bullet
+@item @code{$1} is replaced by c_v
+@item @code{$2} is replaced by rho,ideal_gas
+@item @code{$3} is replaced by alpha
+@item @code{$4} is replaced by effort,k_c
+@end itemize
+whereas in component `turb' the first three parameters are the same but
+@itemize @bullet
+@item @code{$4} is replaced by effort,k_t
+@end itemize
+
+
+
+@node Old-style labels (lbl),  , Parameter passing, Labels (lbl)
+@comment  node-name,  next,  previous,  up
+@subsection Old-style labels (lbl)
+@cindex Old-style labels
+@cindex lbl
+
+Old syle labels (mtt version 2.x) are supported by mtt version
+3.x. However, you are advised to use the new form (@pxref{Labels
+(lbl)}).
+
+Each line of the @code{_label.txt} file is of one of three forms:
+@enumerate
+@item
+Contains three fields (separated by white space) of the form
+@example
+label   field_1   field_2
+@end example
+@item
+Blank
+@item
+Preceded by %
+@end enumerate
+Only the first is noticed by @strong{MTT}; the second and third are for
+providing helpful commenting.
+
+The role of the two information fields depends on the component with the
+corresponding label. In particular the classes of components are:
+@itemize @bullet
+@item
+SS components, @pxref{SS components}.
+@item
+Other components,  @pxref{components}.
+@end itemize
+Named SS component, @pxref{Named SS components} never have labels.
+@menu
+* SS component labels (old-style)::  
+* Other component labels (old-style)::  
+* Parameter passing (old-style)::  
+@end menu
+
+
+@node SS component labels (old-style), Other component labels (old-style), Old-style labels (lbl), Old-style labels (lbl)
+@comment  node-name,  next,  previous,  up
+@subsubsection SS component labels (old-style)
+@cindex SS component labels (old-style)
+In addition to the label there are two information fields,
+@pxref{Labels (lbl)}.
+They correspond to the effort and flow of the components as follows
+@vtable @code
+@item info_field_1
+        effort
+@item info_field_2
+        flow
+@end vtable
+Each of these two fields contains one of the following @emph{attributes}:
+@vtable @code
+@item
+external
+        indicates that the corresponding variable is a system input or
+output
+@item internal
+        indicates that the variable does not appear as a system output;
+        it is an error to label an input in this way.
+@item a number
+        the value of the input; or the value of the (imposed) output
+@item a symbol
+        the symbolic value of the input; or the value of the (imposed) output
+@item unknown
+        used for the SS method of solving algebraic loops. This
+        indicates that the corresponding system input (SS output) is to
+        be chosen to set the corresponding system output (SS input) to zero.
+@item zero
+        used for the SS method of solving algebraic loops. This
+        indicates that the corresponding system output (SS input) is to
+        be set to zero using the variable indicted by the corresponding
+        `unknown' label.
+@end vtable
+
+Some examples are:
+@example
+%Label  field1          field2
+ss1     external        external
+ss2     0               external
+@end example
+
+
+@node Other component labels (old-style), Parameter passing (old-style), SS component labels (old-style), Old-style labels (lbl)
+@comment  node-name,  next,  previous,  up
+@subsubsection Other component labels (old-style)
+@cindex Other component labels (old-style)
+
+In addition to the label there are two information fields,
+@pxref{Labels (lbl)}.
+They correspond to the constitutive relationship 
+(see @pxref{Constitutive relationship} and arguments of the
+component as follows
+@vtable @code
+@item info_field_1
+        constitutive relationship 
+@item info_field_2
+        parameters
+@end vtable
+
+Some examples are:
+@example
+%Armature resistance
+r_a     lin     effort,r_a
+
+%Gearbox ratio
+n       lin     effort,n
+@end example
+
+@strong{MTT} supports parameter-passing to  (@pxref{Parameter passing (old-style)})
+subsystems.
+
+
+@node Parameter passing (old-style),  , Other component labels (old-style), Old-style labels (lbl)
+@comment  node-name,  next,  previous,  up
+@subsubsection Parameter passing (old-style)
+@cindex Parameter passing (old-style)
+@strong{MTT} supports parameter-passing to  (@pxref{Parameter passing (old-style)})
+subsystems within label files (@pxref{Labels (lbl)}). Within a subsystem,
+explicit constitutive relationships and parameters (or groups thereof)
+can be replaced by 
+@code{$1}, @code{$2}, etc.
+
+In a subsystem
+@code{$i}, is replaced by the ith field of a colon @code{;} separated
+field in the calling label file. This field may include commas @code{,}.
+
+For example subsystem ROD contains the following lines in the label
+file:
+@example
+
+%DESCRIPTION    Parameter 1:    length from end 1 to mass centre
+%DESCRIPTION    Parameter 2:    length from end 2 to mass centre
+%DESCRIPTION    Parameter 3:    inertia about mass centre
+%DESCRIPTION    Parameter 4:    mass
+%DESCRIPTION    See Section 10.2 of "Metamodelling"
+
+
+%Inertias
+J       lin     flow,$3
+m_x     lin     flow,$4
+m_y     lin     flow,$4
+
+%Integrate angular velocity to get angle
+th
+
+%Modulated transformers
+s1      lsin    flow,$1
+s2      lsin    flow,$2
+c1      lcos    flow,$1
+c2      lcos    flow,$2
+
+@end example
+
+This can be used in a higher-level lbl (@pxref{Labels (lbl)}) file as:
+@example
+%SUMMARY Pendulum example from Section 10.3 of "Metamodelling"
+
+%Rod parameters
+rod     none    l;l;j;m
+
+@end example
+
+@node Description (desc), Structure (struc), Labels (lbl), Representations
+@comment  node-name,  next,  previous,  up
+@section Description (desc)
+@cindex Description
+@cindex desc
+
+The bond graph can be described textually in LaTeX (.tex) description
+file; this is the only language for this representation. This
+representation is used by the LaTeX language version (@pxref{Language tex
+(abg.tex)}) of the acausal bond graph representation (@pxref{Acausal
+bond graph (abg)}).
+
+@menu
+* Language tex (desc.tex)::     
+@end menu
+
+@node Language tex (desc.tex),  , Description (desc), Description (desc)
+@comment  node-name,  next,  previous,  up
+@subsection Language tex (desc.tex)
+@cindex Language tex (desc.tex)
+This file may contain any LaTeX compatible commands. Any mathematics
+should conform to the AMSmath package.
+
+@node Structure (struc), Constitutive Relationship (cr), Description (desc), Representations
+@comment  node-name,  next,  previous,  up
+@section Structure (struc)
+@cindex Structure
+@cindex struc
+
+The causal bond graph implies a set of equations describing the
+system. The Structure (struc) representation describes the structure of
+these equations in terms of the input, outputs, states and non-states of
+the system.
+
+@menu
+* Language txt (struc.txt)::    
+* Language tex (struc.tex)::    
+* Structure (view)::            
+@end menu
+
+@node Language txt (struc.txt), Language tex (struc.tex), Structure (struc), Structure (struc)
+@comment  node-name,  next,  previous,  up
+@subsection Language txt (struc.txt)
+@cindex Language txt (struc.txt)
+This text tile contains a description of the system structure
+(@pxref{Structure (struc)} with 5 tab-separated columns containing the
+following information:
+@vtable @code
+@item type
+        input, output state or nonstate
+@item   
+index
+        an integer corresponding to the array index
+@item 
+component name
+        the name of the component corresponding to the variable
+@item system name
+        the name of the system containing the component
+@item repetition
+        an integer corresponding to the repetition of a repeated subsystem.
+@end vtable
+
+An example of such a file (corresponding to rc) (@pxref{Quick start}) is:
+@example
+input           1       e1      rc      1
+output          1       e2      rc      1
+state           1       c       rc      1
+@end example
+
+
+@node Language tex (struc.tex), Structure (view), Language txt (struc.txt), Structure (struc)
+@comment  node-name,  next,  previous,  up
+@subsection Language tex (struc.tex)
+@cindex Language tex (struc.tex)
+This LaTeX  (@pxref{LaTeX}) file contains  a description of the system structure
+(@pxref{Structure (struc)} in @code{longtable} format. It is a useful
+item to include in a report(@pxref{Report}).
+
+@node Structure (view),  , Language tex (struc.tex), Structure (struc)
+@subsection Language tex (view)
+@cindex Structure (view)
+@cindex view Structure
+This representation has the standard text view
+(@pxref{Views}).
+
+@node Constitutive Relationship (cr), Parameters, Structure (struc), Representations
+@comment  node-name,  next,  previous,  up
+@section Constitutive relationship (cr)
+@cindex Constitutive relationship
+
+The constitutive relationship (@pxref{Constitutive relationship})
+of a simple component (@pxref{Simple components} is
+defined in the symbolic algebra language Reduce (@pxref{Reduce}).
+The constitutive relationship of a compound components 
+(@pxref{Compound components})
+is implied by the constitutive relationships of its constituent components.
+
+@menu
+* Predefined constitutive relationships::  
+* DIY constitutive relationships::  
+* Unresolved constitutive relationships::  
+* Unresolved constitutive relationships - Octave::  
+* Unresolved constitutive relationships - c++::  
+@end menu
+
+@node Predefined constitutive relationships, DIY constitutive relationships, Constitutive Relationship (cr), Constitutive Relationship (cr)
+@comment  node-name,  next,  previous,  up
+@subsection  Predefined constitutive relationships
+@cindex Predefined constitutive relationships
+
+Some common cr's are predefined by MTT; these are:
+@vtable @code
+@item lin
+        a linear constitutive relationship   
+@item exotherm
+        an exothermic reaction
+@end vtable
+
+@menu
+* lin::                         
+* exotherm::                    
+@end menu
+
+@node lin, exotherm, Predefined constitutive relationships, Predefined constitutive relationships
+@comment  node-name,  next,  previous,  up
+@subsubsection lin
+@findex lin
+The constitutive relationship @code{lin} is predefined for the following
+components.
+@vtable @code
+@item R
+        (one-port) R component
+@item TF
+        transformer
+@item GY
+        gyrator
+@item MTF
+        modulated transformer
+@item MGY
+        modulated gyrator
+@item FMR
+        flow-modulated resistor
+@end vtable
+Lin takes two arguments in the form causality,gain
+@vtable @code
+@item causality
+        the causality (effort or flow) of the @emph{input} to the
+constitutive relationship
+@item gain
+        the gain of the component when the input causality is as
+specified in the first argument.
+@end vtable
+For example the arguments
+@example
+flow,r
+@end example
+given to an R component corresponds to
+@example
+e = rf
+@end example
+if if the input causality is flow
+or
+@example
+f = e/r
+@end example
+if if the input causality is effort.
+
+@node exotherm,  , lin, Predefined constitutive relationships
+@comment  node-name,  next,  previous,  up
+@subsubsection exotherm
+@findex exotherm
+
+@node DIY constitutive relationships, Unresolved constitutive relationships, Predefined constitutive relationships, Constitutive Relationship (cr)
+@comment  node-name,  next,  previous,  up
+@subsection  DIY constitutive relationships
+@cindex DIY constitutive relationships
+You can write your own constitutive relationships using Reduce
+(@pxref{Reduce}). This requires some understanding as to how
+@strong{MTT} represent the elementary system equations
+(@pxref{Elementary system equations}). Looking at the predefined
+constitutive relationships is a good way to get started
+(@pxref{File structure}).
+
+@node Unresolved constitutive relationships, Unresolved constitutive relationships - Octave, DIY constitutive relationships, Constitutive Relationship (cr)
+@subsection Unresolved constitutive relationships
+@cindex Unresolved constitutive relationships
+
+Consider the following CR file.
+@example
+FOR ALL rho,g,vol,h,topt,bott,flowin,press
+LET tktf2(rho,g,vol,h,topt,bott,effort,2,press,effort,1)
+        = tank(rho,g,vol,h,topt,bott,press);      
+@end example
+Assuming that `tank' is not defined in a
+reduce file, MTT will leave it unresolved when generating m or c code.
+
+The resulting function can then be expressed as octave
+(@pxref{Unresolved constitutive relationships - Octave}) or c++ code as
+(@pxref{Unresolved constitutive relationships - c++}) appropriate.
+
+@node Unresolved constitutive relationships - Octave, Unresolved constitutive relationships - c++, Unresolved constitutive relationships, Constitutive Relationship (cr)
+@subsection  Unresolved constitutive relationships - Octave
+@cindex Unresolved constitutive relationships - Octave
+Following the example of the previous section, the unresolved CR `tank'
+can be expressed as an Octave m-file. For example:
+@example
+function p = tank (rho,g,vol,h,topt,bott,press)
+
+  ## usage:  p = tank (vol,h,topt,bott,press)
+  ##
+  ## 
+
+   val = press; zt = topt; zb = bott; 
+   zval = 0.5*(abs(zb+(zt-zb)*val-h)+(zb+(zt-zb)*val-h));
+
+   p = rho*g*zval + 0.5*(1+tanh((press-0.98)*500))*100000;
+
+endfunction
+@end example
+This will be automatically loaded into octave.
+
+@node Unresolved constitutive relationships - c++,  , Unresolved constitutive relationships - Octave, Constitutive Relationship (cr)
+@subsection  Unresolved constitutive relationships - c++
+@cindex Unresolved constitutive relationships - Octave
+Following the example of the previous section, the unresolved CR `tank'
+can be expressed in c++ code. For example:
+@example
+inline double tank(const double rho, 
+		   const double g, 
+		   const double vol, 
+		   const double h, 
+		   const double topt, 
+		   const double bott, 
+		   const double press)
+
+
+  /*  ## usage:  p = tank (vol,h,topt,bott,press)
+    ##
+    ##
+  */
+  double p, val, zval, zt, zb;
+
+  val = press;
+  zt = topt;
+  zb = bott;
+  zval = 0.5 * (abs(zb + (zt - zb) * val - h) + zb + (zt - zb) * val - h);
+
+  p = rho * g * zval + 0.5 * (1 + tanh((press - 0.98) * 500)) * 100000L;
+
+  return p;
+
+@end example
+
+To make sure that this is used in system `model', the model_cr.h file
+must be as follows:
+@example
+// CR headers for system model
+#include "tank.c"
+@end example
+
+@node Parameters, Causal bond graph (cbg), Constitutive Relationship (cr), Representations
+@comment  node-name,  next,  previous,  up
+@section Parameters
+@cindex Parameters
+
+In general, lbl (@pxref{Labels (lbl)}) files contain symbolic
+parameters. @strong{MTT} provides three ways of substituting for these
+parameters:
+@itemize @bullet
+@item
+symbolic substitution
+@item
+symbolic substitution for simplification of displayed equations
+@item
+numeric
+@end itemize
+
+@menu
+* Symbolic parameters (subs.r)::  
+* Symbolic parameters for simplification (simp.r)::  
+* Numeric parameters (numpar)::  
+@end menu
+
+@node Symbolic parameters (subs.r), Symbolic parameters for simplification (simp.r), Parameters, Parameters
+@comment  node-name,  next,  previous,  up
+@subsection Symbolic parameters (subs.r)
+@cindex  Symbolic parameters
+@vindex subs.r
+This file contains reduce statements to symbolically change the
+expressions describing the system.
+For example, a useful set of trig substitutions is:
+@example
+LET cos(~x)*cos(~y) = (cos(x+y)+cos(x-y))/2;
+LET cos(~x)*sin(~y) = (sin(x+y)-sin(x-y))/2;
+LET sin(~x)*sin(~y) = (cos(x-y)-cos(x+y))/2;
+LET cos(~x)^2       = (1+cos(2*x))/2;
+LET sin(~x)^2       = (1-cos(2*x));
+@end example
+
+@node Symbolic parameters for simplification (simp.r), Numeric parameters (numpar), Symbolic parameters (subs.r), Parameters
+@comment  node-name,  next,  previous,  up
+@subsection Symbolic parameters for simplification  (simp.r)
+@cindex  Symbolic parameters for simplification 
+@vindex simp.r
+This file contains reduce statements to symbolically change the
+expressions describing the system. Unlike the subs.r file
+(@pxref{Symbolic parameters (subs.r)}) it does not affect all system
+transformations; only those converting to LaTeX form.
+
+@node Numeric parameters (numpar),  , Symbolic parameters for simplification (simp.r), Parameters
+@comment  node-name,  next,  previous,  up
+@subsection Numeric parameters (numpar)
+@cindex  Numeric parameters
+
+When computing time and frequency responses; or when evaluating
+functions in Octave (@pxref{Octave}); symbolic parameters need numerical
+instantiations. 
+
+The numpar representation provides the relevant @emph{numerical}
+information. It comes in a number of languages:
+@ftable @code
+@item txt
+        a textual description of the parameter values -- this is the
+defining representation (@pxref{Defining representations}).
+@item m
+        readable by @code{octave} a high-level interactive language for numerical
+        computation -- translated by @strong{mtt} from the txt version.
+@item c
+        readable by @code{gcc} a c compiler -- translated by @strong{mtt} from the txt version.
+
+@end ftable
+
+@menu
+* Text form (numpar.txt)::      
+@end menu
+
+@node Text form (numpar.txt),  , Numeric parameters (numpar), Numeric parameters (numpar)
+@comment  node-name,  next,  previous,  up
+@subsubsection Text form (numpar.txt)
+@cindex  Numeric parameters
+This is the textual form of the numerical parameters representation
+(@pxref{Numeric parameters (numpar)}). Lines are either
+@ftable @code
+@item assignment statements
+        variable = value
+@item comments
+        lines beginning with #
+@item commented assignment statements
+        variable = value # comments
+@end ftable
+An example file is:
+@example
+# Numerical parameter file (rc_numpar.txt)
+# Generated by MTT at Mon Jun 16 15:10:17 BST 1997
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# %% Version control history
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# %% $Id$
+# %% $Log$
+# %% Revision 1.66  2000/12/05 14:20:55  peterg
+# %% Added the c++  anf m CR info.
+# %%
+# %% Revision 1.65  2000/11/27 15:36:15  peterg
+# %% NOPAR --> NOTPAR
+# %%
+# %% Revision 1.64  2000/11/16 14:22:48  peterg
+# %% added UNITS declaration
+# %%
+# %% Revision 1.63  2000/11/03 14:41:08  peterg
+# %% Added PAR and NOTPAR stuff
+# %%
+# %% Revision 1.62  2000/10/17 17:53:34  peterg
+# %% Added some simulation details
+# %%
+# %% Revision 1.61  2000/09/14 17:13:06  peterg
+# %% New options table
+# %%
+# %% Revision 1.60  2000/09/14 17:09:20  peterg
+# %% Tidied up valid name sections
+# %% Tidied up defining represnetations table
+# %% Verion 4.6
+# %%
+# %% Revision 1.59  2000/08/30 13:09:00  peterg
+# %% Updated option table
+# %%
+# %% Revision 1.58  2000/08/01 13:30:19  peterg
+# %% Version 4.4
+# %% updated STEPFACTOR info
+# %% describes octave and OCST interfaces
+# %%
+# %% Revision 1.57  2000/07/20 07:55:44  peterg
+# %% Version 4.3
+# %%
+# %% Revision 1.56  2000/05/19 17:49:17  peterg
+# %% Extended the user defined representation section -- new nppp rep.
+# %%
+# %% Revision 1.55  2000/03/16 13:53:31  peterg
+# %% Correct date
+# %%
+# %% Revision 1.54  2000/03/15 21:22:57  peterg
+# %% Updated to 4.1 -- old style SS no longer supported
+# %%
+# %% Revision 1.53  1999/12/22 05:33:10  peterg
+# %% Updated for 4.0
+# %%
+# %% Revision 1.52  1999/11/23 00:25:11  peterg
+# %% Added the sensitivity reps
+# %%
+# %% Revision 1.51  1999/11/16 04:43:47  peterg
+# %% Added start of sensitivity section
+# %%
+# %% Revision 1.50  1999/11/16 00:30:35  peterg
+# %% Updated simulation section
+# %% Added vector components
+# %%
+# %% Revision 1.49  1999/07/20 23:44:58  peterg
+# %% V 3.8
+# %%
+# %% Revision 1.48  1999/07/19 03:08:33  peterg
+# %% Added documentation for (new) SS lbl fields
+# %%
+# %% Revision 1.47  1999/03/09 01:42:22  peterg
+# %% Rearranged the User interface section
+# %%
+# %% Revision 1.46  1999/03/09 01:18:01  peterg
+# %% Updated for 3.5 including xmtt
+# %%
+# %% Revision 1.45  1999/03/03 02:39:26  peterg
+# %% Minor updates
+# %%
+# %% Revision 1.44  1999/02/17 06:52:14  peterg
+# %% New level formula dor artwork
+# %%
+# %% Revision 1.43  1998/11/25 16:49:24  peterg
+# %% Put in subs.r documentation (was called params.r)
+# %%
+# %% Revision 1.42  1998/11/24 12:24:59  peterg
+# %% Added section on simulation output
+# %% Version 3.4
+# %%
+# %% Revision 1.41  1998/09/02 12:04:15  peterg
+# %% Version 3.2
+# %%
+# %% Revision 1.40  1998/08/27 08:36:39  peterg
+# %% Removed in. methods except Euler anf implicit
+# %%
+# %% Revision 1.39  1998/08/18 10:44:28  peterg
+# %% Typo
+# %%
+# %% Revision 1.38  1998/08/18 09:16:38  peterg
+# %% Version 3.1
+# %%
+# %% Revision 1.37  1998/08/17 16:14:30  peterg
+# %% Version 3.1 - includes documentation on METHOD=IMPLICIT
+# %%
+# %% Revision 1.36  1998/07/30 17:33:15  peterg
+# %% VERSION 3.0
+# %%
+# %% Revision 1.35  1998/07/22 11:00:53  peterg
+# %% Correct date!
+# %%
+# %% Revision 1.34  1998/07/22 11:00:13  peterg
+# %% Version to BAe
+# %%
+# %% Revision 1.33  1998/07/17 19:32:19  peterg
+# %% Added more about aliases
+# %%
+# %% Revision 1.32  1998/07/05 14:21:56  peterg
+# %% Further additions (Carlisle-Glasgow)
+# %%
+# %% Revision 1.31  1998/07/04 11:35:57  peterg
+# %% Strarted new lbl description
+# %%
+# %% Revision 1.30  1998/07/02 18:39:20  peterg
+# %% Started 3.0
+# %% Added alias and default sections.
+# %%
+# %% Revision 1.29  1998/05/19 19:46:58  peterg
+# %% Added the odess description
+# %%
+# %% Revision 1.28  1998/05/14 09:17:22  peterg
+# %% Added METHOD variable to the simpar file
+# %%
+# %% Revision 1.27  1998/05/13 10:03:09  peterg
+# %% Added unknown/zero SS label documentation.
+# %%
+# %% Revision 1.26  1998/04/29 15:12:46  peterg
+# %% Version 2.9.
+# %%
+# %% Revision 1.25  1998/04/12 17:00:26  peterg
+# %% Added new port features: coerced direction and top-level behaviour.
+# %%
+# %% Revision 1.24  1998/04/05 18:27:20  peterg
+# %% This was the 2.6 version
+# %%
+# Revision 1.23  1997/08/24  11:17:51  peterg
+# This is the released  version 2.5
+#
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# Parameters
+c =     1.0; # Default value
+r =     1.0; # Default value
+# Initial states
+x(1) =  0.0; # Initial state for rc (c)
+@end example
+As usual, @strong{MTT} provides a default text file to be edited by the
+user (@pxref{Text editors}).
+
+@node Causal bond graph (cbg), Elementary system equations, Parameters, Representations
+@comment  node-name,  next,  previous,  up
+@section Causal bond graph (cbg)
+@cindex Causal bond graph (cbg)
+The causal bond graph is the causally complete version of the
+Acausal bond graph (@pxref{Acausal bond graph (abg)}).
+
+To create the causal bond graph of system `sys' in language fig type:
+@example
+mtt sys cbg fig
+@end example
+To create the causal bond graph of system `sys' in language m type:
+@example
+mtt sys cbg m
+@end example
+To view the causal bond graph of system `sys' type:
+@example
+mtt sys cbg view
+@end example
+
+@menu
+* Language fig (cbg.fig)::      
+* Language m (cbg.m)::          
+@end menu
+
+@node Language fig (cbg.fig), Language m (cbg.m), Causal bond graph (cbg), Causal bond graph (cbg)
+@subsection Language fig (cbg.fig) 
+@cindex Language fig (cbg.fig) 
+@pindex Language fig (cbg.fig) 
+The fig file is created by @strong{MTT}. It is identical to the
+corresponding acausal representation (@pxref{Language fig (abg.fig)})
+except that
+@itemize @bullet
+@item
+the new causal strokes are added (using a double thickness line in blue)
+@item
+components that are undercausal are bold and green
+@item
+components that are overcausal are bold and red
+@end itemize
+
+@node Language m (cbg.m),  , Language fig (cbg.fig), Causal bond graph (cbg)
+@comment  node-name,  next,  previous,  up
+@subsection Language m (cbg.m)
+@cindex Language m (cbg.m) 
+@cindex cbonds
+@cindex status
+
+
+The causal bond graph of system `sys' is represented as
+ an m file with heading:
+@example
+function [cbonds,status] = sys_cbg
+@end example
+The two outputs of this function are:
+@itemize @bullet
+@item
+cbonds
+@item
+status
+@end itemize
+
+@emph{cbonds} is  a matrix with
+@itemize @bullet
+@item
+one row for each bond
+@item
+the first column contains the arrow-orientated 
+(@pxref{Arrow-orientated causality}) 
+causality of the @emph{effort} variable.
+@item
+the second column contains the arrow-orientated 
+(@pxref{Arrow-orientated causality}) 
+causality of the @emph{flow} variable.
+@end itemize
+
+@emph{status} is  a matrix with
+@itemize @bullet
+@item
+one row for each component
+@item
+the first column contains 1 if the component is overcausal; 0 if the
+component is causally complete and -1 if the component is undercausal.
+@end itemize
+A successful model would therefore have all zeros in the status matrix.
+
+@menu
+* Transformation abg2cbg_m::    
+@end menu
+
+@node Transformation abg2cbg_m,  , Language m (cbg.m), Language m (cbg.m)
+@comment  node-name,  next,  previous,  up
+@subsubsection Transformation abg2cbg_m
+@cindex Transformation abg2cbg_m
+
+This transformation takes the acausal bond graph as an m file 
+(@pxref{Language m (abg.m)}) and transforms it into a causal bond graph in
+m-file format (@pxref{Language m (cbg.m)}).
+
+It is based on the m-function abg2cbg.m which iteratively tries to
+complete causality whilst recursively searching the bond graph
+structure.
+If causality is incomplete, it picks the first acausal dynamic (C or I)
+component, asserts integral causality, and tries again.
+
+This is essentially the sequential causality assignment procedure of
+Karnopp and Rosenberg.
+
+The transformation informs the user of the final status in terms of the
+percentage of causally complete components; a successful model will
+yield 100% here.
+
+@node Elementary system equations, Differential-Algebraic Equations, Causal bond graph (cbg), Representations
+@comment  node-name,  next,  previous,  up
+@section Elementary system equations (ese)
+@cindex Elementary system equations
+
+The elementary system equations are a complete set of assignment statements
+describing the dynamic system corresponding to the bond graph.
+They are in the Reduce (@pxref{Reduce}) language.
+
+Because these are based on a causally complete system, these assignment
+statements are directly soluble by substitution.
+
+Unlike early versions of @strong{MTT}, @strong{MTT} does @emph{not} sort
+the equations in order of solution, but rather leaves them sorted by
+component and subsystem.
+
+These are not supposed to be read by the user, so there is no view
+facility as such. However, you may read these with your favourite text
+editor and, to this end,  helpful comment lines have been added.
+
+Wherever components have an explicit constitutive relationship, the
+corresponding RHS of the equation has a standard form.
+
+@example
+cr(arguments,out_causality,outport,
+        input_1, causality_1, port_1,
+        ....
+        input_i, causality_i, port_i,
+        ....
+        input_n, causality_n, port_n
+        );
+@end example
+where the symbols have the following meaning
+@vtable @code
+@item arguments
+        the constitutive relationship arguments
+@item out_causality
+        the causality (effort or flow) of the output variable
+        (@pxref{Variables})
+@item outport
+        the number (integer) of the output port of the system
+@item input_i
+        the ith input to the component
+@item causality_i
+        the causality (effort or flow) of the ith input variable
+        (@pxref{Variables})
+@item port_i
+        the number (integer) of the ith input port of the system
+@end vtable
+
+An example for a resistor with linear constitutive relationship is:
+@example
+rc_1_bond4_flow := lin(flow,r,flow,1,
+        rc_1_bond4_effort,effort,1
+        );
+@end example
+
+@menu
+* Transformation cbg2ese_m2r::  
+@end menu
+
+@node Transformation cbg2ese_m2r,  , Elementary system equations, Elementary system equations
+@comment  node-name,  next,  previous,  up
+@subsubsection Transformation cbg2ese_m2r
+@cindex Transformation cbg2ese_m2r
+@cindex Structure
+@cindex def.r
+This transformation takes the causal bond graph as an m file 
+(@pxref{Language m (cbg.m)}) and transforms it into elementary system
+equations
+in Reduce (@pxref{Reduce})
+form.
+
+It is based on the m-function cbg2ese.m which iteratively traverses the
+causal bond graph writing equations as it goes.
+
+It also writes out the system structure as the file @file{sys_def.r}.
+
+
+@node Differential-Algebraic Equations, Constrained-state Equations, Elementary system equations, Representations
+@section Differential-Algebraic Equations (dae)
+@cindex Differential-Algebraic Equations
+@cindex DAE
+
+The system differential algebraic equations describe the system dynamics together 
+together with any algebraic constraints. 
+
+They are generated in language @code{lang} for system 
+@code{sys} by:
+@example
+mtt sys dae lang
+@end example
+Valid languages are:
+@vtable @code
+@item r
+        reduce (@pxref{Reduce}).
+@item m
+        m  (@pxref{m}).
+@item view
+        reduce (@pxref{Views}).
+@end vtable
+
+
+There are five sets of variables describing the system:
+@vtable @code
+@item x
+        the system states (corresponding to C and I components with integral
+        causality.
+@item z
+        the system nonstates (corresponding to C and I components with derivative
+        causality.
+@item u
+        the system inputs  (corresponding to SS components
+        with external attribute).
+@item ui
+        the @emph{internal} system inputs (corresponding to SS components
+        with internal attribute) used to solve algebraic loops
+        (@pxref{Algebraic loops}).
+@item y
+        the  system outputs (corresponding to SS components
+        with external attribute).
+        @end vtable
+
+In general there are four sets of equations. The right-hand side of
+ each is a function of x, dz/dt,  u and ui and the left hand sides are:
+@enumerate
+@item
+the derivative of x (dx/dt)
+@item
+z
+@item
+w=0 (the algebraic equations)
+@item
+y
+@end enumerate
+
+@menu
+* Differential-Algebraic Equations (reduce)::  
+* Differential-Algebraic Equations (m)::  
+@end menu
+
+@node Differential-Algebraic Equations (reduce), Differential-Algebraic Equations (m), Differential-Algebraic Equations, Differential-Algebraic Equations
+@subsection Language reduce (dae.r)
+@cindex Differential-Algebraic Equations (reduce)
+@cindex dae.r 
+
+The system DAEs (@pxref{Differential-Algebraic Equations})
+are represented in the reduce  (@pxref{Reduce}) language as 
+arrays containing the algebraic expressions for the 
+right hand sides of each set of equations. The arrays are:
+@vtable @code
+@item MTTx
+        x -- the system states (corresponding to C and I components with integral
+        causality.
+
+@item MTTz
+        z -- the system nonstates (corresponding to C and I components with derivative
+        causality.
+@item MTTu
+        u -- the system inputs  (corresponding to SS components
+        with external attribute).
+@item mttv
+        ui -- the @emph{internal} system inputs (corresponding to SS components
+        with internal attribute) used to solve algebraic loops
+        (@pxref{Algebraic loops}).
+@item MTTy
+        y -- the  system outputs (corresponding to SS components
+        with external attribute).
+        @end vtable
+
+@menu
+* Transformation ese2dae_r::    
+@end menu
+
+@node Transformation ese2dae_r,  , Differential-Algebraic Equations (reduce), Differential-Algebraic Equations (reduce)
+@subsubsection Transformation ese2dae_r
+@cindex Transformation ese2dae_r
+@pindex  ese2dae_r
+
+This transformation (@pxref{What is a Transformation?}) 
+uses Reduce (@pxref{Reduce}) to combine the elementary system
+equations (@pxref{Elementary system equations}) with the
+constitutive relationships (@pxref{Constitutive relationship})
+and simplify the result. 
+
+@node Differential-Algebraic Equations (m),  , Differential-Algebraic Equations (reduce), Differential-Algebraic Equations
+@subsection Language m (dae.m)
+@cindex Differential-Algebraic Equations (m)
+@cindex dae.m
+The system DAEs (@pxref{Differential-Algebraic Equations})
+are represented in the m (@pxref{m}) language as  
+two m-functions of the form:
+
+@example
+function resid = sys_dae(dx,x,t)
+function y  = sys_dae(dx,x,t)
+@end example
+Where x is the dae @emph{descriptor} vector and dx its 
+time derivative; t is the time.
+The first function is of a form suitable for solution by DASSL;  
+the second function can then be used to find the coresponding system
+output.
+
+@menu
+* Transformation dae_r2m::      
+@end menu
+
+@node Transformation dae_r2m,  , Differential-Algebraic Equations (m), Differential-Algebraic Equations (m)
+@subsubsection Transformation dae_r2m
+@cindex Transformation dae_r2m
+@pindex  dae_r2m
+
+This transformation (@pxref{What is a Transformation?}) 
+uses Reduce (@pxref{Reduce}) to rewrite the elementary system
+equations (@pxref{Elementary system equations}) in m-file 
+format  (@pxref{m}) . Numerical parameters are declared as global.
+
+
+@node Constrained-state Equations, Ordinary Differential Equations, Differential-Algebraic Equations, Representations
+@section Constrained-state Equations (cse)
+@cindex Constrained-state Equations
+@cindex ODE
+
+The system constrained-state equations describe the system dynamics for
+a special class of systems (see the book for details). The resuting
+equations are of the form:
+@example
+E(x) dx/dt = f(x,u)
+y = g(x,u)
+@end example
+They typically occure where two or more states are constrained to be equal, or
+proportional, to each other. For example, two capacitors in parallel or
+two inertias connected by a stiff shaft.
+
+
+They are generated in language @code{lang} for system 
+@code{sys} by:
+@example
+mtt sys cse lang
+@end example
+Valid languages are:
+@vtable @code
+@item r
+        reduce (@pxref{Reduce}).
+@item m
+        m  (@pxref{m}).
+@item view
+        reduce (@pxref{Views}).
+@end vtable
+
+There are three sets of variables describing the system:
+@vtable @code
+@item x
+        the system states (corresponding to C and I components with integral
+        causality.
+@item u
+        the system inputs  (corresponding to SS components
+        with external attribute).
+@item y
+        the  system outputs (corresponding to SS components
+        with external attribute).
+        @end vtable
+
+In general there are two sets of equations. The right-hand side of
+ each is a function of x and  u  and the left hand sides are:
+@enumerate
+@item
+the derivative of x (dx/dt)
+y
+@end enumerate
+
+@menu
+* Constrained-state Equations (reduce)::  
+* Constrained-state Equations (view)::  
+@end menu
+
+@node Constrained-state Equations (reduce), Constrained-state Equations (view), Constrained-state Equations, Constrained-state Equations
+@subsection Language reduce (cse.r)
+@cindex Constrained-state Equations (reduce)
+@cindex cse.r 
+
+The system CSEs (@pxref{Constrained-state Equations})
+are represented in the reduce  (@pxref{Reduce}) language as 
+arrays containing the algebraic expressions for the 
+right hand sides of each set of equations. The arrays are:
+@vtable @code
+@item MTTx
+        x -- the system states (corresponding to C and I components with integral
+        causality.
+@item MTTu
+        u -- the system inputs  (corresponding to SS components
+        with external attribute).
+@item MTTy
+        y -- the  system outputs (corresponding to SS components
+        with external attribute).
+@end vtable
+together with the array containing the elements of the E matrix.
+@menu
+* Transformation dae2cse_r::    
+@end menu
+
+@node Transformation dae2cse_r,  , Constrained-state Equations (reduce), Constrained-state Equations (reduce)
+@subsubsection Transformation dae2cse_r
+@cindex Transformation dae2cse_r
+@pindex  dae2cse_r
+
+This transformation (@pxref{What is a Transformation?}) 
+Reduce (@pxref{Reduce}) to find various Jacobians which are combined to
+find the E matrix and the
+constrained-state equations (@pxref{Constrained-state Equations}).
+
+@node Constrained-state Equations (view),  , Constrained-state Equations (reduce), Constrained-state Equations
+@subsection Language m (view)
+@cindex Constrained-state Equations (view)
+@cindex view Constrained-state Equations
+This representation has the standard text view
+(@pxref{Views}).
+
+@node Ordinary Differential Equations, Descriptor matrices, Constrained-state Equations, Representations
+@section Ordinary Differential Equations
+@cindex Ordinary Differential Equations
+@cindex ODE
+
+The system ordinary differential equations describe the system dynamics.
+
+They are generated in language @code{lang} for system 
+@code{sys} by:
+@example
+mtt sys ode lang
+@end example
+Valid languages are:
+@vtable @code
+@item r
+        reduce (@pxref{Reduce}).
+@item m
+        m  (@pxref{m}).
+@item view
+        reduce (@pxref{Views}).
+@end vtable
+
+There are three sets of variables describing the system:
+@vtable @code
+@item x
+        the system states (corresponding to C and I components with integral
+        causality.
+@item u
+        the system inputs  (corresponding to SS components
+        with external attribute).
+@item y
+        the  system outputs (corresponding to SS components
+        with external attribute).
+        @end vtable
+
+In general there are two sets of equations. The right-hand side of
+ each is a function of x and  u  and the left hand sides are:
+@enumerate
+@item
+the derivative of x (dx/dt)
+y
+@end enumerate
+
+@menu
+* Ordinary Differential Equations (reduce)::  
+* Ordinary Differential Equations (m)::  
+* Ordinary Differential Equations (view)::  
+@end menu
+
+@node Ordinary Differential Equations (reduce), Ordinary Differential Equations (m), Ordinary Differential Equations, Ordinary Differential Equations
+@subsection Language reduce (ode.r)
+@cindex Ordinary Differential Equations (reduce)
+@cindex ode.r 
+
+The system ODEs (@pxref{Ordinary Differential Equations})
+are represented in the reduce  (@pxref{Reduce}) language as 
+arrays containing the algebraic expressions for the 
+right hand sides of each set of equations. The arrays are:
+@vtable @code
+@item MTTx
+        x -- the system states (corresponding to C and I components with integral
+        causality.
+@item MTTu
+        u -- the system inputs  (corresponding to SS components
+        with external attribute).
+@item MTTy
+        y -- the  system outputs (corresponding to SS components
+        with external attribute).
+        @end vtable
+
+@menu
+* Transformation cse2ode_r::    
+@end menu
+
+@node Transformation cse2ode_r,  , Ordinary Differential Equations (reduce), Ordinary Differential Equations (reduce)
+@subsubsection Transformation cse2ode_r
+@cindex Transformation cse2ode_r
+@pindex  cse2ode_r
+
+This transformation (@pxref{What is a Transformation?}) 
+uses Reduce (@pxref{Reduce}) to invert the E matrix of the 
+constrained-state equations (@pxref{Constrained-state Equations})
+and simplify the result. 
+
+@node Ordinary Differential Equations (m), Ordinary Differential Equations (view), Ordinary Differential Equations (reduce), Ordinary Differential Equations
+@subsection Language m (ode.m)
+@cindex Ordinary Differential Equations (m)
+@cindex ode.m
+The system ODEs (@pxref{Ordinary Differential Equations})
+are represented in the m (@pxref{m}) language as  
+two m-functions of the form:
+
+@example
+function dx = sys_ODE(x,t)
+function y  = sys_ODE(dx,x,t)
+@end example
+Where x is the ODE @emph{state} vector and dx its 
+time derivative; t is the time.
+The first function is of a form suitable for solution by odesol;  
+the second function can then be used to find the corresponding system
+output.
+
+@menu
+* Transformation ode_r2m::      
+@end menu
+
+@node Transformation ode_r2m,  , Ordinary Differential Equations (m), Ordinary Differential Equations (m)
+@subsubsection Transformation ode_r2m
+@cindex Transformation ode_r2m
+@pindex  ode_r2m
+
+This transformation (@pxref{What is a Transformation?}) 
+uses Reduce (@pxref{Reduce}) to rewrite the
+ordinary differential equations
+(@pxref{Ordinary Differential Equations}) in m-file 
+format  (@pxref{m}) . Numerical parameters are declared as global.
+
+@node Ordinary Differential Equations (view),  , Ordinary Differential Equations (m), Ordinary Differential Equations
+@subsection Language m (view)
+@cindex Ordinary Differential Equations (view)
+@cindex view Ordinary Differential Equations
+This representation has the standard text view
+(@pxref{Views}).
+
+@node Descriptor matrices, Report, Ordinary Differential Equations, Representations
+@section Descriptor matrices (dm)
+@cindex Descriptor matrices
+@cindex dm
+
+The system descriptor matrices A, B, C, D and E describe the 
+@emph{linearised} system dynamics in the form
+@example
+E dx/dt = Ax + Bu
+y = Cx + Du
+@end example
+
+They are generated in language @code{lang} for system 
+@code{sys} by:
+@example
+mtt sys dm lang
+@end example
+Valid languages are:
+@vtable @code
+@item r
+        reduce (@pxref{Reduce}).
+@item m
+        m  (@pxref{m}).
+@item view
+        reduce (@pxref{Views}).
+@end vtable
+
+
+@menu
+* Descriptor matrices (reduce)::  
+* Descriptor matrices (m)::     
+@end menu
+
+@node Descriptor matrices (reduce), Descriptor matrices (m), Descriptor matrices, Descriptor matrices
+@subsection Language reduce (dm.r)
+@cindex Descriptor matrices (reduce)
+@cindex dm.r 
+
+The system  descriptor matrices (@pxref{Descriptor matrices})
+are represented in the reduce  (@pxref{Reduce}) language as 
+arrays containing the four matrices. The arrays are:
+@vtable @code
+@item MTTA
+        A 
+@item MTTB
+        B 
+@item MTTA
+        C
+@item MTTD
+        D
+@item MTTE
+        E
+@end vtable
+
+@node Descriptor matrices (m),  , Descriptor matrices (reduce), Descriptor matrices
+@subsection Language m (dm.m)
+@cindex Descriptor matrices (m)
+@cindex dm.m
+The system descriptor matrices (@pxref{Descriptor matrices})
+are represented in the m (@pxref{m}) language as  
+an m-function of the form:
+
+@example
+function [A,B,C,D,E] = sys_dm
+@end example
+
+System numeric parameters (@pxref{Numeric parameters})
+are passed via global variables defined in the _numpar.m file.
+@c (@pxref{numpar.m}). 
+Thus the system descriptor matrices are
+typically generated in Octave (@pxref{Octave}) as follows:
+
+@example
+sys_numpar
+[A,B,C,D,E] = sys_dm
+@end example
+
+Parameters can be changed from their default values by entering
+their values directly into Octave (@pxref{Octave})  and then invoking
+@code{sys_dm}; for example
+@example
+sys_numpar
+par_1 = 25
+par_2 = par_1 + 3
+[A,B,C,D,E] = sys_dm
+@end example
+
+
+@node Report,  , Descriptor matrices, Representations
+@section Report (rep)
+@cindex Report
+@cindex rep
+
+@strong{MTT} has a report-generator feature. The user specifies the
+report contents in a text file (@pxref{Report (text)}) using an
+appropriate text editor (@pxref{Text editors}).
+
+For example, the report can be viewed by typing
+@example
+mtt system rep view
+@end example
+
+
+@menu
+* Report (text)::               
+* Report (view)::               
+@end menu
+
+@node Report (text), Report (view), Report, Report
+@subsection Language text (rep.txt)
+@cindex Report (text)
+@cindex rep.txt 
+
+The user specifies the report contents in a text file (@pxref{Report
+(text)}) using an appropriate text editor (@pxref{Text editors}).
+The text file contains lines which are either comments (indicated by %)
+or valid @strong{MTT} commands. The report will then contain appropriate
+sections. The following languages are supported by the report generator:
+@ftable @code
+@item m
+        @code{octave} a high-level interactive language for numerical
+        computation.
+@item r
+        @code{reduce}  a high-level interactive language for symbolic
+        computation.
+@item tex
+        @code{latex} a text processor.
+@item ps
+        @code{ghostview} another document viewer.
+@item c
+        @code{gcc} a c compiler.
+@end ftable
+For example:
+@example
+mtt rc abg tex
+mtt rc cbg ps
+mtt rc struc tex
+mtt rc ode tex
+mtt rc sro ps
+mtt rc tf tex
+mtt rc lmfr ps
+@end example
+
+The acausal bond graph (abg) (@pxref{Acausal bond graph (abg)}) with the
+tex language is handled in a special way: the acausal Bond Graph  in
+fig format (@pxref{Language fig (abg.fig)}), the label file (@pxref{Labels (lbl)})
+the description file (@pxref{Description (desc)}), together with
+corresponding subsystems are included in the report. It is recommended
+that the first (non-comment line) in the file should be:
+@example
+mtt <system> abg tex
+@end example
+where @code{<system>} is the name of the (top-level) system.
+
+As usual, @strong{MTT} provides a default text file to be edited by the
+user (@pxref{Text editors}).
+
+In the special case that the first argument to mtt (normally the system)
+is a directory, a default text file is provided which generates a report
+for all systems to be found in that directory tree.
+
+@node Report (view),  , Report (text), Report
+@subsection Language view
+@cindex Report (view)
+@cindex view Report
+This representation has the standard text view
+(@pxref{Views}).
+
+@node Extending MTT, Languages, Representations, Top
+@comment  node-name,  next,  previous,  up
+@chapter Extending MTT
+@cindex Extending MTT
+@cindex Make
+
+@strong{MTT} has a number of built-in mechanisms for the user to extend
+its capabilities. As @strong{MTT} is based on `Make' it is unsurprising
+that these  involve the creation of `make files'. 
+
+@menu
+* Makefiles::                   
+* New representations::         
+@end menu
+
+@node Makefiles, New representations, Extending MTT, Extending MTT
+@comment  node-name,  next,  previous,  up
+@section Makefiles
+@cindex Makefiles
+
+If a file called `Makefile' exists in the current directory,
+@strong{MTT} executes it using make before doing anything else. This is
+useful if one of the .txt files contains a reference to, for example, an
+octave function of which @strong{MTT} unaware. Such a function can be
+created using the makefile. An example `Makefile' is
+@example
+# Makefile for the Two link GMV example
+
+all: msdP_tf.m TwoLinkP_obs.m TwoLinkP_sm.m twolinkp_sm.m TwoLinkGMV_numpar.m 
+
+msdP_tf.m: msdP_abg.fig 
+        mtt -q msdP tf m
+
+TwoLinkP_obs.m: TwoLinkP_abg.fig TwoLinkP_lbl.txt
+        mtt -q TwoLinkP obs m
+
+TwoLinkP_sm.m: TwoLinkP_abg.fig TwoLinkP_lbl.txt
+        mtt -q TwoLinkP sm m
+
+twolinkp_sm.m: TwoLinkP_sm.m
+        cp -v TwoLinkP_sm.m twolinkp_sm.m
+
+TwoLinkGMV_numpar.m: TwoLinkGMV_numpar.txt
+        mtt -q TwoLinkGMV numpar m
+@end example
+All of the files in the line stating `all:' are created when
+@strong{MTT} is executed (if they don't already exist).
+
+@node New representations,  , Makefiles, Extending MTT
+@comment  node-name,  next,  previous,  up
+@section New representations
+@cindex New representations
+
+It may be convenient to create new representations for @strong{MTT}; in
+particular, it is nice to be able to include the result of some
+numerical or symbolic computations within an @strong{MTT} report
+(@pxref{Report}).
+
+To create a new representation `myrep' in a language `mylang', create a
+file with the name
+@example
+myrep_rep.make
+@end example
+This file must contain text in `make' syntax. It is executed by
+@strong{MTT} and the two arguments `SYS' (the system name) and `LANG'
+(the language) are passed to it by @strong{MTT}. Note that @strong{MTT}
+cannot know of any prerequisites, but these can be explicitly included in
+the makefile (which may include execution of @strong{MTT} itself.
+
+The following example declares the new representation `nppp' which is
+created with the Octave script sys_nppp.m where `sys' is the system
+name.  This needs a number of files (for exaample `sys_ode2odes.out')
+which are themselves created by @strong{MTT}.
+@example
+# -*-makefile-*-
+# Makefile for representation nppp
+# File nppp_rep.make
+
+#Copyright (C) 2000 by Peter J. Gawthrop
+
+all: $(SYS)_nppp.$(LANG)
+
+$(SYS)_nppp.view: $(SYS)_nppp.ps
+        echo Viewing $(SYS)_nppp.ps; ghostview $(SYS)_nppp.ps&
+
+$(SYS)_nppp.ps: $(SYS)_ode2odes.out s$(SYS)_ode2odes.out \
+                $(SYS)_sim.m s$(SYS)_sim.m \
+                $(SYS)_state.m $(SYS)_sympar.m $(SYS)_numpar.m  \
+                s$(SYS)_state.m s$(SYS)_sympar.m s$(SYS)_numpar.m \
+                $(SYS)_sm.m $(SYS)_def.m  s$(SYS)_def.m
+        octave $(SYS)_nppp.m
+
+$(SYS)_ode2odes.out: 
+        mtt -q -c -stdin $(SYS) ode2odes out
+
+s$(SYS)_ode2odes.out:
+        mtt -q -c -stdin -s s$(SYS) ode2odes out
+
+$(SYS)_sim.m:
+        mtt -q -c $(SYS) sim m
+
+s$(SYS)_sim.m:
+        mtt -q -c -s s$(SYS) sim m
+
+$(SYS)_state.m:
+        mtt -q $(SYS) state m
+
+$(SYS)_sympar.m :
+        mtt -q $(SYS) sympar m 
+
+$(SYS)_numpar.m:
+        mtt -q $(SYS) numpar m
+
+s$(SYS)_state.m:
+        mtt -q -s s$(SYS) state m
+
+s$(SYS)_sympar.m :
+        mtt -q -s s$(SYS) sympar m 
+
+s$(SYS)_numpar.m:
+        mtt -q -s s$(SYS) numpar m
+
+$(SYS)_sm.m:
+        mtt -q $(SYS) sm m
+
+$(SYS)_def.m:
+        mtt -q $(SYS) def m
+
+s$(SYS)_def.m:
+        mtt -q -s s$(SYS) def m
+
+@end example
+
+Future extensions of @strong{MTT} will use such representations stored
+in $MTT_REP.
+
+@c      node   next  prev  up
+@node   Languages, Language tools, Extending MTT, Top
+@chapter Languages
+@cindex Languages
+@pindex Languages
+
+
+@c      node   next  prev  up
+@menu
+* Fig::                         r
+* m::                           
+* Reduce::                      
+* c::                           
+@end menu
+
+These are a number of languages used by @strong{MTT} to implement the
+various representations.
+Each has associated Language tools (@pxref{Language tools}) to
+manipulate and/or view the representation.
+
+@ftable @code
+@item fig
+        @code{Fig} a graphical description language.
+@item m
+        @code{octave} a high-level interactive language for numerical
+        computation.
+@item r
+        @code{reduce}  a high-level interactive language for symbolic
+        computation.
+@item tex
+        @code{latex} a text processor.
+@item dvi
+        @code{xdvi} a document viewer.
+@item ps
+        @code{ghostview} another document viewer.
+@item gdat
+        @code{gnuplot} a data viewer.
+@item c
+        @code{gcc} a c compiler.
+@end ftable
+
+These tools are automatically invoked as appropriate by @strong{MTT};
+but for more advanced use, these tools can be used directly on files
+(with the appropriate suffix) generated by @strong{MTT}.
+
+
+
+@node   Fig, m, Languages, Languages
+@section Fig
+@cindex Fig
+@pindex Fig
+Please see xfig documentation.
+
+@node   m, Reduce, Fig, Languages
+@section m
+@cindex m
+@pindex m
+Please see Octave documentation 
+@ifhtml
+<A HREF="http://www.che.wisc.edu/octave/">Octave</A> documentation.
+<A HREF="http://www.mathworks.com/homepage.html">Matlab</A> documentation.
+@end ifhtml
+
+
+@node   Reduce, c, m, Languages
+@section Reduce
+@cindex Reduce
+@pindex Reduce
+Please see the reduce documentation.
+
+@node c,  , Reduce, Languages
+@comment  node-name,  next,  previous,  up
+@section c
+@cindex c
+@pindex c
+Please see the gcc documentation.
+@node Language tools, Administration, Languages, Top
+@comment  node-name,  next,  previous,  up
+@chapter Language tools
+@cindex  Language tools
+
+@menu
+* Views::                       
+* Xfig::                        
+* Text editors::                
+* Octave::                      
+* LaTeX::                       
+@end menu
+
+@node Views, Xfig, Language tools, Language tools
+@comment  node-name,  next,  previous,  up
+@section Views
+@cindex views
+
+A number of representations (@pxref{Representations}) have a language
+representation which is particularly useful for viewing by the
+user. These views are
+invoked, where appropriate by the command:
+@example
+mtt sys rep view
+@end example
+where @code{sys} is the system name and @code{rep} a corresponding representation.
+
+@node Xfig, Text editors, Views, Language tools
+@comment  node-name,  next,  previous,  up
+@section Xfig
+@cindex Xfig
+
+@node Text editors, Octave, Xfig, Language tools
+@comment  node-name,  next,  previous,  up
+@section Text editors
+@cindex Text editors
+All representations live in text files and thus may be edited using your
+favourite text editor; however, the Fig (@pxref{Fig}) representation is
+pretty meaningless in this form and so you should use Xfig
+(@pxref{Xfig}) for representation in this language.
+
+Its up to you which text editor to use. I recommend emacs, but simpler
+(and less powerful) editors such as xedit, textedit and vi are also ok.
+
+I usually run @strong{MTT} out of an emacs shell window and keep the
+rest of the files in emacs buffers.
+
+@node Octave, LaTeX, Text editors, Language tools
+@comment  node-name,  next,  previous,  up
+@section Octave
+@cindex Octave
+@cindex Matlab
+@cindex m-files
+@cindex Octave interface
+@cindex mtt.m
+
+Octave is a numerical matrix-based language @xref{Top,
+,Octave,Octave,Octave}.  It is similar to Matlab in many ways. In most
+cases, m-files generated by @strong{MTT} can be understood by both
+Matlab and Octave (and no doubt other Matlab lookalikes).
+
+ @strong{MTT} provides the octave function @code{mtt}. The octave
+ command
+@example
+help mtt
+@end example
+gives the following information:
+@example
+ usage:  mtt (system[,representation,language])
+
+ Invokes mtt from octave to generate system_representation.language
+ Ie equivalent to "mtt system representation language" at the shell
+ Representation and language defualt to "sm" and "m" respectively
+
+@end example
+
+Thus for example, if octave is in the directory containing the system
+rc the following session generates the state matrices of the system "rc"
+with the defaut capacitance but resitance r=0.1.
+@example
+octave> mtt("rc");
+Creating rc_rbg.m
+Creating rc_cmp.m
+Creating rc_fig.fig
+Creating rc_sabg.fig
+Creating rc_alias.txt
+Creating rc_alias.m
+Creating rc_sub.sh
+Creating rc_abg.m
+Creating rc_cbg.m (maximise integral causality)
+Creating rc_type.sh
+Creating rc_ese.r
+Creating rc_def.r
+Creating rc_struc.txt
+Creating rc_rdae.r
+Creating rc_subs.r
+Creating rc_cr.txt
+Creating rc_cr.r
+Copying CR SS to here from
+Copying CR lin to here from
+Creating rc_dae.r
+Creating rc_sympar.txt
+Creating rc_sympar.r
+Creating rc_cse.r
+Creating rc_sspar.r
+Creating rc_csm.r
+Creating rc_ode.r
+Creating rc_ss.r
+Creating rc_sm.r
+Creating rc_switch.txt
+0 switches found
+Creating rc_sympars.txt
+Creating rc_sm.m
+Copying rc_sm.m
+octave> mtt("rc","numpar");
+Creating rc_numpar.txt
+Creating rc_numpar.m
+Copying rc_numpar.m
+octave> mtt("rc","sympar");
+Creating rc_sympar.m
+Copying rc_sympar.m
+octave> par = rc_numpar
+par =
+
+  1
+  1
+
+octave> sym = rc_sympar;
+
+octave> par(sym.r) = 0.1;
+octave> [A,B,C,D] = rc_sm(par)
+A = -10
+
+B = 10
+
+C = 1
+
+D = 0
+
+octave> 
+@end example
+generates the data structure rc corresponding the the bond graph of the
+system called `rc'.
+The following octave commands then generate the step reponse and bode
+diagram respectively:
+@example
+step(rc);
+bode(rc);
+@end example
+
+
+@menu
+* Octave control system toolbox (OCST)::  
+@end menu
+
+@node Octave control system toolbox (OCST),  , Octave, Octave
+@comment  node-name,  next,  previous,  up
+@subsection Octave control system toolbox (OCST)
+@cindex Octave
+@cindex toolbox
+@cindex OCST
+@cindex control systems
+@cindex mtt2sys
+
+@strong{MTT} provides an interface to the Octave control system toolbox
+(OCST) using the mfile @code{mtt2sys}. the octave command
+@example
+help mtt2sys
+@end example
+gives the following information.
+@example
+ usage:  sys = mtt2sys (Name[,par])
+
+ Creates a sys structure for the Octave Control Systems Toolbox
+ from an MTT system with name "Name"
+ Optional second argument is system parameter list
+ Assumes that Name_sm.m, Name_struc.m and Name_numpar.m exist
+@end example
+
+Thus for example, if octave is in the directory containing the system
+rc:
+@example
+rc = mtt2sys("rc");
+@end example
+generates the data structure rc corresponding the the bond graph of the
+system called `rc'.
+The following octave commands then generate the step reponse and bode
+diagram respectively:
+@example
+step(rc);
+bode(rc);
+@end example
+
+ 
+
+@node LaTeX,  , Octave, Language tools
+@comment  node-name,  next,  previous,  up
+@section LaTeX
+@cindex LaTeX
+
+LaTeX is a powerful text processor which @strong{MTT} uses to provide
+visual output.
+
+@node Administration, Glossary, Language tools, Top
+@comment  node-name,  next,  previous,  up
+@chapter  Administration
+@cindex  Administration
+
+@menu
+* Software components::         
+* REDUCE setup::                
+* Octave setup::                
+* Paths::                       
+* File structure::              
+@end menu
+
+@node Software components, REDUCE setup, Administration, Administration
+@comment  node-name,  next,  previous,  up
+@section  Software components
+@cindex  Software components
+
+@strong{MTT} is built from a set of readily-available  software tools.
+These are:
+@itemize @bullet
+@item General purpose software tools.
+@item Octave (@pxref{Octave setup})
+@item REDUCE  (@pxref{REDUCE setup})
+@end itemize
+
+The General purpose tools are (these will all be available with a
+standard Linux distribution):
+@vtable @code
+@item sh
+        Bourne shell
+@item gmake
+        Gnu make
+@item gawk
+        Gnu awk
+@item sed
+        Gnu sed
+@item grep
+        Gnu grep
+@item comm
+        Gnu Compare sorted files by line
+@item xfig
+        Figure editor, version 3 or greater.        
+@item fig2dev
+        Fig file conversion, version 3 or greater. 
+@item ghostview
+        postscript viewer
+@item xdvi
+        dvi viewer
+@item dvips
+        dvi to postscript conversion
+@item latex
+        the text processor (LaTeX2e needed)
+@item latex2html
+        converts latex to html
+@item perl
+        needed for latex2html
+@item gnuplot
+        a graph plotting program
+@item gnuscape
+        or other web/html browser such as netscape, Red Baron etc.
+@item gcc
+        GNU c compiler
+@end vtable
+
+@ifhtml
+<A HREF="http://home.pages.de/~GNU/">GNU</A> documentation.
+@end ifhtml
+
+
+
+@node REDUCE setup, Octave setup, Software components, Administration
+@comment  node-name,  next,  previous,  up
+@section  REDUCE setup
+@cindex REDUCE setup
+
+Symbolic algebra is performed by REDUCE, which although not free
+software is the the result of international collaboration. The version I
+use is obtained from:
+@quotation
+ZIB ( http://www.zib.de )
+@end quotation
+@ifhtml
+<A HREF="http://www.rrz.uni-koeln.de/REDUCE/">REDUCE</A> documentation.
+<A HREF="http://www.zib.de">ZIB</A> documentation.
+@end ifhtml
+
+@node Octave setup, Paths, REDUCE setup, Administration
+@comment  node-name,  next,  previous,  up
+@section Octave setup
+@cindex  Octave setup
+
+Octave is available at various web sites including:
+@quotation
+
+@end quotation
+
+@menu
+* .octaverc::                   
+@end menu
+
+@node .octaverc,  , Octave setup, Octave setup
+@comment  node-name,  next,  previous,  up
+@subsection .octaverc
+@vindex  .octaverc
+
+
+The @file{.octaverc} file should contain the following lines:
+@example
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Startup file for Octave for use with MTT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+implicit_str_to_num_ok = 1;
+empty_list_elements_ok = 1;
+
+@end example
+
+@node Paths, File structure, Octave setup, Administration
+@comment  node-name,  next,  previous,  up
+@section Paths
+@cindex paths
+@cindex mttrc
+
+There are a number of paths that must be set correctely for @strong{MTT}
+to work. These are normally set up by sourcing the file @code{mttrc} that
+lives in the @strong{MTT} home directory.
+
+@menu
+* $MTTPATH::                    
+* $MTT_COMPONENTS::             
+* $MTT_CRS::                    
+* $MTT_EXAMPLES::               
+* $OCTAVE_PATH::                
+@end menu
+
+@node $MTTPATH, $MTT_COMPONENTS, Paths, Paths
+@comment  node-name,  next,  previous,  up
+@subsection $MTTPATH
+@vindex $MTTPATH
+The environment variable $MTTPATH points to the mtt home directory.
+This is usually @code{/usr/local/lib/mtt}.
+
+@node $MTT_COMPONENTS, $MTT_CRS, $MTTPATH, Paths
+@comment  node-name,  next,  previous,  up
+@subsection $MTT_COMPONENTS
+@vindex $MTT_COMPONENTS
+The environment variable $MTT_COMPONENTS is a colon-separated path
+pointing to directories containing components and subsystems.
+By default
+@example
+MTT_COMPONENTS=$MTTPATH/lib/comp
+@end example
+but you may wish to add your own component libraries:
+@example
+MTT_COMPONENTS=my_library_path:$MTT_COMPONENTS
+@end example
+
+@node $MTT_CRS, $MTT_EXAMPLES, $MTT_COMPONENTS, Paths
+@comment  node-name,  next,  previous,  up
+@subsection $MTT_CRS
+@vindex $MTT_CRS
+The environment variable $MTT_CRS is a colon-separated path
+pointing to directories containing constitutive relationships.
+By default
+@example
+MTT_CRS=$MTTPATH/lib/cr
+@end example
+but you may wish to add your own component libraries:
+@example
+MTT_CRS=my_cr_path:$MTT_CRS
+@end example
+
+@node $MTT_EXAMPLES, $OCTAVE_PATH, $MTT_CRS, Paths
+@comment  node-name,  next,  previous,  up
+@subsection $MTT_EXAMPLES
+@vindex $MTT_EXAMPLES
+The environment variable $MTT_EXAMPLES is a colon-separated path
+pointing to directories containing EXAMPLES and subsystems.
+By default
+@example
+MTT_EXAMPLES=$MTTPATH/lib/examples
+@end example
+but you may wish to add your own component libraries:
+@example
+MTT_EXAMPLES=my_examples_path:$MTT_EXAMPLES
+@end example
+
+@node $OCTAVE_PATH,  , $MTT_EXAMPLES, Paths
+@comment  node-name,  next,  previous,  up
+@subsection $OCTAVE_PATH
+@vindex $OCTAVE_PATH
+
+The @code{$OCTAVE_PATH} path must include the relevant paths for mtt to
+work properly. In particular, it must include:
+@example
+$MTTPATH/trans/m
+$MTTPATH/lib/comp/simple
+$MTTPATH/lib/comp/compound
+@end example
+
+@node File structure,  , Paths, Administration
+@comment  node-name,  next,  previous,  up
+@section  File structure
+@cindex File structure
+The recommended installation of @strong{MTT} uses the following
+directory structure with corresponding contents. Normally, each of the
+listed directories is a subdirectory of @file{/usr/local}. The directory
+@code{mtt} is pointed to by $MTTPATH (@pxref{$MTTPATH}).
+
+@vtable @file
+@item mtt
+        This is the home directory for @strong{MTT}. @strong{MTT}  itself lives
+        here along with @file{mttrc}.
+@item mtt/trans
+        The transformations executed by @strong{MTT}.
+@item mtt/trans/m
+        The  @code{m-files} associated with the transformations.
+@item mtt/trans/awk
+        The  @code{awk} scripts associated with the transformations.
+@item mtt/lib
+        The place for components, examples and CRs which will be updated.
+@item mtt/lib/comp/simple
+@cindex simple components
+        The  @code{m-files} defining the simple components.
+@cindex compound components
+@item mtt/lib/comp/compound
+        The  @code{m-files} defining the compound components.
+@item mtt/lib/cr/r
+        constitutive relationship definitions
+@item mtt/lib/examples
+        Some examples. 
+@item mtt/examples/metamodelling
+        Examples from the book.
+@item mtt/doc
+        The  documentation files for @strong{MTT}.
+@item mtt/doc/Examples
+        Examples used in the documentation.
+@end vtable
+
+@node Glossary, Index, Administration, Top
+@comment  node-name,  next,  previous,  up
+@unnumbered Glossary
+@printindex fn
+
+@node Index,  , Glossary, Top
+@comment      node-name, next,       previous, up
+@unnumbered Index
+@printindex cp
+
+@contents
+
+@bye
+

@@ -2,7 +2,7 @@
 #DESCRIPTION A stack of rigid 2D bars supported by spring-dampers.
 #DESCRIPTION The model demonstrates hierarchical modelling in dia
 #DESCRIPTION including vector ports, repeated components and
-#DESCRIPTION aliasing of parameters (but not yet of ports).
+#DESCRIPTION aliasing of parameters and ports.
 
 ## System StackOfSupportedBars, representation lbl, language txt
 ## File StackOfSupportedBars_lbl.txt

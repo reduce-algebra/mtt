@@ -178,24 +178,29 @@ OUT "$system_scse";
 
 write "%File: $system_scse";
 
+% Constants
+
+write "% New constants";
+write "MTTNx := ", MTTNx2, ";";
+write "MTTNy := ", MTTNy2, ";";
 
 % E matrix
 MTT_Matrix := MTTsE$ 
-MTT_Matrix_name := "MTTsE"$
+MTT_Matrix_name := "MTTE"$
 MTT_Matrix_n := MTTNx2$
 MTT_Matrix_m := MTTNx2$
 Reduce_Matrix()$
 
 % State derivative
 MTT_Matrix := MTTsEdX$ 
-MTT_Matrix_name := "MTTsEdX"$
+MTT_Matrix_name := "MTTEdX"$
 MTT_Matrix_n := MTTNx2$
 MTT_Matrix_m := 1$
 Reduce_Matrix()$
 
 % Output
 MTT_Matrix := MTTsY$ 
-MTT_Matrix_name := "MTTsY"$
+MTT_Matrix_name := "MTTY"$
 MTT_Matrix_n := MTTNy2$
 MTT_Matrix_m := 1$
 Reduce_Matrix()$

@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.4  1996/08/30  18:45:32  peter
+# Removed header stuff.
+#
 ## Revision 1.3  1996/08/30 10:30:54  peter
 ## Switched order of args in matches.
 ##
@@ -43,21 +46,31 @@ function matches(names, name) {
 
 
 BEGIN {
+sys_name = ARGV[1];
 comment = "%";
 arg_delimiter = ",";
-not_an_arg = "effort flow state internal external zero";
+not_an_arg = "effort flow state internal external zero 0 1";
 numeric = "[0-9]";
 symbol_count = 0;
 symbols = "";
+symbolic_arg_char = "$";
 }
 {
   if ( (match($1,comment)==0) && (NF>=3) ) {
-    args = $3;
+# The following line is a bad attempt to use parameters in SS fields
+# It assumes that at least one SS field is not_an_arg.
+    if (matches(not_an_arg,$3)) {
+      args = $2
+	}
+    else {
+      args = $3;
+    }
     n_args = split(args,arg,arg_delimiter);
     for (i = 1; i <= n_args; i++) {
       first_char = substr(arg[i],1,1);
       if ( (matches(not_an_arg,arg[i])==0) \
 	   && (match(first_char,numeric)==0) \
+	   && (match(first_char,symbolic_arg_char)==0) \
 	   && (length(arg[i])>0) \
 	   && (matches(symbols,arg[i]) ==0) ) {
 	symbol_count++;
@@ -78,5 +91,8 @@ END {
       printf("MTTVar(%1.0f,1) \t := %s;\n", i, symbol[i]);
     }
   }
-  printf("END;\n\n");  
+
 }
+
+
+

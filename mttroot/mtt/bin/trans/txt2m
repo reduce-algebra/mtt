@@ -15,6 +15,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.16  1999/03/06 02:18:10  peterg
+# %% Changed argument list.
+# %%
 # %% Revision 1.15  1999/02/16 21:44:38  peterg
 # %% Revised smx generation
 # %%
@@ -84,13 +87,13 @@ fi
 if [ "$representation" = "simpar" ]; then
     # Check if implicit method and generate xmx.m if
     implicit=`grep -i METHOD $1_simpar.txt | grep -i -c IMPLICIT`
-    if [ "$implicit" = "1"  ]; then
-	mtt -q $1 smx m
-    else
+    if [ "$implicit" = "0" ]; then
 echo Creating dummy $1_smx.m
 cat<<EOF > $1_smx.m
 %% No code as implicit method not used here %%
 EOF
+    else
+#	mtt -q $1 smx m
     fi
 fi
 
@@ -135,14 +138,14 @@ doublequote = "\042";
     LHS = a[1];
     RHS = a[2];
     gsub(quote, doublequote, RHS);
-    sub(/^LAST/, "mttLAST", LHS);
-    sub(/^DT/, "mttDT", LHS);
-    sub(/^STEPFACTOR/, "mttSTEPFACTOR", LHS);
-    sub(/^METHOD/, "mttMETHOD", LHS);
-    sub(/^WMIN/, "mttWMIN", LHS);
-    sub(/^WMAX/, "mttWMAX", LHS);
-    sub(/^WSTEPS/, "mttWSTEPS", LHS);
-    sub(/^INPUT/, "mttinput", LHS);
+    sub(/^[ 	]*LAST/, "mttLAST", LHS);
+    sub(/^[ 	]*DT/, "mttDT", LHS);
+    sub(/^[ 	]*STEPFACTOR/, "mttSTEPFACTOR", LHS);
+    sub(/^[ 	]*METHOD/, "mttMETHOD", LHS);
+    sub(/^[ 	]*WMIN/, "mttWMIN", LHS);
+    sub(/^[ 	]*WMAX/, "mttWMAX", LHS);
+    sub(/^[ 	]*WSTEPS/, "mttWSTEPS", LHS);
+    sub(/^[ 	]*INPUT/, "mttinput", LHS);
     LHS = tolower(LHS);
     RHS = tolower(RHS);
     sub(/["]*euler["]*/, 1, RHS);   

@@ -7,6 +7,9 @@
 %DESCRIPTION % Component type RT
 %DESCRIPTION	r		lin	flow,r
 
+%ALIAS $1	lin
+%ALIAS $1	flow,r
+
 %% Label file for system RT (RT_lbl.txt)
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -14,6 +17,10 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1998/06/29 10:08:14  peterg
+% %% Converted to FP component
+% %% Removed lables from FP
+% %%
 % %% Revision 1.1  1997/09/04  09:48:47  peterg
 % %% Initial revision
 % %%
@@ -26,5 +33,8 @@
 
 
 % Component type R
-	r		$1		$1
+	r		lin		flow,r
 
+% Component type SS
+	[in]		SS		external,external
+	[out]		SS		external,external

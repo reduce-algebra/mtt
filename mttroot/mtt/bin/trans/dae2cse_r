@@ -15,6 +15,11 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.25  2002/09/18 19:46:48  geraint
+## Refined test to reduce shell loop overhead for unnecessary E matrix.
+## Removed unnecessary attempt to optimise cse.
+## Fixes sm representation.
+##
 ## Revision 1.24  2002/09/16 08:08:00  geraint
 ## Merged changes from global-optimisation branch.
 ##
@@ -304,6 +309,8 @@ MTTdX := MTTdXs;  %Restore the symbolic dX
 
 %% Add on input derivative terms
 MTTEdX := MTTEdX + MTTExu*MTTdu;
+%% Add on output derivative terms
+MTTEdx := MTTEdX + MTTExx*(MTTE^(-1))*MTTEdX;
 END;
 
 

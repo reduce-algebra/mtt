@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1998/11/20 09:48:31  peterg
+## Remove the _lower stuff -- see idf this works now.
+##
 ## Revision 1.7  1998/04/14 17:46:28  peterg
 ## To avoid clashes when creating for more thsan one top level file, adds
 ## _lower attribute to lower lecel constitutive relationship files.
@@ -58,7 +61,8 @@
 ###############################################################
 
 # The level of the recursion null at top level; _lower at lower levels.
-level=$2
+
+level='' ## Used to be $2 - now set to null.
 
 crfile=$1_cr.r
 CRFILE=$1_cr.r
@@ -93,12 +97,22 @@ else
     }' $1_cr.txt  | sh
 
     # Include the .cr files
-    awk '{
-	 if (NF>0) {
-         print "in \"" $1 ".cr\";"
-         }
-    }' $1_cr.txt  >> $crfile
+#    awk '{
+#	 if (NF>0) {
+#         print "in \"" $1 ".cr\";"
+#         }
+#    }' $1_cr.txt  >> $crfile
 
+    ## list of the crs
+    crs=`cat $1_cr.txt`
+    for cr in $crs; do
+        crf=$cr'_cr.r'
+	if [ -e "$crf" ]; then
+	   printf "\045 (%s exists)\n" $crf >> $crfile
+	else
+	   printf 'in "%s.cr";\n' $cr >> $crfile
+	fi
+    done
   fi
 echo 'END;' >> $crfile
 

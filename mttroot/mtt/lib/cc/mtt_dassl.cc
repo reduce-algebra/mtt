@@ -34,7 +34,7 @@ mtt_residual (const ColumnVector &X, const ColumnVector &DX, double t, int &ires
   args(0) = octave_value (X);
   args(1) = octave_value (DX);
   args(2) = octave_value (t);
-  args(3) = octave_value (ires);
+  args(3) = octave_value (static_cast<double>(ires));
   f = feval ("mtt_residual", args, 1);
   return f(0).VECTOR_VALUE ();
 #endif // (CODEGENTARGET == STANDALONE)

@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.358  2002/08/07 11:04:40  geraint
+## Now updates timestamp on lbl.txt after processing in make. This eliminates the delay where MTT spends a long period of time uselessly recursing through the model on subsequent passes if the label file is older than the bondgraph.
+##
 ## Revision 1.357  2002/06/28 10:13:40  geraint
 ## Includes fix_c.r in ese2rdae and def2write_r to eliminate occurrances of x**y.
 ##
@@ -2547,6 +2550,10 @@ $1_ode2odes_implicit.o: $1_cseo.o $1_csex.o $1_smxa.o $1_smxax.o mtt_implicit.o
 	@echo "Creating $1_ode2odes_implicit.o"
 	ar -cr \$@ \$^
 
+$1_ode2odes_dassl_oct.stamp: $1_ode.oct $1_odeo.oct mtt_dassl.oct
+	touch \$@
+$1_ode2odes_dassl_o.stamp: $1_ode.o $1_odeo.o mtt_dassl.o
+	touch \$@
 $1_ode2odes_dassl_%.stamp: $1_ode.% $1_odeo.%
 	touch \$@
 $1_ode2odes_dassl.o: $1_ode.o $1_odeo.o mtt_dassl.o

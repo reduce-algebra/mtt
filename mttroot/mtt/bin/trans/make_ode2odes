@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.82  2002/07/24 14:00:12  geraint
+## Corrected arguments passed to mtt_write when dumping data (sigint).
+##
 ## Revision 1.81  2002/07/11 13:00:23  geraint
 ## Declared more function arguments to be "const" - improves compiler optimisation.
 ##
@@ -827,7 +830,7 @@ mtt_dassl (ColumnVector &x,
 
 #if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
 ColumnVector
-mtt_residual (const ColumnVector &X,
+Fmtt_residual (const ColumnVector &X,
 	      const ColumnVector &DX,
 	      double t,
 	      int &ires)
@@ -838,7 +841,7 @@ DEFUN_DLD (mtt_residual, args, , "mtt_residual")
     static ColumnVector	X  (MTTNX+MTTNYZ);
     static ColumnVector	DX (MTTNX+MTTNYZ);
     static double      	t;
-    static int		&ires;
+    static int		ires;
 
     X  = args(0).${vector_value} ();
     DX = args(1).${vector_value} ();
@@ -1021,7 +1024,7 @@ mtt_write (const double &t,
 
 void
 ${sys}_ode2odes (const ColumnVector &state0,
-		 const ColumnVector &numpar,
+		 const ColumnVector &par,
 		 const ColumnVector &simpar)
 {
   static double first, dt, last, stepfactor;
@@ -1058,8 +1061,8 @@ ${sys}_ode2odes (const ColumnVector &state0,
 
   for (register int j = 0, i = 1; i <= ilast; i++)
     {
-      u	= mtt_input (x, y, t, numpar);
-      y	= mtt_output (x, u, t, numpar);
+      u	= mtt_input (x, y, t, par);
+      y	= mtt_output (x, u, t, par);
       if (0 == j)
 	{
            mtt_write (t, x, y, first, nrows);
@@ -1084,10 +1087,10 @@ case "$method" in
           x2 (x),
           x3 (x);
 
-        k1 = ddt * mtt_rate (x , u, t , numpar); x1 += k1 * 0.5;
-        k2 = ddt * mtt_rate (x1, u, t1, numpar); x2 += k2 * 0.5;
-        k3 = ddt * mtt_rate (x2, u, t1, numpar); x3 += k3;
-        k4 = ddt * mtt_rate (x3, u, t2, numpar);
+        k1 = ddt * mtt_rate (x , u, t , par); x1 += k1 * 0.5;
+        k2 = ddt * mtt_rate (x1, u, t1, par); x2 += k2 * 0.5;
+        k3 = ddt * mtt_rate (x2, u, t1, par); x3 += k3;
+        k4 = ddt * mtt_rate (x3, u, t2, par);
         dx = (k1 + 2.0 * (k2 + k3) + k4) / (6.0 * ddt);
       }
 EOF
@@ -1096,21 +1099,21 @@ EOF
     ;;
     "implicit")
 	cat << EOF >> $filename
-      dx = mtt_rate (x, u, t, numpar);
-      AA = mtt_smxa (x, u, ddt, numpar);
-      AAx = mtt_smxax (x, u, ddt, numpar);
+      dx = mtt_rate (x, u, t, par);
+      AA = mtt_smxa (x, u, ddt, par);
+      AAx = mtt_smxax (x, u, ddt, par);
 EOF
     ;;
     "euler" | *)
 	cat << EOF >> $filename
-      dx = mtt_rate (x, u, t, numpar);
+      dx = mtt_rate (x, u, t, par);
 EOF
     ;;
 esac
 
 ## Common stuff
 cat <<EOF >> $filename
-      open_switches = mtt_logic (x, u, t, numpar);
+      open_switches = mtt_logic (x, u, t, par);
       x =  $algorithm; 
       t += ddt;
       j++;

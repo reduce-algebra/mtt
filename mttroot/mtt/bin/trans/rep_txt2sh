@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  2002/04/28 18:55:03  geraint
+## Fixed [ 549658 ] awk should be gawk.
+## Replaced calls to awk with call to gawk.
+##
 ## Revision 1.5  2000/11/27 10:13:25  peterg
 ## Now passes though options as second argument
 ##
@@ -56,9 +60,80 @@ if [ "$mtt_count" = "0" ]; then
   gawk '{print "mtt", sys, $1, $2}' sys="$1" >$1_rep.txt
 fi
 
+
 # Execute the commands - quietly and untidily!
 # But use switches
-strip_comments< $1_rep.txt | sed "s/mtt /mtt -q -u $mtt_switches /" | tee -a JUNK  | sh
+# | sed "s/mtt /mtt -q -u $mtt_switches /" #| tee -a JUNK  | sh
+
+strip_comments< $1_rep.txt | awk '
+{
+  ## Add in the external switches
+  sub("mtt", sprintf("mtt %s", mtt_switches));
+      
+  ## Count the switches (noting that -i -dr -dw and -de have an argument)
+  ## and make up a string (switches) containing them
+  Switches=0; switches = "";
+  for (i=2;i<=NF;i++) {
+    if (match($i,"-")==1) {
+      Switches++;
+      switches=sprintf("%s%s", switches, $i);
+    }
+    if (match($i,"-i")==1) {
+      Switches++;
+      j=i+1;
+      switches=sprintf("%s%s", switches, $j);
+    }
+    if (match($i,"-dr")==1){
+      Switches++;
+      j=i+1;
+      switches=sprintf("%s%s", switches, $j);
+    }
+    if (match($i,"-dw")==1){
+      Switches++;
+      j=i+1;
+      switches=sprintf("%s%s", switches, $j);
+    }
+    if (match($i,"-de")==1){
+      Switches++;
+      j=i+1;
+      switches=sprintf("%s%s", switches, $j);
+    }
+  }
+  System = $(Switches+2)
+  Representation = $(Switches+3);
+  Multiple = "odes odeso sms smso daes daeso";
+  Language = $(Switches+4);
+
+  args = $(Switches+5);
+  if ( (length(args)>0)&&(match(Language,"ps")>0)) {
+    __Args = sprintf("-%s", gensub(/_/, "-", "g", args) );
+  }
+  else
+  {
+  __Args = "";
+  }
+
+  ## mtt command
+  printf("%s\n", $0);
+
+  ## Add in the main mtt switches
+  __Args = sprintf("%s%s", switches, __Args);
+ 
+  ## Zap -q -u
+  gsub("-[qu]","", __Args);
+
+  ## Zap blanks
+  gsub(" ","", __Args);
+
+  ## copy result to long name file
+  SysRepLang = sprintf("%s_%s.%s", System, Representation, Language);
+  if (length(__Args)==0)
+    __Args = "-noargs";
+  SysRepArgLang = sprintf("%s_%s%s.%s", System, Representation, __Args, Language);
+  printf("echo Creating %s\n", SysRepArgLang);
+  printf("cp %s %s\n", SysRepLang, SysRepArgLang);
+
+}' mtt_switches="${mtt_switches}"  | sh
 
 echo "Done creating representations for $1_rep.tex"
 

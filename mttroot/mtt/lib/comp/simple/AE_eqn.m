@@ -7,11 +7,19 @@ function  structure = AE_eqn(bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/08/22 13:12:34  peter
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if nargin<6
   eqnfile = 'stdout';
 end;
+
+% Check that there are exactly two bonds.
+if check_bonds(bonds,2,'AE')==0
+  return
+end
 
 % There are 2 ports; extract the information
 e_1 = bonds(1,1);

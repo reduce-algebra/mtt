@@ -11,6 +11,9 @@
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.3  2001/04/11 07:52:45  gawthrop
+  ## Temporary fix to avoid incorrect _input.cc with stdin
+  ##
   ## Revision 1.2  2001/04/05 11:49:07  gawthrop
   ## Fixed a number of bugs to as to work with reports.
   ##
@@ -50,11 +53,9 @@ $(SYS)_error.pdf: $(SYS)_parameters.pdf
 $(SYS)_outputs.pdf: $(SYS)_parameters.pdf
 	touch $(SYS)_outputs.pdf
 
-## Note when a proper input.cc for stdin is available, change to
-## mtt -q $(OPTS) -stdin -s s$(SYS) ode2odes oct
 s$(SYS)_ode2odes.m: 
 	echo Starting creation of s$(SYS)_ode2odes.m with options $(OPTS)
-	mtt -q $(OPTS) -s s$(SYS) ode2odes m; rm s$(SYS)_input.oct; make_stdin s$(SYS) m
+	mtt -q $(OPTS) -stdin -s s$(SYS) ode2odes oct
 
 s$(SYS)_ssim.m: s$(SYS)_def.m
 	mtt -q $(OPTS) -s s$(SYS) ssim m

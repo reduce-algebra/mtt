@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  2001/05/24 07:48:17  gawthrop
+## Include artwork in the cbg.fig file
+##
 ## Revision 1.5  2001/03/23 14:56:21  gawthrop
 ## Now puts space after header fields + write _port.fig
 ##
@@ -62,7 +65,8 @@ touch $1_art.fig
 
 # The following horrible sed thing is to replace tab by ----
 # this is because I can't get sed to recognise tabs even if FS=" ".
-sed 's/	/---- /'<$1_abg.fig > $1_abg.mtt
+echo "" > $1_abg.mtt
+sed 's/	/---- /'<$1_abg.fig >> $1_abg.mtt
 
 # This is the main transformation using awk
 cat $1_lbl.txt $1_abg.mtt |  awk -f $MTTPATH/trans/awk/rbg_fig2m.awk $1

@@ -16,6 +16,12 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.25  2000/12/01 14:51:26  peterg
+## Major changes towards partioning
+##
+## - generates sub ese, def and struc
+## - generates indices for conversion of subsystem in/out/state - but not used yet
+##
 ## Revision 1.24  2000/11/30 15:12:55  peterg
 ## Zapped the declaration of subsystem connections - now in individual
 ## .def files
@@ -217,6 +223,45 @@ EOF
 
 echo "END;" >> $1_def.r
 }
+
+
+function get_indices {
+  sys=$1
+  which=$2
+  awk '{if ($1==which) print $2}' which=$which < ${sys}_struc.txt
+}
+
+function convert_indices {
+  sys=$1
+  Which="input output state"
+  for which in $Which; do
+  
+    indices=`get_indices ${sys} $which`
+  
+    case $which in
+      input)
+  	name=u
+  	;;
+      output)
+  	name=y
+  	;;
+      state)
+  	name=x
+  	;;
+      *)
+  	
+    esac
+  
+    new=0
+    for old in $indices; do
+      new=`expr $new + 1`
+      pattern="MTT${name}(${old},1)"
+      replacement="MTT${name}(${new},1)"
+      mv ${sys}_ese.r mtt_junk
+      sed "s/$pattern/$replacement/" <mtt_junk >${sys}_ese.r
+    done
+  done
+}
   # Find subsystems
   subsystems=`mtt_get_subsystems $1`
 
@@ -249,19 +294,14 @@ EOF
   echo "END;" >> $esefile
 
   ## Def file for subsystem
-  #makedef ${subsystem}
+  makedef ${subsystem}
   
-  echo Creating ${subsystem}_def.r
-  cp mtt_all_def.r ${subsystem}_def.r
-
   echo Creating ${subsystem}_struc.txt
   grep $subsystem < $1_struc.txt > ${subsystem}_struc.txt
-  echo "Creating indices (needs more work to convert subsystem indices)"
-  whichs="input output state"
-  for which in $whichs; do
-    indices=`mtt_get_subindex $subsystem $which`
-    echo "  $which $indices"
-  done
+
+  echo Converting subsystem indices
+  convert_indices ${subsystem}
+
   done
 
 fi

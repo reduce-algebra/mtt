@@ -8,6 +8,9 @@
 %DESCRIPTION             mtt_f=mtt_e/r
 
 % $Log$
+% Revision 1.4  2000/12/28 09:18:38  peterg
+% put under RCS
+%
 % Revision 1.3  2000/10/05 10:13:00  peterg
 % New eqn2ass function.
 % Started extension to multiports
@@ -24,7 +27,7 @@
 
 % Function to convert equation to assignment
 OPERATOR eqn2ass;
-FOR ALL eqn,outlist,inputs 
+FOR ALL comp_type, eqn,outlist,inputs 
 LET eqn2ass(eqn,outlist,inputs) =
 BEGIN
     ass := {}; mtt_ports := 0;
@@ -58,50 +61,50 @@ OPERATOR cr;
 
 %%%% This is the Equation version
 % Flow input
-FOR ALL mtt_cr, input, out_cause
-LET cr(mtt_cr,out_cause, 1, input, flow, 1) 
+FOR ALL comp_type, mtt_cr, input, out_cause
+LET cr(comp_type,mtt_cr,out_cause, 1, input, flow, 1) 
       = eqn2ass(mtt_cr,mtt_e,{mtt_f=input});
 
 % Effort input
-FOR ALL mtt_cr, input, out_cause
-LET cr(mtt_cr,out_cause, 1, input, effort, 1)
+FOR ALL comp_type, mtt_cr, input, out_cause
+LET cr(comp_type,mtt_cr,out_cause, 1, input, effort, 1)
     = eqn2ass(mtt_cr,mtt_f,{mtt_e=input});
 
 % Effort output
-FOR ALL mtt_cr, input, in_cause
-LET cr(mtt_cr,effort, 1, input, in_cause, 1) 
+FOR ALL comp_type, mtt_cr, input, in_cause
+LET cr(comp_type,mtt_cr,effort, 1, input, in_cause, 1) 
     = eqn2ass(mtt_cr,mtt_e,{mtt_f=input});
 
 % Flow output
-FOR ALL mtt_cr, input, in_cause
-LET cr(mtt_cr,flow, 1, input, in_cause, 1) 
+FOR ALL comp_type, mtt_cr, input, in_cause
+LET cr(comp_type,mtt_cr,flow, 1, input, in_cause, 1) 
     = eqn2ass(mtt_cr,mtt_f,{mtt_e=input});
 
 %%%% This is the assignment version
 % Flow input
-FOR ALL mtt_cr_e,mtt_cr_f, input, out_cause
-LET cr(mtt_cr_e,mtt_cr_f,out_cause, 1, input, flow, 1) 
+FOR ALL comp_type, mtt_cr_e,mtt_cr_f, input, out_cause
+LET cr(comp_type,mtt_cr_e,mtt_cr_f,out_cause, 1, input, flow, 1) 
     = sub(mtt_f=input,mtt_cr_f);
 
 % Effort input
-FOR ALL mtt_cr_e,mtt_cr_f, input, out_cause
-LET cr(mtt_cr_e,mtt_cr_f,out_cause, 1, input, effort, 1) 
+FOR ALL comp_type, mtt_cr_e,mtt_cr_f, input, out_cause
+LET cr(comp_type,mtt_cr_e,mtt_cr_f,out_cause, 1, input, effort, 1) 
     = sub(mtt_e=input,mtt_cr_e);
 
 % Effort output
-FOR ALL mtt_cr_e,mtt_cr_f, input, in_cause
-LET cr(mtt_cr_e,mtt_cr_f,effort, 1, input, in_cause, 1) 
+FOR ALL comp_type, mtt_cr_e,mtt_cr_f, input, in_cause
+LET cr(comp_type,mtt_cr_e,mtt_cr_f,effort, 1, input, in_cause, 1) 
     = sub(mtt_f=input,mtt_cr_f);
 
 % Flow output
-FOR ALL mtt_cr_e,mtt_cr_f, input, in_cause
-LET cr(mtt_cr_e,mtt_cr_f,flow, 1, input, in_cause, 1) 
+FOR ALL comp_type, mtt_cr_e,mtt_cr_f, input, in_cause
+LET cr(comp_type,mtt_cr_e,mtt_cr_f,flow, 1, input, in_cause, 1) 
     = sub(mtt_e=input,mtt_cr_e);
 
 
 %%% Q&D FMR 2 port.
-FOR ALL mtt_cr_e,mtt_cr_f,input_1,input_2
-LET cr(mtt_cr_e,mtt_cr_f,flow,1,
+FOR ALL comp_type, mtt_cr_e,mtt_cr_f,input_1,input_2
+LET cr(comp_type,mtt_cr_e,mtt_cr_f,flow,1,
 	input_1,effort,1,
 	input_2,flow,2
 	)  = sub(mtt_mod=input_2,sub(mtt_e=input_1,mtt_cr_e));

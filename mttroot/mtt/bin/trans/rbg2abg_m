@@ -11,6 +11,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.14  2000/09/14 08:41:35  peterg
+## Strip off the additional direction info from rbonds
+##
 ## Revision 1.13  2000/03/16 12:53:26  peterg
 ## Added copy of the %VAR declarations
 ## Put in the endfunction statement
@@ -156,7 +159,8 @@ EOF
 # Append any VAR declarations
 if [ -f "$1_lbl.txt" ]; then
   echo "# Explicit variable declarations" >> $1_abg.m
-  grep '^[\s]*[%|#]VAR' $1_lbl.txt | tr '%' '#' >> $1_abg.m    
+  grep '^[\s]*[%|#][V|P]AR' $1_lbl.txt | tr '%' '#' >> $1_abg.m    
+  grep '^[\s]*[%|#]NOT[V|P]AR' $1_lbl.txt | tr '%' '#' >> $1_abg.m    
 fi
 
 ## Close off the function

@@ -12,6 +12,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.49  2002/05/11 01:14:17  geraint
+## Fix for [ 553218 ] simpar.oct and simpar.m different.
+## Translation added between ColumnVector in base .cc and Octave_map in .oct.
+##
 ## Revision 1.48  2002/05/08 14:51:03  geraint
 ## Moved matlab/octave data type conversion functions to a separate file.
 ##
@@ -456,12 +460,26 @@ case $language in
     oct)
 	modeline="// -*-c++-*- Put Emacs into c++-mode";
 	Lc='//';
+	Lb='(';
+	Rb=')';
 	oct_header=yes;
         constant_declaration="const double "
         var_declaration="double "
 	minusone="-1"
 	map="_map"
         declaredummies=yes
+	;;
+    sfun)
+	modeline="// -*-c++-*- Put Emacs into c++-mode";
+	Lc='//'
+	Rc=''
+	Lb='['
+	Rb=']'
+	start="## BEGIN Code"
+	finish="## END Code"
+	constant_declaration="const double "
+	var_declaration="double "
+	minusone="-1"
 	;;
     *)
 	echo Language $language not supported - sorry; exit 1
@@ -586,7 +604,7 @@ cat <<EOF
 
 $Lc Parameters $Rc
 EOF
-sympar2par_txt2m ${system} ""  "$var_declaration" "$minusone"
+sympar2par_txt2m ${system} ""  "$var_declaration" "$minusone" "$Lb" "$Rb"
 fi
 
 # States
@@ -597,7 +615,7 @@ $Lc States $Rc
 EOF
 N=`n2m 1 $Nx`
 for i in $N; do
-    echo $constant_declaration 'mttx'$i' = mttx('$i$minusone');'
+    echo $constant_declaration 'mttx'$i' = mttx'$Lb$i$minusone$Rb ';'
 done
 fi
 
@@ -614,7 +632,7 @@ EOF
 
 N=`n2m 1 $Nu`
 for i in $N; do
-  echo $constant_declaration 'mttu'$i' = mttu('$i$minusone');'
+  echo $constant_declaration 'mttu'$i' = mttu'$Lb$i$minusone$Rb';'
 done
 cat <<EOF
 
@@ -623,7 +641,7 @@ EOF
 
 Ni=`n2m 1 $Nyz`
 for i in $Ni; do
-  echo $constant_declaration 'mttui'$i' = mttu('$Nu+$i$minusone');'
+  echo $constant_declaration 'mttui'$i' = mttu'$Lb$Nu+$i$minusone$Rb';'
 done
 fi
 

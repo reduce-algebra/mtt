@@ -2,10 +2,11 @@
 
 SYS=$1
 REP=$2
-PARSER=${3:-indent}
+TARGET=${3:-cc}
+PARSER=${4:-indent}
 
 IN=${SYS}_${REP}.m
-OUT=${SYS}_${REP}.cc
+OUT=${SYS}_${REP}.${TARGET}
 TMP=${SYS}_${REP}_m2cc.tmp
 
 rep_declarations ()
@@ -109,17 +110,17 @@ decrement_indices ()
 {    
     # first section appends '-1' to container indices
     # to convert from FORTRAN-type numbering to C-type numbering
-    sed 's/mtta(\([0-9][0-9]*\),\([0-9][0-9]*\))/mtta(\1-1,\2-1)/g'	|\
-    sed 's/mttax(\([0-9][0-9]*\))/mttax(\1-1)/g'			|\
-    sed 's/mttdx(\([0-9][0-9]*\))/mttdx(\1-1)/g'			|\
-    sed 's/mttedx(\([0-9][0-9]*\))/mttedx(\1-1)/g'			|\
-    sed 's/mttpar(\([0-9][0-9]*\))/mttpar(\1-1)/g'			|\
-    sed 's/mttu(\([0-9][0-9]*\))/mttu(\1-1)/g'				|\
-    sed 's/mttx(\([0-9][0-9]*\))/mttx(\1-1)/g'				|\
-    sed 's/mtty(\([0-9][0-9]*\))/mtty(\1-1)/g'				|\
-    sed 's/mttyz(\([0-9][0-9]*\))/mttyz(\1-1)/g'			|\
-    sed 's/mttz(\([0-9][0-9]*\))/mttz(\1-1)/g'				|\
-    sed 's/mttopen(\([0-9][0-9]*\))/mttopen(\1-1)/g'				|\
+    sed 's/mtta(\([0-9][0-9]*\),\([0-9][0-9]*\))/mtta[\1-1,\2-1]/g'	|\
+    sed 's/mttax(\([0-9][0-9]*\))/mttax[\1-1]/g'			|\
+    sed 's/mttdx(\([0-9][0-9]*\))/mttdx[\1-1]/g'			|\
+    sed 's/mttedx(\([0-9][0-9]*\))/mttedx[\1-1]/g'			|\
+    sed 's/mttpar(\([0-9][0-9]*\))/mttpar[\1-1]/g'			|\
+    sed 's/mttu(\([0-9][0-9]*\))/mttu[\1-1]/g'				|\
+    sed 's/mttx(\([0-9][0-9]*\))/mttx[\1-1]/g'				|\
+    sed 's/mtty(\([0-9][0-9]*\))/mtty[\1-1]/g'				|\
+    sed 's/mttyz(\([0-9][0-9]*\))/mttyz[\1-1]/g'			|\
+    sed 's/mttz(\([0-9][0-9]*\))/mttz[\1-1]/g'				|\
+    sed 's/mttopen(\([0-9][0-9]*\))/mttopen[\1-1]/g'				|\
 									 \
     # next sections tidy the code up a bit, but are not necessary
     sed 's/1\-1\([\,\)]\)/0\1/g'       			       		|\
@@ -154,6 +155,12 @@ decrement_indices ()
     sed 's/\([(,]\)0\([0-9]\)/\1\2/g'
 };
 
+fortran_to_c_paren ()
+{
+    # converts [i] to (i)
+    sed 's/\[\([^[]*\)\]/(\1)/g'
+}
+	
 fix_pow ()
 {
     # matches number^number where number is one or more digits and one or zero decimal points
@@ -164,16 +171,35 @@ fix_pow ()
 
 echo Creating ${OUT}
 
-mtt_header ${SYS} ${REP} "oct"	>  ${TMP}
-find_code ${TMP} head		>  ${OUT}
-rep_declarations		>> ${OUT}
-find_code ${IN} body   		|\
-        decrement_indices	|\
-	fix_comment_delimiter	|\
-	fix_pow			|\
-	strip_junk		|\
-	${PARSER}      		>> ${OUT}
-rep_footer			>> ${OUT}
-find_code ${TMP} foot		>> ${OUT}
-rm ${TMP}
+case ${TARGET} in
+    sfun)
+	mtt_header ${SYS} ${REP} "sfun"	>  ${TMP}
+	echo "## END Code"		>> ${TMP}
+	find_code ${TMP} head		>  ${OUT}
+	find_code ${IN} body		|\
+	    decrement_indices		|\
+	    fix_comment_delimiter	|\
+	    fix_pow			|\
+	    strip_junk			|\
+	    ${PARSER}			>> ${OUT}
+	find_code ${TMP} foot		>> ${OUT}
+	rm ${TMP}
+	;;
+    cc | *)
+	mtt_header ${SYS} ${REP} "oct"	>  ${TMP}
+	find_code ${TMP} head		>  ${OUT}
+	rep_declarations		>> ${OUT}
+	find_code ${IN} body   		|\
+	    decrement_indices		|\
+	    fortran_to_c_paren		|\
+	    fix_comment_delimiter	|\
+	    fix_pow			|\
+	    strip_junk			|\
+	    ${PARSER}			>> ${OUT}
+	rep_footer			>> ${OUT}
+	find_code ${TMP} foot		>> ${OUT}
+	rm ${TMP}
+	;;
+esac
+
 

@@ -1,29 +1,34 @@
 // -*-c++-*-
-// <mtt_model_name>_sfun.cc:
+// <mtt_model_name>_sfun.c:
 // Matlab S-function simulation of <mtt_model_name>
 
 #define S_FUNCTION_NAME <mtt_model_name>_sfun
 #define S_FUNCTION_LEVEL 2
 
 #include "simstruc.h"
-#include <string>
 #include "<mtt_model_name>_def.h"
 
+static mxArray *dX		= mxCreateDoubleMatrix (MTTNX	, 1, mxREAL);
 static mxArray *P		= mxCreateDoubleMatrix (MTTNPAR	, 1, mxREAL);
 static mxArray *T		= mxCreateDoubleMatrix (1	, 1, mxREAL);
 static mxArray *U		= mxCreateDoubleMatrix (MTTNU	, 1, mxREAL);
 static mxArray *X		= mxCreateDoubleMatrix (MTTNX	, 1, mxREAL);
+static mxArray *Y		= mxCreateDoubleMatrix (MTTNY	, 1, mxREAL);
+static mxArray *YZ		= mxCreateDoubleMatrix (MTTNYZ	, 1, mxREAL);
 
-static double *inputs		= mxGetPr (U);
-static double *parameters	= mxGetPr (P);
-static double *states		= mxGetPr (X);
-static double *simtime		= mxGetPr (T);
+static double *mttdx		= mxGetPr (dX);
+static double *mttu		= mxGetPr (U);
+static double *mttpar		= mxGetPr (P);
+static double *mttx		= mxGetPr (X);
+static double *mtty		= mxGetPr (Y);
+static double *mttyz		= mxGetPr (YZ);
+static double *mtttp		= mxGetPr (T);
 
 void
 update_parameters_from_simulink (SimStruct *S)
 {
   for (int i = 0; i < MTTNPAR; i++) {
-    parameters [i] = *mxGetPr (ssGetSFcnParam (S, i));
+    mttpar [i] = *mxGetPr (ssGetSFcnParam (S, i));
   }
 }
 
@@ -33,7 +38,7 @@ update_states_from_simulink (SimStruct *S)
   static double *x;
   x = ssGetContStates (S);
   for (int i = 0; i < MTTNX; i++) {
-    states [i] = x [i];
+    mttx [i] = x [i];
   }
 }
 
@@ -41,14 +46,14 @@ void
 update_inputs_from_simulink (SimStruct *S)
 {
   for (int i = 0; i < MTTNU; i++) {
-    inputs [i] = *ssGetInputPortRealSignalPtrs (S, i)[0];
+    mttu [i] = *ssGetInputPortRealSignalPtrs (S, i)[0];
   }
 }
 
 void
 update_simtime_from_simulink (SimStruct *S)
 {
-  simtime [0] = ssGetT (S);
+  mtttp [0] = ssGetT (S);
 }
 
 // S-function methods
@@ -93,74 +98,44 @@ static void mdlInitializeSampleTimes(SimStruct *S)
 #define MDL_INITIALIZE_CONDITIONS
 static void mdlInitializeConditions(SimStruct *S)
 {
-  static mxArray *plhs[1];
-  static mxArray *prhs[1];
-
   update_parameters_from_simulink (S);
 
-  plhs[0] = X;  
-  prhs[0] = P;
-  
-  mexCallMATLAB (1, plhs, 1, prhs, "<mtt_model_name>_state");  
+#include "<mtt_model_name>_state.sfun"
 
   for (int i = 0; i < MTTNX; i++) {
-    ssGetContStates (S)[i] = states [i];
+    ssGetContStates (S)[i] = mttx [i];
   }
-
-  mxDestroyArray (plhs[0]);
 }
 
 static void mdlOutputs(SimStruct *S, int_T tid)
 {
-  static mxArray *plhs[1];
-  static mxArray *prhs[4];
-
   update_states_from_simulink (S);
   update_inputs_from_simulink (S);
   update_simtime_from_simulink (S);
   update_parameters_from_simulink (S);
 
-  prhs[0] = X;
-  prhs[1] = U;
-  prhs[2] = T;
-  prhs[3] = P;
- 
   UNUSED_ARG(tid); // not used in single tasking mode
 
-  mexCallMATLAB (1, plhs, 4, prhs, "<mtt_model_name>_odeo");
-  double *outputs = mxGetPr (plhs[0]);
+#include "<mtt_model_name>_odeo.sfun"
 
   for (int i = 0; i < MTTNY; i++) {
-      ssGetOutputPortRealSignal (S,i)[0] = outputs [i];
+      ssGetOutputPortRealSignal (S,i)[0] = mtty [i];
   }
-
-  mxDestroyArray (plhs[0]);
 }
 
 #define MDL_DERIVATIVES
 static void mdlDerivatives(SimStruct *S)
 {
-  static mxArray *plhs[1];
-  static mxArray *prhs[4];
-
   update_states_from_simulink (S);
   update_inputs_from_simulink (S);
   update_simtime_from_simulink (S);
   update_parameters_from_simulink (S);
 
-  prhs[0] = X;
-  prhs[1] = U;
-  prhs[2] = T;
-  prhs[3] = P;
+#include "<mtt_model_name>_ode.sfun"
 
-  mexCallMATLAB (1, plhs, 4, prhs, "<mtt_model_name>_ode");
-  double *rates= mxGetPr (plhs[0]);
-  
   for (int i = 0; i < MTTNX; i++) {
-    ssGetdX (S)[i] = rates [i];
+    ssGetdX (S)[i] = mttdx [i];
   }
-
-  mxDestroyArray (plhs[0]);
 }
 
 static void mdlTerminate(SimStruct *S)

@@ -17,6 +17,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.344  2002/05/11 01:14:17  geraint
+## Fix for [ 553218 ] simpar.oct and simpar.m different.
+## Translation added between ColumnVector in base .cc and Octave_map in .oct.
+##
 ## Revision 1.343  2002/05/10 14:07:16  geraint
 ## Preserve .cc files.
 ##
@@ -2160,7 +2164,7 @@ $1_%.mexglx: $1_%.cc $1_def.h $1_sympar.h $1_cr.h mtt_kpathsea.cc mtt_matlab_oct
 .PRECIOUS: %.cc # Don't let mtt delete them
 .PRECIOUS: $1_%.cc # Don't let mtt delete them
 $1_%.cc:  $1_%.m
-	mtt_m2cc.sh  $1 \$* cat 
+	mtt_m2cc.sh  $1 \$* cc cat 
 
 mtt_%.cc: ${MTT_LIB}/cc/mtt_%.cc
 	cp ${MTT_LIB}/cc/mtt_\$*.cc mtt_\$*.cc

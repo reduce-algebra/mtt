@@ -10,6 +10,9 @@
 # Used in lang_header
 # Copyright (C) 2000 by Peter J. Gawthrop
 
+Lb=${5:-'('}
+Rb=${6:-')'}
+
 case $2 in
     zero)
 	  strip_comments <$1_sympar.txt  |\
@@ -26,8 +29,8 @@ case $2 in
     *)
          strip_comments <$1_sympar.txt  |\
          gawk '{
-           i++; printf("  %s %s \t= mttpar(%i%s);\n", decl, tolower($1), i, minusone);
-         }' decl="$3" minusone="$4"
+           i++; printf("  %s %s \t= mttpar%c%i%s%c;\n", decl, tolower($1), Lb, i, minusone, Rb);
+         }' decl="$3" minusone="$4" Lb=$Lb Rb=$Rb
 	;;
 esac
 

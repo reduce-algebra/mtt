@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.159  1998/07/04 11:37:43  peterg
+## Aliases implemented for parameters + lots of associated goodies
+## New-style lbl files - no more SS nonsense.
+##
 ## Revision 1.158  1998/07/03 09:06:39  peterg
 ## Alias implemented for ports
 ##
@@ -551,7 +555,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='2.91'
+version='3.0--'
 
 # MTT recursion level is zero unless explicitly set
 level=0

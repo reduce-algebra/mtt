@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  2000/04/06 08:36:15  peterg
+## *** empty log message ***
+##
 ## Revision 1.5  1999/03/15 22:42:52  peterg
 ## Strip comments (put in by Octave save function)
 ##
@@ -30,23 +33,26 @@ Ny=`grep "MTTNy " <$1_def.r | awk '{print $3}' | sed 's/;//'`
 
 case $2 in
     odeso)
-	First=1; let Last=$First+$Ny
+	First=1; Last=$First+$Ny
 	;;
     odes)
-	let First=$Ny+2; let Last=$First+$Nx
+	First=$Ny+2; Last=$First+$Nx
 	;;
     *)
-	First=1; let Last=$Ny+1
+	First=1; Last=$Ny+1
         ;;
 esac
 
 echo Creating $1_$2.dat
 
 awk '{
-  if (index($1,"#") != 1){
-    for (i=First;i<=Last;i++)
-	printf("%s ", $i);
-    printf("\n"); 
+      ## Convert to numbers
+      split(First,F,"+"); First = F[1] + F[2]
+      split(Last, L,"+"); Last  = L[1] + L[2]
+      ## Extract the data
+      if (index($1,"#") != 1){
+        for (i=First;i<=Last;i++)
+	  printf("%s ", $i);
+      printf("\n"); 
   }
 }' First=$First Last=$Last <$1_odes.dat2  > $1_$2.dat
-

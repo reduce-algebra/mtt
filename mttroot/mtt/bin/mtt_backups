@@ -1,0 +1,7 @@
+#!/bin/sh
+# Does a backup with date of all mtt components
+
+mtt_backup $1
+mtt_backup $1 lib
+mtt_backup $1 doc
+

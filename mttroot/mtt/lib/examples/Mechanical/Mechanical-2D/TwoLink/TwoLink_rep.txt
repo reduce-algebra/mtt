@@ -5,6 +5,10 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1998/01/19 14:21:21  peterg
+% %% Removed ordinary differential equation representation - its to
+% %% verbose.
+% %%
 % %% Revision 1.1  1998/01/19 14:15:52  peterg
 % %% Initial revision
 % %%
@@ -19,4 +23,4 @@ mtt TwoLink rfe tex
 
 mtt TwoLink input txt
 mtt TwoLink numpar txt
-mtt -c TwoLink odeso ps
+mtt TwoLink odeso ps

@@ -19,6 +19,10 @@ function structure =  SS_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.8  1996/12/10 16:52:29  peterg
+% %% Detect null string using strcmp, not length.
+% %% Put filnum argument to mtt_info.
+% %%
 % %% Revision 1.7  1996/12/07 17:17:40  peterg
 % %% Added some ;
 % %%
@@ -53,6 +57,8 @@ function structure =  SS_eqn(name,bond_number,bonds,direction,cr,args, ...
 %     cr contains 'MTT_port'
 %     arg contains port number
 
+STDerr = 2; % Standard output
+
 effort_attribute = cr;
 flow_attribute = args;
 
@@ -75,18 +81,18 @@ if strcmp(effort_attribute, 'MTT_port') % Its a numbered port
 
   % Effort 
   if bonds(1,1)==-1 % Source
-    fprintf(filenum, '%s := %s_MTTu%1.0f;\n', ...
+    fprintf(filenum, '%s := %s_MTTu%d;\n', ...
         varname(name, bond_number,1), name, port_number);
   else % Sensor
-    fprintf(filenum, '%s_MTTy%1.0f := %s;\n', ...
+    fprintf(filenum, '%s_MTTy%d := %s;\n', ...
         name, port_number, varname(name, bond_number,1));
   end;
   % Flow 
   if bonds(1,2)==1 % Source
-    fprintf(filenum, '%s := %s_MTTu%1.0f;\n', ...
+    fprintf(filenum, '%s := %s_MTTu%d;\n', ...
         varname(name, bond_number,-1), name, port_number);
   else % Sensor
-    fprintf(filenum, '%s_MTTy%1.0f := %s;\n', ...
+    fprintf(filenum, '%s_MTTy%d := %s;\n', ...
         name, port_number, varname(name, bond_number,-1));
   end;  
   return
@@ -97,11 +103,11 @@ end;
 if strcmp(effort_attribute, 'external')
   if bonds(1,1)==-1 % Source
     inputs = inputs+1;
-    fprintf(filenum, '%s := MTTu(%1.0f,1);\n', ...
+    fprintf(filenum, '%s := MTTu(%d,1);\n', ...
         varname(name, bond_number,1),inputs);
   else % Sensor
     outputs = outputs+1;
-    fprintf(filenum, 'MTTy(%1.0f,1) := %s;\n', ...
+    fprintf(filenum, 'MTTy(%d,1) := %s;\n', ...
         outputs, varname(name, bond_number,1));
   end;
 elseif strcmp(effort_attribute, 'internal')
@@ -113,12 +119,12 @@ else % named constant
   else % Sensor
     if strcmp(effort_attribute, 'zero') %Zero output
       zero_outputs = zero_outputs + 1;
-      fprintf(filenum, 'MTTyz%1.0f := %s;\n', ...
+      fprintf(filenum, 'MTTyz%d := %s;\n', ...
 	  zero_outputs, varname(name, bond_number,1));
-      fprintf(filenum, '%s := MTTUi%1.0f;\n', ...
+      fprintf(filenum, '%s := MTTUi%d;\n', ...
 	  varname(name, bond_number,-1), zero_outputs);
     else
-      mtt_info([effort_attribute, ' not appropriate for an output '],filenum);
+      mtt_info([effort_attribute, ' not appropriate for an output '],STDerr);
     end;
   end;
 end;
@@ -127,10 +133,10 @@ end;
 if strcmp(flow_attribute, 'external')
   if bonds(1,2)==1 % Source
     inputs = inputs+1;
-    fprintf(filenum, '%s := MTTu(%1.0f,1);\n', varname(name, bond_number,-1),inputs);
+    fprintf(filenum, '%s := MTTu(%d,1);\n', varname(name, bond_number,-1),inputs);
   else % Sensor
     outputs = outputs+1;
-    fprintf(filenum, 'MTTy(%1.0f,1) := %s;\n', outputs, ...
+    fprintf(filenum, 'MTTy(%d,1) := %s;\n', outputs, ...
         varname(name, bond_number,-1));
   end;
 elseif strcmp(flow_attribute, 'internal')
@@ -142,26 +148,13 @@ else % Named constant
   else % Sensor
     if strcmp(flow_attribute, 'zero') %Zero output
       zero_outputs = zero_outputs + 1;
-      fprintf(filenum, 'MTTyz%1.0f := %s;\n', ...
+      fprintf(filenum, 'MTTyz%d := %s;\n', ...
 	  zero_outputs, varname(name, bond_number,-1));
-      fprintf(filenum, '%s := MTTUi%1.0f;\n', ...
+      fprintf(filenum, '%s := MTTUi%d;\n', ...
 	  varname(name, bond_number,1), zero_outputs);
     else
-      mtt_info([effort_attribute, ' not appropriate for an output '], filenum);
+      mtt_info([effort_attribute, ' not appropriate for an output '], STDerr);
     end;
   end;
 end;
-
-  
-structure(3) = inputs;
-structure(4) = outputs;
-structure(5) = zero_outputs;  
-
-  
-  
-
-
-
-
-
 

@@ -14,11 +14,30 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/01/22 13:17:37  peterg
+## Initial revision
+##
 ###############################################################
+Nu=`mtt_getsize $1 u`
+Ny=`mtt_getsize $1 y`
+
+if [ "$Nu" = "1" ]; then
+  if [ "$Ny" = "1" ]; then
+    blurb=' for this siso system'    
+  else
+    blurb=" using first output of $Ny"
+  fi
+else
+  if [ "$Ny" = "1" ]; then
+    blurb=" using first input of $Nu"
+  else
+    blurb=" using first input of $Nu and using first output of $Ny"
+  fi
+fi
 
 
 # Inform user
-echo Creating $1_smc.r -- NOTE this is for SISO systems only.
+echo Creating $1_smc.r $blurb
 
 # Remove the old log file
 rm -f sm2smc_r.log
@@ -127,19 +146,19 @@ Reduce_Matrix()$
 MTT_Matrix := MTTB_c$ 
 MTT_Matrix_name := "MTTB_c"$
 MTT_Matrix_n := MTTNx$
-MTT_Matrix_m := MTTNu$
+MTT_Matrix_m := 1$
 Reduce_Matrix()$
 
 MTT_Matrix := MTTC_c$ 
 MTT_Matrix_name := "MTTC_c"$
-MTT_Matrix_n := MTTNy$
+MTT_Matrix_n := 1$
 MTT_Matrix_m := MTTNx$
 Reduce_Matrix()$
 
 MTT_Matrix := MTTD_c$ 
 MTT_Matrix_name := "MTTD_c"$
-MTT_Matrix_n := MTTNy$
-MTT_Matrix_m := MTTNu$
+MTT_Matrix_n := 1$
+MTT_Matrix_m := 1$
 Reduce_Matrix()$
 
 

@@ -10,11 +10,17 @@
 # Used in lang_header
 # Copyright (C) 2000 by Peter J. Gawthrop
 
-
-strip_comments <$1_sympar.txt  |\
-awk '{
-  i++; printf("  %s = mttpar(%i);\n", tolower($1), i);
-}'
+if [ "$2" = "zero" ]; then
+  strip_comments <$1_sympar.txt  |\
+  awk '{
+    i++; printf(" %s = 0.0;\n", tolower($1));
+  }'
+else
+  strip_comments <$1_sympar.txt  |\
+  awk '{
+    i++; printf("  %s = mttpar(%i);\n", tolower($1), i);
+  }'
+fi
 
 
 

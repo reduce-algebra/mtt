@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  1999/03/11 04:02:19  peterg
+## Revised so that sh2csh does its stuff.
+##
 ## Revision 1.8  1998/07/17 19:48:46  peterg
 ## *** empty log message ***
 ##
@@ -52,7 +55,7 @@ export CC='gcc'
 
 # Setup the paths
 export PATH=$PATH\:$MTTPATH\:$MTTPATH/trans
-export MATRIX_PATH=$MTTPATH/trans/m\:$MTTPATH/trans/m/emulator\:$MTTPATH/lib/comp/simple
+export MATRIX_PATH=$MTTPATH/trans/m\:$MTTPATH/trans/m/emulator\:$MTTPATH/lib/comp/simple\:$MTTPATH/lib/control/PPP
 export MTT_COMPONENTS=$MTTPATH/lib/comp
 export MTT_CRS=$MTTPATH/lib/cr
 export MTT_EXAMPLES=$MTTPATH/lib/examples
@@ -70,7 +73,7 @@ export MATRIX="octave --path $OCTAVE_PATH"
 #MATLABPATH $MATLABPATH\:$MATRIX_PATH
 #export MATLABPATH=
 # Setup the symbolic stuff
-export SYMBOLIC='reduce 32'
+export SYMBOLIC='reduce 64'
 
 
 # Setup xfig
@@ -81,6 +84,7 @@ export FIG="xfig  \
 	-startgridmode 2 \
 	-pheight 21 \
 	-pwidth 30 \
+	-library_dir $MTT_LIB/xfig/\
 	"
 
 # Setup ps viewer
@@ -96,7 +100,18 @@ export HTMLVIEW='netscape'
 export DVIVIEW='xdvi'
 
 # Setup latex2html
-export LATEX2HTML="latex2html -contents_in_navigation \
-                              -index_in_navigation \
-                              -address http://www.mech.gla.ac.uk/~peterg/software/MTT"
+export LATEX2HTML="latex2html -contents_in_navigation -index_in_navigation -address http://www.mech.gla.ac.uk/~peterg/software/MTT"
+
+# Ascend stuff
+export ASCENDLIBRARY=$MTTPATH/ascend/lib
+
+
+
+
+
+
+
+
+
+
 

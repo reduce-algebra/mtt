@@ -1,0 +1,1864 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dia:diagram xmlns:dia="http://www.lysator.liu.se/~alla/dia/">
+  <dia:diagramdata>
+    <dia:attribute name="background">
+      <dia:color val="#ffffff"/>
+    </dia:attribute>
+    <dia:attribute name="pagebreak">
+      <dia:color val="#000099"/>
+    </dia:attribute>
+    <dia:attribute name="paper">
+      <dia:composite type="paper">
+        <dia:attribute name="name">
+          <dia:string>#A4#</dia:string>
+        </dia:attribute>
+        <dia:attribute name="tmargin">
+          <dia:real val="2.8222000598907471"/>
+        </dia:attribute>
+        <dia:attribute name="bmargin">
+          <dia:real val="2.8222000598907471"/>
+        </dia:attribute>
+        <dia:attribute name="lmargin">
+          <dia:real val="2.8222000598907471"/>
+        </dia:attribute>
+        <dia:attribute name="rmargin">
+          <dia:real val="2.8222000598907471"/>
+        </dia:attribute>
+        <dia:attribute name="is_portrait">
+          <dia:boolean val="false"/>
+        </dia:attribute>
+        <dia:attribute name="scaling">
+          <dia:real val="1"/>
+        </dia:attribute>
+        <dia:attribute name="fitto">
+          <dia:boolean val="false"/>
+        </dia:attribute>
+      </dia:composite>
+    </dia:attribute>
+    <dia:attribute name="grid">
+      <dia:composite type="grid">
+        <dia:attribute name="width_x">
+          <dia:real val="1"/>
+        </dia:attribute>
+        <dia:attribute name="width_y">
+          <dia:real val="1"/>
+        </dia:attribute>
+        <dia:attribute name="visible_x">
+          <dia:int val="1"/>
+        </dia:attribute>
+        <dia:attribute name="visible_y">
+          <dia:int val="1"/>
+        </dia:attribute>
+        <dia:composite type="color"/>
+      </dia:composite>
+    </dia:attribute>
+    <dia:attribute name="color">
+      <dia:color val="#d8e5e5"/>
+    </dia:attribute>
+    <dia:attribute name="guides">
+      <dia:composite type="guides">
+        <dia:attribute name="hguides"/>
+        <dia:attribute name="vguides"/>
+      </dia:composite>
+    </dia:attribute>
+  </dia:diagramdata>
+  <dia:layer name="Artwork" visible="true">
+    <dia:object type="Standard - Box" version="0" id="O0">
+      <dia:attribute name="obj_pos">
+        <dia:point val="2.7,9.65"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="2.65,9.6;46.95,22.25"/>
+      </dia:attribute>
+      <dia:attribute name="elem_corner">
+        <dia:point val="2.7,9.65"/>
+      </dia:attribute>
+      <dia:attribute name="elem_width">
+        <dia:real val="44.200000000000003"/>
+      </dia:attribute>
+      <dia:attribute name="elem_height">
+        <dia:real val="12.550000000000001"/>
+      </dia:attribute>
+      <dia:attribute name="inner_color">
+        <dia:color val="#b1a381"/>
+      </dia:attribute>
+      <dia:attribute name="show_background">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+    </dia:object>
+    <dia:object type="Standard - Text" version="0" id="O1">
+      <dia:attribute name="obj_pos">
+        <dia:point val="2.85,2.75"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="2.85,1.35;19.9,3.75"/>
+      </dia:attribute>
+      <dia:attribute name="text">
+        <dia:composite type="text">
+          <dia:attribute name="string">
+            <dia:string>#Rigid 2-dimensional bar#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="font">
+            <dia:font family="sans" style="0" name="Helvetica"/>
+          </dia:attribute>
+          <dia:attribute name="height">
+            <dia:real val="2"/>
+          </dia:attribute>
+          <dia:attribute name="pos">
+            <dia:point val="2.85,2.75"/>
+          </dia:attribute>
+          <dia:attribute name="color">
+            <dia:color val="#0000ff"/>
+          </dia:attribute>
+          <dia:attribute name="alignment">
+            <dia:enum val="0"/>
+          </dia:attribute>
+        </dia:composite>
+      </dia:attribute>
+    </dia:object>
+  </dia:layer>
+  <dia:layer name="Bond Graph" visible="true">
+    <dia:object type="BondGraph - MTT port" version="0" id="O2">
+      <dia:attribute name="obj_pos">
+        <dia:point val="0.4375,29.05"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="0.3875,29;9.87138,30.9071"/>
+      </dia:attribute>
+      <dia:attribute name="elem_corner">
+        <dia:point val="0.4375,29.05"/>
+      </dia:attribute>
+      <dia:attribute name="elem_width">
+        <dia:real val="9.3838834764831844"/>
+      </dia:attribute>
+      <dia:attribute name="elem_height">
+        <dia:real val="1.8071067811865476"/>
+      </dia:attribute>
+      <dia:attribute name="line_width">
+        <dia:real val="0.10000000000000001"/>
+      </dia:attribute>
+      <dia:attribute name="line_colour">
+        <dia:color val="#000000"/>
+      </dia:attribute>
+      <dia:attribute name="fill_colour">
+        <dia:color val="#ffffff"/>
+      </dia:attribute>
+      <dia:attribute name="show_background">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="line_style">
+        <dia:enum val="0"/>
+        <dia:real val="1"/>
+      </dia:attribute>
+      <dia:attribute name="text">
+        <dia:composite type="text">
+          <dia:attribute name="string">
+            <dia:string>#SS:[left_bottom]#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="font">
+            <dia:font family="serif" style="80" name="Times-Roman"/>
+          </dia:attribute>
+          <dia:attribute name="height">
+            <dia:real val="1"/>
+          </dia:attribute>
+          <dia:attribute name="pos">
+            <dia:point val="5.12944,30.2536"/>
+          </dia:attribute>
+          <dia:attribute name="color">
+            <dia:color val="#000000"/>
+          </dia:attribute>
+          <dia:attribute name="alignment">
+            <dia:enum val="1"/>
+          </dia:attribute>
+        </dia:composite>
+      </dia:attribute>
+      <dia:attribute name="flip_horizontal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="flip_vertical">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+    </dia:object>
+    <dia:object type="BondGraph - MTT port" version="0" id="O3">
+      <dia:attribute name="obj_pos">
+        <dia:point val="4.15,19.25"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="4.1,19.2;6.2,21.1071"/>
+      </dia:attribute>
+      <dia:attribute name="elem_corner">
+        <dia:point val="4.15,19.25"/>
+      </dia:attribute>
+      <dia:attribute name="elem_width">
+        <dia:real val="2"/>
+      </dia:attribute>
+      <dia:attribute name="elem_height">
+        <dia:real val="1.8071067811865476"/>
+      </dia:attribute>
+      <dia:attribute name="line_width">
+        <dia:real val="0.10000000000000001"/>
+      </dia:attribute>
+      <dia:attribute name="line_colour">
+        <dia:color val="#000000"/>
+      </dia:attribute>
+      <dia:attribute name="fill_colour">
+        <dia:color val="#ffffff"/>
+      </dia:attribute>
+      <dia:attribute name="show_background">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="line_style">
+        <dia:enum val="0"/>
+        <dia:real val="1"/>
+      </dia:attribute>
+      <dia:attribute name="text">
+        <dia:composite type="text">
+          <dia:attribute name="string">
+            <dia:string>#1#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="font">
+            <dia:font family="serif" style="80" name="Times-Roman"/>
+          </dia:attribute>
+          <dia:attribute name="height">
+            <dia:real val="1"/>
+          </dia:attribute>
+          <dia:attribute name="pos">
+            <dia:point val="5.15,20.4536"/>
+          </dia:attribute>
+          <dia:attribute name="color">
+            <dia:color val="#000000"/>
+          </dia:attribute>
+          <dia:attribute name="alignment">
+            <dia:enum val="1"/>
+          </dia:attribute>
+        </dia:composite>
+      </dia:attribute>
+      <dia:attribute name="flip_horizontal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="flip_vertical">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+    </dia:object>
+    <dia:object type="BondGraph - MTT port" version="0" id="O4">
+      <dia:attribute name="obj_pos">
+        <dia:point val="1.40625,4.1"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="1.35625,4.05;8.90263,5.95711"/>
+      </dia:attribute>
+      <dia:attribute name="elem_corner">
+        <dia:point val="1.40625,4.1"/>
+      </dia:attribute>
+      <dia:attribute name="elem_width">
+        <dia:real val="7.4463834764831844"/>
+      </dia:attribute>
+      <dia:attribute name="elem_height">
+        <dia:real val="1.8071067811865476"/>
+      </dia:attribute>
+      <dia:attribute name="line_width">
+        <dia:real val="0.10000000000000001"/>
+      </dia:attribute>
+      <dia:attribute name="line_colour">
+        <dia:color val="#000000"/>
+      </dia:attribute>
+      <dia:attribute name="fill_colour">
+        <dia:color val="#ffffff"/>
+      </dia:attribute>
+      <dia:attribute name="show_background">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="line_style">
+        <dia:enum val="0"/>
+        <dia:real val="1"/>
+      </dia:attribute>
+      <dia:attribute name="text">
+        <dia:composite type="text">
+          <dia:attribute name="string">
+            <dia:string>#SS:[left_top]#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="font">
+            <dia:font family="serif" style="80" name="Times-Roman"/>
+          </dia:attribute>
+          <dia:attribute name="height">
+            <dia:real val="1"/>
+          </dia:attribute>
+          <dia:attribute name="pos">
+            <dia:point val="5.12944,5.30355"/>
+          </dia:attribute>
+          <dia:attribute name="color">
+            <dia:color val="#000000"/>
+          </dia:attribute>
+          <dia:attribute name="alignment">
+            <dia:enum val="1"/>
+          </dia:attribute>
+        </dia:composite>
+      </dia:attribute>
+      <dia:attribute name="flip_horizontal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="flip_vertical">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+    </dia:object>
+    <dia:object type="BondGraph - MTT port" version="0" id="O5">
+      <dia:attribute name="obj_pos">
+        <dia:point val="9.1,19.3"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="9.05,19.25;11.15,21.1571"/>
+      </dia:attribute>
+      <dia:attribute name="elem_corner">
+        <dia:point val="9.1,19.3"/>
+      </dia:attribute>
+      <dia:attribute name="elem_width">
+        <dia:real val="2"/>
+      </dia:attribute>
+      <dia:attribute name="elem_height">
+        <dia:real val="1.8071067811865476"/>
+      </dia:attribute>
+      <dia:attribute name="line_width">
+        <dia:real val="0.10000000000000001"/>
+      </dia:attribute>
+      <dia:attribute name="line_colour">
+        <dia:color val="#000000"/>
+      </dia:attribute>
+      <dia:attribute name="fill_colour">
+        <dia:color val="#ffffff"/>
+      </dia:attribute>
+      <dia:attribute name="show_background">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="line_style">
+        <dia:enum val="0"/>
+        <dia:real val="1"/>
+      </dia:attribute>
+      <dia:attribute name="text">
+        <dia:composite type="text">
+          <dia:attribute name="string">
+            <dia:string>#0#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="font">
+            <dia:font family="serif" style="80" name="Times-Roman"/>
+          </dia:attribute>
+          <dia:attribute name="height">
+            <dia:real val="1"/>
+          </dia:attribute>
+          <dia:attribute name="pos">
+            <dia:point val="10.1,20.5036"/>
+          </dia:attribute>
+          <dia:attribute name="color">
+            <dia:color val="#000000"/>
+          </dia:attribute>
+          <dia:attribute name="alignment">
+            <dia:enum val="1"/>
+          </dia:attribute>
+        </dia:composite>
+      </dia:attribute>
+      <dia:attribute name="flip_horizontal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="flip_vertical">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+    </dia:object>
+    <dia:object type="BondGraph - MTT port" version="0" id="O6">
+      <dia:attribute name="obj_pos">
+        <dia:point val="24.15,19.25"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="24.1,19.2;26.2,21.1071"/>
+      </dia:attribute>
+      <dia:attribute name="elem_corner">
+        <dia:point val="24.15,19.25"/>
+      </dia:attribute>
+      <dia:attribute name="elem_width">
+        <dia:real val="2"/>
+      </dia:attribute>
+      <dia:attribute name="elem_height">
+        <dia:real val="1.8071067811865476"/>
+      </dia:attribute>
+      <dia:attribute name="line_width">
+        <dia:real val="0.10000000000000001"/>
+      </dia:attribute>
+      <dia:attribute name="line_colour">
+        <dia:color val="#000000"/>
+      </dia:attribute>
+      <dia:attribute name="fill_colour">
+        <dia:color val="#ffffff"/>
+      </dia:attribute>
+      <dia:attribute name="show_background">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="line_style">
+        <dia:enum val="0"/>
+        <dia:real val="1"/>
+      </dia:attribute>
+      <dia:attribute name="text">
+        <dia:composite type="text">
+          <dia:attribute name="string">
+            <dia:string>#1#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="font">
+            <dia:font family="serif" style="80" name="Times-Roman"/>
+          </dia:attribute>
+          <dia:attribute name="height">
+            <dia:real val="1"/>
+          </dia:attribute>
+          <dia:attribute name="pos">
+            <dia:point val="25.15,20.4536"/>
+          </dia:attribute>
+          <dia:attribute name="color">
+            <dia:color val="#1e90ff"/>
+          </dia:attribute>
+          <dia:attribute name="alignment">
+            <dia:enum val="1"/>
+          </dia:attribute>
+        </dia:composite>
+      </dia:attribute>
+      <dia:attribute name="flip_horizontal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="flip_vertical">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+    </dia:object>
+    <dia:object type="BondGraph - MTT port" version="0" id="O7">
+      <dia:attribute name="obj_pos">
+        <dia:point val="39.05,19.2"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="39,19.15;41.1,21.0571"/>
+      </dia:attribute>
+      <dia:attribute name="elem_corner">
+        <dia:point val="39.05,19.2"/>
+      </dia:attribute>
+      <dia:attribute name="elem_width">
+        <dia:real val="2"/>
+      </dia:attribute>
+      <dia:attribute name="elem_height">
+        <dia:real val="1.8071067811865476"/>
+      </dia:attribute>
+      <dia:attribute name="line_width">
+        <dia:real val="0.10000000000000001"/>
+      </dia:attribute>
+      <dia:attribute name="line_colour">
+        <dia:color val="#000000"/>
+      </dia:attribute>
+      <dia:attribute name="fill_colour">
+        <dia:color val="#ffffff"/>
+      </dia:attribute>
+      <dia:attribute name="show_background">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="line_style">
+        <dia:enum val="0"/>
+        <dia:real val="1"/>
+      </dia:attribute>
+      <dia:attribute name="text">
+        <dia:composite type="text">
+          <dia:attribute name="string">
+            <dia:string>#0#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="font">
+            <dia:font family="serif" style="80" name="Times-Roman"/>
+          </dia:attribute>
+          <dia:attribute name="height">
+            <dia:real val="1"/>
+          </dia:attribute>
+          <dia:attribute name="pos">
+            <dia:point val="40.05,20.4036"/>
+          </dia:attribute>
+          <dia:attribute name="color">
+            <dia:color val="#000000"/>
+          </dia:attribute>
+          <dia:attribute name="alignment">
+            <dia:enum val="1"/>
+          </dia:attribute>
+        </dia:composite>
+      </dia:attribute>
+      <dia:attribute name="flip_horizontal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="flip_vertical">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+    </dia:object>
+    <dia:object type="BondGraph - MTT port" version="0" id="O8">
+      <dia:attribute name="obj_pos">
+        <dia:point val="44.15,19.25"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="44.1,19.2;46.2,21.1071"/>
+      </dia:attribute>
+      <dia:attribute name="elem_corner">
+        <dia:point val="44.15,19.25"/>
+      </dia:attribute>
+      <dia:attribute name="elem_width">
+        <dia:real val="2"/>
+      </dia:attribute>
+      <dia:attribute name="elem_height">
+        <dia:real val="1.8071067811865469"/>
+      </dia:attribute>
+      <dia:attribute name="line_width">
+        <dia:real val="0.10000000000000001"/>
+      </dia:attribute>
+      <dia:attribute name="line_colour">
+        <dia:color val="#000000"/>
+      </dia:attribute>
+      <dia:attribute name="fill_colour">
+        <dia:color val="#ffffff"/>
+      </dia:attribute>
+      <dia:attribute name="show_background">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="line_style">
+        <dia:enum val="0"/>
+        <dia:real val="1"/>
+      </dia:attribute>
+      <dia:attribute name="text">
+        <dia:composite type="text">
+          <dia:attribute name="string">
+            <dia:string>#1#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="font">
+            <dia:font family="serif" style="80" name="Times-Roman"/>
+          </dia:attribute>
+          <dia:attribute name="height">
+            <dia:real val="1"/>
+          </dia:attribute>
+          <dia:attribute name="pos">
+            <dia:point val="45.15,20.4536"/>
+          </dia:attribute>
+          <dia:attribute name="color">
+            <dia:color val="#000000"/>
+          </dia:attribute>
+          <dia:attribute name="alignment">
+            <dia:enum val="1"/>
+          </dia:attribute>
+        </dia:composite>
+      </dia:attribute>
+      <dia:attribute name="flip_horizontal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="flip_vertical">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+    </dia:object>
+    <dia:object type="BondGraph - MTT port" version="0" id="O9">
+      <dia:attribute name="obj_pos">
+        <dia:point val="39.95,29.1"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="39.9,29.05;50.2589,30.9571"/>
+      </dia:attribute>
+      <dia:attribute name="elem_corner">
+        <dia:point val="39.95,29.1"/>
+      </dia:attribute>
+      <dia:attribute name="elem_width">
+        <dia:real val="10.258883476483181"/>
+      </dia:attribute>
+      <dia:attribute name="elem_height">
+        <dia:real val="1.8071067811865476"/>
+      </dia:attribute>
+      <dia:attribute name="line_width">
+        <dia:real val="0.10000000000000001"/>
+      </dia:attribute>
+      <dia:attribute name="line_colour">
+        <dia:color val="#000000"/>
+      </dia:attribute>
+      <dia:attribute name="fill_colour">
+        <dia:color val="#ffffff"/>
+      </dia:attribute>
+      <dia:attribute name="show_background">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="line_style">
+        <dia:enum val="0"/>
+        <dia:real val="1"/>
+      </dia:attribute>
+      <dia:attribute name="text">
+        <dia:composite type="text">
+          <dia:attribute name="string">
+            <dia:string>#SS:[right_bottom]#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="font">
+            <dia:font family="serif" style="80" name="Times-Roman"/>
+          </dia:attribute>
+          <dia:attribute name="height">
+            <dia:real val="1"/>
+          </dia:attribute>
+          <dia:attribute name="pos">
+            <dia:point val="45.0794,30.3036"/>
+          </dia:attribute>
+          <dia:attribute name="color">
+            <dia:color val="#000000"/>
+          </dia:attribute>
+          <dia:attribute name="alignment">
+            <dia:enum val="1"/>
+          </dia:attribute>
+        </dia:composite>
+      </dia:attribute>
+      <dia:attribute name="flip_horizontal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="flip_vertical">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+    </dia:object>
+    <dia:object type="BondGraph - MTT port" version="0" id="O10">
+      <dia:attribute name="obj_pos">
+        <dia:point val="40.9688,4.05"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="40.9188,4;49.3402,5.90711"/>
+      </dia:attribute>
+      <dia:attribute name="elem_corner">
+        <dia:point val="40.9688,4.05"/>
+      </dia:attribute>
+      <dia:attribute name="elem_width">
+        <dia:real val="8.3213834764831809"/>
+      </dia:attribute>
+      <dia:attribute name="elem_height">
+        <dia:real val="1.8071067811865476"/>
+      </dia:attribute>
+      <dia:attribute name="line_width">
+        <dia:real val="0.10000000000000001"/>
+      </dia:attribute>
+      <dia:attribute name="line_colour">
+        <dia:color val="#000000"/>
+      </dia:attribute>
+      <dia:attribute name="fill_colour">
+        <dia:color val="#ffffff"/>
+      </dia:attribute>
+      <dia:attribute name="show_background">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="line_style">
+        <dia:enum val="0"/>
+        <dia:real val="1"/>
+      </dia:attribute>
+      <dia:attribute name="text">
+        <dia:composite type="text">
+          <dia:attribute name="string">
+            <dia:string>#SS:[right_top]#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="font">
+            <dia:font family="serif" style="80" name="Times-Roman"/>
+          </dia:attribute>
+          <dia:attribute name="height">
+            <dia:real val="1"/>
+          </dia:attribute>
+          <dia:attribute name="pos">
+            <dia:point val="45.1295,5.25355"/>
+          </dia:attribute>
+          <dia:attribute name="color">
+            <dia:color val="#000000"/>
+          </dia:attribute>
+          <dia:attribute name="alignment">
+            <dia:enum val="1"/>
+          </dia:attribute>
+        </dia:composite>
+      </dia:attribute>
+      <dia:attribute name="flip_horizontal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="flip_vertical">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+    </dia:object>
+    <dia:object type="BondGraph - MTT port" version="0" id="O11">
+      <dia:attribute name="obj_pos">
+        <dia:point val="8.55,10.05"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="8.5,10;11.8589,11.9071"/>
+      </dia:attribute>
+      <dia:attribute name="elem_corner">
+        <dia:point val="8.55,10.05"/>
+      </dia:attribute>
+      <dia:attribute name="elem_width">
+        <dia:real val="3.2588834764831835"/>
+      </dia:attribute>
+      <dia:attribute name="elem_height">
+        <dia:real val="1.8071067811865476"/>
+      </dia:attribute>
+      <dia:attribute name="line_width">
+        <dia:real val="0.10000000000000001"/>
+      </dia:attribute>
+      <dia:attribute name="line_colour">
+        <dia:color val="#000000"/>
+      </dia:attribute>
+      <dia:attribute name="fill_colour">
+        <dia:color val="#ffffff"/>
+      </dia:attribute>
+      <dia:attribute name="show_background">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="line_style">
+        <dia:enum val="0"/>
+        <dia:real val="1"/>
+      </dia:attribute>
+      <dia:attribute name="text">
+        <dia:composite type="text">
+          <dia:attribute name="string">
+            <dia:string>#TF:a#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="font">
+            <dia:font family="serif" style="80" name="Times-Roman"/>
+          </dia:attribute>
+          <dia:attribute name="height">
+            <dia:real val="1"/>
+          </dia:attribute>
+          <dia:attribute name="pos">
+            <dia:point val="10.1794,11.2536"/>
+          </dia:attribute>
+          <dia:attribute name="color">
+            <dia:color val="#a52a2a"/>
+          </dia:attribute>
+          <dia:attribute name="alignment">
+            <dia:enum val="1"/>
+          </dia:attribute>
+        </dia:composite>
+      </dia:attribute>
+      <dia:attribute name="flip_horizontal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="flip_vertical">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+    </dia:object>
+    <dia:object type="BondGraph - MTT port" version="0" id="O12">
+      <dia:attribute name="obj_pos">
+        <dia:point val="38.4,10"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="38.35,9.95;41.7089,11.8571"/>
+      </dia:attribute>
+      <dia:attribute name="elem_corner">
+        <dia:point val="38.4,10"/>
+      </dia:attribute>
+      <dia:attribute name="elem_width">
+        <dia:real val="3.2588834764831813"/>
+      </dia:attribute>
+      <dia:attribute name="elem_height">
+        <dia:real val="1.8071067811865476"/>
+      </dia:attribute>
+      <dia:attribute name="line_width">
+        <dia:real val="0.10000000000000001"/>
+      </dia:attribute>
+      <dia:attribute name="line_colour">
+        <dia:color val="#000000"/>
+      </dia:attribute>
+      <dia:attribute name="fill_colour">
+        <dia:color val="#ffffff"/>
+      </dia:attribute>
+      <dia:attribute name="show_background">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="line_style">
+        <dia:enum val="0"/>
+        <dia:real val="1"/>
+      </dia:attribute>
+      <dia:attribute name="text">
+        <dia:composite type="text">
+          <dia:attribute name="string">
+            <dia:string>#TF:b#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="font">
+            <dia:font family="serif" style="80" name="Times-Roman"/>
+          </dia:attribute>
+          <dia:attribute name="height">
+            <dia:real val="1"/>
+          </dia:attribute>
+          <dia:attribute name="pos">
+            <dia:point val="40.0294,11.2036"/>
+          </dia:attribute>
+          <dia:attribute name="color">
+            <dia:color val="#a52a2a"/>
+          </dia:attribute>
+          <dia:attribute name="alignment">
+            <dia:enum val="1"/>
+          </dia:attribute>
+        </dia:composite>
+      </dia:attribute>
+      <dia:attribute name="flip_horizontal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="flip_vertical">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+    </dia:object>
+    <dia:object type="BondGraph - MTT port" version="0" id="O13">
+      <dia:attribute name="obj_pos">
+        <dia:point val="24.6,10"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="24.55,9.95;26.65,11.8571"/>
+      </dia:attribute>
+      <dia:attribute name="elem_corner">
+        <dia:point val="24.6,10"/>
+      </dia:attribute>
+      <dia:attribute name="elem_width">
+        <dia:real val="2"/>
+      </dia:attribute>
+      <dia:attribute name="elem_height">
+        <dia:real val="1.8071067811865476"/>
+      </dia:attribute>
+      <dia:attribute name="line_width">
+        <dia:real val="0.10000000000000001"/>
+      </dia:attribute>
+      <dia:attribute name="line_colour">
+        <dia:color val="#000000"/>
+      </dia:attribute>
+      <dia:attribute name="fill_colour">
+        <dia:color val="#ffffff"/>
+      </dia:attribute>
+      <dia:attribute name="show_background">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="line_style">
+        <dia:enum val="0"/>
+        <dia:real val="1"/>
+      </dia:attribute>
+      <dia:attribute name="text">
+        <dia:composite type="text">
+          <dia:attribute name="string">
+            <dia:string>#1#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="font">
+            <dia:font family="serif" style="80" name="Times-Roman"/>
+          </dia:attribute>
+          <dia:attribute name="height">
+            <dia:real val="1"/>
+          </dia:attribute>
+          <dia:attribute name="pos">
+            <dia:point val="25.6,11.2036"/>
+          </dia:attribute>
+          <dia:attribute name="color">
+            <dia:color val="#a52a2a"/>
+          </dia:attribute>
+          <dia:attribute name="alignment">
+            <dia:enum val="1"/>
+          </dia:attribute>
+        </dia:composite>
+      </dia:attribute>
+      <dia:attribute name="flip_horizontal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="flip_vertical">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+    </dia:object>
+    <dia:object type="BondGraph - MTT port" version="0" id="O14">
+      <dia:attribute name="obj_pos">
+        <dia:point val="16.15,14.45"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="16.1,14.4;24.5839,16.3071"/>
+      </dia:attribute>
+      <dia:attribute name="elem_corner">
+        <dia:point val="16.15,14.45"/>
+      </dia:attribute>
+      <dia:attribute name="elem_width">
+        <dia:real val="8.3838834764831844"/>
+      </dia:attribute>
+      <dia:attribute name="elem_height">
+        <dia:real val="1.8071067811865469"/>
+      </dia:attribute>
+      <dia:attribute name="line_width">
+        <dia:real val="0.10000000000000001"/>
+      </dia:attribute>
+      <dia:attribute name="line_colour">
+        <dia:color val="#000000"/>
+      </dia:attribute>
+      <dia:attribute name="fill_colour">
+        <dia:color val="#ffffff"/>
+      </dia:attribute>
+      <dia:attribute name="show_background">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="line_style">
+        <dia:enum val="0"/>
+        <dia:real val="1"/>
+      </dia:attribute>
+      <dia:attribute name="text">
+        <dia:composite type="text">
+          <dia:attribute name="string">
+            <dia:string>#I:translational#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="font">
+            <dia:font family="serif" style="80" name="Times-Roman"/>
+          </dia:attribute>
+          <dia:attribute name="height">
+            <dia:real val="1"/>
+          </dia:attribute>
+          <dia:attribute name="pos">
+            <dia:point val="20.3419,15.6536"/>
+          </dia:attribute>
+          <dia:attribute name="color">
+            <dia:color val="#1e90ff"/>
+          </dia:attribute>
+          <dia:attribute name="alignment">
+            <dia:enum val="1"/>
+          </dia:attribute>
+        </dia:composite>
+      </dia:attribute>
+      <dia:attribute name="flip_horizontal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="flip_vertical">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+    </dia:object>
+    <dia:object type="BondGraph - MTT port" version="0" id="O15">
+      <dia:attribute name="obj_pos">
+        <dia:point val="27.35,15.15"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="27.3,15.1;34.2214,17.0071"/>
+      </dia:attribute>
+      <dia:attribute name="elem_corner">
+        <dia:point val="27.35,15.15"/>
+      </dia:attribute>
+      <dia:attribute name="elem_width">
+        <dia:real val="6.8213834764831818"/>
+      </dia:attribute>
+      <dia:attribute name="elem_height">
+        <dia:real val="1.8071067811865476"/>
+      </dia:attribute>
+      <dia:attribute name="line_width">
+        <dia:real val="0.10000000000000001"/>
+      </dia:attribute>
+      <dia:attribute name="line_colour">
+        <dia:color val="#000000"/>
+      </dia:attribute>
+      <dia:attribute name="fill_colour">
+        <dia:color val="#ffffff"/>
+      </dia:attribute>
+      <dia:attribute name="show_background">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="line_style">
+        <dia:enum val="0"/>
+        <dia:real val="1"/>
+      </dia:attribute>
+      <dia:attribute name="text">
+        <dia:composite type="text">
+          <dia:attribute name="string">
+            <dia:string>#I:rotational#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="font">
+            <dia:font family="serif" style="80" name="Times-Roman"/>
+          </dia:attribute>
+          <dia:attribute name="height">
+            <dia:real val="1"/>
+          </dia:attribute>
+          <dia:attribute name="pos">
+            <dia:point val="30.7607,16.3536"/>
+          </dia:attribute>
+          <dia:attribute name="color">
+            <dia:color val="#a52a2a"/>
+          </dia:attribute>
+          <dia:attribute name="alignment">
+            <dia:enum val="1"/>
+          </dia:attribute>
+        </dia:composite>
+      </dia:attribute>
+      <dia:attribute name="flip_horizontal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="flip_vertical">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+    </dia:object>
+    <dia:object type="BondGraph - MTT port" version="0" id="O16">
+      <dia:attribute name="obj_pos">
+        <dia:point val="22,29"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="21.95,28.95;28.1214,30.8571"/>
+      </dia:attribute>
+      <dia:attribute name="elem_corner">
+        <dia:point val="22,29"/>
+      </dia:attribute>
+      <dia:attribute name="elem_width">
+        <dia:real val="6.0713834764831853"/>
+      </dia:attribute>
+      <dia:attribute name="elem_height">
+        <dia:real val="1.8071067811865476"/>
+      </dia:attribute>
+      <dia:attribute name="line_width">
+        <dia:real val="0.10000000000000001"/>
+      </dia:attribute>
+      <dia:attribute name="line_colour">
+        <dia:color val="#000000"/>
+      </dia:attribute>
+      <dia:attribute name="fill_colour">
+        <dia:color val="#ffffff"/>
+      </dia:attribute>
+      <dia:attribute name="show_background">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="line_style">
+        <dia:enum val="0"/>
+        <dia:real val="1"/>
+      </dia:attribute>
+      <dia:attribute name="text">
+        <dia:composite type="text">
+          <dia:attribute name="string">
+            <dia:string>#Se:weight#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="font">
+            <dia:font family="serif" style="80" name="Times-Roman"/>
+          </dia:attribute>
+          <dia:attribute name="height">
+            <dia:real val="1"/>
+          </dia:attribute>
+          <dia:attribute name="pos">
+            <dia:point val="25.0357,30.2036"/>
+          </dia:attribute>
+          <dia:attribute name="color">
+            <dia:color val="#1e90ff"/>
+          </dia:attribute>
+          <dia:attribute name="alignment">
+            <dia:enum val="1"/>
+          </dia:attribute>
+        </dia:composite>
+      </dia:attribute>
+      <dia:attribute name="flip_horizontal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="flip_vertical">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+    </dia:object>
+    <dia:object type="BondGraph - MTT bond" version="0" id="O17">
+      <dia:attribute name="obj_pos">
+        <dia:point val="5.12944,29.9536"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="5.05578,20.0061;6.34895,29.6561"/>
+      </dia:attribute>
+      <dia:attribute name="conn_endpoints">
+        <dia:point val="5.12944,29.9536"/>
+        <dia:point val="5.15,20.1536"/>
+      </dia:attribute>
+      <dia:attribute name="numcp">
+        <dia:int val="1"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_start_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_end_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_start">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_end">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="effort_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="flow_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="arrow_on_start">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="signal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="show_labels">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:connections>
+        <dia:connection handle="0" to="O2" connection="0"/>
+        <dia:connection handle="1" to="O3" connection="0"/>
+      </dia:connections>
+    </dia:object>
+    <dia:object type="BondGraph - MTT bond" version="0" id="O18">
+      <dia:attribute name="obj_pos">
+        <dia:point val="5.15,20.1536"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="5.03673,4.85192;6.34932,19.852"/>
+      </dia:attribute>
+      <dia:attribute name="conn_endpoints">
+        <dia:point val="5.15,20.1536"/>
+        <dia:point val="5.12944,5.00355"/>
+      </dia:attribute>
+      <dia:attribute name="numcp">
+        <dia:int val="1"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_start_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_end_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_start">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_end">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="effort_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="flow_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="arrow_on_start">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="signal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="show_labels">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:connections>
+        <dia:connection handle="0" to="O3" connection="0"/>
+        <dia:connection handle="1" to="O4" connection="0"/>
+      </dia:connections>
+    </dia:object>
+    <dia:object type="BondGraph - MTT bond" version="0" id="O19">
+      <dia:attribute name="obj_pos">
+        <dia:point val="5.15,20.1536"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="5.59947,18.3087;9.71169,21.0281"/>
+      </dia:attribute>
+      <dia:attribute name="conn_endpoints">
+        <dia:point val="5.15,20.1536"/>
+        <dia:point val="10.1,20.2036"/>
+      </dia:attribute>
+      <dia:attribute name="numcp">
+        <dia:int val="1"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_start_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_end_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_start">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_end">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="effort_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="flow_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="arrow_on_start">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="signal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="show_labels">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:connections>
+        <dia:connection handle="0" to="O3" connection="0"/>
+        <dia:connection handle="1" to="O5" connection="0"/>
+      </dia:connections>
+    </dia:object>
+    <dia:object type="BondGraph - MTT bond" version="0" id="O20">
+      <dia:attribute name="obj_pos">
+        <dia:point val="10.1,20.2036"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="10.5498,18.3053;24.7616,21.0031"/>
+      </dia:attribute>
+      <dia:attribute name="conn_endpoints">
+        <dia:point val="10.1,20.2036"/>
+        <dia:point val="25.15,20.1536"/>
+      </dia:attribute>
+      <dia:attribute name="numcp">
+        <dia:int val="1"/>
+      </dia:attribute>
+      <dia:attribute name="line_color">
+        <dia:color val="#1e90ff"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_start_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_end_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_start">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_end">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="effort_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="flow_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="arrow_on_start">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="signal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="show_labels">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:connections>
+        <dia:connection handle="0" to="O5" connection="0"/>
+        <dia:connection handle="1" to="O6" connection="0"/>
+      </dia:connections>
+    </dia:object>
+    <dia:object type="BondGraph - MTT bond" version="0" id="O21">
+      <dia:attribute name="obj_pos">
+        <dia:point val="25.15,20.1536"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="20.6215,14.2076;25.644,19.8711"/>
+      </dia:attribute>
+      <dia:attribute name="conn_endpoints">
+        <dia:point val="25.15,20.1536"/>
+        <dia:point val="20.3419,15.3536"/>
+      </dia:attribute>
+      <dia:attribute name="numcp">
+        <dia:int val="1"/>
+      </dia:attribute>
+      <dia:attribute name="line_color">
+        <dia:color val="#1e90ff"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_start_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_end_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_start">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_end">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="effort_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="flow_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="arrow_on_start">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="signal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="show_labels">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:connections>
+        <dia:connection handle="0" to="O6" connection="0"/>
+        <dia:connection handle="1" to="O14" connection="0"/>
+      </dia:connections>
+    </dia:object>
+    <dia:object type="BondGraph - MTT bond" version="0" id="O22">
+      <dia:attribute name="obj_pos">
+        <dia:point val="45.0794,30.0036"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="45.0326,20.0122;46.3464,29.7122"/>
+      </dia:attribute>
+      <dia:attribute name="conn_endpoints">
+        <dia:point val="45.0794,30.0036"/>
+        <dia:point val="45.15,20.1536"/>
+      </dia:attribute>
+      <dia:attribute name="numcp">
+        <dia:int val="1"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_start_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_end_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_start">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_end">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="effort_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="flow_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="arrow_on_start">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="signal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="show_labels">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:connections>
+        <dia:connection handle="0" to="O9" connection="0"/>
+        <dia:connection handle="1" to="O8" connection="0"/>
+      </dia:connections>
+    </dia:object>
+    <dia:object type="BondGraph - MTT bond" version="0" id="O23">
+      <dia:attribute name="obj_pos">
+        <dia:point val="45.15,20.1536"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="45.0367,4.80192;46.3493,19.852"/>
+      </dia:attribute>
+      <dia:attribute name="conn_endpoints">
+        <dia:point val="45.15,20.1536"/>
+        <dia:point val="45.1294,4.95355"/>
+      </dia:attribute>
+      <dia:attribute name="numcp">
+        <dia:int val="1"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_start_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_end_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_start">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_end">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="effort_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="flow_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="arrow_on_start">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="signal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="show_labels">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:connections>
+        <dia:connection handle="0" to="O8" connection="0"/>
+        <dia:connection handle="1" to="O10" connection="0"/>
+      </dia:connections>
+    </dia:object>
+    <dia:object type="BondGraph - MTT bond" version="0" id="O24">
+      <dia:attribute name="obj_pos">
+        <dia:point val="45.15,20.1536"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="40.4384,18.2586;44.7005,20.9651"/>
+      </dia:attribute>
+      <dia:attribute name="conn_endpoints">
+        <dia:point val="45.15,20.1536"/>
+        <dia:point val="40.05,20.1036"/>
+      </dia:attribute>
+      <dia:attribute name="numcp">
+        <dia:int val="1"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_start_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_end_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_start">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_end">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="effort_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="flow_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="arrow_on_start">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="signal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="show_labels">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:connections>
+        <dia:connection handle="0" to="O8" connection="0"/>
+        <dia:connection handle="1" to="O7" connection="0"/>
+      </dia:connections>
+    </dia:object>
+    <dia:object type="BondGraph - MTT bond" version="0" id="O25">
+      <dia:attribute name="obj_pos">
+        <dia:point val="40.05,20.1036"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="25.5384,18.2553;39.6002,20.9907"/>
+      </dia:attribute>
+      <dia:attribute name="conn_endpoints">
+        <dia:point val="40.05,20.1036"/>
+        <dia:point val="25.15,20.1536"/>
+      </dia:attribute>
+      <dia:attribute name="numcp">
+        <dia:int val="1"/>
+      </dia:attribute>
+      <dia:attribute name="line_color">
+        <dia:color val="#1e90ff"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_start_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_end_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_start">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_end">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="effort_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="flow_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="arrow_on_start">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="signal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="show_labels">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:connections>
+        <dia:connection handle="0" to="O7" connection="0"/>
+        <dia:connection handle="1" to="O6" connection="0"/>
+      </dia:connections>
+    </dia:object>
+    <dia:object type="BondGraph - MTT bond" version="0" id="O26">
+      <dia:attribute name="obj_pos">
+        <dia:point val="10.1,20.2036"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="10.0539,10.8139;11.3751,19.9139"/>
+      </dia:attribute>
+      <dia:attribute name="conn_endpoints">
+        <dia:point val="10.1,20.2036"/>
+        <dia:point val="10.1794,10.9536"/>
+      </dia:attribute>
+      <dia:attribute name="numcp">
+        <dia:int val="1"/>
+      </dia:attribute>
+      <dia:attribute name="line_color">
+        <dia:color val="#a52a2a"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_start_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_end_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_start">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_end">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="effort_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="flow_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="arrow_on_start">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="signal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="show_labels">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:connections>
+        <dia:connection handle="0" to="O5" connection="0"/>
+        <dia:connection handle="1" to="O11" connection="0"/>
+      </dia:connections>
+    </dia:object>
+    <dia:object type="BondGraph - MTT bond" version="0" id="O27">
+      <dia:attribute name="obj_pos">
+        <dia:point val="10.1794,10.9536"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="10.6292,9.05523;25.2116,11.7529"/>
+      </dia:attribute>
+      <dia:attribute name="conn_endpoints">
+        <dia:point val="10.1794,10.9536"/>
+        <dia:point val="25.6,10.9036"/>
+      </dia:attribute>
+      <dia:attribute name="numcp">
+        <dia:int val="1"/>
+      </dia:attribute>
+      <dia:attribute name="line_color">
+        <dia:color val="#a52a2a"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_start_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_end_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_start">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_end">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="effort_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="flow_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="arrow_on_start">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="signal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="show_labels">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:connections>
+        <dia:connection handle="0" to="O11" connection="0"/>
+        <dia:connection handle="1" to="O13" connection="0"/>
+      </dia:connections>
+    </dia:object>
+    <dia:object type="BondGraph - MTT bond" version="0" id="O28">
+      <dia:attribute name="obj_pos">
+        <dia:point val="25.6,10.9036"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="25.8832,9.75738;31.2544,15.7745"/>
+      </dia:attribute>
+      <dia:attribute name="conn_endpoints">
+        <dia:point val="25.6,10.9036"/>
+        <dia:point val="30.7607,16.0536"/>
+      </dia:attribute>
+      <dia:attribute name="numcp">
+        <dia:int val="1"/>
+      </dia:attribute>
+      <dia:attribute name="line_color">
+        <dia:color val="#a52a2a"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_start_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_end_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_start">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_end">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="effort_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="flow_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="arrow_on_start">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="signal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="show_labels">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:connections>
+        <dia:connection handle="0" to="O13" connection="0"/>
+        <dia:connection handle="1" to="O15" connection="0"/>
+      </dia:connections>
+    </dia:object>
+    <dia:object type="BondGraph - MTT bond" version="0" id="O29">
+      <dia:attribute name="obj_pos">
+        <dia:point val="25.6,10.9036"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="26.05,9.0536;39.641,11.7469"/>
+      </dia:attribute>
+      <dia:attribute name="conn_endpoints">
+        <dia:point val="25.6,10.9036"/>
+        <dia:point val="40.0294,10.9036"/>
+      </dia:attribute>
+      <dia:attribute name="numcp">
+        <dia:int val="1"/>
+      </dia:attribute>
+      <dia:attribute name="line_color">
+        <dia:color val="#a52a2a"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_start_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_end_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_start">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_end">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="effort_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="flow_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="arrow_on_start">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="signal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="show_labels">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:connections>
+        <dia:connection handle="0" to="O13" connection="0"/>
+        <dia:connection handle="1" to="O12" connection="0"/>
+      </dia:connections>
+    </dia:object>
+    <dia:object type="BondGraph - MTT bond" version="0" id="O30">
+      <dia:attribute name="obj_pos">
+        <dia:point val="40.0294,10.9036"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="39.9557,10.7509;41.2489,19.8009"/>
+      </dia:attribute>
+      <dia:attribute name="conn_endpoints">
+        <dia:point val="40.0294,10.9036"/>
+        <dia:point val="40.05,20.1036"/>
+      </dia:attribute>
+      <dia:attribute name="numcp">
+        <dia:int val="1"/>
+      </dia:attribute>
+      <dia:attribute name="line_color">
+        <dia:color val="#a52a2a"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_start_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_end_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_start">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_end">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="effort_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="flow_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="arrow_on_start">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="signal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="show_labels">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:connections>
+        <dia:connection handle="0" to="O12" connection="0"/>
+        <dia:connection handle="1" to="O7" connection="0"/>
+      </dia:connections>
+    </dia:object>
+    <dia:object type="BondGraph - MTT port" version="0" id="O31">
+      <dia:attribute name="obj_pos">
+        <dia:point val="24,24"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="23.95,23.95;26.05,25.8571"/>
+      </dia:attribute>
+      <dia:attribute name="elem_corner">
+        <dia:point val="24,24"/>
+      </dia:attribute>
+      <dia:attribute name="elem_width">
+        <dia:real val="2"/>
+      </dia:attribute>
+      <dia:attribute name="elem_height">
+        <dia:real val="1.8071067811865476"/>
+      </dia:attribute>
+      <dia:attribute name="line_width">
+        <dia:real val="0.10000000000000001"/>
+      </dia:attribute>
+      <dia:attribute name="line_colour">
+        <dia:color val="#000000"/>
+      </dia:attribute>
+      <dia:attribute name="fill_colour">
+        <dia:color val="#ffffff"/>
+      </dia:attribute>
+      <dia:attribute name="show_background">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="line_style">
+        <dia:enum val="0"/>
+        <dia:real val="1"/>
+      </dia:attribute>
+      <dia:attribute name="text">
+        <dia:composite type="text">
+          <dia:attribute name="string">
+            <dia:string>#0#</dia:string>
+          </dia:attribute>
+          <dia:attribute name="font">
+            <dia:font family="serif" style="80" name="Times-Roman"/>
+          </dia:attribute>
+          <dia:attribute name="height">
+            <dia:real val="1"/>
+          </dia:attribute>
+          <dia:attribute name="pos">
+            <dia:point val="25,25.2036"/>
+          </dia:attribute>
+          <dia:attribute name="color">
+            <dia:color val="#1e90ff"/>
+          </dia:attribute>
+          <dia:attribute name="alignment">
+            <dia:enum val="1"/>
+          </dia:attribute>
+        </dia:composite>
+      </dia:attribute>
+      <dia:attribute name="flip_horizontal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="flip_vertical">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+    </dia:object>
+    <dia:object type="BondGraph - MTT bond" version="0" id="O32">
+      <dia:attribute name="obj_pos">
+        <dia:point val="25.0357,29.9036"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="24.9166,25.6986;26.2253,28.6413"/>
+      </dia:attribute>
+      <dia:attribute name="conn_endpoints">
+        <dia:point val="25.0357,29.9036"/>
+        <dia:point val="25,24.9036"/>
+      </dia:attribute>
+      <dia:attribute name="numcp">
+        <dia:int val="1"/>
+      </dia:attribute>
+      <dia:attribute name="line_color">
+        <dia:color val="#1e90ff"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_start_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_end_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_start">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_end">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="effort_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="flow_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="arrow_on_start">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="signal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="show_labels">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:connections>
+        <dia:connection handle="0" to="O16" connection="0"/>
+        <dia:connection handle="1" to="O31" connection="0"/>
+      </dia:connections>
+    </dia:object>
+    <dia:object type="BondGraph - MTT bond" version="0" id="O33">
+      <dia:attribute name="obj_pos">
+        <dia:point val="25.15,20.1536"/>
+      </dia:attribute>
+      <dia:attribute name="obj_bb">
+        <dia:rectangle val="24.9507,20.995;26.3035,23.6879"/>
+      </dia:attribute>
+      <dia:attribute name="conn_endpoints">
+        <dia:point val="25.15,20.1536"/>
+        <dia:point val="25,24.9036"/>
+      </dia:attribute>
+      <dia:attribute name="numcp">
+        <dia:int val="1"/>
+      </dia:attribute>
+      <dia:attribute name="line_color">
+        <dia:color val="#1e90ff"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_start_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="absolute_end_gap">
+        <dia:real val="0.5"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_start">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="object_edge_end">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="effort_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="flow_causality">
+        <dia:enum val="1"/>
+      </dia:attribute>
+      <dia:attribute name="arrow_on_start">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="signal">
+        <dia:boolean val="false"/>
+      </dia:attribute>
+      <dia:attribute name="show_labels">
+        <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:connections>
+        <dia:connection handle="0" to="O6" connection="0"/>
+        <dia:connection handle="1" to="O31" connection="0"/>
+      </dia:connections>
+    </dia:object>
+  </dia:layer>
+</dia:diagram>

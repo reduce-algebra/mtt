@@ -16,6 +16,9 @@ function eqn =  equation(name,cr,args,outbond,outcause,outport, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1996/09/10 11:29:47  peter
+% %% Removed causality & port info when no constitutive relationship.
+% %%
 % %% Revision 1.1  1996/09/10 11:11:11  peter
 % %% Initial revision
 % %%
@@ -24,7 +27,16 @@ function eqn =  equation(name,cr,args,outbond,outcause,outport, ...
 
 
 % Find the number of inports
-nports = length(inports);
+nports = length(inbonds);
+
+% Check some arguments
+if length(incauses) ~= nports
+  error('equation.m: incauses inconsistent with inbonds');
+end;
+
+if length(inports) ~= nports
+  error('equation.m: inports inconsistent with inbonds');
+end;
 
 % Set up LHS
 LHS = varname(name, outbond, outcause);
@@ -58,18 +70,20 @@ RHS1 = sprintf('%s%s%s%s%s%s%s%s\n', ...
 % Set up rest of RHS - the input variables, causality and ports.
 RHS2 = '';
 for i=1:nports
-  RHS2 = sprintf('%s\t%s', ...
-      RHS2, varname(name, inbonds(i), incauses(i)))
+  if (length(cr)>0) | (i == outport) % only do diag terms if no cr
+    RHS2 = sprintf('%s\t%s', ...
+	RHS2, varname(name, inbonds(i), incauses(i)))
   
-  if length(cr)>0 % add the causality & port info
-    RHS2 = sprintf('%s,%1.0f', ...
-	RHS2, cause2name(incauses(i)), inports(i));
-  end;
+    if length(cr)>0 % add the causality & port info
+      RHS2 = sprintf('%s,%s,%1.0f', ...
+	  RHS2, cause2name(incauses(i)), inports(i));
+    end;
   
-  if i<nports % Add a comma
-    RHS2 = sprintf('%s,\n',RHS2);
-  else
-    RHS2 = sprintf('%s\n',RHS2);
+    if i<nports % Add a comma
+      RHS2 = sprintf('%s,\n',RHS2);
+    else
+      RHS2 = sprintf('%s\n',RHS2);
+    end;
   end;
 end;
  

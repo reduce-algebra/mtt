@@ -1,0 +1,9 @@
+#!/bin/sh
+# Vectorises the matrix output of reduce ie converts [n,1] to [n]
+# Copyright (C) 2000 by Peter J. Gawthrop
+
+mv $1 $1_junk
+sed 's/mtt_matrix\[\([0-9]*\),1\]/mtt_matrix[\1]/'< $1_junk > $1
+rm -f $1_junk
+
+

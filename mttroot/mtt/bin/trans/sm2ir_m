@@ -1,0 +1,80 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: sm2ir_m
+
+# Transforms descriptor matrix rep to step response
+
+
+# Copyright (c) P.J.Gawthrop, 1996.
+
+
+echo Creating $1_ir.m
+echo Creating $1_iro.m
+rm -f sm2ir_m.log
+rm -f $1_ir.m
+rm -f $1_iro.m
+rm -f mtt_error
+
+if [ "$2" = "" ]; 
+then
+  PARAMS='T=[0:0.1:10];u0=ones(nu,1);x0=zeros(nx,1);'
+  echo Using default parameter $PARAMS
+else
+  PARAMS=$2
+fi
+
+PARAMS="$PARAMS ;"
+
+$MATRIX << EOF > sm2ir_m.log 2>mtt_error.txt
+
+  % Read in the numeric system parameters
+  $1_numpar;
+
+  [nx,ny,nu,nz,nyz] = $1_def;
+  t=0;	%Just in case it appears in the parameter list.
+
+  $PARAMS
+
+  %Defaults
+  if exist('T')==0
+    T=[0:0.1:10]
+  end;
+
+  if exist('u0')==0
+    u0 = ones(nu,1);
+  end;
+
+  if exist('x0')==0
+    x0 = zeros(nx,1);
+  end;
+
+
+  [n,m]=size(T);
+  if m>n
+    T=T';
+  end;
+
+  [A,B,C,D] = $1_sm;
+  [y,x] = sm2ir(A,B,C,D,T,u0,x0);
+
+  if nx>0
+    write_matrix([T x], '$1_ir');
+  end;
+  if ny>0
+    write_matrix([T y], '$1_iro');
+  end;
+
+EOF
+
+# Write info
+touch mtt_info.txt
+cat mtt_info.txt
+
+# Now invoke the standard error handling.
+mtt_error mtt_error.txt
+
+

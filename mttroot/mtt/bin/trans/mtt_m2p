@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.18  1998/08/27 08:55:40  peterg
+## Mods to integration methods
+##
 ## Revision 1.17  1998/08/27 07:38:40  peterg
 ## About to change to new integration (Euler/Implicit only)
 ##
@@ -137,7 +140,7 @@ Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
 	echo "    mttu                        : InputVector;"
 	echo "    mtty                        : OutputVector;"
 	echo "    mttAA                       : StateMatrix;"
-	echo "    MTTi,MTTj,MTTit,MTTjt,MTTiLast,mttSTEPFACTOR,mttWSTEPS,mttSTEPS : INTEGER;"
+	echo "    MTTi,MTTj,MTTit,MTTjt,MTTiLast,mttSTEPFACTOR,mttWSTEPS,mttSTEPS,mttINPUT : INTEGER;"
 	echo "    mttMETHOD : IntegrationMethod;"
 	echo ""
         ;;

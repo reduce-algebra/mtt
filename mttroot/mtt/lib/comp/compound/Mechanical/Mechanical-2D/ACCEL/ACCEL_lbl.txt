@@ -11,6 +11,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1998/07/27 06:49:57  peterg
+% %% Added blank line at end
+% %%
 % %% Revision 1.1  1998/07/27 06:47:32  peterg
 % %% Initial revision
 % %%
@@ -23,5 +26,5 @@
 
 % SS components
 	Force		SS	external,internal
-	Acceleration	SS	external,external
+	[Acceleration]	SS	external,external
 

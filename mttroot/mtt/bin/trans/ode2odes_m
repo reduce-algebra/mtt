@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.10  1997/01/07  09:16:03  peterg
+# Added step_factor parameter - gives that number of integration steps
+# per sample.
+#
 ## Revision 1.9  1997/01/06 21:36:44  peterg
 ## Fixed bug mtt_error --> mtt_error.txt
 ## Replaced lsode by Euler integration.
@@ -57,7 +61,7 @@ else
   PARAMS=$2;
 fi
 
-PARAMS="$PARAMS ;"
+# PARAMS="$PARAMS ;"
 
 
 $MATRIX << EOF > ode2odes_m.log 2>mtt_error.txt

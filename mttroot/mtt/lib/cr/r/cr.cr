@@ -8,6 +8,10 @@
 %DESCRIPTION             mtt_f=mtt_e/r
 
 % $Log$
+% Revision 1.3  2000/10/05 10:13:00  peterg
+% New eqn2ass function.
+% Started extension to multiports
+%
 % Revision 1.2  2000/10/03 18:35:04  peterg
 % Removed comment bug
 %
@@ -95,6 +99,11 @@ LET cr(mtt_cr_e,mtt_cr_f,flow, 1, input, in_cause, 1)
     = sub(mtt_e=input,mtt_cr_e);
 
 
-
+%%% Q&D FMR 2 port.
+FOR ALL mtt_cr_e,mtt_cr_f,input_1,input_2
+LET cr(mtt_cr_e,mtt_cr_f,flow,1,
+	input_1,effort,1,
+	input_2,flow,2
+	)  = sub(mtt_mod=input_2,sub(mtt_e=input_1,mtt_cr_e));
 
 END;

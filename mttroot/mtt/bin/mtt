@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.340  2002/05/08 22:13:47  geraint
+## Removed redundant path from mtt_*.cc targets in mexglx build line.
+##
 ## Revision 1.339  2002/05/08 21:32:26  geraint
 ## Tidied up $1_ode2odes_*.* targets and renamed dummies as *.stamp.
 ##
@@ -1961,6 +1964,11 @@ if [ "${this_dir}" = "MTT_work" ]; then
   for dir in ${read_dirs}; do
     echo Copying ${dir}/*
     cp --force ${dir}/* .
+    read_files=`echo ${dir}/*`
+    for read_file in ${read_files}; do
+     read_file_name=`basename ${read_file}`
+     touch ${read_file_name}
+    done
    done
 fi
 

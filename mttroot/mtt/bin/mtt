@@ -15,6 +15,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.286  2000/12/01 14:18:44  peterg
+## -partition now partially works up to cse.m
+##   but need to think about indexing, struc files etc for subsystems.
+##
 ## Revision 1.285  2000/11/27 11:51:21  peterg
 ## Fixed a few pdf /fig bugs
 ##
@@ -2325,17 +2329,30 @@ $1_cseo.r: $1_cse.r
 
 #$1_cse.m: $1_def.r $1_cse.r $1_sympar.r  $1_subs.r 
 #	cse_r2m $1; matlab_tidy $1_cse.m
-${sys}_cse.m: ${Subsystem}_def.r ${Subsystem}_cse.r ${Subsystem}_sympar.txt
+${sys}_cse.m: ${Subsystem}_def.r ${Subsystem}_cse.r ${sys}_sympars.txt
 ifneq ($partition,)
 	echo Doing subsystems
-	## mtt_cp_subrep ${sys} sympar txt
+	mtt_cp_subrep ${sys} sympars txt
 	mtt_make_subsystems  ${sys} cse m
 endif
-	mtt_r2m  -parameters  ${Subsystem} cse;#  matlab_tidy $1_cse.m; matlab_tidy $1_cseo.m; 
-$1_csex.m: $1_def.r $1_csex.r $1_sympars.txt
-	mtt_r2m $1 csex
-$1_cseo.m: $1_def.r $1_cseo.r $1_sympars.txt
-	mtt_r2m $optimise -parameters  $1 cseo;#  matlab_tidy $1_cse.m; matlab_tidy $1_cseo.m; 
+	mtt_r2m ${Subsystem} cse;#  matlab_tidy $1_cse.m; matlab_tidy $1_cseo.m; 
+
+${sys}_cseo.m: ${Subsystem}_def.r ${Subsystem}_cseo.r ${sys}_sympars.txt
+ifneq ($partition,)
+	echo Doing subsystems
+	mtt_cp_subrep ${sys} sympars txt
+	mtt_make_subsystems  ${sys} cseo m
+endif
+	mtt_r2m ${Subsystem} cseo
+
+${sys}_csex.m: ${Subsystem}_def.r ${Subsystem}_csex.r ${sys}_sympars.txt
+ifneq ($partition,)
+	echo Doing subsystems
+	mtt_cp_subrep ${sys} sympars txt
+	mtt_make_subsystems  ${sys} csex m
+endif
+	mtt_r2m ${Subsystem} csex
+
 $1_cse.tex: $1_cse.r  $1_sympar.r $1_simp.r
 	cse_r2tex $1 $2; latex_tidy $1_cse.tex
 

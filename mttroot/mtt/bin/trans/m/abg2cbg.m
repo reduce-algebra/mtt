@@ -1,20 +1,24 @@
 function [port_bonds, status] = abg2cbg(system_name, ...
     system_type, full_name, ...
     port_bonds,infofile)
-% [bonds,status] = abg2cbg(system_name, system_type, full_name, port_bonds, infofile)
-% 
+% abg2cbg - acausal to causal bg conversion
+%
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %     %%%%% Model Transformation Tools %%%%%
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 
 % Matlab function  abg2cbg.m
 % Acausal bond graph to causal bond graph: mfile format
+% [bonds,status] = abg2cbg(system_name, system_type, full_name, port_bonds, infofile)
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.8  1996/08/26  10:04:25  peterg
+% %% Fixed error due to a line wrap.
+% %%
 % %%Revision 1.7  1996/08/16  12:58:58  peter
 % %% Now does preferred causality of I and C.
 % %% Revision 1.6  1996/08/09 08:27:29  peter
@@ -116,6 +120,7 @@ while ci_index>0
     old_done = done;
   
     for i = 1:n_components
+      if status(i) ~= 0 % only do this if causality not yet complete
       comp = nozeros(components(i,:));
       bond_list = abs(comp);
       direction = sign(comp)'*[1 1];
@@ -135,13 +140,11 @@ while ci_index>0
       
       % Invoke  the appropriate causality procedure
       if exist(cause_name)~=2 % Try a compound component
-	% disp('------------PUSH-----------------');
 	[comp_bonds,s] = abg2cbg(name, comp_type, full_name, comp_bonds, ...
 	    infofile);
 	status(i)=max(abs(s));
-	% disp('------------POP-----------------');
       else % its a simple component
-	% disp(['---', name, ' (', cause_name, ') ---']);
+	disp(['---', name, ' (', cause_name, ') ---']);
 	% comp_bonds
 	eval([ '[comp_bonds,status(i)] = ', cause_name, '(comp_bonds);' ]);
 	% comp_bonds
@@ -151,7 +154,7 @@ while ci_index>0
       % and convert from component orientated to arrow orientated causality
       bonds(bond_list,:) = comp_bonds.*direction; 
     end;
-    
+    end;
     
     done = sum(sum(abs(bonds)))/total*100;
     %  mtt_info(sprintf('Causality is %3.0f%s complete.', done, pc), infofile);

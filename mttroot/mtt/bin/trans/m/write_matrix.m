@@ -7,6 +7,9 @@ function write_matrix(matrix,name);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1996/08/14 08:36:52  peter
+% %% Puts a tab between columns.
+% %%
 % %% Revision 1.1  1996/08/14 08:21:27  peter
 % %% Initial revision
 % %%
@@ -19,9 +22,9 @@ filenum = fopen(filename,'w');
 % Write the function m-file for the causal bond graph
 pc = '%';
 fprintf(filenum, 'function data = %s\n', name);
-fprintf(filenum, '%s m = %s\n\n', pc, name);
+fprintf(filenum, '%s data = %s\n\n', pc, name);
 
-fprintf(filename, 'm = [\n');
+fprintf(filename, 'data = [\n');
 
 [N,M] = size(matrix);
 for i = 1:N,

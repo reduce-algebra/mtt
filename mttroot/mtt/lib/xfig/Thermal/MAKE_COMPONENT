@@ -1,0 +1,16 @@
+#!/bin/sh
+## Makes a new component
+
+if [ -z "$2" ]; then
+  label=$1
+else
+  label=$2    
+fi
+
+if [ "$1" = "0" ]||[ "$1" = "1" ]; then
+  echo Making new component $1 with no label
+  sed "s/TEXT/$1/" <template.txt >$1.fig
+else
+  echo Making new component $1 with label $label
+  sed "s/TEXT/$1:$label/" <template.txt >$1.fig
+fi

@@ -1,0 +1,7 @@
+#!/bin/sh
+## Makes all components
+
+./MAKE_COMPONENT RS rs_1
+./MAKE_COMPONENT RT rt_1
+./MAKE_COMPONENT CT ct_1
+

@@ -7,10 +7,16 @@ else
   label=$2    
 fi
 
-if [ "$1" = "0" ]||[ "$1" = "1" ]; then
-  echo Making new component $1 with no label
-  sed "s/TEXT/$1/" <template.txt >$1.fig
-else
+case $1 in
+    0)
+	echo Making new component $1 with no label
+        sed "s/TEXT/$1/" <template.txt >$1.fig
+	;;
+    1)
+	echo Making new component $1 with no label
+        sed "s/TEXT/$1/" <template.txt >$1.fig
+	;;
+    *)
   echo Making new component $1 with label $label
   sed "s/TEXT/$1:$label/" <template.txt >$1.fig
-fi
+esac

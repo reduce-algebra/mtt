@@ -1,12 +1,11 @@
 %SUMMARY	ROD: rigid rod in two dimensions
-%DESCRIPTION	Port [1]:	Angular torque/velocity - end 1
-%DESCRIPTION	Port [2]:	Angular torque/velocity - end 2
-%DESCRIPTION	Port [3]:	x force/velocity - end 1
-%DESCRIPTION	Port [4]:	x force/velocity - end 2
-%DESCRIPTION	Port [5]:	y force/velocity - end 1
-%DESCRIPTION	Port [6]:	y force/velocity - end 2
-%DESCRIPTION	Port [7]:	x force/velocity - mass centre
-%DESCRIPTION	Port [8]:	x force/velocity - mass centre
+%DESCRIPTION	Port [alpha_a]:	Angular torque/velocity - end a
+%DESCRIPTION	Port [alpha_b]:	Angular torque/velocity - end b
+%DESCRIPTION	Port [x_a]:	x force/velocity - end a
+%DESCRIPTION	Port [x_b]:	x force/velocity - end b
+%DESCRIPTION	Port [y_a]:	y force/velocity - end a
+%DESCRIPTION	Port [y_b]:	y force/velocity - end b
+%DESCRIPTION
 %DESCRIPTION	Parameter 1:	length from end 1 to mass centre
 %DESCRIPTION	Parameter 2:	length from end 2 to mass centre
 %DESCRIPTION	Parameter 3:	inertia about mass centre
@@ -23,6 +22,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% Revision 1.1  1996/11/07  10:57:17  peterg
+% Initial revision
+%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:
@@ -43,6 +45,7 @@ s1	lsin	flow,$1
 s2	lsin	flow,$2
 c1	lcos	flow,$1
 c2	lcos	flow,$2
+
 
 
 	

@@ -127,7 +127,7 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
     endif
     
     
-    U = K_w*w			# Initial control U
+    U = K_w*w;			# Initial control U
 
     ## Checks
     [ol_zeros, ol_poles] = sys2zp(sys)
@@ -139,14 +139,16 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   if (ControlType==2)		# 
     G = eye(n_x);		# State noise gain 
     sigma_x = eye(n_x);		# State noise variance
-    Sigma = p_o.sigma*eye(n_y)	# Measurement noise variance
+    Sigma = p_o.sigma*eye(n_y);	# Measurement noise variance
     
-    L = dlqe(Ad,G,C,sigma_x,Sigma)
+    [L, M, P, obs_poles] = dlqe(Ad,G,C,sigma_x,Sigma);
   else
     L = zeros(n_x,n_y);
+    obs_poles = eig(Ad);
   endif
   
-  obs_poles = eig(Ad-L*C);
+  ## Display the poles
+  obs_poles
 
   ## Short sample interval
   dt = p_c.delta_ol/p_c.N;
@@ -166,15 +168,15 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   tick = time;
   for i=1:I
     i
-    if Simulate
-      t_sim = [0:p_c.N]*dt;
-      [yi,ui,xsi] = ppp_ystar (A,B,C,D,x,p_c.A_u,U,t_sim);
-      x = xsi(:,p_c.N+1);
-      y_now = yi(:,p_c.N+1);
+    if Simulate			# Exact simulation 
+      t_sim = [0:p_c.N]*dt;	# Simulation time points
+      [yi,ui,xsi] = ppp_ystar(A,B,C,D,x,p_c.A_u,U,t_sim); # Simulate
+      x = xsi(:,p_c.N+1);	# Current state
+      y_now = yi(:,p_c.N+1);	# Current output
     else			# The real thing
       to_rt(U');		# Send U
       data = from_rt(p_c.N);	# Receive data
-      [yi,ui] = convert_data(data); 
+      [yi,ui] = convert_data(data); # And convert from integer format
       y_now = yi(:,p_c.N);	# Current output
     endif
 
@@ -182,9 +184,9 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
     [x_est y_est e_est] = ppp_int_obs (x_est,y_now,U,A,B,C,D,p_c.A_u,p_c.delta_ol,L);
     
     ##Control
-    U = K_w*w - K_x*x_est
+    U = K_w*w - K_x*x_est;
 
-    ## Save
+    ## Save data
     ti  = [(i-1)*p_c.N:i*p_c.N-1]*dt; 
     t = [t;ti'];
     y = [y;yi(:,1:p_c.N)'];
@@ -192,7 +194,7 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
     y_e = [y_e; y_est'];
     t_e = [t_e; (i*p_c.N)*dt];
     e_e = [e_e; e_est];
-  endfor
+  endfor			# Main loop
   
   sample_interval = (time-tick)/(I*p_c.N)
 

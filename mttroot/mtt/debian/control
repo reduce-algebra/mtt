@@ -15,5 +15,5 @@ Description: Model Transformation Tools.
  .
  The MTT homepage is located at http://mtt.sourceforge.net. An on-line manual is available at http://mtt.sourceforge.net/doc.
  .
- mtt requires the non-free symbolic algebra tool Reduce to be installed. Details of Reduce can be found at http://www.reduce-algebra.com
+ MTT uses the non-free symbolic algebra tool Reduce to perform some transformations and it is highly recommended that this software is installed. Details of Reduce can be found at http://www.reduce-algebra.com
  .

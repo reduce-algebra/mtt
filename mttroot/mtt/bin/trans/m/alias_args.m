@@ -5,6 +5,9 @@ function args = alias_args(args,alias,delim,message,FileID,sys_name)
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  2000/10/12 19:27:20  peterg
+## Now writes out the aliased args ...
+##
 ## Revision 1.4  2000/09/14 13:35:43  peterg
 ## appended '(' and ')' to SEPS
 ##   -- otherwise first argument after '(' doesn't get substituted
@@ -37,6 +40,8 @@ function args = alias_args(args,alias,delim,message,FileID,sys_name)
   	  mtt_save_alias(arg,sys_name);
 
           arg = new_arg;
+	else
+	  mtt_info(["NOT replacing ", arg, message],FileID);
         end
         SEPS = ",+-*/()";
         for j = 1:length(SEPS)

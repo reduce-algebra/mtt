@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.41  2001/04/15 21:15:41  geraint
+  ## ## Added interface definition rep: _ICD.(txt|c|cc|m).
+  ## ##
   ## ## Revision 1.40  2001/02/05 01:50:29  geraint
   ## ## No unit type comparison at ports if either is "none".
   ## ##
@@ -471,10 +474,13 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	    old_structure = structure;
 	    
 	    ## Generate the simple component equations
+	    ## .. firstly replacing ; by , in argument list
+	    subsystem_arg = strrep(subsystem.arg,";",",");
+
 	    eval(["structure = ", ...
 		  eqn_name, ...
 		  "(name_r,bond_list,comp_bonds, ...
-		    direction,subsystem.cr,subsystem.arg,structure,ese_file);" ]);
+		    direction,subsystem.cr,subsystem_arg,structure,ese_file);" ]);
 	    
 	    ## If structure has changed, write info to structure file.
 	    structure_change = structure-old_structure;

@@ -12,27 +12,49 @@
 
 
 echo Creating  $1_switch.m
+echo Creating  $1_switcha.m
 
 # Find system constants
 Nx=`grep "MTTNx " <$1_def.r | awk '{print $3}' | sed 's/;//'`
 
 #Write some file headers
-lang_header $1 switch m mttx '[mttxs]' > $1_switch.m
+lang_header $1 switch m 'mttx' '[mttx]' > $1_switch.m
 
-# This is the main transformation using gawk
+# Set states to zero
 awk '{
   if ($1=="#"){
-    printf("for MTTi=1:%s\n", Nx)
-    printf("  mttxs(MTTi) = mttx(MTTi);\n")
-    printf("end;\n\n")
+#    printf("for MTTi=1:%s\n", Nx)
+#    printf("  mttxs(MTTi) = mttx(MTTi);\n")
+#    printf("end;\n\n")
+    printf("#== Switches set element of state vector to zero ==#\n")
   }
   else{
-  printf("if (%s==0.0)\n  mttxs(%s)=0.0;\nend;\n\n", $1,$2)
-  printf("if (%s<0.0)\n  if (mttx(%s)<0.0)\n    mttxs(%s)=0.0;\n  end;\nend;\n", $1,$2,$2)
+  printf("\n#== Switch: %s ==#\n",$1)
+  printf("if ((%s==0.0)||((%s<0.0)&&mttx(%s)<=0.0)) \n", $1,$1,$2);
+  printf("  mttx(%s)=0.0;\n", $2);
+  printf("end;\n");
   }
 }' Nx=$Nx < $1_switch.txt >> $1_switch.m
 
-
+# Matrix version
+#Write some file headers
+lang_header $1 switcha m 'mttAA,mttx' '[mttAA]' > $1_switcha.m
+awk '{
+  if ($1=="#"){
+    printf("#== Switches set row and column of A matrix to zero ==#\n")
+  }
+  else{
+  printf("#== Switch: %s ==#\n",$1)
+  #printf("if ((%s==0.0)||((%s<0.0)&&mttx(%s)<=0.0)) \n", $1,$1,$2);
+  printf("if (%s==0.0) \n", $1);
+  printf("  for  MTTi=1:%s\n",Nx)
+  printf("    mttAA(MTTi,%s)=0.0;\n", $2)
+  printf("    mttAA(%s,MTTi)=0.0;\n", $2)
+  printf("  end;\n");
+  printf("  mttAA(%s,%s) = 1.0;\n", $2,$2);
+  printf("end;\n\n")
+  }
+}' Nx=$Nx < $1_switch.txt >> $1_switcha.m
 
 
 

@@ -1,0 +1,29 @@
+#!/bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: maketex
+# Makes teplate for (TeX) system description.
+
+# P.J.Gawthrop August 1997
+# Copyright (c) P.J.Gawthrop, 1997.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+system=$1
+
+echo Creating $system'_desc.tex'
+( \
+  echo '%% Verbal description file for system '$1' ('$1'_desc.tex)' ;\
+  echo 'The acausal bond graph of system \''textbf{'$system'} is' ;\
+  echo 'displayed in Figure \''Ref{'$system'_abg} and its label' ;\
+  echo 'file is listed in Section \''Ref{sec:'$system'_lbl}.' ;\
+  echo 'The subsystems are listed in Section \''Ref{sec:'$system'_sub}.' ;\
+	) > $system_desc.tex

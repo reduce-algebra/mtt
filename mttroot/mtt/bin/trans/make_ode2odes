@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.29  2000/04/07 19:10:57  peterg
+## *** empty log message ***
+##
 ## Revision 1.28  1999/12/08 05:56:52  peterg
 ## Reordered the writing of the input and output.
 ## Note that last value now discarded.
@@ -126,7 +129,7 @@ sympar2global_txt2m $1 >> $1_ode2odes.m
 # The rest of the program
 cat << EOF >> $1_ode2odes.m
 $1_simpar;			# Read in simulation parameters
-$1_numpar;			# Read in parameters
+## $1_numpar;			# Read in parameters
 MTTilast = round(mttlast/mttdt); # Total number of steps
 
 #Initialise
@@ -177,8 +180,8 @@ fi
 if [ "$method" = "implicit" ]; then
 cat << EOF >> $1_ode2odes.m
 #    if mttmethod==2		# Implicit 
-      [MTTdx] = $1_cse(MTTx,MTTu,MTTt); # State derivative
-      [mttAA,mttAAx] = $1_smx(MTTx,MTTu,mttdt);	# (I-Adt) and (I-Adt)x
+      [MTTdx] = $1_cse(MTTx,MTTu,MTTt,MTTpar); # State derivative
+      [mttAA,mttAAx] = $1_smx(MTTx,MTTu,mttdt,MTTpar);	# (I-Adt) and (I-Adt)x
       [MTTopen] = $1_switchopen(MTTx);        # Open switches
       [MTTx] = mtt_implicit(MTTx,MTTdx,mttAA,mttAAx,mttdt,$Nx,MTTopen); # Implicit update
       MTTt = MTTt + mttdt;

@@ -16,6 +16,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.303  2001/04/10 12:54:50  gawthrop
+## Minor fixes for sensitivity versions
+##
 ## Revision 1.302  2001/04/06 05:24:30  geraint
 ## -stdin for .cc reps.
 ##
@@ -2874,7 +2877,7 @@ endif
 endif
 
 ifeq ($computation,c)
-$1_ode2odes.out: $1_ode2odes.c
+$1_ode2odes.out: $1_ode2odes.c $1_cr.h
 	echo Creating $1_odes.out by compiling *.c 
 	$CC *.c -lp2c -lm -o $1_ode2odes.out
 

@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  2001/03/29 19:24:14  gawthrop
+## Can now use c representations of crs when using -c option
+##
 ## Revision 1.10  2000/09/15 09:01:41  peterg
 ## Updated internal comments
 ##
@@ -83,7 +86,9 @@ cat <<EOF  >$1_$2.c
 
 /* Compile with gcc -lm -lp2c $1_$2.c -o $1_$2.out */
 /* Note that p2c must be correctly installed so that p2c.h and libp2c.a are accessible */
-#include "$1.h"
+
+/* Header file for user-defined crs (implemented in c) */ 
+#include "$1_cr.h"
 EOF
 
 #cat<<EOF >>$1_$2.c

@@ -12,6 +12,12 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.18  1997/03/19  09:42:08  peterg
+# Now writes out the following additional fig  files:
+# _head.fig	The fig header
+# _bnd.fig	The bonds actually used
+# _cmp.fig	The components actually used.
+#
 # Revision 1.17  1997/01/02  11:21:17  peterg
 # Now assumes all components bonds etc at depth zero in fig file.
 # Ie anything at depth>0 is ignored.
@@ -388,8 +394,8 @@ function write_fig() {
     printf("\n") >> bnd_file
       }
 
-# Components
-  if ( (isa_component==1) ) {
+# Components & ports
+  if ( isa_component||isa_port ) {
         for (i=1; i<=NF; i++)
 	printf(" %s", $i)  >> cmp_file;
     printf("\n") >> cmp_file

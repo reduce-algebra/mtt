@@ -35,12 +35,14 @@ function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run (system_
     extras.alpha = 0.1;
     extras.criterion = 1e-5;
     extras.emulate_timing = 0;
-    extras.estimate = 1;
     extras.max_iterations = 10;
     extras.simulate = 1;
     extras.v = 1e-5;
     extras.verbose = 0;
   endif
+
+  ##Estimate if we have some adjustable parameters
+  estimating_parameters = (length(i_par)>0)
   
   ## Names
   s_system_name = sprintf("s%s", system_name);
@@ -62,6 +64,7 @@ function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run (system_
   simpars = eval(sprintf("%s_simpar;", s_system_name));
   pars = eval(sprintf("%s_numpar;", s_system_name));
   x_0s = eval(sprintf("%s_state(pars);", s_system_name));
+  x_0_models = x_0s;
 
   ## Times
   ## -- within opt horizon
@@ -138,9 +141,9 @@ function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run (system_
       u_star_t = ppp_ustar(A_u,1,t_ol',0,0,n_u-n_U);
 
       ## Tune parameters/states
-      if (extras.estimate==1)
+      if (estimating_parameters==1)
 	## Save up the estimated parameters
-	par_est = pars(i_par(:,1));
+	par_est = pars(i_par(:,1))
 	p = [p; par_est'];
 
 	## Set up according to interval length
@@ -158,25 +161,27 @@ function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run (system_
 	## Optimise
 	tick = time;
 	[pars,Par,Error,Y,its] = \
-	    ppp_optimise(s_system_name,x_0s,pars,simpar_est,u_star_t,y_est,i_par,extras);
+	    ppp_optimise(s_system_name,x_0_models,pars,simpar_est,u_star_t,y_est,i_par,extras);
+II = [1:length(y_est)]; plot(II,y_est,"*", II,Y)
 	est_time = time-tick;  
 	t_est = [t_est;est_time];
 	its_est = [its_est; its-1];
       endif
 
       ## Update internal model
-      par(i_ppp(:,3)) = U_old; # Update the simulation ppp weights
+      par(i_ppp(:,3)) = U_old; # Update the internal model ppp weights
 
-      if (extras.estimate==1)
-	par(i_par(:,3)) = pars(i_par(:,1)); # Update the simulation params
+      if (estimating_parameters==1)
+	par(i_par(:,3)) = pars(i_par(:,1)); # Update the internal model params
       endif
-      
+
       simpar_model.last = T_ol;
       [y_model,x_model] = eval(sprintf("%s_sim(x_0_model, par, simpar_model, \
  					       u_star_t);",system_name));
 
       x_0 = x_model(n_ol+1,:)';	# Initial state of next interval
       x_0_model = x_0;
+      x_0_models(1:2:(2*n_x)-1) = x_0_model;
 
       ## Compute U by optimisation
       tick = time;
@@ -186,7 +191,7 @@ function [y,u,t,p,UU,t_open,t_ppp,t_est,its_ppp,its_est] = ppp_nlin_run (system_
       [y_next,x_next] = eval(sprintf("%s_sim(x_0, par, simpar, \
 					     u_star_t);",system_name));
       x_next = x_next(n_t+1,:)'; # Initial state for next time
-      x_nexts(1:2:(2*n_x)-1) = x_next;
+      x_nexts(1:2:(2*n_x)-1) = x_next; # And for internal sensitivity model
       
       ## Optimize for next interval      
       U_old = U;		# Save previous value

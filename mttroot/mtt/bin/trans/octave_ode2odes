@@ -1,0 +1,25 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: octave_ode2odes
+# Runs the Octave script $1_ode2odeso.m
+# Copyright (c) P.J.Gawthrop 1999
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+echo Creating $1_odes.dat2
+$MATRIX -q <<EOF >octave_ode2odes.log
+  global MTT_data
+  $1_ode2odes;
+  save -ascii $1_odes.dat2 MTT_data
+EOF
+

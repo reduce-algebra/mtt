@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.213  1999/09/02 23:24:40  peterg
+## Now explicitly generates executable _ode2odes.out file
+## Which takes command line arguments
+##
 ## Revision 1.212  1999/08/18 06:20:32  peterg
 ## Put -u back again .....
 ##
@@ -723,7 +727,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='3.8++'
+version='4.0'
 
 # MTT recursion level is zero unless explicitly set
 level=0
@@ -733,6 +737,8 @@ computation=octave
 
 #By default, the dae and ode representations are different
 dae_is_ode=0
+#By default, the ode and cse reps are different
+ode_is_cse=0
 
 # By default, don't look for BG switches
 switches=0
@@ -768,6 +774,9 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-o )
                 mtt_switches="$mtt_switches $1";
 		dae_is_ode=1 ;;
+	-cse )
+                mtt_switches="$mtt_switches $1";
+		ode_is_cse=1 ;;
 	-ss )
                 mtt_switches="$mtt_switches $1";
 		steadystate_computation=yes ;;
@@ -806,7 +815,7 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 mtt_switches="$mtt_switches $1";
                 start_at_abg='yes';;
         --version)                
-                  echo 'MTT (Model Transformation Tools) version' $version; exit;;
+                  echo 'MTT version' $version; exit;;
         --versions)                
                 mtt_versions; exit;;
 	*)
@@ -832,7 +841,8 @@ fi
 
 #Print what's going on if in verbose mode
 if [ -n "$Verbose" ]; then
-    echo  Starting  mtt  $mtt_switches  $1 $2 $3 $4
+    echo  Starting  mtt  $mtt_switches  $1 $2 $3 $4 at level $level 
+    echo  "        " current wd $PWD
 fi
 
 #Check the principle paths
@@ -850,7 +860,7 @@ if [ -z "$1" ]; then
     echo '       mtt info             -- info-based manual'
     echo '       mtt info topic'
     echo '       mtt hinfo            -- hypertext manual'
-    echo '       mtt manual           -- pdf manual'
+    echo '       mtt manual           -- ps manual'
     echo '       mtt warranty'
     echo '       mtt clean           -- cleans up intermediate files'
     echo '       mtt rclean          -- recursively cleans up intermediate files'
@@ -870,6 +880,7 @@ if [ -z "$1" ]; then
     echo '         -d  <dir>  use directory <dir>'
     echo '         -dc Maximise derivative (not integral) causality'
     echo '         -o  ode and dae are the same'
+    echo '         -cse  ode is computed in cse form'
     echo '         -p  print environment variables'
     echo '         -ss use steady-state info to initialise simulations'
     echo '         -t  tidy mode (default)'
@@ -901,9 +912,9 @@ if [ "$1" = "hinfo" ] && [$2 = ""]; then
 fi
 
 if [ "$1" = "manual" ] && [$2 = ""]; then
-  mtt_check_var "$PDFVIEW" PDFVIEW
-  echo Invoking $PDFVIEW
-  $PDFVIEW  $MTTPATH/doc/mtt.PDF &
+  mtt_check_var "$PSVIEW" PSVIEW
+  echo Invoking $PSVIEW
+  $PSVIEW  $MTTPATH/doc/mtt.ps &
   exit
 fi
 
@@ -954,7 +965,7 @@ fi
 
 # Clean up 
 if [ "$1" = "clean" ]; then
-  echo 'Removing intermediate files'
+  echo Removing intermediate files in `pwd`
   rm -fr MTT_work
   exit
 fi
@@ -1274,7 +1285,7 @@ fi
 # Tidy mode - operate in the directory MTT-work
 if [ "$tidy" = "tidy" ]; then
    mkdir -p MTT_work
-   cp -p -u  Makefile *.* .* MTT_work # 2>/dev/null
+   cp -p -u  Makefile *.* .* MTT_work  2>/dev/null
    cd MTT_work
    
    if [ -z "$directory" ]; then
@@ -1292,6 +1303,7 @@ if [ "$tidy" = "tidy" ]; then
      exit 1
    fi
 
+  # Copy back form working directory
    if [ "$3" != "view" ]; then
     if [ "$3" != "hview" ]; then
 
@@ -1306,7 +1318,6 @@ if [ "$tidy" = "tidy" ]; then
         echo Copying  $1_$2$__ARGS.ps
         cp  $1_$2$__ARGS.ps ..
       fi
-
     fi
   fi
 
@@ -1320,8 +1331,22 @@ fi
 
 # User defined representations
 if [ -f "$2_rep.make" ]; then
-    echo make -f $2_rep.make "SYS=$1" "LANG=$3"
-         make -f $2_rep.make "SYS=$1" "LANG=$3"
+   if [ -n "$4" ]; then
+      filename=$1_$2-$4.$3
+   else
+      filename=$1_$2.$3
+   fi
+    
+   if [ -f "$filename" ]; then
+      echo $filename exists
+   else
+      echo make -f $2_rep.make "SYS=$1" "LANG=$3" "ARG=$4"
+      make -f $2_rep.make "SYS=$1" "LANG=$3" "ARG=$"
+      if [ -n "$4" ]; then
+         echo Copying  $1_$2_$4.ps
+         cp  $1_$2_$4.ps ..
+      fi
+   fi
     exit
 fi
 
@@ -1783,9 +1808,9 @@ $1_dae.tex:	$1_dae.r $1_simp.r
 #SUMMARY cse*	constrained-state equations (view)
 #SUMMARY cse	constrained-state equations (ps)
 #Constrained-state equations
-$1_cse.r: $1_dae.r $1_def.r $1_sympar.r 
+$1_cse.r: $1_dae.r $1_def.r $1_sympar.r $1_subs.r 
 	dae2cse_r $Solve $1; tidy $1_cse.r $1_subs.r
-$1_cse.m: $1_def.r $1_cse.r $1_sympar.r 
+$1_cse.m: $1_def.r $1_cse.r $1_sympar.r  $1_subs.r 
 	cse_r2m $1; matlab_tidy $1_cse.m
 $1_cse.tex: $1_cse.r  $1_sympar.r $1_simp.r
 	cse_r2tex $1; latex_tidy $1_cse.tex
@@ -1801,13 +1826,24 @@ ifeq ($dae_is_ode,0)
 $1_ode.r: $1_cse.r $1_def.r $1_sympar.r $1_subs.r
 	cse2ode_r $1; tidy $1_ode.r
 endif
+
 ifeq ($dae_is_ode,1)
 $1_ode.r: $1_dae.r
 	echo Copying $1_dae.r to $1_ode.r
 	cp $1_dae.r  $1_ode.r
 endif
+
+ifeq ($ode_is_cse,1)
+$1_ode.m: $1_def.m $1_cse.r $1_sympars.txt
+	mtt_r2m $1 cse;  matlab_tidy $1_cse.m; 
+	cp -v $1_cse.m $1_ode.m;
+	cp -v $1_cseo.m $1_odeo.m;
+endif
+ifeq ($ode_is_cse,0)
 $1_ode.m: $1_def.m $1_ode.r $1_sympars.txt
 	mtt_r2m $1 ode m; matlab_tidy $1_ode.m
+endif
+
 $1_odea.m: $1_ode.m
 	touch $1_odea.m
 $1_odeo.m: $1_ode.m
@@ -1841,7 +1877,7 @@ $1_smx.p : $1_def.r $1_smx.m
 	mtt_m2p $1_smx.m
 $1_switchopen.p : $1_def.r $1_switchopen.m
 	mtt_m2p $1_switchopen.m
-$1_ode2odes.p : $1_ode2odes.m $1_def.r\
+$1_ode2odes.p : $1_ode2odes.m $1_def.r $1_smx.p\
                 $1_simpar.p $1_numpar.p $1_state.p $1_input.p \
                 $1_ode.p $1_odeo.p  $1_switchopen.p
 	mtt_m2p $1_ode2odes.m
@@ -1940,8 +1976,8 @@ $1_sm.tex: $1_sm.r  $1_sympar.r $1_simp.r
 #SUMMARY smxtx	Sparse computation of ATx (m)
 $1_smx.r: $1_def.r $1_def.m $1_ode.r $1_subs.r
 		ode2smx_lang $1 r; tidy $1_smx.r
-$1_smx.m: $1_def.r $1_def.m $1_ode.r $1_sympars.txt
-		ode2smx_lang $1 m;
+$1_smx.m: $1_def.r $1_def.m $1_cse.r $1_sympars.txt $1_subs.r
+		cse2smx_lang $1 m;
 $1_smxx.m: $1_smx.m
 		touch $1_smxx.m
 $1_smxtx.m: $1_smx.m
@@ -2394,7 +2430,7 @@ fi
 
 #Print what's going on if in verbose mode
 if [ -n "$Verbose" ]; then
-    echo Finishing mtt  $mtt_switches  $1 $2 $3 $4
+    echo Finishing mtt  $mtt_switches  $1 $2 $3 $4 at level $level
 fi
 
 if [ "$make_status" != "0" ]; then

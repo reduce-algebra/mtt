@@ -1,0 +1,19 @@
+#!/bin/sh
+## Makes all components
+
+./MAKE R r_1
+./MAKE C c_1
+./MAKE I i_1
+
+./MAKE SS ss_1
+./MAKE Se se_1
+./MAKE Sf sf_1
+./MAKE De de_1
+./MAKE Df df_1
+
+./MAKE TF gy_1
+./MAKE GY gy_1
+
+./MAKE EMTF emtf_1
+
+./MAKE Subsystem sub_1

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1998/11/24 12:03:27  peterg
+## Indexing of book docs.
+##
 ## Revision 1.2  1998/04/15 18:40:43  peterg
 ## Run LateX three times
 ##
@@ -27,7 +30,7 @@ system=$1
 documenttype=$2
 
 # Inform user
-echo "Creating $system.dvi ($documenttype)"
+echo "Creating $system.dvi"
 
 #Run latex , bibtex and makeindex
 latex $system.doc > doc2dvi.log

@@ -9,7 +9,7 @@ lang=$4
 maxlevel=$5
 
 if [ -z "$maxlevel" ]; then
-  maxlevel=1;    
+  maxlevel=0;    
 fi
 
 ls $2*_$3.$4 |\

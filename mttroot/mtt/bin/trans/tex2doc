@@ -15,17 +15,14 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1996/08/18 20:00:20  peter
+## Initial revision
+##
 ###############################################################
 
 # Inform user
 echo "Creating $1_$2.doc"
 
 # This is the main transformation using gawk
-gawk -f $MTTPATH/tex2doc.awk $1_$2.txt  > $1_$2.doc
-
-
-
-
-
-
+gawk -f $MTTPATH/trans/awk/tex2doc.awk $1_$2.txt  > $1_$2.doc
 

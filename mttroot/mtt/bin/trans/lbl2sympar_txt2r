@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1996/08/30 10:04:20  peter
+## Included `;' in demimiter list.
+##
 # Revision 1.1  1996/08/24  13:34:09  peter
 # Initial revision
 #
@@ -28,7 +31,7 @@ rm -f mtt_error
 
 # This is the main transformation using gawk
 tr ';' ',' <  $1_lbl.txt | \
-gawk -f $MTTPATH/lbl2sympar.awk  > $1_sympar.r 2>mtt_error.txt
+gawk -f $MTTPATH/trans/awk/lbl2sympar.awk  > $1_sympar.r 2>mtt_error.txt
 
 # Now invoke the standard error handling.
 mtt_error mtt_error.txt

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1996/08/05 20:13:33  peter
+## Initial revision
+##
 ###############################################################
 
 
@@ -30,7 +33,7 @@ rm -f $1_fig.fig
 sed 's/	/---- /'<$1_abg.fig > $1_abg.mtt
 
 # This is the main transformation using gawk
-cat $1_lbl.txt $1_abg.mtt |  gawk -f $MTTPATH/rbg_fig2m.awk $1
+cat $1_lbl.txt $1_abg.mtt |  gawk -f $MTTPATH/trans/awk/rbg_fig2m.awk $1
 
 rm -f $1_abg.mtt
 

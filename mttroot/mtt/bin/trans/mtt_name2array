@@ -35,13 +35,13 @@ case $3 in
     zero)
 	  strip_comments <mtt_infile | grep "$filter"  |\
           awk '{
-          i++; printf(" %s = 0.0;\n", tolower($1));
+          i++; printf("  %s = 0.0;\n", tolower($1));
           }'
 	;;
     set)
 	  strip_comments <mtt_infile  |\
          awk '{
-           i++; printf("%s(%i)\t= %s;\n", name, i, tolower($1));
+           i++; printf("  %s(%i)\t= %s;\n", name, i, tolower($1));
          }' name=$name
         ;;
     *)

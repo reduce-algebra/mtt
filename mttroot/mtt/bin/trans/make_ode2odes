@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.18  1999/03/15 01:17:07  peterg
+## Removed some spurious debugging code
+##
 ## Revision 1.17  1999/03/15 01:09:15  peterg
 ## Fixed bugs when Nx=0 (no state)
 ##
@@ -87,11 +90,11 @@ MTTilast = round(mttlast/mttdt); # Total number of steps
 #Initialise
 MTTt = 0.0;
 [MTTu]  = zero_vector($Nu);	# Zero the input
-if $Nx>0
+#if $Nx>0
   [MTTx] = $1_state;	        # Read in initial state
-else
-  MTTx = 0;			# Dummy value
-endif;
+#else
+#  MTTx = 0;			# Dummy value
+#endif;
 
 [MTTy] = $1_odeo(MTTx,MTTu,MTTt); # Evaluate initial output
 [MTTu] = $1_input(MTTt,MTTx,MTTy);	# Evaluate initial input
@@ -111,7 +114,7 @@ endif;
 
 for MTTit = 1:MTTilast		#Integration loop
 
-  if $Nx>0			# Don't if no states
+  if $Nx>0			# Dont if no states
     if mttmethod==1		# Euler
       for MTTjt = 1:mttstepfactor
 	[MTTdx] = $1_ode(MTTx,MTTu,MTTt); # State derivative
@@ -122,10 +125,10 @@ for MTTit = 1:MTTilast		#Integration loop
     endif;
     if mttmethod==2		# Implicit 
       [MTTdx] = $1_ode(MTTx,MTTu,MTTt); # State derivative
+      [MTTdx] = $1_switch(MTTx);	# Set derivs to zero if states to zero
       [mttAA,mttAAx] = $1_smx(MTTx,MTTu,mttdt);	# (I-Adt) and (I-Adt)x
       [mttAA] = $1_switcha(mttAA,MTTx);	# Switches
       [MTTx] = mtt_implicit(MTTx,MTTdx,mttAA,mttAAx,mttdt,$Nx); # Implicit update
-      [MTTx] = $1_switch(MTTx);	# Switches
       MTTt = MTTt + mttdt;
     endif;
     else

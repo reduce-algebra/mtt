@@ -1,12 +1,20 @@
-%SUMMARY OttoCycle: Ideal Otto cycle with ideal gas
-%DESCRIPTION Uses the CT2 two-port thermal capacitor.
-%% Label file for system OttoCycle (OttoCycle_lbl.txt)
+%SUMMARY Cycle: Closed cycle with ideal gas
+%DESCRIPTION Uses the CU two-port thermal capacitor.
+
+%ALIAS in	Heat
+%ALIAS out	Work
+
+
+%% Label file for system Cycle (Cycle_lbl.txt)
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1997/12/08 20:24:43  peterg
+% %% Initial revision
+% %%
 % %% Revision 1.1  1997/12/07 20:38:05  peterg
 % %% Initial revision
 % %%
@@ -20,16 +28,20 @@
 
 
 
-% Component type CT2
-	gas	CT2	c_v;gamma;m;t_0
+% Component type CU
+	gas	CU	ideal_gas,c_v,gamma,m_g
 
 % Component type INTF
 	entropy
 	volume
 
 % Component type SS
-	S		external	0
-	V		external	0
-	[Heat]		external	external
-	[Work]		external	external
+	S	SS	external,0
+	T	SS	external,0
+	V	SS	external,0
+	P	SS	external,0
+	[Heat]	SS	external,external
+	[Work]	SS	external,external
+
+
 

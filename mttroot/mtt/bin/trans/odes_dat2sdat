@@ -1,0 +1,32 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: odeso_dat2sdat
+
+# Structure file - dat to sdat conversion
+# P.J.Gawthrop April 1997
+# Copyright (c) P.J.Gawthrop, 1997.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+## Revision 1.2  2000/12/28 12:38:24  peterg
+## Put under RCS
+##
+## Revision 1.1  1999/03/28 21:29:40  peterg
+## Initial revision
+##
+###############################################################
+
+
+
+# Inform user
+echo "Creating $1_odeso.sdat"
+
+dat2sdat $1 odes | dat2siag > $1_odes.sdat
+

@@ -1,4 +1,5 @@
-function args_out = subs_arg(args,Args)
+function args_out = subs_arg(args,Args, ...
+    default,full_name,comp_type,comp_name,infofile)
 % subs_arg - substitutes arguments into args from Args
 % FS defaults to `;'.
 % 
@@ -7,7 +8,7 @@ function args_out = subs_arg(args,Args)
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 
 % Matlab function  subs_arg.m
-% args = subs_arg(args,Args)
+% args_out = subs_arg(args,Args,default,comp_type,comp_name,infofile)
 % Copyright (c) P.J. Gawthrop, 1996.
 
 
@@ -16,6 +17,9 @@ function args_out = subs_arg(args,Args)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1996/12/04 21:47:41  peterg
+% %% Skips main loop when arg is null.
+% %%
 % %% Revision 1.1  1996/12/04 21:46:52  peterg
 % %% Initial revision
 % %%
@@ -47,7 +51,22 @@ if strcmp(args,'')==0
 	args_count = args_count+1;
 	ch = str2ch(args,args_count);
       end;
-      args_out = [args_out, args2arg(Args,i)];
+      arg_out = args2arg(Args,i);
+      % Test for empty argument -- replace by default and tell user
+      if strcmp(arg_out,'')
+	info = sprintf("Argument %1.0f of component %s(%s) of system %s is undefined - \n...
+	    replacing by %s", i, comp_name, comp_type, full_name, default);
+	mtt_info(info,infofile);
+	arg_out = default;
+      end;
+ 
+      args_out = [args_out, arg_out];
     end;
   end;
 end;
+
+
+
+
+
+

@@ -547,7 +547,8 @@ sub usage {
 	"\n" .
 	"Usage: dia2abg.pl --diagram_name <diagram_name> [options]\n" .
 	"Options:\n" .
-	"\t--dia_input_file <dia_input_file>\n" .
+	"\t--dia_input_file  <dia_input_file>\n" .
+	"\t--dia_output_file <dia_output_file>\n" .
 	"\t--component_list_file\n" .
 	"\t--create_component_list\n" .
 	"\t--create_ibg\n" .

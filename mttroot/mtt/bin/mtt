@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.252  2000/08/09 10:31:17  peterg
+## Use -d option to find if its a book-style report
+##
 ## Revision 1.251  2000/08/04 10:54:33  peterg
 ## Rationalised call to gcc using -lp2c to access p2c lib.
 ##
@@ -1750,14 +1753,8 @@ $1_simp.r:
 	)> $1_simp.r
 
 #SUMMARY subs  algebraic substitution (r)
-$1_subs.r:
-	echo Creating $1_subs.r
-	( \
-	echo "%% Reduce  substitution statements for system $1 ($1_subs.r)"; \
-	cat $MTTPATH/trans/m/rcs_header.txt; \
-	echo "OFF exp; % Don't expand expressions"; \
-	echo 'END;'; \
-	)> $1_subs.r
+$1_subs.r: $1_sympar.txt
+	makesubs $1;
 
 #SUMMARY obspar  GPC observability function parameters (r)
 $1_obspar.r:
@@ -2573,7 +2570,7 @@ $1_$2.dvi: $1_$2.doc
 ifeq ($REPTYPE,bg)
 $1_$2.ps : $1_$2.fig
 	echo Creating $1_$2.ps
-	multi_command2 'fig2dev -Lps' $1 $2.fig $2.ps | sh
+	multi_command2 'fig2dev -Leps' $1 $2.fig $2.ps | sh
 endif
 
 

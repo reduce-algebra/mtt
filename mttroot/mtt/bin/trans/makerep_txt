@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1999/03/02 22:02:16  peterg
+## Octave-mode style
+##
 ## Revision 1.3  1998/11/18 10:47:39  peterg
 ## Added transfer function rep
 ##
@@ -42,8 +45,9 @@ cat $MTTPATH/trans/rcs_header.sh >> $1_rep.txt
 cat <<EOF >> $1_rep.txt
 mtt $1 abg tex			# The system description
 mtt $1 cbg ps 		        # The causal bond graph
+mtt $1 struc tex	        # The system structure
+mtt $1 sympar tex	        # The system parameters
 ## Uncomment the following lines or add others
-## mtt $1 struc tex	        # The system structure
 ## mtt $1 dae tex	        # The system dae
 ## mtt $1 ode tex	        # The system ode 
 ## mtt $1 sspar tex		# Steady-state parameters
@@ -55,6 +59,9 @@ mtt $1 cbg ps 		        # The causal bond graph
 ## mtt $1 simpar tex		# Simulation parameters
 ## mtt $1 numpar tex		# Numerical simulation parameters
 ## mtt $1 input tex		# Simulation input
+## mtt $1 logic tex		# Logic control
 ## mtt $1 odeso ps		# Simulation output
+
+## mtt $1 rep txt		# This file
 EOF
 

@@ -7,6 +7,11 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.4  1999/10/13 07:01:58  peterg
+% %% Added aliases:
+% %% 	a_in	theta_in
+% %% 	a_out	theta_out
+% %%
 % %% Revision 1.3  1999/09/02 03:07:16  peterg
 % %% r_d --> dr
 % %%
@@ -20,10 +25,10 @@
 
 
 % Port aliases
-%ALIAS	a_in	theta_in
-%ALIAS	a_out	theta_out
-%ALIAS	in	y_in,theta_in
-%ALIAS	out	y_out,theta_out
+%ALIAS	theta_in        a_in
+%ALIAS	theta_out	a_out
+%ALIAS	in	y_in,a_in
+%ALIAS	out	y_out,a_out
 
 % Argument aliases
 %ALIAS	$1	dk
@@ -50,8 +55,11 @@
 % Component type SS
 	[y_in]	SS			external,external
 	[y_out]	SS			external,external
-	[theta_in]	SS		external,external
-	[theta_out]	SS		external,external
+	[a_in]	SS			external,external
+	[a_out]	SS			external,external
 
 % Component type TF
 	dz		lin	effort,dz
+
+
+

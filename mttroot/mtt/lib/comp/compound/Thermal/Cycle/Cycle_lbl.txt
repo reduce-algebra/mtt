@@ -1,41 +1,48 @@
-%SUMMARY Cycle: Closed cycle with ideal gas
-%DESCRIPTION Uses the CU two-port thermal capacitor.
+#SUMMARY Cycle: Closed cycle with ideal gas
+#DESCRIPTION Uses the CU two-port thermal capacitor.
 
-%ALIAS in	Heat
-%ALIAS out	Work
+#ALIAS in	Heat
+#ALIAS out	Work
+
+#ALIAS $1	ideal_gas
+#ALIAS $2	c_v
+#ALIAS $3	gamma_g
+#ALIAS $4	m_g
+
+## Label file for system Cycle (Cycle_lbl.txt)
+
+# ###############################################################
+# ## Version control history
+# ###############################################################
+# ## $Id$
+# ## $Log$
+# ## Revision 1.2  1998/07/21 14:21:04  peterg
+# ## New style file
+# ##
+# ## Revision 1.1  1997/12/08 20:24:43  peterg
+# ## Initial revision
+# ##
+# ## Revision 1.1  1997/12/07 20:38:05  peterg
+# ## Initial revision
+# ##
+# ###############################################################
+
+## Each line should be of one of the following forms:
+#	a comment (ie starting with #)
+#	Component-name	CR_name	arg1,arg2,..argn
+#	blank
 
 
-%% Label file for system Cycle (Cycle_lbl.txt)
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %% Version control history
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %% $Id$
-% %% $Log$
-% %% Revision 1.1  1997/12/08 20:24:43  peterg
-% %% Initial revision
-% %%
-% %% Revision 1.1  1997/12/07 20:38:05  peterg
-% %% Initial revision
-% %%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%% Each line should be of one of the following forms:
-%	a comment (ie starting with %)
-%	Component-name	CR_name	arg1,arg2,..argn
-%	blank
 
 
+# Component type CU
+	gas	CU	ideal_gas,c_v,gamma_g,m_g
 
-
-% Component type CU
-	gas	CU	ideal_gas,c_v,gamma,m_g
-
-% Component type INTF
+# Component type INTF
 	entropy
 	volume
 
-% Component type SS
+# Component type SS
 	S	SS	external,0
 	T	SS	external,0
 	V	SS	external,0

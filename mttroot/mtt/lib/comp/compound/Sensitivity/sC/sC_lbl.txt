@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/07/29 04:24:11  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -15,7 +18,7 @@
 
 % Argument aliases
 %ALIAS	$1	effort,c
-%ALIAS	$2	k_s
+%ALIAS	$2	k_s	% 0 or 1/c
 
 % CR aliases
 %ALIAS	$1	lin
@@ -28,8 +31,8 @@
 
 % ---- Component labels ----
 
-% Component type AEf
-	aef		lin	-1*k_s
+% Component type AE
+	ae		lin	k_s
 
 % Component type C
 	c_1		lin	effort,c
@@ -38,3 +41,4 @@
 % Component type SS
 	[Actual]	SS		external,external
 	[Sensitivity]	SS		external,external
+

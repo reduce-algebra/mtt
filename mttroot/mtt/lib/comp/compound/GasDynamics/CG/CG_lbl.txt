@@ -15,6 +15,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1998/03/04 12:06:06  peterg
+% %% Renamed CR from GasAccumulator to CG
+% %%
 % %% Revision 1.1  1997/11/21  17:06:34  peterg
 % %% Initial revision
 % %%
@@ -34,6 +37,6 @@
 	ps		lin		effort,1
 
 % Component type SS
-	[mass]		external	external
-	[mechanical]		external	external
-	[thermal]		external	external
+	[mass]			SS	external,external
+	[mechanical]		SS	external,external
+	[thermal]		SS	external,external

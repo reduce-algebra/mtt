@@ -1,6 +1,6 @@
 function [Gamma,gamma] = ppp_input_constraint (A_u,Tau,Min,Max,Order,i_u,n_u)
 
-  ## usage:  [Gamma,gamma] = ppp_input_constraint (A_u,Tau,Min,Max,Order)
+  ## usage:  [Gamma,gamma] = ppp_input_constraint (A_u,Tau,Min,Max,Order,i_u,n_u)
   ##
   ## Derives the input constraint matrices Gamma and gamma
   ## For Constraints Min and max at times Tau 
@@ -9,7 +9,9 @@ function [Gamma,gamma] = ppp_input_constraint (A_u,Tau,Min,Max,Order,i_u,n_u)
   ## etc
   ## i_u: Integer index of the input to be constrained
   ## n_u: Number of inputs
-  ## NOTE You can stack up Gamma and gamma matrices for create multi-input constraints.
+  ## NOTE You can stack up Gamma and gamma matrices for create 
+  ##    multi-input constraints.
+  ## Limits at inf and -inf are discarded
 
   ## Copyright (C) 1999 by Peter J. Gawthrop
   ## 	$Id$	
@@ -44,7 +46,7 @@ function [Gamma,gamma] = ppp_input_constraint (A_u,Tau,Min,Max,Order,i_u,n_u)
   o = length(Order);
 
   if (n != N_t)||(m != N_t)||(o != N_t)
-    error("Tau, Min and max must be the same length");
+    error("Tau, Min, Max and Order must be the same length");
   endif
   
   ## Extract the A_i matrix for this input
@@ -60,12 +62,20 @@ function [Gamma,gamma] = ppp_input_constraint (A_u,Tau,Min,Max,Order,i_u,n_u)
   zero_r = zeros(1,(n_u-i_u)*m_U); # Pad right-hand
   for tau = Tau			# Stack constraints for each tau
     i++;
+
     Gamma_tau = ( A_i^Order(i) * expm(A_i*tau) * one )';
     Gamma_tau = [ zero_l Gamma_tau zero_r ]; # Only for i_uth input
-    Gamma = [Gamma;[-1;1]*Gamma_tau]; # One row for each of min and max
 
-    gamma_tau = [-Min(i);Max(i)];
-    gamma = [gamma;gamma_tau];
+    if Max(i)<inf
+      Gamma = [Gamma; Gamma_tau];
+      gamma = [gamma; Max(i)];
+    endif
+    
+    if Min(i)>-inf
+      Gamma = [Gamma; -Gamma_tau];
+      gamma = [gamma; -Min(i)];
+    endif
+    
   endfor
 
 endfunction

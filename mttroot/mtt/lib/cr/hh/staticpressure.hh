@@ -3,6 +3,7 @@
 
 #include <cmath>		// log, pow
 
+#include "causality.hh"
 #include "constants.hh"
 
 inline double

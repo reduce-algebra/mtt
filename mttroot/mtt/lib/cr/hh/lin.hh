@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+#include "causality.hh"
 #include "components.hh"
 // translated from lin.cr
 

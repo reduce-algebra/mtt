@@ -4,6 +4,7 @@
 #include <cmath>		// fabs, pow
 #include <string>
 
+#include "causality.hh"
 #include "constants.hh"
 #include "frictionfactor.hh"
 #include "kinematicviscosity.hh"

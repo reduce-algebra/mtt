@@ -4,6 +4,8 @@
 #include <cmath
 #include "sign.hh"
 
+#include "causality.hh"
+
 inline double squarelaw(const double gain,
 			const causality_t causality, const int port,
 			const double input, const causality_t in_causality, const int in_port)

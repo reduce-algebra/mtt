@@ -45,24 +45,29 @@ MTT::Hybrd_Solver::Solve (void)
       progress_errors++;
       break;
     case 4:
-      //      if (abs(eval(_ui).max()) > 1.0e-6)
       limit_errors++;
-      //      else
-      //	convergences++;
       break;
     default:
       unknown_errors++;
       break;
     }
+  std::clog.setf (std::ios::scientific);
   if (1 != info)
     {
       std::clog
+	<< "\r"
 	<< " time " << _t << " \t"
 	<< " converge (" << convergences << ") "
 	<< " limit (" << limit_errors << ")"
+	<< " progress (" << progress_errors << ")"
+	<< " other (" << input_errors + user_errors + unknown_errors << ") "
 	<< " (max error = " << std::abs (eval(_ui).max()) << ")"
-	<< " other (" << input_errors + user_errors + progress_errors + unknown_errors << ") "
 	<< std::endl;
+    }
+  else
+    {
+      std::clog
+	<< "\r time " << _t << "\t max error = " << std::abs (eval(_ui).max());
     }
   ferr << info << " ";
 }

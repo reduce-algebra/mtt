@@ -19,6 +19,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.10  1996/08/15 07:44:24  peter
+## Now handles generic transformations using %.
+##
 ## Revision 1.9  1996/08/14 09:16:08  peter
 ## Step response now goes through  m, dat and gdat conversions
 ##
@@ -91,15 +94,22 @@ EOF
 fi
 
 if [ "$1" = "clean" ] && [$2 = ""]; then
-  echo 'Removing log, dvi and ps files'
-  rm *.log *.dvi *.ps
+  echo 'Removing log, dat, gdat, doc, dvi and ps files'
+  rm -f *.log *.dat *.gdat *.doc *.dvi *.ps 
   exit
 fi
 
-# Save up the argument list in a file.
-cat > macmic_args.m <<EOF
-$4
+# Save up the argument list in a file; but only if argument has changed
+ARGS=$4;
+cat > $1_args.new <<EOF
+$ARGS
 EOF
+
+DIFF=$(diff -bq $1_args.m $1_args.new)
+
+if [ -n "$DIFF" ]; then
+  mv macmic_args.new macmic_args.m
+fi
 
 # This is the main mtt programme
  
@@ -107,7 +117,7 @@ make -s  -f -  $1_$2.$3 << EOF
 
 # Cancel implicit rules I don't want
 %.dvi: %.tex
-%.ps: %.dvi
+
 
 #Create acausal bond graph figure using xfig 
 $1_abg.fig:
@@ -180,8 +190,10 @@ $1_sum.tex: $1_abg.pl
 #Elementary system equations + definitions
 $1_ese.r: $1_cbg.m
 	   cbg2ese_m2r $1
- 
 $1_def.r: $1_ese.r
+$1_def.m: $1_def.r
+	def_r2m $1; matlab_tidy $1_def.m;
+
 
 #Differential-algebraic equations
 $1_dae.r:	$1_ese.r $1_cr.r $1_sympar.r
@@ -261,15 +273,23 @@ $1_tf.tex: $1_def.r $1_tf.r $1_sympar.r $1_simp.r
 
 #Time responses
 $1_ir.dat: $1_dm.m $1_numpar.m $1_args.m
-	dm2ir_m2dat $1 '$4'
-$1_sr.m: $1_dm.m $1_numpar.m $1_args.m
-	dm2sr_m $1 '$4'
-$1_odesol.m: $1_ode.m $1_numpar.m $1_args.m
-	ode2odesol_m $1 '$4'
+	dm2ir_m2dat $1 '$ARGS'
+$1_sr.m: $1_dm.m $1_numpar.m $1_args.m $1_def.m
+	dm2sr_m $1 '$ARGS'
+$1_odesol.m: $1_ode.m $1_numpar.m $1_args.m $1_def.m
+	ode2odesol_m $1 '$ARGS'
 
 #Frequency responses
-$1_fr.dat: $1_dm.m $1_numpar.m $1_args.m
-	dm2fr_m2dat $1 '$4'
+$1_fr.m: $1_dm.m $1_numpar.m $1_args.m
+	dm2fr_m $1 '$ARGS'
+$1_lmfr.m: $1_fr.m
+	touch $1_lmfr.m
+$1_lpfr.m: $1_fr.m
+	touch $1_lpfr.m
+$1_nyfr.m: $1_fr.m
+	touch $1_nyfr.m
+$1_nifr.m: $1_fr.m
+	touch $1_nifr.m
 
 #Partially-known system indentification structure matrices
 $1_pkim.r: $1_tf.r $1_sympar.r 
@@ -278,21 +298,25 @@ $1_pkim.tex: $1_def.r $1_pkim.r $1_sympar.r
 	pkim_r2tex $1; latex_tidy $1_pkim.tex
 
 #Generic conversion of data files from m to dat format
-%.dat: %.m
+$1_$2.dat: $1_$2.m
 	m2dat $1_$2
 
 #Generic conversion of data files from dat to (gplot) gdat format
-%.gdat: %.dat
+$1_$2.gdat: $1_$2.dat
 	dat2gdat $1_$2
 
 #Generic conversion of Latex to latex document
-%.doc: %.tex
+$1_$2.doc: $1_$2.tex
 	showtex $1 $2
 
 #Generic conversion of LaTeX doc to dvi
-%.dvi: %.doc
+$1_$2.dvi: $1_$2.doc
 	echo Creating $1_$2.dvi
 	latex $1_$2.doc > /dev/null
+
+#Create PostScript version of dat file
+%.ps: %.gdat
+	gdat2ps $1_$2 '$ARGS'
 
 #Create PostScript version of fig files
 %.ps : %.fig
@@ -304,15 +328,17 @@ $1_pkim.tex: $1_def.r $1_pkim.r $1_sympar.r
 	echo Creating $1_$2.ps
 	dvips -o $1_$2.ps $1_$2
 
-#Create PostScript version of dat file
-%.ps: %.gdat
-	gdat2ps $1_$2
-
 
 #View a ps file
-%.view: %.ps
+$1_$2.view: $1_$2.ps
 	echo Creating view of $1_$2
 	ghostview $1_$2.ps&
+
+#View a gdat file
+#%.view: %.gdat
+#	echo Creating view of $1_$2
+#	gdat2view $1_$2 '$ARGS'&
+	
 
 #Report generation
 $1_rep.tex: $1_sum.tex $1_dae.tex $1_lbl.txt $1_sympar.r $1_cr.r \

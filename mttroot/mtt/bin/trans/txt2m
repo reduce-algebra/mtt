@@ -15,6 +15,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.9  1998/07/30 15:07:17  peterg
+# %% Added _ to the disallowed chars around t
+# %%
 # %% Revision 1.8  1998/07/30 12:52:38  peterg
 # %% Adds ; to end of statements
 # %% Translates ' to " before removal
@@ -90,13 +93,24 @@ doublequote = "\042";
   N=split($1,a,"=");
   if (N==2) {
     LHS = a[1];
-    RHS = tolower(a[2]);
+    RHS = a[2];
     gsub(quote, doublequote, RHS);
+    sub(/^LAST/, "mttLAST", LHS);
+    sub(/^DT/, "mttDT", LHS);
+    sub(/^STEPFACTOR/, "mttSTEPFACTOR", LHS);
+    sub(/^METHOD/, "mttMETHOD", LHS);
+    sub(/^WMIN/, "mttWMIN", LHS);
+    sub(/^WMAX/, "mttWMAX", LHS);
+    sub(/^WSTEPS/, "mttWSTEPS", LHS);
+    LHS = tolower(LHS);
+    RHS = tolower(RHS);
     sub(/["]*euler["]*/, 1, RHS);   
     sub(/["]*implicitl["]*/, 2, RHS);   
     sub(/["]*implicit["]*/, 3, RHS);  
-    statement = sprintf("%s=%s",LHS,RHS);
-    if (match(statement,";")==0)
+    statement = sprintf("%s= %s",LHS,RHS);
+    if ( (match(statement,";")==0)&&\
+         ((match(statement,"if ")==0))&&\
+         ((match(statement,"for ")==0)) )
       statement = sprintf("%s;", statement);
   }
   else
@@ -107,13 +121,6 @@ doublequote = "\042";
 }' | sed\
      -e 's/\[\([0-9]*\)\]/(\1)/g' \
      -e 's/\([^a-zA-Z_]\)t\([^a-zA-Z_]\)/\1mttt\2/g' \
-     -e 's/LAST/mttLAST/g' \
-     -e 's/DT/mttDT/g' \
-     -e 's/STEPFACTOR/mttSTEPFACTOR/g' \
-     -e 's/METHOD/mttMETHOD/g' \
-     -e 's/WMIN/mttWMIN/g' \
-     -e 's/WMAX/mttWMAX/g' \
-     -e 's/WSTEPS/mttWSTEPS/g' \
      -e 's/x(/mttx(/g' \
      -e 's/u(/mttu(/g' \
      -e 's/mttmtt/mtt/g' \

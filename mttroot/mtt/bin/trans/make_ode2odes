@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  1998/07/30 11:29:54  peterg
+## Added implicit integration stuff
+##
 ## Revision 1.6  1998/07/30 10:44:37  peterg
 ## INcluded othe integration methods.
 ##
@@ -49,9 +52,8 @@ cat << EOF >> $1_ode2odes.m
 
 $1_simpar;			# Read in simulation parameters
 $1_numpar;			# Read in parameters
-
-MTTiLast = round(mttLAST/mttDT);         # Total number of steps
-mttDDT = mttDT/mttSTEPFACTOR;
+MTTilast = round(mttlast/mttdt);         # Total number of steps
+mttddt = mttdt/mttstepfactor;
 
 #Initialise
 MTTt = 0.0;
@@ -61,22 +63,22 @@ MTTt = 0.0;
 mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny); # And write them
 [mttA] = zeros($Nx); # Zero the A matrix
 
-if mttMETHOD==2 #Linear implicit
+if mttmethod==2 #Linear implicit
   mttA = $1_smx(MTTx,MTTu); # Set up A matrix - linearised system
 end;
 
 #Integration loop
-for MTTit = 1:MTTiLast
-    for MTTi = 1:mttSTEPFACTOR
+for MTTit = 1:MTTilast
+    for MTTi = 1:mttstepfactor
         [MTTu] = $1_input(MTTx,MTTt);# Input
         [MTTx] = $1_switch(MTTx); # Switches
         [MTTdx] = $1_ode(MTTx,MTTu,MTTt);
-        if mttMETHOD==3
+        if mttmethod==3
           mttA = $1_smx(MTTx,MTTu); # Set up A matrix - linearised system
         end;
-        [MTTx] = mtt_update(MTTdx,MTTx,mttDDT,$Nx,mttMETHOD,mttA);
+        [MTTx] = mtt_update(MTTdx,MTTx,mttddt,$Nx,mttmethod,mttA);
         [MTTy] = $1_odeo(MTTx,MTTu,MTTt);
-	MTTt = MTTt + mttDDT;
+	MTTt = MTTt + mttddt;
     end;
     mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny);
 end;

@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.38  1996/11/09 20:17:34  peterg
+## Fixed bug with null ARGS argument
+## Put in new lib paths.
+##
 ## Revision 1.37  1996/11/09 18:47:46  peterg
 ## Added new copy command (using find).
 ## More documaentation stuff.
@@ -150,7 +154,7 @@ done
 #Print header if not in quiet (-q) mode.
 if [ "$quiet" != "quiet" ]; then
   echo
-  echo 'MTT (Model Transformation Tools) version 2.0++'
+  echo 'MTT (Model Transformation Tools) version 2.1'
   echo 'This is free software with ABSOLUTELY NO WARRANTY.'
   echo 'Type `mtt warranty'\' 'for details.'
   echo
@@ -367,7 +371,7 @@ gmake -s  -f -  $1_$2.$3 << EOF
 # If level>0, try and get subsystem files
 ifneq ($level,"0")
 $1_abg.fig:
-	mtt -q copy $1 $MTTPATH/comp/compound
+	mtt -q copy $1 $MTTPATH/lib/comp/compound
 endif
 
 

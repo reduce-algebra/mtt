@@ -10,9 +10,17 @@ sfilename=s$filename
 if [ -f "$sfilename" ]; then
     echo $sfilename exists -- no action taken
     exit
-else
-    echo Creating $sfilename   
 fi
+
+if [ -f $filename ]; then
+    echo Using existing $filename
+else
+    echo "Looking for $1 in library"
+    mtt -q  compcopy $1  
+fi
+
+
+echo Creating $sfilename   
 
 awk '
   function modulo10(x) {

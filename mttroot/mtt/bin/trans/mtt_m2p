@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.57  2000/10/15 10:35:35  peterg
+## Fixed _input.p header
+##
 ## Revision 1.56  2000/10/14 09:14:24  peterg
 ## *** empty log message ***
 ##
@@ -248,6 +251,13 @@ Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
 	echo "                       mttt : REAL;"
 	echo "                       mttpar : ParameterVector);"
 	;;
+    logic)
+	echo "PROCEDURE $Sys_rep(VAR open : StateVector;"
+	echo "                       mttx : StateVector;"
+	echo "                       mttu : InputVector;"
+	echo "                       mttt : REAL;"
+	echo "                       mttpar : ParameterVector);"
+	;;
     ode)
 	echo "PROCEDURE $Sys_rep(VAR mttdx: StateVector;"
 	echo "                       mttx : StateVector;"
@@ -344,11 +354,11 @@ Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
         mtt_txt2declare $Sys sympar p
         mtt_txt2declare $Sys struc p
         ;;
-    switchopen)
-	echo "PROCEDURE $Sys_rep(VAR open : StateVector; mttx : StateVector);"
-	echo "VAR"
-	echo "    MTTi,MTTj :  INTEGER;"
-	;;
+#    switchopen)
+#	echo "PROCEDURE $Sys_rep(VAR open : StateVector; mttx : StateVector);"
+#	echo "VAR"
+#	echo "    MTTi,MTTj :  INTEGER;"
+#	;;
     *)	echo "PROCEDURE $Sys_rep;"
 	echo "VAR"
 	echo "    MTTi,MTTj :  INTEGER;"
@@ -454,7 +464,7 @@ BEGIN{
             printf("\n{%s %s_smxa.p}\n",inc,Sys);
             printf("\n{%s %s_smxax.p}\n",inc,Sys);
           }
-          printf("{%s %s_switchopen.p}\n\n",inc,Sys)
+          printf("{%s %s_logic.p}\n\n",inc,Sys)
 
           for (k=1;k<=j;k++) printf("%s\n", comment[k])
           printf("\n")

@@ -1,9 +1,9 @@
 function [bonds,status] = FP_cause(bonds);
 % Causality for FP component
 
-%SUMMARY FP: converts thermal pseudobond to true bond and vv
-%DESCRIPTION Port [e]: temperature (T) / enthalpy flow (E) bond
-%DESCRIPTION Port [s]: temperature (T) / entropy flow (S) bond
+%SUMMARY FP: converts true bond to a pseudo bond with power flow as flow
+%DESCRIPTION Port [f]: True bond with a flow covariable
+%DESCRIPTION Port [p]: Pseudo bond with power (ef) as flow variable
 
 
 
@@ -12,6 +12,9 @@ function [bonds,status] = FP_cause(bonds);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1998/06/29 09:56:24  peterg
+% %% Changed name to FP from ES
+% %%
 % %% Revision 1.1  1998/06/29 09:56:02  peterg
 % %% Initial revision
 % %%

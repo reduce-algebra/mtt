@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.12  1998/09/02 12:02:14  peterg
+## Added mttinput paramater
+##
 ## Revision 1.11  1998/08/11 13:32:42  peterg
 ## Lowercase mttLAST etc
 ##
@@ -96,13 +99,11 @@ $MATRIX << EOF > dm2fr_m.log 2>mtt_error.txt
   end;
 
   W = logspace(mttwmin,mttwmax,mttwsteps)';
-
   if exist('mttinput')==0
     mttinput = 1;
   end;
   mttu0 = zeros(nu,1);
   mttu0(mttinput) = 1;
-
 
   [n,m]=size(W);
   if m>n
@@ -114,7 +115,7 @@ $MATRIX << EOF > dm2fr_m.log 2>mtt_error.txt
     mttu0=mttu0';
   end;
 
-  [A,B,C,D,E] = $1_dm
+  [A,B,C,D,E] = $1_dm;
   fr = dm2fr(A,B,C,D,E,W,mttu0);
   lw = log10(W);
   lmfr = log10(abs(fr));
@@ -134,7 +135,7 @@ $MATRIX << EOF > dm2fr_m.log 2>mtt_error.txt
   im = imag(fr);
   nyq = [re(:,1) im(:,1)];
   for i = 2:ny
-    nyq = [nyq re(:,i) im(:,i)]
+    nyq = [nyq re(:,i) im(:,i)];
   end;
   write_matrix(nyq, '$1_nyfr');
 
@@ -143,7 +144,7 @@ $MATRIX << EOF > dm2fr_m.log 2>mtt_error.txt
   im = pfr;
   nic = [im(:,1) re(:,1)];
   for i = 2:ny
-    nic = [nic im(:,i) re(:,i)]
+    nic = [nic im(:,i) re(:,i)];
   end;
   write_matrix(nic, '$1_nifr');
 

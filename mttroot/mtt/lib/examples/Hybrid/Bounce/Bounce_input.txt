@@ -6,6 +6,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.3  2000/05/18 11:30:14  peterg
+# %% Moved switch logic to logic.txt
+# %%
 # %% Revision 1.2  1998/10/01 19:20:33  peterg
 # %% Cahged switch function
 # %%
@@ -15,6 +18,7 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # Set the inputs
-mttu(1) = 9.81;
+## Removed by MTT on Fri Oct  5 10:37:56 BST 2001: mttu(1) = 9.81;
 
 
+bounce_gravity	= 9.81; # Added by MTT on Fri Oct 05 10:37:59 BST 2001

@@ -5,13 +5,19 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/07/25 20:34:05  peterg
+## *** empty log message ***
+##
 ## Revision 1.1  1998/07/25 14:59:11  peterg
 ## Initial revision
 ##
 ###############################################################
 
 # Set the states
-mttx(1) 	= 10.0;	# 3 (Bounce_intf)
-mttx(2) 	= 0.0; 	# MTT_SWITCH (Bounce_ground)
-mttx(3) 	= 0.0; 	# ball_mass (Bounce)
+## Removed by MTT on Fri Oct  5 10:38:29 BST 2001: mttx(1) 	= 10.0;	# 3 (Bounce_intf)
+## Removed by MTT on Fri Oct  5 10:38:29 BST 2001: mttx(2) 	= 0.0; 	# MTT_SWITCH (Bounce_ground)
+## Removed by MTT on Fri Oct  5 10:38:29 BST 2001: mttx(3) 	= 0.0; 	# ball_mass (Bounce)
 
+bounce_ball_mass	= 0.0; # Added by MTT on Fri Oct 05 10:38:33 BST 2001
+bounce_ground_1_mtt_switch	= 0.0; # Added by MTT on Fri Oct 05 10:38:33 BST 2001
+bounce_intf_1_mtt3	= 10.0; # Added by MTT on Fri Oct 05 10:38:33 BST 2001

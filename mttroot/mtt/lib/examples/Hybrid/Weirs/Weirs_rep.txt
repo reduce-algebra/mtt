@@ -7,6 +7,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  2000/05/19 07:15:04  peterg
+## Added logic
+##
 ## Revision 1.4  1999/12/21 09:24:26  peterg
 ## Euler integration - compiled
 ##
@@ -38,6 +41,6 @@ mtt Weirs simpar tex		# Simulation parameters
 mtt Weirs numpar tex		# Numerical simulation parameters
 mtt Weirs input tex		# Simulation input
 mtt Weirs logic tex		# Switch logic
-mtt -c Weirs odeso ps		# Simulation output
+mtt Weirs odeso ps		# Simulation output
 
 mtt Weirs rep txt

@@ -6,11 +6,15 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/05/19 07:11:36  peterg
+## Initial revision
+##
 ## Revision 1.1  2000/05/18 11:29:58  peterg
 ## Initial revision
 ##
 ###############################################################
 
 # Set the switches
-clutch_drive_clutch= (t>=5)&&(t<15);
+## Removed by MTT on Fri Oct  5 11:47:34 BST 2001: clutch_drive_clutch= (t>=5)&&(t<15);
 
+clutch_drive_1_clutch_1_mtt_switch_logic	= (t>=5)&&(t<15); # Added by MTT on Fri Oct 05 11:47:40 BST 2001

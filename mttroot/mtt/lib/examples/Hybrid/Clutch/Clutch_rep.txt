@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  2000/05/19 07:16:07  peterg
+% %% Added logic
+% %%
 % %% Revision 1.1  1999/02/21 08:18:25  peterg
 % %% Initial revision
 % %%
@@ -20,6 +23,6 @@ mtt  Clutch input txt
 mtt  Clutch logic txt
 mtt  Clutch numpar txt
 
-mtt  -c  Clutch odeso ps
+mtt  Clutch odeso ps
 
 mtt  Clutch rep txt

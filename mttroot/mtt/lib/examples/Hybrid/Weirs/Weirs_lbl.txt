@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/03/09 00:12:12  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -40,5 +43,5 @@
 	p3	SS		external,0
 
 % Component type Weir
-	w1
-	w2
+	w1      none		epsilon_i;epsilon_r
+	w2      none		epsilon_i;epsilon_r

@@ -6,10 +6,16 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/05/19 07:12:04  peterg
+## Initial revision
+##
 ###############################################################
 
 # Set the inputs
-mttu(1) = 1.0*(t<10); 	# f (Weirs)
+## Removed by MTT on Fri Oct  5 10:47:20 BST 2001: mttu(1) = 1.0*(t<10); 	# f (Weirs)
 
+
+
+weirs_f	= 1.0*(t<10); # Added by MTT on Fri Oct 05 10:48:01 BST 2001
 
 

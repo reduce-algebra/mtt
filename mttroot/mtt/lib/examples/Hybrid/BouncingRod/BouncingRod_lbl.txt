@@ -2,8 +2,6 @@
 %DESCRIPTION A uniform rod bounces on a compliant surface -- the
 %DESCRIPTION CSW component is used.
 
-#PAR pi
-
 %% Label file for system BouncingRod (BouncingRod_lbl.txt)
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -11,6 +9,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.5  2000/12/04 08:36:23  peterg
+% %% Declare pi
+% %%
 % %% Revision 1.4  2000/05/18 10:30:39  peterg
 % %% New SS form
 % %%

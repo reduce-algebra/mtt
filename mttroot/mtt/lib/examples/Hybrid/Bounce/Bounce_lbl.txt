@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1997/09/11 09:54:22  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:
@@ -20,7 +23,7 @@
 	intf
 
 % Component type CSW
-	ground		lin	state,k
+	ground		lin	state,k_g
 
 % Component type I
 	ball_mass		lin	flow,m
@@ -29,6 +32,6 @@
 	air_resistance		lin	flow,r
 
 % Component type SS
-	gravity			external	internal
-	x			external	0
+	gravity			SS	external,internal
+	x			SS	external,0
 

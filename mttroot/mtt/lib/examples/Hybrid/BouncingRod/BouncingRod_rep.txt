@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  2000/12/28 17:45:59  peterg
+% %% To RCS
+% %%
 % %% Revision 1.1  1997/07/06 16:20:44  peterg
 % %% Initial revision
 % %%
@@ -16,7 +19,7 @@ mtt BouncingRod ode tex
 mtt BouncingRod numpar txt
 mtt BouncingRod input txt
 mtt BouncingRod logic txt
-mtt -c  BouncingRod odeso ps
+mtt BouncingRod odeso ps
 
 
 

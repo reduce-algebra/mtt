@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2000/05/19 07:09:19  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 mtt Bounce abg tex
@@ -17,6 +20,6 @@ mtt Bounce input txt
 mtt Bounce logic txt
 mtt Bounce numpar txt
 
-mtt -c Bounce odeso ps
+mtt Bounce odeso ps
 
 mtt Bounce rep txt

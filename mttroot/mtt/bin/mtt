@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.330  2002/04/17 10:03:12  geraint
+## Marked .sg as a major representation.
+##
 ## Revision 1.329  2002/04/16 14:58:00  gawthrop
 ## mtt copy does NOT now copy the CVS directory
 ## $directory --> ${directory}  (just to be tidy)
@@ -3110,11 +3113,11 @@ $1_odes.dat2: $1_ode2odes.m
 endif
 endif
 
-ifeq ($computation,c)
 $1_ode2odes.out: $1_ode2odes.c $1_cr.h
-	echo Creating $1_odes.out by compiling *.c 
-	$CC *.c -lp2c -lm -o $1_ode2odes.out
+	echo Creating $1_odes.out by compiling $1_ode2odes.c 
+	$CC $1_ode2odes.c -lp2c -lm -o $1_ode2odes.out
 
+ifeq ($computation,c)
 $1_odes.dat2: $1_ode2odes.out
 	echo Creating $1_odes.dat2 using c version
 	    time ./$1_ode2odes.out>$1_odes.dat2

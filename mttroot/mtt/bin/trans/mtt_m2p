@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.32  1999/08/29 06:54:42  peterg
+## Added code (mtt_parameters, get args etc) to allow arguments to the
+## a.out file
+##
 ## Revision 1.31  1999/08/02 13:40:03  peterg
 ## Added zero-state and zero_input to include list
 ## Removed zero_matrix
@@ -333,8 +337,8 @@ BEGIN{
           }
           else{
             sub(/=/,":=",$0)
-            sub(/endif/,"END{IF}",$0)
-            sub(/endfor/,"END{FOR}",$0)
+            sub(/endif/,"END;{IF}",$0)
+            sub(/endfor/,"END;{FOR}",$0)
             sub(/else/,"END ELSE BEGIN",$0)
             gsub(/\^/,"**",$0)
             gsub(/&&/," AND ",$0)

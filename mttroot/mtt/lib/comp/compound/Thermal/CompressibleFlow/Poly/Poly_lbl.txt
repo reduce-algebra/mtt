@@ -1,0 +1,29 @@
+%SUMMARY Poly - computes polytropic expansion temperature.
+%DESCRIPTION Parameter: alpha = (n-1)/n (n = polytropic index)
+%DESCRIPTION Port [P1]: Pressure 1
+%DESCRIPTION Port [T1]: Temperature 1
+%DESCRIPTION Port [P2]: Pressure 2
+%DESCRIPTION Port [T2]: Temperature 2
+
+%% Label file for system Poly (Poly_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type R
+	r		Poly		$1
+
+% Component type SS
+	zero		0		0
+

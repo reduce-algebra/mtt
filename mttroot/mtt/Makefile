@@ -104,7 +104,7 @@ mtt.sh:
 	@echo ''							>>mtt.sh
 	@echo '# get site-specific settings'				>>mtt.sh
 	@echo 'if [[ -r $${mtt_config_file} ]]; then'			>>mtt.sh
-	@echo '   . $${mtt_config_file} $${mtt_install_dir}'		>>mtt.sh
+	@echo '   . $${mtt_config_file} $${mtt_install_dir} >/dev/null'	>>mtt.sh
 	@echo ''							>>mtt.sh
 	@echo 'elif [[ -r $${mtt_install_dir}/bin/mttrc ]]; then'	>>mtt.sh
 	@echo '   . $${mtt_install_dir}/bin/mttrc $${mtt_install_dir}'	>>mtt.sh

@@ -1,0 +1,48 @@
+%SUMMARY	ROD: rigid rod in two dimensions
+%DESCRIPTION	Port [1]:	Angular torque/velocity - end 1
+%DESCRIPTION	Port [2]:	Angular torque/velocity - end 2
+%DESCRIPTION	Port [3]:	x force/velocity - end 1
+%DESCRIPTION	Port [4]:	x force/velocity - end 2
+%DESCRIPTION	Port [5]:	y force/velocity - end 1
+%DESCRIPTION	Port [6]:	y force/velocity - end 2
+%DESCRIPTION	Port [7]:	x force/velocity - mass centre
+%DESCRIPTION	Port [8]:	x force/velocity - mass centre
+%DESCRIPTION	Parameter 1:	length from end 1 to mass centre
+%DESCRIPTION	Parameter 2:	length from end 2 to mass centre
+%DESCRIPTION	Parameter 3:	inertia about mass centre
+%DESCRIPTION	Parameter 4:	mass
+%DESCRIPTION	See Section 10.2 of "Metamodelling"
+
+
+%% Label file for system ROD (ROD_lbl.txt)
+
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+%Inertias
+J	lin	flow,$3
+m_x	lin	flow,$4
+m_y	lin	flow,$4
+
+%Integrate angular velocity to get angle
+th
+
+%Modulated transformers
+s1	lsin	flow,$1
+s2	lsin	flow,$2
+c1	lcos	flow,$1
+c2	lcos	flow,$2
+
+
+	

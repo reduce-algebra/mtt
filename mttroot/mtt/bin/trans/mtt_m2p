@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.38  2000/04/07 13:24:41  peterg
+## Modified for smxa and smxax
+##
 ## Revision 1.37  2000/04/07 08:17:37  peterg
 ## Added mttpar to the arg list of cse and cseo
 ##
@@ -160,10 +163,11 @@ fi
 
 # Find system constants
 Nx=`mtt_getsize $Sys x` # States
+Nxx=`mtt_getsize $Sys xx` # States x States
 Nu=`mtt_getsize $Sys u` # Inputs 
 Ny=`mtt_getsize $Sys y` # Inputs 
 Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
-Nxx=`echo "$Nx * $Nx" | bc` # Nxx is Nx*Nx
+
 
 #if [ "$rep" = "simpar" ]; then
 #    mtt -q $Sys smx p

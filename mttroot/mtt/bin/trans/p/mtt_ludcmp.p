@@ -1,15 +1,23 @@
-PROCEDURE ludcmp(VAR a: glnpbynp; n,np: integer;
-       VAR indx: glindx; VAR d: real);
-(* Programs using LUDCMP must define the types
+PROCEDURE mtt_ludcmp(VAR a: StateMatrix; n: integer;
+		     VAR indx: StateVector; VAR d: real);
+
+{ This file is derived from the NUMERICAL RECIPES PASCAL SHAREWARE DISKETTE.
+ Please read the README file in $MTTPATH/trans/p
+ }
+
 {
 ###############################################################
 ## Version control history
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/08/14 07:58:13  peterg
+## Initial revision
+##
 ###############################################################
 }
 
+(* Programs using LUDCMP must define the types
 TYPE
    glnpbynp = ARRAY [1..np,1..np] OF real;
    glnarray = ARRAY [1..n] OF real;

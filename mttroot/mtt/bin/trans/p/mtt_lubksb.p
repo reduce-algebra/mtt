@@ -1,4 +1,8 @@
-PROCEDURE lubksb(a: StateMatrix; n: INTEGER; indx: StateVector; VAR b: StateVector);
+PROCEDURE mtt_lubksb(a: StateMatrix; n: INTEGER; indx: StateVector; VAR b: StateVector);
+
+{ This file is derived from the NUMERICAL RECIPES PASCAL SHAREWARE DISKETTE.
+ Please read the README file in $MTTPATH/trans/p
+ }
 
 {
 ###############################################################
@@ -6,6 +10,9 @@ PROCEDURE lubksb(a: StateMatrix; n: INTEGER; indx: StateVector; VAR b: StateVect
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/08/17 12:58:16  peterg
+## Initial revision
+##
 ###############################################################
 }
 

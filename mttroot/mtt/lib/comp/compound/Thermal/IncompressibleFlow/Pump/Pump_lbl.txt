@@ -1,9 +1,4 @@
 %SUMMARY Pump: a hydraulic pump - incompressible flow
-%DESCRIPTION Parameter 1: Density (rho)
-%DESCRIPTION Parameter 2: Specific heat (c_p)
-%DESCRIPTION Parameter 3: R component parameters
-%DESCRIPTION Parameter 4: Pump gain (k_p) Vol. flow = k_p * omega
-%DESCRIPTION CR 1: R component CR
 %DESCRIPTION Typical lable: pump  lin  rho;c_p;flow,r;k_p
 
 %% Label file for system Pump (Pump_lbl.txt)
@@ -14,9 +9,29 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/11/20 10:07:14  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %ALIAS	Pipe	IncompressibleFlow/Pipe
+%ALIAS	in  Thermal_in,Hydraulic_in
+%ALIAS	out Thermal_out,Hydraulic_out
+
+%ALIAS	Th_in  Thermal_in
+%ALIAS	Hy_in  Hydraulic_in
+
+%ALIAS	Th_out  Thermal_out
+%ALIAS	Hy_out  Hydraulic_out
+
+%ALIAS	Work	Shaft
+
+%ALIAS  $1	rho
+%ALIAS  $2	c_p
+%ALIAS  $3	flow,r
+%ALIAS  $4	flow,k_p
+
+%ALIAS	$1	lin
 
 %% Each line should be of one of the following forms:
 %	a comment (ie starting with %)
@@ -25,7 +40,14 @@
 
 
 % Component type Pipe
-	pipe		$1	$1;$2;$3
+	pipe		lin	rho;c_p;flow,r
 
 % Component type TF
-	k_p		lin	$4
+	k_p		lin	flow,k_p
+
+% Component type SS
+	[Hydraulic_in]	SS	external,external
+	[Hydraulic_out]	SS	external,external
+	[Thermal_in]	SS	external,external
+	[Thermal_out]	SS	external,external
+	[Shaft]		SS	external,external

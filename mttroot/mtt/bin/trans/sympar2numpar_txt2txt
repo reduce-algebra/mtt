@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  1998/02/04 12:24:35  peterg
+## Simplified output format
+##
 ## Revision 1.8  1998/01/29 17:06:36  peterg
 ## Better annotation
 ##
@@ -58,13 +61,13 @@ awk '{i++; print tolower($1) " = \t1.0; \# " $2}' $1_sympar.txt \
 >> $1_numpar.txt
 
 #Write out the initial states
-echo  >> $1_numpar.txt
-echo "# Initial states" >> $1_numpar.txt
-awk '{
-  if ($1=="state") 
-    print "x(" $2 ") = \t0.0; \# " $4 " (" $3 ")"
-}' \
- $1_struc.txt >> $1_numpar.txt
+#echo  >> $1_numpar.txt
+#echo "# Initial states" >> $1_numpar.txt
+#awk '{
+#  if ($1=="state") 
+#    print "x(" $2 ") = \t0.0; \# " $4 " (" $3 ")"
+#}' \
+# $1_struc.txt >> $1_numpar.txt
 
 
 

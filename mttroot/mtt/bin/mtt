@@ -14,6 +14,11 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.58  1997/03/18  17:58:12  peterg
+# Generates label files containing all variables in fig file.
+# Generates sympar file for all levels in system.
+# Generates txt version of sympar file.
+#
 # Revision 1.57  1997/03/10  09:24:58  peterg
 # a.out now deleted in the clean operation
 #
@@ -325,6 +330,9 @@ if [ "$2" = "clean" ] && [ "$3" = "" ]; then
   exit
 fi
 
+#SUMMARY abg	acausal bond graph (fig)
+#SUMMARY abg	acausal bond graph (ps)
+#SUMMARY abg	acausal bond graph (view)
 # Invoke explicit requests for modification
 if [ "$2" = "abg" ] && [ "$3" = "fig" ]; then
   echo Editing $1_$2.$3
@@ -371,6 +379,8 @@ fi
 # Classify the representation - needed for conversion route to postscript
 case $2 in
 	abg )
+		REPTYPE='bg' ;;
+	sabg )
 		REPTYPE='bg' ;;
 	cbg )
 		REPTYPE='bg' ;;
@@ -646,11 +656,17 @@ $1_rbg.m: $1_abg.fig $1_lbl.txt
 $1_cmp.m: $1_rbg.m
 $1_fig.fig: $1_rbg.m
 
+#SUMMARY sabg	stripped acausal bond graph (fig)
+#SUMMARY sabg	stripped acausal bond graph (ps)
+#SUMMARY sabg	stripped acausal bond graph (view)
+$1_sabg.fig: $1_rbg.m
+
+
 #Subsystem creation commands
 $1_sub.sh: $1_cmp.m
 	cmp2sub_m2sh $1
 
-#SUMMARY abg	acausal bond graph (m)
+    #SUMMARY abg	acausal bond graph (m)
 #Raw bond graph to acausal bond graph: mfile
 $1_abg.m: $1_rbg.m $1_sub.sh
 	sh $1_sub.sh "mtt -q -l $level+1 " ' abg m'

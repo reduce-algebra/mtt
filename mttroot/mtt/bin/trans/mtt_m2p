@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.49  2000/05/18 09:45:45  peterg
+## Fixed missing ;
+##
 ## Revision 1.48  2000/05/18 09:39:38  peterg
 ## Removed fifth argument from _input
 ##
@@ -208,7 +211,8 @@ Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
 # Heading
 (case $rep in
     state)
-        echo "PROCEDURE $Sys_rep(VAR mttx : StateVector);"
+        echo "PROCEDURE $Sys_rep(VAR mttx : StateVector; 
+                                     mttpar : ParameterVector);"
         ;;
     numpar)
         echo "PROCEDURE $Sys_rep(VAR mttpar : ParameterVector);"
@@ -520,7 +524,8 @@ sed 's/(\(MTT[ijk0-9],MTT[ijk0-9]\))/\[\1\]/g' |\
 sed 's/(\(MTT[ijk0-9,]*\))/\[\1\]/g'  |\
 sed 's/switcha(mttAA,/switcha(/g'   |\
 sed 's/switch(MTTx,/switch(/g'  |\
-sed 's/if nargin<[1-9] THEN//'  \
+sed 's/if nargin<[1-9] THEN//'  |\
+sed 's/if nargin>[0-9] THEN//'  \
 >> $Filename
 
 # p2c doesn't like mixed case filenames!

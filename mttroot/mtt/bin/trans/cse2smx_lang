@@ -30,8 +30,9 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
         iname='INAME mtt_o;';
 	;;
     -fixcc )
-        include=`echo 'in "'$MTT_LIB'/reduce/fix_c.r";'`
+        fix_pow='FOR ALL x,y LET x^y = pow(x,y);'
         blurb2='fixing c and cc code';
+        unfix_pow='FOR ALL x,y CLEAR x^y;'
 		;;
     *)
 	echo $1 is an unknown option
@@ -114,9 +115,6 @@ in "$1_def.r";
 in "$1_cse.r";
 in "$1_cr.r";
 
-%% Fixes for c and cc (if needed)
-$include;
-
 
 clear mttx; % Dont need this now - use mkid instead
 
@@ -167,16 +165,20 @@ symbolic procedure maxtype type;
       write "matrix mttd(", mttny, ",", mttnu, ");";    
     END;
 
+  ${fix_pow} %% set x^y to pow(x,y)
+
 % find MTTA : the A matrix
   FOR i := 1:MTTNx DO
   BEGIN
     mttAAx_i := 0;
     FOR j := 1:MTTNx DO
     BEGIN
+      ${unfix_pow} %% Revert to x^y form
       ij := i + MTTNx*(j-1);
       xj := mkid(mttx,j);
       a_ij := df(MTTEdx(i,1), xj, 1);
       aa_ij := MTTE(i,j) - mttt*a_ij;
+      ${fix_pow} %% set x^y to pow(x,y)
       IF (aa_ij NEQ 0) THEN
         IF ($nmatrix EQ 1) THEN
         BEGIN
@@ -198,6 +200,8 @@ symbolic procedure maxtype type;
           $iname
           GENTRAN mttax(i) ::=: mttAAx_i;
         END;
+
+
   END;
 
 %Shut the  output according to the language.

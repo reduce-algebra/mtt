@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  2000/05/17 16:01:42  peterg
+## Fixed bug for n_y>1
+##
 ## Revision 1.4  2000/05/16 18:57:15  peterg
 ## Still debugging
 ##
@@ -138,11 +141,7 @@ cat >> $1_sim.m <<EOF
   ## main simulation loop
   n_sim = max(1,n_sens);
   for i_sim=1:n_sim
-    if i_sim==1
-      i_1 = 2;
-    else
-      i_1 = 2+n_y;
-    endif;
+    i_1 = 2;
 
     if doing_state
       i_2 = i_1 + n_y - 1;
@@ -158,11 +157,11 @@ cat >> $1_sim.m <<EOF
       endif
     endif;
 
-    if doing_state # Need to cut twice
-      command = sprintf("./$1_ode2odes.out< $1_input.dat | cut -f %i-%i,%i-%i | tail -%i;", i_1,i_2,i_3,i_4,n_t);
-    else
-      command = sprintf("./$1_ode2odes.out< $1_input.dat | cut -f %i-%i | tail -%i;", i_1,i_2,n_t);
-    end;
+      if doing_state # Need to cut twice
+        command = sprintf("./$1_ode2odes.out< $1_input.dat | cut -f %i-%i,%i-%i | tail -%i;", i_1,i_2,i_3,i_4,n_t);
+      else # not doing_state
+        command = sprintf("./$1_ode2odes.out< $1_input.dat | cut -f %i-%i | tail -%i;", i_1,i_2,n_t);
+      endif
 
   ## Execute external programme
   S = [S;sprintf("Run %i\t",i_sim)];
@@ -182,22 +181,24 @@ cat >> $1_sim.m <<EOF
   [N_yy,M_yy] = size(yy);
 
   if i_sim==1
-    y = yy(1:n_y,:);              # Output
-    i_1 = n_y+1;
+    if doing_sensitivities
+      y = yy(1:n_y:2*n_y,:);              # Output
+      ys = yy(2:n_y:2*n_y,:);
+    else
+      y = yy(1:n_y,:);
+    endif;
     if doing_state 
+      i_1 = n_y+1;
       i_2 = i_1 + $Nx - 1;
       ys = yy(i_1:i_2,:);
     endif;
-  else
-    i_1 = 1;
+  else # i_sim>1
+    if doing_sensitivities
+      ys =  [ys; yy(2:n_y:2*n_y,:)];
+    endif; 
   endif
 
-  if doing_sensitivities
-    i_2 = i_1 - 1 + n_y;
-    ys =  [ys; yy(i_1:i_2,:)];
-  endif; 
-
-  endfor;
+   endfor;
   ##RealTime = [S T]
 endfunction
 

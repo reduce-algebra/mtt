@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.289  2000/12/05 09:01:52  peterg
+## Changed == to =
+##
 ## Revision 1.288  2000/12/01 17:59:01  peterg
 ## Added .PRECIOUS: %.cc to hang on to cc files - thanks Geraint
 ##
@@ -1797,7 +1800,7 @@ $MAKE -S $verbose  -f  -  $target << EOF
 # MTT implicit rules
 ## .oct files
 ifneq ($2,ode2odes)
-%.oct:  %.cc $1_def.h $1_sympar.h
+%.oct:  %.cc $1_def.h $1_sympar.h $1_cr.h
 	echo Creating $1_$2.oct; $MKOCTFILE  $< 
 endif
 
@@ -1877,6 +1880,12 @@ $1_cr.txt: $1_abg.m $1_sub.sh
 #SUMMARY cr	constitutive relationship for each subsystem (r)
 $1_cr.r: $1_cr.txt
 	cr_txt2r $1
+
+#SUMMARY cr	constitutive relationship header (c)
+$1_cr.h: 
+	echo Creating $1_cr.h
+	echo "// CR headers for system $1" > $1_cr.h
+
 # Cheat a bit and use the top level cr file for the subsystem as well
 ifneq ($sub,)
 $Subsystem_cr.r: $1_cr.r

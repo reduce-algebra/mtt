@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/02/22 09:17:59  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 mtt Pendulum abg tex
@@ -15,4 +18,4 @@ mtt Pendulum rfe tex
 mtt Pendulum ode tex
 mtt Pendulum input txt
 mtt Pendulum numpar txt
-mtt Pendulum odeso ps
+mtt -c Pendulum odeso ps

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/01/22 13:16:16  peterg
+## Initial revision
+##
 ###############################################################
 
 
@@ -55,7 +58,7 @@ alpha_c(9,1) := alpha_c9;
 
 
 for i := 1:MTTNx do
- MTTk_c(1,i) := alpha_c(i,1) - MTTA_c(1,i);
+ MTTk_c(1,i) := alpha_c(i,1) + MTTA_c(1,i);
 
 % Gain in physical form
 MTTk := MTTk_c*MTTT_c;

@@ -5,6 +5,9 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.29  1998/07/02 13:28:31  peterg
+% %% Added defaults in new form BEFORE alias expansion
+% %%
 % %% Revision 1.28  1998/07/02 12:36:05  peterg
 % %% Removed debugging lines
 % %%
@@ -222,8 +225,9 @@ for i = 1:n_components
     eval( ["alias = ", comp_type, '_alias';]); # Get aliases
     if is_struct(alias)		# are there any aliases
       for j=1:n_comp_bonds
-      	port_name_index = getindex(port_bond,signed_bond_list(j));
-        port_direction = -sign(signed_bond_list(j));
+        signed_bond = signed_bond_list(j);
+      	port_name_index = getindex(port_bond,signed_bond);
+        port_direction = -sign(signed_bond);
 
       	if port_name_index==0	# There is no port on this bond - so try
 				# to default
@@ -253,7 +257,9 @@ for i = 1:n_components
 	  mtt_info(["Defaulting to port name " port_name_i " on component " \
 		    comp_name " (" comp_type ")" ],fnum);
 	  port_name = [port_name; ["[" port_name_i "]"]];	# add to list
-	  [port_name_index,junk] = size(port_name); # the corresponding index
+	  [port_name_index,junk] = size(port_name); # the corresponding
+						    # index
+	  port_bond(port_name_index,:) = signed_bond; # add to port bond
         else  
       	  port_name_i = deblank(port_name(port_name_index,:));
 	  port_name_i = port_name_i(2:length(port_name_i)-1) # strip []

@@ -14,6 +14,14 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1998/07/17 07:50:33  peterg
+## Now handles library name
+## Returns a status
+##   0 if exactly one result
+##   1 if no results
+##   2 if two or more results
+##   3 if utterly confused
+##
 ## Revision 1.4  1998/07/16 20:40:24  peterg
 ## Cleaned up algorithms
 ##
@@ -44,6 +52,8 @@ if [ -n "$2" ]; then
     Name="-name $name"
 fi
 
+# If this is non-empty just print the path
+path_only=$3
 
 # Find all dirs in path with same name as component
 # AND the path contains the full (name+library) name
@@ -59,10 +69,15 @@ grep "$longname"`
 # and print dirname and file name and last access time
 
 if [ -n "$foundpath" ]; then
+  if [ -n "$path_only" ]; then
+    format='%h\n';
+  else
+    format='%h\t%f\t%Ac\n';
+  fi
  for thepath in $foundpath ;  do
   dirname=`echo $thepath | awk -F/ '{print $NF}'`
   fullname="$dirname"_lbl.txt
-  find $thepath -maxdepth 1 -name $fullname  -printf '%h\t%f\t%Ac\n';
+  find $thepath -maxdepth 1 -name $fullname  -printf $format;
  done |\
  tee mtt_junk
 fi

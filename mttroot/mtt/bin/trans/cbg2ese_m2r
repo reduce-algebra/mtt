@@ -16,6 +16,9 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.29  2001/03/29 19:24:14  gawthrop
+## Can now use c representations of crs when using -c option
+##
 ## Revision 1.28  2001/02/05 17:19:52  gawthrop
 ## Now gives unique names to the states of multiports. Second name
 ## onwards labeled with port number
@@ -330,26 +333,32 @@ mv $structurefile junk
 sort -k 1,1 -k 2,2n junk >$structurefile
 
 # Relabel states with multiple ports
-mv $structurefile junk
-awk '
-BEGIN{
-   state_index=1;  
-   oldname="";
-}
-{
-   name=$4;
-   newname=name;
-   if ($1=="state") {
-     if (name==oldname)
-       newname = sprintf("%s_%i",name, ++state_index);
-     else
-       state_index=1;
+relabel_multiple_definitions(){
+  mv $structurefile junk
+  awk '
+  BEGIN{
+     var_type_index=1;  
+     oldname="";
+  }
+  {
+     name=$4;
+     newname=name;
+     if ($1==var_type) {
+       if (name==oldname)
+         newname = sprintf("%s_%i",name, ++var_type_index);
+       else
+         var_type_index=1; 
    }
-   $4 = newname
-   for (i=1;i<NF;i++) printf("%s\t",$i);
-   printf("%s\n", $NF)
-   oldname = name;
-'} < junk > $structurefile
+     $4 = newname
+     for (i=1;i<NF;i++) printf("%s\t",$i);
+     printf("%s\n", $NF)
+     oldname = name;
+  '} < junk var_type=$1> $structurefile
+}
+
+relabel_multiple_definitions input;
+relabel_multiple_definitions output;
+relabel_multiple_definitions state;
 
 # Now invoke the standard error handling.
 mtt_error mtt_error.txt

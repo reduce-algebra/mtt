@@ -1,13 +1,13 @@
-function  structure = ES_eqn(name,bond_number,bonds,direction,cr,args, ...
+function  structure = FP_eqn(name,bond_number,bonds,direction,cr,args, ...
     structure,eqnfile);
-% ES_eqn - equations for ES component
+% FP_eqn - equations for FP component
 % 
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %     %%%%% Model Transformation Tools %%%%%
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 
-% Matlab function  ES_eqn
-% ES_eqn(name,bond_number,bonds,direction,cr,args, ...
+% Matlab function  FP_eqn
+% FP_eqn(name,bond_number,bonds,direction,cr,args, ...
 %    structure,eqnfile);
 
 
@@ -17,6 +17,9 @@ function  structure = ES_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/06/29 09:53:22  peterg
+% %% Initial revision
+% %%
 % %% Revision 1.3  1998/03/27 10:59:43  peterg
 % %% Zapped t_0 again ...
 % %%
@@ -38,7 +41,7 @@ end;
 
 % Check that there are exactly two bonds.
 ports = 2;
-if check_bonds(bonds,ports,'ES')==0
+if check_bonds(bonds,ports,'FP')==0
   return
 end
 

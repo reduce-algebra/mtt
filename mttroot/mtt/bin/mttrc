@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.23  2001/07/24 22:32:49  gawthrop
+## Use gv, not ghostview
+##
 ## Revision 1.22  2001/04/12 03:08:00  geraint
 ## Improved sh->csh conversion, reduces environment namespace pollution.
 ## Still need to do proper if [ -z $MTT_BASE ] ... else ... fi conversion.
@@ -117,7 +120,7 @@ else
   export MTT_DOC=$MTT_BASE/doc
   export MTT_CC=$MTT_BASE/cc
   
-  export MTT_COMPONENTS=$MTT_LIB/comp
+  export MTT_COMPONENTS=.:$MTT_LIB/comp
   export MTT_CRS=$MTT_LIB/cr
   export MTT_EXAMPLES=$MTT_LIB/examples
   export MTT_REP=$MTT_LIB/rep

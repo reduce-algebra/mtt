@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1998/05/20 15:23:26  peterg
+## Put MTTYz := MTTYz outsise the BEGIN/END
+##
 ## Revision 1.4  1998/05/20 15:13:09  peterg
 ## Writes out algebraic equations (if any).
 ##
@@ -40,8 +43,16 @@
 ##
 ###############################################################
 
-#Inform user
-echo Creating $1_cse.r
+
+#Explicit solution option
+Solving=$2;
+if [ "$Solving" = "Solving" ]; then
+    solve=1
+    echo "Creating $1_cse.r (with explicit solution of algebraic equations)"
+else
+    solve=0
+    echo "Creating $1_cse.r"
+fi
 
 # Remove the old log file
 rm -f dae2cse_r.log
@@ -60,7 +71,8 @@ in "$1_subs.r";
 in "$1_dae.r";
 
 
-%Create F_x, F_y matrices - assumming equations are linear in dZ
+%Create F_x, F_y matrices - assumming equations are 
+% linear in dZ
 IF MTTNz>0 THEN 
 BEGIN
 % Find MTTFx;
@@ -147,6 +159,8 @@ matrix MTTE(MTTNx,MTTNx);   MTTE := MTTI - MTTExx;
 MTTEdX := MTTdX; %Ie MTTEdX is MTTdX with the dz terms deleted ie EdX.
 MTTdX := MTTdXs;  %Restore the symbolic dX
 
+%% Add on input derivative terms
+MTTEdX := MTTEdX + MTTExu*MTTdu;
 
 
 MTTY := MTTY + MTTEyx*MTTEdX;
@@ -154,9 +168,6 @@ MTTY := MTTY + MTTEyx*MTTEdX;
 %%% MTTdXs and MTTdu need setting in _def.r file
 %%MTTY := MTTY +  MTTEyu*MTTdu;
 MTTY := MTTY + MTTEyx*(MTTE^(-1))*MTTEdX;
-
-
-
 
 
 END; %%of MTTNz>0
@@ -167,31 +178,36 @@ BEGIN
   MTTE   := MTTI;
 END;
 
-%IF MTTNyz>0 THEN 
-%BEGIN
-%  %%%% Try and solve algebraic loops!!
-%
-%  %Create list of the relevant equations 
-%  MTT_eqns := {};
-%  FOR i := 1:MTTNyz DO
-%    MTT_eqns := append(MTT_eqns,{MTTyz(i,1)});
-%
-%  %Create list of the relevant unknowns
-%  MTT_unknowns := {};
-%  FOR i := 1:MTTNyz DO
-%    MTT_unknowns := append(MTT_unknowns,{MTTUi(i,1)});
-%
-%  %Solve the algebraic equations symbolically
-%  MTT_sol := solve(MTT_eqns,MTT_unknowns);
-%
-%  %Substitute back into the equations
-%  FOR i := 1:MTTNyz DO
-%  BEGIN
-%    MTT_sol_i := first(MTT_sol); MTT_sol := rest(MTT_sol);
-%    set(lhs(MTT_sol_i),rhs(MTT_sol_i));
-%  END;
-%
-%END; % IF MTTNyz>0
+IF (MTTNyz>0) AND ($solve>0) THEN
+BEGIN
+  %%%% Try and solve algebraic loops!!
+
+  %Create list of the relevant equations 
+  MTT_eqns := {};
+  FOR i := 1:MTTNyz DO
+    MTT_eqns := append(MTT_eqns,{MTTyz(i,1)});
+
+  %Create list of the relevant unknowns
+  MTT_unknowns := {};
+  FOR i := 1:MTTNyz DO
+    MTT_unknowns := append(MTT_unknowns,{MTTUi(i,1)});
+
+  %Solve the algebraic equations symbolically
+  %The result seems to be in an extra list - I don't know why
+  % So remove the outer list with first.
+
+  MTT_sol := first(solve(MTT_eqns,MTT_unknowns));
+
+  %Substitute back into the equations
+  FOR i := 1:MTTNyz DO
+  BEGIN
+    MTT_sol_i := first(MTT_sol); MTT_sol := rest(MTT_sol);
+    set(lhs(MTT_sol_i),rhs(MTT_sol_i));
+  END;
+
+  % No algebraic variables left!
+  MTTNYz := 0;
+END; % IF MTTNyz>0
 
 %%Create the _cse.r file
 OUT "$1_cse.r";
@@ -206,6 +222,7 @@ IF MTTNy>0 THEN
 BEGIN
   write "matrix MTTY(", MTTNy, ",1)";
 END;
+
 MTTY := MTTY;
 
 IF MTTNu>0 THEN
@@ -234,7 +251,13 @@ END;
 IF MTTNyz>0 THEN
   BEGIN
   write "matrix MTTYz(", MTTNyz, ",1)";
+  END
+ELSE
+  BEGIN
+  write "MTTNYz := 0;";
+  MTTYz := 0;
   END;
+
   MTTYz := MTTYz;
 
 

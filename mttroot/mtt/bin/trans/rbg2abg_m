@@ -11,6 +11,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.16  2000/12/05 09:04:08  peterg
+## Fixed function () compatibility problem.
+##
 ## Revision 1.15  2000/11/03 14:53:33  peterg
 ## Copy NOTPAR as well
 ##
@@ -152,7 +155,7 @@ $MATRIX > rbg2abg_m.log  2>mtt_error.txt << EOF
 EOF
 
 ## Sets the units for the abg file
-function test_units
+test_units()
 { 
   grep '^[\s]*[#|%]UNITS' < ${lbl_file} >/dev/null
   if [ $? = "0" ]; then 
@@ -171,7 +174,7 @@ function test_units
   fi
 } 
 
-function check_ports_exist
+check_ports_exist()
 {
  declared_ports=`grep '^[\s]*[#|%]UNITS' < ${lbl_file} | awk '{print $2}'`
   for declared_port in $declared_ports; do
@@ -183,7 +186,7 @@ function check_ports_exist
   done
 }
 
-function set_units
+set_units()
 { 
   grep '^[\s]*[#|%]UNITS' < ${lbl_file} |\
   awk '{

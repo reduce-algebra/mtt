@@ -1,0 +1,138 @@
+#! /bin/sh
+
+rep_name="diy"
+
+help_message="
+	A representation you can create all by yourself!
+
+	The purpose of this representation is to help in the creation of a new DIY rep structure.
+	Eventually it should form a template for creating new representations.
+"
+
+non_standard_options="
+	--crash:	make the computer crash, wiping the hard drive in the process
+	--recover:	attempt to recover data after crash (by crying very loudly for 10 minutes)
+"
+
+texi_message="
+This message should be really, really helpful.
+@node Stuff, More Stuff, Top, Top
+Stuff!
+@node More Stuff, Top, Top, Top
+More Stuff
+"
+
+# function definitions for non-standard options (should have same name)
+crash () {
+    touch .crash
+    echo "IDIOT!"
+    exit 99
+}
+recover () {
+    if [ -f .crash ]; then
+	cat <<EOF
+A long time ago
+in galaxy far away
+data can't be found
+EOF
+    else
+	echo "Recovery worked - your data is safe!"
+    fi
+}
+hello () {
+    echo "Hello ${USER}!"
+}
+
+languages="ada c c++ fortran m pascal ps" # this is used for documentation only
+process_language () {
+    Language=$1
+    case ${Language} in
+	'c')
+	    echo "C is a good language"
+	    ;;
+	'c')
+	    echo "C++ is a great language"
+	    ;;
+	*)
+	    exit ${ELanguageUnknown}
+	    ;;
+    esac
+}
+
+#####################################################################
+###  It should not be necessary to edit anything below this line  ###
+#####################################################################
+
+# Error codes
+ELanguageUnknown="-2"		# MTT will continue from here
+ENoLanguageSpecified="-10"
+
+help () {
+    cat <<EOF
+
+$0: help
+
+	MTT representation ${rep_name}
+${help_message}
+EOF
+}
+
+usage () {
+    cat <<EOF
+
+$0: usage
+
+	mtt [mtt_options] ${rep_name} [options] lang
+
+	standard options:
+
+	--help:		print useful help message
+	--usage:	print this useful message
+	--texi:		print very useful message
+
+	additional options:
+${non_standard_options}
+EOF
+}
+
+texi () {
+    cat <<EOF
+@settitle MTT: ${rep_name} representation
+${texi_message}
+EOF
+}
+
+error () {
+    cat <<EOF
+*** Error: MTT (${rep_name}): $1 : exiting ($2)
+EOF
+    exit $2
+}
+
+warn () {
+    cat <<EOF
+*** Warning: MTT (${rep_name}): $1 : continuing
+EOF
+}
+
+process_arguments () {
+    if [ $# -eq 0 ]; then
+	help
+	usage
+    else
+	while [ -n "`echo $1 | grep '^--'`" ]; do
+	    option=`echo $1 | sed 's/\-\-\(.*\)/\1/'`
+	    ${option} 2> /dev/null || warn "option --${option} unknown"
+	    shift
+	done   
+	export Language="$*"
+    fi
+}
+
+process_arguments $*
+if [ ! "${Language}" ]; then
+    error "no language specified" ${NoLanguageSpecified}
+fi
+
+process_language ${Language}
+	

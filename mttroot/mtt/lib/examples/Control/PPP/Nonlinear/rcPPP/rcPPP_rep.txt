@@ -7,10 +7,13 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/05/20 17:44:47  peterg
+## Initial revision
+##
 ###############################################################
 
 mtt rcPPP abg tex		# The system description
-mtt -s srcPPP abg tex		# The system description
+#mtt -s srcPPP abg tex		# The system description
 
 mtt rcPPP struc tex	        # The system structure
 mtt -s srcPPP struc tex	        # The system structure

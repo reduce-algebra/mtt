@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1998/08/27 07:04:44  peterg
+## Cleared out mttx array ans use mkid instead.
+##
 ## Revision 1.7  1998/08/27 06:48:20  peterg
 ## Changed mttxx to mttx - in implicit integration smx is called once
 ## with x in the linearisation the same as x in the current state
@@ -117,7 +120,7 @@ in"$MTTPATH/trans/lang_matrix.r";
       END;
       IF (aa_ij NEQ 0) THEN
         GENTRAN mtta(i,j) ::=: aa_ij;
-      mttAAx_i := mttAAx_i + aa_ij*mkid(mttx,j);
+      mttAAx_i := mttAAx_i + aa_ij*xj;
       %%%mttAAtx(i,1) := mttAAtx(i,1) + aa_ji*mkid(mttx,j);
     END;
     IF (mttAAx_i NEQ 0) THEN

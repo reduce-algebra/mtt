@@ -16,6 +16,9 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.14  1998/07/08 08:26:26  peterg
+## Added -I option -- if set prints out the information messages
+##
 ## Revision 1.13  1998/05/12 14:49:10  peterg
 ## Don't write END; any more - ese-tidy does this now!
 ##
@@ -76,8 +79,13 @@ structurefile="$1_struc.txt";
 eqnfile="$1_ese.r";
 deffile="$1_def.r";
 
+
 # Remove the old log file
 rm -f cbg2ese_m.log
+
+# Remove the info and error files
+rm -f mtt_info.txt
+rm -f mtt_error.txt
 
 # Remove relevent ese files
 rm -f $1_ese.r $1_*_ese.r 
@@ -88,7 +96,7 @@ echo Creating $deffile
 echo Creating $structurefile
 
 # Use matrix manipulation to accomplish the transformation
-$MATRIX > cbg2ese_m2r.log 2>mtt_error.txt << EOF
+$MATRIX << EOF > cbg2ese_m2r.log 2>mtt_error.txt
 
 infofile = '$infofile';;
 infofilenum = fopen(infofile,'w');

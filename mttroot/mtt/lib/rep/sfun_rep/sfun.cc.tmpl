@@ -106,6 +106,8 @@ static void mdlInitializeConditions(SimStruct *S)
   for (int i = 0; i < MTTNX; i++) {
     ssGetContStates (S)[i] = states [i];
   }
+
+  mxDestroyArray (plhs[0]);
 }
 
 static void mdlOutputs(SimStruct *S, int_T tid)
@@ -131,6 +133,8 @@ static void mdlOutputs(SimStruct *S, int_T tid)
   for (int i = 0; i < MTTNY; i++) {
       ssGetOutputPortRealSignal (S,i)[0] = outputs [i];
   }
+
+  mxDestroyArray (plhs[0]);
 }
 
 #define MDL_DERIVATIVES
@@ -155,6 +159,8 @@ static void mdlDerivatives(SimStruct *S)
   for (int i = 0; i < MTTNX; i++) {
     ssGetdX (S)[i] = rates [i];
   }
+
+  mxDestroyArray (plhs[0]);
 }
 
 static void mdlTerminate(SimStruct *S)

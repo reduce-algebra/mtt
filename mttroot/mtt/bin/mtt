@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.272  2000/10/06 16:20:00  peterg
+## added ode_write rule
+##
 ## Revision 1.271  2000/10/03 12:14:25  peterg
 ## Version 4.8
 ##
@@ -1682,6 +1685,13 @@ $MAKE -S $verbose  -f  -  $target << EOF
 %.cc:  %.p
 	mtt_p2cc  $< 
 
+#Suffix rules
+## .m files
+##.SUFFIXES : .r .m
+##.r.m:   $1_$2.r $1.def $1.sympar
+	mtt_r2m  $1 $2 
+
+
 # Generates code to write reduce code
 $1_ode_write.r: $1_def.m
 	def2write_r  $1 $2
@@ -2146,12 +2156,15 @@ $1_dae.tex: $1_dae.r $1_simp.r
 $1_cse.r: $1_dae.r $1_def.r $1_sympar.r $1_subs.r 
 	dae2cse_r $Solve $1; tidy $1_cse.r $1_subs.r
 
+$1_cseo.r: $1_cse.r
+	touch $1_cseo.r
+
 #$1_cse.m: $1_def.r $1_cse.r $1_sympar.r  $1_subs.r 
 #	cse_r2m $1; matlab_tidy $1_cse.m
-$1_cse.m: $1_def.m $1_cse.r $1_sympars.txt
-	mtt_r2m $optimise -parameters  $1 cse;  matlab_tidy $1_cse.m; matlab_tidy $1_cseo.m; 
-$1_cseo.m: $1_cse.m
-	touch $1_cseo.m
+$1_cse.m: $1_def.r $1_cse.r $1_sympars.txt
+	mtt_r2m $optimise -parameters  $1 cse;#  matlab_tidy $1_cse.m; matlab_tidy $1_cseo.m; 
+$1_cseo.m: $1_def.r $1_cseo.r $1_sympars.txt
+	mtt_r2m $optimise -parameters  $1 cseo;#  matlab_tidy $1_cse.m; matlab_tidy $1_cseo.m; 
 $1_cse.tex: $1_cse.r  $1_sympar.r $1_simp.r
 	cse_r2tex $1 $2; latex_tidy $1_cse.tex
 
@@ -2182,7 +2195,7 @@ $1_scse.tex: $1_scse.r  $1_sympar.r $1_simp.r
 #SUMMARY ode	ordinary differential equations (oct)
 #Ordinary differential equations
 ifeq ($dae_is_ode,0)
-$1_ode.r: $1_cse.r $1_def.r $1_sympar.r $1_subs.r
+$1_ode.r: $1_cse.r $1_cseo.r $1_def.r $1_sympar.r $1_subs.r
 	cse2ode_r $1; tidy $1_ode.r
 endif
 
@@ -2191,9 +2204,13 @@ $1_ode.r: $1_dae.r
 	echo Copying $1_dae.r to $1_ode.r
 	cp $1_dae.r  $1_ode.r
 endif
+$1_odeo.r: $1_ode.r
+	touch $1_odeo.r
 
-$1_ode.m: $1_def.m $1_ode.r  $1_subs.r $1_sympars.txt
-	mtt_r2m $optimise -parameters $1 ode m; matlab_tidy $1_ode.m
+$1_ode.m: $1_def.r $1_ode.r
+	mtt_r2m $optimise -parameters $1 ode m; #  matlab_tidy $1_ode.m
+$1_odeo.m: $1_def.r $1_odeo.r
+	mtt_r2m $1 odeo m
 
 $1_ode.oct: $1_def.r $1_ode.p $1_sympars.txt
 	mtt_p2oct $1 ode
@@ -2203,8 +2220,7 @@ $1_odeo.oct: $1_def.r $1_odeo.p $1_sympars.txt
 
 $1_odea.m: $1_ode.m
 	touch $1_odea.m
-$1_odeo.m: $1_ode.m
-	touch $1_odeo.m
+
 #$1_ode.c: $1_def.r $1_ode.r $1_sympar.r $1_sympar.c
 #	ode_r2c $1 
 $1_ode.tex: $1_ode.r  $1_sympar.r $1_simp.r
@@ -2569,7 +2585,7 @@ $1_sms.c: $1_sm.c $1_def.r $1_sympar.r
 	sm2sms_r2c $1
 
 ifeq ($computation,octave)
-$1_odes.dat2: $1_ode2odes.m $1_ode.m $1_numpar.m $1_switchopen.m  \
+$1_odes.dat2: $1_ode2odes.m $1_ode.m $1_odeo.m $1_numpar.m $1_switchopen.m  \
 	     $1_def.m $1_input.m $1_state.m $1_simpar.m
 	time octave_ode2odes $1
 endif

@@ -40,8 +40,14 @@ function sys = mtt2sys (Name,par)
 
   eval(sprintf("[A,B,C,D]=%s_sm(par);", Name)); # State matrices
   sys = ss2sys(A,B,C,D);	# Sys form
-  eval(sprintf("[sys.inname,sys.outname,sys.stname]=%s_struc;", Name)); # Setup names
-  
+  if (rindex(version,"2.0."))	# stable (pre-list)
+    eval(sprintf("[sys.inname,sys.outname,sys.stname]=%s_struc;", Name)); # Setup names
+  else 				# development version
+    eval(sprintf("[mtt_inname,mtt_outname,mtt_stname]=%s_struc;",Name)); # Setup names
+    eval(sprintf("sys = syssetsignals(sys,\"in\", mtt_inname)"));
+    eval(sprintf("sys = syssetsignals(sys,\"out\",mtt_outname)"));
+    eval(sprintf("sys = syssetsignals(sys,\"st\", mtt_stname)"));
+  endif
 endfunction
 
 

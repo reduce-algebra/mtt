@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.194  1998/10/20 09:00:43  peterg
+## Added a few summary lines - to help with xmtt
+##
 ## Revision 1.193  1998/10/01 16:11:42  peterg
 ## Implicit integration now handles switches
 ##
@@ -1934,7 +1937,7 @@ $1_ssl.m: $1_def.r $1_ssl.r $1_numpar.m
 #Linearised system: transfer function
 $1_tf.r: $1_dm.r $1_sympar.r 
 	dm2tf_r $1; tidy $1_tf.r
-$1_tf.m: $1_def.r $1_tf.r 
+$1_tf.m: $1_def.r $1_sympars.txt $1_tf.r 
 	tf_r2m $1; matlab_tidy $1_tf.m
 $1_tf.tex: $1_def.r $1_tf.r $1_sympar.r $1_simp.r
 	tf_r2tex $1; latex_tidy $1_tf.tex

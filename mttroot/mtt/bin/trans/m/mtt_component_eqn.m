@@ -1,4 +1,5 @@
-function [known] = mtt_component_eqn (fullname, port, causality, known)
+function [known] = mtt_component_eqn (fullname, port, causality, \
+				      known, Cbg)
 
   ## function [known] = mtt_component_eqn (fullname, port, causality, known)
   ##
@@ -36,16 +37,8 @@ function [known] = mtt_component_eqn (fullname, port, causality, known)
   if length(known)<2		# Invalid
     known = "  ";
   endif
-  
-  ## File containing data structure
-  cbg_file = sprintf("%s_cbg",Name);
 
-  if (exist(cbg_file)==0)
-    error(sprintf("mtt_component_eqn: subystem \"%s\" does not exist", Name));
-  endif
-  
-  ## Subsystem data structure
-  cbg = eval(sprintf("%s;", cbg_file));
+  cbg = mtt_cbg(Name);		# Structure for this subsystem
 
   if struct_contains (cbg, "ports")
     ## Combine ports with the other subsystems
@@ -70,7 +63,8 @@ function [known] = mtt_component_eqn (fullname, port, causality, known)
       if DEBUG
 	disp("----> lower-level system")
       endif
-      known = mtt_component_eqn (mtt_fullname(Name,name), 1, causality, known);
+      known = mtt_component_eqn (mtt_fullname(Name,name), 1, \
+				 causality, known, cbg);
       return
     endif
   endif
@@ -178,20 +172,12 @@ function [known] = mtt_component_eqn (fullname, port, causality, known)
 
     ## File containing data structure
     NAME = mtt_subname(Name);
-    Cbg_file = sprintf("%s_cbg",NAME);
-
-    if (exist(Cbg_file)==0)
-      error(sprintf("mtt_component_eqn: subsystem %s does not exist", NAME));
-    endif
-    
-    ## System data structure
-    Cbg = eval(sprintf("%s;", Cbg_file));
-    
+    CBG = mtt_cbg(NAME);
     
     ## And to which component (at higher level) is it connected?
     [new_Name,new_name] = mtt_subname(Name);
-    port_bond = eval(sprintf("Cbg.subsystems.%s.connections(%i);", new_name, port_index));
-    [in_name, in_port, in_bond] = mtt_other_end (new_name,port_bond,Cbg);
+    port_bond = eval(sprintf("CBG.subsystems.%s.connections(%i);", new_name, port_index));
+    [in_name, in_port, in_bond] = mtt_other_end (new_name,port_bond,CBG);
 
     ## Find its equation
     if DEBUG
@@ -199,7 +185,8 @@ function [known] = mtt_component_eqn (fullname, port, causality, known)
     endif
     
 
-    known = mtt_component_eqn (mtt_fullname(new_Name,in_name), in_port, causality, known);
+    known = mtt_component_eqn (mtt_fullname(new_Name,in_name), \
+			       in_port, causality, known, cbg);
 
     LHS = Source_seqn ("external",Name);
     RHS = varname(NAME, abs(in_bond), i_cause);
@@ -226,15 +213,8 @@ function [known] = mtt_component_eqn (fullname, port, causality, known)
       new_Name = mtt_fullname(Name,name);
       new_name = "";
       
-      ## File containing data structure
-      Cbg_file = sprintf("%s_cbg",new_Name);
-
-      if (exist(Cbg_file)==0)
-	error(sprintf("mtt_component_eqn: subsystem %s does not exist", new_Name));
-      endif
-      
-      ## System data structure
-      Cbg = eval(sprintf("%s;", Cbg_file));
+      ## Get relevant data structure
+      Cbg = mtt_cbg(new_Name);
       port_name = Cbg.portlist(port,:);
 
       LHS = varname(Name, outsig(1,1), outsig(1,2));
@@ -246,7 +226,7 @@ function [known] = mtt_component_eqn (fullname, port, causality, known)
       endif
 
       [known] = mtt_component_eqn \
-   	  (mtt_fullname(new_Name,new_name), port, causality, known);
+   	  (mtt_fullname(new_Name,new_name), port, causality, known, cbg);
       
     endif
   endif
@@ -279,7 +259,8 @@ function [known] = mtt_component_eqn (fullname, port, causality, known)
       
 
       [known] = mtt_component_eqn \
-    	  (mtt_fullname(Name,other_name), other_port, other_causality, known);
+    	  (mtt_fullname(Name,other_name), other_port, other_causality, \
+	   known, cbg);
     endfor
   endif
 

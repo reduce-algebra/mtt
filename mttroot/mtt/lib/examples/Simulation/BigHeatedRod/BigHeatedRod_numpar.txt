@@ -6,6 +6,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  2000/12/28 18:06:11  peterg
+# %% To RCS
+# %%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -17,6 +20,7 @@ electrical_resistivity = 16.8*0.000000001;
 thermal_resistivity = 1/390.0;
 thermal_capacity = 380.0;
 
+pi = 3.142;
 
 segments = 100;
 area = pi*rod_radius*rod_radius;

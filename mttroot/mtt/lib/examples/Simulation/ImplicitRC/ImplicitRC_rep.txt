@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2000/12/28 18:06:50  peterg
+% %% To RCS
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 mtt ImplicitRC abg tex
@@ -19,4 +22,4 @@ mtt ImplicitRC sro ps
 mtt ImplicitRC numpar tex
 
 mtt ImplicitRC simpar tex
-mtt -c ImplicitRC odeso ps
+mtt -cc ImplicitRC odeso ps

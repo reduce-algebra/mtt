@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2000/12/28 18:06:50  peterg
+% %% To RCS
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 This report describes the \emph{implicit} integration methods
@@ -83,19 +86,19 @@ In contrast, the implicit method is stable.
 
 \subsubsection{Example}
    The acausal bond graph of system \textbf{ImplicitRC} is
-   displayed in Figure \Ref{ImplicitRC_abg} and its label
-   file is listed in Section \Ref{sec:ImplicitRC_lbl}.
+   displayed in Figure \Ref{fig:ImplicitRC_abg.ps} and its label
+   file is listed in Section \Ref{sec:ImplicitRC_lbl}
    The subsystems are listed in Section \Ref{sec:ImplicitRC_sub}.
 
 The system represents two simple RC circuits in series with
-differential equations as given in Section \Ref{sec:ImplicitRC_ode.tex} and
-transfer function  as given in Section \Ref{sec:ImplicitRC_tf.tex}.
+differential equations as given in Section \Ref{sec:ImplicitRC_ode-noargs.tex} and
+transfer function  as given in Section \Ref{sec:ImplicitRC_tf-noargs.tex}.
 
 For the purposes of this example the two time constants are $1$ and
 $\epsilon=10^{-3}$ -- this is a stiff system. All of the simulations
 use a sample interval of $\Delta t = 0.1$ ang the input is a unit
-step.  Section \Ref{sec:ImplicitRC_sro} shows the exact (computed from
-the matrix exponential) solution, and  Section \Ref{sec:ImplicitRC_odeso}
+step.  Section \Ref{sec:ImplicitRC_sro-noargs.ps} shows the exact (computed from
+the matrix exponential) solution, and  Section {sec:ImplicitRC_odeso-cc.ps}
 shows the solution by implicit integration.
 
 The explicit solution is not shown, but was found to be unstable for

@@ -6,14 +6,17 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.1  2000/12/28 18:11:16  peterg
+% % To RCS
+% %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
 % Steady-state states
 MTTX1 := 	1; % LiquidTurbine (j_s)
-MTTX2 := 	p_0*c/rho; % LiquidTurbine_C1 (tank) - pressure = p0
-MTTX3 := 	t_0*p_0*c*c_p; % LiquidTurbine_C1 (tank) - temp = t0
+MTTX2 := 	p_0*c_t/rho; % LiquidTurbine_C1 (tank) - pressure = p0
+MTTX3 := 	t_0*p_0*c_t*c_p; % LiquidTurbine_C1 (tank) - temp = t0
 % Steady-state inputs
 MTTU1 := 	q_0; % LiquidTurbine (Heat)
 MTTU2 := 	0; % LiquidTurbine (Work)

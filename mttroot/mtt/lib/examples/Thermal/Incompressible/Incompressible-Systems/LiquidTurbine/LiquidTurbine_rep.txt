@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1999/12/21 23:50:25  peterg
+% %% Use compiled version
+% %%
 % %% Revision 1.1  1999/02/21 02:13:25  peterg
 % %% Initial revision
 % %%
@@ -20,8 +23,8 @@ mtt -o -ss LiquidTurbine ode tex
 mtt -o -ss LiquidTurbine numpar txt
 mtt -o -ss LiquidTurbine input txt
 
-mtt -o -ss -c LiquidTurbine odeso ps 'LiquidTurbine_Heat'
-mtt -o -ss -c LiquidTurbine odeso ps 'LiquidTurbine_Work'
-mtt -o -ss -c LiquidTurbine odeso ps 'LiquidTurbine_in_Hy_in'
-mtt -o -ss -c LiquidTurbine odeso ps 'LiquidTurbine_out_Hy_out'
-mtt -o -ss -c LiquidTurbine odeso ps 'LiquidTurbine_out_Th_out'
+mtt -o -ss LiquidTurbine odeso ps 'LiquidTurbine__Heat'
+mtt -o -ss LiquidTurbine odeso ps 'LiquidTurbine__Work'
+mtt -o -ss LiquidTurbine odeso ps 'LiquidTurbine__in__Hy_in'
+mtt -o -ss LiquidTurbine odeso ps 'LiquidTurbine__out__Hy_out'
+mtt -o -ss LiquidTurbine odeso ps 'LiquidTurbine__out__Th_out'

@@ -1,0 +1,30 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: doc2dvi
+# Converts doc file to dvi file
+
+# Copyright (c) P.J.Gawthrop 1998
+
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+system=$1
+
+# Inform user
+echo Creating $system.dvi
+
+#Run latex twice
+latex $system.doc > doc2dvi.log
+latex $system.doc >> doc2dvi.log
+
+# Make sure transformation succeeeds
+exit 0

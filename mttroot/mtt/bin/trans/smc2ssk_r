@@ -14,6 +14,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/01/23 09:30:36  peterg
+## Fixed a sign error - the coeficients of a(s) appear with - signs in
+## the A_c matrix!
+##
 ## Revision 1.1  1998/01/22 13:16:16  peterg
 ## Initial revision
 ##
@@ -82,6 +86,8 @@ MTT_Matrix_name := "MTTK"$
 MTT_Matrix_n := MTTNu$
 MTT_Matrix_m := MTTNx$
 Reduce_Matrix()$
+
+write "END;";
 
 SHUT "$1_ssk.r";
 quit;

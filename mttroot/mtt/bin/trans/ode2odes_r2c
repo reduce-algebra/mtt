@@ -20,6 +20,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.11  1997/05/12  16:00:54  peterg
+# Removed itime again.,
+#
 # Revision 1.10  1997/05/10  10:05:15  peterg
 # Put _input in inner loop in front of call to _ode
 #
@@ -154,8 +157,8 @@ write "  $1_numpar();"$
 write "/* Initialise main (Euler) integration loop */"$
 write "  time = 0.0;"$
 write "  dt = DT/STEPFACTOR;"$
-write "  for (i=1; i<=MTTNX; i++)"$
-write "      x[i] = 0.0;"$
+%% write "  for (i=1; i<=MTTNX; i++)"$
+%% write "      x[i] = 0.0;"$
 
 %Set up system inputs
 write "/* Set up system inputs */"$

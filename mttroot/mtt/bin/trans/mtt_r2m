@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.16  2000/04/18 11:14:18  peterg
+## Put in the -parameters option
+##
 ## Revision 1.15  2000/02/10 14:58:57  peterg
 ## *** empty log message ***
 ##
@@ -68,11 +71,12 @@
 # Args
 while [ -n "`echo $1 | grep '^-'`" ]; do
   case $1 in
-    -noglobal)
-	noglobal='-noglobal';
+    -noglobals)
+	noglobals='-noglobals';
 	;;
     -parameters)
 	parameters='-parameters';
+        par='mttpar'
 	;;
     *)
 	echo $1 is an unknown option
@@ -139,8 +143,8 @@ if [ "$rep" = "ode" ]||[ "$rep" = "cse" ]; then
   #rm -f $1_odea.$ext.1;
 
   #Header
-  lang_header $noglobal $parameters $1 $rep $ext 'mttx,mttu,mttt,mttpar' mttdx > $1_$2.p
-  lang_header $noglobal $parameters $1 $2o $ext 'mttx,mttu,mttt,mttpar' mtty  > $1_$2o.p
+  lang_header $noglobals $parameters $1 $rep $ext 'mttx,mttu,mttt,mttpar' mttdx > $1_$2.p
+  lang_header $noglobals $parameters $1 $2o $ext 'mttx,mttu,mttt,mttpar' mtty  > $1_$2o.p
 
   rm -f mtt_ode mtt_odeo
 
@@ -229,13 +233,13 @@ if [ "$rep" = "sm" ]||[ "$rep" = "ssm" ]||[ "$rep" = "dm" ]||\
 
 if  [ "$rep" = "sm" ]||[ "$rep" = "ssm" ]; then
    #Header
-  lang_header $noglobal $parameters $1 $rep $ext '' [mtta,mttb,mttc,mttd] > $outfile.p
+  lang_header $noglobals $parameters $1 $rep $ext "$par" [mtta,mttb,mttc,mttd] > $outfile.p
   Symbols='a b c d'    
 fi
 
 if [ "$rep" = "dm" ]||[ "$rep" = "csm" ]; then
    #Header
-  lang_header $noglobal $parameters $1 $rep $ext '' [mtta,mttb,mttc,mttd,mtte] > $outfile.p
+  lang_header $noglobals $parameters $1 $rep $ext "$par" [mtta,mttb,mttc,mttd,mtte] > $outfile.p
   Symbols='a b c d e'    
 fi
 
@@ -245,9 +249,9 @@ if [ "$rep" = "obs" ]; then
   echo 'affine = ' $affine
    #Header 
 if [ "$affine" = "1" ]; then
-    lang_header $noglobal $parameters $1 obs m mttx [mttobs_o,mttobs_h] >  $outfile.p
+    lang_header $noglobals $parameters $1 obs m mttx [mttobs_o,mttobs_h] >  $outfile.p
 else
-    lang_header $noglobal $parameters $1 obs m mttx,mttu mttyy > $outfile.p
+    lang_header $noglobals $parameters $1 obs m mttx,mttu mttyy > $outfile.p
 fi
   Symbols='obs_o obs_h'    
 fi

@@ -212,7 +212,14 @@ function [known] = mtt_component_eqn (fullname, port, causality, \
   else				# Everything else
     if exist(sprintf("%s_cause", comp_type)) # Simple component
       ## Do the equations
-      [eqn,insigs,innames] = eval(sprintf("%s_seqn (Name, name, cr, arg, outsig, insigs, innames);", comp_type));
+      [eqn,insigs,innames] = eval(sprintf("%s_seqn (Name, name, cr, \
+						    arg, outsig, \
+						    insigs, \
+						    innames);", \
+					  comp_type));
+      ## Resolve CR
+      eqn = mtt_resolve_cr(eqn);
+
     else			# Compound component
       new_NAME = Name;
       new_Name = mtt_fullname(Name,name);

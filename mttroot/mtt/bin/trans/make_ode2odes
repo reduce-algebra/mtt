@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.45  2001/02/05 04:32:35  geraint
+## Octave version 2.1.x compatability and #ifdef statements for standalone rep
+##
 ## Revision 1.46  2001/01/08 06:21:59  geraint
 ## #ifdef STANDALONE stuff
 ##
@@ -253,7 +256,7 @@ make_cc()
 {
 # get octave version
 octave_development=`octave --version | awk '{print $4}' | awk -F\. '{print $2}'`
-if [ octave_development ]; then
+if [ $octave_development ]; then
     vector_value=column_vector_value
     feval_header=parse.h
 else

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.30  1999/04/20 06:16:46  peterg
+## Removed calls to _switch.m
+##
 ## Revision 1.29  1999/04/02 06:27:55  peterg
 ## Modified for new implicit method with swoitches
 ##
@@ -276,8 +279,9 @@ BEGIN{
           printf("{%s $MTTPATH/trans/p/sign.p}\n",inc)
           printf("{%s $MTTPATH/trans/p/mtt_euler.p}\n",inc)
           printf("{%s $MTTPATH/trans/p/mtt_implicit.p}\n",inc)
-          printf("{%s $MTTPATH/trans/p/zero_matrix.p}\n",inc)
-          printf("{%s $MTTPATH/trans/p/zero_vector.p}\n",inc)
+          # printf("{%s $MTTPATH/trans/p/zero_matrix.p}\n",inc)
+          printf("{%s $MTTPATH/trans/p/zero_input.p}\n",inc)
+          printf("{%s $MTTPATH/trans/p/zero_state.p}\n",inc)
           printf("{%s %s_simpar.p}\n",inc,Sys) 
           printf("{%s %s_numpar.p}\n",inc,Sys)
           printf("{%s %s_state.p}\n",inc,Sys)

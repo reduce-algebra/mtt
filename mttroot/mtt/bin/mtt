@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.361  2002/09/16 08:08:00  geraint
+## Merged changes from global-optimisation branch.
+##
 ## Revision 1.360.2.3  2002/09/16 07:59:26  geraint
 ## Changed default optimisation to global.
 ##
@@ -1618,7 +1621,7 @@ if [ "$1" = "hinfo" ] && [$2 = ""]; then
    mtt_check_var "$HTMLVIEW" HTMLVIEW
   (cd $MTT_DOC/; make --silent mtt.html) 
    echo Invoking $HTMLVIEW
-   (cd $MTT_DOC; $HTMLVIEW ./mtt.html)&
+   (cd $MTT_DOC; $HTMLVIEW file://$MTT_DOC/mtt.html)&
    exit
 fi
 

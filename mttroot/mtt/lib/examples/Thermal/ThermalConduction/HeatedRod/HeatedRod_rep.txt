@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1999/12/21 23:53:04  peterg
+% %% Compiled version
+% %%
 % %% Revision 1.1  1999/02/21 02:14:29  peterg
 % %% Initial revision
 % %%
@@ -19,5 +22,5 @@ mtt -o -ss HeatedRod lmfr ps
 
 mtt -o -ss HeatedRod numpar txt
 mtt -o -ss HeatedRod input txt
-mtt -o -ss -c HeatedRod odeso ps
+mtt -o -ss HeatedRod odeso ps
 

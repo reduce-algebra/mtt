@@ -1,12 +1,13 @@
-function arg = args2arg(args,n)
-% args2arg - pulls the nth argument from a comma-separated list.
+function arg = args2arg(args,n,FS)
+% args2arg - pulls the nth argument from a FS-separated list.
+% FS defaults to `;'.
 % 
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %     %%%%% Model Transformation Tools %%%%%
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 
 % Matlab function  args2arg.m
-% arg = args2arg(args,n) 
+% arg = args2arg(args,n,FS) 
 % Copyright (c) P.J. Gawthrop, 1996.
 
 
@@ -15,10 +16,16 @@ function arg = args2arg(args,n)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/08/27  12:50:43  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Field separator
-FS = ',';
+if nargin<3
+  FS = ';';
+end;
+
 arg = '';
 L = length(args);
 args_count = 0;
@@ -31,10 +38,10 @@ for i=1:n
   while args_count < L
     args_count = args_count+1;
     arg_count = arg_count+1;
-    ch = args(args_count);
+    ch = str2ch(args,args_count);
     if ch==FS
       break;
     end;
-    arg(arg_count) = ch;
+    arg = [arg ch];
   end;
 end;

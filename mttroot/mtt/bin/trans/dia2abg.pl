@@ -92,6 +92,8 @@ my (%component_id_tag, %bond_id_start_id, %bond_id_end_id,
     %bond_id_arrow_on_start, %bond_id_flow_causality, %bond_id_effort_causality,
     %bond_id_start_label,%bond_id_end_label);
 
+my (%component_id_type, %component_id_name, %component_id_reps, %component_id_anon);
+
 # Parse user options:
 my $diagram_name = '';
 my $dia_input_file = '';
@@ -139,11 +141,11 @@ $doc = $dom->parsefile($dia_input_file);
 $objects = get_objects_node($doc,"Bond Graph");
 
 get_component_data($objects);
+parse_component_data();
 
 get_bond_data($objects);
 
 create_component_list() if ($create_component_list);
-name_anonymous_components();
 
 if ($create_abg) {
     open (OUT,">$abg_file") ||
@@ -190,12 +192,14 @@ sub create_component_list {
     open (RAW,">$component_list_file") ||
 	die "Cannot open $component_list_file for writing.\n";
 
+    my (%reverse_component_id_tag) = reverse (%component_id_tag);
     foreach my $val (values(%component_id_tag)) {	
+	my ($id, $type);
+	$id = $reverse_component_id_tag{$val};
+	$type = $component_id_type{$id};
 	$_ = $val;
 	id_cleaner();
-	$val = $_;
-	($type, $name) = split (/:/) ;
-	$type = $type ? $type : $val;
+	$val =  $_;
 	print RAW $val . "\n" if (($type ne "1") and ($type ne "0"));
     }
     close(RAW);
@@ -350,7 +354,6 @@ sub output_abg {
 	$strlength,$subsys_or_port);
 
     print_debug("WRITING OUTPUT TO STDIO...\n");
-    $rep = "1";
     $stat = "-1";
 
     output_abg_header();
@@ -359,10 +362,11 @@ sub output_abg {
 	($subsys_or_port,$_) = id_to_name($id);
 	remove_brackets(); $NM = $_;
 
-	$type = id_to_type($id);
+	$type = $component_id_type{$id};
 
 	$cr = "" unless defined($cr = $component_label_data{$NM}[1]);
 	$arg = "" unless defined($arg = $component_label_data{$NM}[2]);
+	$rep = $component_id_reps{$id};
 
 	@clist = ();
 	while (($bond_id,$start) = each(%bond_id_start_id)) {
@@ -433,7 +437,6 @@ sub output_ibg {
 
     %reverse_mtt_bond_id_index = reverse (%mtt_bond_id_index);
 
-#    while (($mtt_bond_id, $dia_bond_id) = each(%reverse_mtt_bond_id_index)) {
     @bonds = (sort keys (%reverse_mtt_bond_id_index));
     foreach $mtt_bond_id (@bonds) {
  
@@ -461,10 +464,6 @@ sub output_ibg {
 	    $end_label = "[]";
 	}
 
-	# ignore label if it is not enclosed by []
-#	$start_label =~ s/[^[]*\[\([^]]*\)\]/[$1]/;
-#	$end_label   =~ s/[^[]*\[\([^]]*\)\]/[$1]/;
-
 	if ($bond_id_arrow_on_start{$dia_bond_id}) {
 	    $head_label = $end_label;
 	    $tail_label = $start_label;
@@ -473,8 +472,8 @@ sub output_ibg {
 	    $tail_label = $end_label;
 	}
 
-	$head_component = $component_id_tag{$head};
-	$tail_component = $component_id_tag{$tail};
+	$head_component = "$component_id_type{$head}:$component_id_name{$head}";
+	$tail_component = "$component_id_type{$tail}:$component_id_name{$tail}";
 
 	$effort_causality = $bond_id_effort_causality{$dia_bond_id};
 	$flow_causality   = $bond_id_flow_causality  {$dia_bond_id};
@@ -553,20 +552,32 @@ sub get_component_data {
     die "There are no components!\n" unless keys(%component_id_tag) > 0;
 }
 
-sub name_anonymous_components {
-    my ($id, $component, $type, $name, $anon_id);
-    $anon_id = 0;
-    while (($id, $component) = each(%component_id_tag)) {
+sub parse_component_data {
+    my ($anon_index, $id, $component, $anonymous);
+    $anon_index = 0;
+    while (($id, $component) = each (%component_id_tag)) {
 	$_ = $component;
 	id_cleaner();
 	$component = $_;
-	($type, $name) = split (/:/, $component);
-	if (! $name) {
-	    $component = "${component}:mtt${component}_${anon_id}";
-	    $anon_id++;
+	my ($type_name, $repetitions) = split (/\*/, $component);
+	if (! $repetitions) {
+	    $type_name = $component;
+	    $repetitions = 1;
 	}
-	$component_id_tag{$id} = $component;
-    }    
+	my ($type, $name) = split (/:/, $type_name);
+	if (! $name) {
+	    $type = $type_name;
+	    $name = "mtt${type}_${anon_index}";
+	    $anonymous = 1;
+	    $anon_index++;
+	} else {
+	    $anonymous = 0;
+	}
+	$component_id_type{$id} = $type;
+	$component_id_name{$id} = $name;
+	$component_id_reps{$id} = $repetitions;
+	$component_id_anon{$id} = $anonymous;
+    }
 }
 
 # Dia stores its attributes in a strange way, not using typical xml attributes.
@@ -746,26 +757,14 @@ sub remove_brackets {
     s/^\[([^\]]*)\]$/$1/;
 }
 
-sub id_to_type {
-    my ( $id )= @_;
-    my($type,$name);
-
-    $_ = $component_id_tag{$id};
-    id_cleaner();
-    ($type, $name) = split(/:/);
-
-    return $type;
-}
-
 # If 1 LHS argument is used, it returns component name.  If 2 are used, it return
 # "subsystem" or "port" depending on whether brackets are found in the name.
 sub id_to_name {
     my ( $id )= @_;
     my($type,$name);
-
-    $_ = $component_id_tag{$id};
-    id_cleaner();
-    ($type, $name) = split(/:/);
+    
+    $type = $component_id_type{$id};
+    $name = $component_id_name{$id};
 
     if(!defined($name)) { $name = $id };
 

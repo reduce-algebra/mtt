@@ -15,7 +15,7 @@ Ny=`mtt_getsize ${sys} y`
 ## write header
 cat <<EOF > ${out}
 #!/bin/sh
-# Next line replaces shell with wish\\
+# -*-tcl-*- Next line replaces shell with wish\\
 exec wish "\$0" "\$@"
 
 ## main window
@@ -36,20 +36,49 @@ menu .menubar.file.menu
 menubutton .menubar.edit -text "Edit" -underline 0 -menu .menubar.edit.menu
 menu .menubar.edit.menu
 .menubar.edit.menu add cascade -label "Axes"         -underline 0 -menu .menubar.edit.menu.axes
+.menubar.edit.menu add cascade -label "Contour (3D)" -underline 0 -menu .menubar.edit.menu.contour
 .menubar.edit.menu add cascade -label "Grid"         -underline 0 -menu .menubar.edit.menu.grid
 .menubar.edit.menu add cascade -label "Key"          -underline 0 -menu .menubar.edit.menu.key
+.menubar.edit.menu add cascade -label "Timestamp"    -underline 0 -menu .menubar.edit.menu.time
 
 menu .menubar.edit.menu.axes
 .menubar.edit.menu.axes add command -label "Cartesian" -underline 0 -command { puts "set nopolar ; replot" }
 .menubar.edit.menu.axes add command -label "Polar"     -underline 0 -command { puts "set   polar ; replot" }
+.menubar.edit.menu.axes add cascade -label "Ranges"    -underline 0 -menu .menubar.edit.menu.axes.range
+
+menu .menubar.edit.menu.axes.range
+.menubar.edit.menu.axes.range add command -label "Set X"   -underline 4 -command { puts "set xrange \[[get_value "X axis range? min:max" "*:*"]\]" }
+.menubar.edit.menu.axes.range add command -label "Set Y"   -underline 4 -command { puts "set yrange \[[get_value "Y axis range? min:max" "*:*"]\]" }
+.menubar.edit.menu.axes.range add command -label "Set Z"   -underline 4 -command { puts "set zrange \[[get_value "Z axis range? min:max" "*:*"]\]" }
+
+menu .menubar.edit.menu.contour
+.menubar.edit.menu.contour add command -label "Show Contour" -underline 0 -command { puts "set   dgrid3d ; set   contour ; replot" }
+.menubar.edit.menu.contour add command -label "Hide Contour" -underline 0 -command { puts "set nodgrid3d ; set nocontour ; replot" }
+.menubar.edit.menu.contour add cascade -label "Surface"      -underline 0 -menu .menubar.edit.menu.contour.surface
+
+menu .menubar.edit.menu.contour.surface
+.menubar.edit.menu.contour.surface add command -label "Show Surface" -underline 0 -command { puts "set   surface ; replot" }
+.menubar.edit.menu.contour.surface add command -label "Hide Surface" -underline 0 -command { puts "set nosurface ; replot" }
 
 menu .menubar.edit.menu.grid
-.menubar.edit.menu.grid add command -label "Show Grid" -underline 0 -command { puts "set   grid  ; replot" }
-.menubar.edit.menu.grid add command -label "Hide Grid" -underline 0 -command { puts "set nogrid  ; replot" }
+.menubar.edit.menu.grid add cascade -label "Show" -underline 0 -menu .menubar.edit.menu.grid.show
+.menubar.edit.menu.grid add cascade -label "Hide" -underline 0 -menu .menubar.edit.menu.grid.hide
+
+menu .menubar.edit.menu.grid.show
+.menubar.edit.menu.grid.show add command -label "Show all ticks" -underline 5 -command { puts "set grid xtics ytics ztics ; replot" }
+.menubar.edit.menu.grid.show add command -label "Show X ticks" -underline 5 -command { puts "set grid xtics ; replot" }
+.menubar.edit.menu.grid.show add command -label "Show Y ticks" -underline 5 -command { puts "set grid ytics ; replot" }
+.menubar.edit.menu.grid.show add command -label "Show Z ticks" -underline 5 -command { puts "set grid ztics ; replot" }
+
+menu .menubar.edit.menu.grid.hide
+.menubar.edit.menu.grid.hide add command -label "Hide all ticks" -underline 5 -command { puts "set grid noxtics noytics noztics ; replot" }
+.menubar.edit.menu.grid.hide add command -label "Hide X ticks" -underline 5 -command { puts "set grid noxtics ; replot" }
+.menubar.edit.menu.grid.hide add command -label "Hode Y ticks" -underline 5 -command { puts "set grid noytics ; replot" }
+.menubar.edit.menu.grid.hide add command -label "Hide Z ticks" -underline 5 -command { puts "set grid noztics ; replot" }
 
 menu .menubar.edit.menu.key
-.menubar.edit.menu.key add command -label "Show Key"   -underline 0 -command { puts "set   key   ; replot" }
-.menubar.edit.menu.key add command -label "Hide Key"   -underline 0 -command { puts "set nokey   ; replot" }
+.menubar.edit.menu.key add command -label "Show Key"   -underline 0 -command { puts "set   key ; replot" }
+.menubar.edit.menu.key add command -label "Hide Key"   -underline 0 -command { puts "set nokey ; replot" }
 .menubar.edit.menu.key add cascade -label "Position"   -underline 0 -menu .menubar.edit.menu.key.posn
 
 menu .menubar.edit.menu.key.posn
@@ -59,6 +88,10 @@ menu .menubar.edit.menu.key.posn
 .menubar.edit.menu.key.posn add command -label "Bottom"  -underline 0 -command { puts "set key bottom  ; replot" }
 .menubar.edit.menu.key.posn add command -label "Outside" -underline 0 -command { puts "set key outside ; replot" }
 .menubar.edit.menu.key.posn add command -label "Below"   -underline 3 -command { puts "set key below   ; replot" }
+
+menu .menubar.edit.menu.time
+.menubar.edit.menu.time add command -label "Show Timestamp"   -underline 0 -command { puts "set   timestamp ; replot" }
+.menubar.edit.menu.time add command -label "Hide Timestamp"   -underline 0 -command { puts "set notimestamp ; replot" }
 
 menubutton .menubar.tool -text "Tools" -underline 0 -menu .menubar.tool.menu
 menu .menubar.tool.menu
@@ -115,12 +148,15 @@ pack .plotbar.select  -expand false -fill x -side right
 # button bar
 canvas .buttonbar
 
+button .buttonbar.replot -text "Refresh"   -relief raised -command { puts "replot" }
+
 button .buttonbar.newwin -text "New Plot"  -relief raised -command {
     set windownum [expr 1 + \$windownum]
     puts "set term x11 \$windownum"
 }
 
 pack .buttonbar.newwin  -expand false -side right
+pack .buttonbar.replot  -expand false -side right
 
 ## parameter list canvas
 canvas		.parameters
@@ -163,11 +199,9 @@ proc "reverse_sort" "list" {
 }
 
 proc "sort_list" "list sortorder" {
-    if ("\$sortorder"=="normal") {
-	return [lsort -ascii \$list]
-    }
-    if ("\$sortorder"=="reverse") {
-	return [reverse_sort \$list]
+    switch -- \$sortorder {
+	normal	{ return [lsort -ascii \$list] }
+	reverse { return [reverse_sort \$list] }
     }
 }
 
@@ -197,27 +231,29 @@ pack .parameters		-expand true  -fill both
 
 ## map names to column numbers
 proc "get_state_column" "title" {
+    switch -- \$title {
 EOF
 
-gawk '
-($1 == "state") {
-    printf "if (\"%s\"==\"%s\") { return %d }\n", Title, $4, $2+2+Ny;
-}
-' Title=\$title Ny=${Ny} ${struc} >> ${out}
-
+	gawk '($1 == "state") {
+	    printf "\t\t%s\t{ return %d }\n", $4, $2+2+Ny;
+	}
+	' Ny=${Ny} ${struc} >> ${out}
+	
 cat <<EOF >> ${out}
+    }
 }
-
+    
 proc "get_output_column" "title" {
+    switch -- \$title {
 EOF
 
-gawk '
-($1 == "output") {
-    printf "if (\"%s\"==\"%s\") { return %d }\n", Title, $4, $2+1;
-}    
-' Title=\$title Ny=${Ny} ${struc} >> ${out}
+	gawk '($1 == "output") {
+	    printf "\t\t%s\t{ return %d }\n", $4, $2+1;
+	}    
+	' Title=\$title Ny=${Ny} ${struc} >> ${out}
 
 cat <<EOF >> ${out}
+    }
 }
 
 proc "plot" "title" {
@@ -231,20 +267,25 @@ proc "plot" "title" {
     global ztitle
     if {"\$title" == "Time"} {
 	set column 1
-    } elseif {"\$view" == "states"} {
-	set column [get_state_column \$title]
-    } elseif {"\$view" == "outputs"} {
-	set column [get_output_column \$title]
-    }    
-    if {"\$select" == "Select X"} {
-	set xcolumn \$column
-	set xtitle  \$title
-    } elseif {"\$select" == "Select Y"} {
-	set ycolumn \$column
-	set ytitle  \$title
-    } elseif {"\$select" == "Select Z"} {
-	set zcolumn \$column
-	set ztitle  \$title
+    } else {
+	switch -- \$view {
+	    states	{ set column [get_state_column  \$title] }
+	    outputs	{ set column [get_output_column \$title] }
+	}
+    } 
+    switch -- \$select {
+	"Select X" {
+	    set xcolumn \$column
+	    set xtitle  \$title
+	}
+	"Select Y" {
+	    set ycolumn \$column
+	    set ytitle  \$title
+	}
+	"Select Z" {
+	    set zcolumn \$column
+	    set ztitle  \$title
+	}
     }
     plot_var
 }
@@ -260,45 +301,52 @@ proc "plot_var" "" {
     global dimension
     global plottype
     global lastplot
-    if {"\$dimension" == "2D"} {
-	if {"\$plottype" == "Single"} {
-	    puts "set xlabel '\$xtitle'"
-	    puts "set ylabel '\$ytitle'"
-	    puts "set nokey"
-	    puts "plot '${dat2}' using \$xcolumn:\$ycolumn title 'y:\$ytitle  x:\$xtitle' with lines"
-	} elseif {"\$plottype" == "Multi"} {
-	    puts "set xlabel ''"
-	    puts "set ylabel ''"
-	    puts "set key"
-	    if {"\$lastplot" != "2D"} {
-		puts "plot '${dat2}' using \$xcolumn:\$ycolumn title 'y:\$ytitle  x:\$xtitle' with lines"
-	    } else {
-		puts "replot '${dat2}' using \$xcolumn:\$ycolumn title 'y:\$ytitle  x:\$xtitle' with lines"	    
+    switch -- \$dimension {
+	2D	{
+	    switch -- \$plottype {
+		Single	{
+		    puts "set xlabel '\$xtitle'"
+		    puts "set ylabel '\$ytitle'"
+		    puts "set nokey"
+		    puts "plot '${dat2}' using \$xcolumn:\$ycolumn title 'y:\$ytitle  x:\$xtitle' with lines"
+		}
+		Multi	{
+		    puts "set xlabel ''"
+		    puts "set ylabel ''"
+		    puts "set key"
+		    if {"\$lastplot" != "2D"} {
+			puts "plot '${dat2}' using \$xcolumn:\$ycolumn title 'y:\$ytitle  x:\$xtitle' with lines"
+		    } else {
+			puts "replot '${dat2}' using \$xcolumn:\$ycolumn title 'y:\$ytitle  x:\$xtitle' with lines"	    
+		    }
+		}
 	    }
 	}
-	set lastplot "2D"	
-    } elseif {"\$dimension" == "3D"} {
-	if {"\$plottype" == "Single"} {
-	    puts "set xlabel '\$xtitle'"
-	    puts "set ylabel '\$ytitle'"
-	    puts "set zlabel '\$ztitle'"
-	    puts "set nokey"
-	    puts "splot '${dat2}' using \$xcolumn:\$ycolumn:\$zcolumn title 'z:\$ztitle  y:\$ytitle  x:\$xtitle' with lines"
-	} elseif {"\$plottype" == "Multi"} {
-	    puts "set xlabel ''"
-	    puts "set ylabel ''"
-	    puts "set zlabel ''"
-	    puts "set key"
-	    if {"\$lastplot" != "3D"} {
-		puts "splot '${dat2}' using \$xcolumn:\$ycolumn:\$zcolumn title 'z:\$ztitle  y:\$ytitle  x:\$xtitle' with lines"
-	    } else {
-		puts "replot '${dat2}' using \$xcolumn:\$ycolumn:\$zcolumn title 'z:\$ztitle  y:\$ytitle  x:\$xtitle' with lines"
+	3D	{
+	    switch -- \$plottype {
+		Single	{
+		    puts "set xlabel '\$xtitle'"
+		    puts "set ylabel '\$ytitle'"
+		    puts "set zlabel '\$ztitle'"
+		    puts "set nokey"
+		    puts "splot '${dat2}' using \$xcolumn:\$ycolumn:\$zcolumn title 'z:\$ztitle  y:\$ytitle  x:\$xtitle' with lines"
+		}
+		Multi	{
+		    puts "set xlabel ''"
+		    puts "set ylabel ''"
+		    puts "set zlabel ''"
+		    puts "set key"
+		    if {"\$lastplot" != "3D"} {
+			puts "splot '${dat2}' using \$xcolumn:\$ycolumn:\$zcolumn title 'z:\$ztitle  y:\$ytitle  x:\$xtitle' with lines"
+		    } else {
+			puts "replot '${dat2}' using \$xcolumn:\$ycolumn:\$zcolumn title 'z:\$ztitle  y:\$ytitle  x:\$xtitle' with lines"
+		    }
+		}
 	    }
 	}
-	set lastplot "3D"
     }
+    set lastplot \$dimension
 }
-
 ## open gnuplot plot file
 proc "open_plotfile" "" {
     global parameter
@@ -363,6 +411,74 @@ proc "print_postscript" "" {
     }
 }
 
+proc "get_value" "string initial" {
+    frame .f
+    frame .f.buttons
+    global get_value_retval
+    global get_value_status
+    set get_value_retval ""
+    set get_value_status ""
+
+    button	.f.buttons.ok		-text "ok"	-command {
+	set get_value_status "ok"
+	set get_value_retval [.f.entry get ]
+	destroy .f
+    }
+    button	.f.buttons.cancel	-text "Cancel"	-command {
+	set get_value_status "cancel"
+	destroy .f
+    }
+    entry	.f.entry
+    label	.f.label	-text "\$string"
+
+    .f.entry insert 0 "\$initial"
+
+    pack .f.buttons.ok		-side left   -expand false
+    pack .f.buttons.cancel	-side left   -expand false
+    pack .f.label		-side top    -expand false
+    pack .f.entry		-side top    -expand false
+    pack .f.buttons		-side top    -expand false
+    place .f -in .parameters -relx 0 -rely 0 -relwidth 1 -relheight 1 -anchor nw -bordermode outside
+    tkwait variable get_value_retval
+    if {"\$get_value_status" == "ok"} {
+	return "\$get_value_retval"
+    } else {
+	return ""
+    }
+}
+
+proc "get_scale" "string min max" {
+    frame .f
+    frame .f.buttons
+    global get_scale_retval
+    global get_scale_status
+    set get_scale_retval ""
+    set get_scale_status ""
+
+    button	.f.buttons.ok		-text "ok"	-command {
+	set get_scale_status "ok"
+	set get_scale_retval [.f.scale get ]
+	destroy .f
+    }
+    button	.f.buttons.cancel	-text "Cancel"	-command {
+	set get_scale_status "cancel"
+	destroy .f
+    }
+    scale	.f.scale	-orient h	-label "\$string"	-from "\$min"	-to "\$max"
+
+    pack .f.buttons.ok		-side left   -expand false
+    pack .f.buttons.cancel	-side left   -expand false
+    pack .f.scale		-side top    -expand false
+    pack .f.buttons		-side top    -expand false
+    place .f -in .parameters -relx 0 -rely 0 -relwidth 1 -relheight 1 -anchor nw -bordermode outside
+    tkwait variable get_value_retval
+    if {"\$get_scale_status" == "ok"} {
+	return "\$get_scale_retval"
+    } else {
+	return ""
+    }
+}
+
 # Defaults
 set parameter ""
 set windownum 0
@@ -373,6 +489,7 @@ set xcolumn 1 ; set xtitle "Time"
 set ycolumn 1 ; set ytitle "Time"
 set zcolumn 1 ; set ztitle "Time"
 
+puts "set timestamp"
 puts "set grid"
 puts "set nopolar"
 puts "set term X11 0"

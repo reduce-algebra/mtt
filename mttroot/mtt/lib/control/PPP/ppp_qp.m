@@ -1,4 +1,4 @@
-function [u,U,J] = ppp_qp (x,W,J_uu,J_ux,J_uw,Us0,Gamma,gamma)
+function [u,U,iterations] = ppp_qp (x,W,J_uu,J_ux,J_uw,Us0,Gamma,gamma,mu)
 
   ## usage:  [u,U] = ppp_qp (x,W,J_uu,J_ux,J_uw,Gamma,gamma)
   ## INPUTS:
@@ -7,6 +7,7 @@ function [u,U,J] = ppp_qp (x,W,J_uu,J_ux,J_uw,Us0,Gamma,gamma)
   ##      J_uu,J_ux,J_uw: Cost derivatives (see ppp_lin)
   ##      Us0: value of U* at tau=0 (see ppp_lin)
   ##      Gamma, gamma: U constrained by Gamma*U <= gamma 
+  ##      mu  Parameter of qp_mu
   ## Outputs:
   ##      u: control signal
   ##      U: control weight vector
@@ -18,6 +19,11 @@ function [u,U,J] = ppp_qp (x,W,J_uu,J_ux,J_uw,Us0,Gamma,gamma)
 
   ## Copyright (C) 1999 by Peter J. Gawthrop
   ## 	$Id$	
+
+  if nargin<9
+    mu = 0
+  endif
+
 
   ## Check the sizes
   n_x = length(x);
@@ -33,9 +39,11 @@ function [u,U,J] = ppp_qp (x,W,J_uu,J_ux,J_uw,Us0,Gamma,gamma)
   endif
 
 
-  if length(gamma)>0		# Constraints exist: do the QP algorithm 
-    U = qp(J_uu,(J_ux*x - J_uw*W),Gamma,gamma); # QP solution for weights U
-    #U = pd_lcp04(J_uu,(J_ux*x - J_uw*W),Gamma,gamma); # QP solution for weights U
+  if length(gamma)>0		# Constraints exist: do the QP algorithm
+    [U,iterations] = qp_mu(J_uu,(J_ux*x - J_uw*W),Gamma,gamma,mu); # QP solution for weights U	
+
+    ##U = qp(J_uu,(J_ux*x - J_uw*W),Gamma,gamma); # QP solution for weights U
+    ##U = pd_lcp04(J_uu,(J_ux*x - J_uw*W),Gamma,gamma); # QP solution for weights U
     u = Us0*U;			# Control signal
   else			# Do the unconstrained solution
     ## Compute the open-loop gains

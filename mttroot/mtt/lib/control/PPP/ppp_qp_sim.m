@@ -1,4 +1,4 @@
-function [T,y,u,J] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max_u,Order_u, Tau_y,Min_y,Max_y,Order_y, W,x_0,Delta_ol,movie)
+function [T,y,u,Iterations] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max_u,Order_u, Tau_y,Min_y,Max_y,Order_y, W,x_0,Delta_ol,mu,movie)
 
   ## usage: [T,y,u,J] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max_u,Order_u, Tau_y,Min_y,Max_y,Order_y, W,x_0,movie)
   ## Needs documentation - see ppp_ex11 for example of use.
@@ -14,8 +14,13 @@ function [T,y,u,J] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max_u,Order_u,
   endif
 
   if nargin<20			# No movie
+    mu = 0;
+  endif
+
+  if nargin<21			# No movie
     movie = 0;
   endif
+
 
   ## Check some sizes
   [n_x,n_u,n_y] = abcddim(A,B,C,D);
@@ -49,7 +54,7 @@ function [T,y,u,J] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max_u,Order_u,
   dt = t(2)-t(1);		# Time increment
 
   ## Make sure Delta_ol is multiple of dt
-  Delta_ol = floor(Delta_ol/dt)*dt
+  Delta_ol = floor(Delta_ol/dt)*dt;
 
   if Delta_ol>0			# Intermittent control
     T_ol = 0:dt:Delta_ol-dt;	# Create the open-loop time vector
@@ -75,6 +80,7 @@ function [T,y,u,J] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max_u,Order_u,
   ## Initialise the saved variable arrays
   X = [];
   u = [];
+  Iterations = [];
   du = [];
   J = [];
   tick= time;
@@ -90,7 +96,7 @@ function [T,y,u,J] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max_u,Order_u,
     gamma = [gamma_u; gamma_y];
     
     ## Compute U(t)
-    [uu U] = ppp_qp (x,W,J_uu,J_ux,J_uw,Us0,Gamma,gamma); # Compute U
+    [uu, U, iterations] = ppp_qp (x,W,J_uu,J_ux,J_uw,Us0,Gamma,gamma,mu); # Compute U
  
     ## Compute the cost (not necessary but maybe interesting)
 #    [J_t] = ppp_cost (U,x,W,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww); # cost
@@ -109,6 +115,7 @@ function [T,y,u,J] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max_u,Order_u,
       i = i+1;
       X = [X x];		# Save state
       u = [u ut];		# Save input
+      Iterations = [Iterations iterations]; # Save iteration count
       x = Ad*x + Bd*ut;	# System
 
 #       if movie			# Plot the moving horizon
@@ -123,9 +130,9 @@ function [T,y,u,J] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max_u,Order_u,
   ## Save the last values
   X = [X x];		# Save state
   u = [u ut];		# Save input
+  Iterations = [Iterations iterations]; # Save iteration count
 
   tock = time;
-  Iterations = length(T_cl)
   Elapsed_Time = tock-tick
   y = C*X + D*u;		# System output
 

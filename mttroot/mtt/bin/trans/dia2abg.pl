@@ -200,7 +200,7 @@ sub create_component_list {
 	$_ = $val;
 	id_cleaner();
 	$val =  $_;
-	print RAW $val . "\n" if (($type ne "1") and ($type ne "0"));
+	print RAW $val . "\n";
     }
     close(RAW);
 }

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1996/08/11 08:48:07  peter
+## Initial revision
+##
 ###############################################################
 
 # Inform user
@@ -35,6 +38,8 @@ IN "$1_sympar.r";
 OUT "$1_numpar.m";
 
 write "function numpar = $1_numpar;";
+write "% function numpar = $1_numpar;";
+write "% Created by MTT";
 
 IF MTTNvar>0 THEN
 BEGIN
@@ -42,19 +47,25 @@ BEGIN
   BEGIN
     write "numpar(",i , ") = 1;		% ", MTTVar(i,1);
   END;
-END;
+END
+ELSE
+  write "numpar = []";
+
 
 SHUT "$1_numpar.m";
 
 OUT "$1_parconv.m";
 
-write "[ ...";
+write "function [ ...";
 
 IF MTTNvar>0 THEN
 BEGIN
   FOR i := 1:MTTNvar DO
   BEGIN
-    write MTTVar(i,1), ", ...";
+    IF i<MTTNvar THEN
+      write MTTVar(i,1), ", ..."
+    ELSE
+      write MTTVar(i,1), " ...";
   END;
 END;
 

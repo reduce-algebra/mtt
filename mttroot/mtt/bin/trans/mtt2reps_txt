@@ -9,6 +9,12 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1999/03/08 21:24:43  peterg
+## Handles * representations:
+##
+## 	rep* is special
+##         rep shows all possible languages
+##
 ## Revision 1.2  1999/03/08 06:34:07  peterg
 ## Removed mtt help - replaced by grep #SUMMARY - quicker
 ##
@@ -31,7 +37,7 @@ for rep in $representations ; do
             if (($2==rep)||($2==sprintf("%s*",rep))) print $NF
         }' rep=$rep |\
       sort -u | sed 's/[()]//g'`
-    echo $rep $language |\
+    echo $rep $language  |\
        awk '{
          printf( "%s", $1)
          for (i=2;i<=NF;i++) printf("\t%s", $i); 

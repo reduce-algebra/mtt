@@ -13,35 +13,123 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/10/20 08:13:14  peterg
+## Initial revision
+##
 ###############################################################
 
-name=`mtt --version`
+#MTT blurb
+title=`mtt --version`
+
+#Collect all systems (inc dir name)
+dirname=`basename $PWD`
+systems=`echo *_abg.fig | sed 's/\([a-zA-Z0-9]*\)_abg.fig/\1/g'`
+dirname_in_systems=`echo $systems | grep -c $dirname`
+if [ "$dirname_in_systems" = "0" ]; then
+    systems="$systems $dirname"
+fi
+
+# Default system
+system=$dirname
 
 cat<<EOF
-# The top level menu
-menubutton .mtt -text "$name" -menu .mtt.sys
-pack .mtt
+# Default system
+set system "$system"
 
-menu .mtt.sys
-.mtt.sys add cascade -label "NewSystem" -menu .mtt.sys.rep
-.mtt.sys add cascade -label "sys1" -menu .mtt.sys.rep
-.mtt.sys add cascade -label "sys2" -menu .mtt.sys.rep
-.mtt.sys add separator
-.mtt.sys add command -label "Exit" -command "exit"
+# Arguments to mtt
+set args "-q"
+
+# The top level menu
+button .mtt -text "$title ($dirname)" -command "exec mtt warranty &"
+menubutton .util  -text "Utilities" -menu .util.util
+menubutton .opt  -text "Options" -menu .opt.opt
+menubutton .sys -text "Systems" -menu .sys.sys
+menubutton .rep -text "Representations (major)" -menu .rep.rep
+menubutton .repall -text "Representations (all)" -menu .repall.repall
+menubutton .exam -text "Examples" -menu .exam.exam
+button .mtt_quit -text "Quit" -command exit
+pack .mtt .rep  .repall .sys .exam .util .opt  .mtt_quit
+ 
+menu .util.util
+# .mtt.opt.util add command -label "copy example" -command 
+# .mtt.opt.util add command -label "copy" 
+.util.util add command -label "clean" -command "exec mtt -q Clean &"
+.util.util add command -label "recursive clean" -command "exec mtt -q rclean &"
+
+menu .opt.opt
+
+
+# System choice
+menu .sys.sys
 EOF
+
+for sys in $systems; do
+    echo .sys.sys add radio -label "$sys"  -command {set system "$sys"} 
+done
+
+# Create the options menu
+mtt |  awk '{
+  if (Options) {
+    option=substr($1,2);
+    label="";
+    for (i=2;i<=NF;i++)
+      label = sprintf("%s %s",label,$i);
+    printf(".opt.opt add check -label \"%s (-%s)\" -variable %s -command {set args \"$args -%s\"}\n", label, option, option, option); 
+  }
+  if ($1=="Options:") Options = 1;
+}'
+
+# Examples menu
+cat <<EOF
+menu .exam.exam
+EOF
+
+awk '{
+    gsub(/"/,"",$0); # zap quotes
+    printf("\n# Example  %s\n", $1)
+    sub(/:/,"",$1); # zap :
+    printf(" set mtt {xmtt -example %s} \n", $1); 
+    $1 = $1 ":";
+    printf(" set label \"%s\" \n", $0); 
+    printf(".exam.exam add command -label $label -command \"exec echo $mtt &; exec $mtt & \"\n", $1);
+}' < $MTTPATH/EXAMPLES
 
 # Create other menus from the reps.txt file
 cat<<EOF
-menu .mtt.sys.rep
+menu .rep.rep
+menu .repall.repall
 EOF
 awk '{
- printf("\n# Menus for representation %s\n", $1)
- printf(".mtt.sys.rep add  cascade -label \"%s\" -menu .mtt.sys.rep.%s\n", $1, $1);
- printf("menu .mtt.sys.rep.%s\n", $1);
- for (i=2;i<=NF;i++) {
-    printf(".mtt.sys.rep.%s add  command -label  \"%s\" ", $1, $i);
-    printf(" -command  \"exec mtt sys %s %s \" \n",  $1, $i); 
+# Important representation?
+ if (index($1,"*")) {
+    rep=substr($1,1,length($1)-1);
+    printf("\n# Menus for representation %s\n", $1)
+    printf(".rep.rep add  cascade -label \"%s\" -menu .rep.rep.%s\n", rep, $1);
+    printf("menu .rep.rep.%s\n", $1);
+    for (i=2;i<=NF;i++) {
+      printf(" set mtt {mtt $args $system %s %s} \n", rep, $i); 
+      printf(".rep.rep.%s add  command -label  \"%s\" ", $1, $i);
+      printf(" -command  \"exec echo $mtt &; exec $mtt &\" \n"); 
+   }
  }
-}' 
+ else {
+    rep = $1;
+    printf("\n# Menus for representation %s\n", rep)
+    printf(".repall.repall add  cascade  -label \"%s\" -menu .repall.repall.%s\n", rep, rep);
+    printf("menu .repall.repall.%s\n", rep);
+    for (i=2;i<=NF;i++) {
+      printf(" set mtt {mtt $args $system %s %s} \n", rep, $i); 
+      printf(".repall.repall.%s add  command -label  \"%s\" ", rep, $i);
+      printf(" -command  \"exec echo $mtt &; exec $mtt &\" \n"); 
+   }
+ }
+}' <$MTTPATH/REPS 
+
+
+
+
+
+
+
 
 

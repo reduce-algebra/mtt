@@ -1,0 +1,49 @@
+#! /bin/sh
+
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: mtt_p2c
+# Pascal to c converter for MTT
+# Uses the wonderful GNU p2c by  Dave Gillespie, daveg@csvax.cs.caltech.edu.    
+# P.J.Gawthrop July 1998
+# Copyright (c) P.J.Gawthrop 1998
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+# Options
+info=''
+while [ -n "`echo $1 | grep '^-'`" ]; do
+  case $1 in
+	-I )
+                info=info;;
+	*)
+		echo "$1 is an invalid argument - ignoring" ;;
+  esac
+  shift
+done
+
+# Inform user
+echo Creating $1_$2.c
+
+# Use p2c to do the translation - but zap the PASCAL_MAIN which we don't want. 
+p2c -V  $1_$2.p  > mtt_p2c.log 2>/dev/null
+
+mv $1_$2.p mtt_junk
+grep -v 'PASCAL_MAIN' < mtt_junk > $1_$2.p
+
+# Info if needed
+if [ -n "$info" ]; then
+    cat $1_ode2odes.log
+else
+    rm -f $1_ode2odes.log
+fi
+

@@ -12,7 +12,7 @@
 title=`mtt --version`
 
 #Collect all systems (inc dir name)
-dirname=`basename $PWD`
+dirname="basename `pwd`"
 systems=`echo *_abg.fig | sed 's/\([a-zA-Z0-9]*\)_abg.fig/\1/g'`
 dirname_in_systems=`echo $systems | grep -c $dirname`
 if [ "$dirname_in_systems" = "0" ]; then
@@ -85,12 +85,14 @@ cat <<EOF
 menu .exam.exam
 EOF
 
-strip_comments $MTTPATH/EXAMPLES | examples_txt2tk
+echo '#' Examples menu
+strip_comments <$MTTPATH/EXAMPLES | examples_txt2tk
 
 # Representations menu
+echo '#' Representations menu
 cat<<EOF
 menu .rep.rep
 menu .repall.repall
 EOF
 
-strip_comments $MTTPATH/REPS  | reps_txt2tk 
+strip_comments <$MTTPATH/REPS  | reps_txt2tk 

@@ -31,6 +31,9 @@ global at_top_level
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.22  1998/07/28 19:05:46  peterg
+% %% Fixed a few bugs.
+% %%
 % %% Revision 1.21  1998/07/28 14:21:31  peterg
 % %% Vector SS ports.
 % %%
@@ -119,8 +122,8 @@ if (strcmp(cr,"SS"))		# Then its the standard file
   if (N~=2)			# Must have 2 arguments
     mtt_error(sprintf("SS should have 2 args not %i", N));
   else
-    effort_attribute = a(1,:);
-    flow_attribute   = a(2,:);
+    effort_attribute = deblank(a(1,:));
+    flow_attribute   = deblank(a(2,:));
   end;
 else				# Old style file
   effort_attribute = cr;
@@ -212,15 +215,15 @@ for i=1:n_bonds			# Loop over all the bonds
     % Flow
     if strcmp(flow_attribute, "external")
       if bonds(1,2)==1 % Source
-	inputs = inputs+1;
+	inputs = inputs+1
 	fprintf(filenum, "%s := MTTu(%d,1);\n", varname(sname, bond_number,-1),inputs);
       else % Sensor
-	outputs = outputs+1;
+	outputs = outputs+1
 	fprintf(filenum, "MTTy(%d,1) := %s;\n", outputs, ...
 		varname(sname, bond_number,-1));
       end;
     elseif strcmp(flow_attribute, "unknown") % Unknown input
-      unknown_inputs = unknown_inputs + 1;
+      unknown_inputs = unknown_inputs + 1
       fprintf(filenum, "%s := MTTUi%d;\n", ...
 	      varname(sname, bond_number,-1), unknown_inputs);
     elseif strcmp(flow_attribute, "internal")
@@ -231,7 +234,7 @@ for i=1:n_bonds			# Loop over all the bonds
 		varname(sname, bond_number,-1), flow_attribute);
       else % Sensor
 	if strcmp(flow_attribute, "zero") %Zero output
-	  zero_outputs = zero_outputs + 1;
+	  zero_outputs = zero_outputs + 1
 	  fprintf(filenum, "MTTyz%d := %s;\n", ...
 		  zero_outputs, varname(sname, bond_number,-1));
 	else

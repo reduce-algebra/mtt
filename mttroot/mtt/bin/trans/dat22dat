@@ -14,6 +14,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  2000/09/27 16:12:50  peterg
+## Use expr to evaluate arithmetic - compatible with sh (as opposed to
+## bash)
+##
 ## Revision 1.8  2000/09/21 10:07:06  peterg
 ## Now correctely writes out the state into _odes.dat rep.
 ##
@@ -33,7 +37,7 @@
 ##
 ###############################################################
 if [ -z "$1" ]; then
-  echo "Usage: dat22dat system odeso|odes"
+  echo "Usage: dat22dat system ode|odes so|s"
   exit
 fi
 
@@ -41,11 +45,11 @@ fi
 Nx=`mtt_getsize $1 x` # States
 Ny=`mtt_getsize $1 y` # Outputs
 
-case $2 in
-    odeso)
+case $3 in
+    so)
 	First=1; Last=`expr $First + $Ny`
 	;;
-    odes)
+    s)
 	First=`expr $Ny + 2`; Last=`expr $First + $Nx`
 	;;
     *)
@@ -53,7 +57,7 @@ case $2 in
         ;;
 esac
 
-echo Creating $1_$2.dat
+echo Creating $1_$2$3.dat
 
 awk '{
       ## Extract the data
@@ -62,4 +66,4 @@ awk '{
 	  printf("%s ", $i);
       printf("\n"); 
   }
-}' First=$First Last=$Last <$1_odes.dat2  > $1_$2.dat
+}' First=$First Last=$Last <$1_$2s.dat2  > $1_$2$3.dat

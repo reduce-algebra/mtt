@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.288  2000/12/01 17:59:01  peterg
+## Added .PRECIOUS: %.cc to hang on to cc files - thanks Geraint
+##
 ## Revision 1.287  2000/12/01 16:04:24  peterg
 ## More partitioning achieved -- now needs the connections to be properly
 ## sorted in cbg2ese_r
@@ -1616,7 +1619,7 @@ rep=$2
 lang=$3
 
 ## Make ps pdf if -pdf set
-if [ "$lang" == "ps" ]; then
+if [ "$lang" = "ps" ]; then
   lang=$ps
 fi
 

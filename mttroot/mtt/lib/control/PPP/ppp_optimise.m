@@ -1,21 +1,47 @@
-function [par,Par,Error,Y,iterations] = ppp_optimise(system_name,x_0,u,t,par_0,free,y_0,extras);
-  ## Usage: [par,Par,Error,Y,iterations] = ppp_optimise(system_name,x_0,u,t,par_0,free,y_0,weight,extras);
-  ##  system_name     String containg system name
-  ##  y_s   actual system output
-  ##  theta_0   initial parameter estimate
-  ##  free  Indices of the free parameters within theta_0
-  ##  weight Weighting function - same dimension as y_s
-  ##  extras.criterion convergence criterion
-  ##  extras.max_iterations limit to number of iterations
-  ##  extras.v  Initial Levenberg-Marquardt parameter
+function [par,Par,Error,Y,iterations] = \
+      ppp_optimise(system_name,x_0,par_0,simpar,u,y_0,free,extras);
+  ## Levenberg-Marquardt optimisation for PPP/MTT
+  ## Usage: [par,Par,Error,Y,iterations] = ppp_optimise(system_name,x_0,par_0,simpar,u,y_0,free[,extras]);
+  ##  system_name     String containing system name
+  ##  x_0             Initial state
+  ##  par_0           Initial parameter vector estimate
+  ##  simpar          Simulation parameters:
+  ##        .first      first time
+  ##        .dt         time increment
+  ##        .stepfactor Euler integration step factor
+  ##  u               System input (column vector, each row is u')
+  ##  y_0             Desired model output
+  ##  free            one row for each adjustable parameter
+  ##                  first column parameter indices
+  ##                  second column corresponding sensitivity indices
+  ##  extras (opt)    optimisation parameters
+  ##        .criterion convergence criterion
+  ##        .max_iterations limit to number of iterations
+  ##        .v  Initial Levenberg-Marquardt parameter
+
+  ###################################### 
+  ##### Model Transformation Tools #####
+  ######################################
+  
+  ###############################################################
+  ## Version control history
+  ###############################################################
+  ## $Id$
+  ## $Log$
+  ## Revision 1.1  2000/12/28 11:58:07  peterg
+  ## Put under CVS
+  ##
+  ###############################################################
+
 
   ## Copyright (C) 1999,2000 by Peter J. Gawthrop
 
+  sim_command = sprintf("%s_ssim(x_0,par,simpar,u,i_s)", system_name)
   ## Extract indices
   i_t = free(:,1); # Parameters
   i_s = free(:,2)'; # Sensitivities
 
-  if nargin<8
+  if nargin<9
     extras.criterion = 1e-5;
     extras.max_iterations = 10;
     extras.v = 1e-5;
@@ -23,7 +49,7 @@ function [par,Par,Error,Y,iterations] = ppp_optimise(system_name,x_0,u,t,par_0,f
   endif
   
 
-  [n_y,n_data] = size(y_0);
+  [n_data,n_y] = size(y_0);
 
   n_th = length(i_s);
   error_old = inf;
@@ -45,7 +71,7 @@ function [par,Par,Error,Y,iterations] = ppp_optimise(system_name,x_0,u,t,par_0,f
 
     iterations = iterations + 1; # Increment iteration counter
 
-    [y,y_par] = eval(sprintf("%s_sim(x_0,u,t,par,i_s)", system_name)); # Simulate
+    [y,y_par] = eval(sim_command); # Simulate
 
     ##Evaluate error, cost derivative J and cost second derivative JJ
     error = 0; 
@@ -53,12 +79,11 @@ function [par,Par,Error,Y,iterations] = ppp_optimise(system_name,x_0,u,t,par_0,f
     JJ = zeros(n_th,n_th);
     
     for i = 1:n_y
-      E = y(i,:) - y_0(i,:);	#  Error
-      error = error + (E*E');	# Sum the error over outputs
-      y_par_i = y_par(i:n_y:n_y*n_th,:);
-      J  = J + y_par_i*E';	# Jacobian
-      JJ = JJ + y_par_i*y_par_i'; # Newton Euler approx Hessian (with LM
-				# term
+      E = y(:,i) - y_0(:,i);	#  Error in ith output
+      error = error + (E'*E);	# Sum the squared error over outputs
+      y_par_i = y_par(:,i:n_y:n_y*n_th); # sensitivity function (ith output)
+      J  = J + y_par_i'*E;	# Jacobian
+      JJ = JJ + y_par_i'*y_par_i; # Newton Euler approx Hessian
     endfor
 
     if iterations>1 # Adjust the Levenberg-Marquardt parameter
@@ -83,7 +108,6 @@ function [par,Par,Error,Y,iterations] = ppp_optimise(system_name,x_0,u,t,par_0,f
 	  printf("%g ", par(i_t(i_th)));
 	endfor
 	printf("\n");
-	  
       endif
     
       if reduction<0		# Its getting worse
@@ -93,15 +117,12 @@ function [par,Par,Error,Y,iterations] = ppp_optimise(system_name,x_0,u,t,par_0,f
 	if extras.verbose
 	  printf(" Rewinding ....\n");
 	endif
-	
       endif
-
     endif
 
     ## Compute step using pseudo inverse
     JJL = JJ + v*eye(n_th);	# Levenberg-Marquardt term
     step =  pinv(JJL)*J;	# Step size
-
     par(i_t) = par(i_t) - step; # Increment parameters
     error_old_old = error_old;	# Save old error
     error_old = error;		# Save error
@@ -109,13 +130,7 @@ function [par,Par,Error,Y,iterations] = ppp_optimise(system_name,x_0,u,t,par_0,f
     ##Some diagnostics
     Error = [Error error];	# Save error
     Par = [Par par];		# Save parameters
-    Y = [Y; y];			# Save output
-
+    Y = [Y y];			# Save output
   endwhile
 
 endfunction
-
-
-
-
-

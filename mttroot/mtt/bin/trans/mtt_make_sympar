@@ -13,6 +13,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  2002/04/28 18:41:27  geraint
+## Fixed [ 549658 ] awk should be gawk.
+## Replaced calls to awk with call to gawk.
+##
 ## Revision 1.10  2001/07/28 21:10:18  geraint
 ## Generate warning instead of error if reserved word used.
 ##
@@ -49,6 +53,9 @@
 
 sys=$1 # System name
 filename=$1_sympar.txt
+
+use_reduce=$2
+
 # Inform user
 echo Creating $filename
 
@@ -104,23 +111,25 @@ END{
 
 }' < mtt_sympar.txt >$filename
 
-reserved_words=`\
+if [ ! "${use_reduce}" == "no" ]; then
+    reserved_words=`\
     cat ${MTT_LIB}/reduce/reserved_words.txt	|\
     gawk '{printf "%s ", $0}'			|\
     tr [a-z] [A-Z]`
-sympar_words=`\
+    sympar_words=`\
     cat ${filename}				|\
     cut -f1					|\
     gawk '{printf "%s ", $0}'			|\
     tr [a-z] [A-Z]`
-flag=0
-for reserved_word in ${reserved_words}; do
-    for sympar_word in ${sympar_words}; do
-	if [ ${sympar_word} = ${reserved_word} ]; then
-	    echo ""
-	    echo "*** MTT Warning:"
-	    echo "    ${sympar_word} is reserved (Reduce)"
-	    echo ""
-	fi
+    flag=0
+    for reserved_word in ${reserved_words}; do
+	for sympar_word in ${sympar_words}; do
+	    if [ ${sympar_word} = ${reserved_word} ]; then
+		echo ""
+		echo "*** MTT Warning:"
+		echo "    ${sympar_word} is reserved (Reduce)"
+		echo ""
+	    fi
+	done
     done
-done
+fi

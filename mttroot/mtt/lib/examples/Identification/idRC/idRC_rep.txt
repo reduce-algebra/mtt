@@ -7,6 +7,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  2002/09/23 11:42:14  gawthrop
+## Example uses simulated data from idRC_ident_data
+##
 ## Revision 1.1  2000/12/28 11:58:07  peterg
 ## Put under RCS
 ##
@@ -16,8 +19,7 @@ mtt idRC abg tex			# The system description
 ##mtt idRC cbg ps 		        # The causal bond graph
 mtt idRC struc tex	        # The system structure
 mtt idRC sympar tex	        # The system parameters
-mtt idRC subs r
-mtt sidMuscle subs r
+
 ## Uncomment the following lines or add others
 ## mtt idRC dae tex	        # The system dae
 ## mtt idRC ode tex	        # The system ode 
@@ -34,9 +36,11 @@ mtt sidMuscle subs r
 ## mtt idRC logic txt		# Logic control
 ## mtt idRC odeso ps		# Simulation output
 
+
 ## Linear identificationm
+##mtt idRC ident_numpar tex
 mtt idRC ident ps
-mtt idRC ident_comparison ps
+##mtt idRC ident_comparison ps
 mtt idRC ident_par tex
 
 mtt idRC rep txt		# This file

@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  2002/09/23 11:16:27  gawthrop
+% %% New example for ident representation
+% %%
 % %% Revision 1.1  2001/04/05 11:57:29  gawthrop
 % %% Identification example
 % %%
@@ -29,7 +32,11 @@
    The system is a simple RC circuit with zero initial condition; the
    method identifies the resitance $r$.
 
-   To see the results, type: 
+   The data is created by typing:
+\begin{verbatim}
+make
+\end{verbatim}
+To see the results, type: 
 \begin{verbatim}
 mtt -oct -i euler  idRC ident view
 \end{verbatim}

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  1998/03/30 14:18:07  peterg
+## Removed NERO command
+##
 ## Revision 1.8  1998/02/25 18:03:49  peterg
 ## Removed the argument reading bits.
 ##
@@ -87,7 +90,7 @@ BEGIN
   END;
   
   write "% Read in the input";
-  write "u = $1_input(t)";
+  write "u = $1_input(x,t)";
 
   write "% Read in the definitions";
   write "[nx,ny,nu,nz,nyz] = $1_def";

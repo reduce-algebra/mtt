@@ -3,8 +3,15 @@
 %DESCRIPTION Internally pseudo
 %DESCRIPTION Example label file entry:
 %DESCRIPTION % Component type CT
-%DESCRIPTION % Component type CT
 %DESCRIPTION 	c		lin	effort,c
+
+%Port aliases
+%ALIAS		in		Thermal
+
+%CR aliases
+%ALIAS		$1		CR
+%ALIAS          $1		effort,c_t
+
 
 %% Label file for system CT (CT_lbl.txt)
 
@@ -13,6 +20,10 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1998/06/29 10:12:58  peterg
+% %% Converted to FP component
+% %% Removed FP label
+% %%
 % %% Revision 1.1  1997/09/04  09:49:19  peterg
 % %% Initial revision
 % %%
@@ -26,4 +37,7 @@
 
 
 % Component type C
-	c		$1	$1
+	c		lin		effort,c_t
+
+% Component type SS
+	[Thermal]		SS	external,external

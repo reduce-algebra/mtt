@@ -199,8 +199,6 @@ sub get_label_data {
       print_debug("label: $_ \n");      
 
       @line = split(/\s+/);
-      die "Label file entries must have at least 3 columns!\n" unless
-	  @line >= 3;
       $name = shift(@line);
 
       $component_label_data{$name} = [ ($i++,@line) ];

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.19  2002/08/19 14:37:05  geraint
+## Fixed eta, beta, theta, Theta and zeta.
+##
 ## Revision 1.18  2001/06/11 19:43:50  gawthrop
 ## MTT is now much more sophisticated in generating lbl files
 ## Labels can contain maths
@@ -120,10 +123,14 @@ sed \
     -e "s/mttpar//g" \
     -e "s/!/\\\/g" \
     -e "s/\\$//g" \
-    -e "s/(/{(/g" \
+    -e "s/abs(\([^()]*\))/| \1 |/g" \
+    -e "s/(\([^(),]*\),/( { \1 } ,/g" \
+    -e "s/,\([^(),]*\),/, { \1 } ,/g" \
+    -e "s/,\([^(),]*\))/, { \1 } )/g" \
+    -e "s/(/{\\\left /g" \
     -e "s/\*\*/^/g" \
     -e "s/\*/ /g" \
-    -e "s/)/)}/g" \
+    -e "s/)/\\\right }/g" \
     -e "s/\left/\left (/g" \
     -e "s/\right/\right )/g" \
     -e "s/sqrt/\\\sqrt/g" \
@@ -151,6 +158,7 @@ sed \
     -e "s/cos/\\\cos/g" \
     -e "s/23/{23}/g" \
     -e "s/+-/ -/g" \
+    -e "s/\\^/\\\uparrow /g" \
  | cat -s  | \
 sed -e "s/ $//g" | \
 tr  -s '\012' '\012' \

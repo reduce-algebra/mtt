@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  2002/12/06 11:45:57  gawthrop
+## Strips comments from _cmp.txt before processing
+##
 ## Revision 1.1  2002/12/01 14:54:52  gawthrop
 ## Replaces defunct abg2lbl_fig2txt
 ##
@@ -202,14 +205,22 @@ gawk --field-separator ':' '
     OldComponent="None";
     default_cr = "lin";
  }
- { 
+(NF == 1) {
+  Component = $1 " (anonymous => default parameters)";
+  Name = "# " $1;
+  cr[Component] = "\t";
+  arg[Component] = "\t";
+}
+(NF > 1) { 
   Component = $1;
   Name = $2;
   Arg = $3;
-
+}
+{
 ##Aliases
   if (Component == "SS") {
     port_alias[++j] = Name;
+    Component_type = Component;
   }
   else {
     alias[++i] = Name;

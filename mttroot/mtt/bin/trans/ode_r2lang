@@ -1,0 +1,214 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: ode_r2lang
+# Reduce ODE to general language ODE
+# Based on obsolete ode_r2m  
+# P.J.Gawthrop 14 June 1991, 12 Jan 1994, April 1994, Jan 95, May 1998
+# Copyright (c) P.J.Gawthrop 1991, 1994, 1995, 1996, 1998
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+# Set up the language specific stuff
+language=$2
+case $language in
+    m)
+	ext='m';
+	codegenerator='FORTRAN'
+	Lc='#';
+	Rc='#';
+	Lb='(';
+	Rb=')';
+	;;
+    c)
+	ext='c';
+	codegenerator='C'
+	Lc='/*';
+	Rc='*/';
+	Lb='[';
+	Rb=']';
+	;;
+    *)
+	echo Language $2 not supported - sorry; exit 1
+esac
+
+#Inform user
+echo Creating $1_ode.$ext
+echo Creating $1_odea.$ext
+echo Creating $1_odeo.$ext
+
+
+# Remove the old log file
+rm -f ode_r2lang.log
+
+#Remove the temporary files
+rm -f $1_ode.$ext.1
+rm -f $1_odea.$ext.1;
+rm -f $1_odeo.$ext.1;
+
+# Use reduce to accomplish the transformation
+$SYMBOLIC >ode_r2lang.log << EOF
+
+%Read the reduce definitions file
+in "$1_def.r";
+
+%Read the reduce  ODE   file
+in "$1_ode.r";
+
+
+% Set up the code generator
+% Load the general translator package
+LOAD GENTRAN;
+GENTRANLANG!* := '$codegenerator;
+ON GENTRANSEG;
+MAXEXPPRINTLEN!* := 40;
+
+% Matrix output function
+in"$MTTPATH/trans/lang_matrix.r";
+
+%Set up the number of argument variables to zero in case the user has forgotten
+MTTNVar := 0;
+
+%Read the parameter file
+in "$1_sympar.r";
+
+% The body of the ode function
+  GENTRANOUT "$1_ode.$ext.1";
+  mtt_matrix := MTTdX$
+  mtt_matrix_n := MTTNx$
+  mtt_matrix_m := 1$
+  mtt_matrix_name := MTTdX$
+  lang_matrix(); 
+  GENTRANSHUT "$1_ode.$ext.1";
+  
+% The algebraic equations (if any)
+  GENTRANOUT "$1_odea.$ext.1";
+  mtt_matrix := MTTYz$
+  mtt_matrix_n := MTTNYz$
+  mtt_matrix_m := 1$
+  mtt_matrix_name := MTTYz$
+  lang_matrix(); 
+  GENTRANSHUT "$1_odea.$ext.1";
+
+
+% Now do the y = g(x,t) function.
+% The body of the odeo function
+  GENTRANOUT "$1_odeo.$ext.1";
+  mtt_matrix := MTTy$
+  mtt_matrix_n := MTTNy$
+  mtt_matrix_m := 1$
+  mtt_matrix_name := MTTy$
+  lang_matrix(); 
+  GENTRANSHUT "$1_odeo.$ext.1";
+
+EOF
+
+# Create the ode.$ext function
+lang_header $1 ode $ext 'mttx,t' mttdx > $1_ode.$ext
+
+# Algebraic bits
+$MATRIX -q  <<EOF  >> $1_ode.$ext
+  %System structure
+  [nx,ny,nu,nz,nyz] = $1_def;
+if nyz>0
+  printf("global mttxx mttt;\n");
+  printf("mttxx = mttx; mttt=t;\n");
+
+  printf("$Lc====== Extract the internal input variables ======$Rc\n");
+  for i = 1:nyz
+    printf("  mttui$Lb%i$Rb = mttx$Lb%i$Rb;\n",i,i+nx);
+  end;
+  printf("\n");
+
+  printf("mttui = fsolve('$1_odea',mttui);\n");
+  printf("\n");
+
+  printf("$Lc====== Set up the internal input variables ======$Rc\n");
+  for i = 1:nyz
+    printf("  mttui%i = mttui$Lb%i$Rb;\n",i,i);
+  end;
+  printf("\n");
+
+  printf("$Lc====== Put internal input variables at end of state derivative ======$Rc\n");
+  for i = 1:nyz
+    printf(" mttdx$Lb%i$Rb = mttui%i;\n",i+nx,i);
+  end;
+  printf("\n");
+end;
+
+EOF
+
+cat <<EOF >> $1_ode.$ext
+
+% The differential equations
+EOF
+
+sed 's/mtt_matrix/mttdx/' $1_ode.$ext.1 >> $1_ode.$ext
+
+
+
+# Create the odea.$ext function
+lang_header $1 odea $ext 'mttui' mttyz 'global mttxx mttt; mttx = mttxx; t=mttt;' > $1_odea.$ext
+
+$MATRIX -q  <<EOF  >> $1_odea.$ext
+  %System structure
+  [nx,ny,nu,nz,nyz] = $1_def;
+if nyz>0
+  printf("$Lc====== Set up the internal input variables ======$Rc\n");
+  for i = 1:nyz
+    printf("  mttui%i = mttui$Lb%i$Rb;\n",i,i);
+  end;
+  printf("\n");
+end;
+EOF
+
+cat <<EOF >> $1_odea.$ext
+
+% The algebraic equations
+EOF
+sed 's/mtt_matrix/mttyz/' $1_odea.$ext.1 >> $1_odea.$ext
+
+
+# Create the odeo.$ext function
+lang_header $1 odeo $ext 'mttx,t' mtty > $1_odeo.$ext
+
+$MATRIX -q  <<EOF  >> $1_odeo.$ext
+  %System structure
+  [nx,ny,nu,nz,nyz] = $1_def;
+if nyz>0
+  printf("$Lc====== Extract the internal input variables ======$Rc\n");
+  for i = 1:nyz
+    printf("  mttui$Lb%i$Rb = mttx$Lb%i$Rb;\n",i,i+nx);
+  end;
+  printf("\n");
+
+  printf("$Lc====== Set up the internal input variables ======$Rc\n");
+  for i = 1:nyz
+    printf("  mttui%i = mttui$Lb%i$Rb;\n",i,i);
+  end;
+  printf("\n");
+end;
+
+EOF
+
+
+cat <<EOF >> $1_odeo.$ext
+
+% The output equations
+EOF
+sed 's/mtt_matrix/mtty/' $1_odeo.$ext.1 >> $1_odeo.$ext
+
+
+
+
+
+
+

@@ -19,12 +19,11 @@ function ch = str2ch(str,n)
 % %% Initial revision
 % %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+implicit_str_to_num_ok = 1;
 
-implicit_str_to_num_ok = 'true';
-str = abs(str);
-
-if (n>0) &  (n<=length(str))
-  ch = setstr(str(n));
+astr = abs(str);
+if (n>0) &  (n<=length(str)) & (strcmp(str,'')==0)
+  ch = setstr(astr(n));
 else
   ch = '';
 end;

@@ -1,0 +1,35 @@
+# Outline report file for system itwolink (itwolink_rep.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+mtt -c itwolink abg tex
+mtt -c itwolink struc tex
+mtt -c itwolink simp r
+mtt -c itwolink dae tex
+mtt -c itwolink cse tex
+mtt -c itwolink ode tex
+mtt -c itwolink sspar r
+mtt -c itwolink dm tex
+mtt -c itwolink sm tex
+mtt -c itwolink tf tex
+mtt -c itwolink lmfr ps
+
+mtt -c itwolink odes h
+mtt -c itwolink numpar txt
+mtt -c itwolink input txt
+mtt -c itwolink odeso ps  'itwolink_t1'
+mtt -c itwolink odeso ps  'itwolink_t2'
+mtt -c itwolink odeso ps  'itwolink_t1s'
+mtt -c itwolink odeso ps  'itwolink_t1s:itwolink_t1'
+mtt -c itwolink odeso ps  'itwolink_t1s:itwolink_t2'
+mtt -c itwolink rep txt
+
+
+
+
+

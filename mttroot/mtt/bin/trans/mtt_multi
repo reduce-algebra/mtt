@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Does mutiple commands down the hierarchy
+
+command=$1
+system=$2
+rep=$3
+lang=$4
+maxlevel=$5
+
+if [ -z "$maxlevel" ]; then
+  maxlevel=1;    
+fi
+
+ls $2*_$3.$4 |\
+awk '{
+  level=split($1,foo,"_")-2; 
+  if (level<=maxlevel) print command, $0, "&";
+'} command=$command maxlevel=$maxlevel

@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.31  2002/05/02 20:12:45  geraint
+## Added -Wl,--rpath to MTT_CXXLIBS. Sets the runtime linker path so that the
+## sys-admin does not have to ldconfig the octave directory for -cc to work.
+##
 ## Revision 1.30  2002/05/02 11:10:11  geraint
 ## s/loctave/loctinterp/
 ##
@@ -220,6 +224,14 @@ else
     OPTIM="-O3"
     FLAGS="-fno-rtti -fno-exceptions -fno-implicit-templates"
 
+    # matlab flags
+    
+    MATLAB_ARCH="glnx86"
+    MATLAB_ROOT="/usr/local/matlab6p1"
+    MATLAB_FLAGS="-shared -fPIC -ansi -D_GNU_SOURCE -pthread"
+    MATLAB_INCS="-I${MATLAB_ROOT}/extern/include"
+    MATLAB_LIBS="-Wl,--rpath-link,${MATLAB_ROOT}/extern/lib/${MATLAB_ARCH},--rpath-link,${MATLAB_ROOT}/bin/${MATLAB_ARCH} -L${MATLAB_ROOT}/bin/${MATLAB_ARCH} -lmx -lmex -lm"
+
     # exported variables
 
     export MTT_CXX="g++"
@@ -227,4 +239,5 @@ else
     export MTT_CXXLIBS="${LOCTAVE} ${LSYSTEM}"
     export MTT_CXXINCS="-I. ${IOCTAVE}"
     export MTT_LDFLAGS=" "
+    export MTT_MATLAB_FLAGS="${MATLAB_FLAGS} ${MATLAB_INCS} ${MATLAB_LIBS}"
 fi

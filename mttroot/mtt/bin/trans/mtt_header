@@ -12,6 +12,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.46  2002/05/07 13:48:43  geraint
+## Improved clarity of code generated for -cc and -oct (except ode2odes).
+## Octave DEFUN_DLDs now call (rather than replace) their .cc equivalents.
+##
 ## Revision 1.45  2002/05/02 09:30:22  gawthrop
 ## _ssim.m now returns t as 4th arg
 ##
@@ -821,6 +825,36 @@ map_oct_inputs ()
     done
 }	
 
+map_mex_inputs ()
+{
+    s=${1:-""}					# comma separated input list
+    if [ -z ${s:-""} ];then return; fi
+    c=`get_field ${s} 0`			# count of inputs
+    i=0
+    cat <<EOF
+    if (${c} != nrhs)
+     {
+       std::cerr << "${fun_name} expected " << ${c} << " argument(s): ${s}" << std::endl;
+       return;
+     }
+EOF
+    while [ ${i} -lt ${c} ]; do
+	j=${i}
+	i=`expr ${i} + 1`
+	w=`get_field ${s} ${i}`		# argument name
+	get_arg_specific_stuff ${w}
+	case ${arg_type} in
+	    "const double")
+		printf "  ${arg_type}\t${w}\t= mtt_double (prhs [${j}]);\n"
+		;;
+	    ColumnVector | Matrix | *)
+		printf "  ${arg_type}\t${w}\t= mtt_${arg_type} (prhs [${j}]);\n"
+		;;
+	esac
+    done
+}	
+    
+
 write_oct()
 {
     func=${1:-"<insert function name>"}
@@ -840,9 +874,90 @@ EOF
   return (retval);
 }
 #endif // (CODEGENTARGET == OCTAVEDLD)
+
 EOF
 }
 
+write_mex ()
+{
+    func=${1:-"<insert function name>"}
+    args=${2:-""}
+    cat <<EOF
+#if (CODEGENTARGET == MATLABMEX)
+#include "mex.h"
+
+Matrix
+mtt_Matrix (const mxArray *m)
+{
+  const unsigned long int nrows = mxGetM (m);
+  const unsigned long int ncols = mxGetN (m);
+  Matrix o (nrows, ncols);
+  const double *p = mxGetPr (m);
+  for (unsigned long int row = 0; row < nrows; row++)
+    for (unsigned long int col = 0; col < ncols; col++)
+      o (row, col) = p[row + nrows*col];
+  return (o);
+}
+
+ColumnVector
+mtt_ColumnVector (const mxArray *m)
+{
+  const unsigned long int nrows = mxGetM (m);
+  ColumnVector o (nrows);
+  const double *p = mxGetPr (m);
+  for (unsigned long int row = 0; row < nrows; row++)
+    o (row) = p[row];
+  return (o);
+}
+
+const double
+mtt_double (const mxArray *m)
+{
+  const double *p = mxGetPr (m);
+  return (*p);
+}
+
+mxArray *
+mtt_mxArray (const Matrix &o)
+{
+  const unsigned long int nrows = o.rows ();
+  const unsigned long int ncols = o.columns ();
+  mxArray *m;
+  m = mxCreateDoubleMatrix (nrows, ncols, mxREAL);
+  double *p = mxGetPr (m);
+  for (unsigned long int row = 0; row < nrows; row++)
+    for (unsigned long int col = 0; col < ncols; col++)
+      p [row + nrows*col] = o (row, col);
+  return (m);
+}
+
+mxArray *
+mtt_mxArray (const ColumnVector &o)
+{
+  const unsigned long int nrows = o.length ();
+  mxArray *m;
+  m = mxCreateDoubleMatrix (nrows, 1, mxREAL);
+  double *p = mxGetPr (m);
+  for (unsigned long int row = 0; row < nrows; row++)
+    p [row] = o (row);
+  return (m);
+}
+
+extern "C"
+{
+  void mexFunction (int nlhs,       mxArray *plhs[],
+		  int nrhs, const mxArray *prhs[])
+  {
+EOF
+  map_mex_inputs ${args}
+cat <<EOF
+  plhs[0] = mtt_mxArray (${func} (${args}));
+  }
+}
+#endif
+
+EOF
+}
 
 # Header information
 cat<<EOF
@@ -865,8 +980,9 @@ if [ ${language} = "oct" ];then
     write_cc_header
     array2constant
     write_cc_footer
-# oct code
+# oct and mex code
     write_oct ${system}_${rep} ${args}
+    write_mex ${system}_${rep} ${args}
 else
 
 if [ -n "$noglobals" ]; then

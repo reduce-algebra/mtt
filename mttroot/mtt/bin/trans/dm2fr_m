@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1996/08/15 16:23:02  peter
+## Now uses W in place of w for consistancy with time responses.
+##
 ## Revision 1.4  1996/08/15 11:52:42  peter
 ## Now creats a number of versions:
 ## fr 	complex frequency response
@@ -42,7 +45,7 @@ echo Creating $1_nifr.m
 
 if [ "$2" = "" ]; 
 then
-  PARAMS='W=logspace(-1,2,100); u0=ones(nu,1);'
+  PARAMS='W=logspace(-1,2,100); u0=zeros(nu,1); u0(1)=1;'
   echo Using default parameter $PARAMS
 else
   PARAMS=$2;
@@ -55,11 +58,12 @@ $MATRIX << EOF > dm2fr_m.log
 
   %Defaults
   if exist('W')==0
-    W = logspace(-1,2,100);
+    W = logspace(-1,2,100)';
   end;
 
   if exist('u0')==0
-    u0 = ones(nu,1);
+    u0 = zeros(nu,1);
+    u0(1) = 1;
   end;
 
   [n,m]=size(W);
@@ -67,8 +71,8 @@ $MATRIX << EOF > dm2fr_m.log
     W=W';
   end;
 
-  [A,B,C,D,E] = $1_dm($1_numpar);
-  fr = dm2fr(A,B,C,D,E,W,u0);
+  [A,B,C,D,E] = $1_dm($1_numpar)
+  fr = dm2fr(A,B,C,D,E,W,u0)
   lw = log10(W);
   lmfr = log10(abs(fr));
   pfr = angle(fr)*180/pi;
@@ -92,7 +96,7 @@ $MATRIX << EOF > dm2fr_m.log
   write_matrix(nyq, '$1_nyfr');
 
 % Nichols style
-  re = lw;
+  re = lmfr;
   im = pfr;
   nic = [im(:,1) re(:,1)];
   for i = 2:ny

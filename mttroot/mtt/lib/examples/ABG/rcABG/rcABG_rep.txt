@@ -1,0 +1,15 @@
+% %% Outline report file for system rcABG (rcABG_rep.txt)
+mtt rcABG struc tex
+mtt rcABG ode tex
+mtt rcABG sm tex
+mtt rcABG tf tex
+mtt rcABG sro ps
+mtt rcABG lmfr ps
+mtt rcABG nyfr ps
+
+mtt rcABG numpar txt
+mtt rcABG input txt
+mtt -c rcABG odeso ps
+mtt rcABG rep txt
+
+

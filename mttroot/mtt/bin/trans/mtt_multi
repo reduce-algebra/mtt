@@ -6,14 +6,17 @@ command=$1
 system=$2
 rep=$3
 lang=$4
-maxlevel=$5
+relative_level=$5
 
-if [ -z "$maxlevel" ]; then
-  maxlevel=0;    
+current_level=`echo $system | awk '{N=split($1,foo,"_"); print N-1}'`
+
+if [ -z "$relative_level" ]; then
+  relative_level=0;    
 fi
 
-ls $2*_$3.$4 |\
+ls $2*_$3.$4  |\
 awk '{
-  level=split($1,foo,"_")-2; 
+  level=split($1,foo,"_")-2;
+  maxlevel = current_level +  relative_level;
   if (level<=maxlevel) print command, $0, "&";
-'} command=$command maxlevel=$maxlevel
+'} command=$command relative_level=$relative_level current_level=$current_level

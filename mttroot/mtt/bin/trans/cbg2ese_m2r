@@ -16,6 +16,9 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.21  2000/10/16 08:40:35  peterg
+## Whoops! Must touch mtt_aliased
+##
 ## Revision 1.20  2000/10/16 08:36:31  peterg
 ## Creat empty _aliased file if it doesn't exist
 ##
@@ -121,19 +124,19 @@ echo Creating $structurefile
 # Use matrix manipulation to accomplish the transformation
 $MATRIX << EOF > cbg2ese_m2r.log 2>mtt_error.txt
 
-infofile = '$infofile';;
-infofilenum = fopen(infofile,'w');
-structurefile = '$structurefile';;
-structurefilenum = fopen(structurefile,'w');
-deffile = '$1_def.r';
-deffilenum = fopen(deffile,'w');
+infofile = "$infofile";;
+infofilenum = fopen(infofile,"w");
+structurefile = "$structurefile";;
+structurefilenum = fopen(structurefile,"w");
+deffile = "$1_def.r";
+deffilenum = fopen(deffile,"w");
 
-system_name = '$1';
-system_type = '';
-system_cr = '';
-system_args = '';
-full_name = '';
-full_name_repetition = '';
+system_name = "$1";
+system_type = "";
+system_cr = "";
+system_args = "";
+full_name = "";
+full_name_repetition = "";
 
 % Structure matrix [states,nonstates,inputs,outputs,zero_outputs]
 
@@ -144,7 +147,6 @@ structure = cbg2ese(system_name, system_type, system_cr, ...
                      1, structure, structurefilenum, infofilenum);
 makedef(structure,deffilenum);
 EOF
-
 
 if [ "$info" = "info" ]; then
   cat $infofile

@@ -15,6 +15,11 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.262  2000/09/14 17:16:33  peterg
+## Fixes some outstanding bugs:
+##   perpendicular strokes in cbg.fig
+##   proper display of hierachical cbg file (-sub and -viewlevel)
+##
 ## Revision 1.261  2000/09/14 12:43:46  peterg
 ## view of ps s files now uses -sub and -viewlevel options
 ##
@@ -2655,7 +2660,7 @@ $1_$2.dvi: $1_$2.doc
 ifeq ($REPTYPE,bg)
 $1_$2.ps : $1_$2.fig
 	echo Creating $1_$2.ps
-	multi_command2 'fig2dev -Leps' $1 $2.fig $2.ps | sh
+	multi_command2 'fig2dev -Lps' $1 $2.fig $2.ps | sh
 endif
 
 

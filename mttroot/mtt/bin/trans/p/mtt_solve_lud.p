@@ -1,16 +1,19 @@
-PROCEDURE mtt_solve_lud.p(VAR x     : StateVector;
+PROCEDURE mtt_solve_lud(VAR x     : StateVector;
 			A     : StateMatrix;
 		        B     : StateVector;
 			n     : integer);
 
 {
-Linear equation solution via LU factorisation}
+Linear equation solution via LU factorisation
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.1  1998/08/17 12:52:16  peterg
+% % Initial revision
+% %
 % % Revision 1.1  1998/08/17 12:41:37  peterg
 % % Initial revision
 % %
@@ -24,18 +27,19 @@ Linear equation solution via LU factorisation}
  }
 
 VAR
-   i : integer;
-   d : real;
+   i	 : integer;
+   d	 : real;
+   Index : StateVector;
 
-(*$I ludcmp.p *)
-(*$I lubksb.p *)
+(*$I mtt_ludcmp.p *)
+(*$I mtt_lubksb.p *)
 
 BEGIN{mtt_solve}
    (* decompose matrix A using LU decomposition *)
-   ludcmp(A,n,Index,d);
+   mtt_ludcmp(A,n,Index,d);
    
    (* backsubstitute for B *)
-   lubksb(A,n,Index,B);
+   mtt_lubksb(A,n,Index,B);
 
    (* x now lives in B *)
    FOR i := 1 TO n DO

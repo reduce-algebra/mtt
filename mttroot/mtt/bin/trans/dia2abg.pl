@@ -286,16 +286,20 @@ EOF
 }
 
 sub output_component {
-    my ($NM,$type,$cr,$arg,$rep,$stat,$connections) = @_;
+    my ($NM,$type,$cr,$arg,$rep,$stat,$connections,$subsys_or_port) = @_;
+
+    $_=$NM; remove_brackets(); $NM = $_;
+
+    my $pretty_name = ($subsys_or_port eq "ports") ? "Port" : "Component";
 
 	print OUT <<"EOF";
-# Component $NM
-  $diagram_name.subsystems.$NM.type = "$type";
-  $diagram_name.subsystems.$NM.cr = "$cr";
-  $diagram_name.subsystems.$NM.arg = "$arg";
-  $diagram_name.subsystems.$NM.repetitions = $rep;
-  $diagram_name.subsystems.$NM.status = $stat;
-  $diagram_name.subsystems.$NM.connections = [$connections];
+# $pretty_name $NM
+  ${diagram_name}.${subsys_or_port}.${NM}.type = "$type";
+  ${diagram_name}.${subsys_or_port}.${NM}.cr = "$cr";
+  ${diagram_name}.${subsys_or_port}.${NM}.arg = "$arg";
+  ${diagram_name}.${subsys_or_port}.${NM}.repetitions = $rep;
+  ${diagram_name}.${subsys_or_port}.${NM}.status = $stat;
+  ${diagram_name}.${subsys_or_port}.${NM}.connections = [$connections];
     
 EOF
 }
@@ -314,7 +318,8 @@ sub by_label_file {
 }
 
 sub output_abg {
-    my ($cr,$rep,$stat,$NM,$type,$arg,$bond_id,$start,$end,@clist,$connections,$strlength);
+    my ($cr,$rep,$stat,$NM,$type,$arg,$bond_id,$start,$end,@clist,$connections,
+	$strlength,$subsys_or_port);
 
     print_debug("WRITING OUTPUT TO STDIO...\n");
     $rep = "1";
@@ -323,7 +328,9 @@ sub output_abg {
     output_abg_header();
     
     foreach my $id (keys(%component_id_tag)) {
-	$NM = id_to_name($id);
+	($subsys_or_port,$_) = id_to_name($id);
+	remove_brackets(); $NM = $_;
+
 	$type = id_to_type($id);
 
 	$cr = "" unless defined($cr = $component_label_data{$NM}[1]);
@@ -342,7 +349,7 @@ sub output_abg {
 	}
 	$connections = join(" ",@clist);
 
-	output_component($NM,$type,$cr,$arg,$rep,$stat,$connections);
+	output_component($NM,$type,$cr,$arg,$rep,$stat,$connections,$subsys_or_port);
     }
     
     print OUT "# Ordered list of subsystem names\n";
@@ -552,6 +559,10 @@ sub id_cleaner {
     s/#?([^#]*)#?/$1/;
 }
 
+sub remove_brackets {
+    s/^\[([^\]]*)\]$/$1/;
+}
+
 sub id_to_type {
     my ( $id )= @_;
     my($type,$name);
@@ -563,6 +574,8 @@ sub id_to_type {
     return $type;
 }
 
+# If 1 LHS argument is used, it returns component name.  If 2 are used, it return
+# "subsystem" or "port" depending on whether brackets are found in the name.
 sub id_to_name {
     my ( $id )= @_;
     my($type,$name);
@@ -573,7 +586,7 @@ sub id_to_name {
 
     if(!defined($name)) { $name = $id };
 
-    return $name;
+    return ( ($name =~ /^\[[^\]]*\]$/ ? "ports" : "subsystems" ),$name);
 }
 
 sub print_debug {

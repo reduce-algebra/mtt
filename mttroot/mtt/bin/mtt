@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.84  1997/06/13  14:08:23  peterg
+# Changed default rep.txt
+#
 # Revision 1.83  1997/06/13  09:18:28  peterg
 # Removed all params.m
 #
@@ -338,22 +341,23 @@ if [ "$quiet" != "quiet" ]; then
 fi
 
 if [ -z "$1" ]; then
-  echo 'Usage: mtt help'
-  echo '       mtt info'
-  echo '       mtt info topic'
-  echo '       mtt manual'
-  echo '       mtt warranty'
-  echo '       mtt clean'
-  echo '       mtt <system_name> clean'
-  echo '       mtt copy <system_name> <path_name>'
-  echo '       mtt <system_name> <representation> vc'
-  echo '       mtt <system_name> <representation> <language>'
-  echo '       mtt <system_name> <representation> <language> <parameters>'
-  echo 'Options: -q  quiet mode'
-  echo '         -c  c-code generation'
-  echo '         -o  ode and dae are the same'
-  echo '         -s  use switch (ISW and CSW) components'
- exit
+    echo 'Usage: mtt help             -- mtt on-line help'
+    echo '       mtt info             -- info-based manual'
+    echo '       mtt info topic'
+    echo '       mtt hinfo            -- hypertext manual'
+    echo '       mtt manual           -- dvi manual'
+    echo '       mtt warranty'
+    echo '       mtt clean'
+    echo '       mtt <system_name> clean'
+    echo '       mtt copy <system_name> <path_name>'
+    echo '       mtt <system_name> <representation> vc'
+    echo '       mtt <system_name> <representation> <language>'
+    echo '       mtt <system_name> <representation> <language> <parameters>'
+    echo 'Options: -q  quiet mode'
+    echo '         -c  c-code generation'
+    echo '         -o  ode and dae are the same'
+    echo '         -s  use switch (ISW and CSW) components'
+    exit
 fi
 
 
@@ -475,7 +479,7 @@ if [ "$1" = "copy" ]; then
       path_name=$MTTPATH/lib/examples
     fi
     echo Copying system $2 to here from $3
-    find $path_name -name "$2_*.???" -exec cp {} . \;
+    find $path_name -name "$2_*.*" -exec cp {} . \;
   fi
   exit
 fi

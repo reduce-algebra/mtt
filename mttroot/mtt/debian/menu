@@ -1,0 +1,6 @@
+?package(mtt):needs="X11"\
+	section="Apps/Math"\
+	title="Xmtt"\
+	longtitle="Model Transformation Tools for X"\
+	hint="Model Transformation Tools for X"\
+	command="x-terminal-emulator -e /usr/bin/xmtt"

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  1998/11/26 09:18:55  peterg
+## Incluse subs.r
+##
 ## Revision 1.10  1998/11/18 13:50:29  peterg
 ## Removed writeing of EYz matrix
 ##
@@ -62,16 +65,18 @@
 ##
 ###############################################################
 
-
+# Create the reduce output code
+def2write_r $1 cse
+def2write_r $1 cseo
 
 #Explicit solution option
 solve=0
 while [ -n "`echo $1 | grep '^-'`" ]; do
   case $1 in
-	-A )
+        -A )
                 solve=1;;
-	*)
-		echo "$1 is an invalid argument - ignoring" ;;
+        *)
+                echo "$1 is an invalid argument - ignoring" ;;
   esac
   shift
 done
@@ -242,7 +247,7 @@ BEGIN
 
   %Solve the algebraic equations symbolically
     MTT_sol := solve(MTT_eqns,MTT_unknowns);
-  %The result seems to be in an extra list - I don't know why
+  %The result seems to be in an extra list - I dont know why
   % So remove the outer list with first.
   % But only if more than one list element!
 
@@ -260,62 +265,86 @@ BEGIN
   MTTNYz := 0;
 END; % IF MTTNyz>0
 
+
+% Create the matrix declarations
+OUT "$1_cse.r1";
+write "MATRIX MTTEdx(", MTTNx, ",", 1, ")$"; 
+write "MATRIX MTTE(", MTTNx, ",", MTTNx, ")$"; 
+SHUT "$1_cse.r1";
+
+OUT "$1_cseo.r1";
+write "MATRIX MTTY(", MTTNy, ",", MTTNx, ")$"; 
+SHUT "$1_cseo.r1";
+
 %%Create the _cse.r file
-OUT "$1_cse.r";
+OUT "$1_cse.r2";
+write "%File: $1_cse.r";
+in ("$1_cse_write.r");
+write "in ""$1_cseo.r"";";
+write "END;";
 
-% State derivative
-MTT_Matrix := MTTEdX$ 
-MTT_Matrix_name := "MTTEdX"$
-MTT_Matrix_n := MTTNx$
-MTT_Matrix_m := 1$
-Reduce_Matrix()$
+% % State derivative
+% MTT_Matrix := MTTEdX$ 
+% MTT_Matrix_name := "MTTEdX"$
+% MTT_Matrix_n := MTTNx$
+% MTT_Matrix_m := 1$
+% Reduce_Matrix()$
 
-% Output
-MTT_Matrix := MTTY$ 
-MTT_Matrix_name := "MTTY"$
-MTT_Matrix_n := MTTNy$
-MTT_Matrix_m := 1$
-Reduce_Matrix()$
+% % Output
+% MTT_Matrix := MTTY$ 
+% MTT_Matrix_name := "MTTY"$
+% MTT_Matrix_n := MTTNy$
+% MTT_Matrix_m := 1$
+% Reduce_Matrix()$
 
-% Inputs
-MTT_Matrix := MTTU$ 
-MTT_Matrix_name := "MTTU"$
-MTT_Matrix_n := MTTNu$
-MTT_Matrix_m := 1$
-Reduce_Matrix()$
-MTT_Matrix := MTTdU$ 
-MTT_Matrix_name := "MTTdU"$
-MTT_Matrix_n := MTTNu$
-MTT_Matrix_m := 1$
-Reduce_Matrix()$
+% % Inputs
+% MTT_Matrix := MTTU$ 
+% MTT_Matrix_name := "MTTU"$
+% MTT_Matrix_n := MTTNu$
+% MTT_Matrix_m := 1$
+% Reduce_Matrix()$
+% MTT_Matrix := MTTdU$ 
+% MTT_Matrix_name := "MTTdU"$
+% MTT_Matrix_n := MTTNu$
+% MTT_Matrix_m := 1$
+% Reduce_Matrix()$
 
-% E matrix
-MTT_Matrix := MTTE$ 
-MTT_Matrix_name := "MTTE"$
-MTT_Matrix_n := MTTNx$
-MTT_Matrix_m := MTTNx$
-Reduce_Matrix()$
+% % E matrix
+% MTT_Matrix := MTTE$ 
+% MTT_Matrix_name := "MTTE"$
+% MTT_Matrix_n := MTTNx$
+% MTT_Matrix_m := MTTNx$
+% Reduce_Matrix()$
 
-% Eyx matrix
-MTT_Matrix := MTTEyx$ 
-MTT_Matrix_name := "MTTEyx"$
-MTT_Matrix_n := MTTNy$
-MTT_Matrix_m := MTTNx$
-%Reduce_Matrix()$
+% % Eyx matrix
+% MTT_Matrix := MTTEyx$ 
+% MTT_Matrix_name := "MTTEyx"$
+% MTT_Matrix_n := MTTNy$
+% MTT_Matrix_m := MTTNx$
+% %Reduce_Matrix()$
 
-% Yz
-MTT_Matrix := MTTYz$ 
-MTT_Matrix_name := "MTTYz"$
-MTT_Matrix_n := MTTNyz$
-MTT_Matrix_m := 1$
-Reduce_Matrix()$
+% % Yz
+% MTT_Matrix := MTTYz$ 
+% MTT_Matrix_name := "MTTYz"$
+% MTT_Matrix_n := MTTNyz$
+% MTT_Matrix_m := 1$
+% Reduce_Matrix()$
 
 write ";END;";
 
-SHUT "$1_cse.r";
-quit;
+SHUT "$1_cse.r2";
 
+%Write out the  output equations
+OUT "$1_cseo.r2";
+write "%File: $1_cseo.r";
+in ("$1_cseo_write.r");
+write "END;";
+SHUT "$1_cseo.r2";
+quit;
 EOF
+
+cat $1_cse.r1 $1_cse.r2 > $1_cse.r
+cat $1_cseo.r1 $1_cseo.r2 > $1_cseo.r
 
 if [ "$solve" = "1" ]; then
     echo "Setting MTTNyz=0 in $1_def.r and removing other $1_def files"

@@ -16,6 +16,13 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/03/04 15:32:53  peterg
+## Major revision.
+## Now just includes cr files using in"";
+## Two sorts of CR:
+## 	generic (.cr)
+## 	tied to a system (_cr.r)
+##
 ## Revision 1.1  1998/03/04 15:31:14  peterg
 ## Initial revision
 ##
@@ -33,7 +40,7 @@
 ###############################################################
 
 if [ -f "$1_cr.r" ]; then
-    echo "$1_cr.r exists -- no action taken"
+    # echo "$1_cr.r exists -- no action taken"
 else
 
     # Inform user

@@ -1,5 +1,5 @@
 PROCEDURE mtt_solve(VAR x     : StateVector;
-		    VAR A     : StateMatrix;
+			A     : StateMatrix;
 		    VAR B     : StateVector;
 			n     : integer;
 			Small : real);
@@ -11,6 +11,9 @@ PROCEDURE mtt_solve(VAR x     : StateVector;
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.1  1998/08/13 08:51:57  peterg
+% % Initial revision
+% %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  }
 

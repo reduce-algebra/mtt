@@ -1,0 +1,52 @@
+%% Label file for system lPump (lPump_lbl.txt)
+%SUMMARY lPump: a hydraulic pump with leakage - incompressible flow
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Component aliases
+%ALIAS	Pipe	IncompressibleFlow/Pipe
+%ALIAS	Pump	IncompressibleFlow/Pump
+
+% Port aliases
+%ALIAS	in  Thermal_in,Hydraulic_in
+%ALIAS	out Thermal_out,Hydraulic_out
+
+%ALIAS	Th_in  Thermal_in
+%ALIAS	Hy_in  Hydraulic_in
+
+%ALIAS	Th_out  Thermal_out
+%ALIAS	Hy_out  Hydraulic_out
+
+% Argument aliases
+%ALIAS  $1	rho
+%ALIAS  $2	c_p
+%ALIAS  $3	flow,r
+%ALIAS  $4	flow,k_p
+%ALIAS  $5	flow,r_l
+
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+% Component type Pipe
+	leak		lin	$1;$2;$5
+
+% Component type Pump
+	pump		lin	$1;$2;$3;$4
+
+% Component type SS
+	[Hydraulic_in]	SS	external,external
+	[Hydraulic_out]	SS	external,external
+	[Thermal_in]	SS	external,external
+	[Thermal_out]	SS	external,external
+	[Shaft]		SS	external,external
+

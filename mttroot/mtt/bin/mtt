@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.81  1997/05/22 10:11:04  peterg
+## Fixed dat2gdat bug (with parameters)
+##
 ## Revision 1.80  1997/05/22 07:38:27  peterg
 ## Added command line info to .doc files (makedoc)
 ##
@@ -322,7 +325,7 @@ done
 #Print header if not in quiet (-q) mode.
 if [ "$quiet" != "quiet" ]; then
   echo
-  echo 'MTT (Model Transformation Tools) version 2.3++'
+  echo 'MTT (Model Transformation Tools) version 2.4'
   echo 'This is free software with ABSOLUTELY NO WARRANTY.'
   echo 'Type `mtt warranty'\' 'for details.'
   echo
@@ -1157,9 +1160,9 @@ $1_pkim.tex: $1_def.r $1_pkim.r $1_sympar.r
 $1_$2.dat: $1_$2.m
 	m2dat $1_$2
 
-#Generic conversion of data files from dat to (gplot) gdat format
+#Generic conversion of data files from dat to (gplot) gdat format 
 $1_$2.gdat: $1_$2.dat $1_args.m $1_struc.txt
-	dat2gdat $1_$2 `name2index $1 "$4"`
+	dat2gdat $1 $2 $4
 
 #Generic conversion of Latex to latex document
 mtt.sty:
@@ -1224,7 +1227,9 @@ ifeq ($REPTYPE,tex)
 $1_$2.view : $1_$2.tview
 endif
 
-
+# Hypertext view
+$1_$2.hview: $1_$2.html
+	$HTMLVIEW $1_$2/$1_$2.html&
 
 #View a ps file
 $1_$2.pview: $1_$2.ps

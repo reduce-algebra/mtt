@@ -11,7 +11,7 @@ function N = mtt_check_sigs (outsig,insigs)
 
   ## Sanity check
   [N_out,M_out] = size(outsig);
-  if N_out<>1
+  if N_out!=1
     error("There must be exactly one outbond");
   endif
   [N_in,M_in] = size(insigs);

@@ -1,0 +1,52 @@
+%% Label file for system sDC (sDC_lbl.txt)
+%SUMMARY sDC
+%DESCRIPTION <Detailed description here>
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS	in		Electrical_1,Electrical_2
+%ALIAS	out		Mechanical_1,Mechanical_2
+
+% Argument aliases
+%ALIAS $1	k_m
+%ALIAS $2	l_a
+%ALIAS $3	r_a
+%ALIAS $4	j_m
+%ALIAS $5	b_m
+
+%ALIAS $6	k_ms
+%ALIAS $7	l_as
+%ALIAS $8	r_as
+%ALIAS $9	j_ms
+%ALIAS $10	b_ms
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+% Component type SS
+	[Electrical]	SS		external,external
+	[Mechanical]	SS		external,external
+
+% Component type sGY
+	k_m	        lin		flow,k_m;k_ms
+
+% Component type sI
+	j_m		lin		flow,j_m;j_ms
+	l_a		lin		flow,l_a;l_as
+
+% Component type sR
+	b_m		lin		flow,b_m;b_ms
+	r_a		lin		flow,r_a;r_as
+
+

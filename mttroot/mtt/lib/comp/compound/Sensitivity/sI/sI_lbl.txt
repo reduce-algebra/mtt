@@ -1,0 +1,45 @@
+%% Label file for system sI (sI_lbl.txt)
+%SUMMARY sI: Sensitivity version of I component
+%DESCRIPTION 
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %% Revision 1.1  1999/07/29 04:24:11  peterg
+% %% Initial revision
+% %%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS	in	Actual,Sensitivity
+
+% Argument aliases
+%ALIAS	$1	flow,i
+%ALIAS	$2	k_s		# Note this is 1/i or zero
+
+% CR aliases
+%ALIAS	$1	lin
+%ALIAS	$2	slin
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+% Component type AE
+	af		lin	k_s
+
+% Component type I
+	i_1		lin	flow,i
+	i_2		slin	flow,i
+
+% Component type SS
+	[Actual]	SS		external,external
+	[Sensitivity]	SS		external,external
+
+

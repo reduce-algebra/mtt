@@ -1,0 +1,40 @@
+%SUMMARY CT2: Two-port thermal C component - a heat engine.
+%DESCRIPTION Port [in]: a (true) thermal bond 
+%DESCRIPTION Port [out]: a mechanical (P, dV/dT) bond.
+%DESCRIPTION Parameter 1: c_v (specific heat at constant volume)
+%DESCRIPTION Parameter 2: gamma = c_p/c_v
+%DESCRIPTION Parameter 3: mass of (ideal) gas within component.
+%DESCRIPTION Parameter 4: t_0 -- the temperature at which internal
+%DESCRIPTION energy is zero.
+
+%% Label file for system CT2 (CT2_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type C	c_v,gamma,m,t_0
+	c	CT2	$1,$2,$3,$4
+
+% Component type ES
+	es
+
+% Component type PS
+	ps
+
+% Component type SS
+	[in]		SS	external,external
+	[out]		SS	external,external
+
+	
+	

@@ -1,0 +1,25 @@
+%SUMMARY CU
+%DESCRIPTION <Detailed description here>
+%% Label file for system CU (CU_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+% Component type AF (gain of -1)
+	af		lin		-1
+
+% Component type C
+	c		CU		$1
+
+% Component type SS
+	[in]		SS	external,external
+	[out]		SS	external,external

@@ -1,0 +1,27 @@
+%SUMMARY Tankp	Pseudo bond graph model of a tank storing mass and enthalpy
+%DESCRIPTION Parameter 1: EITHER
+%DESCRIPTION incompressible,c OR
+%DESCRIPTION ideal_gas,R,c_p,v_t
+
+%% Label file for system Tankp (Tankp_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type C
+	tank		Tankp		$1
+
+% Component type SS
+	[Hy]		external	external
+	[Th]		external	external

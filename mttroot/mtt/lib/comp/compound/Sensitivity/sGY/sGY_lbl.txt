@@ -1,0 +1,38 @@
+%% Label file for system sGY (sGY_lbl.txt)
+%SUMMARY sGY GY component with sensitivity ports
+%DESCRIPTION <Detailed description here>
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS	in	Actual_in,Sens_in
+%ALIAS	out	Actual_out,Sens_out
+
+
+% Argument aliases
+%ALIAS	$1	flow,k
+%ALIAS	$2	k_s
+
+%ALIAS	$1	lin
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+% Component type sTF
+        stf		lin		flow,k;k_s
+
+% Component type SS
+	[Actual_in]	SS		external,external
+	[Actual_out]	SS		external,external
+	[Sens_in]	SS		external,external
+	[Sens_out]	SS		external,external
+

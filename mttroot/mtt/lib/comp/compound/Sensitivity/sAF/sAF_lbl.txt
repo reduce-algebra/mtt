@@ -1,0 +1,39 @@
+%% Label file for system sAF (sAF_lbl.txt)
+%SUMMARY sAF
+%DESCRIPTION <Detailed description here>
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS	in	Actual_in,Sens_in
+%ALIAS	out	Actual_out,Sens_out
+
+
+% Argument aliases
+%ALIAS	$1	k
+%ALIAS	$2	k_s
+
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+% Component type AF
+	actual		lin		k
+	sens		lin		k
+	k_s		lin		k_s
+
+% Component type SS
+	[Actual_in]	SS		external,external
+	[Actual_out]	SS		external,external
+	[Sens_in]	SS		external,external
+	[Sens_out]	SS		external,external

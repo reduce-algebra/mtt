@@ -1,4 +1,4 @@
-function sr = dm2sr(A,B,C,D,E,T);
+function sr = dm2sr(A,B,C,D,E,T,u0,x0);
 % sr = dm2sr(A,B,C,D,E,T);
 % Descriptor matrix to impulse response.
 % NB At the moment - this assumes that E is unity .....
@@ -10,6 +10,9 @@ function sr = dm2sr(A,B,C,D,E,T);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1996/08/11 19:33:24  peter
+% %% Replaced exp by expm - whoops!
+% %%
 % %% Revision 1.2  1996/08/11 10:37:40  peter
 % %% Corrected mistake in step-response calculation.
 % %%
@@ -18,6 +21,17 @@ function sr = dm2sr(A,B,C,D,E,T);
 % %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+[Ny,Nu] = size(D);
+[Ny,Nx] = size(C);
+
+if nargin<7
+  u0 = zeros(Nu,1);
+  u0(1) = 1;
+end;
+
+if nargin<8
+  x0 = zeros(Nx,1);
+end;
 
 [N,M] = size(T);
 if M>N
@@ -25,17 +39,14 @@ if M>N
   N = M;
 end;
 
-[Ny,Nu] = size(D);
-NN=Ny*Nu;
+one = eye(Nx);
 
-[N_y,N_x] = size(C);
-one = eye(N_x);
-
-sr = zeros(N,NN);
+sr = zeros(N,Ny);
 i = 0;
 for t = T'
   i=i+1;
-  SR = C*( A\(expm(A*t)-one) )*B + D;
-  sr(i,:) = reshape(SR, 1,NN);
+  expAt = expm(A*t);
+  SR = C*( ( A\(expAt-one) )*B*u0 + expAt*x0) + D*u0;
+  sr(i,:) =SR';
 end;
 

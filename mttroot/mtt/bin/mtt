@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.193  1998/10/01 16:11:42  peterg
+## Implicit integration now handles switches
+##
 ## Revision 1.192  1998/09/29 20:09:46  peterg
 ## Fixed nyfr and nifr plotting bug
 ##
@@ -661,7 +664,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='3.2'
+version='3.3'
 
 # MTT recursion level is zero unless explicitly set
 level=0
@@ -741,7 +744,7 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 mtt_switches="$mtt_switches $1";
                 start_at_abg='yes';;
         --version)                
-                echo MTT $version; exit;;
+                  echo 'MTT (Model Transformation Tools) version' $version; exit;;
         --versions)                
                 mtt_versions; exit;;
 	*)
@@ -1475,6 +1478,7 @@ $1_numpar.m:  $1_numpar.txt $1_sympars.txt
 	txt2m $1 numpar
 
 #SUMMARY numpar	numerical parameter declaration (c) 
+#SUMMARY numpar	numerical parameter declaration (view) 
 $1_numpar.c:  $1_numpar.txt $1_sympar.c
 	txt2c $1 numpar
 
@@ -1652,6 +1656,8 @@ $1_cbg.m: $1_abg.m
 $1_type.sh: $1_cbg.m
 
 #SUMMARY cbg	causal bond graph (fig)
+#SUMMARY cbg	causal bond graph (ps)
+#SUMMARY cbg	causal bond graph (view)
 #Causal bond graph: mfile to fig conversion
 $1_cbg.fig: $1_cbg.m $1_rbg.m $1_fig.fig $1_type.sh
 	cbg_m2fig $1

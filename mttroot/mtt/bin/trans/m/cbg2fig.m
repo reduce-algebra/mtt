@@ -1,13 +1,13 @@
-function cbg2fig(bonds, cbonds, rbonds, ...
-                 rcomponents, status, systemname, ...
+function cbg2fig(system_name, ...
+                 system_type, full_name, ...
                  stroke_length, stroke_thickness, stroke_colour, ...
-                 comp_font, comp_colour_u, comp_colour_o, ...
-                 filename)
-
-
-	     
-%
-%
+                 comp_font, comp_colour_u, comp_colour_o)
+% $$$ function cbg2fig(bonds, cbonds, rbonds, ...
+% $$$                  rcomponents, status, system_name, ...
+% $$$                  stroke_length, stroke_thickness, stroke_colour, ...
+% $$$                  comp_font, comp_colour_u, comp_colour_o, ...
+% $$$                  filename)
+% $$$ 
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %     %%%%% Model Transformation Tools %%%%%
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -25,45 +25,60 @@ function cbg2fig(bonds, cbonds, rbonds, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/08/05 18:12:25  peter
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%Check sizes
+if nargin<4
+  stroke_length = 20;
+end;
+
+if nargin<5
+  stroke_thickness = 2;
+end;
+
+if nargin<6
+  stroke_colour = 1; %Blue
+end;
+
+if nargin<7
+  comp_font = 18; %Helvetica bold
+end;
+
+if nargin<8
+  comp_colour_u = 12; %Green
+end;
+
+if nargin<9
+  comp_colour_o = 4; %Red
+end;
+
+% Create the (full) system name
+if length(full_name)==0
+  full_name = system_name;
+  system_type = system_name;
+else
+  full_name = [full_name, '_', system_name];
+end;
+
+% Get the raw and the processed bonds
+eval(['[rbonds,rstrokes,rcomponents] = ', system_type, '_rbg;']);
+eval(['[bonds] = ', system_type, '_abg;']);
+
+% Get the causal bonds
+eval(['[cbonds,status]=', full_name, '_cbg;']);
+
+% Check sizes
 [N_components,Columns] = size(rcomponents);
 if (Columns ~= 13)
   error('Incorrect rcomponents matrix: must have 13 columns');
 end;
 M_components = Columns;
 
-
-if nargin<7
-  stroke_length = 20;
-end;
-
-if nargin<8
-  stroke_thickness = 2;
-end;
-
-if nargin<9
-  stroke_colour = 1; %Blue
-end;
-
-if nargin<10
-  comp_font = 18; %Helvetica bold
-end;
-
-if nargin<11
-  comp_colour_u = 12; %Green
-end;
-
-if nargin<12
-  comp_colour_o = 4; %Red
-end;
-
-if nargin<13
-  filename = 'stdout';
-end;
-
+% Setup file - append to the cbg file
+filenum = fopen([full_name, '_cbg.fig'], 'a');
 
 % Rotation matrix
 rot = [0 -1; 1 0];
@@ -112,9 +127,9 @@ if index(1,1)>0
     %print the fig3 format firstline spec.
     polyline = 2; 
     firstline = fig3(polyline,stroke_thickness,stroke_colour);
-    fprintf(filename, '%s\n', firstline);
+    fprintf(filenum, '%s\n', firstline);
 
-    fprintf(filename, '	%4.0f %4.0f %4.0f %4.0f \n', ...
+    fprintf(filenum, '	%4.0f %4.0f %4.0f %4.0f \n', ...
 	stroke_end_1(1), stroke_end_1(2), ...
 	stroke_end_2(1), stroke_end_2(2) );
   end;
@@ -134,9 +149,9 @@ if index(1,1)>0
     %print the fig3 format firstline spec.
     polyline = 2; 
     firstline = fig3(polyline,stroke_thickness,stroke_colour);
-    fprintf(filename, '%s\n', firstline);
+    fprintf(filenum, '%s\n', firstline);
 
-    fprintf(filename, '	%4.0f %4.0f %4.0f %4.0f \n', ...
+    fprintf(filenum, '	%4.0f %4.0f %4.0f %4.0f \n', ...
 	stroke_end_1(1), stroke_end_1(2), ...
 	stroke_end_2(1), stroke_end_2(2) );
   end;
@@ -159,18 +174,18 @@ for i = 1:N_components
 
 
   %Now print the component in fig format
-  eval(['[comp_type,comp_name] = ', systemname, '_cmp(i);']);
+  eval(['[comp_type,comp_name] = ', system_name, '_cmp(i);']);
   Terminator = '\\001';   
   for j = 1:length(fig_params)
-    fprintf(filename, '%1.0f ', fig_params(j));
+    fprintf(filenum, '%1.0f ', fig_params(j));
   end;
-  fprintf(filename, '%1.0f %1.0f ', coords(1), coords(2)); 
+  fprintf(filenum, '%1.0f %1.0f ', coords(1), coords(2)); 
   % don't print the auto-numbered labels
-  fprintf(filename, '%s:%s%s\n', comp_type, comp_name, Terminator);
-  
+  fprintf(filenum, '%s:%s%s\n', comp_type, comp_name, Terminator);
 end;
 
-
+% Close the file
+fclose(filenum);
 
 
 

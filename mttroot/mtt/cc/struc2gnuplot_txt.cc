@@ -53,7 +53,7 @@ ostream &struc2gnuplot_txt(const string sys = "sim", istream &in = cin, ostream 
 	{
 	  out << ",\\" << endl;
 	}
-      out << "\t\"MTT_work/" << sys << "_odes2.dat\" using 1:" << 2 + Ly.size() + i->num
+      out << "\t\"MTT_work/" << sys << "_odes.dat2\" using 1:" << 2 + Ly.size() + i->num
 	  << " axes x1y1"
 	  << " title \"" << i->mod << "_" << i->cmp << "\"";
     }
@@ -75,7 +75,7 @@ ostream &struc2gnuplot_txt(const string sys = "sim", istream &in = cin, ostream 
 	{
 	  out << ",\\" << endl;
 	}
-      out << "\t\"MTT_work/" << sys << "_odes2.dat\" using 1:" << 1 + i->num
+      out << "\t\"MTT_work/" << sys << "_odes.dat2\" using 1:" << 1 + i->num
 	  << " axes x1y1"
 	  << " title \"" << i->mod << "_" << i->cmp << "\"";
     }

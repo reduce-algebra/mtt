@@ -7,10 +7,19 @@ function [bonds,status] = FMR_cause(bonds);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/08/09 08:28:02  peter
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 status = -1;
+
+% Check that there are exactly two bonds.
+if check_bonds(bonds,2,'FMR')==0
+  return
+end
+
 
 % There are 2 ports; extract the information
 e_1 = bonds(1,1);

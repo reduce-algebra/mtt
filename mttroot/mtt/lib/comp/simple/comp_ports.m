@@ -14,6 +14,9 @@ function ports = comp_ports(comp_type,N)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1997/11/21 11:32:57  peterg
+% %% N ports numbered 1..N
+% %%
 % %% Revision 1.2  1997/08/28  08:08:24  peterg
 % %% Added RS component to the two-port list
 % %%
@@ -25,7 +28,7 @@ function ports = comp_ports(comp_type,N)
 
 junctions = '-zero-one-';
 one_ports = '-SS-';
-two_ports = '-TF-GY-AE-AF-FMR-RS-';
+two_ports = '-TF-GY-AE-AF-FMR-RS-EBTF-';
 N_ports   = '-R-C-I-';
 comp_type = ['-', comp_type, '-'];
 
@@ -39,6 +42,8 @@ elseif length(findstr(comp_type,'[-EMTF-]'))==1
   ports = ['in';'out';'mod'];
 elseif length(findstr(comp_type,'[-ES-]'))==1
   ports = ['e';'s'];
+elseif length(findstr(comp_type,'[-PS-]'))==1
+  ports = ['in';'out';'power'];
 elseif length(findstr(comp_type,N_ports))==1
   if N==1
     ports = ['in'];

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1998/05/13 16:42:03  peterg
+## Fixed various bugs etc.
+##
 # Revision 1.4  1996/08/24  14:27:59  peter
 # Global parameters.
 # Error handling.
@@ -41,11 +44,22 @@ rm -f $1_daeso.m
 
 $MATRIX << EOF > dae2daes_m.log 2>mtt_error.txt
 
-  %Read the parameters
-  $1_numpar;
-
+  %System structure
   [nx,ny,nu,nz,nyz] = $1_def;
+  
+  % Number of descriptor "states"
   NX = nx+2*nz+nyz;
+
+  %Read in parameters
+  $1_numpar; 
+ 
+  %Read in state (needs redoing for descriptor xevtor
+  %x = $1_state;
+
+
+  %Read in simulation parameters
+  $1_simpar;
+  T = [0:DT:LAST];
 
   t=0;  %Just in case its in the parameter list
 
@@ -67,7 +81,6 @@ $MATRIX << EOF > dae2daes_m.log 2>mtt_error.txt
     T=T';
   end;
 
-
 if NX>0
   x = dassl("$1_dae", x0, dx0,  T);
   write_matrix([T,x], '$1_daes');
@@ -77,11 +90,13 @@ end;
 
 if ny>0
   i=0;
+  Y = [];
   for tt=T'
     i=i+1;
-    y(i,:) = $1_daeo(x(i,:),tt)';
+    y = $1_daeo(x(i,:),tt)';
+    Y = [Y; y'];
   end;
-  write_matrix([T,y], '$1_daeso');
+  write_matrix([T,Y], '$1_daeso');
 end;
 
 EOF

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  1998/01/30 15:15:14  peterg
+## Sorted out superscript problem
+##
 # Revision 1.10  1997/08/19  10:38:26  peterg
 # Added pi to the list
 #
@@ -66,6 +69,8 @@ sed \
     -e "s/mttdz/\\\dot z_/g" \
     -e "s/mttdu/\\\dot u_/g" \
     -e "s/dot_/ \\\dot /g" \
+    -e "s/mtttf/G(s)/g" \
+    -e "s/mttctf/D(s)/g" \
     -e "s/mtta/A/g" \
     -e "s/mttb/B/g" \
     -e "s/mttc/C/g" \
@@ -84,7 +89,6 @@ sed \
     -e "s/mttz/z/g" \
     -e "s/mttyy/Y/g" \
     -e "s/mttw/w/g" \
-    -e "s/mtttf/G/g" \
     -e "s/mttt/T/g" \
     -e "s/mttpar//g" \
     -e "s/!/\\\/g" \

@@ -1,0 +1,179 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: dae2cse_r
+# Differential-algebraic equations to constrained-state equations
+# P.J.Gawthrop 14 June 1991, 8 Aug 1991, 2 April 1992, 14 April 1994, 28 Dec 94
+# Copyright (c) P.J.Gawthrop 1991, 1992, 1994.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+## Revision 1.2  1996/08/25 09:57:30  peter
+## Sorted out bug when MTTNz=0
+##
+## Revision 1.1  1996/08/15 16:47:02  peter
+## Initial revision
+##
+###############################################################
+
+#Inform user
+echo Creating $1_cse.r
+
+# Remove the old log file
+rm -f dae2cse_r.log
+
+# Use reduce to accomplish the transformation
+reduce >dae2cse_r.log << EOF
+
+OFF Echo;
+OFF Nat;
+ON NERO;
+
+in "$1_def.r";
+MTTdxs := MTTdX;  %Save the symbolic form of dX
+in "$1_sympar.r";
+in "$1_dae.r";
+
+
+%Create F_x, F_y matrices - assumming equations are linear in dZ
+IF MTTNz>0 THEN 
+BEGIN
+% Find MTTFx;
+matrix MTTFx(MTTNx,MTTNz);
+FOR j := 1:MTTNz DO
+  BEGIN
+  dzj := MTTdZ(j,1);
+  FOR i := 1:MTTNx DO
+    MTTFx(i,j) := df(MTTdX(i,1), dzj, 1);
+  END;
+
+% Find MTTFy;
+matrix MTTFy(MTTNy,MTTNz);
+FOR j := 1:MTTNz DO
+  BEGIN
+  dzj := MTTdZ(j,1);
+  FOR i := 1:MTTNy DO
+    MTTFy(i,j) := df(MTTy(i,1), dzj, 1);
+  END;
+
+%Create G_x, G_u matrices 
+
+% Find MTTGx;
+matrix MTTGx(MTTNz,MTTNx);
+FOR j := 1:MTTNx DO
+  BEGIN
+  xj := MTTX(j,1);
+  FOR i := 1:MTTNz DO
+    MTTGx(i,j) := df(MTTZ(i,1), xj, 1);
+  END;
+
+% Find MTTGu;
+matrix MTTGu(MTTNz,MTTNu);
+FOR j := 1:MTTNu DO
+  BEGIN
+  uj := MTTu(j,1);
+  FOR i := 1:MTTNz DO
+    MTTGu(i,j) := df(MTTZ(i,1), uj, 1);
+  END;
+
+%Create E matrices
+matrix MTTExx(MTTNx,MTTNx); MTTExx := MTTFx*MTTGx;
+matrix MTTExu(MTTNx,MTTNu); MTTExu := MTTFx*MTTGu;
+matrix MTTEyx(MTTNy,MTTNx); MTTEyx := MTTFy*MTTGx;
+matrix MTTEyu(MTTNy,MTTNu); MTTEyu := MTTFy*MTTGu;
+
+
+matrix MTTE(MTTNx,MTTNx);   MTTE := MTTI - MTTExx;
+
+
+  %% The following gets rid of the dZs; there must be a better way.
+  MTTdZ1 := 0;
+  MTTdZ2 := 0;
+  MTTdZ3 := 0;
+  MTTdZ4 := 0;
+  MTTdZ5 := 0;
+  MTTdZ6 := 0;
+  MTTdZ7 := 0;
+  MTTdZ8 := 0;
+  MTTdZ9 := 0;
+  MTTdZ10 := 0;
+  MTTdZ11 := 0;
+  MTTdZ12 := 0;
+  MTTdZ13 := 0;
+  MTTdZ14 := 0;
+  MTTdZ15 := 0;
+  MTTdZ16 := 0;
+  MTTdZ17 := 0;
+  MTTdZ18 := 0;
+  MTTdZ19 := 0;
+
+MTTEdX := MTTdX; %Ie MTTEdX is MTTdX with the dz terms deleted ie EdX.
+MTTdX := MTTdXs;  %Restore the symbolic dX
+
+%%% This causes the matrix mismatch
+%%% MTTdXs and MTTdu need setting in _def.r file
+MTTY := MTTY + MTTEyx*MTTEdX + MTTEyu*MTTdu;
+
+
+END; %%of MTTNz>0
+
+
+IF MTTNz=0 THEN 
+BEGIN
+  MTTEdX := MTTdX;
+  MTTE   := MTTI;
+END;
+
+%%Create the _cse.r file
+OUT "$1_cse.r";
+
+IF MTTNx>0 THEN
+BEGIN
+  write "matrix MTTEdX(", MTTNx, ",1)";
+END;
+MTTEdX := MTTEdX;
+
+IF MTTNy>0 THEN
+BEGIN
+  write "matrix MTTY(", MTTNy, ",1)";
+END;
+MTTY := MTTY;
+
+IF MTTNu>0 THEN
+BEGIN
+  write "matrix MTTU(", MTTNu, ",1)";
+  write "matrix MTTdU(", MTTNu, ",1)";
+END;
+MTTU := MTTU;
+
+IF MTTNx>0 THEN
+BEGIN
+  write "matrix MTTE(", MTTNx, ",", MTTNx, ")";
+END;
+MTTE := MTTE;
+
+IF MTTNz>0 THEN
+BEGIN
+  IF MTTNx>0 THEN IF MTTNy>0 THEN
+  BEGIN
+    write "matrix MTTEyx(", MTTNy, ",", MTTNx, ")";
+  END;
+  MTTEyx := MTTEyx;
+%%%%%  MTTdU := MTTdU;
+END;
+
+write ";END;";
+
+SHUT "$1_cse.r";
+quit;
+
+EOF
+
+# Now invoke the standard error handling.
+mtt_error_r dae2cse_r.log

@@ -1,0 +1,41 @@
+%% Label file for system Tank (Tank_lbl.txt)
+%SUMMARY Tank: Tank of hot incompressible liquid
+%DESCRIPTION c is the pressure constant: P=(rho*V)/c
+%DESCRIPTION Typical lable: tank  none  rho;c_p;c
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS	Heat_in	Heat_in
+%ALIAS	Hy_in	Hy_in
+%ALIAS	Hy_out	Hy_out
+%ALIAS	Th_in	Th_in
+%ALIAS	Th_out	Th_out
+
+% Argument aliases
+%ALIAS	$1	rho
+%ALIAS	$2	c_p
+%ALIAS	$3	c
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+% Component type C
+	tank		Tank	       rho,c_p,c
+
+% Component type SS
+	[Heat_in]	SS		external,external
+	[Hy_in]		SS		external,external
+	[Hy_out]	SS		external,external
+	[Th_in]		SS		external,external
+	[Th_out]	SS		external,external

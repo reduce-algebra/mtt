@@ -8,6 +8,13 @@
 # Creates tk/tcl menus for xmtt.
 # Copyright (c) P.J.Gawthrop, 1998,1999
 
+## Paths for its files
+dotfile="$HOME/.mtt"
+xdotfile="${dotfile}/xmtt"
+
+repfile="${xdotfile}/reps"
+exfile="${xdotfile}/examples"
+
 #MTT blurb
 title=`mtt --version`
 
@@ -87,7 +94,7 @@ menu .exam.exam
 EOF
 
 echo '#' Examples menu
-strip_comments <$MTTPATH/EXAMPLES | examples_txt2tk
+strip_comments <${exfile} | examples_txt2tk
 
 # Representations menu
 echo '#' Representations menu
@@ -96,4 +103,4 @@ menu .rep.rep
 menu .repall.repall
 EOF
 
-strip_comments <$MTTPATH/REPS  | reps_txt2tk 
+strip_comments <${repfile}  | reps_txt2tk 

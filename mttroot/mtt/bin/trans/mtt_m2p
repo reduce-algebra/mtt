@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.15  1998/08/15 13:46:01  peterg
+## Included new sparse update routines
+##
 ## Revision 1.14  1998/08/12 15:21:12  peterg
 ## Added type definition for the SVD procedures
 ##
@@ -167,7 +170,7 @@ EOF
   non_space="[^ ]*"
 
 # Body	
-grep -v '^[ ]*function' < $Sys_rep.m  | sed "s/^$space%/#/" |\
+grep -v '^[ ]*function' < $Sys_rep.m  | sed "s/^$space%/#/" | sed "s/;$space%/#/" |\
 awk -F# '{printf("%s",$1) 
           if (NF>1) printf("{* %s *}", $2)
           printf("\n") 

@@ -9,6 +9,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.78  2002/05/11 01:14:17  geraint
+## Fix for [ 553218 ] simpar.oct and simpar.m different.
+## Translation added between ColumnVector in base .cc and Octave_map in .oct.
+##
 ## Revision 1.77  2002/05/08 16:03:32  geraint
 ## Added mex support for ode2odes: mtt sys ode2odes mexglx.
 ## This mex stuff seems to require octave2.1-headers.
@@ -349,7 +353,7 @@ make_m()
 #lang_header  $1 ode2odes m  'x,par,simpar' '[Y,X,t]' > $filename
 mtt_header ${sys} ode2odes m > $filename
 cat <<EOF >> $filename 
-global MTT_data;
+global MTT_data
 
   if nargin<3
     simpar = ${sys}_simpar(); 
@@ -381,7 +385,7 @@ global MTT_data;
     [u] = ${sys}_input(x,y,t,par);	# Input
     [y] = ${sys}_$odeo(x,u,t,par);  # Output 
     if mttj==0
-     mtt_write(t,x,y,$Nx,$Ny);   # Write it out
+     mtt_write(t,x,y,$Nx,$Ny,simpar.first);   # Write it out
     endif
 EOF
 
@@ -938,6 +942,7 @@ inline void
 mtt_write (const double &t,
 	   ColumnVector &x,
 	   ColumnVector &y,
+           const double &first,
 	   const int &nrows,
 	   const bool dump_data = false,
 	   std::ostream &file = std::cout)
@@ -966,6 +971,7 @@ mtt_write (const double &t,
   if (0 == row)
     data = Matrix (nrows, 1+ny+1+nx, 0.0);
 
+  if (t >= first) {
   data.elem (row, col) = t;
   for (register int i = 0; i < ny; i++)
     data.elem (row, ++col) = y.elem (i);
@@ -974,6 +980,7 @@ mtt_write (const double &t,
     data.elem (row, ++col) = x.elem (i);
 
   row++;
+  };
 
   static std::fstream fcputime ("MTT.cputime", std::ios::out | std::ios::trunc | std::ios::app);
   static clock_t cputime0 = clock();
@@ -1023,7 +1030,7 @@ ${sys}_ode2odes (ColumnVector &state0, ColumnVector &numpar, ColumnVector &simpa
   register double t	= 0.0;
 
   const double	ddt	= dt / stepfactor;
-  const int	ilast	= static_cast<int> (round ((last - first) / ddt)) + 1;
+  const int	ilast	= static_cast<int> (round ( last  / ddt)) + 1;
   const int	nrows	= static_cast<int> (round ((last - first) / dt)) + 1;
 
   for (register int i = 0; i < MTTNY; i++)
@@ -1042,7 +1049,7 @@ ${sys}_ode2odes (ColumnVector &state0, ColumnVector &numpar, ColumnVector &simpa
       y	= mtt_output (x, u, t, numpar);
       if (0 == j)
 	{
-           mtt_write (t, x, y, nrows);
+           mtt_write (t, x, y, first, nrows);
 	}
 EOF
 case "$method" in

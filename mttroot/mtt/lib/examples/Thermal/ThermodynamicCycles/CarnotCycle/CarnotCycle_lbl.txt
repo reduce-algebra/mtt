@@ -1,0 +1,35 @@
+%SUMMARY CarnotCycle: a simple closed thermodynamic cycle
+%DESCRIPTION The Carnot cycle is a simple closed thermodynamic cycle
+%DESCRIPTION with four parts:
+%DESCRIPTION o Isentropic compression
+%DESCRIPTION o Heat injection at constant temperature
+%DESCRIPTION o Isentropic expansion
+%DESCRIPTION o Heat extraction at constant temperature
+
+
+
+%% Label file for system CarnotCycle (CarnotCycle_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type Cycle
+	cycle
+
+% Component type RT
+	r		lin	flow,r
+
+% Component type SS
+	Heat	SS	external,internal
+	Work	SS	internal,external

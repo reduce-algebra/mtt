@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.15  2000/10/17 09:53:05  peterg
+## More on logic rep
+##
 ## Revision 1.14  2000/10/17 08:36:56  peterg
 ## Included logic rep.
 ##
@@ -81,7 +84,17 @@ case $rep in
 	    moreinfofile=$infofile
 	    default='1.0'
 	;;
-    state|input)
+    input)
+	    lang=txt
+	    textfile=$1_$2.$lang
+	    infofile=mtt_list.$lang
+	    moreinfofile=mtt_list_numpar.$lang
+            awk '{if ($1==rep) printf("%s\n", $4)}' rep=$2 \
+            <$1_struc.txt >$infofile
+	    cat $infofile $1_sympar.$lang> $moreinfofile  
+	    default='1.0'
+         ;;
+    state)
 	    lang=txt
 	    textfile=$1_$2.$lang
 	    infofile=mtt_list.$lang

@@ -1,7 +1,7 @@
 #ifndef FADE_HH
 #define FADE_HH
 
-#include <math.h>		// tanh
+#include <cmath>		// tanh
 
 #include "constants.hh"		// pi
 
@@ -33,7 +33,7 @@ chkfade(const double x,
 {
   double X1 = x1, X2 = x2;
   if (x1 > x2) {
-    cerr << "* Warning: chkfade; x2 > x1, swapping" << endl;
+    std::cerr << "* Warning: chkfade; x2 > x1, swapping" << std::endl;
     X1 = x2;
     X2 = x1;
   }

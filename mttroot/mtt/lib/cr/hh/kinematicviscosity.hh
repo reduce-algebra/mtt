@@ -1,7 +1,7 @@
 #ifndef KINEMATICVISCOSITY_HH
 #define KINEMATICVISCOSITY_HH
 
-#include <math.h>		// pow
+#include <cmath>		// pow
 #include <string>
 
 inline double
@@ -47,13 +47,13 @@ kerosenekinematicviscosity(const double T)
 }
 
 inline double
-kinematicviscosity(const string fluid,
+kinematicviscosity(const std::string fluid,
 		   const double T)
 {
   if ("kerosene" == fluid) {
     return kerosenekinematicviscosity(T);
   } else {
-    cerr << __FILE__ << ": fluid \"" << fluid << "\" unknown" << endl;
+    std::cerr << __FILE__ << ": fluid \"" << fluid << "\" unknown" << std::endl;
     exit(-1);
   }
 }

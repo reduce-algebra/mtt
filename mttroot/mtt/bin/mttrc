@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1998/01/06 09:14:51  peterg
+## Added latex2html to setup
+##
 # Revision 1.3  1998/01/06  09:11:26  peterg
 # Removed matlab from the setup
 #
@@ -30,7 +33,7 @@ MTTPATH=~/mtt_new/mtt
 
 # The following line sets up the make to use -- gmake is the standard 
 # but you may wish to use lsmake for parallelism
-MAKE='gmake'
+MAKE='make'
 export MAKE
 
 # The following sets up the c compiler

@@ -19,6 +19,9 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 # ###############################################################
 # ## $Id$
 # ## $Log$
+# ## Revision 1.36  1998/08/25 06:44:40  peterg
+# ## Furhter revisions
+# ##
 # ## Revision 1.35  1998/08/24 10:16:32  peterg
 # ## Coverted to new structure - still needs status sorting.
 # ##
@@ -211,7 +214,8 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
   if struct_contains(ABG,"ports")# Are there any ports?
     [n_ports,junk] = size(struct_elements(ABG.ports));
     port_bond_index=zeros(n_ports,1);
-    for port = ABG.ports		# Find indices of the internal port bonds
+    for port = ABG.ports	# Find indices of the internal
+				# port bonds in correct order
        port_bond_index(port.index) = port.connections;
     endfor
     port_bond_index=abs(port_bond_index);
@@ -301,11 +305,12 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
   done = sum(sum(abs(ABG.bonds)))/total*100;
 
 
-field=["ports";"subsystems"];	# Do for both ports and subsystems -
-#				# ports first
+  fields=["ports";"subsystems"];	# Do for both ports and subsystems -
+				# ports first
   for i=1:2
-    if struct_contains(ABG,field(i,:));
-      eval(["ABG_field = ABG.",field(i,:), ";"]);
+    field=deblank(fields(i,:));
+    if struct_contains(ABG,field);
+      eval(["ABG_field = ABG.",field, ";"]);
       
 # Outer while loop sets preferred causality
       ci_index=1;
@@ -321,59 +326,39 @@ field=["ports";"subsystems"];	# Do for both ports and subsystems -
 	  old_done = done;
 	  for [subsystem,name] = ABG_field
       	    if subsystem.status != 0 # only do this if causality not yet complete
-	      
-				# Get the bonds on this component
-	      comp = subsystem.connections;
+	      comp = subsystem.connections; # Get the bonds on this component
 	      bond_list = abs(comp);
 	      direction = sign(comp)'*[1 1];
               n_bonds = length(bond_list);
-	      
-				# Get the component details
-				#eval([ "[comp_type,name,cr,arg] = ", system_type, "_cmp(i);" ]);
-	      
-				# Change name of 0 and 1 components -- matlab doesn't like numbers here
-	      if strcmp(subsystem.type,"0")
+
+	      if strcmp(subsystem.type,"0") # Change names
 	    	subsystem.type = "zero";
 	      end;
 	      if strcmp(subsystem.type,"1")
 	    	subsystem.type = "one";
 	      end;
+				
+	      cause_name = [subsystem.type, "_cause"];# Component causality procedure name
+	      eqn_name = [subsystem.type, "_eqn"]; #Component equation procedure name
 	      
-				# Component causality procedure name
-	      cause_name = [subsystem.type, "_cause"];
-	      
-				#Component equation procedure name
-	      eqn_name = [subsystem.type, "_eqn"];
-	      
-				# Bonds on this component (arrow-orientated) -- these become the
-				# port bonds on the ith component of this subsystem.
-	      
-	      comp_bonds=[];
-	      for kk = 1:n_bonds
+	      comp_bonds=[];	# Bonds on this component (arrow-orientated) -- these become the
+	      for kk = 1:n_bonds # port bonds on the ith component of this subsystem.
 	    	comp_bonds(kk,:) = ABG.bonds(bond_list(kk),:);
 	      end;
-	      
-	      
-				# Invoke  the appropriate causality procedure
+
 	      if exist(eqn_name)!=2 # Try a compound component
 				# Port status depends on whether the corresponding bonds are
 				#  fully causal at this stage.
             	one = ones(n_bonds,1);
             	port_status = (sum(abs(comp_bonds'))'==2*one) - one;
 		
-				# Direction of bonds on the ports (0 if next to port)
-				#port_bond_direction = -sign(components(i,1:n_bonds))';
-	    	port_bond_direction = -sign(subsystem.connections)';
-				# If there is a predefined causality function; use it
-            	if exist(cause_name)==2
-    				# Convert from arrow orientated to component orientated causality
-		  comp_bonds = comp_bonds.*(port_bond_direction*[1 1]);
-		  
-				# Evaluate the built-in causality procedure
-		  eval([ "[comp_bonds] = ", cause_name, "(comp_bonds);" ]);
-		  
-				# and convert from component orientated to arrow orientated causality
-		  comp_bonds = comp_bonds.*(port_bond_direction*[1 1]); 
+	    	port_bond_direction = -sign(subsystem.connections)'; # Direction of bonds
+
+            	if exist(cause_name)==2	# If there is a predefined causality function; use it
+		  comp_bonds = comp_bonds.*(port_bond_direction*[1 1]);	# Convert from arrow orientated to component orientated causality
+		  eval([ "[comp_bonds] = ", cause_name, "(comp_bonds);" ]); # Evaluate the built-in causality procedure
+
+		  comp_bonds = comp_bonds.*(port_bond_direction*[1 1]);	# and convert from component orientated to arrow orientated causality
             	end;
 		
 	    	[comp_bonds,subsystem.status] = abg2cbg(name, subsystem.type, full_name, 
@@ -445,31 +430,7 @@ field=["ports";"subsystems"];	# Do for both ports and subsystems -
     if done<100
       mtt_error(sprintf("Unable to complete causality"),errorfile);
     end;
-    
-    
-				# List overcausal bonds
-				#  [over_causal_bonds,n] = getindex(status,1);
-				#  if n>0
-				#    for i=over_causal_bonds'
-				#      eval([ "[comp_type,name] = ", system_type, "_cmp(i);" ]);
-				#      mtt_info(sprintf("Component #s (#s) is overcausal", name, subsystem.type), ...
-				#	  infofile);
-				#    end;
-				#  end;
-    
-				# List undercausal bonds
-				#  [under_causal_bonds,n] = getindex(status,-1);
-				#  if n>0
-				#    for i=under_causal_bonds'
-				#      eval([ "[comp_type,name] = ", system_type, "_cmp(i);" ]);
-				#      mtt_info(sprintf("Component #s (#s) is undercausal", name, subsystem.type), ...
-				#	  infofile);
-				#    end;
-				#  end;
-    
-				#  List over and undercausal bonds and set status
-    
-  endif
+  endif				# at_top_level
   
 
   disp(["Writing ", full_name]);

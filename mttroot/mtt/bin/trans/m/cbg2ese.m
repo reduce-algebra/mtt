@@ -23,6 +23,10 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.42  2001/04/23 16:23:30  gawthrop
+  ## ## Now stips ; from bottlom level argument list - allows aliasing of
+  ## ## parts of a,b,c (eg a,b by using a,b;c
+  ## ##
   ## ## Revision 1.41  2001/04/15 21:15:41  geraint
   ## ## Added interface definition rep: _ICD.(txt|c|cc|m).
   ## ##
@@ -501,6 +505,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 			  "%s\t%i\t%s\t%s_%s\t%i\n", ...
 			  structure_name(which_index,:), value-k+1, ...
 			  comp_name, full_name_repetition, comp_name, repetition);
+		  fflush (structure_file);
 	    	endfor;
  	      endfor;
  	    endif;

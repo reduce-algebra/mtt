@@ -1,6 +1,12 @@
 function [Y,X] = sm2sr(A,B,C,D,T,u0,x0);
+% sm2sr - Constrained-state matrix to step response.
+%
+%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%     %%%%% Model Transformation Tools %%%%%
+%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% Matlab function  sm2sr
 % [Y,X] = sm2sr(A,B,C,D,T,u0,x0);
-% Constrained-state matrix to impulse response.
 % A,B,C,D,E - (constrained) state matrices
 % T vector of time points
 % u0 input gain vector: u = u0*unit step.
@@ -10,6 +16,9 @@ function [Y,X] = sm2sr(A,B,C,D,T,u0,x0);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1996/10/27  10:39:04  peterg
+% %% Only compute matrix exponential once.
+% %%
 % %% Revision 1.2  1996/09/10  16:48:21  peter
 % %% Changed ar counts in default settings.
 % %%
@@ -39,34 +48,45 @@ end;
 
 
 
-one = eye(Nx);
+% $$$ one = eye(Nx);
+% $$$ 
+% $$$ Y = zeros(N,Ny);
+% $$$ X = zeros(N,Nx);
+% $$$ 
+% $$$ dt = T(2)-T(1);% Assumes fixed interval
+% $$$ expAdt = expm(A*dt); % Compute matrix exponential
+% $$$ i = 0;
+% $$$ expAt = one;
+% $$$ 
+% $$$ for t = T'
+% $$$   i=i+1;
+% $$$   if Nx>0
+% $$$     x = ( A\(expAt-one) )*B*u0 + expAt*x0;
+% $$$     expAt = expAt+expAdt;
+% $$$     X(i,:) = x';
+% $$$     if Ny>0
+% $$$       y = C*x + D*u0;
+% $$$       Y(i,:) = y';
+% $$$     end;
+% $$$   elseif Ny>0
+% $$$     y = D*u0;
+% $$$     Y(i,:) = y';
+% $$$   end;
+% $$$ end;
 
-Y = zeros(N,Ny);
-X = zeros(N,Nx);
+% Compute the impulse response
+[Y,X] = sm2ir(A,B,C,D,T,u0,x0);
 
-dt = T(2)-T(1);% Assumes fixed interval
-expAdt = expm(A*dt); % Compute matrix exponential
-i = 0;
-expAt = one;
+% Assume fixed sample interval
+dT = T(2)-T(1);
 
-for t = T'
-  i=i+1;
-  if Nx>0
-    x = ( A\(expAt-one) )*B*u0 + expAt*x0;
-    expAt = expAt+expAdt;
-    X(i,:) = x';
-    if Ny>0
-      y = C*x + D*u0;
-      Y(i,:) = y';
-    end;
-  elseif Ny>0
-    y = D*u0;
-    Y(i,:) = y';
-  end;
-end;
-
-
-
+% Do an Euler integration on it
+ Y = mtt_euler(Y,dT);
+ 
+ if nargout>1
+   X = mtt_euler(X,dT);
+ end;
+ 
 
 
 

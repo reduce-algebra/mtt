@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/07/27 16:30:26  peterg
+## Initial revision
+##
 ###############################################################
 
 
@@ -67,10 +70,7 @@ echo Creating $outfile
 rm -f mtt_r2lang.log
 
 #Remove the temporary files
-rm -f $1_$rep.$ext.1
-
-#Header
-lang_header $1 $rep $ext 'mttx,mttu,t' mttdx > $1_$rep.$ext
+rm -f $outfile.*
 
 if [ "$rep" = "ode" ]; then
   echo Creating $1_odea.$ext
@@ -79,7 +79,7 @@ if [ "$rep" = "ode" ]; then
   rm -f $1_odea.$ext.1;
 
   #Header
-  lang_header $1 $rep $ext 'mttx,mttu,t' mttdx > $1_$rep.$ext
+  lang_header $1 $rep $ext 'mttx,mttu,t' mttdx > $outfile.1
 
   # Use reduce to accomplish the transformation
   $SYMBOLIC >mtt_r2lang.log << EOF
@@ -88,22 +88,22 @@ if [ "$rep" = "ode" ]; then
   in"mtt_setreduce.r";
       
   % The body of the ode function
-    GENTRANOUT "$1_ode.$ext.1";
+    GENTRANOUT "$outfile.3";
     mtt_matrix := MTTdX$
     mtt_matrix_n := MTTNx$
     mtt_matrix_m := 1$
     mtt_matrix_name := 'MTTdX$
     lang_matrix(); 
-    GENTRANSHUT "$1_ode.$ext.1";
+    GENTRANSHUT "$outfile.3";
     
-      % The algebraic equations (if any)
-    GENTRANOUT "$1_odea.$ext.1";
-    mtt_matrix := MTTYz$
-    mtt_matrix_n := MTTNYz$
-    mtt_matrix_m := 1$
-    mtt_matrix_name := MTTYz$
-    lang_matrix(); 
-    GENTRANSHUT "$1_odea.$ext.1";
+%%      % The algebraic equations (if any)
+%%    GENTRANOUT "$1_odea.$ext.1";
+%%    mtt_matrix := MTTYz$
+%%    mtt_matrix_n := MTTNYz$
+%%    mtt_matrix_m := 1$
+%%    mtt_matrix_name := MTTYz$
+%%    lang_matrix(); 
+%%    GENTRANSHUT "$1_odea.$ext.1;
       
       
       % Now do the y = g(x,t) function.
@@ -117,7 +117,8 @@ if [ "$rep" = "ode" ]; then
     GENTRANSHUT "$1_odeo.$ext.1";
       
 EOF
-  
+  cat $1_odeo.$ext.1
+
   # Algebraic bits
   $MATRIX -q  <<EOF  >> $1_ode.$ext
     %System structure
@@ -153,13 +154,13 @@ EOF
   
 EOF
   
-  cat <<EOF >> $outfile.O
+  cat <<EOF >> $outfile.2
   
   $Lc The differential equations $Rc
 EOF
   
-  sed 's/mtt_matrix/mttdx/' $1_ode.$ext.1 >> $1_ode.$ext
-  
+  sed 's/mtt_matrix/mttdx/' $outfile.3 > $outfile.4
+  rm -f $outfile.3
   
   # Create the odea.$ext function
   lang_header $1 odea $ext 'mttui' mttyz 'global mttxx mttt; mttx = mttxx; t=mttt;' > $1_odea.$ext
@@ -217,16 +218,26 @@ sed 's/mtt_matrix/mtty/' $1_odeo.$ext.1 >> $1_odeo.$ext
   mv $1_odea.m mtt_junk; mtt_p2m<mtt_junk > $1_odea.m
 fi
   
+if [ "$rep" = "sm" ]||[ "$rep" = "dm" ]; then
+
 if [ "$rep" = "sm" ]; then
+   #Header
+  lang_header $1 $rep $ext '' [mtta,mttb,mttc,mttd] > $outfile.A
+  Symbols='a b c d'    
+fi
 
-  #Header
-  lang_header $1 $rep $ext 'mttx,mttu' [mtta,mttb,mttc,mttd] > $1_$rep.$ext
+if [ "$rep" = "dm" ]; then
+   #Header
+  lang_header $1 $rep $ext '' [mtta,mttb,mttc,mttd,mtte] > $outfile.A
+  Symbols='a b c d e'    
+fi
 
-  
-Symbols='a b c d'
 for Symbol in $Symbols; do
   rm -f $outfile.1
-  case $Symbol in
+
+
+if [ "$rep" = "sm" ]; then
+      case $Symbol in
     a)
 	N=MTTNx; M=MTTNx
 	;;
@@ -239,10 +250,34 @@ for Symbol in $Symbols; do
     d)
 	N=MTTNy; M=MTTNu
 	;;
+    e)
+	N=MTTNx; M=MTTNx
+	;;
     *)
 	
-esac
-
+     esac
+else
+  NN=MTTNx+2*MTTNz+MTTNyz
+  case $Symbol in
+    a)
+	N=$NN; M=$NN
+	;;
+    b)
+	N=$NN; M=MTTNu
+	;;
+    c)
+	N=MTTNy; M=$NN
+	;;
+    d)
+	N=MTTNy; M=MTTNu
+	;;
+    e)
+	N=$NN; M=$NN
+	;;
+    *)
+  esac
+    
+fi
     $SYMBOLIC  << EOF >mtt_r2m.log
 
     %Set up the code generator
@@ -271,7 +306,8 @@ rm -f $outfile.[12]
 fi
 
 # Convert from Pascal syntax to Octave syntax
-cat $outfile.?  | mtt_p2m >> $outfile
+cat $outfile.?  | mtt_p2m > $outfile
+
 rm -f $outfile.?  
   
   

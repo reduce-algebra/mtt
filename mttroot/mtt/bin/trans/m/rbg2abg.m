@@ -5,6 +5,9 @@ function [bonds,components] = rbg2abg(rbonds,rstrokes,rcomponents,rports,infofil
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1996/08/04 18:37:57  peter
+% %% Fixed  no causal strokes bug.
+% %%
 % %% Revision 1.1  1996/08/04 18:30:14  peter
 % %% Initial revision
 % %%
@@ -41,14 +44,14 @@ end;
 
 % Determine coordinates of the arrow end of the bond and the other end
 other_end_1 = rbonds(:,1:2);
-arrow_end = rbonds(:,3:4);
+arrow_end   = rbonds(:,3:4);
 other_end_2 = rbonds(:,5:6);
 
-distance_1 = length2d(other_end_1 - arrow_end);
-distance_2 = length2d(other_end_2 - arrow_end);
-which_end = (distance_1>distance_2)*[1 1];
-one = ones(size(which_end));
-other_end = which_end.*other_end_1 + (one-which_end).*other_end_2;
+distance_1   = length2d(other_end_1 - arrow_end);
+distance_2   = length2d(other_end_2 - arrow_end);
+which_end    = (distance_1>distance_2)*[1 1];
+one          = ones(size(which_end));
+other_end    = which_end.*other_end_1 + (one-which_end).*other_end_2;
 arrow_vector = ( which_end.*other_end_2 + (one-which_end).*other_end_1 ) - ...
     arrow_end;
  

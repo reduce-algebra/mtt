@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.244  2000/05/19 14:19:46  peterg
+## Added library path for representations
+##
 ## Revision 1.243  2000/05/19 11:36:36  peterg
 ## Added logic rep.
 ##
@@ -1484,8 +1487,10 @@ if [ -f "$2_rep.make" ]; then
    if [ -f "$filename" ]; then
       echo $filename exists
    else
-      echo make -f $2_rep.make "SYS=$1" "LANG=$3" "ARG=$4"
-      make -f $2_rep.make "SYS=$1" "LANG=$3" "ARG=$"
+     if [ -n "$Verbose" ]; then
+      echo make -s -f $2_rep.make "SYS=$1" "LANG=$3" "ARG=$4" 
+     fi
+      make -s -f $2_rep.make "SYS=$1" "LANG=$3" "ARG=$"
       if [ -n "$4" ]; then
          echo Copying  $1_$2$__ARGS.ps
          cp  $1_$2$__ARGS.ps ..

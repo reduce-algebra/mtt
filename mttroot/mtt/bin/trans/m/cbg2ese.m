@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.44  2001/11/11 18:12:30  geraint
+  ## ## Moved fflush(structure_file) out of loop.
+  ## ##
   ## ## Revision 1.43  2001/11/11 08:32:00  geraint
   ## ## fflush (structure_file).
   ## ##
@@ -194,8 +197,16 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
     system_type = system_name;
   else
     full_name = [full_name, "_", system_name];
-    full_name_repetition = [full_name_repetition, ...
-			    "_", system_name, "_", num2str(repetition)];
+
+    if (repetition>1)
+      full_name_repetition = [full_name_repetition, \
+			      "_", system_name, "_", \
+			      num2str(repetition)];
+    else
+      full_name_repetition = [full_name_repetition, \
+			      "_", system_name];
+    endif
+    
   end;
   
   
@@ -373,8 +384,17 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	    fprintf(ese_file, ...
 		    "\n\t%s Equations linking up subsystem %s (%s)\n\n", ...
 		    pc, comp_name, subsystem.type);
-	    name_comp_name = sprintf("%s_%s_%d", ...
-				     full_name_repetition, comp_name, k);
+	    
+	    if (k>1)
+	      name_comp_name = sprintf("%s_%s_%d", ...
+				       full_name_repetition, \
+				       comp_name, k);
+	    else
+	      name_comp_name = sprintf("%s_%s", ...
+				       full_name_repetition, \
+				       comp_name);
+	    endif
+	    
 	    
 	    printf("\n\t%s Equations linking up subsystem %s (%s)\n\n",\
 		   pc, comp_name, subsystem.type);

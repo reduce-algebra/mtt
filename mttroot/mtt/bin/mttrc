@@ -1,0 +1,79 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: mttrc - sets up paths etc for mtt
+# Usage: mttrc 
+# This version sets up octave as the matrix engine except for the three
+# recursive transformations (abg2cbg, cbg2ese,cbg2fig) which use matlab
+# Hopfully, a new release of Octave will fix this.
+
+# Copyright (c) P.J.Gawthrop 1996.
+
+#Edit the following line to show the location of mtt
+MTTPATH=~/mtt_new/mtt
+
+# The following line sets up the make to use -- gmake is the standard 
+# but you may wish to use lsmake for parallelism
+MAKE='gmake'
+export MAKE
+
+# The following sets up the c compiler
+CC='gcc'
+export CC
+
+# Setup the paths
+export MTTPATH
+PATH=$PATH:$MTTPATH:$MTTPATH/trans
+export PATH
+MATRIX_PATH=$MTTPATH/trans/m:$MTTPATH/lib/comp/simple
+
+MTT_COMPONENTS=$MTTPATH/lib/comp
+export MTT_COMPONENTS
+
+MTT_CRS=$MTTPATH/lib/cr
+export MTT_CRS
+
+MTT_EXAMPLES=$MTTPATH/lib/examples
+export MTT_EXAMPLES
+
+MTT_LIB=$MTTPATH/lib
+export MTT_LIB
+
+
+#Setup octave
+MATRIX=octave
+export MATRIX
+OCTAVE_PATH=$OCTAVE_PATH:$MATRIX_PATH
+export OCTAVE_PATH 
+
+RMATRIX=octave
+export RMATRIX
+
+#Setup matlab
+MATLABPATH=$MATLABPATH:$MATRIX_PATH
+export MATLABPATH
+
+
+# Setup the symbolic stuff
+SYMBOLIC='reduce'
+export SYMBOLIC
+
+# Setup xfig
+FIG='xfig  -startfontsize 20 -metric -startgridmode 1'
+export FIG
+
+# Setup ps viewer
+PSVIEW='ghostview'
+export PSVIEW
+
+# Setup html viewer
+HTMLVIEW='netscape'
+export HTMLVIEW
+
+# Setup dvi viewer
+DVIVIEW='xdvi'
+export DVIVIEW
+

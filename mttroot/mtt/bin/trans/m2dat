@@ -1,0 +1,23 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: m2dat
+
+# Transforms data in .m file to just the data - ie strips the matlab stuff
+
+# Copyright (c) P.J.Gawthrop, 1996.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+echo Creating $1.dat
+
+awk '$1 ~ /[0-9]/ && NF>0 {print} ' <$1.m  >$1.dat
+

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1996/09/12 19:26:57  peter
+## Initial revision
+##
 ## Revision 1.4  1996/08/16 13:04:46  peter
 ## Fixed problem with more than one output (y vector).
 ##
@@ -34,8 +37,9 @@ rm -f ode2odess_m.log
 
 if [ "$2" = "" ]; 
 then
-  PARAMS='T=[0:0.1:1]; u=ones(nu,1)*t;'
+  PARAMS='T=[0:10]; u=ones(nu,1)*t;x0=ones(nx,1);'
   echo Using default parameter $PARAMS
+  echo $PARAMS>$1_args.m
 else
   PARAMS=$2;
 fi
@@ -43,7 +47,7 @@ fi
 PARAMS="$PARAMS ;"
 
 
-$MATRIX << EOF >  ode2odess_m.log 2>mtt_error
+$MATRIX << EOF >  ode2odess_m.log 2>mtt_error.txt
 
   %Read in parameters
   $1_numpar;

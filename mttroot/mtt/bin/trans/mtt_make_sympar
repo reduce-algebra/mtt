@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/10/12 19:24:28  peterg
+## Initial revision
+##
 ##
 ###############################################################
 
@@ -27,8 +30,8 @@ sh $1_type.sh 'echo ' ' ' ' ' |\
 awk '{print "abg2sympar_m2txt " $1, $2}' |\
 sh | sort -u > mtt_all_sympar.txt
 
-# Sort ther aliased list
-sort -u  $1_aliased.txt > mtt_aliased_sort.txt
+# Sort the aliased list
+mtt_strip_args < $1_aliased.txt | sort -u  > mtt_aliased_sort.txt
 
 # Compare it with the aliased list and show the differences
 diff mtt_all_sympar.txt mtt_aliased_sort.txt |\
@@ -63,3 +66,4 @@ END{
         printf("\n")
 
 }' < mtt_sympar.txt >$filename
+

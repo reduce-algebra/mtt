@@ -7,8 +7,23 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/10/11 05:08:22  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+%VAR n
+%VAR BeamLength
+%VAR BeamWidth
+%VAR BeamThickness
+%VAR Youngs
+%VAR Density
+%VAR Area
+%VAR AreaMoment
+%VAR EI
+%VAR rhoA
+%VAR k
 
 % Port aliases
 

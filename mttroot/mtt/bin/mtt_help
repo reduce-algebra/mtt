@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.4  1997/09/04  09:16:29  peterg
+# Removed sort -u
+#
 ## Revision 1.3  1996/11/09 21:10:20  peterg
 ## Tidied up searches by putting everyrhing into lib.
 ##
@@ -49,12 +52,14 @@ case $topic in
     key=$summary 
     find_path=$MTT_COMPONENTS
     name='*_*.*'
+    sort='sort -u'
     blurb="Components";;
 
   crs) 
     key=$summary 
     find_path=$MTT_CRS
     name='*.cr'
+    sort='sort -u'
     blurb="Constitutive Relationships";;
 
   examples) 
@@ -62,6 +67,7 @@ case $topic in
     find_path=$MTT_EXAMPLES
     name='*_lbl.txt'
     all='all'
+    sort='sort -u'
     blurb="Examples";;
 
   representations)
@@ -69,6 +75,7 @@ case $topic in
     find_path=$MTTPATH/mtt
     name='mtt'
     all='all'
+    sort='sort -u'
     blurb="Representations";;
 
   *)
@@ -76,6 +83,7 @@ case $topic in
     find_path=$MTT_LIB
     name=$topic$ext
     all=''
+    sort='cat'
     blurb=$topic;;     
   
 esac
@@ -88,7 +96,8 @@ fi;
 echo $blurb
   mtt_find $find_path "$name" "egrep -i $key.*$subtopic" $all|\
   sed "s/$summary[	]*/  /" |\
-  sed "s/$description[	]*/  /"
+  sed "s/$description[	]*/  /" | $sort
+
 
 
 

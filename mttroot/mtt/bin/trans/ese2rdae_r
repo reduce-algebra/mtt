@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.13  2002/06/28 10:13:40  geraint
+## Includes fix_c.r in ese2rdae and def2write_r to eliminate occurrances of x**y.
+##
 ## Revision 1.12.2.2  2002/06/05 17:28:00  geraint
 ## Cosmetic change.
 ##
@@ -174,11 +177,11 @@ in "$MTTPATH/trans/reduce_matrix.r";
 % Definitions
 in "$defname";
 
-% Elementary system equations
-in "$esename";
-
 % Fix c code if required
 $include
+
+% Elementary system equations
+in "$esename";
 
 OFF Echo;
 OFF Nat;

@@ -9,6 +9,7 @@ ON ROUNDED$ % No integer output
 %% Changes x^y to pow(x,y)
  OPERATOR pow$
  FOR ALL x,y LET x^y = pow(x,y)$ % Use the pow function
+ FOR ALL x,y LET x**y = pow(x,y)$ % Use the pow function
  
  %% Derivatives
  FOR ALL f,g,x LET df(pow(f,g),x)=

@@ -1,0 +1,33 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: lbl2component
+# Creates the commands to pull down components from libraries
+
+# Copyright (c) P.J.Gawthrop 1998
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+# Regexp for an alias
+alias='^[#%]ALIAS'
+
+grep $alias $1_lbl.txt  | grep '/' | awk '{print "mtt -q compcopy " $3}'
+
+
+
+
+
+
+
+
+
+

@@ -14,6 +14,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  2000/04/06 09:02:46  peterg
+## Removed bash let commands as unsupported by sh
+## Do arithmetic within awk - yuk
+##
 ## Revision 1.6  2000/04/06 08:36:15  peterg
 ## *** empty log message ***
 ##
@@ -25,30 +29,30 @@
 ## instead
 ##
 ###############################################################
-
+if [ -z "$1" ]; then
+  echo "Usage: dat22dat system odeso|odes"
+  exit
+fi
 
 # Find Nx and Ny
-Nx=`grep "MTTNx " <$1_def.r | awk '{print $3}' | sed 's/;//'`
-Ny=`grep "MTTNy " <$1_def.r | awk '{print $3}' | sed 's/;//'`
+Nx=`mtt_getsize $1 x` # States
+Ny=`mtt_getsize $1 y` # Outputs
 
 case $2 in
     odeso)
-	First=1; Last=$First+$Ny
+	declare -i First=1; declare -i Last=$First+$Ny
 	;;
     odes)
-	First=$Ny+2; Last=$First+$Nx
+	declare -i First=$Ny+2; declare -i Last=$First+$Nx
 	;;
     *)
-	First=1; Last=$Ny+1
+	declare -i First=1; declare -i Last=$Ny+1
         ;;
 esac
-
+echo $Nx $Ny $First $Last
 echo Creating $1_$2.dat
 
 awk '{
-      ## Convert to numbers
-      split(First,F,"+"); First = F[1] + F[2]
-      split(Last, L,"+"); Last  = L[1] + L[2]
       ## Extract the data
       if (index($1,"#") != 1){
         for (i=First;i<=Last;i++)

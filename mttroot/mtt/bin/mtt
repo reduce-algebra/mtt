@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.346  2002/05/17 11:15:38  gawthrop
+## Messages about copying when using -dr now only appear in verbose (-v) mode.
+##
 ## Revision 1.345  2002/05/15 14:22:25  geraint
 ## Code for Simulink S-function target written direct to sfun.cc instead of
 ## calling .mexglx files. This eliminates the sfun dependency on Octave
@@ -1494,7 +1497,7 @@ if [ -z "$1" ]; then
     echo '         -cc C++ code generation'
     echo '         -cr Use cr before resolving equations'
     echo '         -d  <dir>  use directory <dir>'
-    echo '         -dc Maximise derivative (not integral) causality'
+    echo '         -dr <dir>  use files contained in <dir>'
     echo '         -dc Maximise derivative (not integral) causality'
     echo '         -i <implicit|euler|rk4|dassl>   Use implicit, euler, rk4 or dassl integration'
     echo '         -ae <reduce|hybrd|dassl|hooke>   Solve algebraic equations with specified solver'
@@ -1963,6 +1966,15 @@ Subsystem_cr=$Subsystem"_cr"
 Subsystem_cbg=$Subsystem"_cbg"
 
 ## Create the make target name
+#if [ -z "${using_oct}" ]; then
+#  target=${sys}_${rep}.${lang}    
+#else
+#  if [ "${lang}" = "m" ]; then
+#    target=${sys}_${rep}.oct
+#  else
+#    target=${sys}_${rep}.${lang}
+#  fi
+#fi 
 target=${sys}_${rep}.${lang}
 
 ## Arguments

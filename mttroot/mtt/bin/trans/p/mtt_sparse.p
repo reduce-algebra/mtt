@@ -8,6 +8,9 @@ PROCEDURE mtt_sparse(	 b   : glnarray;
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1998/08/15 09:30:05  peterg
+## Commented out the cariabel iteration stuff
+##
 ## Revision 1.2  1998/08/15 08:26:30  peterg
 ## This is variable interations version - now going on to fixed
 ## iterations
@@ -31,7 +34,6 @@ PROCEDURE atsub(x: glnarray; VAR z: glnarray; n: integer);
 which calculate A*x and (A transpose)*x *)
 LABEL 1,99;
 CONST
-  {** eps	 = 0.00000;**}
    iters = 500;
    
 VAR
@@ -40,16 +42,11 @@ VAR
    g,h,xi,xj: glnarray;
    
 BEGIN
-{**   eps2 := n*sqr(eps);
-    irst := 0;
-1:   irst := irst+1; **}
    mtt_asub(x,xi,n);
    rp := 0.0;
    bsq := 0.0;
    FOR j := 1 TO n DO BEGIN
-     {* bsq := bsq+sqr(b[j]);*}
       xi[j] := xi[j]-b[j];
-     {* rp := rp+sqr(xi[j]) *}
    END;
    mtt_atsub(xi,g,n);
    FOR j := 1 TO n DO BEGIN
@@ -64,36 +61,15 @@ BEGIN
          anum := anum+g[j]*h[j];
          aden := aden+sqr(xi[j])
       END;
-      IF (aden = 0.0) THEN BEGIN
-         writeln('pause in routine SPARSE');
-         writeln('very singular matrix'); {***readln ***}
-      END;
       anum := anum/aden;
       FOR j := 1 TO n DO BEGIN
          xi[j] := x[j];
          x[j] := x[j]+anum*h[j]
       END;
       mtt_asub(x,xj,n);
-      {***
-       rsq := 0.0;
-       **}
       FOR j := 1 TO n DO BEGIN
          xj[j] := xj[j]-b[j];
-         {***rsq := rsq+sqr(xj[j])**}
       END;
-      {***
-      IF ((rsq = rp) OR (rsq <= bsq*eps2)) THEN GOTO 99;
-      IF (rsq > rp) THEN BEGIN
-       ***}{**
-         FOR j := 1 TO n DO BEGIN
-             x[j] := xi[j]
-	 END;**}
-      {***
-         IF (irst >= 3) THEN GOTO 99;
-         GOTO 1
-      END;
-      rp := rsq;
-       ***}
       mtt_atsub(xj,xi,n);
       gg := 0.0;
       dgg := 0.0;
@@ -101,15 +77,10 @@ BEGIN
          gg := gg+sqr(g[j]);
          dgg := dgg+(xi[j]+g[j])*xi[j]
       END;
-      {**IF (gg = 0.0) THEN GOTO 99;**}
       gam := dgg/gg;
       FOR j := 1 TO n DO BEGIN
          g[j] := -xi[j];
          h[j] := g[j]+gam*h[j]
       END
    END;
-   {***writeln('pause in routine SPARSE');
-   writeln('too many iterations'); readln; **}
-
-{**99:writeln("---",iter,rsq);**}
 END;

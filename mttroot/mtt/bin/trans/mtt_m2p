@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.59  2000/11/10 09:29:31  peterg
+## Changed the name regexp to be at least 3 characters long
+##  - avoids problem translating som state files - but needs more work
+##
 ## Revision 1.58  2000/10/17 09:54:29  peterg
 ## replaced switchopen by logic
 ##
@@ -376,7 +380,7 @@ cat<<EOF >> $Filename
 EOF
 
 # Regexps
-  name="[a-zA-Z0-9_][a-zA-Z0-9_][a-zA-Z0-9_]*"
+  name="[a-zA-Z0-9_]*"
   fun_name="$Sys\_$name"
   mttfun_name=$name
   tab='	'
@@ -400,9 +404,7 @@ sed "s/$space\[\($non_space\)\]$spaces=$spaces\($fun_name\)(\($args\))/\2(\1,\3)
 sed "s/$space\[\($non_space\)\]$spaces=$spaces\($mttfun_name\)(\($args\))/\2(\1,\3)/" |\
 sed "s/$space\[\($non_space\)\]$spaces=$spaces\($mttfun_name\)/\2(\1)/" |\
 sed "s/$space\[\($non_space\)\]$spaces=$spaces\(zeros\)(\($args\))/\2(\1,\3)/" |\
-sed "s/$space\[\($non_space\)\]$spaces=$spaces\($fun_name\)/\2(\1)/" |\
 sed "s/$space\($non_space\)$spaces=$spaces\($fun_name\)(\($args\))/\2(\1,\3)/" |\
-sed "s/$space\($non_space\)$spaces=$spaces\($fun_name\)/\2(\1)/"  |\
 awk '
 function printvar(Name,N) {
   if (N<1) return;

@@ -1,9 +1,9 @@
 
 .POSIX:
 
-ifeq (0,1)
 CC=g++
 
+ifeq (0,1)
 CFLAGS+=-static
 OCTAVE_LIBS_PATH=-L/usr/local/lib/octave
 OCTAVE_LIBRARIES=-loctave -lcruft -lm -lncurses -ldl -lstdc++ -lc -lkpathsea -lreadline -lf2c
@@ -47,4 +47,6 @@ $(sys)_sympar.txt:
 	mtt $(sys) sympar txt
 
 
-
+# struc2gnuplot_txt.exe is used by gnuplot_rep.make to create gnuplot input file.
+struc2gnuplot_txt.exe: $(MTT_CC)/struc2gnuplot_txt.cc
+	$(CC) -O3 -Wall -ansi -pedantic -DMAIN $(MTT_CC)/struc2gnuplot_txt.cc -o $(MTTPATH)/trans/struc2gnuplot_txt.exe 

@@ -7,6 +7,11 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.48  2004/02/19 18:27:47  geraint
+  ## ## [ 852694 ] octave 2.1.52 breaks rbg2abg
+  ## ##
+  ## ## Octave now prefers row vectors to column vectors.
+  ## ##
   ## ## Revision 1.47  2002/08/27 16:09:01  geraint
   ## ## Added port_name to error message when multiple bonds are near a port.
   ## ##
@@ -645,7 +650,7 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
       unsorted_port_list
       [n_list,m_list] = size(unsorted_port_list);
       if n_list!=n_comp_bonds
-	error(sprintf("Component %s (%s) has %i bonds but %i port lables",\
+	error(sprintf("Component %s (%s) has %i bonds but %i port labels",\
 		      comp_name, comp_type, n_comp_bonds, n_list))
       endif
 

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.132  1998/02/24 22:33:23  peterg
+## new state reresentation included
+##
 ## Revision 1.131  1998/02/23 16:21:21  peterg
 ## Just do model name in summary line of lbl file
 ##
@@ -845,7 +848,7 @@ fi
 # Tidy mode - operate in the directory MTT-work
 if [ "$tidy" = "tidy" ]; then
    mkdir -p MTT_work
-   cp -u  *.* MTT_work 2>/dev/null
+   cp -u -p  *.* MTT_work 2>/dev/null
    cd MTT_work
    
    if [ -z "$directory" ]; then
@@ -858,7 +861,7 @@ if [ "$tidy" = "tidy" ]; then
 
    if [ "$3" != "view" ]; then
      # echo Copying " " $1_$2.$3
-     cp -u $1_$2.$3 ..
+     cp -u -p $1_$2.$3 ..
    fi
 
    # Remove the MTT_work directory if very tidy

@@ -17,6 +17,10 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.19  1997/08/18 11:23:59  peterg
+% %% Main component loop now misses out the ports (SS:[]) -- the causality
+% %% is merely passed through these components.
+% %%
 % %% Revision 1.18  1997/08/08 08:11:04  peterg
 % %% Suppress compoment trace.
 % %%
@@ -160,7 +164,7 @@ if ~at_top_level
                full_name, n_port_bonds, n_ports), infofile);
 
   else % Copy the port bonds & status
-    j = abs(components(1:n_ports,1)); %relevant bond numbers
+    j = abs(components(1:n_ports,1)) % relevant bond numbers
     bonds(j,:) = port_bonds;
     status(1:n_ports) = port_status;
   end
@@ -183,7 +187,7 @@ while( ci_index>0)
    % disp(sprintf('Causality is %3.0f%s complete.', done, pc));
     old_done = done;
   
-    for i = n_port_bonds+1:n_components
+    for i = n_port_bonds+1:n_components % Miss out the ports 
       if status(i) ~= 0 % only do this if causality not yet complete
 
 	% Get the bonds on this component
@@ -206,17 +210,26 @@ while( ci_index>0)
 	% Component causality procedure name
 	cause_name = [comp_type, '_cause'];
 	
-        % Bonds on this component (arrow-orientated)
-      	port_bonds = bonds(bond_list,:);
+        % Bonds on this component (arrow-orientated) -- these become the
+        % port bonds on the ith component of this subsystem.
+	
+	% a bug in octave 1.92 (??) prevents this from working -- replace by
+	% a loop -- but check on V2.0
+      	% comp_bonds = bonds(bond_list,:)
+	
+	for kk = 1:n_comp
+	  comp_bonds(kk,:) = bonds(comp(kk),:);
+	end;
+	
 
       % Invoke  the appropriate causality procedure
       if exist(cause_name)~=2 % Try a compound component
         % Port status depends on whether the corresponding bonds are
         %  fully causal at this stage.
         one = ones(n_bonds,1);
-        port_status = (sum(abs(port_bonds'))'==2*one) - one;
-	[port_bonds,s] = abg2cbg(name, comp_type, full_name, 
-            port_bonds, port_status, ...
+        port_status = (sum(abs(comp_bonds'))'==2*one) - one;
+	[comp_bonds,s] = abg2cbg(name, comp_type, full_name, 
+            comp_bonds, port_status, ...
 	    typefile, infofile);
 	
 	% Create a single status from the status vector s
@@ -231,25 +244,24 @@ while( ci_index>0)
 	end;
 
       else % its a simple component
-	port_bonds_in = port_bonds
+	comp_bonds_in = comp_bonds
 
 	% Convert from arrow orientated to component orientated causality
-	port_bonds = port_bonds.*direction;
+	comp_bonds = comp_bonds.*direction;
 	
 	disp(['---', name, ' (', cause_name, ') ---']);
 
         % Evaluate the built-in causality procedure
-	eval([ '[port_bonds,status(i)] = ', cause_name, '(port_bonds);' ]);
+	eval([ '[comp_bonds,status(i)] = ', cause_name, '(comp_bonds);' ]);
 
        % and convert from component orientated to arrow orientated causality
-       port_bonds = port_bonds.*direction; 
+       comp_bonds = comp_bonds.*direction; 
        
-       port_bonds_out = port_bonds
-
+       comp_bonds_out = comp_bonds
       end;
       
       % Update the full bonds list
-      bonds(bond_list,:) = port_bonds
+      bonds(bond_list,:) = comp_bonds
     end;
     end;
     
@@ -304,7 +316,7 @@ write_cbg(cbgfilenum,full_name,system_type,bonds,status);
 fclose(cbgfilenum);
 
 % Return the port bonds - arrow orientated causality
-if ~at_top_level %Not at top level
+if ~at_top_level % Not at top level
   j = abs(components(1:n_ports,1)) %relevant bond numbers
   port_bonds = bonds(j,:)
 end;

@@ -1,0 +1,56 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: sympar_txt2declare
+
+# Symbolic parameters to variable declaration
+# Copyright (C) 2000 by Peter J. Gawthrop
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+
+###############################################################
+
+sys=$1
+language=$2
+
+case $language in
+    p)
+        first="VAR";
+        delim=", ";
+        last=': REAL;';
+	;;
+    *)
+	echo Language $language not supported - sorry; exit 1
+esac
+
+# Start
+cat<<EOF
+$first
+EOF
+#Write out the variables 
+strip_comments < $sys"_sympar.txt" |\
+awk '{
+  i++; 
+  var[i] = tolower($1);
+}
+END{
+  n = i;
+  for (i=1; i<n; i++){
+    printf("%s%s",var[i], delim);
+    j++; 
+    if (j>10){
+    printf("\n"); j=0;
+    }
+  }
+  printf("%s%s\n",var[n], last);
+
+}' "delim=$delim" "last=$last" 
+
+

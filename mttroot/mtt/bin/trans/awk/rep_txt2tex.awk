@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1997/05/22 07:36:35  peterg
+## \ref --> \Ref
+##
 ## Revision 1.3  1997/05/19 16:43:34  peterg
 ## Explicit include of tex files 'cos latex2html prefers this!
 ##
@@ -61,7 +64,7 @@ BEGIN {
       printf("    \\epsfig{file=%s_%s.%s,width=\\linewidth}\n", \
 	     system_name, Representation, Language);
       printf("    \\caption{System \\textbf{%s}, representation %s}\n", system_name, Representation);
-      printf("    \\label{fig:%s}\n", Rep_lang);
+      printf("    \\label{fig:%s_%s}\n", system_name, Representation);
       print "  \\end{figure}";
     }
   }

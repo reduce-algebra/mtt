@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.391  2004/08/26 00:07:06  geraint
+## Added rule to create cbg.dia.
+##
 ## Revision 1.390  2004/08/13 09:49:13  geraint
 ## Only use one level of MTT_work to prevent MTT from repeatedly copying or creating the same files.
 ##
@@ -2463,11 +2466,13 @@ $1_args.m:
 	touch $1_args.m
 
 #Create list of components
-%_cmp.txt:: %_abg.dia
-	abg2cmp_dia2txt \$*
-
-%_cmp.txt: %_abg.fig
-	abg2cmp_fig2txt \$* 
+ifeq ("\$(wildcard $1_abg.dia)","$1_abg.dia")
+$1_cmp.txt: $1_abg.dia
+	abg2cmp_dia2txt $1
+else
+$1_cmp.txt: $1_abg.fig
+	abg2cmp_fig2txt $1
+endif
 
 #Create skeleton files (with titles) if not already there
 #SUMMARY lbl*	label file (txt)
@@ -2832,8 +2837,8 @@ ifeq ($start_at_abg,yes)
 $1_sub.sh: $1_abg.m
 	abg2sub_m2sh $1
 else
-%_sub.sh: %_cmp.txt %_aliased_subsystems_copied
-	cmp2sub_txt2sh \$*
+$1_sub.sh: $1_cmp.txt $1_aliased_subsystems_copied
+	cmp2sub_txt2sh $1
 endif
 
 #SUMMARY sub LaTeX subsystem list (tex)
@@ -2850,23 +2855,23 @@ endif
 #Raw bond graph to acausal bond graph: mfile
 
 ifneq ($start_at_abg,yes)
-%_abg.m: %_ibg.m %_cmp.m %_lbl.txt %_alias.m %_sub.sh %_icd.m
+$1_abg.m: $1_ibg.m $1_cmp.m $1_lbl.txt $1_alias.m $1_sub.sh $1_icd.m
 	@echo "Creating \$@"
-	(sh \$*_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
-	ibg2abg_m $info_switch \$*
+	(sh $1_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
+	ibg2abg_m $info_switch $1
 endif
 
-
-.PRECIOUS: %_ibg.m
-%_ibg.m: %_abg.dia %_alias.m
-	abg2ibg_dia2m \$*
-
-%_ibg.m: %_abg.fig %_rbg.m
+ifeq ("\$(wildcard $1_abg.dia)","$1_abg.dia")
+$1_ibg.m: $1_abg.dia $1_alias.m
+	abg2ibg_dia2m $1
+else
+$1_ibg.m: $1_abg.fig $1_rbg.m
 	@echo "Creating \$@"
-	rbg2ibg_m $info_switch \$*
+	rbg2ibg_m $info_switch $1
+endif
 
-%_connections.dat: %_abg.m
-	abg2connections_m2dat \$*
+$1_connections.dat: $1_abg.m
+	abg2connections_m2dat $1
 
 #SUMMARY cbg*	causal bond graph (m)
 #Acausal bond graph to causal bond graph: mfile
@@ -3666,9 +3671,16 @@ $1_$2.doc: $1_$2.tex
 
 #Create PostScript version of fig files
 ifeq ($REPTYPE,bg)
+#ifeq ("\$(wildcard $1_abg.dia)","$1_abg.dia")
+#$1_$2.$ps : $1_$2.dia
+#	echo Creating $1_$2.$ps
+#	dia --no-splash --export-to-format=eps $1_$2.dia
+#	mv $1_$2.eps $1_$2.$ps
+#else
 $1_$2.$ps : $1_$2.fig
 	echo Creating $1_$2.$ps
 	multi_command2 "fig2dev -L$eps" $1 $2.fig $2.$ps | sh
+#endif
 endif
 
 

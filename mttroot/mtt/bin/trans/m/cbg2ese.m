@@ -23,6 +23,9 @@ global at_top_level
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.23  1998/07/08 12:33:51  peterg
+% %% Reinstated the infofilenum parameter.
+% %%
 % %% Revision 1.22  1998/07/04 07:10:27  peterg
 % %% Don't evaluate alias if no constitutive relationship or args and write
 % %% message.
@@ -197,19 +200,18 @@ disp('---- Component ---');
     % Alias the args list -- if not at top level
     message = sprintf("\tfor component  %s (%s) within %s",\
                       comp_name,comp_type,full_name);    
-
     if (length(system_args)>0)
-      args = alias_args(args,alias,";",message)
+      args = alias_args(args,alias,";",message,infofilenum)
     end;
     if (length(system_cr)>0)
-      cr = alias_args(cr,alias,";",message)
+      cr = alias_args(cr,alias,";",message,infofilenum)
     end;
 
     % Substitute positional ($1 etc) arguments
     cr = subs_arg(cr,system_cr, ...
-	'lin',full_name,comp_type,comp_name);
+	'lin',full_name,comp_type,comp_name,infofilenum);
     args = subs_arg(args,system_args, ...
-	'1',full_name,comp_type,comp_name);
+	'1',full_name,comp_type,comp_name,infofilenum);
     
     % change name of 0 and 1 components -- matlab doesn't like numbers here
     if strcmp(comp_type,'0')

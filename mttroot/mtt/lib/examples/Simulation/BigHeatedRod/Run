@@ -8,6 +8,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/08/15 13:58:27  peterg
+## Initial revision
+##
 ###############################################################
 
 
@@ -68,7 +71,7 @@ SparseSTEPFACTOR=`awk '{if ($1=="SparseSTEPFACTOR") print $3}' HR$1.tmp1`
 rm -f HR$1_table.txt
 
 #Set the methods of interest
-METHODS='ImplicitS Euler ImplicitL Implicit'
+METHODS='ImplicitS Euler Implicit'
 
 for METHOD in $METHODS; do
 

@@ -20,6 +20,7 @@ const bool false = 0;
 */
 #else
 #define cast_to_double	static_cast<double>
+using std::pow;
 #endif /* ! __cplusplus */
 
 static inline double

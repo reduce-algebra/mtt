@@ -16,6 +16,10 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.8  1996/12/05 10:05:28  peterg
+## Removed the Octave switch: empty_list_elements_ok = 1;
+## This is now in .octaverc
+##
 # Revision 1.7  1996/08/30  11:29:49  peter
 # Added constitutive relationship to argument list.
 # Put in explicit argument list to cbg2ese.
@@ -47,10 +51,6 @@ deffile="$1_def.r";
 # Remove the old log file
 rm -f cbg2ese_m.log
 rm -f $1_ese.r
-rm -f $1_def.r
-rm -f $infofile
-
-touch $infofile
 
 #Inform user
 echo Creating $eqnfile
@@ -60,6 +60,10 @@ echo Creating $1_def.r
 $RMATRIX > cbg2ese_m2r.log 2>mtt_error.txt << EOF
 
 infofile = '$infofile';;
+infofilenum = fopen(infofile,'w');
+deffile = '$1_def.r';
+deffilenum = fopen(deffile,'w');
+
 system_name = '$1';
 system_type = '';
 system_cr = '';
@@ -67,7 +71,6 @@ system_args = '';
 full_name = '';
 full_name_repetition = '';
 
-deffile = '$1_def.r';
 
 % Structure matrix [states,nonstates,inputs,outputs,zero_outputs]
 
@@ -75,8 +78,8 @@ structure = zeros(1,5);
 
 structure = cbg2ese(system_name, system_type, system_cr, ...
                      system_args, full_name, full_name_repetition, ...
-                     1, structure, infofile);
-makedef(structure,deffile);
+                     1, structure, infofilenum);
+makedef(structure,deffilenum);
   
 EOF
 

@@ -1,10 +1,13 @@
-function makedef(structure,deffile);
+function makedef(structure,deffilenum);
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.5  1996/11/09 21:05:44  peterg
+% %% Only generates MTTIm when at least 2 states!
+% %%
 % %% Revision 1.4  1996/08/30  19:42:36  peter
 % %% Added newline at end of file.
 % %%
@@ -18,8 +21,6 @@ function makedef(structure,deffile);
 
 
 
-filenum = fopen(deffile,'w');
-
 states = structure(1);
 nonstates=structure(2);
 inputs=structure(3);
@@ -28,68 +29,67 @@ zero_outputs = structure(5);
 
 pc = '%';
 % Declare reduce constants;
-fprintf(filenum, 'MTTNx := %1.0f;\n', states);
-fprintf(filenum, 'MTTNz := %1.0f;\n', nonstates);
-fprintf(filenum, 'MTTNu := %1.0f;\n', inputs);
-fprintf(filenum, 'MTTNy := %1.0f;\n', outputs);
-fprintf(filenum, 'MTTNyz := %1.0f;\n', zero_outputs);
+fprintf(deffilenum, 'MTTNx := %1.0f;\n', states);
+fprintf(deffilenum, 'MTTNz := %1.0f;\n', nonstates);
+fprintf(deffilenum, 'MTTNu := %1.0f;\n', inputs);
+fprintf(deffilenum, 'MTTNy := %1.0f;\n', outputs);
+fprintf(deffilenum, 'MTTNyz := %1.0f;\n', zero_outputs);
 
 % Declare reduce matrices
-fprintf(filenum, '%s Declare reduce matrices\n', pc);
+fprintf(deffilenum, '%s Declare reduce matrices\n', pc);
 if states>0
-  fprintf(filenum, 'matrix MTTx(%1.0f,1);\n', states);
-  fprintf(filenum, 'matrix MTTdx(%1.0f,1);\n', states);
+  fprintf(deffilenum, 'matrix MTTx(%1.0f,1);\n', states);
+  fprintf(deffilenum, 'matrix MTTdx(%1.0f,1);\n', states);
 end;
 if nonstates>0
-  fprintf(filenum, 'matrix MTTz(%1.0f,1);\n', nonstates);
-  fprintf(filenum, 'matrix MTTdz(%1.0f,1);\n', nonstates);
+  fprintf(deffilenum, 'matrix MTTz(%1.0f,1);\n', nonstates);
+  fprintf(deffilenum, 'matrix MTTdz(%1.0f,1);\n', nonstates);
 end;
 if inputs>0
-  fprintf(filenum, 'matrix MTTu(%1.0f,1);\n', inputs);
+  fprintf(deffilenum, 'matrix MTTu(%1.0f,1);\n', inputs);
 end;
 if outputs>0
-  fprintf(filenum, 'matrix MTTy(%1.0f,1);\n', outputs);
+  fprintf(deffilenum, 'matrix MTTy(%1.0f,1);\n', outputs);
 end;
 if zero_outputs>0
-  fprintf(filenum, 'matrix MTTyz(%1.0f,1);\n', zero_outputs);
-  fprintf(filenum, 'matrix MTTui(%1.0f,1);\n', zero_outputs);
+  fprintf(deffilenum, 'matrix MTTyz(%1.0f,1);\n', zero_outputs);
+  fprintf(deffilenum, 'matrix MTTui(%1.0f,1);\n', zero_outputs);
 end;
 
 % Make an Nx x Nx unit matrix
 if states>0
-  fprintf(filenum, 'matrix MTTI(%1.0f,%1.0f);\n', states,states);
+  fprintf(deffilenum, 'matrix MTTI(%1.0f,%1.0f);\n', states,states);
   for i = 1:states
-    fprintf(filenum, 'MTTI(%1.0f,%1.0f) := 1;\n', i, i);
+    fprintf(deffilenum, 'MTTI(%1.0f,%1.0f) := 1;\n', i, i);
   end
 end;
 
 % Make an Nx/2 x Nx/2 unit matrix
 if states>1
-  fprintf(filenum, 'matrix MTTIm(%1.0f,%1.0f);\n', states/2,states/2);
+  fprintf(deffilenum, 'matrix MTTIm(%1.0f,%1.0f);\n', states/2,states/2);
   for i = 1:states/2
-    fprintf(filenum, 'MTTIM(%1.0f,%1.0f) := 1;\n', i, i);
+    fprintf(deffilenum, 'MTTIM(%1.0f,%1.0f) := 1;\n', i, i);
   end
 end;
 
 % Set the y, yz, u, x and dx matrices
-fprintf(filenum, '%s Set the y, yz, u and x matrices\n', pc);
+fprintf(deffilenum, '%s Set the y, yz, u and x matrices\n', pc);
 for i=1:outputs
-  fprintf(filenum, 'MTTy(%1.0f,1) := MTTy%1.0f;\n', i, i);
+  fprintf(deffilenum, 'MTTy(%1.0f,1) := MTTy%1.0f;\n', i, i);
 end;
 for i=1:zero_outputs
-  fprintf(filenum, 'MTTyz(%1.0f,1) := MTTyz%1.0f;\n', i, i);
-  fprintf(filenum, 'MTTui(%1.0f,1) := MTTui%1.0f;\n', i, i);
+  fprintf(deffilenum, 'MTTyz(%1.0f,1) := MTTyz%1.0f;\n', i, i);
+  fprintf(deffilenum, 'MTTui(%1.0f,1) := MTTui%1.0f;\n', i, i);
 end;
 for i=1:inputs
-  fprintf(filenum, 'MTTu(%1.0f,1) := MTTu%1.0f;\n', i, i);
+  fprintf(deffilenum, 'MTTu(%1.0f,1) := MTTu%1.0f;\n', i, i);
 end;
 for i=1:states
-  fprintf(filenum, 'MTTx(%1.0f,1) := MTTx%1.0f;\n', i, i);
+  fprintf(deffilenum, 'MTTx(%1.0f,1) := MTTx%1.0f;\n', i, i);
 end;
 for i=1:nonstates
-  fprintf(filenum, 'MTTdz(%1.0f,1) := MTTdz%1.0f;\n', i, i);
+  fprintf(deffilenum, 'MTTdz(%1.0f,1) := MTTdz%1.0f;\n', i, i);
 end;
 
-fprintf(filenum, 'END;\n');
-fclose(filenum);
+fprintf(deffilenum, 'END;\n');
   

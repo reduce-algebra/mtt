@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 
      ###################################### 
      ##### Model Transformation Tools #####
@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.6  1997/02/24  14:43:21  peterg
+# Now ignores parameters that are numerical.
+#
 ## Revision 1.5  1996/09/12 18:34:44  peter
 ## Back under rcs.
 ##
@@ -58,8 +61,8 @@ OUT "$1_sm.m";
 %Headings - Matlab style
 %(Note. The ;; are deleted by for2mat)
 
-write "function [MTTA,MTTB,MTTC,MTTD] = $1_sm;;";
-write "%function [MTTA,MTTB,MTTC,MTTD] = $1_sm;;";
+write "function [A,B,C,D] = $1_sm(x);;";
+write "%function [A,B,C,D] = $1_sm(x);;";
 
 write "%Linearised state matrices for system $1";
 write "%File $1_sm.m";
@@ -83,6 +86,15 @@ BEGIN
     END;
     write " ";
 END;
+
+write "% Set the state (if given as an argument)";
+write "if nargin>0";
+FOR i := 1:MTTNx DO
+  write "  mttx
+", i, " = x(", i, ");";
+write "end;";
+
+write "";
 
 
 %Fortran switches - one line expressions

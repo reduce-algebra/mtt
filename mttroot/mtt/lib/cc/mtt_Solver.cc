@@ -12,5 +12,6 @@ MTT::Solver::Solver (const int npar,
   _nx  = nx;
   _ny  = ny;
   _nyz = nyz;
+  _ui  = ColumnVector (_nyz,0.0);
   _uui = ColumnVector (_nu+_nyz);
 };

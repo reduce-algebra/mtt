@@ -56,7 +56,7 @@ MTT::Hybrd_Solver::Solve (void)
     }
   if (1 != info)
     {
-      std::cerr
+      std::clog
 	<< " time " << _t << " \t"
 	<< " converge (" << convergences << ") "
 	<< " limit (" << limit_errors << ")"

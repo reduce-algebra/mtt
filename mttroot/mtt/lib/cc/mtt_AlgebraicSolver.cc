@@ -13,7 +13,6 @@ MTT::AlgebraicSolver::solve (const ColumnVector	&x,
       _uui.insert(u,0);
       _t = t;
       _par = par;
-      _ui = ColumnVector(_nyz,0.0);
       Solve();
       _uui.insert(_ui,_nu);
     }

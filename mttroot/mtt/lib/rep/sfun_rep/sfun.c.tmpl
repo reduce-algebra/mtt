@@ -165,8 +165,8 @@ update_inputs_from_solver (void)
   }
   mexPutArray (MTT_MATLAB_P, "base");
 
-  /* call fsolve */
-  mexEvalString ("MTT_Ui = fsolve (@<mtt_model_name>_sfun_ae, MTT_Ui, optimset('display','off','diagnostics','off'), MTT_X, MTT_U, MTT_T, MTT_P);");
+  /* call solver */
+  mexEvalString ("MTT_Ui = lsqnonlin (@<mtt_model_name>_sfun_ae, MTT_Ui, [], [], optimset('display','off','diagnostics','off','TolX',1e-2,'TolFun',1e-2), MTT_X, MTT_U, MTT_T, MTT_P);");
 
   /* retrieve result */
   MTT_MATLAB_Ui = mexGetArray ("MTT_Ui", "base");

@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.5  1997/03/20  12:05:31  peterg
+# Now just writes out the cr name.
+#
 # Revision 1.4  1996/11/09  20:38:45  peterg
 # Put in new lib pat
 #
@@ -46,6 +49,7 @@ comment = "%";
 arg_delimiter = ",";
 not_a_cr = "effort flow state internal external zero none";
 numeric = "[0-9]";
+symbolic = "\044"; # Ascii $
 symbol_count = 0;
 symbols = "";
 }
@@ -55,6 +59,7 @@ symbols = "";
     first_char = substr(cr,1,1);
     if ( (matches(not_a_cr,cr )==0) \
 	 && (match(not_a_cr,$3)==0) \
+	 && (match($3,"\\$")==0) \
 	 && (match(first_char,numeric)==0) \
 	 && (length(cr )>0) \
 	 && (matches(symbols,cr ) ==0) ) {

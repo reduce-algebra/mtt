@@ -41,6 +41,6 @@ BEGIN{mtt_implicit}
 	 ii := ii+1;
 	 xnew[i] := xsub[ii];
       END ELSE
-	 xnew[i] := x[i];
+	 xnew[i] := 0.0;
 END;{mtt_implicit}			  
 

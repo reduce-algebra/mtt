@@ -60,7 +60,7 @@ test_units()
       printf("mtt_units.sh %s %s %s %s %s\n", sys, $2, $3, $4, $5)
     }' sys=${sys}  | sh | grep ERROR
     if [ $? = "0" ]; then
-      echo "    " *MTT_ERRROR: domains and units are not OK - exiting
+      echo "    " *MTT_ERROR: domains and units are not OK - exiting
       exit 1  
     else
       echo "    " domains and units are OK 

@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.12  2000/11/09 09:52:07  peterg
+## Removed [] from zero_state output
+##
 ## Revision 1.11  2000/10/17 09:55:55  peterg
 ## Now writes to standard output
 ## Write the name, not the array
@@ -89,8 +92,8 @@ Nx=`mtt_getsize $1 x` # States
 awk '{
   if ($1=="#"){
     printf("#== open - boolean vector of open switches ==#\n")
-    printf("open = zero_state(%i); # Default to not open\n", Nx);
-    
+    for (i=1;i<=Nx;i++)
+     printf("open(%i) = 0; # Default to not open\n", i);
   }
   else{
   printf("\n#== Switch: %s ==#\n",$1)

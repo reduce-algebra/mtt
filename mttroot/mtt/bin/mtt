@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.77  1997/05/19  11:29:37  peterg
+# Added desc.tex and abg.tex descriptions.
+#
 # Revision 1.76  1997/05/15  09:43:46  peterg
 # New version of _input.txt for -s option
 #
@@ -1151,7 +1154,7 @@ $1_$2.gdat: $1_$2.dat $1_args.m
 mtt.sty:
 	echo Copying mtt.sty to here
 	cp $MTTPATH/trans/mtt.sty .
-$1_$2.doc: $1_$2.tex mtt.sty
+$1_$2.doc: $1_$2.tex
 	makedoc $1 $2
 
 #Generic conversion of LaTeX doc to dvi

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.163  1998/07/17 08:27:33  peterg
+## Added find target
+##
 ## Revision 1.162  1998/07/16 16:14:27  peterg
 ## Now stops if a transformation forces error.
 ##
@@ -622,6 +625,7 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-v )
                 mtt_switches="$mtt_switches $1";
 		info_switch='-I';
+                Verbose='verbose';
 		verbose=' -w ' ;;
 	-I )
                 mtt_switches="$mtt_switches $1";
@@ -634,7 +638,7 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-u )
 		tidy=untidy ;;
 	-l )
-                mtt_switches="$mtt_switches $1";
+                mtt_switches="$mtt_switches $1 $2";
 		level=$2; shift ;;
 	-A )
                 mtt_switches="$mtt_switches $1";
@@ -662,6 +666,11 @@ if [ "$quiet" != "quiet" ]; then
     echo Using directory $directory
     echo
   fi
+fi
+
+#Print what's going on if in verbose mode
+if [ -n "$Verbose" ]; then
+    echo  Starting  mtt  $mtt_switches  $1 $2 $3 $4
 fi
 
 #Check the principle paths
@@ -898,10 +907,14 @@ fi
 
 # Copy components from the library
 if [ "$1" = "compcopy" ]; then
+
+   #Pull out the base name (we may have a library as well)
+   name=`basename $2`
+
    #set up source and destination dirs
     source=$3
     if [ -z "$source" ]; then
-      source=$MTTPATH/lib/comp/compound
+      source=$MTT_COMPONENTS
     fi
     destination=$4
     if [ -z "$destination" ]; then
@@ -909,22 +922,30 @@ if [ "$1" = "compcopy" ]; then
     fi   
 
   # check that its not here already
-  file_exists=`ls $destination/$2_abg.fig 2> /dev/null`
+  file_exists=`ls $destination/"$name"_lbl.txt 2> /dev/null`
   if [ -n "$file_exists" ]; then
     if [ "$quiet" != "quiet" ]; then    
-      echo $destination/$2_abg.fig exists already - no action taken
+      echo Component $name exists already - no action taken
     fi
   else
-    if [ -z "$source" ]; then
-      source=$MTTPATH/lib/comp/compound
-    fi
-    # if [ "$quiet" != "quiet" ]; then    
-      echo Copying component $2 from $source to  $destination
-    # fi
     if [ $source = "." ]; then
       cp -u *_*.* $destination
     else
-      find $source -name "$2_*.*" -exec cp {} $destination \;
+      comp_path=`mtt_find $source $2 path_only`
+      n_found=`echo $comp_path | wc | awk '{print $2}'`
+
+      if [ "$n_found" = "1" ]; then
+         echo Copying $2 from $comp_path to $destination
+         cp $comp_path/*_*.* $destination
+         exit 0
+      elif [ "$n_found" = "0" ]; then
+         echo Component $2 not found - is MTT_COMPONENTS set correctly?
+         exit 1
+      elif [ "$n_found" > "1" ]; then
+         echo "Multiple versions of $2 found (see below) - use a more explicit alias"
+         mtt -q find $2
+         exit 2
+      fi
     fi
   fi
   exit
@@ -1080,7 +1101,7 @@ if [ "$tidy" = "tidy" ]; then
 
    # Exit on failure
    if [ "$mtt_status" != "0" ]; then
-     echo Exiting mtt with status $mtt_status
+     echo Exiting MTT with error $mtt_status
      exit 1
    fi
 
@@ -1121,7 +1142,7 @@ $MAKE -S $verbose  -f  -  $1_$2.$3 << EOF
 # If level>0, try and get subsystem files
 ifneq ("$level","0")
 $1_abg.fig:
-	mtt -q -u compcopy $1 
+	mtt -q -u $mtt_switches compcopy $1 || exit 1 
 endif
 
 
@@ -1458,8 +1479,9 @@ endif
 
 #SUMMARY abg	acausal bond graph (m)
 #Raw bond graph to acausal bond graph: mfile
-$1_abg.m: $1_rbg.m $1_alias.m $1_sub.sh 
-	sh $1_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m'
+$1_abg.m: $1_rbg.m $1_alias.m $1_sub.sh
+	lbl2component $1 | sh || exit 1
+	(sh $1_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
 	rbg2abg_m $info_switch $1
 
 
@@ -2037,6 +2059,14 @@ else
   mv -f *.log LOGFILES
 fi
 
-if [ "$make_status" != "0" ]; then
-    exit 2
+#Print what's going on if in verbose mode
+if [ -n "$Verbose" ]; then
+    echo Finishing mtt  $mtt_switches  $1 $2 $3 $4
 fi
+
+if [ "$make_status" != "0" ]; then
+    echo Exiting MTT with error $make_status
+    exit 1
+fi
+
+

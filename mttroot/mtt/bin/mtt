@@ -17,6 +17,13 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.397  2004/08/29 13:17:30  geraint
+## Added rules to use sae (sorted algebraic equations) instead
+## of ae if sorted equations are being used.
+##
+## Converted temporary variable names to lowercase in sorted
+## sympar.h to match code output from mtt_r2m.
+##
 ## Revision 1.396  2004/08/29 02:59:30  geraint
 ## Added -make-sort option and rules to generate simulation using sesx and sesy.
 ##
@@ -1448,7 +1455,8 @@ psview=$PSVIEW
 num_tmp_var=500
 
 # Default no equation sorting
-use_sorted_equations=''
+do_sort=''
+sort_method=''
 
 #Initialise list of switches
 mtt_switches='';
@@ -1548,12 +1556,14 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 		sensitivity=sensitivity ;;
 	-make-sort )
 		mtt_switches="$mtt_switches $1";
-		use_sorted_equations="make";
+		do_sort='-sort';
+		sort_method="make";
 		num_tmp_var=0;
 		integration_method="euler";;
 	-sort )
                 mtt_switches="$mtt_switches $1";
-		use_sorted_equations="seqn";
+		do_sort='-sort';
+		sort_method="seqn";
 		integration_method="sorted_euler";;
 	-ss )
                 mtt_switches="$mtt_switches $1";
@@ -2603,7 +2613,7 @@ $1_sympar.r: $1_sympar.txt
 	sympar_txt2r $1
 $1_sympar.m: $1_sympar.txt
 	sympar_txt2m $1
-ifneq ($use_sorted_equations,make)
+ifneq ($sort_method,make)
 $1_sympar.h: $1_sympar.txt
 	sympar_txt2h.sh $1 $num_tmp_var
 else
@@ -2747,7 +2757,7 @@ endif
 # Dummy target
 FORCE:
 
-ifeq ($use_sorted_equations,)
+ifeq ($do_sort,)
 $1_ode2odes_common_%.stamp: $1_ae.% $1_input.% $1_logic.% $1_numpar.% $1_simpar.% $1_state.%
 	touch \$@
 $1_ode2odes_common.o: $1_ae.o $1_input.o $1_logic.o $1_numpar.o $1_simpar.o $1_state.o
@@ -2761,7 +2771,7 @@ $1_ode2odes_common.o: $1_sae.o $1_input.o $1_logic.o $1_numpar.o $1_simpar.o $1_
 	ar -cr \$@ \$^
 endif
 
-ifeq ($use_sorted_equations,)
+ifeq ($do_sort,)
 $1_ode2odes_euler_%.stamp $1_ode2odes_rk4_%.stamp: $1_ode.% $1_odeo.%
 	touch \$@
 $1_ode2odes_euler.o $1_ode2odes_rk4.o: $1_ode.o $1_odeo.o mtt_euler.o
@@ -2781,7 +2791,7 @@ $1_ode2odes_implicit.o: $1_cseo.o $1_csex.o $1_smxa.o $1_smxax.o mtt_implicit.o
 	@echo "Creating $1_ode2odes_implicit.o"
 	ar -cr \$@ \$^
 
-ifeq ($use_sorted_equations,)
+ifeq ($do_sort,)
 $1_ode2odes_dassl_oct.stamp: $1_ode.oct $1_odeo.oct mtt_dassl.oct
 	touch \$@
 $1_ode2odes_dassl_o.stamp: $1_ode.o $1_odeo.o mtt_dassl.o
@@ -3018,13 +3028,18 @@ $1_def.h: $1_def.m $1_sympar.txt
 #SUMMARY dae	differential-algebraic equations (ps)
 #Differential-algebraic equations
 
+ifeq ($do_sort,)
 ${sys}_rdae.r: ${sys}_ese.r ${sys}_def.r $1_modpar.r ${Subsystem}_cr.r ${Subsystem}_subs.r
+else
+${sys}_rdae.r: ${sys}_sese.r ${sys}_def.r $1_modpar.r ${Subsystem}_cr.r ${Subsystem}_subs.r
+endif
 ifneq ($partition,)
 	echo Doing subsystems
 	mtt_make_subsystems  ${sys} rdae r
 endif
 	mtt_prepend.sh -p $1_modpar.r $1_ese.r # Add modulated parameters to start
-	ese2rdae_r ${cr_first} ${fixcc} ${Subsystem}; tidy ${Subsystem}_rdae.r
+	ese2rdae_r ${cr_first} ${fixcc} ${do_sort} ${Subsystem}
+	tidy ${Subsystem}_rdae.r
 
 ${sys}_dae.r: ${Subsystem}_rdae.r ${Subsystem}_def.r ${Subsystem}_subs.r ${Subsystem}_cr.r
 ifneq ($partition,)
@@ -3173,16 +3188,16 @@ ifeq ($using_oct,yes)
 	touch $1_ode2odes.m # Create a dummy which wont' be used
 	mtt $mtt_switches -q -u $1 ode2odes oct
 else
-	make_ode2odes $1 m $integration_method $algebraic_solver $use_sorted_equations
+	make_ode2odes $1 m $integration_method $algebraic_solver $sort_method
 endif
 endif
 ifneq ($integration_method,implicit)
-ifeq ($use_sorted_equations,seqn)
+ifeq ($sort_method,seqn)
 $1_ode2odes.m : $1_def.r $1_sympars.txt\
 		$1_simpar.m $1_numpar.m $1_state.m $1_input.m \
 		$1_sese.m $1_logic.m
 else
-ifeq ($use_sorted_equations,make)
+ifeq ($sort_method,make)
 $1_ode2odes.m : $1_def.r $1_sympars.txt\
 		$1_simpar.m $1_numpar.m $1_state.m $1_input.m \
 		$1_sesx.m $1_sesy.m $1_logic.m
@@ -3197,7 +3212,7 @@ ifeq ($using_oct,yes)
 	touch $1_ode2odes.m # Create a dummy which wont' be used
 	mtt $mtt_switches -q -u $1 ode2odes oct
 else
-	make_ode2odes $1 m $integration_method $algebraic_solver $use_sorted_equations
+	make_ode2odes $1 m $integration_method $algebraic_solver $sort_method
 endif
 endif
 
@@ -3234,7 +3249,7 @@ $1_ode2odes.cc: $1_def.r $1_sympars.txt\
 		$1_ode2odes_${integration_method}_m.stamp $1_ode2odes_${integration_method}_cc.stamp\
 		mtt_Solver.cc mtt_AlgebraicSolver.cc mtt_${algebraic_solver}.cc mtt_${algebraic_solver}.hh
 	touch $1_ode2odes.m
-	make_ode2odes $1 cc $integration_method $algebraic_solver $use_sorted_equations
+	make_ode2odes $1 cc $integration_method $algebraic_solver $sort_method
 
 #Conversion of m to p to c
 #SUMMARY ode	ordinary differential equations (c)

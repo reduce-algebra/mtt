@@ -13,11 +13,14 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/03/15 21:23:20  peterg
+## Initial revision
+##
 ###############################################################
 
 
 if [ -f "$1_sub.sh" ]; then
-    echo Using "$1_sub.sh"
+    #echo Using "$1_sub.sh"
     exit
 else
     #Inform user

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.100  1997/12/06 12:14:39  peterg
+## Put a conditional around the PS data rep to check for set arguments.
+##
 ## Revision 1.99  1997/12/04 22:06:53  peterg
 ## Added view arguments for graph plotting
 ##
@@ -369,19 +372,26 @@ mtt_switches='';
 
 #Look for a command line argument
 while [ -n "`echo $1 | grep '-'`" ]; do
-  mtt_switches="$mtt_switches $1"
   case $1 in
 	-q )
-		quiet=quiet ;;
+                mtt_switches="$mtt_switches $1";
+		quiet=quiet;;  
 	-p )
+                mtt_switches="$mtt_switches $1";
 		print='-p';;
 	-c )
+                mtt_switches="$mtt_switches $1";
 		computation=c ;;
 	-o )
+                mtt_switches="$mtt_switches $1";
 		dae_is_ode=1 ;;
 	-s )
+                mtt_switches="$mtt_switches $1";
 		switches=1 ;;
+	-d )
+		directory=$2; cd $directory; shift ;;
 	-l )
+                mtt_switches="$mtt_switches $1";
 		level=$2; shift ;;
 	*)
 		echo "$1 is an invalid argument - ignoring" ;;
@@ -425,6 +435,7 @@ if [ -z "$1" ]; then
     echo '         -c  c-code generation'
     echo '         -o  ode and dae are the same'
     echo '         -s  use switch (ISW and CSW) components'
+    echo '         -d  <dir>  use directory <dir>'
     exit
   fi
 fi
@@ -598,6 +609,7 @@ fi
 
 # Save up the argument list in a file; but only if argument has changed
 ARGS=$4; _ARGS=_$4
+
 #DIFF doesn't like empty files - so put a blank if empty
 if [ -z "$ARGS" ]; then
   ARGS=' ';
@@ -688,8 +700,18 @@ if [ "$3" = "vc" ]; then
   esac
 fi
 
+# See if we are making a book -- ie representation rep on a directory
+if [ "$2" = "rep" ]; then
+     book=`file $1 | awk '{print $2}' | grep directory`
+     if [ -n "$book" ]; then
+	book=book
+     fi
+fi
 
+################################
 # This is the main mtt programme
+################################
+
 $MAKE -s  -f -  $1_$2.$3 << EOF
 
 # Cancel implicit rules I don't want
@@ -895,8 +917,14 @@ $1_sspar.r:
 #SUMMARY rep	report (txt)
 #SUMMARY rep	report (tex)
 #SUMMARY rep	report (view)
+
+
+ifeq ($book,book)
 $1_rep.txt:
-	echo Creating $1_rep.txt
+	dir2rep $1;
+else
+$1_rep.txt:
+	echo Creating $1_rep.txt;
 	( \
 	echo "# Outline report file for system $1 ($1_rep.txt)"; \
 	cat $MTTPATH/trans/m/rcs_header.txt; \
@@ -906,6 +934,7 @@ $1_rep.txt:
 	echo "mtt $1 dm tex"; \
 	echo "mtt $1 lmfr ps"; \
 	)> $1_rep.txt
+endif
 
 #SUMMARY rbg	raw bond graph (m)
 #Raw bond graph: fig file to mfile
@@ -1283,7 +1312,7 @@ mtt.sty:
 	echo Copying mtt.sty to here
 	cp $MTTPATH/trans/mtt.sty .
 $1_$2.doc: $1_$2.tex
-	makedoc "$mtt_switches" "$1" "$2" "$3" "$4"
+	makedoc "$mtt_switches" "$1" "$2" "$3" "$4" "$book"
 
 #Generic conversion of LaTeX doc to dvi
 $1_$2.dvi: $1_$2.doc
@@ -1375,7 +1404,7 @@ make_reps:
 	rep_txt2sh $1; touch $1_rep.txt
 
 $1_rep.tex: $1_rep.txt make_reps
-	rep_txt2tex $1;
+	rep_txt2tex $1 "$book" "$directory";
 
 #SUMMARY abg Acausal bond graph report (tex)
 $1_abg.tex: $1_sub.sh
@@ -1401,3 +1430,10 @@ nrutil.h:
 sign.c:
 	echo Copying sign.c; cp $MTTPATH/trans/c/sign.c .
 EOF
+
+# Tidy up.
+# echo Removing log files and other garbage
+  rm -f  *_unique_raw_list *_raw_list
+  rm -f mtt_error.txt mtt_info.txt a.out 
+  rm -f *.log  mtt_info.txt warning.txt
+  rm -f *_*.idx *_*.ind *_*.ilg *_*.dvi *_*.aux *_*.lof *_*.toc

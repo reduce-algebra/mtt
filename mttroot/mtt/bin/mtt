@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.250  2000/08/01 19:29:27  peterg
+## Explcit zero of input in the simulations
+##
 ## Revision 1.249  2000/08/01 12:28:02  peterg
 ## VERSION 4.4
 ##    euler now works
@@ -2453,7 +2456,7 @@ endif
 ifeq ($computation,c)
 $1_ode2odes.out: $1_ode2odes.c
 	echo Creating $1_odes.out
-	$CC $1_ode2odes.c   /usr/lib/libp2c.a -lm -o $1_ode2odes.out
+	$CC $1_ode2odes.c -lp2c -lm -o $1_ode2odes.out
 
 $1_odes.dat2: $1_ode2odes.out
 	echo Creating $1_odes.dat2

@@ -15,6 +15,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.299  2001/04/03 14:49:42  gawthrop
+## Revised to incorporate new ssim (sensitivity simulation)
+## representation (m only just now).
+##
 ## Revision 1.298  2001/04/02 17:36:20  gawthrop
 ## Resolved $sys name clash when using -s
 ##
@@ -2563,6 +2567,10 @@ ifeq ($computation,c)
 $1_sim.m: $1_def.r $1_sympar.txt $1_ode2odes.out $1_numpar.m $1_state.m
 	mtt_make_sim $1 $integration_method $computation 
 endif
+
+#SUMMARY ssim Octave sensitivity simulation function (m)
+$1_ssim.m: $1_def.r
+	make_ssim $1 m
 
 #SUMMARY obs	observer equations for CGPC (r)
 #SUMMARY obs*	observer equations for CGPC (m)

@@ -512,9 +512,9 @@ sub output_ibg {
 	    if (/1/) { $effort_causality = "head";}
 	}
 	for ($flow_causality) {
-	    if (/-1/) { $flow_causality = "tail";}
+	    if (/-1/) { $flow_causality = "head";}
 	    if (/0/) { $flow_causality = "none";}
-	    if (/1/) { $flow_causality = "head";}
+	    if (/1/) { $flow_causality = "tail";}
 	}
 		       
 	print OUT

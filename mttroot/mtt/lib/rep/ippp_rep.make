@@ -11,40 +11,57 @@
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.1  2001/04/04 10:05:38  gawthrop
+  ## Reresentation for system identification for ppp
+  ##
   ###############################################################
 
 #Copyright (C) 2000 by Peter J. Gawthrop
 
 all: $(SYS)_ippp.$(LANG)
 
-$(SYS)_ippp.view: $(SYS)_parameters.pdf $(SYS)_error.pdf $(SYS)_outputs.pdf
-	( cd MTT_work; acroread *.pdf )
+$(SYS)_ippp.view:  $(SYS)_ippp.pdf
+	acroread *.pdf
 
-$(SYS)_parameters.pdf: s$(SYS)_ode2odes.oct s$(SYS)_ssim.m $(SYS)_ippp.m s$(SYS)_sympar.m s$(SYS)_simpar.m
-	(cd MTT_work; octave $(SYS)_ippp.m)
+$(SYS)_ippp.ps: $(SYS)_parameters.ps $(SYS)_error.ps $(SYS)_outputs.ps $(SYS)_ippp.pdf
+	cp $(SYS)_parameters.ps $(SYS)_ippp.ps
+
+$(SYS)_ippp.pdf: $(SYS)_parameters.pdf $(SYS)_error.pdf $(SYS)_outputs.pdf
+	cp $(SYS)_parameters.pdf $(SYS)_ippp.pdf
+
+$(SYS)_parameters.ps: s$(SYS)_ode2odes.m s$(SYS)_ssim.m $(SYS)_ippp.m s$(SYS)_sympar.m s$(SYS)_simpar.m
+	octave $(SYS)_ippp.m
+
+$(SYS)_error.ps: $(SYS)_parameters.ps
+	touch $(SYS)_error.ps
+
+$(SYS)_outputs.ps: $(SYS)_parameters.ps
+	touch $(SYS)_outputs.ps
+
+$(SYS)_parameters.pdf: s$(SYS)_ode2odes.m s$(SYS)_ssim.m $(SYS)_ippp.m s$(SYS)_sympar.m s$(SYS)_simpar.m
+	octave $(SYS)_ippp.m
 
 $(SYS)_error.pdf: $(SYS)_parameters.pdf
-	(cd MTT_work; touch $(SYS)_error.pdf)
+	touch $(SYS)_error.pdf
 
 $(SYS)_outputs.pdf: $(SYS)_parameters.pdf
-	(cd MTT_work; touch $(SYS)_outputs.pdf)
+	touch $(SYS)_outputs.pdf
 
 ## Note when a proper input.cc for stdin is available, change to
-## mtt -q -stdin -s s$(SYS) ode2odes oct
-s$(SYS)_ode2odes.oct: 
-	echo Starting creation of s$(SYS)_ode2odes.oct '....'
-	mtt -q -s s$(SYS) ode2odes oct; (cd MTT_work; make_stdin s$(SYS) m)
+## mtt -q $(OPTS) -stdin -s s$(SYS) ode2odes oct
+s$(SYS)_ode2odes.m: 
+	echo Starting creation of s$(SYS)_ode2odes.m '....'
+	mtt -q $(OPTS) -s s$(SYS) ode2odes m; make_stdin s$(SYS) m
 
-s$(SYS)_ssim.m:
-	mtt -q -s s$(SYS) ssim m
+s$(SYS)_ssim.m: s$(SYS)_def.m
+	mtt -q $(OPTS) -s s$(SYS) ssim m
 
 s$(SYS)_sympar.m:
-	mtt -q -s s$(SYS) sympar m
+	mtt -q $(OPTS) -s s$(SYS) sympar m
 
 s$(SYS)_simpar.m:
-	mtt -q -s s$(SYS) simpar m
+	mtt -q $(OPTS) -s s$(SYS) simpar m
 
-
-
-
+s$(SYS)_def.m:
+	mtt -q $(OPTS) -s s$(SYS) def m
 

@@ -2,7 +2,7 @@
 
 all: $(SYS)_sfun.mexglx
 
-$(SYS)_sfun.mexglx: $(SYS)_sfun.c sfun_debug.h $(SYS)_def.h $(SYS)_sympar.h $(SYS)_numpar.c $(SYS)_ode.c $(SYS)_odeo.c $(SYS)_state.c $(SYS)_sfun_ae.mexglx $(SYS)_sfun_input.mexglx $(SYS)_sfun_interface.mexglx $(SYS).mdl
+$(SYS)_sfun.mexglx: $(SYS)_sfun.c sfun_debug.h useful-functions.hh $(SYS)_def.h $(SYS)_sympar.h $(SYS)_numpar.c $(SYS)_ode.c $(SYS)_odeo.c $(SYS)_state.c $(SYS)_sfun_ae.mexglx $(SYS)_sfun_input.mexglx $(SYS)_sfun_interface.mexglx $(SYS).mdl
 	echo Creating $@
 	mex $(SYS)_sfun.c
 	cp *_sfun*mexglx $(SYS).mdl ..
@@ -11,7 +11,7 @@ $(SYS)_sfun.c:: ${MTT_REP}/sfun_rep/sfun.c.tmpl
 	echo Creating $@
 	cat $^ | sed 's/<mtt_model_name>/$(SYS)/g' > $@
 
-$(SYS)_sfun_ae.mexglx: $(SYS)_sfun_ae.c $(SYS)_def.h $(SYS)_sympar.h $(SYS)_ae.c
+$(SYS)_sfun_ae.mexglx: $(SYS)_sfun_ae.c sfun-debug.h useful-functions.hh $(SYS)_def.h $(SYS)_sympar.h $(SYS)_ae.c
 	echo Creating $@
 	mex $(SYS)_sfun_ae.c
 
@@ -19,7 +19,7 @@ $(SYS)_sfun_ae.c:: ${MTT_REP}/sfun_rep/mex_ae.c.tmpl
 	echo Creating $@
 	cat $^ | sed 's/<mtt_model_name>/$(SYS)/g' > $@
 
-$(SYS)_sfun_input.mexglx: $(SYS)_sfun_input.c sfun_debug.h $(SYS)_def.h $(SYS)_sympar.h $(SYS)_input.c $(SYS)_numpar.c
+$(SYS)_sfun_input.mexglx: $(SYS)_sfun_input.c sfun_debug.h useful-functions.hh $(SYS)_def.h $(SYS)_sympar.h $(SYS)_input.c $(SYS)_numpar.c
 	echo Creating $@
 	mex $(SYS)_sfun_input.c
 
@@ -27,7 +27,7 @@ $(SYS)_sfun_input.c:: ${MTT_REP}/sfun_rep/sfun_input.c.tmpl
 	echo Creating $@
 	cat $^ | sed 's/<mtt_model_name>/$(SYS)/g' > $@
 
-$(SYS)_sfun_interface.mexglx: $(SYS)_sfun_interface.c sfun_debug.h $(SYS)_def.h $(SYS)_sympar.h $(SYS)_numpar.c
+$(SYS)_sfun_interface.mexglx: $(SYS)_sfun_interface.c sfun_debug.h useful-functions.hh $(SYS)_def.h $(SYS)_sympar.h $(SYS)_numpar.c
 	echo Creating $@
 	mex $(SYS)_sfun_interface.c
 
@@ -37,7 +37,7 @@ $(SYS)_sfun_interface.c: ${MTT_REP}/sfun_rep/sfun_interface.c.tmpl $(SYS)_struc.
 	 sed 's/<mtt_model_name>/$(SYS)/g'		|\
 	 ${MTT_REP}/sfun_rep/insert_file.sh > $@
 
-$(SYS)_sfun.zip: $(SYS)_sfun.c sfun_debug.h $(SYS)_sfun_ae.c $(SYS)_sfun_input.c $(SYS)_sfun_interface.c \
+$(SYS)_sfun.zip: $(SYS)_sfun.c sfun_debug.h useful-functions.hh $(SYS)_sfun_ae.c $(SYS)_sfun_input.c $(SYS)_sfun_interface.c \
 	 $(SYS)_def.h $(SYS)_sympar.h \
 	 $(SYS)_ae.c $(SYS)_input.c $(SYS)_numpar.c $(SYS)_ode.c $(SYS)_odeo.c $(SYS)_state.c \
 	 $(SYS).mdl README
@@ -86,6 +86,10 @@ $(SYS)_struc.c: $(SYS)_struc.txt
 	' $^ > $@
 
 sfun_debug.h:: ${MTT_REP}/sfun_rep/sfun_debug.h
+	echo Copying $@
+	cp $^ $@
+
+useful-functions.hh:: ${MTT_CC}/include/useful-functions.hh
 	echo Copying $@
 	cp $^ $@
 

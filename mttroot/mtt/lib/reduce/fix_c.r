@@ -14,5 +14,7 @@ ON ROUNDED$ % No integer output
  FOR ALL x LET pow(x,0) = 1$
  FOR ALL x LET pow(x,1) = x$
 
+OPERATOR fabs$
+FOR ALL x let abs(x) = fabs(x)$
 
 END$

@@ -9,5 +9,6 @@
   ######################################
 
 set -e
-  
+
+mtt_uncompress.sh $1_abg.dia
 dia2abg.pl --create_component_list --diagram_name=$1

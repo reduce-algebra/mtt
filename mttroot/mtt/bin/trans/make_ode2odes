@@ -9,6 +9,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.22  1999/04/20 06:16:07  peterg
+## Removed initialisation of AA and AAx
+## Remove _switch calls -- uses _switchopen exclusively
+##
 ## Revision 1.21  1999/04/02 06:29:25  peterg
 ## New implicit method - solves numerical prob with ISW
 ##
@@ -100,7 +104,7 @@ MTTilast = round(mttlast/mttdt); # Total number of steps
 
 #Initialise
 MTTt = 0.0;
-[MTTu]  = zero_vector($Nu);	# Zero the input
+[MTTu]  = zero_input($Nu);	# Zero the input
 #if $Nx>0
   [MTTx] = $1_state;	        # Read in initial state
 #else

@@ -3,13 +3,17 @@
 # Makes subsystems for partitioning
 # Copyright (C) 2000 by Peter J. Gawthrop
 
-echo Creating subsystems for $1_$2.$3
+options=$1
+sys=$2
+rep=$3
+lang=$4
 
+echo Creating subsystem representations for ${sys}_${rep}.${lang}
 # Get subsystems
-  subsystems=`mtt_get_subsystems -strip $1`;
+  subsystems=`mtt_get_subsystems -strip ${sys}`;
 
 for subsystem in $subsystems; do
-    mtt -q -sub $subsystem $1 $2 $3
+    echo mtt $options -u -q -sub $subsystem ${sys} ${rep} ${lang}
     ## Repeating systems need sorting out !!!!
     #cp $1_$subsystem"_"$2.$3 $1_$subsystem"_1_"$2.$3
 done

@@ -1,0 +1,131 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: ode2smx_lang
+# ODE to state matrix (with explicit state values) conversion
+# P.J.Gawthrop  6th September 1991, May 1994, July 1998
+# Copyright (c) P.J.Gawthrop, 1991, 1994, 1998
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+# Language
+if [ -n "$2" ]; then
+    lang=$2
+else
+    lang="r"
+fi
+
+
+# Inform user
+echo Creating $1_smx.$lang
+
+# Remove the old log file
+rm -f ode2smx_r.log
+
+
+# Use reduce to accomplish the transformation
+reduce << EOF  >ode2smx_lang.log
+
+lang := $lang;
+
+in "$1_def.r";
+in "$1_ode.r";
+
+OFF Echo;
+
+%Procedure to write out the result according to the language used.
+PROCEDURE WriteElement(name, i, j, element);
+BEGIN
+  IF (element NEQ 0) THEN
+  BEGIN
+    IF (lang = r) THEN 
+      write name, "(", i, ",", j, ") := ", element;
+
+    IF (lang = m) THEN 
+      write name, "(", i, ",", j, ") = ", element;
+
+  END
+END;
+
+%Set up output according to the language.
+ OFF NAT;
+ OUT "$1_smx.$lang";
+ LineLength 1000;
+
+% Set up output according to the language.
+    IF (lang = r) THEN 
+    BEGIN
+      write "matrix mtta(", mttnx, ",", mttnx, ");";    
+      write "matrix mttb(", mttnx, ",", mttnu, ");";    
+      write "matrix mttc(", mttny, ",", mttnx, ");";    
+      write "matrix mttd(", mttny, ",", mttnu, ");";    
+    END;
+
+    IF (lang = m) THEN 
+    BEGIN
+      write "mtta = zeros(", mttnx, ",", mttnx, ");";    
+      write "mttb = zeros(", mttnx, ",", mttnu, ");";    
+      write "mttc = zeros(", mttny, ",", mttnx, ");";    
+      write "mttd = zeros(", mttny, ",", mttnu, ");";    
+    end;
+
+
+
+% find MTTA : the A matrix
+  FOR j := 1:MTTNx DO
+    BEGIN
+    xj := MTTX(j,1);
+    FOR i := 1:MTTNx DO
+      WriteElement("mtta",i,j,df(MTTdx(i,1), xj, 1));
+    END;
+
+% Find MTTB : the B matrix
+  FOR j := 1:MTTNu DO
+    BEGIN
+    uj := MTTU(j,1);
+    FOR i := 1:MTTNx DO
+      WriteElement("mttb",i,j,df(MTTdx(i,1), uj, 1));
+    END;
+
+% Find MTTC : the C matrix
+  FOR i := 1:MTTNy DO
+    FOR j := 1:MTTNx DO
+    BEGIN
+      xj := MTTX(j,1);
+      WriteElement("mttc",i,j,df(MTTY(i,1), xj, 1));
+    END;
+
+% Find MTTD : the D matrix
+  FOR i := 1:MTTNy DO
+    FOR j := 1:MTTNu DO
+    BEGIN
+      xj := MTTU(j,1);
+      WriteElement("mttd",i,j,df(MTTY(i,1), xj, 1));
+    END;
+
+%Shut the  output according to the language.
+ SHUT "$1_smx.$lang";
+
+EOF
+
+if [ "$lang" = "m" ]; then
+  mv $1_smx.$lang  mtt_junk
+  lang_header $1 smx m 'mttx,mttu' '[mtta,mttb,mttc,mttd]' > $1_smx.m
+  cat mtt_junk >> $1_smx.m
+  rm -f mtt_junk
+fi
+
+# Now invoke the standard error handling.
+mtt_error_r ode2smx_lang.log
+
+
+
+

@@ -11,6 +11,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% $Id$
 %% $Log$
+%% Revision 1.6  2000/10/10 21:02:42  peterg
+%% *** empty log message ***
+%%
 %% Revision 1.5  2000/08/09 10:41:39  peterg
 %% Changed criterion form 3 to 5
 %%
@@ -31,7 +34,7 @@
 
 PROCEDURE Latex_Matrix;
 BEGIN
-IF MTT_Matrix_m<6 THEN %% Do matrix style version
+IF MTT_Matrix_m<10 THEN %% Do matrix style version
 BEGIN
   IF MTT_Matrix_n>0 THEN
     IF MTT_Matrix_m>0 THEN

@@ -1,0 +1,12 @@
+#! /bin/sh
+
+mttmatrix='\(mtt[A-Za-z][A-Za-z]*\)'
+integer='\([0-9][0-9]*\)'
+
+mtt_join_lines | gawk -v RS=${1:-"$"} -v ORS=${2:-"$\n"} ' {
+str = $0;
+str1 = gensub ( /([^A-Za-z_0-9\.\+])([0-9]+)([^\.0-9])/ , "\\1\\2.0\\3" , "g", str );
+str2 = gensub ( /([^e]\+)([0-9]+)([^\.0-9])/ , "\\1\\2.0\\3" , "g", str1 );
+str3 = gensub ( /([^A-Za-z_0-9\.\+])([0-9]+)e([0-9]+).0([^\.0-9])/ , "\\1\\2\\3\\4" , "g" , str2)
+printf "%s$\n", str3 ;
+}' | sed -e "s/$mttmatrix($integer\.0,/\1(\2,/g"

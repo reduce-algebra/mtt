@@ -15,6 +15,20 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.23.2.3  2002/09/12 18:50:50  geraint
+## Uncommented cse optimisations - they seem to work ok.
+##
+## Revision 1.23.2.2  2002/09/10 23:24:19  geraint
+## Rationalised local and global optimisations.
+## Fixes presentation of locally optimised code (ode view).
+## Much more elegant :-)
+##
+## Revision 1.23.2.1  2002/09/03 23:44:43  geraint
+## adding global optimisation (-optg).
+##
+## Revision 1.23  2002/07/10 17:43:05  geraint
+## Added feature [ 562453 ] Optimisation of algebraic equations.
+##
 ## Revision 1.22  2002/06/28 15:35:47  geraint
 ## Commented out aej.r generation (not used yet).
 ##
@@ -134,9 +148,12 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 include=`echo 'in "'$MTT_LIB'/reduce/fix_c.r";'`
                 fix_msg='fixing c and cc code';
 		;;
-	-optimise)
-	    optimise='-optimise'
-	    optimise_msg=' with optimisation' ;;
+        -optimise_global )
+	    optimise='-optimise_global'
+	    optimise_msg=' with global optimisation' ;;
+	-optimise_local )
+	    optimise='-optimise_local'
+	    optimise_msg=' with local optimisation' ;;
         *)
                 echo "$1 is an invalid argument - ignoring" ;;
   esac
@@ -144,10 +161,10 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 done
 
 # Create the reduce output code
-def2write_r $optimise $fixcc $1 ae 
-def2write_r $optimise $fixcc $1 cse 
-def2write_r $optimise $fixcc $1 csex # Version without E matrix
-def2write_r $optimise $fixcc $1 cseo
+def2write_r $fixcc $1 ae 
+def2write_r $fixcc $1 cse 
+def2write_r $fixcc $1 csex # Version without E matrix
+def2write_r $fixcc $1 cseo
 
 echo "Creating $1_ae.r $optimise_msg"
 echo "Creating $1_cse.r $solve_msg $optimise_msg $fix_msg"
@@ -472,6 +489,18 @@ cat $1_ae.r1 $1_ae.r2 > $1_ae.r
 cat $1_cse.r1 $1_cse.r2  > $1_cse.r
 cat $1_csex.r1 $1_csex.r2  > $1_csex.r
 cat $1_cseo.r1 $1_cseo.r2  > $1_cseo.r
+
+if [ ${optimise:-""} = "-optimise_global" ]; then
+    mtt_optimise global $1 ae
+    mtt_optimise global $1 cse
+    mtt_optimise global $1 cseo
+    mtt_optimise global $1 csex
+elif [ ${optimise:-""} = "-optimise_local" ]; then
+    mtt_optimise local $1 ae
+    mtt_optimise local $1 cse
+    mtt_optimise local $1 cseo
+    mtt_optimise local $1 csex
+fi
 
 if [ "$solve" = "1" ]; then
     echo "Setting MTTNyz=0 in $1_def.r and updating other $1_def files"

@@ -13,6 +13,20 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.16.2.3  2002/09/10 23:24:19  geraint
+## Rationalised local and global optimisations.
+## Fixes presentation of locally optimised code (ode view).
+## Much more elegant :-)
+##
+## Revision 1.16.2.2  2002/09/10 22:09:14  geraint
+## Fixed presentation of globally optimised equations (ode view).
+##
+## Revision 1.16.2.1  2002/09/03 23:44:43  geraint
+## adding global optimisation (-optg).
+##
+## Revision 1.16  2002/09/03 19:34:15  geraint
+## Write EdX regardless - csex is needed to create ode when not optimised.
+##
 ## Revision 1.15  2002/08/29 15:45:20  geraint
 ## Tests for existence of matrix before entering shell loop.
 ## Tests for existence of expression before attempting to write or optimise.
@@ -76,9 +90,6 @@
 optimise=''
 while [ -n "`echo $1 | grep '^-'`" ]; do
     case $1 in
-	-optimise)
-	    opt='-optimise'
-	    optimise_msg=' with optimisation' ;;
 	-fixcc )
 	    include=`echo 'in "'$MTT_LIB'/reduce/fix_c.r";'` ;;
 	*)
@@ -91,7 +102,7 @@ sys=$1 # System name
 rep=$2 # System representation
 
 # Inform User
-echo Creating $1_$2_write.r $optimise_msg
+echo Creating $1_$2_write.r
 
 # Find system constants
 Nx=`mtt_getsize $sys x` # States
@@ -153,85 +164,14 @@ case $rep in
         exit
 esac
 
-
-mtt_fix_integers ()
-{
-    gawk -F":=" -v RS="$" -v ORS="$\n" '
-(NF == 1) {
-	print $0
-}
-(NF > 1) {
-	lhs=$1 ;
-	rhs=$2" " ;
-	rhs1 = gensub ( /([^A-Za-z_0-9\.\+])([0-9]+)([^\.0-9])/ , "\\1\\2.0\\3" , "g", rhs );
-	rhs2 = gensub ( /([^e]\+)([0-9]+)([^\.0-9])/ , "\\1\\2.0\\3" , "g", rhs1 );
-	rhs3 = gensub ( /([^A-Za-z_0-9\.\+])([0-9]+)e([0-9]+).0([^\.0-9])/ , "\\1\\2\\3\\4" , "g" , rhs)
-	printf "%s:=%s$\n", lhs, rhs3 ;
-    }'
-}
-
-mtt_optimise ()
-{
-    sys="$1"
-    lhs="$2"
-    rhs="$3"
-    
-    dae="${sys}_dae.r"
-    tmp="mtt_optimise.tmp"
-    tmp1="mtt_optimise1.tmp"
-    tmp2="mtt_optimise2.tmp"
-    tmp3="mtt_optimise3.tmp"
-    
-    grep -i -e "^$lhs" $dae |\
-	sed -e 's/;/\ INAME\ mtt_tmp/g' |\
-	sed -e 's/:=/:=/g' > $tmp1
-    nlines=`wc -l $tmp1 | gawk '{print $1}'`
-    if [ $nlines -gt 0 ]; then
-	{
-	    cat <<EOF
-off echo$
-load scope$
-on double$
-on noconvert$
-on rounded$
-off int$
-off nat$
-$include
-
-out "$tmp2"$
-optimize
-EOF
-	} > $tmp
-	cat $tmp1 >> $tmp
-	{
-	    cat <<EOF
-shut "$tmp2"$
-$end$
-EOF
-	} >> $tmp
-	echo "%%% $lhs %%%" >> def2write_r1.log
-	${SYMBOLIC:-reduce} < $tmp >> def2write_r1.log 2>> def2write_r2.log
-	cat $tmp2 | gawk -v RS=';' '($2 == ":=") {print $0}' > $tmp3
-	cat $tmp3 | mtt_fix_integers
-    fi
-    rm -f $tmp $tmp1 $tmp2 $tmp3
-    return
-}
-
-
 # Remove log files
 rm -f def2write_r1.log def2write_r2.log
 
 # Write out the code
 echo "" > $1_$2_write.r
 
-if [ ${opt:-""} = "-optimise" ]; then
-    echo 'off nat$'
-#    echo 'on echo$'
-else
-    echo 'off echo$'
-    echo 'load gentran$'
-fi >> $1_$2_write.r
+echo 'off echo$' >> $1_$2_write.r
+echo 'load gentran$' >> $1_$2_write.r
 
 for matrix in $matrices; do
     matrix_exists=`grep -i MTT${matrix} ${sys}_dae.r | wc -l | gawk '{print $1}'`
@@ -240,21 +180,17 @@ for matrix in $matrices; do
 	m=`first "$ms"`; ms=`rest "$ms"`
 	is=`n2m 1 $n`; 
 	js=`n2m 1 $m`; 
+	echo "write \"% Begin Matrix MTT${matrix}\"$" >> $1_$2_write.r
 	if [ $n -ge 1 ]; then
 	    for i in $is; do
 		for j in $js; do
-		    if [ ${opt:-""} = "-optimise" ]; then
-			name=`echo MTT$matrix'('$i','$j')'`
-			mtt_optimise $1 "$comma$name" "$name"
-			comma=''
-		    else
-			echo 'write'
-			name=`echo MTT$matrix'('$i','$j')'`
-			echo '  '$comma$name ':=' $name '$'
-		    fi >> $1_$2_write.r
+		    echo 'write'
+		    name=`echo MTT$matrix'('$i','$j')'`
+		    echo '  '$comma$name ':=' $name '$'
 		done
 	    done
-	fi
+	fi >> $1_$2_write.r
+	echo "write \"% End Matrix MTT${matrix}\"$" >> $1_$2_write.r
     fi
 done
 echo ';END;'                           >>$1_$2_write.r

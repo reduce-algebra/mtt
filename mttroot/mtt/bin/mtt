@@ -17,6 +17,18 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.360.2.3  2002/09/16 07:59:26  geraint
+## Changed default optimisation to global.
+##
+## Revision 1.360.2.2  2002/09/04 10:44:59  geraint
+## Added option to specify number of tmp variables declared (-ntmpvar <N>).
+##
+## Revision 1.360.2.1  2002/09/03 23:44:43  geraint
+## adding global optimisation (-optg).
+##
+## Revision 1.360  2002/08/20 15:51:16  gawthrop
+## Update to work with ident DIY rep
+##
 ## Revision 1.359  2002/08/07 14:27:14  geraint
 ## Changes to make "-i dassl" work again.
 ##
@@ -1308,6 +1320,9 @@ ps=ps
 eps=eps
 psview=$PSVIEW
 
+# Default declare 500 temporary variables
+num_tmp_var=500
+
 #Initialise list of switches
 mtt_switches='';
 
@@ -1461,8 +1476,16 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 mtt_switches="$mtt_switches $1";
                 using_oct=yes;
                 ;;
-	-opt )  mtt_switches="$mtt_switches $1";
-                optimise='-optimise';;
+	-optl )
+		mtt_switches="$mtt_switches $1";
+                optimise='-optimise_local';;
+	-opt | -optg )
+		mtt_switches="$mtt_switches $1";
+                optimise='-optimise_global';;
+        -ntmpvar )
+		num_tmp_var=$2;
+		mtt_switches="$mtt_switches $1 $2";
+		shift;;
 	-partition ) mtt_switches="$mtt_switches $1";
                      partition='-partition';
                 ;;
@@ -1555,7 +1578,10 @@ if [ -z "$1" ]; then
     echo '         -ae <reduce|hybrd|dassl|hooke>   Solve algebraic equations with specified solver'
     echo '         -o ode is same as dae'
     echo '         -oct use oct files in place of m files where appropriate'
-    echo '         -opt optimise code generation'
+    echo '         -opt optimise code generation (equivalent to -optg)'
+    echo '         -optl optimise code generation (local  : line-by-line)'
+    echo '         -optg optimise code generation (global : full vector)'
+    echo "         -ntmpvar <N>  declare N temporary variables (default=$num_tmp_var)"
     echo '         -p  print environment variables'
     echo '         -partition partition hierachical system'
     echo '         -pdf generate pdf in place of ps'
@@ -2405,7 +2431,7 @@ $1_sympar.r: $1_sympar.txt
 $1_sympar.m: $1_sympar.txt
 	sympar_txt2m $1
 $1_sympar.h: $1_sympar.txt
-	sympar_txt2h.sh $1
+	sympar_txt2h.sh $1 $num_tmp_var
 
 #SUMMARY sympar	symbolic parameters (c)
 # txt to c sympar conversion

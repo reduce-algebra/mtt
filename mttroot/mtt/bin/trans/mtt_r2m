@@ -18,6 +18,12 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.30.4.1  2002/09/03 23:44:43  geraint
+## adding global optimisation (-optg).
+##
+## Revision 1.30  2002/03/26 11:59:54  geraint
+## Added dummy -optimise switch to prevent falling over for -cc generation.
+##
 ## Revision 1.29  2001/09/07 00:25:56  geraint
 ## Partial fix for insidious bug which eliminates lines of code when parameter
 ## names of the form (in* or off*) start continuation lines.
@@ -129,7 +135,7 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	parameters='-parameters';
         par='mttpar'
 	;;
-    -optimise)
+    -optimise_local | -optimise_global )
 	;;
     *)
 	echo $1 is an unknown option

@@ -25,7 +25,7 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
     -matrix)
 	matrix='yes';
 	;;
-    -optimise)
+    -optimise_global | -optimise_local )
 	optimise='LOAD SCOPE; ON GENTRANOPT;';
         iname='INAME mtt_o;';
 	;;

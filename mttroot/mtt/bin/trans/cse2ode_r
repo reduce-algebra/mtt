@@ -14,6 +14,17 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3.4.2  2002/09/10 23:24:19  geraint
+## Rationalised local and global optimisations.
+## Fixes presentation of locally optimised code (ode view).
+## Much more elegant :-)
+##
+## Revision 1.3.4.1  2002/09/03 23:44:43  geraint
+## adding global optimisation (-optg).
+##
+## Revision 1.3  2001/07/27 23:29:10  geraint
+## Optimises only when requested (-opt).
+##
 ## Revision 1.2  2001/07/13 04:54:04  geraint
 ## Branch merge: numerical-algebraic-solution back to main.
 ##
@@ -36,9 +47,12 @@
 optimise=''; optimise_msg=''
 while [ -n "`echo $1 | grep '^-'`" ]; do
     case $1 in
-	-optimise)
-	    optimise='-optimise'
-	    optimise_msg=' with optimisation' ;;
+	-optimise_global )
+	    optimise='-optimise_global'
+	    optimise_msg=' with global optimisation' ;;
+	-optimise_local )
+	    optimise='-optimise_local'
+	    optimise_msg=' with local optimisation' ;;
 	*)
 	    echo "$1 is an invalid argument - ignoring" ;;
     esac
@@ -46,8 +60,8 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 done
 
 # Create the reduce output code
-def2write_r $optimise $1 ode
-def2write_r $optimise $1 odeo
+def2write_r $1 ode
+def2write_r $1 odeo
 
 #Inform user
 echo Creating $1_ode.r $optimise_msg
@@ -129,13 +143,13 @@ SHUT "$1_odeo.r";
 quit;
 EOF
 
+if [ ${optimise:-""} = "-optimise_global" ]; then
+    mtt_optimise global $1 ode
+    mtt_optimise global $1 odeo
+elif [ ${optimise:-""} = "-optimise_local" ]; then
+    mtt_optimise local $1 ode
+    mtt_optimise local $1 odeo
+fi
+
 # Now invoke the standard error handling.
 mtt_error_r cse2ode_r.log
-
-
-
-
-
-
-
-

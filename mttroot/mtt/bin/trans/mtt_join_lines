@@ -1,0 +1,5 @@
+#! /bin/sh
+
+gawk '{ printf ( "%s" , $0 ) }'		|\
+    gawk -v RS="$" '{ printf "%s$\n", $0 }'	|\
+    gawk -v RS=";" '{ printf "%s;\n", $0 }'

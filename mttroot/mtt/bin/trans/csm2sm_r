@@ -14,6 +14,17 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2.4.2  2002/09/10 23:24:19  geraint
+## Rationalised local and global optimisations.
+## Fixes presentation of locally optimised code (ode view).
+## Much more elegant :-)
+##
+## Revision 1.2.4.1  2002/09/03 23:44:43  geraint
+## adding global optimisation (-optg).
+##
+## Revision 1.2  2001/07/27 23:29:10  geraint
+## Optimises only when requested (-opt).
+##
 ## Revision 1.1  2000/12/28 12:24:03  peterg
 ## Put under RCS
 ##
@@ -29,17 +40,20 @@
 optimise=''; optimise_msg=''
 while [ -n "`echo $1 | grep '^-'`" ]; do
     case $1 in
-	-optimise)
-	    optimise='-optimise'
-	    optimise_msg=' with optimisation' ;;
-	*)
+	-optimise_global )
+	    optimise='-optimise_global'
+	    optimise_msg=' with global optimisation' ;;
+       	-optimise_local )
+	    optimise='-optimise_local'
+	    optimise_msg=' with local optimisation' ;;
+	* )
 	    echo "$1 is an invalid argument - ignoring" ;;
     esac
     shift
 done
 
 # Create the reduce output code
-def2write_r $optimise $1 $2
+def2write_r $1 $2
 
 # Inform user
 echo Creating $1_$2.r $optimise_msg
@@ -137,6 +151,12 @@ quit;
 EOF
 
 cat $1_$2.r1 $1_$2.r2 > $1_$2.r
+
+if [ ${optimise:-""} = "-optimise_global" ]; then
+    mtt_optimise global $1 $2
+elif [ ${optimise:-""} = "-optimise_local" ]; then
+    mtt_optimise local $1 $2
+fi
 
 # Now invoke the standard error handling.
 mtt_error_r csm2sm_r.log

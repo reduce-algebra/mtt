@@ -9,13 +9,16 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/10/20 08:15:08  peterg
+## Initial revision
+##
 ###############################################################
 
 
-representations=`mtt -q help representations | awk '{print $1'} | sort -u | grep -v 'Representations'`
-
+representations=`grep '#SUMMARY' $MTTPATH/mtt | awk '{print $2'} | sort -u | grep -v 'Representations'`
+echo $representations
 for rep in $representations ; do
-    language=`mtt -q help representations | grep "^[ ]*$rep" |\
+    language=`grep '#SUMMARY' $MTTPATH/mtt | grep "^#SUMMARY[ ]*$rep" |\
       awk '{print $NF}'|  grep -v 'Representations' |\
       sort -u | sed 's/[()]//g'`
     echo $rep $language |\

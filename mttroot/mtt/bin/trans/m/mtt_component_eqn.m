@@ -221,7 +221,7 @@ function [known] = mtt_component_eqn (fullname, port, causality, \
       [eqn,insigs,innames] = eval(sprintf("%s_seqn (Name, name, cr, \
 						    arg, outsig, \
 						    insigs, \
-						    innames);", \
+						    innames, is_port_output);", \
 					  comp_type));
       ## Resolve CR
       eqn = mtt_resolve_cr(eqn);

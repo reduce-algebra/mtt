@@ -15,14 +15,22 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1997/07/27 13:11:37  peterg
+## Initial revision
+##
 ###############################################################
 
 var=$1
 name=$2
+print=$3
 
 if [ -z "$1"  ]; then
- echo '***** Shell variable' $name 'not set. *****'
+ echo '***** Environment variable' $name 'not set. *****'
  echo 'Check that mttrc or mttrc.csh has been invoked.'
+ echo
  exit
 fi
 
+if [ "$print" = "print" ]; then
+ echo Environment variable $name set to $var
+fi

@@ -15,9 +15,9 @@ function mtt (sys,rep,lang)
   endif
 
   filename = sprintf("%s_%s.%s", sys, rep, lang);
-  if !exist(filename)
-    command = sprintf("mtt -q %s %s %s", sys, rep, lang);
-    system(command);
-  endif
+
+  command = sprintf("mtt -q %s %s %s", sys, rep, lang);
+  system(command);
+
 
 endfunction

@@ -6,7 +6,11 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  2000/12/28 17:42:25  peterg
+# %% To RCS
+# %%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # Set the inputs
-u(1) =	1.0; # V (Default value)
+## Removed by MTT on Thu Jun  5 15:47:51 BST 2003: u(1) =	1.0; # V (Default value)
+electrostatic__v	= 1.0; # Added by MTT on Thu Jun 05 15:47:54 BST 2003

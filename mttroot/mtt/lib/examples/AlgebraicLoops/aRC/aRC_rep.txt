@@ -7,6 +7,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/12/28 17:02:29  peterg
+## To RCS
+##
 ###############################################################
 
 mtt aRC abg tex			# The system description
@@ -19,7 +22,7 @@ mtt -A aRC ode tex	        # The system ode
 ## mtt aRC ss tex 		# Steady state
 ## mtt aRC dm tex		# Descriptor matrices (of linearised system)
 ## mtt aRC sm tex		# State matrices (of linearised system)
-## mtt -A aRC tf tex		# Transfer function (of linearised system)
+mtt -A aRC tf tex		# Transfer function (of linearised system)
 ## mtt aRC lmfr ps		# log modulus of frequency response (of linearised system)
 ## mtt aRC simpar tex		# Simulation parameters
 ## mtt aRC numpar tex		# Numerical simulation parameters

@@ -7,7 +7,11 @@
 
 
 
-Electrostatic_cm_1_mass	= 0.0; # Default
-Electrostatic_cm_1_transducer	= 0.0; # Default
-Electrostatic_cm_1_transducer_2	= 1.0; #  plate displacement
-Electrostatic_k	= 0.0; # Default
+## Removed by MTT on Thu Jun  5 15:45:42 BST 2003: Electrostatic_cm_1_mass	= 0.0; # Default
+## Removed by MTT on Thu Jun  5 15:45:42 BST 2003: Electrostatic_cm_1_transducer	= 0.0; # Default
+## Removed by MTT on Thu Jun  5 15:45:42 BST 2003: ## Removed by MTT on Thu Jun  5 15:45:42 BST 2003: Electrostatic_cm_1_transducer_2	= 1.0; #  plate displacement
+## Removed by MTT on Thu Jun  5 15:45:42 BST 2003: Electrostatic_k	= 0.0; # Default
+electrostatic__cm__mass	= 0.0; 
+electrostatic__cm__transducer	= 0.0;
+electrostatic__cm__transducer_2	= 1.0;
+electrostatic__k	= 0.0;

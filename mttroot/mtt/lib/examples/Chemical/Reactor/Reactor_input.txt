@@ -6,6 +6,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  2000/12/28 18:52:24  peterg
+## Updated for new formats
+##
 ## Revision 1.1  2000/12/28 17:09:55  peterg
 ## To RCS
 ##
@@ -58,5 +61,7 @@ u2 = q_s;
 
 
 
-reactor_f	= u1 + 0.1*u1*(t>0.01); # Added by MTT on Thu Dec 28 18:44:47 GMT 2000
-reactor_t	= u2 + 0.1*u2*(t>0.05); # Added by MTT on Thu Dec 28 18:44:47 GMT 2000
+## Removed by MTT on Thu Jun  5 12:48:41 BST 2003: reactor_f	= u1 + 0.1*u1*(t>0.01); # Added by MTT on Thu Dec 28 18:44:47 GMT 2000
+## Removed by MTT on Thu Jun  5 12:48:41 BST 2003: reactor_t	= u2 + 0.1*u2*(t>0.05); # Added by MTT on Thu Dec 28 18:44:47 GMT 2000
+reactor__f	= u1 + 0.1*u1*(t>0.01); # f (Reactor)
+reactor__t	= u2 + 0.1*u2*(t>0.05) ; # t (Reactor)

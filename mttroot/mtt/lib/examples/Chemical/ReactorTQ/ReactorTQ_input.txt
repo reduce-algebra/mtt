@@ -6,6 +6,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/12/28 17:19:08  peterg
+## To RCS
+##
 ###############################################################
 
 ## Reduce steady-state parameter file (ReactorTQ_sspar.r)
@@ -41,7 +44,5 @@ x2 = c_b*v_r;
 x3 = c_p*t_s*v_r;
 
 # Set the inputs
-mttu(1) = f_s + 0.1*f_s*(t>0.01); # f (ReactorTQ)
-
-
-
+## Removed by MTT on Thu Jun  5 14:27:42 BST 2003: mttu(1) = f_s + 0.1*f_s*(t>0.01); # f (ReactorTQ)
+reactortq__f	=  f_s + 0.1*f_s*(t>0.01); # f (ReactorTQ)

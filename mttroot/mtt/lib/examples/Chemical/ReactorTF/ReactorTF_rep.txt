@@ -7,6 +7,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/12/28 17:12:57  peterg
+## To RCS
+##
 ###############################################################
 
 mtt ReactorTF abg tex			# The system description
@@ -25,5 +28,5 @@ mtt ReactorTF simpar tex		# Simulation parameters
 mtt ReactorTF numpar tex		# Numerical simulation parameters
 mtt ReactorTF input tex		# Simulation input
 mtt ReactorTF state tex		# Simulation initial state
-mtt -c ReactorTF odeso ps
+mtt ReactorTF odeso ps		# Simulation
 

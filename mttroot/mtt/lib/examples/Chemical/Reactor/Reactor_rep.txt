@@ -7,6 +7,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/12/28 17:09:55  peterg
+## To RCS
+##
 ###############################################################
 
 mtt Reactor abg tex			# The system description
@@ -27,7 +30,7 @@ mtt Reactor input tex		# Simulation input
 mtt Reactor state tex		# Simulation initial state
 
 ## The system outputs
-mtt -c Reactor odeso ps 'Reactor_c_a'
-mtt -c Reactor odeso ps 'Reactor_c_b'
-mtt -c Reactor odeso ps 'Reactor_t'
+mtt  Reactor odeso ps 'Reactor__c_a'
+mtt  Reactor odeso ps 'Reactor__c_b'
+mtt  Reactor odeso ps 'Reactor__t'
 

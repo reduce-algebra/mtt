@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2000/12/28 17:42:25  peterg
+% %% To RCS
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 mtt Electrostatic abg tex
@@ -13,4 +16,4 @@ mtt Electrostatic ode tex
 mtt Electrostatic numpar txt
 mtt Electrostatic input txt
 mtt Electrostatic simpar txt
-mtt -c Electrostatic odeso ps
+mtt Electrostatic odeso ps

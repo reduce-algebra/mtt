@@ -6,6 +6,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  2000/12/28 18:52:25  peterg
+## Updated for new formats
+##
 ## Revision 1.1  2000/12/28 17:09:55  peterg
 ## To RCS
 ##
@@ -59,6 +62,9 @@ u2 = q_s;
 
 
 
-reactor_h_r	= x3; # Added by MTT on Thu Dec 28 18:46:25 GMT 2000
-reactor_m_a	= x1; # Added by MTT on Thu Dec 28 18:46:25 GMT 2000
-reactor_m_b	= x2; # Added by MTT on Thu Dec 28 18:46:25 GMT 2000
+## Removed by MTT on Thu Jun  5 12:47:23 BST 2003: reactor_h_r	= x3; # Added by MTT on Thu Dec 28 18:46:25 GMT 2000
+## Removed by MTT on Thu Jun  5 12:47:23 BST 2003: reactor_m_a	= x1; # Added by MTT on Thu Dec 28 18:46:25 GMT 2000
+## Removed by MTT on Thu Jun  5 12:47:23 BST 2003: reactor_m_b	= x2; # Added by MTT on Thu Dec 28 18:46:25 GMT 2000
+reactor__h_r	= x3;
+reactor__m_a	= x1;
+reactor__m_b	= x2;

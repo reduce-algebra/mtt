@@ -7,4 +7,5 @@
 
 
 
-MotorGenerator_v1_v_u	= 1.0; # Default
+## Removed by MTT on Thu Jun  5 16:43:47 BST 2003: MotorGenerator_v1_v_u	= 1.0; # Default
+motorgenerator__v1__v__u	= 1.0; # Added by MTT on Thu Jun 05 16:43:50 BST 2003

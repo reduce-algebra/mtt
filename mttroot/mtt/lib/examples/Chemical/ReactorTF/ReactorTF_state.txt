@@ -6,6 +6,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/12/28 17:12:57  peterg
+## To RCS
+##
 ###############################################################
 
 ## Reduce steady-state parameter file (ReactorTF_sspar.r)
@@ -41,10 +44,12 @@ x2 = c_b*v_r;
 #x3 = c_p*t_s*v_r;
 
 ## Load up the states
-mttx(1) = x1;
-mttx(2) = x2;
-mttx(3) = x3;
+## Removed by MTT on Thu Jun  5 14:14:18 BST 2003: mttx(1) = x1;
+## Removed by MTT on Thu Jun  5 14:14:18 BST 2003: mttx(2) = x2;
+## Removed by MTT on Thu Jun  5 14:14:18 BST 2003: mttx(3) = x3;
 
 
 
 
+reactortf__m_a	= x1;
+reactortf__m_b	= x2;

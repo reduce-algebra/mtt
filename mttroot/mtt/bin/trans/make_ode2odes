@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.27  1999/11/15 22:47:53  peterg
+## Generates method-specific code.
+##
 ## Revision 1.26  1999/10/20 01:31:43  peterg
 ## *** empty log message ***
 ##
@@ -129,11 +132,6 @@ MTTt = 0.0;
 
 [MTTx] = $1_state;	        # Read in initial state
 
-
-[MTTy] = $1_$odeo(MTTx,MTTu,MTTt); # Evaluate initial output
-[MTTu] = $1_input(MTTt,MTTx,MTTy);	# Evaluate initial input
-mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny); # And write them
-
 #[mttAA]  = zero_matrix($Nx);	# Zero the A matrix
 #[mttAAx] = zero_vector($Nx);	# Zero the AAx vector
 
@@ -152,6 +150,9 @@ fi
 
 cat << EOF >> $1_ode2odes.m
 for MTTit = 1:MTTilast		#Integration loop
+  [MTTy] = $1_$odeo(MTTx,MTTu,MTTt);     # Output 
+  [MTTu] = $1_input(MTTt,MTTx,MTTy);	# Input
+  mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny);    # Write it out
 
   if $Nx>0			# Dont if no states
 EOF
@@ -186,9 +187,6 @@ cat << EOF >> $1_ode2odes.m
       MTTt = MTTt + mttdt;
   endif;			# $Nx>0
 
-  [MTTy] = $1_$odeo(MTTx,MTTu,MTTt);     # Output 
-  [MTTu] = $1_input(MTTt,MTTx,MTTy);	# Input
-  mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny);    # Write it out
 endfor;				# Integration loop
 
 EOF

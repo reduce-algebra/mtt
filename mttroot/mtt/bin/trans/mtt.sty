@@ -1,0 +1,79 @@
+%
+%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%     %%%%% Model Transformation Tools %%%%%
+%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% mtt.sty -- LaTeX style file for MTT
+% P.J.Gawthrop May 1997
+% Copyright (c) P.J.Gawthrop, 1997.
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%Verbatim file input
+\usepackage{verbatim}
+\usepackage{moreverb}
+
+%Long tables
+\usepackage{supertabular}
+
+%AMS maths
+  \usepackage{amsmath}
+
+%Fancy headings
+  \usepackage{fancyheadings}
+
+%Fancy boxes
+\usepackage{fancybox}
+
+%Citations package 
+%\usepackage{chicago}
+
+%Postscript figures 
+\usepackage{epsfig}
+
+% Figure definition
+ \newcommand{\fig}[3]{
+        \begin{figure}[htbp]
+          \centerline{
+             \shadowbox{
+                \epsfig{file=#2.ps,width=#1\textwidth}
+              }
+            }
+            \caption{#3}
+            \label{#2}
+       \end{figure}
+       }
+
+% Rotated figure definition
+ \newcommand{\rfig}[3]{
+        \begin{figure}[htbp]
+          \centerline{
+            \epsfig{file=#2.ps,width=#1\textheight,angle=90}
+                 }
+            \caption{#3}
+            \label{#2}
+       \end{figure}
+       }
+
+% Read in a verbatim file
+\newcommand{\txt}[2]{
+  \subsubsection*{#1}
+  \verbatimtabinput{#2}
+}
+
+% Read in a LaTeX file
+\newcommand{\Input}[1]{
+  \input{#1}
+}
+
+
+% Page refs as well.
+\newcommand{\Ref}[1]{\ref{#1} (on page \pageref{#1})}
+
+

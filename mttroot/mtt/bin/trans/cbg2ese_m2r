@@ -16,6 +16,9 @@
 ## $Id$
 ##
 ## $Log$
+# Revision 1.9  1996/12/07  18:21:25  peterg
+# Now uses fopen + file number
+#
 ## Revision 1.8  1996/12/05 10:05:28  peterg
 ## Removed the Octave switch: empty_list_elements_ok = 1;
 ## This is now in .octaverc
@@ -45,6 +48,7 @@
 ###############################################################
 
 infofile='mtt_info.txt';
+structurefile="$1_struc.txt";
 eqnfile="$1_ese.r";
 deffile="$1_def.r";
 
@@ -54,13 +58,16 @@ rm -f $1_ese.r
 
 #Inform user
 echo Creating $eqnfile
-echo Creating $1_def.r
+echo Creating $deffile
+echo Creating $structurefile
 
 # Use matrix manipulation to accomplish the transformation
 $RMATRIX > cbg2ese_m2r.log 2>mtt_error.txt << EOF
 
 infofile = '$infofile';;
 infofilenum = fopen(infofile,'w');
+structurefile = '$structurefile';;
+structurefilenum = fopen(structurefile,'w');
 deffile = '$1_def.r';
 deffilenum = fopen(deffile,'w');
 
@@ -78,7 +85,7 @@ structure = zeros(1,5);
 
 structure = cbg2ese(system_name, system_type, system_cr, ...
                      system_args, full_name, full_name_repetition, ...
-                     1, structure, infofilenum);
+                     1, structure, structurefilenum, infofilenum);
 makedef(structure,deffilenum);
   
 EOF
@@ -90,6 +97,9 @@ END;
 EOF
 mv $1_ese.tmp $1_ese.r
 
+# Sort the struc file
+mv $structurefile junk
+sort -k 1,1 -k 2,2n junk >$structurefile
 
 # Now invoke the standard error handling.
 mtt_error mtt_error.txt

@@ -7,6 +7,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2001/04/05 12:00:18  gawthrop
+## Identification example
+##
 ## Revision 1.1  2000/12/28 11:58:07  peterg
 ## Put under RCS
 ##
@@ -17,8 +20,8 @@ mtt idNonlinearTanks cbg ps 		        # The causal bond graph
 mtt idNonlinearTanks struc tex	        # The system structure
 mtt idNonlinearTanks sympar tex	        # The system parameters
 ## Uncomment the following lines or add others
-## mtt idNonlinearTanks dae tex	        # The system dae
-## mtt idNonlinearTanks ode tex	        # The system ode 
+##mtt idNonlinearTanks dae tex	        # The system dae
+ mtt idNonlinearTanks ode tex	        # The system ode 
 ## mtt idNonlinearTanks sspar tex		# Steady-state parameters
 ## mtt idNonlinearTanks ss tex 		# Steady state
 ## mtt idNonlinearTanks dm tex		# Descriptor matrices (of linearised system)
@@ -30,7 +33,7 @@ mtt idNonlinearTanks sympar tex	        # The system parameters
 ## mtt idNonlinearTanks state tex		# Simulation initial state
 ## mtt idNonlinearTanks input tex		# Simulation input
 ## mtt idNonlinearTanks logic tex		# Logic control
- mtt -oct -s sidNonlinearTanks odeso ps		# Simulation output
- mtt -oct -i euler idNonlinearTanks ippp ps
+## mtt -oct -s sidNonlinearTanks odeso ps		# Simulation output
+ mtt -i euler idNonlinearTanks ident ps
 
 mtt idNonlinearTanks rep txt		# This file

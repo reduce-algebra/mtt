@@ -7,21 +7,24 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  2001/04/05 12:00:18  gawthrop
+# %% Identification example
+# %%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 ## Parameters
 
 ## States 
-v_1 = 	0.5;			# Tank 1
-v_2 = 	0.25;			# Tank 2
+v_1 = 	2.0;			# Tank 1
+v_2 = 	1.0;			# Tank 2
 
 ## Tank parameters
 g = 	1;			#Gravity
 rho = 	1;			# sC,sNonlinearTanks
-alpha = 	1.5;
+alpha = 	1.0;
 
 ## Pipe parameters
-beta = 	1; 
+beta = 	2.0; 
 
 ## Sensitivity.
 v_1s = 	0;			# Tank 1

@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.209  1999/07/27 03:50:13  peterg
+## Fixed odeo.p bug.
+## Fixed compound object bug in fig.
+##
 ## Revision 1.208  1999/07/20 23:43:05  peterg
 ## V 3.8 ( to Eric)
 ##
@@ -2319,27 +2323,27 @@ $1_$2.vc: RCS
 	ci -I $1_$2.$VCext </dev/tty  ; co -l $1_$2.$VCext 
 
 # Copy Pascal utilities
-sign.p: 
-	echo Copying sign.p; cp $MTTPATH/trans/p/sign.p .
-mtt_ludcmp.p: 
-	echo Copying mtt_ludcmp.p; cp $MTTPATH/trans/p/mtt_ludcmp.p .
-mtt_lubksb.p: 
-	echo Copying mtt_lubksb.p; cp $MTTPATH/trans/p/mtt_lubksb.p .
-mtt_sparse.p: 
-	echo Copying mtt_sparse.p; cp $MTTPATH/trans/p/mtt_sparse.p .
-mtt_write.p: 
-	echo Copying mtt_write.p; cp $MTTPATH/trans/p/mtt_write.p .
-mtt_implicit.p: mtt_solve_lud.p 
-	echo Copying mtt_implicit.p; cp $MTTPATH/trans/p/mtt_implicit.p .
-mtt_euler.p: 
-	echo Copying mtt_euler.p; cp $MTTPATH/trans/p/mtt_euler.p .
-mtt_solve_lud.p: mtt_ludcmp.p mtt_lubksb.p
-	echo Copying mtt_solve_lud.p; cp $MTTPATH/trans/p/mtt_solve_lud.p .
-zero_vector.p: 
-	echo Copying zero_vector.p; cp $MTTPATH/trans/p/zero_vector.p .
-zero_matrix.p: 
-	echo Copying zero_matrix.p; cp $MTTPATH/trans/p/zero_matrix.p .
-
+## sign.p: 
+## 	echo Copying sign.p; cp $MTTPATH/trans/p/sign.p .
+## mtt_ludcmp.p: 
+## 	echo Copying mtt_ludcmp.p; cp $MTTPATH/trans/p/mtt_ludcmp.p .
+## mtt_lubksb.p: 
+## 	echo Copying mtt_lubksb.p; cp $MTTPATH/trans/p/mtt_lubksb.p .
+## mtt_sparse.p: 
+## 	echo Copying mtt_sparse.p; cp $MTTPATH/trans/p/mtt_sparse.p .
+## mtt_write.p: 
+## 	echo Copying mtt_write.p; cp $MTTPATH/trans/p/mtt_write.p .
+## mtt_implicit.p: mtt_solve_lud.p 
+## 	echo Copying mtt_implicit.p; cp $MTTPATH/trans/p/mtt_implicit.p .
+## mtt_euler.p: 
+## 	echo Copying mtt_euler.p; cp $MTTPATH/trans/p/mtt_euler.p .
+## mtt_solve_lud.p: mtt_ludcmp.p mtt_lubksb.p
+## 	echo Copying mtt_solve_lud.p; cp $MTTPATH/trans/p/mtt_solve_lud.p .
+## zero_vector.p: 
+## 	echo Copying zero_vector.p; cp $MTTPATH/trans/p/zero_vector.p .
+## zero_matrix.p: 
+## 	echo Copying zero_matrix.p; cp $MTTPATH/trans/p/zero_matrix.p .
+## 
 # Copy c utilities
 ##dsvdcmp.c: dpythag.c nrutil.c nrutil.h
 ##	echo Copying dsvdcmp.c; cp $MTTPATH/trans/c/dsvdcmp.c .

@@ -14,20 +14,21 @@
 
 #ifdef STANDALONE
 extern ColumnVector
-Fmtt_residual (const ColumnVector &X, const ColumnVector &DX, double t);
+Fmtt_residual (const ColumnVector &X, const ColumnVector &DX, double t, int &ires);
 #endif // STANDALONE
 
 
 ColumnVector
-mtt_residual (const ColumnVector &X, const ColumnVector &DX, double t)
+mtt_residual (const ColumnVector &X, const ColumnVector &DX, double t, int &ires)
 {
 #ifdef STANDALONE
-  return Fmtt_residual (X, DX, t);
+  return Fmtt_residual (X, DX, t, ires);
 #else // !STANDALONE
   static octave_value_list args, f;
   args(0) = octave_value (X);
   args(1) = octave_value (DX);
   args(2) = octave_value (t);
+  args(3) = octave_value (ires);
   f = feval ("mtt_residual", args, 1);
   return f(0).VECTOR_VALUE ();
 #endif // STANDALONE

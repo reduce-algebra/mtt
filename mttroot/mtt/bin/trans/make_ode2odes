@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.64  2001/08/08 02:15:00  geraint
+## Rationalisation of solver code, beginning with algebraic solvers.
+##
 ## Revision 1.63  2001/08/07 04:39:24  geraint
 ## Consolidated dassl and residual functions.
 ##
@@ -770,7 +773,8 @@ mtt_dassl (ColumnVector &x,
 ColumnVector
 Fmtt_residual (const ColumnVector &X,
 	      const ColumnVector &DX,
-	      double t)
+	      double t,
+	      int &ires)
 {
 #else // !STANDALONE
 DEFUN_DLD (mtt_residual, args, , "mtt_residual")
@@ -778,10 +782,12 @@ DEFUN_DLD (mtt_residual, args, , "mtt_residual")
     static ColumnVector	X  (MTTNX+MTTNYZ);
     static ColumnVector	DX (MTTNX+MTTNYZ);
     static double      	t;
+    static int		&ires;
 
     X  = args(0).${vector_value} ();
     DX = args(1).${vector_value} ();
     t  = args(2).double_value ();
+    ires = static_cast<int>(args(3).double_value ());
 #endif // STANDALONE
 
     static ColumnVector residual (MTTNX+MTTNYZ);
@@ -830,7 +836,25 @@ DEFUN_DLD (mtt_residual, args, , "mtt_residual")
       residual (i) = dx(i) - DX(i);
     
     if (MTTNYZ > 0)
-      residual.insert (yz,MTTNX);
+      {
+	residual.insert (yz,MTTNX);
+
+	// XXX:
+	// DASSL needs residual to be dependent on Ui and Uidot
+	// mtt_dassl always sets the initial Ui to zero, so
+	// Ui - h*Uidot should equal zero BUT, we don't know h
+	static double t_old;
+	double step;
+	if (t != t_old)
+	  {
+	    step = t - t_old;
+	    t = t_old;
+	  }
+	else
+	  step = t;	
+	for (register int i = MTTNX; i < MTTNX+MTTNYZ; i++)
+	  residual(i) += X(i) - DX(i)*step;
+      }
 
 #ifdef STANDALONE
     return residual;

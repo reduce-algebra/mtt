@@ -12,6 +12,12 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.21  1997/08/04 12:49:17  peterg
+## Modified to use named (as opposed to numbered) ports.
+## Generates a list of component ports in the .rbg file.
+## As octave handles string vectors properly, the .cmp file format is not
+## really necessary - but I've let it be for the moment.
+##
 ## Revision 1.20  1997/03/19 12:02:01  peterg
 ## Now writes an error message if a lable is used twice in the fig file.
 ##
@@ -478,7 +484,7 @@ BEGIN {
   q = "\047";
   terminator = "\\001";
   component_regexp = "[^0-9a-zA-Z_:\*-]";
-  port_regexp = "^\[[a-zA-Z0-9]*\]";
+  port_regexp = "^\[[a-zA-Z0-9_]*\]";
   nonport_regexp = "[a-zA-Z]";
     
   isa_fig_file = 0;

@@ -6,6 +6,9 @@
 %ALIAS $3	j_m	# inertia about mass centre
 %ALIAS $4	m	# mass
 
+%ALIAS in|Tip_a		xTip_a,angularTip_a,yTip_a 	
+%ALIAS out|Tip_b	xTip_b,angularTip_b,yTip_b 	
+
 %ALIAS x_a	xTip_a # Force/velocity at tip a in x direction
 %ALIAS y_a	yTip_a # Force/velocity at tip a in y direction
 %ALIAS alpha_a	angularTip_a # Torque/angular velocity at tip a
@@ -23,6 +26,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.4  1998/07/27 10:51:20  peterg
+% %% Aliased INTF as well.
+% %%
 % %% Revision 1.3  1998/07/27 10:49:10  peterg
 % %% Major revision to include aliases etc
 % %%

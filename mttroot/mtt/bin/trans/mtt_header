@@ -12,6 +12,14 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.50  2002/05/15 14:22:25  geraint
+## Code for Simulink S-function target written direct to sfun.cc instead of
+## calling .mexglx files. This eliminates the sfun dependency on Octave
+## ColumnVectors. sys_sfun.cc should build directly on a MS Windows machine
+## (can't test this yet).
+##
+## added sfun.zip target to create source code to export.
+##
 ## Revision 1.49  2002/05/11 01:14:17  geraint
 ## Fix for [ 553218 ] simpar.oct and simpar.m different.
 ## Translation added between ColumnVector in base .cc and Octave_map in .oct.
@@ -210,6 +218,9 @@ language=$3
 fun_name=${1}_${2}
 
 other=$4 # Anything else eg stdin
+
+insertor=\<\<			# help emacs sh-mode out with C++ lines
+
 
 if [ -z "$system" ]; then
   echo 'Usage: mtt_header sys rep lang [stdin]'
@@ -469,14 +480,12 @@ case $language in
 	map="_map"
         declaredummies=yes
 	;;
-    sfun)
-	modeline="// -*-c++-*- Put Emacs into c++-mode";
-	Lc='//'
-	Rc=''
+    c)
+	modeline="/* -*-c-*- Put Emacs into c-mode */";
+	Lc='/*'
+	Rc='*/'
 	Lb='['
 	Rb=']'
-	start="## BEGIN Code"
-	finish="## END Code"
 	constant_declaration="const double "
 	var_declaration="double "
 	minusone="-1"
@@ -853,7 +862,7 @@ map_oct_inputs ()
     done
 }	
 
-map_mex_inputs ()
+map_mex_cc_inputs ()
 {
     s=${1:-""}					# comma separated input list
     if [ -z ${s:-""} ];then return; fi
@@ -862,14 +871,14 @@ map_mex_inputs ()
     cat <<EOF
     if (${c} != nrhs)
      {
-       std::cerr << "${fun_name} expected " << ${c} << " argument(s): ${s}" << std::endl;
+       std::cerr $insertor "${fun_name} expected " $insertor ${c} $insertor " argument(s): ${s}" $insertor std::endl;
        return;
      }
 EOF
     while [ ${i} -lt ${c} ]; do
 	j=${i}
 	i=`expr ${i} + 1`
-	w=`get_field ${s} ${i}`		# argument name
+        w=`get_field ${s} ${i}`		# argument name
 	get_arg_specific_stuff ${w}
 	case ${arg_type} in
 	    "const double")
@@ -908,7 +917,7 @@ EOF
 EOF
 }
 
-write_mex ()
+write_mex_cc ()
 {
     func=${1:-"<insert function name>"}
     args=${2:-""}
@@ -922,7 +931,7 @@ extern "C"
 		    int nrhs, const mxArray *prhs[])
   {
 EOF
-  map_mex_inputs ${args}
+  map_mex_cc_inputs ${args}
 cat <<EOF
   plhs[0] = mtt_mxArray (${func} (${args}));
   }
@@ -955,7 +964,13 @@ if [ ${language} = "oct" ];then
     write_cc_footer
 # oct and mex code
     write_oct ${system}_${rep} ${args}
-    write_mex ${system}_${rep} ${args}
+    write_mex_cc ${system}_${rep} ${args}
+elif [ $language = "c" ]; then
+    array2constant
+    cat <<EOF
+/* BEGIN Code */
+/* END Code */
+EOF
 else
 
 if [ -n "$noglobals" ]; then

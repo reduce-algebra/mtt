@@ -1,6 +1,10 @@
 #! /bin/sh
 # $Id$
 # $Log$
+# Revision 1.5  2002/04/28 18:58:06  geraint
+# Fixed [ 549658 ] awk should be gawk.
+# Replaced calls to awk with call to gawk.
+#
 # Revision 1.4  2001/08/24 21:41:04  geraint
 # Fixed problem with declaration when there are no numerical parameters.
 #
@@ -56,7 +60,7 @@ OUT=${SYS}_sympar.h
 
 declare_sys_param ()
 {
-cat ${IN} | gawk '(NF>0){printf ("static double %s MTT_UNUSED;\t// %s\n", tolower($1), $2)}'
+cat ${IN} | gawk '(NF>0){printf ("static double %s MTT_UNUSED;\t/* %s\t*/\n", tolower($1), $2)}'
 }
 
 declare_temp_vars ()

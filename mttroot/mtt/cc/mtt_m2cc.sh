@@ -100,10 +100,17 @@ esac
 
 fix_comment_delimiter ()
 {
+    language=${1:-cc}
+    case $language in
     # it would be preferable if we didn't use '%' as a delimiter
     # (a % b) gives the remainder of ((int)a / (int)b) in C/C++
-    sed 's/[%#]/\/\//g' | sed 's/\/\/\/\//\/\//g'
-    
+	c)
+	    sed 's/[%#]\(.*\)/\/* \1 *\//'
+	    ;;
+	cc | *)
+	    sed 's/[%#]/\/\//g' | sed 's/\/\/\/\//\/\//g'
+	    ;;
+    esac
 };
 
 decrement_indices ()
@@ -172,13 +179,12 @@ fix_pow ()
 echo Creating ${OUT}
 
 case ${TARGET} in
-    sfun)
-	mtt_header ${SYS} ${REP} "sfun"	>  ${TMP}
-	echo "## END Code"		>> ${TMP}
+    c)
+	mtt_header ${SYS} ${REP} "c"	>  ${TMP}
 	find_code ${TMP} head		>  ${OUT}
 	find_code ${IN} body		|\
 	    decrement_indices		|\
-	    fix_comment_delimiter	|\
+	    fix_comment_delimiter c	|\
 	    fix_pow			|\
 	    strip_junk			|\
 	    ${PARSER}			>> ${OUT}
@@ -192,7 +198,7 @@ case ${TARGET} in
 	find_code ${IN} body   		|\
 	    decrement_indices		|\
 	    fortran_to_c_paren		|\
-	    fix_comment_delimiter	|\
+	    fix_comment_delimiter cc	|\
 	    fix_pow			|\
 	    strip_junk			|\
 	    ${PARSER}			>> ${OUT}

@@ -1,0 +1,112 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: abg2cbg_m
+#
+# Acausal bond graph to causal bond graph: mfile format
+
+###############################################################
+## Version control history
+###############################################################
+## $Header$
+## $Log$
+###############################################################
+
+# The causal BG is described by four matrices
+# (the same structure as the acausal BG except that Causality is 1 ot -1):
+#   junctions: describes the junctions -
+#     Column 1   Index of component (see components)
+#     Column 2.. Indices of bonds on junction (see jbonds)
+#                  rows may be padded with zeros
+#
+#    cjbonds:    describes the true bonds -
+#     Column 1     Index of component (see components)
+#     Column 2     Direction
+#                    1 away from junction
+#                   -1 towards junction
+#     Column 3    Effort causality 
+#                     1 stroke at arrow end
+#                    -1 stroke at other end
+#                     0 no stroke (ie acausal)
+#     Column 4    Flow causality 
+#                     1 stroke at arrow end
+#                    -1 stroke at other end
+#                     0 no stroke (ie acausal)
+#     Columns 5:6  x,y coordinates of non-arrow end (in Fig)
+#     Columns 7:8  x,y coordinates of arrow end (in Fig)
+#
+#   mbonds:    describes the modulation bonds -
+#     Column 1     Index of component at non-arrow end
+#     Column 2     Index of component at arrow end
+#     Columns 4:5  x,y coordinates of non-arrow end (in Fig)
+#     Columns 6:7  x,y coordinates of arrow end (in Fig)
+#
+#   components: describes the comonents -
+#     Column 1     Type of component
+#                    0  0-junction
+#                    1  1-junction
+#                    2  R component
+#                    3  C component
+#                    4  I component
+#                    11 TF component
+#                    12 GY component
+#                    13 A  component
+#     Column 2     Flag for explicit junction
+#                    4  Explicit component (4 means text type)
+#                    0  Implicit component
+#     Column 3-14    fig file information (see fig documentation)
+#
+# Lists of under- and over-causal junctions are displayed.
+#
+# P.J.Gawthrop May 1996
+# Copyright (c) P.J.Gawthrop, 1996.
+
+
+# P.J.Gawthrop May 1996
+# Copyright (c) P.J.Gawthrop, 1996.
+
+infofile='mtt_info.txt';
+
+# Remove the old log file
+rm -f abg2cbg_m.log
+rm -f $1_cbg.m
+rm -f mtt_info.txt
+
+
+#Inform user
+echo Creating $1_cbg.m
+
+# Use matrix manipulation to accomplish the transformation
+ $MATRIX  >abg2cbg_m.log  2>>abg2cbg_m.log << EOF
+
+  infofile= '$infofile';
+
+  %Convert from acausal to causal bond graph in m-file form.
+  [bonds,components] = $1_abg;
+  system_name = '$1';
+
+  [cbonds,status] = abg2cbg(system_name,bonds,infofile);
+
+
+  %Write the function m-file for the causal bond graph
+  filename = '$1_cbg.m';
+  c = '%';
+  fprintf(filename, 'function [cbonds,status] = $1_cbg\n');
+  fprintf(filename, '%s [cbonds,status] = $1_cbg\n', c);
+  fprintf(filename, '%s Causal bond graph created by MTT on %s \n\n', ...
+                    c, date);
+  mat2mfile(cbonds, 'cbonds', filename);
+  mat2mfile(status, 'status', filename);
+
+EOF
+
+cat mtt_info.txt
+
+
+
+
+
+

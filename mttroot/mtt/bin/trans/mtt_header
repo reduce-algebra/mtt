@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.63  2004/08/28 22:08:41  geraint
+## Fixed zeromatrices statements: spaces instead of commas
+##
 ## Revision 1.62  2004/07/19 22:22:25  geraint
 ## Fixed initialisation of ColumnVectors for -oct.
 ##
@@ -408,6 +411,22 @@ case $rep in
 	output="mttdx,mtty";
 	args=$eqnargs;
 	zeromatrices="dx y";
+	;;
+    sesx)
+	states=yes;
+        inputs=yes;
+	parameters=yes;
+        output='mttdx'
+        args=$eqnargs
+	zeromatrices='dx'
+	;;
+    sesy)
+	states=yes;
+        inputs=yes;
+	parameters=yes;
+        output='mtty'
+        args=$eqnargs
+	zeromatrices='y'
 	;;
     sm)
 	states=no;

@@ -1,6 +1,6 @@
 function [port_bonds, status] = abg2cbg(system_name, ...
     system_type, full_name, ...
-    port_bonds, port_status, typefile, infofile)
+    port_bonds, port_bond_direction, port_status, typefile, infofile)
 
 % abg2cbg - acausal to causal bg conversion
 %
@@ -17,6 +17,10 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.22  1997/08/19 10:21:09  peterg
+% %% Only copy port cuaslity info if not already set within the
+% %% subsystem. I thought I'd done this already ....
+% %%
 % %% Revision 1.21  1997/08/18 16:25:25  peterg
 % %% Minor bug fixes
 % %%
@@ -145,8 +149,7 @@ if exist(fun_name)~=2
 end;
 
 % Evaluate the system function to get the bonds and number of ports
-eval(['[bonds,components,n_ports]=', fun_name, ';']);
-
+eval(['[bonds,components,n_ports]=', fun_name, ',']);
 
 % Find number of bonds
 [n_bonds,columns] = size(bonds);
@@ -160,6 +163,34 @@ end;
 if n_components==0 % there is nothing to be done
   return
 end;
+
+port_bond_direction
+
+% Coerce the port (SS:[]) component bonds to have the same direction as
+% of the bonds in the encapsulating system 
+if n_ports>0
+  port_bond_index = abs(components(1:n_ports,1)) % relevant bond numbers
+  for i=1:n_ports
+    % Is the direction different?
+    if (sign(components(i,1))~=port_bond_direction(i))
+      disp(sprintf("Flip port %i",i));
+      % Flip direction at port
+      components(i,1) = - components(i,1);
+      % and at the other end
+      for j=n_ports+1:n_components
+	for k=1:columns
+	  if (abs(components(j,k))==port_bond_index(i))
+	    components(j,k) = - components(j,k);
+	  end
+	end
+      end;
+      % Flip the bond causalities (these are arrow-orientated)
+      bonds(port_bond_index(i),:) = -bonds(port_bond_index(i),:);
+    end
+  end
+end
+
+
 
 % Set initial status
 status = -ones(n_components,1);
@@ -175,7 +206,6 @@ if ~at_top_level
                full_name, n_port_bonds, n_ports), infofile);
 
   else % Copy the port bonds & status
-    port_bond_index = abs(components(1:n_ports,1)) % relevant bond numbers
     for j = 1:n_port_bonds
       jj = port_bond_index(j);
       for k = 1:2
@@ -189,7 +219,7 @@ if ~at_top_level
 else
   n_port_bonds=0;
 end;
-bonds,port_bonds
+% bonds,port_bonds
 
 % Causality indicator
 total = 2*n_bonds;
@@ -247,8 +277,10 @@ while( ci_index>0)
         %  fully causal at this stage.
         one = ones(n_bonds,1);
         port_status = (sum(abs(comp_bonds'))'==2*one) - one;
+	% Direction of bonds on the ports (0 if next to port)
+	port_bond_direction = -sign(components(i,1:n_bonds))';
 	[comp_bonds,s] = abg2cbg(name, comp_type, full_name, 
-            comp_bonds, port_status, ...
+            comp_bonds, port_bond_direction, port_status, ...
 	    typefile, infofile);
 	
 	% Create a single status from the status vector s
@@ -330,10 +362,10 @@ end;
 file_name = [full_name, '_cbg.m'];
 disp(['Writing ', file_name]);
 cbgfilenum = fopen(file_name,'w');
-write_cbg(cbgfilenum,full_name,system_type,bonds,status);
+write_cbg(cbgfilenum,full_name,system_type,bonds,status,components);
 fclose(cbgfilenum);
 
-% Return the port bonds - arrow orientated causality
+% Return the port bonds - arrow orientated causality - and the direction 
 if ~at_top_level % Not at top level
   j = abs(components(1:n_ports,1)) %relevant bond numbers
   port_bonds = bonds(j,:)

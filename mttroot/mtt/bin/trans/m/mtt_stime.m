@@ -1,4 +1,4 @@
-function [t,y,y_theta] = mtt_stime(system_name,theta,indices);
+function [t,y,y_theta,x] = mtt_stime(system_name,theta,free);
   ## usage: [t,y,y_theta] = mtt_stime(system_name,theta);
   ##
   ## Simulate system with name system_name and parameter vector theta
@@ -11,34 +11,43 @@ function [t,y,y_theta] = mtt_stime(system_name,theta,indices);
 
   ## Simulate using mtt-generated function
 
-  if nargin<3
-    indices = ones(size(theta))
-  endif
-  
   N = length(theta);
-  if N!=length(indices)
-    error(sprintf("The length (%i) of indices must be the same as that of theta (%i)",length(indices),N));
+
+  eval(sprintf("[nx,ny,nu,nz,nyz] = %s_def;", system_name));
+  if nargin<3
+    free = 1;
   endif
   
   y_theta = [];
-  for i=1:length(theta)
-    if indices(i)
-      args="";
-      for j=1:length(theta)
-	i_sensitivity=(j==i);
-	args = sprintf("%s%i %g ",args, i_sensitivity, theta(j));
-      endfor
-      args
-      command = sprintf("./%s_ode2odes.out %s > mtt_data.dat\n", system_name, args);
-      system(command);
 
-      ## Retrieve data
-      load -force mtt_data.dat
-      t = mtt_data(:,1);
-      y = mtt_data(:,2);
-      y_theta = [y_theta mtt_data(:,3)];
-    endif
+  if length(free)==0
+    free=1;			# Make the loop happen once to get y and X
+  endif
+  
+  [n,m]  = size(free);
+  if m==1
+    free = free';
+  endif
+  
+  for i=free
+    args=sprintf("%i",i);
+    for j=1:length(theta)
+      args = sprintf("%s %g",args, theta(j));
+    endfor
+
+    command = sprintf("./%s_ode2odes.out %s > mtt_data.dat\n", system_name, args);
+    system(command);
+
+    ## Retrieve data
+    load -force mtt_data.dat
+    y_theta = [y_theta mtt_data(:,3:2:1+ny)];
   endfor
+
+  ## System data
+  [n,m]=size(mtt_data);
+  t = mtt_data(:,1);
+  y = mtt_data(:,2:2:ny);
+  x = mtt_data(:,3+ny:m);
 
 endfunction
 

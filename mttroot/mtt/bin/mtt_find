@@ -1,0 +1,39 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: mtt_find
+# mtt_find path name operation
+# P.J.Gawthrop Nov 1996
+# Copyright (c) P.J.Gawthrop 1996
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+path=$1
+name=$2
+operation=$3
+all=$4
+
+# awk splits the path into components and writes a find for each
+# If all argument null, then succesful find terminates.
+
+awk 'END{ \
+  n=split(path,a,":"); 
+  if (all == "") { 
+    printf("if ");
+  }  for (i=1;i<=n;i++) { 
+  printf("find %s -name \"%s\" -exec %s {} \\; \n", a[i], name, operation);
+  if (all == "") { 
+    printf("then\n"); 
+    printf("exit\n"); 
+    printf("fi\n");
+  }
+   }
+     }' path="$path" name="$name" operation="$operation" all="$all"</dev/null 

@@ -17,6 +17,11 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.25  1998/06/25 18:53:30  peterg
+% %% Actually, the previous comment was optimistic.
+% %% The port causalities on a compound are now forced to be the same as
+% %% that specified by a a _cuase.m file (if it exists)
+% %%
 % %% Revision 1.24  1998/06/25 17:45:03  peterg
 % %% No change -- but checked that explicit causality works!
 % %%
@@ -344,9 +349,10 @@ while( ci_index>0)
   % Set causality of a C or I which is not already set
   [ci_index,prefered] = getdynamic(status,system_type);
   if ci_index>0
-    bond_index = components(ci_index,1) % its a one port
-    bonds(bond_index,1) = prefered;
-    bonds(bond_index,2) = prefered;
+    ci_bond_index = nozeros(components(ci_index,:)); # Get all bonds
+    ci_direction = sign(ci_bond_index);
+    ci_bond_index = abs(ci_bond_index);
+    bonds(ci_bond_index,1:2) = prefered*ci_direction'*[1 1];
   end;
   
 end;

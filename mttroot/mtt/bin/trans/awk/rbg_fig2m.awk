@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  1996/08/05 18:44:56  peter
+## Now writes out a _cbg file without ----- symbol.
+##
 ## Revision 1.6  1996/08/05 12:17:37  peter
 ## n_ports now appear in the _abg file instead.
 ##
@@ -252,9 +255,9 @@ function process_bond() {
     }
 }
 
-function write_cbg() {
-# Create _cbg.fig file from _abg file - not components
-  if ( (fig_file)&&((object!=text)||(isa_component==0))) {
+function write_fig() {
+# Create _fig.fig file from _abg file - not components
+  if ( (isa_fig_file)&&((object!=text)||(isa_component==0))) {
     if (exact_match($1,data_symbol)) {
       field_1 = out_data_symbol
 	}
@@ -262,10 +265,10 @@ function write_cbg() {
       field_1 = $1
 	}
 
-    printf field_1 >> cbg_file
+    printf field_1   >> fig_file
       for (i=2; i<=NF; i++)
-	printf(" %s", $i) >> cbg_file;
-    printf("\n") >> cbg_file
+	printf(" %s", $i)  >> fig_file;
+    printf("\n") >> fig_file
       }
 }
 
@@ -300,7 +303,7 @@ function process_fig() {
     process_bond()
       }   
 
-  write_cbg()
+  write_fig()
 
     }
 
@@ -309,7 +312,7 @@ BEGIN {
   delete ARGV[1];
   b_file = sprintf("%s_rbg.m", sys_name);
   c_file = sprintf("%s_cmp.m", sys_name);
-  cbg_file = sprintf("%s_cbg.fig", sys_name);
+  fig_file = sprintf("%s_fig.fig", sys_name);
   warning_f = "WARNING %s \t in fig file but not lbl file  - using\n";
   warning_l = "WARNING %s \t in lbl file but not fig file  - ignoring\n";
   warning_p = "WARNING system ports are not consecutively numbered\n";
@@ -324,7 +327,7 @@ BEGIN {
   component_regexp = "[^0-9a-zA-Z_:]";
   port_regexp = "\[[0-9]*\]";
     
-  fig_file = 0;
+  isa_fig_file = 0;
   min_line_length = 10;
   object = 0;
   polyline = 2;
@@ -348,10 +351,10 @@ BEGIN {
 {
 # Start of .fig file?
   if ( (NF>0) && (match("#FIG", $1) > 0) ) {
-    fig_file=1;
+    isa_fig_file=1;
   }
 
-  if (fig_file==0) {
+  if (isa_fig_file==0) {
     process_lbl()    
       }
   else {

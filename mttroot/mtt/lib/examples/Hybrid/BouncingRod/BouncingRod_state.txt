@@ -5,6 +5,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/12/28 17:45:59  peterg
+## To RCS
+##
 ###############################################################
 
 
@@ -19,9 +22,12 @@
 ## Removed by MTT on Mon Dec  4 08:27:53 GMT 2000: mttx(8) 	= pi/4; 	# 3 (BouncingRod_rod_th)
 bouncingrod_groundl_1_mtt_switch	= 0.0; # Added by MTT on Mon Dec 04 08:27:59 GMT 2000
 bouncingrod_groundr_1_mtt_switch	= 0.0; # Added by MTT on Mon Dec 04 08:27:59 GMT 2000
-bouncingrod_intfl_1_mtt3	= 10+sin(pi/4);
-bouncingrod_intfr_1_mtt3	= 10-sin(pi/4);
+## Removed by MTT on Fri May 10 13:32:17 BST 2002: bouncingrod_intfl_1_mtt3	= 10+sin(pi/4);
+## Removed by MTT on Fri May 10 13:32:17 BST 2002: bouncingrod_intfr_1_mtt3	= 10-sin(pi/4);
 bouncingrod_rod_1_j	= 0.0; # Added by MTT on Mon Dec 04 08:27:59 GMT 2000
 bouncingrod_rod_1_m_x	= 0.0; # Added by MTT on Mon Dec 04 08:27:59 GMT 2000
 bouncingrod_rod_1_m_y	= 0.0; # Added by MTT on Mon Dec 04 08:27:59 GMT 2000
-bouncingrod_rod_1_th_1_mtt3	= pi/4;
+## Removed by MTT on Fri May 10 13:32:17 BST 2002: bouncingrod_rod_1_th_1_mtt3	= pi/4;
+bouncingrod_intfl_1_x	= 0.0; # Added by MTT on Fri May 10 13:32:24 BST 2002
+bouncingrod_intfr_1_x	= 0.0; # Added by MTT on Fri May 10 13:32:24 BST 2002
+bouncingrod_rod_1_th_1_x	= 0.0; # Added by MTT on Fri May 10 13:32:24 BST 2002

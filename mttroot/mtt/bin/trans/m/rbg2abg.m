@@ -5,6 +5,9 @@ function [bonds,components] = rbg2abg(rbonds,rstrokes,rcomponents,rports,infofil
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.10  1997/03/17  13:45:42  peterg
+% %% Added more error info.
+% %%
 % %% Revision 1.9  1996/12/31  11:25:57  peterg
 % %% Clearer error messages for incorrect ports.
 % %%
@@ -83,8 +86,15 @@ arrow_vector = ( which_end.*other_end_2 + (one-which_end).*other_end_1 ) - ...
 % col 1 of port_near_bond contains a signed bond number (+ for arrow end)
 % col 2  of port_near_bond contains the corresponding port number
 for i = 1:n_ports
-  near_bond = adjbond(rports(i,1:2),arrow_end,other_end);
-  signed_bond = near_bond(1)*sign(1.5-near_bond(2))
+   [i rports(i,1:2)/scale rports(i,3)]
+   near_bond = adjbond(rports(i,1:2),arrow_end,other_end)
+   [rows,cols]=size(near_bond);
+   if rows>1
+     error(sprintf ...
+	 ("A port is near to more than one bond at coordinates %g,%g\n", ...
+	 rports(i,1)/scale,  rports(i,2)/scale));
+   end;
+  signed_bond = near_bond(1)*sign(1.5-near_bond(2));
   port_near_bond(i,:) = [signed_bond, rports(i,3)];
 end;
 

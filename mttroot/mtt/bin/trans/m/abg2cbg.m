@@ -20,6 +20,9 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 # ###############################################################
 # ## $Id$
 # ## $Log$
+# ## Revision 1.45  1999/11/01 03:17:45  peterg
+# ## Added extra info - current subsystem
+# ##
 # ## Revision 1.44  1999/03/11 23:54:11  peterg
 # ## Include possibility of vector SS when finding port_bond_index
 # ##
@@ -185,7 +188,7 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 # ##
 # ###############################################################
 
-  mtt_info(sprintf("\nCompleting causality for subsystem %s", system_name), infofile);
+  mtt_info(sprintf("Completing causality for subsystem %s", system_name), infofile);
 
   pc = '%';
   if nargin<1

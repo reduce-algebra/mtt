@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.172  1998/07/26 11:13:38  peterg
+## Fixed name classes with globs - ide is that all @strong{MTT} variables
+## start with @strong{MTT}
+##
 ## Revision 1.171  1998/07/25 20:37:22  peterg
 ## Removes -s (switches) option -- they are now assumed to be present
 ## I still need to shift the old switch
@@ -1353,7 +1357,7 @@ $1_simpar.txt:
 
 #SUMMARY simpar	simulation information (m)
 $1_simpar.m: $1_simpar.txt
-	tx2m $1 simpar
+	txt2m $1 simpar
 
 #SUMMARY simpar	simulation information c header file (h) 
 $1_simpar.h: $1_simpar.txt
@@ -1644,8 +1648,8 @@ $1_odeo.p : $1_def.r $1_odeo.m
 $1_switch.p : $1_def.r $1_switch.m
 	mtt_m2p $1_switch.m
 $1_ode2odes.p : $1_def.r $1_simpar.p $1_numpar.p $1_state.p $1_input.p \
-                $1_ode.p $1_odeo.p  $1_switch.p $1_ode2odes.m mtt_write.p \
-                mtt_update.p
+                $1_ode.p $1_odeo.p  $1_switch.p $1_ode2odes.m \
+                mtt_write.p mtt_update.p sign.p
 	mtt_m2p $1_ode2odes.m
 
 $1_ode2odes.c: $1_ode2odes.p 
@@ -2112,6 +2116,8 @@ $1_$2.vc: RCS
 	ci -I $1_$2.$VCext </dev/tty  ; co -l $1_$2.$VCext 
 
 # Copy Pascal utilities
+sign.p: 
+	echo Copying sign.p; cp $MTTPATH/trans/p/sign.p .
 mtt_write.p: 
 	echo Copying mtt_write.p; cp $MTTPATH/trans/p/mtt_write.p .
 mtt_update.p: 

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.127  1998/02/11 19:36:29  peterg
+## Only displays one level of cbg file now.
+##
 ## Revision 1.126  1998/02/11 19:26:03  peterg
 ## Added verbose (-v) mode.
 ##
@@ -821,7 +824,7 @@ fi
 # Tidy mode - operate in the directory MTT-work
 if [ "$tidy" = "tidy" ]; then
    mkdir -p MTT_work
-   cp -u  *_*.* MTT_work 2>/dev/null
+   cp -u  *.* MTT_work 2>/dev/null
    cd MTT_work
    
    if [ -z "$directory" ]; then
@@ -1656,7 +1659,6 @@ $1_$2.hview: $1_$2.html
 #View a ps file
 $1_$2.pview: $1_$2.ps
 	echo Creating view of $1_$2
-#	multi_command $PSVIEW $1 $2.ps | sh
 	$PSVIEW $1_$2.ps
 
 #View a gdat file

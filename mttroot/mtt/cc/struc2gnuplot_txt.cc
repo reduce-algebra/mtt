@@ -38,54 +38,30 @@ ostream &struc2gnuplot_txt(const string sys = "sim", istream &in = cin, ostream 
 
   // write header
 
-  out << "set data style lines" << endl
+  out << "wait=-1" << endl
+      << "set data style lines" << endl
       << "set xlabel \"time\"" << endl
       << "set grid" << endl
+      << "set term X11" << endl
       << endl;
 
   // write states (X11)
 
-  out << "set term X11" << endl
-      << "plot\\" << endl;
   for (list<record_t>::iterator i = Lx.begin(); i != Lx.end() ; i++)
     {
-      if (Lx.begin() != i)
-	{
-	  out << ",\\" << endl;
-	}
-      out << "\t\"MTT_work/" << sys << "_odes.dat2\" using 1:" << 2 + Ly.size() + i->num
-	  << " axes x1y1"
-	  << " title \"" << i->mod << "_" << i->cmp << "\"";
+      out << "plot " << "\"MTT_work/" << sys << "_odes.dat2\" using 1:" << 2 + Ly.size() + i->num
+	  << " axes x1y1 title \"" << i->mod << "_" << i->cmp << ";" << endl
+	  << "pause(wait);" << endl;
     }
-  out << endl << endl << "pause(-1)" << endl << endl;
-
-  // write states (postscript)
-  
-  out << "set term postscript eps color" << endl
-      << "set output \"" << sys << "_states.eps\"" << endl
-      << "replot" << endl << endl;  
 
   // write outputs (X11)
 
-  out << "set term X11" << endl
-      << "plot\\" << endl;
   for (list<record_t>::iterator i = Ly.begin(); i != Ly.end() ; i++)
     {
-      if (Ly.begin() != i)
-	{
-	  out << ",\\" << endl;
-	}
-      out << "\t\"MTT_work/" << sys << "_odes.dat2\" using 1:" << 1 + i->num
-	  << " axes x1y1"
-	  << " title \"" << i->mod << "_" << i->cmp << "\"";
+      out << "plot " << "\"MTT_work/" << sys << "_odes.dat2\" using 1:" << 1 + i->num
+	  << " axes x1y1 title \"" << i->mod << "_" << i->cmp << endl
+	  << "; pause(wait);" << endl;
     }
-  out << endl << endl << "pause(-1)" << endl << endl;
-
-  // write outputs (postscript)
-  
-  out << "set term postscript eps color" << endl
-      << "set output \"" << sys << "_outputs.eps\"" << endl
-      << "replot" << endl << endl;  
 
   return out;
 }

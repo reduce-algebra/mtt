@@ -1,4 +1,4 @@
-function  structure = AE_eqn(bond_number,bonds,direction,cr,args, ...
+function  structure = AE_eqn(name,bond_number,bonds,direction,cr,args, ...
                             structure,eqnfile);
 % AE_eqn. Equation generation for effort amplifier.
 
@@ -7,6 +7,9 @@ function  structure = AE_eqn(bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1996/08/30 13:23:11  peter
+% %% Added bond number check
+% %%
 % %% Revision 1.1  1996/08/22 13:12:34  peter
 % %% Initial revision
 % %%
@@ -30,7 +33,7 @@ f_2 = bonds(2,2);
 
 % Flow on port 1 is always zero
    fprintf(eqnfile, '%s := 0;\n', ...
-      varname(bond_number(1), -1));
+      varname(name,bond_number(1), -1));
   
   
 LHS_cause = 1;
@@ -44,7 +47,7 @@ else 	                                % Bicausal: e_1 := e_2
   RHS_number = bond_number(2);
 end
 
-oneeqn(LHS_number,LHS_cause,RHS_number,RHS_cause,cr,args,eqnfile);
+oneeqn(name,LHS_number,LHS_cause,RHS_number,RHS_cause,cr,args,eqnfile);
 
  
 

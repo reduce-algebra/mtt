@@ -1,0 +1,93 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: rbg2abg_m
+#
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+# Raw bond graph to structured acausal bond graph: mfile format
+# The structured BG is described by four matrices:
+#   junctions: describes the junctions -
+#     Column 1   Index of component (see components)
+#     Column 2.. Indices of bonds on junction (see jbonds)
+#                  rows may be padded with zeros
+#
+#   jbonds:    describes the true bonds -
+#     Column 1     Index of component (see components)
+#     Column 2     Direction
+#                    1 away from junction
+#                   -1 towards junction
+#     Column 3     Causality 
+#                     1 stroke at arrow end
+#                    -1 stroke at other end
+#                     0 no stroke (ie acausal)
+#     Columns 4:5  x,y coordinates of non-arrow end (in Fig)
+#     Columns 6:7  x,y coordinates of arrow end (in Fig)
+#
+#   mbonds:    describes the modulation bonds -
+#     Column 1     Index of component at non-arrow end
+#     Column 2     Index of component at arrow end
+#     Columns 4:5  x,y coordinates of non-arrow end (in Fig)
+#     Columns 6:7  x,y coordinates of arrow end (in Fig)
+#
+#   components: describes the comonents -
+#     Column 1     Type of component
+#                    0  0-junction
+#                    1  1-junction
+#                    2  R component
+#                    3  C component
+#                    4  I component
+#                    11 TF component
+#                    12 GY component
+#                    13 A  component
+#     Column 2     Flag for explicit junction
+#                    4  Explicit component (4 means text type)
+#                    0  Implicit component
+#     Column 3-14    fig file information (see fig documentation)
+#
+# P.J.Gawthrop May 1996
+# Copyright (c) P.J.Gawthrop, 1996.
+
+
+# Remove the old log file
+rm -f rbg2abg_m.log
+rm -f $1_abg.m
+rm -f warning.txt; touch warning.txt
+
+#Inform user
+echo Creating $1_abg.m
+
+# Use matrix manipulation to accomplish the transformation
+$MATRIX > rbg2abg_m.log  2>>rbg2abg_m.log << EOF
+
+  warningfile = 'warning.txt';
+  %Convert from the fig version of the bonds to a structured version
+  [rbonds,rstrokes,rcomponents,rports,n_ports] = $1_rbg;
+  [bonds,components] = rbg2abg(rbonds,rstrokes,rcomponents,rports,warningfile);
+
+  %Write the function m-file for the causal bond graph
+  filename = '$1_abg.m';
+  c = '%';
+  fprintf(filename, 'function [bonds,components,n_ports] = $1_abg\n');
+  fprintf(filename, '%s [bonds,components] = $1_abg\n', c);
+  fprintf(filename, '%s Acausal bond graph created by MTT on %s\n\n', ...
+                     c, date);
+  mat2mfile(bonds, 'bonds', filename);
+  mat2mfile(components, 'components', filename);
+  fprintf(filename, 'n_ports = %1.0f;\n', n_ports);
+
+
+EOF
+
+cat warning.txt
+
+
+

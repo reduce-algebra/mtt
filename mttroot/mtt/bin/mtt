@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.268  2000/09/27 16:15:55  peterg
+## Now sh (as opposed to bash) compatible -  fixed dat22dat again
+##
 ## Revision 1.267  2000/09/21 10:08:30  peterg
 ## Version 4.7.1 - bug in odes.dat representation fixed in dat22dat
 ##
@@ -903,7 +906,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='4.7.2'
+version='4.7.3'
 
 # MTT recursion level is zero unless explicitly set
 level=0

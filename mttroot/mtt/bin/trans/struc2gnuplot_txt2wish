@@ -152,7 +152,7 @@ cat <<EOF >> ${out}
 proc "plot_var" "title column" {
     exec echo plot \"${dat2}\" using 1:\$column title \"\$title\" with lines\; > ${tmp}
     exec echo exit\; >> ${tmp}
-    exec gnuplot -persist -title "\$title" ${tmp} &
+    exec gnuplot -geometry 400x300 -persist -title "\$title" ${tmp} &
 }
 
 ## print output

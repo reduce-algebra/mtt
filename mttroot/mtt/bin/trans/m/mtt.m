@@ -2,7 +2,9 @@ function mtt (sys,rep,lang)
 
   ## usage:  mtt (system[,representation,language])
   ##
-  ## Invokes mtt form octave to generate system_representation.language
+  ## Invokes mtt from octave to generate system_representation.language
+  ## Ie equivalent to "mtt system representation language" at the shell
+  ## Representation and language defualt to "sm" and "m" respectively
 
   if nargin<2
     rep='sm';

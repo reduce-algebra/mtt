@@ -17,6 +17,9 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.18  1997/08/08 08:11:04  peterg
+% %% Suppress compoment trace.
+% %%
 % %% Revision 1.17  1997/08/07 16:10:13  peterg
 % %% Move the if status ..  to the beginning of the main loop.
 % %%
@@ -129,6 +132,7 @@ end;
 % Evaluate the system function to get the bonds and number of ports
 eval(['[bonds,components,n_ports]=', fun_name, ';']);
 
+
 % Find number of bonds
 [n_bonds,columns] = size(bonds);
 if (columns ~= 2)&(n_bonds>0)
@@ -160,7 +164,10 @@ if ~at_top_level
     bonds(j,:) = port_bonds;
     status(1:n_ports) = port_status;
   end
+else
+  n_port_bonds=0;
 end;
+bonds,port_bonds
 
 % Causality indicator
 total = 2*n_bonds;
@@ -176,13 +183,13 @@ while( ci_index>0)
    % disp(sprintf('Causality is %3.0f%s complete.', done, pc));
     old_done = done;
   
-    for i = 1:n_components
+    for i = n_port_bonds+1:n_components
       if status(i) ~= 0 % only do this if causality not yet complete
 
 	% Get the bonds on this component
 	comp = nozeros(components(i,:))
-	bond_list = abs(comp)
-	direction = sign(comp)'*[1 1]
+	bond_list = abs(comp);
+	direction = sign(comp)'*[1 1];
         n_bonds = length(bond_list);
 
 	% Get the component details

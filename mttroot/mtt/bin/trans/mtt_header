@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.62  2004/07/19 22:22:25  geraint
+## Fixed initialisation of ColumnVectors for -oct.
+##
 ## Revision 1.61  2004/06/21 16:30:41  gawthrop
 ## Don't zero for cc code
 ##
@@ -265,7 +268,7 @@ fun_name=${1}_${2}
 
 other=$4 # Anything else eg stdin
 
-insertor=\<\<			# help emacs sh-mode out with C++ lines
+insertor=\<\<			# help emacs sh-mode with C++ lines
 
 
 if [ -z "$system" ]; then
@@ -307,7 +310,7 @@ case $rep in
 	parameters=yes;
         output='mttdx,mtte'
         args=$eqnargs
-	zeromatrices='dx,e'
+	zeromatrices='dx e'
 	;;
     csex)
 	states=yes;
@@ -346,7 +349,7 @@ case $rep in
 	  parameters=yes;
           declareinputs=yes
 	  declarestates=yes
-	  zeromatrices=u
+	  zeromatrices='u'
         fi
 	;;
     logic)
@@ -404,7 +407,7 @@ case $rep in
 	parameters=yes;
 	output="mttdx,mtty";
 	args=$eqnargs;
-	zeromatrices="dx,y";
+	zeromatrices="dx y";
 	;;
     sm)
 	states=no;
@@ -437,7 +440,7 @@ case $rep in
         output=mttx
         args=mttpar
         declarestates=yes
-	zeromatrices=x
+	zeromatrices='x'
 	;;
     sim)
 	states=no;

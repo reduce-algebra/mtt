@@ -1,0 +1,100 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: sspar2ss_r
+# Reduce steady steady-state parameter file to reduce steady-state:
+#	X0, and Y0 and U0;
+# P.J.Gawthrop 10 July 1990, 22 April 1991, Dec 1993, April 1994
+# Copyright (c) P.J.Gawthrop, 1990, 1994.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+#Inform user
+echo Creating $1_ss.r
+
+# Remove the old log file
+rm -f sspar2ss_r.log
+
+# Use reduce to accomplish the transformation
+reduce >sspar2ss_r.log << EOF
+
+%Read the definition file
+in "$1_def.r";
+
+%Read the constitutive relationships (May be used in rss file). 
+in "$1_cr.r";
+
+%Read the steady-state values 
+in "$1_sspar.r";
+
+%Read in the parameter file
+in "$1_sympar.r";
+
+
+OFF Echo;
+OFF Nat;
+OUT "$1_ss.r";
+
+
+%Write out the steady-state values (if any)
+write "%Steady-state values";
+IF MTTNx>0 THEN
+BEGIN
+  write "matrix MTTX0(", MTTNx, ",1)";
+END;
+MTTX0 := MTTX;
+
+IF MTTNu>0 THEN
+BEGIN
+  write "matrix MTTU0(", MTTNu, ",1)";
+END;
+MTTU0 := MTTU;
+
+IF MTTNy>0 THEN
+BEGIN
+  write "matrix MTTY0(", MTTNy, ",1)";
+END;
+MTTY0 := MTTY;
+
+%Write them out by component - but only if values have been set
+
+%(This assumes that if element 1 not set then the rest aren't either)
+clear MTTx1;
+IF MTTNx>0 THEN
+IF MTTX0(1,1) NEQ MTTX1 THEN
+FOR i := 1:MTTNx DO
+BEGIN
+  write "MTTX", i, " := ", MTTX0(i,1);
+END;
+
+clear MTTu1;
+IF MTTNu>0 THEN
+IF MTTu0(1,1) NEQ MTTu1 THEN
+FOR i := 1:MTTNu DO
+BEGIN
+  write "MTTu", i, " := ", MTTu0(i,1);
+END;
+
+%Derivatives are zero in the steady-state
+IF MTTNz>0 THEN
+FOR i := 1:MTTNz DO
+BEGIN
+  write "MTTdz", i, " := 0";
+END;
+
+write "END;";
+
+SHUT "$1_ss.r";
+quit;
+EOF
+
+# Now invoke the standard error handling.
+mtt_error_r sspar2ss_r.log

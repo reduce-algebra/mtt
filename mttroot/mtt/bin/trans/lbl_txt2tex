@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1998/07/27 10:56:31  peterg
+## Cosmetics.
+##
 ## Revision 1.5  1998/07/27 08:29:44  peterg
 ## Include a comment field in the aliases
 ##
@@ -58,20 +61,23 @@ cat <<EOF >> $1_lbl.tex
 EOF
     grep '[%|#]ALIAS' $1_lbl.txt | sed 's/_/\\_/g' |\
     awk '{
-      if (match($2,"\\$")>0){
-        printf("\\item [Parameter \\%s] represents actual parameter ",$2)
+      N=split($2,a,"|");
+      for (i=1;i<=N;i++){
+        if (match(a[i],"\\$")>0){
+          printf("\\item [Parameter \\%s] represents actual parameter ",a[i])
+        }
+        else if (match($3,"/")>0){
+          printf("\\item [Component %s]  is in library ",a[i])
+        }
+        else{
+          printf("\\item [Port %s] represents actual port ",a[i])
+        }
+        printf("\\textbf{%s}",$3)
+        if (match($4,"[\#\%]")==1) printf(" -- ");
+        for (j=5;j<=NF;j++) printf(" %s", $j)
+        printf("\n");
+        }
       }
-      else if (match($3,"/")>0){
-        printf("\\item [Component %s]  is in library ",$2)
-      }
-      else{
-        printf("\\item [Port %s] represents actual port ",$2)
-      }
-      printf("\\textbf{%s}",$3)
-      if (match($4,"[\#\%]")==1) printf(" -- ");
-      for (i=5;i<=NF;i++) printf(" %s", $i)
-      printf("\n");
-     }
     END{if (NR==0) print "\\item This component has no aliases"
 }'  | sort >> $1_lbl.tex
 cat <<EOF >> $1_lbl.tex

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/10/12 12:32:23  peterg
+## Initial revision
+##
 ##
 ###############################################################
 
@@ -24,8 +27,13 @@ textfile=$1_$2.txt
 infofile=$1_sympar.txt
 default='0.0'
 
-# Inform User
-echo Checking $textfile
+if [ -f "$textfile" ]; then
+  # Inform User
+  echo Checking $textfile
+else
+  sympar2numpar_txt2txt $1
+  exit    
+fi
 
 # Remove tmp files
 rm -f mtt_in_text mtt_in_info
@@ -62,13 +70,14 @@ if [ -f "mtt_in_text" ]; then
 
   while [ -z "$answered" ]; do
     echo "Update $textfile (y/n)?"
-    read answer
+    read answer < /dev/tty
     case $answer in
 	y)
 	    answered=yes
  	    for old in $in_text; do
 	      sed "s/\($old[ \t]*=\)/## Removed by MTT on `date`: \1/" <$textfile > mtt_tmp
               mv mtt_tmp $textfile
+              changed=yes
 	    done
 	    ;;
 	n)
@@ -87,12 +96,13 @@ if [ -f "mtt_in_info" ]; then
 
   while [ -z "$answered" ]; do
     echo "Update $textfile (y/n)?"
-    read answer
+    read answer < /dev/tty
     case $answer in
 	y)
 	    answered=yes
  	    for new in $in_info; do
 		echo "$new = $default; # Added by MTT on `date`" >> $textfile
+                changed=yes
 	    done
 	    ;;
 	n)
@@ -102,5 +112,3 @@ if [ -f "mtt_in_info" ]; then
     esac
   done      
 fi
-
-

@@ -16,6 +16,9 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.17  2000/09/15 08:06:17  peterg
+## Removed debug lines
+##
 ## Revision 1.16  2000/09/02 15:55:51  peterg
 ## *** empty log message ***
 ##
@@ -160,7 +163,7 @@ Nu=`mtt_getsize -external $1 u`
 Nui=`mtt_getsize -external $1 ui`
 Nuc=`mtt_getsize -internal $1 u`
 
-echo Ny $Ny Nu $Nu Nx $Nx Nui $Nui Nuc $Nuc
+# echo Ny $Ny Nu $Nu Nx $Nx Nui $Nui Nuc $Nuc
 
 ## Definitions file
 octave -q <<EOF

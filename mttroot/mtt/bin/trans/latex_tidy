@@ -14,6 +14,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.22  2002/09/26 08:33:54  geraint
+## Removed comma from pattern so that braces are places around each argument
+## of a function call. Added greek letter nu as a special variable.
+##
 ## Revision 1.21  2002/08/21 18:11:15  geraint
 ## Replaced |x| with |{x}|. LaTeX now renders abs(fractions) correctly.
 ##
@@ -138,12 +142,10 @@ sed \
     -e "s/(\([^(),]*\),/( { \1 } ,/g" \
     -e "s/,\([^(),]*\),/, { \1 } ,/g" \
     -e "s/,\([^(),]*\))/, { \1 } )/g" \
-    -e "s/(/{\\\left /g" \
+    -e "s/(/{\\\\left (/g" \
     -e "s/\*\*/^/g" \
     -e "s/\*/ /g" \
-    -e "s/)/\\\right }/g" \
-    -e "s/\left/\left (/g" \
-    -e "s/\right/\right )/g" \
+    -e "s/)/\\\right )}/g" \
     -e "s/sqrt/\\\sqrt/g" \
     -e "s/theta/\\\theta/g" \
     -e "s/tau/\\\tau/g" \
@@ -177,8 +179,3 @@ tr  -s '\012' '\012' \
 >junk
 
 mv junk $1
-
-
-
-
-

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1997/05/09 14:21:35  peterg
+## Default to flow,component_name
+##
 # Revision 1.2  1997/03/19  12:08:01  peterg
 # No longer writes out non-unique names - now done in rbg_fig2m
 #
@@ -39,7 +42,7 @@ rm -f $infofile
 echo Creating $1_lbl.txt
 
 	( \
-	echo "%SUMMARY $1: <brief description here>"; \
+	echo "%SUMMARY $1"; \
 	echo "%DESCRIPTION <Detailed description here>"; \
 	echo "%% Label file for system $1 ($1_lbl.txt)"; \
 	cat $MTTPATH/trans/m/rcs_header.txt; \

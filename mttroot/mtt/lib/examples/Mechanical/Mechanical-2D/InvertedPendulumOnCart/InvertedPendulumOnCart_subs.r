@@ -8,9 +8,13 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2000/12/28 18:00:45  peterg
+% %% To RCS
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Put algebraic substitution commands here
 
-for all x let cos(x)^2+sin(x)^2 = 1
+for all x let cos(x)^2+sin(x)^2 = 1;
+
 END;

@@ -1,27 +1,29 @@
 %SUMMARY	ROD: rigid rod in two dimensions
-%DESCRIPTION	Port [alpha_a]:	Angular torque/velocity - end a
-%DESCRIPTION	Port [alpha_b]:	Angular torque/velocity - end b
-%DESCRIPTION	Port [x_a]:	x force/velocity - end a
-%DESCRIPTION	Port [x_b]:	x force/velocity - end b
-%DESCRIPTION	Port [y_a]:	y force/velocity - end a
-%DESCRIPTION	Port [y_b]:	y force/velocity - end b
-%DESCRIPTION
-%DESCRIPTION	Parameter 1:	length from end 1 to mass centre
-%DESCRIPTION	Parameter 2:	length from end 2 to mass centre
-%DESCRIPTION	Parameter 3:	inertia about mass centre
-%DESCRIPTION	Parameter 4:	mass
 %DESCRIPTION	See Section 10.2 of "Metamodelling"
 
+%ALIAS $1	l_a	# length from end a to mass centre
+%ALIAS $2	l_b	# length from end b to mass centre
+%ALIAS $3	j_m	# inertia about mass centre
+%ALIAS $4	m	# mass
+
+%ALIAS x_a	xTip_a # Force/velocity at tip a in x direction
+%ALIAS y_a	yTip_a # Force/velocity at tip a in y direction
+%ALIAS alpha_a	angularTip_a # Torque/angular velocity at tip a
+
+%ALIAS x_b	xTip_b # Force/velocity at tip b in x direction
+%ALIAS y_b	yTip_b # Force/velocity at tip b in y direction
+%ALIAS alpha_b	angularTip_b # Torque/angular velocity at tip b
 
 %% Label file for system ROD (ROD_lbl.txt)
-
-
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1997/08/15  09:43:06  peterg
+% %% Now has lablelled (as opposed to numbered) ports.
+% %%
 % Revision 1.1  1996/11/07  10:57:17  peterg
 % Initial revision
 %
@@ -33,19 +35,26 @@
 %	blank
 
 %Inertias
-J	lin	flow,$3
-m_x	lin	flow,$4
-m_y	lin	flow,$4
+J	lin	flow,j_m
+m_x	lin	flow,m
+m_y	lin	flow,m
 
 %Integrate angular velocity to get angle
 th
 
 %Modulated transformers
-s1	lsin	flow,$1
-s2	lsin	flow,$2
-c1	lcos	flow,$1
-c2	lcos	flow,$2
+s1	lsin	flow,l_a
+s2	lsin	flow,l_b
+c1	lcos	flow,l_a
+c2	lcos	flow,l_b
 
+% Component type SS
+	[angularTip_a]		SS		external,external
+	[angularTip_b]		SS		external,external
+	[xTip_a]		SS		external,external
+	[xTip_b]		SS		external,external
+	[yTip_a]		SS		external,external
+	[yTip_b]		SS		external,external
 
 
 	

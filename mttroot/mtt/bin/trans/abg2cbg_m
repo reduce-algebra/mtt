@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.17  2001/07/28 21:09:22  geraint
+## Eliminated duplicate lines in type.sh.
+##
 ## Revision 1.16  2001/07/26 04:07:28  gawthrop
 ## Changed a to w on open (Geraint's suggestion)
 ## Explictly close files
@@ -154,9 +157,9 @@ mtt_header $1 type sh > $typefile
 # Use matrix manipulation to accomplish the transformation
 $MATRIX << EOF  >abg2cbg_m.log  #2>mtt_error.txt
 
-  infofilenum  = fopen("$infofile",'w');
-  errorfilenum = fopen("$errorfile",'w');
-  typefilenum  = fopen("$typefile",'w');
+  infofilenum  = fopen("$infofile",'wt');
+  errorfilenum = fopen("$errorfile",'wt');
+  typefilenum  = fopen("$typefile",'wt');
 
   %Convert from acausal to causal bond graph in m-file form.
   system_name='$1';

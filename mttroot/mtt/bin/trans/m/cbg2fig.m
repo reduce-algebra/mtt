@@ -24,6 +24,9 @@ function cbg2fig(system_name, system_type, full_name, ...
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## %% $Id$
   ## %% $Log$
+  ## %% Revision 1.16  2001/03/23 14:58:16  gawthrop
+  ## %% Fixed cosmetic bugs -- component display
+  ## %%
   ## %% Revision 1.15  2001/03/23 11:20:20  gawthrop
   ## %% Fixed bug with vector components --NB takes geometric info from _rbg.fig
   ## %%
@@ -124,7 +127,7 @@ function cbg2fig(system_name, system_type, full_name, ...
   end;
 
   ## Setup file - append to the fig file
-  filenum = fopen(fig_name, 'a');
+  filenum = fopen(fig_name, 'at');
 
   ## Get the raw and the processed bonds
   eval(['[rbonds,rstrokes,rcomponents,port_coord,port_name,port_list] = ', system_type, '_rbg;']);

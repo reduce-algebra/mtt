@@ -7,6 +7,9 @@ function write_matrix(matrix,name,extn);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.7  2002/05/15 16:37:30  gawthrop
+% %% Added third argument (file extension)
+% %%
 % %% Revision 1.6  2000/12/27 16:06:17  peterg
 % %% *** empty log message ***
 % %%
@@ -33,7 +36,7 @@ if nargin<3
 endif
 
 filename = sprintf("%s.%s", name, extn);
-filenum = fopen(filename,'w');
+filenum = fopen(filename,'wt');
 
 % Write the function m-file for the causal bond graph
 pc = '%';

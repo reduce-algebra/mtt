@@ -11,6 +11,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.20  2004/02/19 12:05:49  gawthrop
+## Fix prob. when no bonds
+##
 ## Revision 1.19  2002/04/28 18:55:03  geraint
 ## Fixed [ 549658 ] awk should be gawk.
 ## Replaced calls to awk with call to gawk.
@@ -142,8 +145,8 @@ echo Creating ${abg_file}
 # Use matrix manipulation to accomplish the transformation
 $MATRIX > rbg2abg_m.log  2>mtt_error.txt << EOF
   name = '$1'
-  infofile = fopen('mtt_info.txt', 'w');
-  errorfile = fopen('mtt_error.txt', 'w');
+  infofile = fopen('mtt_info.txt', 'wt');
+  errorfile = fopen('mtt_error.txt', 'wt');
 
   %Convert from the fig version of the bonds to a structured version
   [rbonds,rstrokes,rcomponents,port_coord,port_name,port_list] = $1_rbg

@@ -5,6 +5,9 @@ function write_cbg(system_name,system_type,system,Flipped)
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1998/08/26 12:26:17  peterg
+## Replaced if N>0 by   if (N>0)&&(M>0)		# Flipped ports exist
+##
 ## Revision 1.3  1998/08/25 20:05:33  peterg
 ## Write flipped port info
 ##
@@ -17,7 +20,7 @@ function write_cbg(system_name,system_type,system,Flipped)
 ###############################################################
 
 
-  fid=fopen([system_name,"_cbg.m"], "w");# Open file
+  fid=fopen([system_name,"_cbg.m"], "wt");# Open file
 
   StatusFormat = "  %s.%s.%s.status = %i;\n";
   Bformat = "  %s.bonds = [\n";

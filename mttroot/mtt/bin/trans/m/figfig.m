@@ -15,6 +15,9 @@ function figfig(filename,language,boxed,monochrome,key)
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.11  2004/03/15 11:44:34  gawthrop
+  ## Yet another option (to allow legend).
+  ##
   ## Revision 1.10  2003/08/19 13:13:28  gawthrop
   ## No legend
   ##
@@ -78,7 +81,7 @@ function figfig(filename,language,boxed,monochrome,key)
   replot;
 
   if boxed # Add a box - makes a visible bounding box
-    fid = fopen(figfilename,"a+");
+    fid = fopen(figfilename,"a+t");
     fprintf(fid,"2 4 0 2 31 7 50 0 -1 0.000 0 0 7 0 0 5\n");
     fprintf(fid,"\t9675 5310 9675 270 225 270 225 5310 9675 5310\n");
     fclose(fid);

@@ -12,6 +12,9 @@ function mtt_info(info, infofile);
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.4  2003/03/24 12:18:00  gawthrop
+  ## ## Default file when no second argument
+  ## ##
   ## ## Revision 1.3  2000/11/12 17:10:51  peterg
   ## ## Close file if it is opened
   ## ## Reformated  octave style
@@ -35,7 +38,7 @@ function mtt_info(info, infofile);
   endif
   
   if nofile
-    infofile = fopen("mtt_info.txt","a");
+    infofile = fopen("mtt_info.txt","at");
   end;
 
   fprintf(infofile, "INFORMATION: %s\n", info);

@@ -34,8 +34,8 @@ echo Creating ${ibg}
 # Use matrix manipulation to accomplish the transformation
 ${MATRIX} > ${log} 2> ${err} <<EOF
   name = '$1'
-  infofile = fopen('mtt_info.txt', 'w');
-  errorfile = fopen('mtt_error.txt', 'w');
+  infofile = fopen('mtt_info.txt', 'wt');
+  errorfile = fopen('mtt_error.txt', 'wt');
   
   ## Interpret the connections from the fig version
   [rbonds,rstrokes,rcomponents,port_coord,port_name,port_list] = $1_rbg;

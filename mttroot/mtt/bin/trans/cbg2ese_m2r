@@ -16,6 +16,10 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.32  2002/04/28 18:41:26  geraint
+## Fixed [ 549658 ] awk should be gawk.
+## Replaced calls to awk with call to gawk.
+##
 ## Revision 1.31  2001/07/13 04:54:04  geraint
 ## Branch merge: numerical-algebraic-solution back to main.
 ##
@@ -165,11 +169,11 @@ echo Creating $structurefile
 $MATRIX << EOF > cbg2ese_m2r.log 2>mtt_error.txt
 
 infofile = "$infofile";;
-infofilenum = fopen(infofile,"w");
+infofilenum = fopen(infofile,"wt");
 structurefile = "$structurefile";;
-structurefilenum = fopen(structurefile,"w");
+structurefilenum = fopen(structurefile,"wt");
 deffile = "$1_def.r";
-deffilenum = fopen(deffile,"w");
+deffilenum = fopen(deffile,"wt");
 
 system_name = "$1";
 system_type = "";
@@ -230,7 +234,7 @@ Nuc=`mtt_getsize -internal $1 u`
 ## Definitions file
 octave -q <<EOF
   deffile = '$1_def.r';
-  deffilenum = fopen(deffile,'w');
+  deffilenum = fopen(deffile,'wt');
 
   ## Set up the structure vector
   structure = zeros(1,7);  

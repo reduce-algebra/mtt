@@ -5,6 +5,9 @@ function write_abg(system_name,bonds,connections,n_vector_bonds);
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  2004/08/09 14:47:28  gawthrop
+## Changed arg to args to avoid strange octave bug
+##
 ## Revision 1.9  2001/04/15 21:15:41  geraint
 ## Added interface definition rep: _ICD.(txt|c|cc|m).
 ##
@@ -38,7 +41,7 @@ function write_abg(system_name,bonds,connections,n_vector_bonds);
 ###############################################################
 
 
-  fid=fopen([system_name,"_abg.m"], "w");
+  fid=fopen([system_name,"_abg.m"], "wt");
   [N,M]=size(connections);
   Sformat = "  %s.subsystems.%s.%s = \"%s\";\n";
   PSformat = "  %s.ports.%s.%s = \"%s\";\n";

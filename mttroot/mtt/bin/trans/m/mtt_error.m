@@ -12,6 +12,9 @@ function mtt_error(message, errorfile);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/12/03 16:21:27  peterg
+% %% Initial revision
+% %%
 % %% Revision 1.2  1997/02/11 10:06:42  peterg
 % %% Removed a debugging line.
 % %%
@@ -22,7 +25,7 @@ function mtt_error(message, errorfile);
 
 % Set default file if it isn't there already
 if nargin<2
-  errorfile = fopen('mtt_error.txt','a');
+  errorfile = fopen('mtt_error.txt','at');
 end;
 
 fprintf(errorfile, '*MTT ERROR : %s\n', message);

@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.51  2003/05/16 11:16:28  gawthrop
+  ## ## Fixed bug with multiports
+  ## ##
   ## ## Revision 1.50  2003/05/08 18:47:50  gawthrop
   ## ## Fixed __ bug when using * representations
   ## ##
@@ -240,8 +243,8 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   
   ## Setup files
   ese_name = [full_name_repetition, "_ese.r"];
-  ese_file = fopen(ese_name, "w") # open file (first time)
-  icd_file = fopen([full_name_repetition,"_icd.txt2"],"w")
+  ese_file = fopen(ese_name, "wt") # open file (first time)
+  icd_file = fopen([full_name_repetition,"_icd.txt2"],"wt")
 
   fprintf(ese_file, "\n%s%s Equation file for system %s (file %s)\n", ...
 	  pc, pc, full_name_repetition, ese_name);
@@ -397,7 +400,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 				k, structure,  structure_file, infofilenum);
 	    
 	    disp("---POP---");
-	    ese_file = fopen(ese_name, "a") # open file (again)
+	    ese_file = fopen(ese_name, "at") # open file (again)
 
 	    eval(["subABG = ",subsystem.type , "_abg;"]); # Get the information
 

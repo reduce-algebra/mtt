@@ -1,0 +1,40 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: dat2ps
+
+# Tramsforms descriptor matrix rep to frequency response dat.
+
+
+# Copyright (c) P.J.Gawthrop, 1996.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+echo Creating $1_ir.dat
+
+$MATRIX << EOF | awk '$1 !~ /[A-Za-z]/ && NF>0 {print} '  >$1_ir.dat
+
+  tmax=2; tstep=tmax/100;
+  T = [0:tstep:tmax]';
+  [A,B,C,D,E] = $1_dm;
+  y = dm2ir(A,B,C,D,E,T);
+
+  [Ny,Nu]=size(D);
+  NN = Ny*Nu;
+
+  xy = [T y(:,1)];
+  for i=2:NN
+    xy = [xy T y(:,i)];
+  end;
+xy
+
+EOF
+

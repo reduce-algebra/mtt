@@ -1,0 +1,41 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: dm2fr_m2dat
+
+# Transformation: descriptor matrix to frequency response
+
+# Copyright (c) P.J.Gawthrop, 1996.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+echo Creating $1_fr.dat
+
+$MATRIX << EOF  | awk '$1 !~ /[A-Za-cf-z]/ && NF>0 {print} '  >$1_fr.dat
+
+  W = logspace(-1,2,100);
+  [A,B,C,D,E] = $1_dm;
+  fr = dm2fr(A,B,C,D,E,W);
+
+  rfr = real(fr);
+  ifr = imag(fr);
+
+  [Ny,Nu]=size(D);
+  NN = Ny*Nu;
+
+  xy = [rfr(:,1), ifr(:,1)];
+  for i=2:NN
+    xy = [xy rfr(:,i) ifr(:,i)];
+  end;
+xy
+
+EOF
+

@@ -12,6 +12,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  1997/04/22 12:50:15  peterg
+## New much simpler version -- does not check for multiple crs -- these
+## are removed later anyway.
+##
 # Revision 1.6  1997/03/22  15:15:44  peterg
 # Ignores symbolic ($i) crs.
 #
@@ -51,16 +55,21 @@ BEGIN {
 comment = "%";
 arg_delimiter = ",";
 not_a_cr = "effort flow state internal external zero none";
+is_a_SS = "internal external zero";
 numeric = "[0-9]";
 symbolic = "\044"; # Ascii $
 symbol_count = 0;
 symbols = "";
+
+print "lin"
 }
 {
   if ( (match($1,comment)==0) && (NF>=3) ) {
-    cr = $2;
-    first_char = substr(cr,1,1);
-    if ( (matches(not_a_cr,cr)==0) && (match(cr,numeric)==0) )
+      cr = $2
+      first_char = substr(cr,1,1);
+      if ( (matches(not_a_cr,cr)==0) &&
+         (match(numeric,first_char)==0) &&
+         (matches(is_a_SS,$3)==0))
 	 print cr;
-	 }
+  }
 }

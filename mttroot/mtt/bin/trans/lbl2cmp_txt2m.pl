@@ -48,6 +48,11 @@ GetOptions ('sys=s' => \$sys,
 
 die usage() if ($sys eq '');
 
+if ($debug) {
+    my $logfile = "lbl2cmp_txt2m_${sys}.log";
+    open (LOG, ">$logfile") or die ("MTT: lbl2cmp_txt2m, cannot open $logfile");
+}
+
 $cmp = "${sys}_cmp.txt";
 $lbl = "${sys}_lbl.txt";
 $out = "${sys}_cmp.m";
@@ -58,6 +63,7 @@ sort_components();
 write_header();
 write_body();
 
+close (LOG) if ($debug);
 
 sub usage() {
     return "Usage: lbl2cmp_txt2m --sys=<sys>\n";
@@ -80,7 +86,7 @@ sub read_cmp_file() {
 	s/^\s*(\S.*\S)\s*$/$1/;
 	
 	$line = $_;
-	print "read_cmp_file: line='${line}'\n" if ($debug);
+	print LOG "read_cmp_file: line='${line}'\n" if ($debug);
 
 	# cmp provides type, name and repetition information
 	# class is inferred from type and name
@@ -115,7 +121,7 @@ sub read_cmp_line() {
     $name = '' unless defined $name;
     $rep  = 1  unless defined $rep;
     
-    print "read_cmp_line: type='$type', name='$name', rep='$rep'\n" if ($debug);
+    print LOG "read_cmp_line: type='$type', name='$name', rep='$rep'\n" if ($debug);
     return ($type, $name, $rep);
 }
 
@@ -129,7 +135,7 @@ sub name_anonymous_component() {
 	$anonymous_component_type_index{$type} = 1;
 	$name = "mtt${type}";
     }
-    print "name_anonymous_component: type='${type}', name='${name}'\n" if ($debug);
+    print LOG "name_anonymous_component: type='${type}', name='${name}'\n" if ($debug);
     return ($name);
 }
 
@@ -155,7 +161,7 @@ sub port_or_component_or_junction() {
     } else {
 	$retval = "component";
     }
-    print "port_or_component_or_junction: type='$type', name='$name' class='$retval'\n" if ($debug);
+    print LOG "port_or_component_or_junction: type='$type', name='$name' class='$retval'\n" if ($debug);
     return ($retval);
 }
 
@@ -202,7 +208,7 @@ sub read_lbl_line() {
     $cr   = '' unless defined ($cr);
     $arg  = '' unless defined ($arg);
     
-    print "read_lbl_line: name='$name' cr='$cr' arg='$arg'\n" if ($debug);
+    print LOG "read_lbl_line: name='$name' cr='$cr' arg='$arg'\n" if ($debug);
     return ($name, $cr, $arg);
 }
 
@@ -239,7 +245,7 @@ sub sort_components ()
 	    if ($class eq $target) {
 		if (! defined ($sorted_component_list{$name})) {
 		    $sorted_component_list{$name} = $i++;
-		    print "sorted: '$name' '$i'\n" if ($debug); 
+		    print LOG "sorted: '$name' '$i'\n" if ($debug); 
 		}
 	    }
 	}

@@ -50,6 +50,11 @@ $outfile = "${sys}_ese.make"	if ($outfile eq '');
 # main
 #-------------------------------------------------------------------------------
 
+if ($debug) {
+    my $logfile = "ese_r2make_${sys}.log";
+    open (LOG, ">$logfile") or die ("MTT: ese_r2make, cannot open $logfile");
+}
+
 # First the elementary system equations are read
 # and placed in the "expressions" hash.
 read_ese_r ();
@@ -63,6 +68,7 @@ get_dependencies ();
 # pre-requisites are the dependencies
 write_make ($sys);
 
+close (LOG) if ($debug);
 
 #-------------------------------------------------------------------------------
 # subroutines
@@ -87,7 +93,7 @@ sub read_ese_r {
 	my ($lvar,$expr) = split (/:=/);
 	$expressions{$lvar} = $expr;
 
-	print "$lvar\t= $expressions{$lvar}\n" if $debug;
+	print LOG "$lvar\t= $expressions{$lvar}\n" if $debug;
     }
     
     close (ESE);
@@ -106,7 +112,7 @@ sub get_dependencies {
 		$dependencies{$lvar} = "$dependencies{$lvar} $lvar2";
 	    }
 	}
-	print "$lvar:\t$dependencies{$lvar}\n" if $debug;
+	print LOG "$lvar:\t$dependencies{$lvar}\n" if $debug;
     }
 }
 #-------------------------------------------------------------------------------

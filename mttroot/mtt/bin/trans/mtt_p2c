@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1999/04/20 06:17:15  peterg
+## Fudge to avoid a bizzare bug (?) in p2c which corrupts "zero_matrix"
+##
 ## Revision 1.5  1998/08/12 14:14:18  peterg
 ## Added pretty heading and explicitly include p2c header.
 ##
@@ -54,9 +57,9 @@ echo Creating $1_$2.c
 p2c -V  $1_$2.p  | grep Warning # > mtt_p2c.log 2>> mtt_p2c.log
 cat $1_$2.log >> mtt_p2c.log
 
-# zap the PASCAL_MAIN which we don't want and change p2c.h include.
+# Change p2c.h include.
 mv $1_$2.c mtt_junk1
-grep -v 'PASCAL_MAIN'  < mtt_junk1 | grep -v 'p2c/p2c.h'> mtt_junk2
+cat mtt_junk1 | grep -v 'p2c/p2c.h'> mtt_junk2
 
 # pretty heading
 DATE=`date`

@@ -11,7 +11,7 @@ $(SYS)_sfun.c:: ${MTT_REP}/sfun_rep/sfun.c.tmpl
 	echo Creating $@
 	cat $^ | sed 's/<mtt_model_name>/$(SYS)/g' > $@
 
-$(SYS)_sfun_ae.mexglx: $(SYS)_sfun_ae.c sfun-debug.h useful-functions.hh $(SYS)_def.h $(SYS)_sympar.h $(SYS)_ae.c
+$(SYS)_sfun_ae.mexglx: $(SYS)_sfun_ae.c sfun_debug.h useful-functions.hh $(SYS)_def.h $(SYS)_sympar.h $(SYS)_ae.c
 	echo Creating $@
 	mex $(SYS)_sfun_ae.c
 

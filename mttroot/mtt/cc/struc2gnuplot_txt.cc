@@ -49,7 +49,7 @@ ostream &struc2gnuplot_txt(const string sys = "sim", istream &in = cin, ostream 
 
   for (list<record_t>::iterator i = Lx.begin(); i != Lx.end() ; i++)
     {
-      out << "plot " << "\"MTT_work/" << sys << "_odes.dat2\" using 1:" << 2 + Ly.size() + i->num
+      out << "plot " << "\"" << sys << "_odes.dat2\" using 1:" << 2 + Ly.size() + i->num
 	  << " axes x1y1 title \"" << i->mod << "_" << i->cmp << ";" << endl
 	  << "pause(wait);" << endl;
     }
@@ -58,7 +58,7 @@ ostream &struc2gnuplot_txt(const string sys = "sim", istream &in = cin, ostream 
 
   for (list<record_t>::iterator i = Ly.begin(); i != Ly.end() ; i++)
     {
-      out << "plot " << "\"MTT_work/" << sys << "_odes.dat2\" using 1:" << 1 + i->num
+      out << "plot " << "\"" << sys << "_odes.dat2\" using 1:" << 1 + i->num
 	  << " axes x1y1 title \"" << i->mod << "_" << i->cmp << endl
 	  << "; pause(wait);" << endl;
     }

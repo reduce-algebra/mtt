@@ -1,8 +1,7 @@
 PROCEDURE mtt_solve(VAR x     : StateVector;
 			A     : StateMatrix;
 		    VAR B     : StateVector;
-			n     : integer;
-			Small : real);
+			n     : integer);
 
 {
 
@@ -11,6 +10,9 @@ PROCEDURE mtt_solve(VAR x     : StateVector;
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.2  1998/08/14 12:09:13  peterg
+% % A passed by value - its destroyed by SVDcm
+% %
 % % Revision 1.1  1998/08/13 08:51:57  peterg
 % % Initial revision
 % %
@@ -23,28 +25,10 @@ VAR
    w	     : StateVector ;
    v	     : StateMatrix;
 
-(*$I svdcmp.p *)
-(*$I svbksb.p *)
+(*$I mtt_solve_lud.p *)
+(* I mtt_solve_svd.p *)
 
 BEGIN{mtt_solve}
-(* decompose matrix A using SVD *)
-   svdcmp(A,n,n,w,v);
-   
-(* find maximum singular value *)
-   wmax := 0.0;
-   FOR i := 1 to n DO BEGIN
-      IF  (w[i] > wmax) THEN  wmax := w[i]
-   END;
-   
-(* define "small" *)
-   wmin := wmax*Small;
-   
-(* zero the "small" singular values *)
-   FOR i := 1 to n DO BEGIN
-      IF  (w[i] < wmin) THEN  w[i] := 0.0
-   END;
-   
-(* backsubstitute for B *)
-      svbksb(A,w,v,n,n,B,x);
-   
+      mtt_solve_lud(xsub,AAsub,BB,Nx);
+      (*** mtt_solve_svd(xsub,AAsub,BB,Nx); ***)
 END{mtt_solve};

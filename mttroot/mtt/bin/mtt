@@ -19,6 +19,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.5  1996/08/10 14:13:47  peter
+## Added impulse and frequency response stuff.
+##
 ## Revision 1.4  1996/08/10 09:19:48  peter
 ## Put in help, info and warranty stuff.
 ##
@@ -106,18 +109,17 @@ $1_sympar.r:
 	echo "%% Change the following line to reflect the number of variables"; \
 	echo "MTTNVar := 0;"; \
 	echo "IF MTTNVar>0 THEN MATRIX MTTVar(MTTNVar,1);"; \
- 	echo "%% Add a statement here for each variable"; \
+ 	echo "%% Add an assignment statement here for each variable"; \
+ 	echo "%% For example: MTTVar(1,1) := r"; \
         )> $1_sympar.r
 $1_simp.r:
 	echo Creating $1_simp.r
 	( \
 	echo "%% Reduce comands to simplify output ($1_simp.r)"; \
         )> $1_simp.r
-$1_numpar.m:
-	echo Creating $1_numpar.m
-	( \
-	echo "%% Numerical parameter file ($1_numpar.m)"; \
-        )> $1_numpar.m
+$1_numpar.m: $1_sympar.r
+	mknumpar $1; matlab_tidy $1_numpar.m; matlab_tidy $1_parconv.m
+
 $1_sspar.r:
 	echo Creating $1_sspar.r
 	echo "%% Reduce steady-state parameter file ($1_sspar.r)" > $1_sspar.r
@@ -235,11 +237,13 @@ $1_tf.tex: $1_def.r $1_tf.r $1_sympar.r $1_simp.r
 
 
 #Time responses
-$1_ir.dat: $1_dm.m
+$1_ir.dat: $1_dm.m $1_numpar.m
 	dm2ir_m2dat $1
+$1_sr.dat: $1_dm.m $1_numpar.m
+	dm2sr_m2dat $1
 
 #Frequency responses
-$1_fr.dat: $1_dm.m
+$1_fr.dat: $1_dm.m $1_numpar.m
 	dm2fr_m2dat $1
 
 #Partially-known system indentification structure matrices
@@ -277,6 +281,12 @@ ifeq ('$2','ir')
 $1_$2.ps: $1_$2.dat
 	dat2ps $1_$2
 endif
+
+ifeq ('$2','sr')
+$1_$2.ps: $1_$2.dat
+	dat2ps $1_$2
+endif
+
 ifeq ('$2','fr')
 $1_$2.ps: $1_$2.dat
 	dat2ps $1_$2
@@ -286,10 +296,12 @@ endif
 ifneq ('$2','abg')
 ifneq ('$2','cbg')
 ifneq ('$2','ir')
+ifneq ('$2','sr')
 ifneq ('$2','fr')
 $1_$2.ps: $1_$2.dvi
 	echo Creating $1_$2.ps
 	dvips -o $1_$2.ps $1_$2.dvi 2> /dev/null
+endif
 endif
 endif
 endif

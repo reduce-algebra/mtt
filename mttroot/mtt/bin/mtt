@@ -19,6 +19,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.6  1996/08/11 10:40:56  peter
+## Added new numpar stuff.
+## Added step response.
+##
 ## Revision 1.5  1996/08/10 14:13:47  peter
 ## Added impulse and frequency response stuff.
 ##
@@ -44,7 +48,8 @@ echo
 if [ "$1" = "" ]; then
   echo 'Usage: mtt info'
   echo '       mtt warranty'
-  echo '       mtt system_name representation language'
+   echo '       mtt system_name representation language'
+   echo '       mtt system_name representation language parameters'
   exit
 fi
 
@@ -238,13 +243,13 @@ $1_tf.tex: $1_def.r $1_tf.r $1_sympar.r $1_simp.r
 
 #Time responses
 $1_ir.dat: $1_dm.m $1_numpar.m
-	dm2ir_m2dat $1
+	dm2ir_m2dat $1 '$4'
 $1_sr.dat: $1_dm.m $1_numpar.m
-	dm2sr_m2dat $1
+	dm2sr_m2dat $1 '$4'
 
 #Frequency responses
 $1_fr.dat: $1_dm.m $1_numpar.m
-	dm2fr_m2dat $1
+	dm2fr_m2dat $1 '$4'
 
 #Partially-known system indentification structure matrices
 $1_pkim.r: $1_tf.r $1_sympar.r 

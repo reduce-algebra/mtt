@@ -16,6 +16,9 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.25  2004/08/27 20:12:34  geraint
+@comment  Added note about "none" as an option for units.
+@comment
 @comment  Revision 1.24  2004/08/13 01:39:24  geraint
 @comment  Fixed variable names in diy makefile example (again)
 @comment
@@ -1297,7 +1300,7 @@ The available options are:
 @item -dc 
        Maximise derivative (not integral) causality
 @item -i 
-       <implicit|euler|rk4>   Use implicit, euler or Runge Kutta IVintegration
+       <implicit|euler|rk4>   Use implicit, euler or Runge Kutta IV integration
 @item -o 
        ode is same as dae
 @item -oct 
@@ -1861,7 +1864,7 @@ The recommended sequence of steps to create a simple model is:
     not appear in the label file - this can safely be ignored.
 @item
   @strong{MTT} will indicate the percentage of components which are
-    causally complete -- ideally this will be 100\%. Components which are
+    causally complete -- ideally this will be 100%. Components which are
     not causally complete will be listed.
 @item
     A view of the causal bond graph will be created. The added causal
@@ -2910,7 +2913,7 @@ It points in the direction of power flow; thus a bond normally points
 towards C, I and R components.
 @item
 the corresponding side of the bond indicates flow causality; the other
-side represents effort causality. This is significant when using casual
+side represents effort causality. This is significant when using causal
 half-strokes (@pxref{strokes}). Please adopt the convention of having
 the half-arrows below horizontal bonds and to the right of vertical bonds.
 @end itemize
@@ -3208,7 +3211,7 @@ labels of the form @code{[name1,name2,name3]}.
 @cindex Port label defaults
 @pindex Port label defaults
 Whether impicitly or explicity, all ports of components (with the
-exception of 0 and 1 junctions) must have lables  (@pxref{Port
+exception of 0 and 1 junctions) must have labels  (@pxref{Port
 labels}). However, these can be omitted from the bond graph in the
 following circumstances and default labels are supplied by @strong{MTT}.
 @enumerate
@@ -3609,7 +3612,7 @@ The label file contains the following non-blank lines (blank lines are ignored)
 
 Note, for compatability with old versions, % may be used in place of
 #; but the use of % is deprecated.
-Each lable contains three fields (in the following order) separated by
+Each label contains three fields (in the following order) separated by
 white space and on one line:
 @enumerate
 @item The component name @pxref{Component names}. This must be a valid
@@ -4704,6 +4707,9 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.25  2004/08/27 20:12:34  geraint
+# %% Added note about "none" as an option for units.
+# %%
 # %% Revision 1.24  2004/08/13 01:39:24  geraint
 # %% Fixed variable names in diy makefile example (again)
 # %%

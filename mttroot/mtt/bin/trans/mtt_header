@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.24  2000/12/05 10:04:52  peterg
+## Fixed dummy variable bug
+##
 ## Revision 1.23  2000/12/05 09:47:50  peterg
 ## Include crs as c files
 ##
@@ -287,7 +290,7 @@ if [ "$rep" = "simpar" ]; then
    output=${output}${map}    # Output is simpar_map in this case
 fi
 
-function zero_matrices
+zero_matrices()
 {
 ## Set matrices to zero
 echo
@@ -316,7 +319,7 @@ for name in $zeromatrices; do
 done
 }
 
-function declare_dummies
+declare_dummies()
 {
 # Get the dummies
 dummies="mtt_tmp"
@@ -342,7 +345,7 @@ for dummy in $dummy_list; do
 done
 } # declare_dummies
 
-function declare_switches 
+declare_switches ()
 {
 cat <<EOF
 
@@ -352,7 +355,7 @@ EOF
  awk '{printf("  double %s_logic = 0;\n", tolower($1))}' 
 } # declare_switches
 
-function declare_vars
+declare_vars()
 {
 # Grab the names
 names=`awk '{if ($1==var_type) print tolower($4)}' var_type=$1 ${system}_struc.txt`
@@ -369,7 +372,7 @@ done
 }
 
 
-function array2constant
+array2constant()
 {
 # Parameters
 if [ "$parameters" = "yes" ]; then
@@ -427,7 +430,7 @@ zero_matrices;
 }
 
 # Argument specific stuff
-function get_arg_specific_stuff 
+get_arg_specific_stuff ()
 {
     arg_name=${1:-""}
     case ${arg_name} in
@@ -481,7 +484,7 @@ function get_arg_specific_stuff
 }
 
 
-function get_field 
+get_field ()
 { # parse comma separated string
     s=${1:-""}					# comma separated string
     i=${2:-0}					# field number in string
@@ -496,7 +499,7 @@ function get_field
 }
 
 
-function get_extra_fields 
+get_extra_fields ()
 { # return list of words in s2 and not in s1
     s1=${1:-""}					# comma separated list
     s2=${2:-""}					# comma separated list
@@ -531,7 +534,7 @@ function get_extra_fields
 }
 
 
-function write_DLD_header
+write_DLD_header()
 {
     cat <<EOF
 
@@ -558,7 +561,7 @@ EOF
 }
 
 
-function map_DLD_inputs 
+map_DLD_inputs ()
 {
     s=${1:-""}					# comma separated input list
     if [ -z ${s:-""} ];then return; fi
@@ -583,7 +586,7 @@ function map_DLD_inputs
 }	
 
 
-function declare_DLD_outputs 
+declare_DLD_outputs ()
 {
     s=${1:-""}					# comma separated output list
     c=`get_field ${s} 0`			# count of outputs
@@ -597,7 +600,7 @@ function declare_DLD_outputs
 }
 
 
-function return_DLD_outputs 
+return_DLD_outputs ()
 {
     s=${1:-""}					# comma separated output list
     c=`get_field ${s} 0`			# count of outputs

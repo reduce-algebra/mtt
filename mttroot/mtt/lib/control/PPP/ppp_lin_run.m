@@ -58,6 +58,10 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   if !struct_contains(p_c,"T")
     p_c.T = 10.0;			# Last time point.
   endif
+
+  if !struct_contains(p_c,"augment")
+    p_c.augment = 1;		# Augment basis funs with contand
+  endif
   
   if !struct_contains(p_c,"Method")
     p_c.Method = "lq";
@@ -75,7 +79,10 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
       if !struct_contains(p_c,"A_u")
 	p_c.n_U = n_x;
 	a_u = 2.0;
-	p_c.A_u = laguerre_matrix(p_c.n_U,a_u)
+	p_c.A_u = laguerre_matrix(p_c.n_U,a_u);
+	if p_c.augment		# Put in constant term
+	  A_u = ppp_aug(0,A_u);
+	endif
       endif
     else
       error(sprintf("Method %s not recognised", p_c.Method));
@@ -87,8 +94,8 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   endif
   
   if !struct_contains(p_o,"method")
-    p_o.method = "continuous";
-    ##    p_o.method = "intermittent";
+    ##p_o.method = "continuous";
+    p_o.method = "intermittent";
   endif
   
 
@@ -118,10 +125,10 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
       tau = [10:0.1:11]*(2/a_u);	# Time horizons
       [k_x,k_w,K_x,K_w] = ppp_lin(A,B,C,D,p_c.A_u,p_c.A_w,tau); # Design
     elseif strcmp(p_c.Method, "lq") # LQ design
-      tau = [0:0.001:1.0]*5; # Time horizons
+      tau = [0:0.1:2.0]*1; # Time horizons
       [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,A_u] \
-	  = ppp_lin_quad (A,B,C,D,tau,p_c.Q,p_c.R);
-      p_c.A_u = A_u
+	  = ppp_lin_quad (A,B,C,D,tau,p_c.Q,p_c.R,p_c.augment);
+      p_c.A_u = A_u;
     else
       error(sprintf("Control method %s not recognised", p_c.Method));
     endif
@@ -132,8 +139,7 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
       error("A_u must be square");
     endif
     
-    K_w,w
-    U = K_w*w			# Initial control U
+    U = K_w*w;			# Initial control U
 
     ## Checks
     [ol_zeros, ol_poles] = sys2zp(sys)

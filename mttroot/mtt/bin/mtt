@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.218  1999/12/03 00:04:50  peterg
+## Version to eric.
+## -stdin switch added
+##
 ## Revision 1.217  1999/11/16 22:15:55  peterg
 ## Changed compcopy to test for abg, not lbl file
 ##
@@ -853,7 +857,7 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 start_at_abg='yes';;
 	-stdin )
                 mtt_switches="$mtt_switches $1";
-                source=stdin;;
+                stdin=stdin;;
         --version)                
                   echo 'MTT version' $version; exit;;
         --versions)                
@@ -1000,6 +1004,8 @@ if [ -n "$start_at_abg" ]; then
   if [ -f "$1_abg.m" ]; then
     if [ "$quiet" != "quiet" ]; then
         echo Starting from $1_abg.m
+	touch $1_subs.sh
+	touch $1_cr.r
     fi
   else
     echo $1_abg.m does not exist
@@ -1826,10 +1832,12 @@ endif
 
 #SUMMARY abg	acausal bond graph (m)
 #Raw bond graph to acausal bond graph: mfile
+
+ifneq ($start_at_abg,yes)
 $1_abg.m: $1_rbg.m $1_alias.m $1_sub.sh
 	(sh $1_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
 	rbg2abg_m $info_switch $1
-
+endif
 
 #SUMMARY cbg*	causal bond graph (m)
 #Acausal bond graph to causal bond graph: mfile
@@ -1852,7 +1860,7 @@ $1_cbg.fig: $1_cbg.m $1_rbg.m $1_fig.fig $1_type.sh
 #SUMMARY struc	structure - list of inputs, outputs and states (tex)
 #SUMMARY struc*	structure - list of inputs, outputs and states (view)
 #Elementary system equations + definitions
-$1_ese.r: $1_cbg.m $1_sympar.txt 
+$1_ese.r: $1_cbg.m
 	   cbg2ese_m2r $info_switch $1; ese_tidy $1
 $1_def.r: $1_ese.r
 	touch $1_def.r
@@ -1972,7 +1980,7 @@ $1_numpar.p : $1_def.r $1_numpar.m
 $1_state.p : $1_def.r $1_state.m
 	mtt_m2p $1_state.m
 
-ifeq ($source,stdin)
+ifeq ($stdin,stdin)
 $1_input.p : $1_def.r
 	make_stdin $1 p
 else
@@ -1997,13 +2005,13 @@ ifeq ($integration_method,implicit)
 $1_ode2odes.p : $1_ode2odes.m $1_def.r $1_smx.p\
                 $1_simpar.p $1_numpar.p $1_state.p $1_input.p \
                 $1_cse.p $1_cseo.p  $1_switchopen.p
-	mtt_m2p $1_ode2odes.m $integration_method
+	mtt_m2p $1_ode2odes.m $integration_method $stdin
 endif
 ifeq ($integration_method,euler)
 $1_ode2odes.p : $1_ode2odes.m $1_def.r\
                 $1_simpar.p $1_numpar.p $1_state.p $1_input.p \
                 $1_ode.p $1_odeo.p  $1_switchopen.p
-	mtt_m2p $1_ode2odes.m $integration_method
+	mtt_m2p $1_ode2odes.m $integration_method $stdin
 endif
 
 $1_ode2odes.c: $1_ode2odes.p 
@@ -2068,10 +2076,10 @@ $1_dm.tex: $1_dm.r $1_sympar.r $1_simp.r
 #SUMMARY csm	constrained-state matrices (view)
 #SUMMARY csm	constrained-state matrices (ps)
 #Linearised system: constrained-state matrices
-$1_csm.r: $1_cse.r $1_def.r $1_cr.r $1_ss.r $1_sympar.r
+$1_csm.r: $1_cse.r $1_def.r $1_cr.r $1_sspar.r
 	cse2csm_r $1 csm; tidy $1_csm.r
-$1_csm.m: $1_def.r $1_csm.r
-		csm_r2m $1 csm;  matlab_tidy $1_csm.m
+$1_csm.m: $1_def.r $1_csm.r $1_sympars.txt
+		mtt_r2m $1 csm;  matlab_tidy $1_csm.m
 $1_csm.tex: $1_csm.r  $1_sympar.r $1_simp.r
 	csm_r2tex $1 csm; latex_tidy $1_csm.tex
 #SUMMARY scsm	sensitivity constrained-state matrices (r)

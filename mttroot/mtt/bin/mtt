@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.326  2001/10/26 01:01:47  geraint
+## fixcc when rdae_is_dae (-cr).
+##
 ## Revision 1.325  2001/10/11 03:15:55  geraint
 ## Fixed make dependencies for c++ simulation code
 ## - re-simulation no longer required for different output format.
@@ -1237,6 +1240,11 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-ae )
                 mtt_switches="$mtt_switches $1";
 		case $2 in
+		    dassl)
+			mtt_switches="$mtt_switches $2";
+			algebraic_solver=Dassl_Solver;
+			shift;
+			;;
 		    fsolve | hybrd)
 			mtt_switches="$mtt_switches $2";
 			algebraic_solver=Hybrd_Solver;
@@ -1403,7 +1411,7 @@ if [ -z "$1" ]; then
     echo '         -dc Maximise derivative (not integral) causality'
     echo '         -dc Maximise derivative (not integral) causality'
     echo '         -i <implicit|euler|rk4|dassl>   Use implicit, euler, rk4 or dassl integration'
-    echo '         -ae <reduce|hybrd|hooke>   Solve algebraic equations with Reduce, hybrd (fsolve) or Hooke and Jeeves'
+    echo '         -ae <reduce|hybrd|dassl|hooke>   Solve algebraic equations with specified solver'
     echo '         -o ode is same as dae'
     echo '         -oct use oct files in place of m files where appropriate'
     echo '         -opt optimise code generation'

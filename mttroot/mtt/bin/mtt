@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.406  2005/01/06 15:36:06  geraint
+## Tidied output of options.
+##
 ## Revision 1.405  2005/01/06 12:47:53  geraint
 ## Fixed generation of sese.r with -make-sort option.
 ##
@@ -2317,7 +2320,7 @@ if [ "${this_dir}" = "MTT_work" ]; then
 fi
 
 # Tidy mode - operate in the directory MTT-work
-if [[ "$tidy" = "tidy" && "$level" = "0" ]]; then
+if [ "$tidy" = "tidy" ] && [ "$level" = "0" ]; then
     # make sure that a system exists in this directory
     if [ "${sys}_${rep}.${lang}" != "${sys}_abg.dia" ] && [ "${sys}_${rep}.${lang}" != "${sys}_abg.fig" ]; then
 	nabgs=`ls ${sys}_abg.* 2>/dev/null | wc -l`

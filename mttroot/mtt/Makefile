@@ -121,20 +121,20 @@ mtt.sh.tmp:
 	@echo 'mtt_install_dir=$(INSTDIR)'				>>mtt.sh.tmp
 	@echo ''							>>mtt.sh.tmp
 	@echo '# get site-specific settings'				>>mtt.sh.tmp
-	@echo 'if [[ -r $${mtt_config_file} ]]; then'			>>mtt.sh.tmp
+	@echo 'if [ -r $${mtt_config_file} ]; then'			>>mtt.sh.tmp
 	@echo '   . $${mtt_config_file} $${mtt_install_dir} >/dev/null'	>>mtt.sh.tmp
 	@echo ''							>>mtt.sh.tmp
-	@echo 'elif [[ -r $${mtt_install_dir}/bin/mttrc ]]; then'	>>mtt.sh.tmp
+	@echo 'elif [ -r $${mtt_install_dir}/bin/mttrc ]; then'		>>mtt.sh.tmp
 	@echo '   . $${mtt_install_dir}/bin/mttrc $${mtt_install_dir}'	>>mtt.sh.tmp
 	@echo 'fi'							>>mtt.sh.tmp
 	@echo ''							>>mtt.sh.tmp
 	@echo '# get user-specific settings'				>>mtt.sh.tmp
-	@echo 'if [[ -r $${HOME}/.mttrc ]]; then'			>>mtt.sh.tmp
+	@echo 'if [ -r $${HOME}/.mttrc ]; then'				>>mtt.sh.tmp
 	@echo '   . $${HOME}/.mttrc'					>>mtt.sh.tmp
 	@echo 'fi'							>>mtt.sh.tmp
 	@echo ''							>>mtt.sh.tmp
 	@echo '# get directory-specific settings'			>>mtt.sh.tmp
-	@echo 'if [[ -r ./.mttrc ]]; then'				>>mtt.sh.tmp
+	@echo 'if [ -r ./.mttrc ]; then'				>>mtt.sh.tmp
 	@echo '   . ./.mttrc'						>>mtt.sh.tmp
 	@echo 'fi'							>>mtt.sh.tmp
 	@echo ''							>>mtt.sh.tmp

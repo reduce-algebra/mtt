@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.70  1997/05/03  14:17:13  peterg
+# Now copies c utilities (eg dsvdcmp.c) from $MTTPATH/trans/c.
+#
 # Revision 1.69  1997/05/03  13:58:35  peterg
 # Implicit integration for sm representation added.
 #
@@ -624,14 +627,18 @@ $1_numpar.m:  $1_numpar.txt $1_sympar.txt
 $1_numpar.c:  $1_numpar.txt $1_sympar.c
 	numpar_txt2c $1
 
+#SUMMARY input	numerical input declaration (txt) -- default
+$1_input.txt: 
+	mtt $1 struc txt; struc2input_txt2txt $1
 
-#SUMMARY params	numerical parameter setting (m)
- $1_params.m: 
-	sympar2params_txt2m $1
+#SUMMARY input	numerical input declaration (m) 
+$1_input.m:  $1_input.txt $1_sympar.txt
+	input_txt2m $1
 
-#SUMMARY params	numerical parameter setting (c)
- $1_params.c:
-	sympar2params_txt2c $1
+#SUMMARY input	numerical input declaration (c) 
+$1_input.c:  $1_input.txt $1_sympar.c
+	input_txt2c $1
+
 
 #SUMMARY odes ODE simulation header file (h)
  $1_odes.h: 
@@ -669,39 +676,6 @@ $1_numpar.c:  $1_numpar.txt $1_sympar.c
 	echo 'END;'; \
         )> $1_params.r
 
-#SUMMARY input	input signal definition (m)
-$1_input.m:
-	echo Creating $1_input.m
-	( \
-	echo "function u = $1_input(t)"; \
-	echo "%% Input file for system $1 ($1_input.m)"; \
-	echo "%% This file provides the system input for simulation:";\
-	cat $MTTPATH/trans/m/rcs_header.txt; \
-	echo; \
-	echo "% Set up system definitions"; \
-	echo "[nx,ny,nu,nz,nyz] = $1_def;"; \
-	echo "% Change the following lines as you wish"; \
-	echo "u = ones(nu,1);"; \
-        )> $1_input.m
-
-#SUMMARY input	input signal definition (c)
-$1_input.c:
-	echo Creating $1_input.c
-	( \
-	echo "$1_input(t)"; \
-	echo '  double t;'; \
-	echo '/*'; \
-	echo "%% Input file for system $1 ($1_input.c)"; \
-	echo "%% This file provides the system input for simulation:";\
-	echo '*/'; \
-	cat $MTTPATH/trans/rcs_header.c; \
-	echo; \
-        echo '{'; \
-        echo "#include \"$1_sympar.c\""; \
-	echo "/* Change the following lines as you wish */"; \
-        echo '  extern double u;'; \
-	echo '};'; \
-        )> $1_input.c
 
 #SUMMARY sspar	steady-state definition (r)
 $1_sspar.r:
@@ -1003,7 +977,7 @@ $1_sms.m: $1_sms.c $1_sm.c $1_numpar.c $1_sms.h\
 	echo Creating $1_sms.m
 	echo Creating $1_smso.m
 	echo 'Compiling ...'
-	gcc $1_sms.c $1_sm.c $1_numpar.c  $1_input.c -lm
+	gcc $1_sms.c -lm
 	echo 'Running  ...'; ./a.out; echo 'Done.'
 
 endif

@@ -409,25 +409,23 @@ proc "save_plotfile" "" {
 
 ## print output to postscript
 proc "print_postscript" "" {
-    global parameter;
-    if {"\$parameter"==""} {
-	tk_dialog ".mtt_Print_Error" "Print Error" "Select a parameter!" "" "0" "Try Again"
-    } else {
-	set filename [tk_getSaveFile\
-		-initialdir ".."\
-		-initialfile "\$parameter.ps"\
-		-defaultextension ".ps"\
-		-filetypes {
-		    {{Postscript} {.ps}}
-		    {{All files} {*}}
-		}
-	]
-	if {\$filename != ""} {
-	    puts "set term postscript"
-	    puts "set output '\$filename'"
-	    puts "replot"
-	    tk_dialog ".printed" "Graph Printed!" "PostScript saved as \$filename" "" "0" "Close"
-	}
+    global parameter
+    global windownum
+    set filename [tk_getSaveFile\
+		      -initialdir ".."\
+		      -initialfile "\$parameter.ps"\
+		      -defaultextension ".ps"\
+		      -filetypes {
+			  {{Postscript} {.ps}}
+			  {{All files} {*}}
+		      }
+		 ]
+    if {\$filename != ""} {
+	puts "set term postscript"
+	puts "set output '\$filename'"
+	puts "replot"
+	puts "set term x11 \$windownum"
+	tk_dialog ".printed" "Graph Printed!" "PostScript saved as \$filename" "" "0" "Close"
     }
 }
 

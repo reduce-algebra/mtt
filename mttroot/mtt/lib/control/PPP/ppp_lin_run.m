@@ -119,8 +119,9 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
       [k_x,k_w,K_x,K_w] = ppp_lin(A,B,C,D,p_c.A_u,p_c.A_w,tau); # Design
     elseif strcmp(p_c.Method, "lq") # LQ design
       tau = [0:0.001:1.0]*5; # Time horizons
-      [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,p_c.A_u] \
+      [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,A_u] \
 	  = ppp_lin_quad (A,B,C,D,tau,p_c.Q,p_c.R);
+      p_c.A_u = A_u
     else
       error(sprintf("Control method %s not recognised", p_c.Method));
     endif
@@ -131,8 +132,8 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
       error("A_u must be square");
     endif
     
-    
-    U = K_w*w;			# Initial control U
+    K_w,w
+    U = K_w*w			# Initial control U
 
     ## Checks
     [ol_zeros, ol_poles] = sys2zp(sys)

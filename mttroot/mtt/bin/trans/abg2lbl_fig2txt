@@ -13,6 +13,12 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  1998/07/04 10:37:21  peterg
+## Major revision to include:
+## 	aliases
+## 	new Style
+## 	prettyfied
+##
 ## Revision 1.6  1998/03/05 10:09:47  peterg
 ## Corrected bug in writing "other" components
 ##
@@ -55,7 +61,7 @@ echo Creating $1_lbl.txt
 	( \
 	echo "%% Label file for system $1 ($1_lbl.txt)"; \
 	echo "%SUMMARY $1"; \
-	echo "%DESCRIPTION <Detailed description here>"; \
+	echo "%DESCRIPTION "; \
 	cat $MTTPATH/trans/m/rcs_header.txt; \
         )>mtt_junk_top.txt
 
@@ -83,7 +89,7 @@ sort -u> $1_unique_raw_list
 grep -v  '\[[0-9]*\]'  $1_unique_raw_list | \
 awk --field-separator ':' '
  { 
-   if (($1 != "0")&&($1 != "1")) 
+#   if (($1 != "0")&&($1 != "1")) 
     { 
       if (Component !~ $1) print "\n% Component type", $1
 

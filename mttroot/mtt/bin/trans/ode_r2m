@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  1997/08/29 07:58:17  peterg
+## Changed MTT to mtt in the .m files.
+##
 # Revision 1.6  1997/01/05  19:34:35  peterg
 # Don't write globals which are already assigned to a number.
 #
@@ -86,8 +89,8 @@ BEGIN
   write "% Read in the definitions";
   write "[nx,ny,nu,nz,nyz] = $1_def";
 
-  write "% Read in the arguments";
-  write "$1_args";
+%  write "% Read in the arguments";
+%  write "$1_args";
   
   write "% Set up the State variables";
   FOR i := 1:MTTNx DO

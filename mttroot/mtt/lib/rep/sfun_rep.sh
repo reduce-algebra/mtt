@@ -33,10 +33,7 @@ exit_error ()
 
 check_for_valid_input ()
 {
-    args="$*"
-    if [ $# -neq 4 ]; then
-	exit_error "Invalid Input"
-    fi
+    return 0;
 }
 
 #

@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.355  2002/06/10 23:18:44  geraint
+## Adjusted cr.h comment delimiters to be C compliant.
+##
 ## Revision 1.354  2002/06/10 10:43:19  gawthrop
 ## ode2odes now prerequisite for sim.m and ssim.m
 ##
@@ -2236,10 +2239,11 @@ $1_%.mexglx: $1_%.cc $1_def.h $1_sympar.h $1_cr.h mtt_kpathsea.cc mtt_matlab_oct
 $1_%.cc:  $1_%.m
 	mtt_m2cc.sh  $1 \$* cc cat 
 
-mtt_%.cc: ${MTT_LIB}/cc/mtt_%.cc
+mtt_%.cc:: ${MTT_LIB}/cc/mtt_%.cc
 	cp ${MTT_LIB}/cc/mtt_\$*.cc mtt_\$*.cc
+	
 
-mtt_%.hh: ${MTT_LIB}/cc/mtt_%.hh
+mtt_%.hh:: ${MTT_LIB}/cc/mtt_%.hh
 	cp ${MTT_LIB}/cc/mtt_\$*.hh mtt_\$*.hh
 
 ## .o files
@@ -2272,6 +2276,9 @@ ifneq ("$level","0")
 # If level>0, try and get subsystem files; creating if necessary
 $1_abg.fig:
 	mtt -q -u $mtt_switches compcopy $1
+else
+$1_abg.fig:
+	
 endif
 endif
 
@@ -2539,9 +2546,8 @@ $1_ode2odes_dassl.o: $1_ode.o $1_odeo.o mtt_dassl.o
 	@echo "Creating \$@"
 	ar -cr \$@ \$^
 
-mtt_Solver.cc:	mtt_Solver.hh
-mtt_AlgebraicSolver.cc: mtt_AlgebraicSolver.hh
 $1_ode2odes_${algebraic_solver}.cc:	mtt_Solver.cc mtt_AlgebraicSolver.cc mtt_${algebraic_solver}.hh mtt_${algebraic_solver}.cc
+	
 $1_ode2odes_${algebraic_solver}.o:	mtt_Solver.o  mtt_AlgebraicSolver.o  mtt_${algebraic_solver}.o
 	@echo "Creating $1_ode2odes_${algebraic_solver}.o"
 	ar -cr \$@ \$^
@@ -2615,8 +2621,11 @@ endif
 $1_rbg.m: $1_abg.fig  $1_lbl.txt
 	lbl2component $1 | sh || exit 1 # Grab specified components now
 	rbg_fig2m $1
+
 $1_cmp.m: $1_rbg.m
+	
 $1_fig.fig: $1_rbg.m
+	
 
 #SUMMARY sabg	stripped acausal bond graph (fig)
 #SUMMARY sabg	stripped acausal bond graph (ps)

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.95  1997/12/04 10:05:02  peterg
+## Compiler now symbolocic $cc
+##
 # Revision 1.94  1997/11/20  11:23:16  peterg
 # Changed gcc to cc
 #
@@ -354,6 +357,8 @@ while [ -n "`echo $1 | grep '-'`" ]; do
   case $1 in
 	-q )
 		quiet=quiet ;;
+	-p )
+		print='-p';;
 	-c )
 		computation=c ;;
 	-o )
@@ -368,7 +373,6 @@ while [ -n "`echo $1 | grep '-'`" ]; do
   shift
 done
 
-
 #Print header if not in quiet (-q) mode.
 if [ "$quiet" != "quiet" ]; then
   echo
@@ -378,7 +382,16 @@ if [ "$quiet" != "quiet" ]; then
   echo
 fi
 
+#Check the principle paths
+mtt_check_vars $print
+
+# Exit if just printing paths
+if [ "$print" != "" ]; then
+  exit
+fi
+
 if [ -z "$1" ]; then
+  if [ -z "$print" ]; then
     echo 'Usage: mtt help             -- mtt on-line help'
     echo '       mtt info             -- info-based manual'
     echo '       mtt info topic'
@@ -392,10 +405,12 @@ if [ -z "$1" ]; then
     echo '       mtt <system_name> <representation> <language>'
     echo '       mtt <system_name> <representation> <language> <parameters>'
     echo 'Options: -q  quiet mode'
+    echo '         -p  print environment variables'
     echo '         -c  c-code generation'
     echo '         -o  ode and dae are the same'
     echo '         -s  use switch (ISW and CSW) components'
     exit
+  fi
 fi
 
 
@@ -656,8 +671,6 @@ if [ "$3" = "vc" ]; then
   esac
 fi
 
-#Check the principle paths
-mtt_check_vars
 
 # This is the main mtt programme
 $MAKE -s  -f -  $1_$2.$3 << EOF

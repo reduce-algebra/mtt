@@ -8,6 +8,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  2000/05/11 08:03:02  peterg
+## Remove the mtt no global stuff
+##
 ## Revision 1.10  2000/04/18 11:14:32  peterg
 ## - parameters option
 ##
@@ -195,11 +198,11 @@ fi
 # Globals
 if [ -z "$noglobals" ]; then
     sympar2global_txt2lang $1 $language
-#else
-#cat<<EOF
-#global ...
-#mtt_no_globals ;
-#EOF
+else
+cat<<EOF
+global ...
+mtt_no_globals ;
+EOF
 fi
 
 # Explicit parameters

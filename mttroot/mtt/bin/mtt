@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.197  1998/11/20 09:00:45  peterg
+## Number of changes to underlying tools
+##
 ## Revision 1.196  1998/11/10 11:55:40  peterg
 ## Added $info_switch to abg2cbg invocation
 ##
@@ -1624,8 +1627,8 @@ endif
 #SUMMARY rbg	raw bond graph (m)
 #Raw bond graph: fig file to mfile
 $1_rbg.m: $1_abg.fig $1_lbl.txt
-	rbg_fig2m $1
 	lbl2component $1 | sh || exit 1 # Grab specified components now
+	rbg_fig2m $1
 $1_cmp.m: $1_rbg.m
 $1_fig.fig: $1_rbg.m
 

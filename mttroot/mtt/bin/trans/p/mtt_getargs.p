@@ -10,9 +10,17 @@ char *argv[];
 
 \[
  int i;
- mtt_n_parameters = argc-1;
-  for (i=1;i<argc;i++)\[
-    mtt_parameters[i-1] = strtod(argv[i],0);
+ mttnpar = argc-1;
+ if (mttnpar>0) \[
+   for (i=0;i<MTT_Nx;i++)\[
+     x[i] = strtod(argv[i+1],0);
   \]
+   for (i=0;i<MTT_Npar;i++)\[
+     par[i] = strtod(argv[i+MTT_Nx+1],0);
+  \]
+ simpar.first=strtod(argv[MTT_Nx+MTT_Npar+1],0);
+ simpar.dt=strtod(argv[MTT_Nx+MTT_Npar+2],0);
+ simpar.last=strtod(argv[MTT_Nx+MTT_Npar+3],0);
+ \]
 \]
 }

@@ -6,15 +6,6 @@
 
 MTT::Hybrd_Solver *MTT::Hybrd_Solver::static_ptr;
 
-MTT::Hybrd_Solver (const int npar,
-		   const int nu,
-		   const int nx,
-		   const int ny,
-		   const int nyz)
-{
-  static_ptr = this;
-}
-
 ColumnVector
 MTT::Hybrd_Solver::f_hybrd (const ColumnVector &tryUi)
 {

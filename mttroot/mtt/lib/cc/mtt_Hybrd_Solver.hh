@@ -21,7 +21,10 @@ namespace MTT
 		  const int nx,
 		  const int ny,
 		  const int nyz)
-      : MTT::AlgebraicSolver (npar,nu,nx,ny,nyz);
+      : MTT::AlgebraicSolver (npar,nu,nx,ny,nyz)
+    {
+      static_ptr = this;
+    }
 
     static ColumnVector
     f_hybrd (const ColumnVector &tryUi);

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.66  1997/04/16  09:46:01  peterg
+# More informative copy message
+#
 # Revision 1.65  1997/04/15  15:16:12  peterg
 # Added structure (_struc) files.
 # Fixed prob with dvi2ps conversion -- removed .doc extension.
@@ -240,6 +243,9 @@ level=0
 #Computation mode is octave by default
 computation=octave
 
+#By default, the dae and ode representations are different
+dae_is_ode=0
+
 #Look for a command line argument
 while [ -n "`echo $1 | grep '-'`" ]; do
   case $1 in
@@ -247,6 +253,8 @@ while [ -n "`echo $1 | grep '-'`" ]; do
 		quiet=quiet ;;
 	-c )
 		computation=c ;;
+	-o )
+		dae_is_ode=1 ;;
 	-l )
 		level=$2; shift ;;
   esac
@@ -274,6 +282,9 @@ if [ -z "$1" ]; then
   echo '       mtt <system_name> <representation> vc'
   echo '       mtt <system_name> <representation> <language>'
   echo '       mtt <system_name> <representation> <language> <parameters>'
+  echo 'Options: -q  quiet mode'
+  echo '         -c  c-code generation'
+  echo '         -o  ode and dae are the same'
  exit
 fi
 
@@ -593,18 +604,13 @@ $1_numpar.m: $1_sympar.r $1_params.m
 $1_numpar.c: $1_sympar.r
 	sympar2numpar_r2c $1
 
+
 #SUMMARY params	numerical parameter setting (m)
  $1_params.m: 
-	echo Creating $1_params.m
-	( \
-	echo "%% Parameter file for system $1 ($1_params.m)"; \
-	echo "%% This file provides the system params for simulation:";\
-	cat $MTTPATH/trans/m/rcs_header.txt; \
-	echo; \
-        )> $1_params.m
+	sympar2params_txt2m $1
 
 #SUMMARY params	numerical parameter setting (c)
- $1_params.c: 
+ $1_params.c:
 	sympar2params_txt2c $1
 
 #SUMMARY odes ODE simulation header file (h)
@@ -725,6 +731,7 @@ $1_cbg.fig: $1_cbg.m $1_rbg.m $1_fig.fig $1_type.sh
 
 #SUMMARY ese	elementary system equations (r)
 #SUMMARY def	definitions - system orders etc. (r)
+#SUMMARY def	definitions - system orders etc. (m)
 #SUMMARY struc	structure - list of inputs, outputs and states (txt)
 #SUMMARY struc	structure - list of inputs, outputs and states (tex)
 #SUMMARY struc	structure - list of inputs, outputs and states (view)
@@ -737,6 +744,8 @@ $1_struc.txt: $1_ese.r
 	touch $1_struc.txt
 $1_struc.tex: $1_struc.txt
 	struc_txt2tex $1
+$1_struc.m: $1_struc.txt 
+	struc_txt2m $1
 $1_def.m: $1_def.r
 	def_r2m $1; matlab_tidy $1_def.m;
 
@@ -775,8 +784,15 @@ $1_cse.tex: $1_cse.r  $1_sympar.r $1_simp.r
 #SUMMARY ode	ordinary differential equations (view)
 #SUMMARY ode	ordinary differential equations (ps)
 #Ordinary differential equations
+ifeq ($dae_is_ode,0)
 $1_ode.r: $1_cse.r $1_def.r $1_sympar.r
 	cse2ode_r $1; tidy $1_ode.r
+endif
+ifeq ($dae_is_ode,1)
+$1_ode.r: $1_dae.r
+	echo Copying $1_dae.r to $1_ode.r
+	cp $1_dae.r  $1_ode.r
+endif
 $1_ode.m: $1_def.r $1_ode.r $1_sympar.r 
 	ode_r2m $1; matlab_tidy $1_ode.m; matlab_tidy $1_odeo.m
 $1_ode.c: $1_def.r $1_ode.r $1_sympar.r $1_sympar.c
@@ -830,7 +846,7 @@ $1_ss.tex: $1_def.r $1_ss.r  $1_sympar.r $1_simp.r
 #Linearised system: descriptor matrices
 $1_dm.r: $1_dae.r $1_def.r $1_cr.r  $1_ss.r $1_sympar.r
 	dae2dm_r $1; tidy $1_dm.r
-$1_dm.m: $1_def.r $1_dm.r $1_sympar.r $1_numpar.m
+$1_dm.m: $1_def.m $1_dm.r $1_sympar.r $1_numpar.m
 		dm_r2m $1; matlab_tidy $1_dm.m
 $1_dm.tex: $1_dm.r $1_sympar.r $1_simp.r 
 	dm_r2tex $1; latex_tidy $1_dm.tex

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  2002/04/22 08:05:26  gawthrop
+## New regexp.
+##
 ## Revision 1.5  2000/12/27 13:11:42  peterg
 ## *** empty log message ***
 ##
@@ -35,7 +38,7 @@ old_name=$1
 new_name=$2
 extension=$3
 
-left='[^a-zA-Z]*'
+left='[^a-zA-Z]'
 right=$left
 if [ -f "$new_name$extension" ]; then
    echo  "$new_name$extension already exists -- no action taken"
@@ -44,7 +47,10 @@ fi
 if ls $old_name$extension > /dev/null 2>&1 
     then
 	echo Renaming $old_name$extension to $new_name$extension
-	sed "s/\($left\)$old_name\($right\)/\1$new_name\2/g" <$old_name$extension >$new_name$extension
+	sed \
+         -e "s/\($left\)$old_name\($right\)/\1$new_name\2/g" \
+         -e "s/^$old_name\($right\)/$new_name\1/g" \
+        <$old_name$extension >$new_name$extension
 fi
 
 

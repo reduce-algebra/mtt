@@ -42,61 +42,66 @@ menu .menubar.edit.menu
 .menubar.edit.menu add cascade -label "Timestamp"    -underline 0 -menu .menubar.edit.menu.time
 
 menu .menubar.edit.menu.axes
-.menubar.edit.menu.axes add command -label "Cartesian" -underline 0 -command { puts "set nopolar ; replot" }
-.menubar.edit.menu.axes add command -label "Polar"     -underline 0 -command { puts "set   polar ; replot" }
+.menubar.edit.menu.axes add command -label "Cartesian" -underline 0 -command { do_cmd "set nopolar ; replot" }
+.menubar.edit.menu.axes add command -label "Polar"     -underline 0 -command { do_cmd "set   polar ; replot" }
 .menubar.edit.menu.axes add cascade -label "Ranges"    -underline 0 -menu .menubar.edit.menu.axes.range
 
 menu .menubar.edit.menu.axes.range
-.menubar.edit.menu.axes.range add command -label "Set X"   -underline 4 -command { puts "set xrange \[[get_value "X axis range? min:max" "*:*"]\] ; replot" }
-.menubar.edit.menu.axes.range add command -label "Set Y"   -underline 4 -command { puts "set yrange \[[get_value "Y axis range? min:max" "*:*"]\] ; replot" }
-.menubar.edit.menu.axes.range add command -label "Set Z"   -underline 4 -command { puts "set zrange \[[get_value "Z axis range? min:max" "*:*"]\] ; replot" }
+.menubar.edit.menu.axes.range add command -label "Set X"   -underline 4 -command { do_cmd "set xrange \[[get_value "X axis range? min:max" "*:*"]\] ; replot" }
+.menubar.edit.menu.axes.range add command -label "Set Y"   -underline 4 -command { do_cmd "set yrange \[[get_value "Y axis range? min:max" "*:*"]\] ; replot" }
+.menubar.edit.menu.axes.range add command -label "Set Z"   -underline 4 -command { do_cmd "set zrange \[[get_value "Z axis range? min:max" "*:*"]\] ; replot" }
 
 menu .menubar.edit.menu.contour
-.menubar.edit.menu.contour add command -label "Show Contour" -underline 0 -command { puts "set   dgrid3d ; set   contour ; replot" }
-.menubar.edit.menu.contour add command -label "Hide Contour" -underline 0 -command { puts "set nodgrid3d ; set nocontour ; replot" }
+.menubar.edit.menu.contour add command -label "Show Contour" -underline 0 -command { do_cmd "set   dgrid3d ; set   contour ; replot" }
+.menubar.edit.menu.contour add command -label "Hide Contour" -underline 0 -command { do_cmd "set nodgrid3d ; set nocontour ; replot" }
 .menubar.edit.menu.contour add cascade -label "Surface"      -underline 0 -menu .menubar.edit.menu.contour.surface
 
 menu .menubar.edit.menu.contour.surface
-.menubar.edit.menu.contour.surface add command -label "Show Surface" -underline 0 -command { puts "set   surface ; replot" }
-.menubar.edit.menu.contour.surface add command -label "Hide Surface" -underline 0 -command { puts "set nosurface ; replot" }
+.menubar.edit.menu.contour.surface add command -label "Show Surface" -underline 0 -command { do_cmd "set   surface ; replot" }
+.menubar.edit.menu.contour.surface add command -label "Hide Surface" -underline 0 -command { do_cmd "set nosurface ; replot" }
 
 menu .menubar.edit.menu.grid
-.menubar.edit.menu.grid add cascade -label "Show" -underline 0 -menu .menubar.edit.menu.grid.show
-.menubar.edit.menu.grid add cascade -label "Hide" -underline 0 -menu .menubar.edit.menu.grid.hide
+.menubar.edit.menu.grid add cascade -label "Show Grid" -underline 0 -menu .menubar.edit.menu.grid.show
+.menubar.edit.menu.grid add cascade -label "Hide Grid" -underline 0 -menu .menubar.edit.menu.grid.hide
 
 menu .menubar.edit.menu.grid.show
-.menubar.edit.menu.grid.show add command -label "Show all ticks" -underline 5 -command { puts "set grid xtics ytics ztics ; replot" }
-.menubar.edit.menu.grid.show add command -label "Show X ticks" -underline 5 -command { puts "set grid xtics ; replot" }
-.menubar.edit.menu.grid.show add command -label "Show Y ticks" -underline 5 -command { puts "set grid ytics ; replot" }
-.menubar.edit.menu.grid.show add command -label "Show Z ticks" -underline 5 -command { puts "set grid ztics ; replot" }
+.menubar.edit.menu.grid.show add command -label "Show all ticks" -underline 5 -command { do_cmd "set grid xtics ytics ztics ; replot" }
+.menubar.edit.menu.grid.show add command -label "Show X ticks" -underline 5 -command { do_cmd "set grid xtics ; replot" }
+.menubar.edit.menu.grid.show add command -label "Show Y ticks" -underline 5 -command { do_cmd "set grid ytics ; replot" }
+.menubar.edit.menu.grid.show add command -label "Show Z ticks" -underline 5 -command { do_cmd "set grid ztics ; replot" }
 
 menu .menubar.edit.menu.grid.hide
-.menubar.edit.menu.grid.hide add command -label "Hide all ticks" -underline 5 -command { puts "set grid noxtics noytics noztics ; replot" }
-.menubar.edit.menu.grid.hide add command -label "Hide X ticks" -underline 5 -command { puts "set grid noxtics ; replot" }
-.menubar.edit.menu.grid.hide add command -label "Hode Y ticks" -underline 5 -command { puts "set grid noytics ; replot" }
-.menubar.edit.menu.grid.hide add command -label "Hide Z ticks" -underline 5 -command { puts "set grid noztics ; replot" }
+.menubar.edit.menu.grid.hide add command -label "Hide all ticks" -underline 5 -command { do_cmd "set grid noxtics noytics noztics ; replot" }
+.menubar.edit.menu.grid.hide add command -label "Hide X ticks" -underline 5 -command { do_cmd "set grid noxtics ; replot" }
+.menubar.edit.menu.grid.hide add command -label "Hode Y ticks" -underline 5 -command { do_cmd "set grid noytics ; replot" }
+.menubar.edit.menu.grid.hide add command -label "Hide Z ticks" -underline 5 -command { do_cmd "set grid noztics ; replot" }
 
 menu .menubar.edit.menu.key
-.menubar.edit.menu.key add command -label "Show Key"   -underline 0 -command { puts "set   key ; replot" }
-.menubar.edit.menu.key add command -label "Hide Key"   -underline 0 -command { puts "set nokey ; replot" }
+.menubar.edit.menu.key add command -label "Show Key"   -underline 0 -command { do_cmd "set   key ; replot" }
+.menubar.edit.menu.key add command -label "Hide Key"   -underline 0 -command { do_cmd "set nokey ; replot" }
 .menubar.edit.menu.key add cascade -label "Position"   -underline 0 -menu .menubar.edit.menu.key.posn
 
 menu .menubar.edit.menu.key.posn
-.menubar.edit.menu.key.posn add command -label "Left"    -underline 0 -command { puts "set key left    ; replot" }
-.menubar.edit.menu.key.posn add command -label "Right"   -underline 0 -command { puts "set key right   ; replot" }
-.menubar.edit.menu.key.posn add command -label "Top"     -underline 0 -command { puts "set key top     ; replot" }
-.menubar.edit.menu.key.posn add command -label "Bottom"  -underline 0 -command { puts "set key bottom  ; replot" }
-.menubar.edit.menu.key.posn add command -label "Outside" -underline 0 -command { puts "set key outside ; replot" }
-.menubar.edit.menu.key.posn add command -label "Below"   -underline 3 -command { puts "set key below   ; replot" }
+.menubar.edit.menu.key.posn add command -label "Left"    -underline 0 -command { do_cmd "set key left    ; replot" }
+.menubar.edit.menu.key.posn add command -label "Right"   -underline 0 -command { do_cmd "set key right   ; replot" }
+.menubar.edit.menu.key.posn add command -label "Top"     -underline 0 -command { do_cmd "set key top     ; replot" }
+.menubar.edit.menu.key.posn add command -label "Bottom"  -underline 0 -command { do_cmd "set key bottom  ; replot" }
+.menubar.edit.menu.key.posn add command -label "Outside" -underline 0 -command { do_cmd "set key outside ; replot" }
+.menubar.edit.menu.key.posn add command -label "Below"   -underline 3 -command { do_cmd "set key below   ; replot" }
 
 menu .menubar.edit.menu.time
-.menubar.edit.menu.time add command -label "Show Timestamp"   -underline 0 -command { puts "set   timestamp ; replot" }
-.menubar.edit.menu.time add command -label "Hide Timestamp"   -underline 0 -command { puts "set notimestamp ; replot" }
+.menubar.edit.menu.time add command -label "Show Timestamp"   -underline 0 -command { do_cmd "set   timestamp ; replot" }
+.menubar.edit.menu.time add command -label "Hide Timestamp"   -underline 0 -command { do_cmd "set notimestamp ; replot" }
 
 menubutton .menubar.tool -text "Tools" -underline 0 -menu .menubar.tool.menu
 menu .menubar.tool.menu
+.menubar.tool.menu add cascade -label "gnuplot command" -underline 0 -menu .menubar.tool.menu.gcmd
 .menubar.tool.menu add cascade -label "Sort List" -underline 0 -menu .menubar.tool.menu.sort
 .menubar.tool.menu add command -label "X-MTT"     -underline 0 -command { exec xmtt & }
+
+menu .menubar.tool.menu.gcmd
+.menubar.tool.menu.gcmd add command -label "Show Command" -underline 0 -command show_gnuplot_prompt
+.menubar.tool.menu.gcmd add command -label "Hide Command" -underline 0 -command hide_gnuplot_prompt
 
 menu .menubar.tool.menu.sort
 .menubar.tool.menu.sort add command -label "Left to Right" -underline 0 -command {
@@ -141,33 +146,32 @@ tk_optionMenu .plotbar.dim   dimension "2D" "3D"
 
 tk_optionMenu .plotbar.plot  plottype "Single" "Multi"
 
-pack .plotbar.dim     -expand false -fill x -side right
-pack .plotbar.plot    -expand false -fill x -side right
-pack .plotbar.select  -expand false -fill x -side right
+pack .plotbar.dim     -expand true -fill x -side right
+pack .plotbar.plot    -expand true -fill x -side right
+pack .plotbar.select  -expand true -fill x -side right
 
 # button bar
 canvas .buttonbar
 
-button .buttonbar.replot -text "Refresh"   -relief raised -command { puts "replot" }
+button .buttonbar.replot -text "Refresh"   -relief raised -command { do_cmd "replot" }
 
 button .buttonbar.newwin -text "New Plot"  -relief raised -command {
     set windownum [expr 1 + \$windownum]
-    puts "set term x11 \$windownum"
+    do_cmd "set term x11 \$windownum"
 }
 
-pack .buttonbar.newwin  -expand false -side right
-pack .buttonbar.replot  -expand false -side right
+pack .buttonbar.newwin  -expand true -side right -fill x
+pack .buttonbar.replot  -expand true -side right -fill x
 
 # rotation bar
 canvas .rotationbar
 scale .rotationbar.xrot  -label "Rotate X" -orient h -from "0" -to "180" -command { do_rotate_3d "xrot" }
 scale .rotationbar.zrot  -label "Rotate Z" -orient h -from "0" -to "360" -command { do_rotate_3d "zrot" }
-pack .rotationbar.xrot  -side left
-pack .rotationbar.zrot  -side left
+pack .rotationbar.xrot  -side left -fill x -expand true
+pack .rotationbar.zrot  -side left -fill x -expand true
 .rotationbar.xrot set 30
 .rotationbar.zrot set 60
 
-pack .rotationbar		-expand false -fill x    -side bottom
 
 proc "enable_rotationbar" "" {
 }
@@ -238,8 +242,9 @@ lappend yl Time
 .parameters.list configure -listvar yl
 
 pack .menubar			-expand false -fill x    -side top
-pack .plotbar			-expand false -fill x    -side bottom
 pack .listbar			-expand false -fill x    -side top
+pack .rotationbar		-expand false -fill x    -side bottom
+pack .plotbar			-expand false -fill x    -side bottom
 pack .buttonbar			-expand false -fill x    -side bottom
 pack .parameters.yscrollbar	-expand false -fill y    -side right
 pack .parameters.list		-expand true  -fill both -side left
@@ -324,19 +329,19 @@ proc "plot_var" "" {
 	    disable_rotationbar
 	    switch -- \$plottype {
 		Single	{
-		    puts "set xlabel '\$xtitle'"
-		    puts "set ylabel '\$ytitle'"
-		    puts "set nokey"
-		    puts "plot '${dat2}' using \$xcolumn:\$ycolumn title 'y:\$ytitle  x:\$xtitle' with lines"
+		    do_cmd "set xlabel '\$xtitle'"
+		    do_cmd "set ylabel '\$ytitle'"
+		    do_cmd "set nokey"
+		    do_cmd "plot '${dat2}' using \$xcolumn:\$ycolumn title 'y:\$ytitle  x:\$xtitle' with lines"
 		}
 		Multi	{
-		    puts "set xlabel ''"
-		    puts "set ylabel ''"
-		    puts "set key"
+		    do_cmd "set xlabel ''"
+		    do_cmd "set ylabel ''"
+		    do_cmd "set key"
 		    if {"\$lastplot" != "2D"} {
-			puts "plot '${dat2}' using \$xcolumn:\$ycolumn title 'y:\$ytitle  x:\$xtitle' with lines"
+			do_cmd "plot '${dat2}' using \$xcolumn:\$ycolumn title 'y:\$ytitle  x:\$xtitle' with lines"
 		    } else {
-			puts "replot '${dat2}' using \$xcolumn:\$ycolumn title 'y:\$ytitle  x:\$xtitle' with lines"	    
+			do_cmd "replot '${dat2}' using \$xcolumn:\$ycolumn title 'y:\$ytitle  x:\$xtitle' with lines"	    
 		    }
 		}
 	    }
@@ -345,21 +350,21 @@ proc "plot_var" "" {
 	    enable_rotationbar
 	    switch -- \$plottype {
 		Single	{
-		    puts "set xlabel '\$xtitle'"
-		    puts "set ylabel '\$ytitle'"
-		    puts "set zlabel '\$ztitle'"
-		    puts "set nokey"
-		    puts "splot '${dat2}' using \$xcolumn:\$ycolumn:\$zcolumn title 'z:\$ztitle  y:\$ytitle  x:\$xtitle' with lines"
+		    do_cmd "set xlabel '\$xtitle'"
+		    do_cmd "set ylabel '\$ytitle'"
+		    do_cmd "set zlabel '\$ztitle'"
+		    do_cmd "set nokey"
+		    do_cmd "splot '${dat2}' using \$xcolumn:\$ycolumn:\$zcolumn title 'z:\$ztitle  y:\$ytitle  x:\$xtitle' with lines"
 		}
 		Multi	{
-		    puts "set xlabel ''"
-		    puts "set ylabel ''"
-		    puts "set zlabel ''"
-		    puts "set key"
+		    do_cmd "set xlabel ''"
+		    do_cmd "set ylabel ''"
+		    do_cmd "set zlabel ''"
+		    do_cmd "set key"
 		    if {"\$lastplot" != "3D"} {
-			puts "splot '${dat2}' using \$xcolumn:\$ycolumn:\$zcolumn title 'z:\$ztitle  y:\$ytitle  x:\$xtitle' with lines"
+			do_cmd "splot '${dat2}' using \$xcolumn:\$ycolumn:\$zcolumn title 'z:\$ztitle  y:\$ytitle  x:\$xtitle' with lines"
 		    } else {
-			puts "replot '${dat2}' using \$xcolumn:\$ycolumn:\$zcolumn title 'z:\$ztitle  y:\$ytitle  x:\$xtitle' with lines"
+			do_cmd "replot '${dat2}' using \$xcolumn:\$ycolumn:\$zcolumn title 'z:\$ztitle  y:\$ytitle  x:\$xtitle' with lines"
 		    }
 		}
 	    }
@@ -384,7 +389,7 @@ proc "open_plotfile" "" {
 	    {{All files} {*}}
 	}
     ]
-    puts "load '\$filename'"
+    do_cmd "load '\$filename'"
 }
 
 ## save gnuplot plot file
@@ -404,7 +409,7 @@ proc "save_plotfile" "" {
 	    {{All files} {*}}
 	}
     ]
-    puts "save '\$filename'"
+    do_cmd "save '\$filename'"
 }
 
 ## print output to postscript
@@ -421,10 +426,10 @@ proc "print_postscript" "" {
 		      }
 		 ]
     if {\$filename != ""} {
-	puts "set term postscript"
-	puts "set output '\$filename'"
-	puts "replot"
-	puts "set term x11 \$windownum"
+	do_cmd "set term postscript"
+	do_cmd "set output '\$filename'"
+	do_cmd "replot"
+	do_cmd "set term x11 \$windownum"
 	tk_dialog ".printed" "Graph Printed!" "PostScript saved as \$filename" "" "0" "Close"
     }
 }
@@ -505,12 +510,38 @@ proc "get_scale" "string min max" {
 proc "do_rotate_3d" "var val" {
     switch -- \$var {
 	xrot	{
-	    puts "set view \$val,,, ; replot"
+	    do_cmd "set view \$val,,, ; replot"
 	}
 	zrot	{
-	    puts "set view ,\$val,, ; replot"
+	    do_cmd "set view ,\$val,, ; replot"
 	}
     }
+}
+
+proc "show_gnuplot_prompt" "" {
+    global gnuplot_command
+    destroy .gcmd
+    canvas .gcmd
+    label .gcmd.l -text ">"
+    entry .gcmd.e -textvariable gnuplot_command
+    button .gcmd.b -text "<-" -relief flat -command { set gnuplot_command "" }
+    pack .gcmd.b -side right
+    pack .gcmd.l -side left
+    pack .gcmd.e -side top    -fill x -expand true
+    pack .gcmd -expand false -fill x -side bottom -before .rotationbar
+    focus .gcmd.e
+    bind .gcmd.e <<Return>> {
+	do_cmd "[.gcmd.e get]"
+    }
+}
+proc "hide_gnuplot_prompt" "" {
+    destroy .gcmd
+}
+
+proc "do_cmd" "string" {
+    global gnuplot_command
+    set gnuplot_command "\$string"
+    puts "\$string"
 }
 
 event add <<Return>> <Return>
@@ -525,11 +556,11 @@ set xcolumn 1 ; set xtitle "Time"
 set ycolumn 1 ; set ytitle "Time"
 set zcolumn 1 ; set ztitle "Time"
 
-puts "set timestamp"
-puts "set grid"
-puts "set nopolar"
-puts "set term X11 0"
-puts "set key"
+do_cmd "set timestamp"
+do_cmd "set grid"
+do_cmd "set nopolar"
+do_cmd "set term X11 0"
+do_cmd "set key"
 
 EOF
 chmod +x ${out}

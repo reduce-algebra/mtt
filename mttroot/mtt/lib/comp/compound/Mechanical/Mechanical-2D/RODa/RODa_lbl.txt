@@ -1,0 +1,52 @@
+%SUMMARY	RODa: rigid rod in two dimensions - angle port.
+%DESCRIPTION	Port [alpha_a]:	Angular torque/velocity - end a
+%DESCRIPTION	Port [alpha_b]:	Angular torque/velocity - end b
+%DESCRIPTION	Port [x_a]:	x force/velocity - end a
+%DESCRIPTION	Port [x_b]:	x force/velocity - end b
+%DESCRIPTION	Port [y_a]:	y force/velocity - end a
+%DESCRIPTION	Port [y_b]:	y force/velocity - end b
+%DESCRIPTION	Port [alpha]:	rod angle
+%DESCRIPTION
+%DESCRIPTION	Parameter 1:	length from end 1 to mass centre
+%DESCRIPTION	Parameter 2:	length from end 2 to mass centre
+%DESCRIPTION	Parameter 3:	inertia about mass centre
+%DESCRIPTION	Parameter 4:	mass
+%DESCRIPTION	See Section 10.2 of "Metamodelling"
+
+
+%% Label file for system RODa (RODa_lbl.txt)
+
+
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % $Id$
+% % $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+%Inertias
+J	lin	flow,$3
+m_x	lin	flow,$4
+m_y	lin	flow,$4
+
+%Integrate angular velocity to get angle
+th
+
+%Modulated transformers
+s1	lsin	flow,$1
+s2	lsin	flow,$2
+c1	lcos	flow,$1
+c2	lcos	flow,$2
+
+
+
+	

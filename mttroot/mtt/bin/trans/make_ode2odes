@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  1998/08/15 13:46:59  peterg
+## New versions of integration routines
+##
 ## Revision 1.8  1998/08/11 13:28:03  peterg
 ## Lowercase mttLAST etc
 ##
@@ -55,50 +58,52 @@ cat << EOF >> $1_ode2odes.m
 
 $1_simpar;			# Read in simulation parameters
 $1_numpar;			# Read in parameters
-MTTilast = round(mttlast/mttdt);         # Total number of steps
+MTTilast = round(mttlast/mttdt); # Total number of steps
 
 #Initialise
 MTTt = 0.0;
 [MTTx] = $1_state;	        # Read in initial state
-[MTTu] = $1_input(MTTx,MTTt);        # Evaluate initial input
-[MTTy] = $1_odeo(MTTx,MTTu,MTTt);    # Evaluate initial output
+[MTTx] = $1_switch(MTTx);       # Switches
+[MTTu] = $1_input(MTTx,MTTt);	# Evaluate initial input
+[MTTy] = $1_odeo(MTTx,MTTu,MTTt); # Evaluate initial output
 mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny); # And write them
 
-[mttAA]  = zero_matrix($Nx); # Zero the A matrix
-[mttAAx] = zero_vector($Nx); # Zero the AAx vector
+[mttAA]  = zero_matrix($Nx);	# Zero the A matrix
+[mttAAx] = zero_vector($Nx);	# Zero the AAx vector
 
-if mttmethod==1 #Euler
+if mttmethod==1			#Euler
   mttsteps = mttstepfactor;
 endif;
 
-if mttmethod>1 #everything else
+if mttmethod>1			#everything else
   mttsteps = 1;
 end;
 
 
-mttddt = mttdt/mttsteps; # The small sample interval
+mttddt = mttdt/mttsteps;	# The small sample interval
 
-if mttmethod==2 #Linear implicit
+if mttmethod==2			#Linear implicit
   mttAA = $1_smx(MTTx,MTTu,mttdt); # Set up AA= I-Adt matrix - linearised system
 end;
 
 #Integration loop
 for MTTit = 1:MTTilast
-  if mttmethod==3 # nonlinear implicit
+  if mttmethod==3		# nonlinear implicit
     [mttAA] = $1_smx(MTTx,MTTu,mttdt); # Set up AA=I-A*dt  matrix - linearised system
   end;
-  if mttmethod>1 # nonlinear implicit
+  if mttmethod>1		# nonlinear implicit
     [mttAAx] = $1_smxx(MTTx,MTTu,MTTx,mttdt); # Set up AAx = AA*x vector - linearised system
   end;
 
-  [MTTu] = $1_input(MTTx,MTTt);# Input
-  [MTTx] = $1_switch(MTTx); # Switches
+  [MTTu] = $1_input(MTTx,MTTt);	# Input
 
   for MTTjt = 1:mttsteps
     [MTTdx] = $1_ode(MTTx,MTTu,MTTt); # State derivative
     [MTTx] = mtt_update(MTTdx,MTTx,mttAAx,mttAA,mttdt,mttstepfactor,$Nx,mttmethod);
     MTTt = MTTt + mttddt;
   end;
+
+  [MTTx] = $1_switch(MTTx);	# Switches
 
   [MTTy] = $1_odeo(MTTx,MTTu,MTTt);
   mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny);

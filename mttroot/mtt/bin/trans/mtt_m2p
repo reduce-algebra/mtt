@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.16  1998/08/19 08:46:00  peterg
+## Now translates ; % to #
+##
 ## Revision 1.15  1998/08/15 13:46:01  peterg
 ## Included new sparse update routines
 ##
@@ -165,12 +168,13 @@ EOF
   name="[a-zA-Z0-9_]*"
   fun_name="$Sys\_$name"
   mttfun_name=$name
-  space="[ \t]*"
-  spaces="[ \t][ \t]*"
+  tab='	'
+  space="[ $tab]*"
+  spaces="[ $tab][ $tab]*"
   non_space="[^ ]*"
 
 # Body	
-grep -v '^[ ]*function' < $Sys_rep.m  | sed "s/^$space%/#/" | sed "s/;$space%/#/" |\
+grep -v '^[ ]*function' < $Sys_rep.m  | sed "s/^$space%/#/" | sed "s/\(;$space\)%/\1#/" |\
 awk -F# '{printf("%s",$1) 
           if (NF>1) printf("{* %s *}", $2)
           printf("\n") 

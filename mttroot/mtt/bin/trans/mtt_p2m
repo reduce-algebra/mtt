@@ -1,0 +1,19 @@
+#! /bin/sh
+
+sed 's/begin//' |\
+sed 's/end//' |\
+sed 's/\[\([0-9]*\)\]/(\1)/g' |\
+sed 's/:=/ = /' |\
+awk '{
+  sub(/^[\ ]*/, "", $0)
+  
+  if ((match($0,"=")>0)&&(match($NF,"[\#;]")==0)){
+    Previous = $0
+  }
+  else {
+    print Previous $0
+    Previous = ""
+  }
+}'
+sed 's/\([^\.;\#]\)$/\1\\/'
+

@@ -1,0 +1,41 @@
+#!/bin/sh
+
+## Makes the sensitivity simulation
+## Copyright (C) 2001 by Peter J. Gawthrop
+
+sys=$1
+lang=$2
+
+outfile=${sys}_sim.${lang}
+
+echo Creating $outfile
+make_m() {
+mtt_header ${sys} sim m >  ${outfile}
+cat >> ${outfile} <<EOF
+
+ ## Pass input as a global
+ global MTT_input MTT_input_index MTT_input_last
+
+  [nx,ny] = ${sys}_def;
+  y_par = [];
+  MTT_input = u;
+  [MTT_input_last,m] = size(u);
+
+  MTT_input_index = 0;
+  [mtt_data] = ${sys}_ode2odes(x0,par,simpar);
+  y = mtt_data(:,2:1+ny);
+  x = mtt_data(:,3+ny:2+ny+nx);
+  ypar = [];
+
+endfunction
+EOF
+
+}
+
+case ${lang} in
+    m)
+	make_m
+	;;
+    *)
+	echo Language ${lang} not supported - sorry
+esac

@@ -20,6 +20,9 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.48  2001/07/23 23:20:27  gawthrop
+  ## ## Now only writes to type.sh and cbg.m when causality is completed.
+  ## ##
   ## ## Revision 1.47  2000/03/20 16:45:26  peterg
   ## ## *** empty log message ***
   ## ##
@@ -506,11 +509,10 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
     endif;
   endfor;			# [subsystem,name] = ABG.subsystems
 
-  if (status==0)		# write out the component .cbg file
+  ## write out the component .cbg file
     disp(["Writing ", full_name]);
     write_cbg(full_name,system_type,ABG,Flipped);
     fprintf(typefile, "$1%s$2%s$3\n", system_type, full_name);
-  endif
   
 
 

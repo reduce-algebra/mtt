@@ -1,6 +1,6 @@
-PROCEDURE mtt_sparse(	 b   : StateVector;
-n			     : integer;
-		     VAR x   : StateVector;
+PROCEDURE mtt_sparse(	 b   : glnarray;
+			 n   : integer;
+		     VAR x   : glnarray;
 		     VAR rsq : real);
 {*
 ###############################################################
@@ -8,6 +8,9 @@ n			     : integer;
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/08/13 14:58:35  peterg
+## Initial revision
+##
 ## Revision 1.1  1998/08/13 08:40:40  peterg
 ## Initial revision
 ##
@@ -57,7 +60,7 @@ BEGIN
       END;
       IF (aden = 0.0) THEN BEGIN
          writeln('pause in routine SPARSE');
-         writeln('very singular matrix'); readln
+         writeln('very singular matrix'); {***readln ***}
       END;
       anum := anum/aden;
       FOR j := 1 TO n DO BEGIN
@@ -93,6 +96,8 @@ BEGIN
          h[j] := g[j]+gam*h[j]
       END
    END;
-   writeln('pause in routine SPARSE');
-   writeln('too many iterations'); readln;
-99:   END;
+   {***writeln('pause in routine SPARSE');
+   writeln('too many iterations'); readln; **}
+
+99:{**writeln("---",iter,rsq);**}
+END;

@@ -1,0 +1,51 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: make_ode2odes
+
+# Copyright (c) P.J.Gawthrop July 1998.
+
+Sys=$1
+
+# Find system constants
+Nx=`grep "MTTNx " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
+Nu=`grep "MTTNu " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
+Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
+ 
+
+cat << EOF > $1_ode2odes.m
+function $1_ode2odes
+EOF
+
+# Do the globals
+sympar2global_txt2m $1 >> $1_ode2odes.m
+
+# The rest of the program
+cat << EOF >> $1_ode2odes.m
+
+$1_simpar;			# Read in simulation parameters
+$1_numpar;			# Read in parameters
+MTTx = $1_state;	        # Read in state
+
+iLast = round(Last/DT);         # Total number of steps
+ 
+t = 0.0;
+for it = 1:iLast
+    MTTu = $1_input(MTTx,t);
+    MTTdx = $1_ode(MTTx,MTTu,t);
+    for j = 1:$Nx
+      MTTx[j] = MTTx[j] + MTTdx[j]*DT;
+    end;
+    MTTy = $1_odeo(MTTx,MTTu,t);
+    t = t + DT;
+    mtt_write(t,MTTx,MTTy,$Nx,$Ny);
+end;
+
+EOF
+
+
+
+

@@ -15,6 +15,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.7  2000/05/19 17:46:17  peterg
+# %% Give argument to state
+# %%
 # %% Revision 1.6  2000/05/19 14:59:03  peterg
 # %% MTT --> mtt in fun output
 # %%
@@ -192,6 +195,6 @@ doublequote = "\042";
 
 if [ "$2" = "numpar" ]; then
    echo "## Set up the parameter vector"  >> $1_numpar.m;
+   echo "mttpar = []; # Default to empty matrix (Remove in mtt_m2p)"  >> $1_numpar.m;
    sympar2par_txt2m $1 set   >> $1_numpar.m;
 fi
-

@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.396  2004/08/29 02:59:30  geraint
+## Added -make-sort option and rules to generate simulation using sesx and sesy.
+##
 ## Revision 1.395  2004/08/28 23:48:06  geraint
 ## Removed dependency of ae.r on cse.r if -ae is not specified as an option.
 ## This prevents an implicit -A and thus removes a dependency on cse
@@ -1867,7 +1870,7 @@ if [ "$1" = "Clean" ] && [ "$2" = "" ]; then
   rm -f *_ICD.txt *_ICD.c *_ICD.cc *_ICD.m
   rm -f *_ae.r *_ae.m *_ae.cc *_ae.oct
   rm -f *_sese.r *_sese.m
-  rm -f *_sese.make *_sesx.* *_sesy.*
+  rm -f *_sese.make *_sesx.* *_sesy.* _sae.*
   rm -fR *_rep MTT_work
   exit
 fi
@@ -1910,7 +1913,7 @@ if [ "$2" = "Clean" ] && [ "$3" = "" ]; then
   rm -f $1_ICD.txt $1_ICD.c $1_ICD.cc $1_ICD.m
   rm -f $1_ae.r $1_ae.m $1_ae.cc $1_ae.oct
   rm -f $1_sese.r $1_sese.m
-  rm -f $1_sese.make $1_sesx.* $1_sesy.*
+  rm -f $1_sese.make $1_sesx.* $1_sesy.* $1_sae.*
   rm -fR $1_rep MTT_work
   exit
 fi
@@ -2607,7 +2610,8 @@ else
 $1_sympar.h: $1_sympar.txt $1_sese.make
 	sympar_txt2h.sh $1 $num_tmp_var
 	declaration="static double" \
-	make -f $1_sese.make declare_tmpvars >> \$@
+	make -f $1_sese.make declare_tmpvars |\
+	tr [A-Z] [a-z] >> \$@
 endif
 
 #SUMMARY sympar	symbolic parameters (c)
@@ -2743,11 +2747,19 @@ endif
 # Dummy target
 FORCE:
 
+ifeq ($use_sorted_equations,)
 $1_ode2odes_common_%.stamp: $1_ae.% $1_input.% $1_logic.% $1_numpar.% $1_simpar.% $1_state.%
 	touch \$@
 $1_ode2odes_common.o: $1_ae.o $1_input.o $1_logic.o $1_numpar.o $1_simpar.o $1_state.o
 	@echo "Creating $1_ode2odes_common.o"
 	ar -cr \$@ \$^
+else
+$1_ode2odes_common_%.stamp: $1_sae.% $1_input.% $1_logic.% $1_numpar.% $1_simpar.% $1_state.%
+	touch \$@
+$1_ode2odes_common.o: $1_sae.o $1_input.o $1_logic.o $1_numpar.o $1_simpar.o $1_state.o
+	@echo "Creating $1_ode2odes_common.o"
+	ar -cr \$@ \$^
+endif
 
 ifeq ($use_sorted_equations,)
 $1_ode2odes_euler_%.stamp $1_ode2odes_rk4_%.stamp: $1_ode.% $1_odeo.%
@@ -2769,6 +2781,7 @@ $1_ode2odes_implicit.o: $1_cseo.o $1_csex.o $1_smxa.o $1_smxax.o mtt_implicit.o
 	@echo "Creating $1_ode2odes_implicit.o"
 	ar -cr \$@ \$^
 
+ifeq ($use_sorted_equations,)
 $1_ode2odes_dassl_oct.stamp: $1_ode.oct $1_odeo.oct mtt_dassl.oct
 	touch \$@
 $1_ode2odes_dassl_o.stamp: $1_ode.o $1_odeo.o mtt_dassl.o
@@ -2778,6 +2791,17 @@ $1_ode2odes_dassl_%.stamp: $1_ode.% $1_odeo.%
 $1_ode2odes_dassl.o: $1_ode.o $1_odeo.o mtt_dassl.o
 	@echo "Creating \$@"
 	ar -cr \$@ \$^
+else
+$1_ode2odes_dassl_oct.stamp: $1_sesx.oct $1_sesy.oct mtt_dassl.oct
+	touch \$@
+$1_ode2odes_dassl_o.stamp: $1_sesx.o $1_sesy.o mtt_dassl.o
+	touch \$@
+$1_ode2odes_dassl_%.stamp: $1_sesx.% $1_sesy.%
+	touch \$@
+$1_ode2odes_dassl.o: $1_sesx.o $1_sesy.o mtt_dassl.o
+	@echo "Creating \$@"
+	ar -cr \$@ \$^
+endif
 
 $1_ode2odes_${algebraic_solver}.cc:	mtt_Solver.cc mtt_AlgebraicSolver.cc mtt_${algebraic_solver}.hh mtt_${algebraic_solver}.cc
 
@@ -2952,15 +2976,24 @@ ${sys}_sesx.m: ${sys}_def.r ${sys}_sesx.r ${sys}_sympar.txt
 ${sys}_sesy.m: ${sys}_def.r ${sys}_sesy.r ${sys}_sympar.txt
 	echo Creating \$@
 	mtt_r2m ${sys} sesy m
+${sys}_sae.m: ${sys}_def.r ${sys}_sae.r ${sys}_sympar.txt
+	echo Creating \$@
+	mtt_r2m ${sys} sae m
+
 ${sys}_sesx.r: ${sys}_sese.make
 	echo Creating \$@
 	make -f \$< MTTdX > \$@
 ${sys}_sesy.r: ${sys}_sese.make
 	echo Creating \$@
 	make -f \$< MTTy > \$@
+${sys}_sae.r: ${sys}_sese.make
+	echo Creating \$@
+	make -f \$< MTTyz > \$@
+
 ${sys}_sese.make: ${sys}_ese.r
 	echo Creating \$@
 	ese_r2make.pl --sys=${sys} --outfile=\$@ --$debug
+
 
 $1_def.r: $1_ese.r
 	touch $1_def.r

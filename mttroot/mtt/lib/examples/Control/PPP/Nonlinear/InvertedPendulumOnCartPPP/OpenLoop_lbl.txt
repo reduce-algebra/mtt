@@ -1,0 +1,40 @@
+%% Label file for system OpenLoop (OpenLoop_lbl.txt)
+%SUMMARY OpenLoop
+%DESCRIPTION <Detailed description here>
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS	out	us
+
+% Argument aliases
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+% Component type AE
+	U_1	 lin		ppp_1
+	U_2	 lin		ppp_2
+	U_3	 lin		ppp_3
+	U_4	 lin		ppp_4
+
+% Component type SS
+	[us]	SS		external,external
+
+% Component type Se
+	Us_1		SS	external
+	Us_2		SS	external
+	Us_3		SS	external
+	Us_4		SS	external
+
+

@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/02/21 02:16:17  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 mtt -o -ss OttoCycle abg tex
@@ -14,13 +17,13 @@ mtt -o -ss OttoCycle ss tex
 
 mtt -o -ss OttoCycle numpar txt
 mtt -o -ss OttoCycle input txt
-mtt -o -ss OttoCycle odes h
-mtt -o -ss OttoCycle odeso ps 'OttoCycle_cycle_V'
-mtt -o -ss OttoCycle odeso ps 'OttoCycle_cycle_P'
-mtt -o -ss OttoCycle odeso ps 'OttoCycle_cycle_S'
-mtt -o -ss OttoCycle odeso ps 'OttoCycle_cycle_T'
-mtt -o -ss OttoCycle odeso ps 'OttoCycle_cycle_V:OttoCycle_cycle_P'
-mtt -o -ss OttoCycle odeso ps 'OttoCycle_cycle_S:OttoCycle_cycle_T'
+
+mtt -o -ss -c OttoCycle odeso ps 'OttoCycle_cycle_V'
+mtt -o -ss -c OttoCycle odeso ps 'OttoCycle_cycle_P'
+mtt -o -ss -c OttoCycle odeso ps 'OttoCycle_cycle_S'
+mtt -o -ss -c OttoCycle odeso ps 'OttoCycle_cycle_T'
+mtt -o -ss -c OttoCycle odeso ps 'OttoCycle_cycle_V:OttoCycle_cycle_P'
+mtt -o -ss -c OttoCycle odeso ps 'OttoCycle_cycle_S:OttoCycle_cycle_T'
 
 
 

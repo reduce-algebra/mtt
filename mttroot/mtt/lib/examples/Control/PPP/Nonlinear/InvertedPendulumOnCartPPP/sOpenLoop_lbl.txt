@@ -1,0 +1,54 @@
+%% Label file for system sOpenLoop (sOpenLoop_lbl.txt)
+%SUMMARY sOpenLoop
+%DESCRIPTION 
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS	out	us_1,us_2
+
+% Argument aliases
+%ALIAS	$1	U_1
+%ALIAS	$2	U_1s
+%ALIAS	$3	U_2
+%ALIAS	$4	U_2s
+%ALIAS	$5	U_3
+%ALIAS	$6	U_3s
+%ALIAS	$7	U_4
+%ALIAS	$8	U_4s
+%ALIAS	$9	us
+%ALIAS	$10	uss
+%ALIAS	$11	Us_1
+%ALIAS	$12	Us_1s
+%ALIAS	$13	Us_2
+%ALIAS	$14	Us_2s
+%ALIAS	$15	Us_3
+%ALIAS	$16	Us_3s
+%ALIAS	$17	Us_4
+%ALIAS	$18	Us_4s
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+	[us]	SS		external,external
+
+% Component type AE
+	U_1	lin		ppp_1;ppp_1s
+	U_2	lin		ppp_2;ppp_2s
+	U_3	lin		ppp_3;ppp_3s
+	U_4	lin		ppp_4;ppp_4s
+
+% Component type Se
+	Us_1	SS		external;0
+	Us_2	SS		external;0
+	Us_3	SS		external;0
+	Us_4	SS		external;0

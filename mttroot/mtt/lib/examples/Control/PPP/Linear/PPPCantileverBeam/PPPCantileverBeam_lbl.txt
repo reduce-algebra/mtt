@@ -1,0 +1,45 @@
+%% Label file for system PPPCantileverBeam (PPPCantileverBeam_lbl.txt)
+%SUMMARY PPPCantileverBeam
+%DESCRIPTION <Detailed description here>
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Declare some variables
+%VAR Area
+%VAR AreaMoment
+%VAR BeamLength
+%VAR BeamThickness
+%VAR BeamWidth
+%VAR Density
+%VAR N
+%VAR Youngs
+%VAR EI
+%VAR rhoA
+
+% Port aliases
+
+% Argument aliases
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+% Component type BenoulliEuler
+  Chunk_1
+  Patch_1
+  Chunk_2
+  Patch_2
+  Chunk_3
+
+
+% Component type SS
+	tau_1	SS		external,external
+	tau_2	SS		external,external

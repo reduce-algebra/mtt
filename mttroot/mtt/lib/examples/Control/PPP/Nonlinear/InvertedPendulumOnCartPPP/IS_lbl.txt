@@ -1,0 +1,36 @@
+%% Label file for system IS (IS_lbl.txt)
+%SUMMARY IS I component with initial state
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS	in	in
+
+% Argument aliases
+%ALIAS	$1	flow,i
+%ALIAS	$2	f_0
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+% Component type I
+	i		lin	flow,i
+
+% Component type SS
+	[in]	 SS	external,external
+
+% Component type Sf
+	f_0		SS	f_0
+
+

@@ -1,0 +1,21 @@
+# Outline report file for system iMacroMicro (iMacroMicro_rep.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+mtt iMacroMicro abg tex
+mtt iMacroMicro cbg ps
+mtt iMacroMicro struc tex
+mtt iMacroMicro dae tex
+mtt iMacroMicro dm tex
+mtt iMacroMicro tf tex
+mtt iMacroMicro numpar txt
+mtt iMacroMicro lmfr ps 
+mtt iMacroMicro lpfr ps 
+%mtt iMacroMicro sro ps 
+%mtt -c iMacroMicro odeso ps 
+

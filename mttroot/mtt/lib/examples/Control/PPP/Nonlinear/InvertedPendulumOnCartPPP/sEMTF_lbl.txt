@@ -1,0 +1,52 @@
+%% Label file for system sEMTF (sEMTF_lbl.txt)
+%SUMMARY sEMTF Effort modulated TF - sensitivity version
+%DESCRIPTION 
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS	in	Actual_in,Sens_in
+%ALIAS	out	Actual_out,Sens_out
+%ALIAS	mod	Actual_mod,Sens_mod
+
+
+% Argument aliases
+%ALIAS	$1	l
+
+% CR aliases
+%ALIAS	$1	lsin
+%ALIAS	$2	slsin
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+% Component type EMTF
+	actual		lsin	flow,l
+	sens		lsin	flow,l
+
+% Component type AE3 (????NB NEGATIVE GAIN HERE!!!!)
+	ae3             slsin   l
+
+% Component type AF3
+	af3             slsin   l
+
+% Component type SS
+	[Actual_in]	SS		external,external
+	[Actual_out]	SS		external,external
+	[Actual_mod]	SS		external,internal
+	[Sens_in]	SS		external,external
+	[Sens_out]	SS		external,external
+	[Sens_mod]	SS		external,internal
+
+
+

@@ -6,6 +6,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  2000/12/04 14:42:47  peterg
+# %% Initial revision
+# %%
 # %% Revision 1.1  2000/08/01 12:26:48  peterg
 # %% Initial revision
 # %%
@@ -23,5 +26,6 @@ l_g = 	0.1; # Parameter l_g for MotorGenerator
 l_m = 	0.1; # Parameter l_m for MotorGenerator
 r_g = 	0.1; # Parameter r_g for MotorGenerator
 r_l = 	1.0; # Parameter r_l for MotorGenerator
-r_m = 	0.1; # Parameter r_m for MotorGenerator
+## Removed by MTT on Mon Dec  4 14:44:19 GMT 2000: r_m_1 = 	0.1; # Parameter r_m for MotorGenerator
 
+r_m	= 0.1; # Added by MTT on Mon Dec 04 14:44:44 GMT 2000

@@ -6,8 +6,11 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/05/18 11:29:58  peterg
+## Initial revision
+##
 ###############################################################
 
 
 # Set the switches
-bounce_ground= mttx(1)<0;
+bounce_ground_1_mtt_switch_logic	= (bounce_intf_1_mtt3<0);

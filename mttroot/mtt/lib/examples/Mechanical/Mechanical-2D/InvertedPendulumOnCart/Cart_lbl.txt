@@ -1,0 +1,48 @@
+%% Label file for system Cart (Cart_lbl.txt)
+%SUMMARY Cart
+%DESCRIPTION <Detailed description here>
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS	
+%ALIAS	in	drive
+%ALIAS	pendulum|out	x,y,a
+
+% Argument aliases
+%ALIAS	$1	m_c
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+% Component type I
+	m_c		lin	flow,m_c
+
+% Component type R
+	r_c		lin	flow,r_c
+	r_p		lin	flow,r_p
+
+% Component type SS
+	[a]	SS		external,external
+	[drive]	SS		external,external
+	[x]	SS		external,external
+	[y]	SS		external,external
+
+% Component type Df
+	v_c			SS	external
+
+% Component type Sf
+	zero_velocity		SS	0
+
+
+

@@ -1,0 +1,27 @@
+%SUMMARY Out: Outflow conditions
+%DESCRIPTION <Detailed description here>
+%% Label file for system Out (Out_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+%ALIAS	in  Thermal_in,Hydraulic_in
+%ALIAS	Th_in  Thermal_in
+%ALIAS	Hy_in  Hydraulic_in
+
+
+% Component type SS
+	Hy_out		SS	p_0,external
+	Th_out		SS	t_0,external
+	[Hydraulic_in]	SS	external,external
+	[Thermal_in]	SS	external,external
+

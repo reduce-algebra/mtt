@@ -1,0 +1,27 @@
+%SUMMARY Satellite: <brief description here>
+%DESCRIPTION <Detailed description here>
+%% Label file for system Satellite (Satellite_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type I
+	j		lin	flow,1
+
+% Component type INTF
+	int		
+
+% Component type SS
+	u		SS	external,internal
+	y		SS	external,0

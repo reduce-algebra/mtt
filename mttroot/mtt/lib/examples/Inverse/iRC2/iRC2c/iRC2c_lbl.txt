@@ -1,0 +1,30 @@
+%SUMMARY iRC2c Inverse of double RC circuit with collocated io
+%DESCRIPTION <Detailed description here>
+%% Label file for system iRC2c (iRC2c_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type C
+	c_1		lin	effort,c_1
+	c_2		lin	effort,c_2
+
+% Component type R
+	r_1		lin	flow,r_1
+	r_2		lin	flow,r_2
+
+% Component type SS
+	uy		SS	external,external
+
+

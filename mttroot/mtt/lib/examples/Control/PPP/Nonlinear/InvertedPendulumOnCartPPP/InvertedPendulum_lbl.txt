@@ -1,0 +1,47 @@
+%% Label file for system InvertedPendulum (InvertedPendulum_lbl.txt)
+%SUMMARY InvertedPendulum
+%DESCRIPTION <Detailed description here>
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS	in	x,y,a
+
+
+% Argument aliases
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+
+% Component type I
+        m_x     lin             flow,m_t
+        m_y     lin             flow,m_t
+
+% Component type Se
+	mg			SS		m_t*g
+
+% Component type De
+	theta			SS	external
+
+% Component type SS
+	[a]	SS		external,external
+	[x]	SS		external,external
+	[y]	SS		external,external
+
+% Component type Se
+	a_0	 SS	0
+
+% Component type gRod
+	rod	 none		l_p;l_p;j_p;m_p;g;omega_0;theta_0
+ 

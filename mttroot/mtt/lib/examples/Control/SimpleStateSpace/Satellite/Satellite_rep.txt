@@ -1,0 +1,23 @@
+# Outline report file for system Satellite (Satellite_rep.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+mtt Satellite abg tex
+
+mtt -o Satellite ode tex
+mtt -o Satellite sm tex
+mtt -o Satellite tf tex
+
+mtt -o Satellite smc tex
+mtt -o Satellite ssk tex
+
+mtt -o Satellite smo tex
+mtt -o Satellite ssl tex
+mtt -o Satellite ctf tex
+
+

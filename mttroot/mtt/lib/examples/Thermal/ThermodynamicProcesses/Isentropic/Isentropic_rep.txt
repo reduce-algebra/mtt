@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/02/21 02:18:41  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 mtt -o -ss Isentropic abg tex
@@ -14,14 +17,10 @@ mtt -o -ss Isentropic ss tex
 
 mtt -o -ss Isentropic numpar txt
 mtt -o -ss Isentropic input txt
-mtt -o -ss Isentropic odes h
-mtt -o -ss Isentropic odeso ps 'Isentropic_cycle_V'
-mtt -o -ss Isentropic odeso ps 'Isentropic_cycle_P'
-mtt -o -ss Isentropic odeso ps 'Isentropic_cycle_S'
-mtt -o -ss Isentropic odeso ps 'Isentropic_cycle_T'
-mtt -o -ss Isentropic odeso ps 'Isentropic_cycle_V:Isentropic_cycle_P'
-mtt -o -ss Isentropic odeso ps 'Isentropic_cycle_S:Isentropic_cycle_T'
 
-
-
-
+mtt -o -ss -c Isentropic odeso ps 'Isentropic_cycle_V'
+mtt -o -ss -c Isentropic odeso ps 'Isentropic_cycle_P'
+mtt -o -ss -c Isentropic odeso ps 'Isentropic_cycle_S'
+mtt -o -ss -c Isentropic odeso ps 'Isentropic_cycle_T'
+mtt -o -ss -c Isentropic odeso ps 'Isentropic_cycle_V:Isentropic_cycle_P'
+mtt -o -ss -c Isentropic odeso ps 'Isentropic_cycle_S:Isentropic_cycle_T'

@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/11/20 08:02:53  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:
@@ -20,7 +23,7 @@
 	pipe		lin		rho;c_p;lin,r
 
 % Component type SS
-	Hy_in		external	external
-	Hy_out		external	external
-	Th_in		external	external
-	Th_out		external	external
+	Hy_in		SS	external,external
+	Hy_out		SS	external,external
+	Th_in		SS	external,external
+	Th_out		SS	external,external

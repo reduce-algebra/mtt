@@ -6,12 +6,22 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  1998/03/04 11:49:01  peterg
+# %% Initial revision
+# %%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+# Initial states -- needed to choose an approppriate mass
+P_0 = 1e5;
+V_0 = 1;
+T_0 = 300;
+
 # Parameters
+c_v = 	718.0; # Parameter c_v for CU
+gamma_g = 1.4; # Parameter gamma for CU
+m_g = 	P_0*V_0/(T_0*(gamma_g-1)*c_v); # Parameter m for CU
+
+
 r = 	1.0; # Parameter r for CarnotCycle
-c_v = 	718.0; # Parameter c_v for CT2
-gamma = 1.4; # Parameter gamma for CT2
-m = 	1.0; # Parameter m for CT2
-t_0 = 	300.0; # Parameter t_0 for CT
+
 

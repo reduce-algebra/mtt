@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/02/22 09:18:53  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 mtt gTwoLink abg tex
@@ -16,4 +19,4 @@ mtt gTwoLink rfe tex
 mtt gTwoLink ode tex
 mtt gTwoLink input txt
 mtt gTwoLink numpar txt
-mtt gTwoLink odeso ps
+mtt -c gTwoLink odeso ps

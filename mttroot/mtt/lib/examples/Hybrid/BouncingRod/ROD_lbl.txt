@@ -5,8 +5,9 @@
 %DESCRIPTION	Port [4]:	x force/velocity - end 2
 %DESCRIPTION	Port [5]:	y force/velocity - end 1
 %DESCRIPTION	Port [6]:	y force/velocity - end 2
-%DESCRIPTION	Port [7]:	x force/velocity - mass centre
-%DESCRIPTION	Port [8]:	x force/velocity - mass centre
+%DESCRIPTION	Port [7]:	x force/velocity - centre
+%DESCRIPTION	Port [8]:	y force/velocity - centre
+%DESCRIPTION
 %DESCRIPTION	Parameter 1:	length from end 1 to mass centre
 %DESCRIPTION	Parameter 2:	length from end 2 to mass centre
 %DESCRIPTION	Parameter 3:	inertia about mass centre
@@ -23,6 +24,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% Revision 1.1  1996/11/07  10:57:17  peterg
+% Initial revision
+%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:
@@ -44,5 +48,13 @@ s2	lsin	flow,$2
 c1	lcos	flow,$1
 c2	lcos	flow,$2
 
-
+% ports
 	
+[p1]	SS	external,external
+[p2]	SS	external,external
+[p3]	SS	external,external
+[p4]	SS	external,external
+[p5]	SS	external,external
+[p6]	SS	external,external
+[p7]	SS	external,external
+[p8]	SS	external,external

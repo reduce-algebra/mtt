@@ -1,0 +1,36 @@
+%% Label file for system Load (Load_lbl.txt)
+%SUMMARY Load
+%DESCRIPTION 
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS	in	in
+
+% Argument aliases
+%ALIAS	$1	r_l
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+
+	PowerSensor			
+
+% Component type Df
+	Work	SS		external
+
+% Component type R
+	r_l	lin		flow,r_l
+
+% Component type SS
+	[in]	SS		external,external

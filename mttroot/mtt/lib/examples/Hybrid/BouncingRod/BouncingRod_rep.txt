@@ -5,14 +5,18 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1997/07/06 16:20:44  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-mtt -s -o -c BouncingRod abg tex
-mtt -s -o -c BouncingRod struc tex
-mtt -s -o -c BouncingRod ode tex
-mtt -s -o -c BouncingRod odes h
-mtt -s -o -c BouncingRod numpar txt
-mtt -s -o -c BouncingRod input txt
-mtt -s -o -c BouncingRod odeso ps
+mtt BouncingRod abg tex
+mtt BouncingRod struc tex
+mtt BouncingRod ode tex
+mtt BouncingRod numpar txt
+mtt BouncingRod input txt
+mtt BouncingRod logic txt
+mtt -c  BouncingRod odeso ps
+
 
 

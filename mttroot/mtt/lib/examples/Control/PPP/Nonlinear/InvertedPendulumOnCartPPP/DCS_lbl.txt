@@ -1,0 +1,39 @@
+%SUMMARY DCS: DCS motor 
+%DESCRIPTION A special for the inverted pendulum system
+%DESCRIPTION Derivative causality on the  shaft
+%DESCRIPTION No aliased parameters
+%DESCRIPTION Built in causality - speeds things up
+%DESCRIPTION Only the armature state and shaft resistance are variable
+
+%ALIAS in	Electrical
+%ALIAS out	Mechanical
+
+
+%% Label file for system DCS (DCS_lbl.txt)
+
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+%Motor gain
+k_m	lin		flow,k_m
+
+% Electrical components
+%Inductance
+l_a	lin		flow,l_a;i_0
+
+%Resistance
+r_a	lin		flow,r_a
+
+% Mechanical components
+%Inertia
+j_m	lin		flow,j_m
+
+%Friction
+b_m	lin		flow,b_m
+
+% Ports
+	[Electrical]	SS	external,external
+	[Mechanical]	SS	external,external

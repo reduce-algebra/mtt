@@ -1,0 +1,30 @@
+%SUMMARY msdP
+%DESCRIPTION <Detailed description here>
+%% Label file for system msdP (msdP_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type C
+	c_s		lin	effort,c_s
+
+% Component type I
+	j_s		lin	flow,j_s
+
+% Component type R
+	r_s		lin	flow,r_s
+
+% Component type SS
+	[in]		SS	external,internal
+	[out]		SS	external,0

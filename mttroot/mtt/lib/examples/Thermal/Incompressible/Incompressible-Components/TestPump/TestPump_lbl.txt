@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.5  1998/11/20 13:00:27  peterg
+% %% Replaces Pump by lPump in ALIAS
+% %%
 % %% Revision 1.4  1998/11/20 08:31:24  peterg
 % %% Fixed alias error
 % %%
@@ -33,8 +36,8 @@
 	pump		lin;lin		rho;c_p;flow,r_p;k_p;flow,r_l
 
 % Component type SS
-	Hy_in		external	external
-	Hy_out		external	external
-	Shaft		external	external
-	Th_in		external	external
-	Th_out		external	external
+	Hy_in		SS	external,external
+	Hy_out		SS	external,external
+	Shaft		SS	external,external
+	Th_in		SS	external,external
+	Th_out		SS	external,external

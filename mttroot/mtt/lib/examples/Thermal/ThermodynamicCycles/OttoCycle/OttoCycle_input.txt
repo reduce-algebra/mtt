@@ -6,33 +6,33 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  1998/08/10 14:42:13  peterg
+# %% Initial revision
+# %%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # Set the inputs
 
 if ((t>=0.0)&&(t<1.0))		#Compression
   u(1) = 0.0;			# Entropy flow
-else
   u(2) = -0.8;			# Volume rate-of-change
 endif;
 
 if ((t>=1.0)&&(t<2.0))		#Heating
   u(1) = 1000;			# Entropy flow
-else
   u(2) = 0.0;			# Volume rate-of-change
 endif;
 
 if ((t>=2.0)&&(t<3.0))		#Expansion
   u(1) = 0.0;			# Entropy flow
-else
   u(2) = 0.8;			# Volume rate-of-change
 endif;
 
 if (t>=3.0)			#Cooling
   u(1) = -1000;			# Entropy flow
-else
   u(2) = 0.0;			# Volume rate-of-change
 endif;
+
 
 
 

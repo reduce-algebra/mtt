@@ -22,6 +22,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1997/08/15  09:43:06  peterg
+% %% Now has lablelled (as opposed to numbered) ports.
+% %%
 % Revision 1.1  1996/11/07  10:57:17  peterg
 % Initial revision
 %
@@ -45,7 +48,6 @@ s1	lsin	flow,$1
 s2	lsin	flow,$2
 c1	lcos	flow,$1
 c2	lcos	flow,$2
-
 
 
 	

@@ -1,0 +1,32 @@
+%% Label file (macmic_lbl.txt)
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+%Masses
+m1	lin	flow,m_1
+m2	lin	flow,m_2
+m3	lin	flow,m_3
+
+%Springs
+k2	lin	state,k_2
+kt	lin	state,k_t
+
+%Dampers
+b1	lin	flow,b_1
+b2	lin	flow,b_2
+b3	lin	flow,b_3
+bt	lin	flow,b_t
+
+%Source/sensors
+f2	SS	external,internal
+ft	SS	external,0
+fb	SS	internal,0
+
+%Control
+p1	lin	flow,p_1
+d1	lin	flow,d_1
+
+
+

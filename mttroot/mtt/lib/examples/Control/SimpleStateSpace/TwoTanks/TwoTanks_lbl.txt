@@ -1,0 +1,29 @@
+%SUMMARY TwoTanks: <brief description here>
+%DESCRIPTION <Detailed description here>
+%% Label file for system TwoTanks (TwoTanks_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type C
+	c_1		lin	effort,1
+	c_2		lin	effort,1
+
+% Component type R
+	r_1		lin	effort,sigma_1
+	r_2		lin	effort,sigma_2
+
+% Component type SS
+	f_1		SS	internal,external
+	f_2		SS	0,external

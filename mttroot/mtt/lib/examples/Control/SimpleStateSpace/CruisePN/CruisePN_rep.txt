@@ -1,0 +1,24 @@
+# Outline report file for system CruisePN (CruisePN_rep.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+mtt CruisePN abg tex
+
+mtt -o CruisePN ode tex
+mtt -o CruisePN sm tex
+mtt -o CruisePN tf tex
+
+mtt -o CruisePN smc tex
+mtt -o CruisePN ssk tex
+
+mtt -o CruisePN smo tex
+mtt -o CruisePN ssl tex
+
+mtt -o CruisePN ctf tex
+
+

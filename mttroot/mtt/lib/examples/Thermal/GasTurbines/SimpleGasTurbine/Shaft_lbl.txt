@@ -1,0 +1,35 @@
+%% Label file for system Shaft (Shaft_lbl.txt)
+%SUMMARY Shaft
+%DESCRIPTION 
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS	in	in
+%ALIAS	load	load
+%ALIAS	out	out
+
+% Argument aliases
+%ALIAS	$1	j_s
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+	speed	SS		external
+
+% Component type I
+	j_s	lin		flow,j_s
+
+% Component type SS
+	[in]	SS		external,external
+	[load]	SS		external,external
+	[out]	SS		external,external

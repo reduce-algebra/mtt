@@ -1,0 +1,48 @@
+%% Label file for system sInvertedPendulum (sInvertedPendulum_lbl.txt)
+%SUMMARY sInvertedPendulum
+%DESCRIPTION <Detailed description here>
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Port aliases
+%ALIAS	in	x_1,x_2,y_1,y_2,a_1,a_2
+
+
+% Argument aliases
+
+%% Each line should be of one of the following forms:
+%	     a comment (ie starting with %)
+%	     component-name	cr_name	arg1,arg2,..argn
+%	     blank
+
+% ---- Component labels ----
+
+% Component type I
+        m_x     lin             flow,m_t;m_ts
+        m_y     lin             flow,m_t;m_ts
+
+% Component type Se
+	mg			SS		m_t*g;0
+
+% Component type De
+	theta			SS	external;external
+
+
+
+% Component type SS
+	[a]	SS		external,external
+	[x]	SS		external,external
+	[y]	SS		external,external
+
+% Component type Se
+	a_0	 SS	0;0
+
+% Component type ROD
+	rod	 none		l_p;l_p;j_p;m_p;g;omega_0;theta_0;j_ps;m_ps;omega_0s;theta_0s
+ 

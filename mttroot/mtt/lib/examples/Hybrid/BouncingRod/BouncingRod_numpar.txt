@@ -6,28 +6,19 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  1997/07/06 16:17:27  peterg
+# %% Initial revision
+# %%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-float theta,height;
-
 # Parameters
-epsilon = 	0.1; 
+epsilon = 	0.01; 
 l = 	1.0; # Default value
 m = 	1.0; # Default value
 j = 	l*l*m/3;
 
+## Declare pi
+pi = 3.142;
 
-theta = 3.1416/4;
-height = 10.0;
-
-# Initial states
-x(1) = 	0.0; # Initial state for BouncingRod_groundL (MTT_SWITCH)
-x(2) = 	0.0; # Initial state for BouncingRod_groundR (MTT_SWITCH)
-x(3) = 	height+l*cos(theta); # Initial state for BouncingRod_intfL (3)
-x(4) = 	height-l*cos(theta); # Initial state for BouncingRod_intfR (3)
-x(5) = 	0.0; # Initial state for BouncingRod_rod (J)
-x(6) = 	0.0; # Initial state for BouncingRod_rod (m_x)
-x(7) = 	0.0; # Initial state for BouncingRod_rod (m_y)
-x(8) = 	theta; # Initial state for BouncingRod_rod_th (3)
 
 

@@ -1,0 +1,17 @@
+# Outline report file for system iRC2n (iRC2n_rep.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+mtt iRC2n abg tex
+mtt iRC2n struc tex
+mtt iRC2n dae tex
+mtt iRC2n dm tex
+mtt iRC2n tf tex
+
+
+

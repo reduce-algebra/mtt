@@ -1,0 +1,24 @@
+%SUMMARY DCexample: <brief description here>
+%DESCRIPTION <Detailed description here>
+%% Label file for system DCexample (DCexample_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type DC
+	motor		lin	k_m;l_m;r_m;j_m;b_m
+
+% Component type SS
+	e		SS	external,internal
+	v		SS	0,external

@@ -1,0 +1,24 @@
+# Outline report file for system Cruise (Cruise_rep.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+mtt Cruise abg tex
+
+mtt -o Cruise sm tex
+mtt -o Cruise tf tex
+
+mtt -o Cruise smc tex
+mtt -o Cruise ssk tex
+
+mtt -o Cruise smo tex
+mtt -o Cruise ssl tex
+
+mtt -o Cruise ctf tex
+
+
+

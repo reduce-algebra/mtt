@@ -1,0 +1,26 @@
+## Outline report file for system rc (rc_rep.txt)
+mtt rc abg tex
+mtt rc struc tex
+mtt rc cbg ps
+mtt rc ode tex
+mtt rc sm tex
+mtt rc tf tex
+mtt rc sro ps
+mtt rc lmfr ps
+mtt rc nyfr ps
+
+mtt rc numpar txt
+mtt rc input txt
+
+## Octave .m form
+mtt  rc odeso ps
+
+## Octave .oct form
+mtt  -oct rc odeso ps
+
+## c form
+mtt  -c rc odeso ps
+
+mtt rc rep txt
+
+

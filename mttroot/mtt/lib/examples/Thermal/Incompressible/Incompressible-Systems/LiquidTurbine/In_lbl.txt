@@ -1,0 +1,27 @@
+%SUMMARY In: Inflow conditions
+%DESCRIPTION <Detailed description here>
+%% Label file for system In (In_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+%ALIAS	out Thermal_out,Hydraulic_out
+%ALIAS	Th_out  Thermal_out
+%ALIAS	Hy_out  Hydraulic_out
+
+
+
+% Component type SS
+	Hy_in			SS	p_0,external
+	Th_in			SS	t_0,external
+	[Hydraulic_out]		SS	external,external
+	[Thermal_out]		SS	external,external

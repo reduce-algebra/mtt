@@ -6,17 +6,39 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.1  1998/03/04 11:49:14  peterg
+% % Initial revision
+% %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
+% Set a pressure of 1 bar
+P_0 := 10^5;
+
+% Unit initial volume
+V_0 := 1;
+
+% Internal energy
+U_0 := P_0*V_0/(gamma_g-1);
+
+% Set initial temperature of 300k
+T_0 := 300;
+
+% Deduce the mass of gas
+m :=  U_0/(T_0*c_v);
+
+% Entropy
+S_0 := U_0/T_0;
+
 % Steady-state states
-MTTX1 := 	t_0*m*c_v; % CarnotCycle_cycle_gas (c)
-MTTX2 := 	10.0;      % CarnotCycle_cycle_gas (c)
-MTTX3 := 	m*c_v;	   % CarnotCycle_cycle_entropy (3)
-MTTX4 := 	10.0;      % CarnotCycle_cycle_volume (3)
+MTTX1 := 	U_0;         % CarnotCycle_cycle_gas (c)
+MTTX2 := 	V_0;         % CarnotCycle_cycle_gas (c)
+MTTX3 := 	S_0;         % CarnotCycle_cycle_entropy (3)
+MTTX4 := 	V_0;         % CarnotCycle_cycle_volume (3)
 
 % Steady-state inputs
 MTTU1 := 	0; % CarnotCycle (Heat)
 MTTU2 := 	0; % CarnotCycle (Work)
 ;;END;
+

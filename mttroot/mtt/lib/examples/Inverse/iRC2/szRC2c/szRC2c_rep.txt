@@ -1,0 +1,19 @@
+# Outline report file for system szRC2c (szRC2c_rep.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+mtt szRC2c abg tex
+mtt szRC2c struc tex
+mtt szRC2c dae tex
+mtt szRC2c dm tex
+mtt szRC2c tf tex
+
+mtt -c szRC2c odeso ps
+mtt szRC2c lmfr ps
+
+

@@ -1,4 +1,4 @@
-%SUMMARY twolinkxyn: two-link manipulator with collocated tip source-sensors.
+%SUMMARY TwoLinkxyn: two-link manipulator with collocated tip source-sensors.
 %DESCRIPTION This is related to a heirachical version of the 
 %DESCRIPTION example from Section 10.5 of "Metamodelling".
 %DESCRIPTION It uses two compound components: ROD and GRA
@@ -8,14 +8,14 @@
 %DESCRIPTION except that the source sensors are not collocated:
 %DESCRIPTION sources at the joints, sensors at the xy motion of the tip.
 
-%% Label (twolinkxyn_lbl.txt)
+%% Label (TwoLinkxyn_lbl.txt)
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Version control history
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
-% %% Revision 1.1  1998/01/06  15:56:31  peterg
+% %% Revision 1.1  1998/01/06  17:37:55  peterg
 % %% Initial revision
 % %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -30,20 +30,20 @@ rod1	none	l;l;j;m;mg
 rod2	none	l;l;j;m;mg
 
 %Zero velocity sources
-v_x	internal	0
+v_x	SS     internal,0
 
 
 %Zero force/torque sources
-F_a	0	internal
+F_a	SS	   0,internal
 
 
 %Torque at joints
-f_a1	external	internal
-f_a2	external	internal
+f_a1	SS	external,internal
+f_a2	SS	external,internal
 
 %Forces at tip
-F_x	0		external
-F_y	0		external
+F_x	SS	0,external
+F_y	SS	0,external
 
 
 %Gravity

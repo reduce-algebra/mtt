@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1999/02/21 02:15:05  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 mtt -ss -o CarnotCycle abg tex
@@ -14,10 +17,10 @@ mtt -ss -o CarnotCycle ss tex
 
 mtt -ss -o CarnotCycle numpar txt
 mtt -ss -o CarnotCycle input txt
-mtt -ss -o CarnotCycle odes h
-mtt -ss -o CarnotCycle odeso ps 'CarnotCycle_cycle_V'
-mtt -ss -o CarnotCycle odeso ps 'CarnotCycle_cycle_P'
-mtt -ss -o CarnotCycle odeso ps 'CarnotCycle_cycle_S'
-mtt -ss -o CarnotCycle odeso ps 'CarnotCycle_cycle_T'
-mtt -ss -o CarnotCycle odeso ps 'CarnotCycle_cycle_V:CarnotCycle_cycle_P'
-mtt -ss -o CarnotCycle odeso ps 'CarnotCycle_cycle_S:CarnotCycle_cycle_T'
+
+mtt -ss -c -o CarnotCycle odeso ps 'CarnotCycle_cycle_V'
+mtt -ss -c -o CarnotCycle odeso ps 'CarnotCycle_cycle_P'
+mtt -ss -c -o CarnotCycle odeso ps 'CarnotCycle_cycle_S'
+mtt -ss -c -o CarnotCycle odeso ps 'CarnotCycle_cycle_T'
+mtt -ss -c -o CarnotCycle odeso ps 'CarnotCycle_cycle_V:CarnotCycle_cycle_P'
+mtt -ss -c -o CarnotCycle odeso ps 'CarnotCycle_cycle_S:CarnotCycle_cycle_T'

@@ -18,6 +18,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.12  2001/03/23 14:55:03  gawthrop
+## Fixed cosmetic bugs -- component display
+##
 ## Revision 1.11  2000/12/28 12:19:49  peterg
 ## *** empty log message ***
 ##
@@ -67,7 +70,7 @@ rm -f mtt_info.txt
 #sh $1_type.sh 'cp ' '_fig.fig ' '_cbg.fig'> mtt_error.txt
 
 # Copy the unchaging part of the figure file
-cat $1_head.fig $1_port.fig $1_bnd.fig> $2_cbg.fig
+cat $1_head.fig $1_port.fig $1_bnd.fig $1_art.fig> $2_cbg.fig
 
 #Inform user
 echo Creating $2_cbg.fig -- component type $1

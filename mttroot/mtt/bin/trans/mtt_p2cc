@@ -102,10 +102,11 @@ grep typedef $1_$2.C              >> $1_$2.cc
 echo "/* Representation $2 information */" >> $1_$2.cc
 awk '{
   if ($1=="}") writing=0;
-  if ( (writing)&&(match($2,"mtt")==0) ) print $0;
+  if ( (writing)&&(match($2,"mtt")!=1) ) print $0;
   if (match($1,"{")==1) writing=1;
 }' <$1_$2.C |\
-sed 's/\[\([0-9]*\)\]/(\1)/g' >> $1_$2.cc
+sed 's/\[\([0-9]*\)\]/(\1)/g' |\
+sed 's/\[\(mmtti\)\]/(\1)/g' >> $1_$2.cc
 
 # Tail
 cat >> $1_$2.cc <<EOF

@@ -21,6 +21,7 @@ echo "Creating $1_$2.pas"
 
 # Find system constants
 Nx=`mtt_getsize $1 x`
+Nxx=`mtt_getsize $1 xx`
 Nu=`mtt_getsize $1 u`
 Ny=`mtt_getsize $1 y`
 
@@ -31,6 +32,7 @@ echo "PROCEDURE $1_$2;" > $1_$2.pas
 echo "TYPE"             >>$1_$2.pas
 echo "    StateVector  = ARRAY[1..$Nx] OF REAL;"        >>$1_$2.pas
 echo "    StateMatrix  = ARRAY[1..$Nx,1..$Nx] OF REAL;" >>$1_$2.pas
+echo "    StateMatrixVector  = ARRAY[1..$Nxx] OF REAL;" >>$1_$2.pas
 echo "    InputVector  = ARRAY[1..$Nu] OF REAL;"        >>$1_$2.pas
 echo "    OutputVector  = ARRAY[1..$Ny] OF REAL;"       >>$1_$2.pas
 echo "    ParameterVector  = ARRAY[1..$Npar] OF REAL;"  >>$1_$2.pas

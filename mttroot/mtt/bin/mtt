@@ -8,12 +8,16 @@
 
 # P.J.Gawthrop Oct 1989, Dec 1989, 1990, 1991, Oct 1993, Dec 1993, Jan 1994, Dec 95, Nov 1996.
 # Copyright (c) P.J.Gawthrop, 1989, 1990, 1991, 1993, 1994, 1995, 1996, 1997,1998,1999
+# Copyright (C) 2000 by Peter J. Gawthrop
 
 ###############################################################
 ## Version control history
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.236  2000/04/06 10:55:36  peterg
+## Removed debug lines
+##
 ## Revision 1.235  2000/04/06 10:52:53  peterg
 ## Replace $PWD with `pwd` for sh compatibility
 ##
@@ -1923,6 +1927,7 @@ $1_dae.tex:	$1_dae.r $1_simp.r
 
 #SUMMARY cse	constrained-state equations (r)
 #SUMMARY cse*	constrained-state equations (m)
+#SUMMARY cse*	constrained-state equations (oct)
 #SUMMARY cse	constrained-state equations (tex)
 #SUMMARY cse*	constrained-state equations (view)
 #SUMMARY cse	constrained-state equations (ps)
@@ -1934,9 +1939,14 @@ $1_cse.r: $1_dae.r $1_def.r $1_sympar.r $1_subs.r
 #	cse_r2m $1; matlab_tidy $1_cse.m
 $1_cse.m: $1_def.m $1_cse.r $1_sympars.txt
 	mtt_r2m $1 cse;  matlab_tidy $1_cse.m; matlab_tidy $1_cseo.m; 
-
+$1_cseo.m: $1_cse.m
+	touch $1_cseo.m
 $1_cse.tex: $1_cse.r  $1_sympar.r $1_simp.r
 	cse_r2tex $1; latex_tidy $1_cse.tex
+
+## Implicit oct rules
+$1_%.oct: $1_def.r $1_%.p $1_sympars.txt
+	mtt_p2oct $1 $2
 
 #SUMMARY scse	sensitivity constrained-state equations (r)
 #SUMMARY scse	sensitivity constrained-state equations (tex)
@@ -2035,6 +2045,10 @@ $1_cseo.p : $1_def.r $1_cseo.m
 	mtt_m2p $1_cseo.m
 $1_smx.p : $1_def.r $1_smx.m
 	mtt_m2p $1_smx.m
+$1_smxa.p : $1_def.r $1_smxa.m
+	mtt_m2p $1_smxa.m
+$1_smxax.p : $1_def.r $1_smxax.m
+	mtt_m2p $1_smxax.m
 $1_switchopen.p : $1_def.r $1_switchopen.m
 	mtt_m2p $1_switchopen.m
 
@@ -2172,10 +2186,10 @@ $1_smx.r: $1_def.r $1_def.m $1_ode.r $1_subs.r
 		ode2smx_lang $1 r; tidy $1_smx.r
 $1_smx.m: $1_def.r $1_def.m $1_cse.r $1_sympars.txt $1_subs.r
 		cse2smx_lang $1 m;
-$1_smxx.m: $1_smx.m
-		touch $1_smxx.m
-$1_smxtx.m: $1_smx.m
-		touch $1_smxtx.m
+$1_smxa.m: $1_smx.m
+		touch $1_smxa.m
+$1_smxax.m: $1_smx.m
+		touch $1_smxax.m
 
 #SUMMARY smc	controller form state matrices etc. - siso only (r)
 #SUMMARY smc	controller form state matrices etc. - siso only (tex)

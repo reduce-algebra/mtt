@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.39  2000/04/07 13:38:13  peterg
+## New mtt_getsize to replace bc
+##
 ## Revision 1.38  2000/04/07 13:24:41  peterg
 ## Modified for smxa and smxax
 ##
@@ -387,7 +390,14 @@ BEGIN{
         else{
           for (k=1;k<=j;k++) printf("%s\n", comment[k])
           printf("\n")
+          printf("VAR mmtti : INTEGER;");
           printf("\nBEGIN{%s}\n", Sys_rep)
+          if (rep=="smxa"){
+            printf("FOR mmtti:= 1 to %i DO\n\tmtta[mmtti] := 0;\n", Nx*Nx);
+          }
+          if (rep=="smxax"){
+            printf("FOR mmtti:= 1 to %i DO\n\tmttax[mmtti] := 0;\n", Nx);
+          }
        }
         doing_header = 0;
       }

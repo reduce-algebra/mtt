@@ -10,7 +10,7 @@ set -e
 set_debug ()
 {
     debug=$1
-    if [ $debug -eq 1 ]; then
+    if ( $debug ); then
 	set -x
 	make_debug='--debug=a'
     else
@@ -1376,7 +1376,7 @@ EOF
 
 ### main program
 
-set_debug 0
+set_debug false
 check_for_valid_input "$*"
 
 OPTS="$1" SYS="$2" REP="$3" LANG="$4" make $make_debug -f ${MTT_REP}/sfun_rep/Makefile ${2}_${3}.${4}

@@ -20,6 +20,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.5  1997/05/01  13:50:11  peterg
+# Replaced float by double.
+#
 # Revision 1.4  1997/05/01  13:43:44  peterg
 # Changed double to float.
 #
@@ -74,18 +77,31 @@ write " "$
 
 
 %Program heading
+write "#define MTTNX ", MTTNx $
+write "#define MTTNY ", MTTNy $
+write "#define MTTNU ", MTTNu $
+write "#define MTTNX1 ", MTTNx+1 $
+write "#define MTTNY1 ", MTTNy+1 $
+write "#define MTTNU1 ", MTTNu+1 $
+write "#define MTTNX2 ", MTTNx+2 $
+write "#define MTTNY2 ", MTTNy+2 $
+write "#define MTTNU2 ", MTTNu+2 $
+
 write "#include <stdio.h>"$
 write "#include ""$1_odes.h"" "$
+write "#include ""$1_ode.c"" "$
+write "#include ""$1_input.c"" "$
+write "#include ""$1_numpar.c"" "$
 
 %External (global) variable list
 write "#include ""$1_sympar.h"" "$
 
 
 write "/* Declare standard arrays */"$
-write "double y[", MTTNy+1, "]; /* $1_ode output */"$
-write "double dx[", MTTNx+1, "]; /* $1_ode state derivative */"$ 
-write "double x[", MTTNx+1, "]; /* $1_ode state */"$ 
-write "double u[", MTTNu+1, "]; /* $1_ode input */"$
+write "double y[MTTNY1]; /* $1_ode output */"$
+write "double dx[MTTNX1]; /* $1_ode state derivative */"$ 
+write "double x[MTTNX1]; /* $1_ode state */"$ 
+write "double u[MTTNU1]; /* $1_ode input */"$
 
 
 write "/* Files */ "$
@@ -119,7 +135,7 @@ write "  $1_numpar();"$
 write "/* Initialise main (Euler) integration loop */"$
 write "  time = 0;"$
 write "  dt = DT/STEPFACTOR;"$
-write "  for (i=1; i<=", MTTNx, "; i++)"$
+write "  for (i=1; i<=MTTNX; i++)"$
 write "      x[i] = 0.0;"$
 
 %Set up system inputs
@@ -147,14 +163,14 @@ write "  {"$
 %Write to output to file
 write "/* Write to output file */"$
 write "    fprintf(fpso, ""%5.4f "",time);"$
-write "    for (i=1; i<=", MTTNy, "; i++)"$
+write "    for (i=1; i<=MTTNY; i++)"$
 write "      fprintf(fpso, ""%5.4f "", y[i]);"$
 write "    fprintf(fpso, ""\n"");"$
 
 %Write to state to file
 write "/* Write to state file */"$
 write "    fprintf(fps, ""%5.4f "",time);"$
-write "    for (i=1; i<=", MTTNx, "; i++)"$
+write "    for (i=1; i<=MTTNX; i++)"$
 write "      fprintf(fps, ""%5.4f "", x[i]);"$
 write "    fprintf(fps, ""\n"");"$
 
@@ -165,7 +181,7 @@ write "    {"$
 %Set up system inputs
 write "      /* Set up system inputs */"$
 write "      $1_input(time);"$
-write "      for (i=1; i<=", MTTNx, "; i++)"$
+write "      for (i=1; i<=MTTNX; i++)"$
 write "        x[i] = x[i] + dx[i]*dt;"$
 write "      $1_ode();"$
 write "      time = time + dt;"$
@@ -178,14 +194,14 @@ write "  }"$
 %Write to output to file
 write "/* Write to output file */"$
 write "    fprintf(fpso, ""%5.4f "",time);"$
-write "    for (i=1; i<=", MTTNy, "; i++)"$
+write "    for (i=1; i<=MTTNY; i++)"$
 write "      fprintf(fpso, ""%5.4f "", y[i]);"$
 write "    fprintf(fpso, ""\n"");"$
 
 %Write to state to file
 write "/* Write to state file */"$
 write "    fprintf(fps, ""%5.4f "",time);"$
-write "    for (i=1; i<=", MTTNx, "; i++)"$
+write "    for (i=1; i<=MTTNX; i++)"$
 write "      fprintf(fps, ""%5.4f "", x[i]);"$
 write "    fprintf(fps, ""\n"");"$
 

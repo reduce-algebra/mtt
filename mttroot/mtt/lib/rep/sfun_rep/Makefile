@@ -100,4 +100,4 @@ useful-functions.hh:: ${MTT_CC}/include/useful-functions.hh
 	cp $^ $@
 
 %::
-	mtt -q $(MTT_OPTS) `echo $* | sed 's/\(.*\)_\(.*\)\.\(.*\)/\1 \2 \3/'`
+	mtt -cc -q $(MTT_OPTS) `echo $* | sed 's/\(.*\)_\(.*\)\.\(.*\)/\1 \2 \3/'`

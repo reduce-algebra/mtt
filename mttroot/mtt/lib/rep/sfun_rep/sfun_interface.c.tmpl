@@ -22,15 +22,15 @@ static double *mttx;		/* pointer to states */
 static double *mtty;		/* pointer to outputs */
 static double  mttt;		/* time */
 
-static double *controller_inputs;
-static double *controller_outputs;
+static double *MTT_outputs;
+static double *MTT_inputs;
 
 static unsigned int i;		/* loop counter */
 
 /* Start EDIT */
-/* Edit this block to define the number of controller inputs, outputs and parameters */
-const int NumberOfControllerInputs	= 1; /* inputs TO controller */
-const int NumberOfControllerOutputs	= 1; /* outputs FROM controller */
+/* Edit this block to define the number of simulink inputs, outputs and parameters */
+#define NumberOfSimulinkInputs	MTTNY /* MTT outputs */
+#define NumberOfSimulinkOutputs	MTTNU /* MTT inputs */
 /* End EDIT */
 
 static void
@@ -41,19 +41,21 @@ static void
   /* Start EDIT */
   /* Edit this block to process the model inputs and outputs */
   
-  /* Remove the following line */
-  ssSetErrorStatus (S, "<mtt_model_name>_sfun_interface.c has not been customised!\n");
+  /* Error messages can be set using the following line */
+  /*  ssSetErrorStatus (S, "<mtt_model_name>_some error message!\n"); */
 
-  /* simple example follows */
+  /* Default is to expose all MTT inputs, outputs and states */
 
-  /* Get total of all outputs and input to controller */
-  controller_inputs[0] = 0.0;
-  for (i = 0; i < MTTNY; i++) {
-    controller_inputs[0] += mtty[i];
+  /* Get all the MTT model outputs and pass them to simulink */
+  for (i = 0; i < NumberOfSimulinkInputs; i++) {
+    MTT_outputs[i] = mtty[i];
   }
 
-  /* overwrite first model input with output from controller */
-  mttu[0] = controller_outputs[0];
+  /* Get all inputs from Simulink and pass them to the MTT model */
+  /* Any inputs not over-written here will be read from <mtt_model_name>_input.c  */
+  for (i = 0; i < NumberOfSimulinkOutputs; i++) {
+    mttu[i] = MTT_inputs[i];
+  }
 
   /* End EDIT */
 }
@@ -100,10 +102,10 @@ check_finite(SimStruct *S, double *array, unsigned int index)
       array_name = "mttx";
     } else if (array == mtty) {
       array_name = "mtty";
-    } else if (array == controller_inputs) {
-      array_name = "controller_inputs";
-    } else if (array == controller_outputs) {
-      array_name = "controller_outputs";
+    } else if (array == MTT_outputs) {
+      array_name = "MTT_outputs";
+    } else if (array == MTT_inputs) {
+      array_name = "MTT_inputs";
     } else {
       array_name = "unknown_array";
     }
@@ -122,8 +124,8 @@ initialise_arrays (void)
   mttx		= array_of_double (MTTNX);
   mtty		= array_of_double (MTTNY);
 
-  controller_inputs	= array_of_double (NumberOfControllerInputs);
-  controller_outputs	= array_of_double (NumberOfControllerOutputs);
+  MTT_outputs	= array_of_double (NumberOfSimulinkInputs);
+  MTT_inputs	= array_of_double (NumberOfSimulinkOutputs);
 
   PRINT_LEAVE;
 }
@@ -144,9 +146,9 @@ update_inputs_from_simulink (SimStruct *S)
     mtty[i] = *ssGetInputPortRealSignalPtrs (S, 2)[i];
     check_finite(S, mtty, i);
   }
-  for (i = 0; i < NumberOfControllerOutputs; i++) {
-    controller_outputs[i] = *ssGetInputPortRealSignalPtrs (S, 3)[i];
-    check_finite(S, controller_outputs, i);
+  for (i = 0; i < NumberOfSimulinkOutputs; i++) {
+    MTT_inputs[i] = *ssGetInputPortRealSignalPtrs (S, 3)[i];
+    check_finite(S, MTT_inputs, i);
   }
   PRINT_LEAVE;
 }
@@ -178,7 +180,7 @@ static void mdlInitializeSizes(SimStruct *S)
   ssSetInputPortWidth(S, 0, MTTNU);
   ssSetInputPortWidth(S, 1, MTTNX);
   ssSetInputPortWidth(S, 2, MTTNY);
-  ssSetInputPortWidth(S, 3, NumberOfControllerOutputs);	/* inputs from controller */
+  ssSetInputPortWidth(S, 3, NumberOfSimulinkOutputs);	/* inputs from simulink */
   ssSetInputPortDirectFeedThrough(S, 0, 1);
   ssSetInputPortDirectFeedThrough(S, 1, 1);
   ssSetInputPortDirectFeedThrough(S, 2, 1);
@@ -186,7 +188,7 @@ static void mdlInitializeSizes(SimStruct *S)
     
   if (!ssSetNumOutputPorts(S, 2)) return;
   ssSetOutputPortWidth(S, 0, MTTNU); /* altered inputs */
-  ssSetOutputPortWidth(S, 1, NumberOfControllerInputs); /* outputs to controller */
+  ssSetOutputPortWidth(S, 1, NumberOfSimulinkInputs); /* outputs to simulink */
     
   ssSetNumSampleTimes(S, 1);
   ssSetNumRWork(S, 0);
@@ -234,9 +236,9 @@ static void mdlOutputs(SimStruct *S, int_T tid)
     ssGetOutputPortRealSignal (S, 0)[i] = mttu[i];
   }
   
-  for (i = 0; i < NumberOfControllerInputs; i++) {
-    check_finite(S, controller_inputs, i);
-    ssGetOutputPortRealSignal (S, 1)[i] = controller_inputs[i];
+  for (i = 0; i < NumberOfSimulinkInputs; i++) {
+    check_finite(S, MTT_outputs, i);
+    ssGetOutputPortRealSignal (S, 1)[i] = MTT_outputs[i];
   }
 
   PRINT_LEAVE;
@@ -260,8 +262,8 @@ static void mdlTerminate(SimStruct *S)
   free (mttx);
   free (mtty);
 
-  free (controller_inputs);
-  free (controller_outputs);
+  free (MTT_outputs);
+  free (MTT_inputs);
 
   PRINT_LEAVE;
 }

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1999/08/18 06:15:48  peterg
+## Stripped down to just representations menu - see mtt_make_menu
+##
 ## Revision 1.2  1999/03/09 00:03:19  peterg
 ## Revisions for xmtt
 ##
@@ -23,27 +26,35 @@
 
 
 # Create reps menu
-awk '{
+awk --field-separator='|' '{
+  
+# Find the rep and the title
+  split($1,REP," ");
+  rep=REP[1];
+# find the languages
+  N=split($2,LANG," ");
+
 # Important representation?
- if (index($1,"*")) {
-    rep=substr($1,1,length($1)-1);
-    printf("\n# Menus for representation %s\n", $1)
-    printf(".rep.rep add  cascade -label \"%s\" -menu .rep.rep.%s\n", rep, $1);
-    printf("menu .rep.rep.%s\n", $1);
-    for (i=2;i<=NF;i++) {
-      printf(" set mtt {mtt $args $system %s %s} \n", rep, $i); 
-      printf(".rep.rep.%s add  command -label  \"%s\" ", $1, $i);
+ if (index(rep,"*")) {
+    # Zap *
+    rep=substr(rep,1,length(rep)-1);
+    sub(/\*/,"",$1);
+    printf("\n# Menus for representation %s\n", rep)
+    printf(".rep.rep add  cascade -label \"%s\" -menu .rep.rep.%s\n", $1, rep);
+    printf("menu .rep.rep.%s\n", rep);
+    for (i=1;i<=N;i++) {
+      printf(" set mtt {mtt $args $system %s %s} \n", rep, LANG[i]); 
+      printf(".rep.rep.%s add  command -label  \"%s\" ", rep, LANG[i]);
       printf(" -command  \"exec echo $mtt &; exec $mtt &\" \n"); 
    }
  }
  else {
-    rep = $1;
     printf("\n# Menus for representation %s\n", rep)
-    printf(".repall.repall add  cascade  -label \"%s\" -menu .repall.repall.%s\n", rep, rep);
+    printf(".repall.repall add  cascade  -label \"%s\" -menu .repall.repall.%s\n", $1, rep);
     printf("menu .repall.repall.%s\n", rep);
-    for (i=2;i<=NF;i++) {
-      printf(" set mtt {mtt $args $system %s %s} \n", rep, $i); 
-      printf(".repall.repall.%s add  command -label  \"%s\" ", rep, $i);
+    for (i=1;i<=N;i++) {
+      printf(" set mtt {mtt $args $system %s %s} \n", rep, LANG[i]); 
+      printf(".repall.repall.%s add  command -label  \"%s\" ", rep, LANG[i]);
       printf(" -command  \"exec echo $mtt &; exec $mtt &\" \n"); 
    }
  }

@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.24  1999/08/27 06:02:16  peterg
+## removed zero_input to avoid p2c bug
+##
 ## Revision 1.23  1999/08/02 13:39:19  peterg
 ## Replaced zero_vector by zero_input
 ##
@@ -100,19 +103,17 @@ sympar2global_txt2m $1 >> $1_ode2odes.m
 
 # The rest of the program
 cat << EOF >> $1_ode2odes.m
-
 $1_simpar;			# Read in simulation parameters
 $1_numpar;			# Read in parameters
 MTTilast = round(mttlast/mttdt); # Total number of steps
 
 #Initialise
 MTTt = 0.0;
-####[MTTu]  = zero_input($Nu);	# Zero the input
-#if $Nx>0
-  [MTTx] = $1_state;	        # Read in initial state
-#else
-#  MTTx = 0;			# Dummy value
-#endif;
+
+#[MTTu]  = zero_input($Nu);	# Zero the input
+
+[MTTx] = $1_state;	        # Read in initial state
+
 
 [MTTy] = $1_odeo(MTTx,MTTu,MTTt); # Evaluate initial output
 [MTTu] = $1_input(MTTt,MTTx,MTTy);	# Evaluate initial input

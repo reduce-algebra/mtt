@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.1  1997/05/01  07:45:17  peterg
+# Initial revision
+#
 ###############################################################
 
 # Inform user
@@ -28,8 +31,12 @@ echo  >>  $1_numpar.m
 echo "% Global variable list" >>  $1_numpar.m
 sympar2global_txt2m $1 >> $1_numpar.m
 
-# Set the variables
-cat $1_numpar.txt >> $1_numpar.m
+#Write out the variables in m format.
+awk -F#  '{
+  if (NF<2) print $1
+  if (NF>1)  print $1 "% " $2
+}' $1_numpar.txt  >> $1_numpar.m
+
 
 
 

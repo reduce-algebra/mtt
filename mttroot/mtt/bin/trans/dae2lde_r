@@ -1,0 +1,116 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: lde2ode.r
+# Reduce differential-algebraic equations to Lagranges equations
+# Copyright (C) 2000 by Peter J. Gawthrop
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+# Create the reduce output code
+def2write_r $1 lde
+def2write_r $1 ldeo
+
+#Inform user
+echo Creating $1_lde.r
+echo Creating $1_ldeo.r
+
+# Remove the old log file
+rm -f cse2lde_r.log
+
+# Use reduce to accomplish the transformation
+$SYMBOLIC  << EOF >cse2lde_r.log
+
+%Read the formatting function
+in "$MTTPATH/trans/reduce_matrix.r";
+
+%Read the definitions file
+in "$1_def.r";
+
+%Read the substitution file
+in "$1_subs.r";
+
+%Read the dae file
+in "$1_dae.r";
+
+% Zap bits we dont need
+clear mttui, mttu, mttdu, mttx, mttdz;
+
+%% The lagrangian eqns are those set to zero.
+MTTL := mttyz;
+
+% Create the second derivative of z
+MATRIX mttddz(MTTNz,1);
+FOR i := 1:MTTNz DO
+BEGIN
+  mttuii := mkid(mttui,i);
+  mttdduii := mkid(mttddui,i);
+  mttddz(i,1) :=  sub(mttuii=mttdduii,mttz(i,1));
+END;
+mttddz;
+
+% Create Lagranges Equations
+FOR j := 1:MTTNyz DO
+BEGIN
+  %% Create derivative of the equations by substituting:
+  %du for u
+  mttuj := mkid(mttu,j);
+  mttduj := mkid(mttdu,j);
+  MTTL :=  sub(mttuj=mttduj,MTTL);
+
+  % dv for v
+  mttuij := mkid(mttui,j);
+  mttduij := mkid(mttdui,j);
+  MTTL :=  sub(mttuij=mttduij,MTTL);
+
+  % dx for x
+  mttxj := mkid(mttx,j);
+  MTTL :=  sub(mttxj=mttdx(j,1),MTTL);
+
+  % ddz for dz
+  mttdzj := mkid(mttdz,j);
+  MTTL :=  sub(mttdzj=mttddz(j,1),MTTL);
+
+END;
+
+L = MTTL;
+
+OFF Echo;
+OFF Nat;
+
+
+%Write out the  ordinary differential equations.
+OUT "$1_lde.r";
+write "%File: $1_lde.r";
+in ("$1_lde_write.r");
+write "in ""$1_ldeo.r"";";
+write "END;";
+SHUT "$1_lde.r";
+
+%Write out the  output equations
+OUT "$1_ldeo.r";
+write "%File: $1_ldeo.r";
+in ("$1_ldeo_write.r");
+write "END;";
+SHUT "$1_ldeo.r";
+quit;
+EOF
+
+# Now invoke the standard error handling.
+mtt_error_r cse2lde_r.log
+
+
+
+
+
+
+
+

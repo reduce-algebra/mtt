@@ -1,0 +1,33 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: abg_m2a4c
+#
+# Acausal bond graph to ascend format
+
+infofile='mtt_info.txt'
+errorfile='mtt_error.txt'
+
+
+# Remove the old log file
+rm -f abg_m2a4c_m.log
+rm -f $1_abg.a4c
+
+
+
+#Inform user
+echo "Creating $1_abg.a4c" 
+
+# Use matrix manipulation to accomplish the transformation
+octave -q << EOF  >$1_abg.a4c
+    ABG = $1_abg;
+    name = "$1";
+    abg_m2a4c(ABG,name);
+EOF
+
+if [ "$info" = "info" ]; then
+  cat $infofile
+fi

@@ -1,0 +1,38 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: abg2sabg_fig
+#
+# Acausal bond graph to causal bond graph: mfile format
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+# P.J.Gawthrop March 1997
+# Copyright (c) P.J.Gawthrop, 1997
+
+infofile='mtt_info.txt'
+typefile="$1_type.sh"
+
+# Remove the old log file
+rm -f abg2sabg_fig.log
+rm -f $1_cbg.m
+rm -f $typefile
+rm -f $infofile
+
+
+#Inform user
+echo Creating $1_sabg.txt
+
+awk '{\
+    Depth=7;\
+    print $Depth}' $1_abg.fig
+

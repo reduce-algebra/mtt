@@ -1,0 +1,60 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: gdat2ps
+
+# Converts a data file in gplot format to a ps file
+
+# Copyright (c) P.J.Gawthrop, 1996.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+## Revision 1.8  1997/12/07 18:45:44  peterg
+## Set to monochrome (not colour). This gives clearer plots.
+##
+## Revision 1.7  1996/08/26 13:04:43  peterg
+## Changed $() to ``.
+##
+# Revision 1.6  1996/08/16  14:51:21  peter
+# Put in some cosmetic postscript options.
+#
+## Revision 1.5  1996/08/15 09:37:58  peter
+## Parameters in title.
+##
+## Revision 1.4  1996/08/14 09:21:17  peter
+## Gnu plot conversion now done externally in dat2gdat
+##
+## Revision 1.3  1996/08/10 14:12:48  peter
+## Revised to new dat format: [x y x y x y] in place of [x y y y].
+##
+## Revision 1.2  1996/08/10 12:54:56  peter
+## Reorganised data file for gnuplot input.
+##
+## Revision 1.1  1996/08/10 09:52:39  peter
+## Initial revision
+##
+###############################################################
+
+echo Creating $1.fig
+
+gnuplot << EOF
+  set terminal fig color portrait fontsize 16 size 20 10 metric
+  set output '$1.fig'
+  set grid
+  set title "MTT simulation on `date` "
+  plot '$1.gdat' with lines
+  exit
+
+EOF
+
+## Add a gold box to give a nice picture
+cat >> $1.fig <<EOF
+2 4 0 2 31 7 50 0 -1 0.000 0 0 7 0 0 5
+	 9675 5310 9675 270 225 270 225 5310 9675 5310
+EOF

@@ -43,7 +43,15 @@ function [y,u,t,y_e,t_e] = ppp_lin_run (Name,Simulate,ControlType,w,p_c,p_o)
   endif
 
   if !struct_contains(p_c,"N")
-    p_c.N = 10;			# Number of small samples
+    p_c.N = 10;			# Number of small samples per large sample
+  endif
+  
+  if !struct_contains(p_c,"delta_ol")
+    p_c.delta_ol = 1.0;	# OL sample interval
+  endif
+  
+  if !struct_contains(p_c,"T")
+    p_c.T = 5.0;			# Last time point.
   endif
   
   if !struct_contains(p_c,"A_w")
@@ -67,6 +75,12 @@ function [y,u,t,y_e,t_e] = ppp_lin_run (Name,Simulate,ControlType,w,p_c,p_o)
   [n_x, n_u, n_y] = abcddim(A,B,C,D)
   ol_poles = eig(A)
 
+  ## Check w.
+  [n_w,m_w] = size(w);
+  if ( (n_w<>n_y) || (m_w<>1) )
+    error(sprintf("ppp_lin_run: w must a column vector with %i elements",n_y));
+  endif
+  
   ## Initialise
   x_0 = zeros(n_x,1);
   x_est = x_0;
@@ -78,15 +92,15 @@ function [y,u,t,y_e,t_e] = ppp_lin_run (Name,Simulate,ControlType,w,p_c,p_o)
 				#   x(4) = y_0(2);
 
   if ControlType==0		# Step input
-    N = 50;			# Number of small samples
-    I = 1;			# Number of large samples 
+    I = 1;			# 1 large sample
+    p_c.delta_ol = p_c.T	# I
     K_w = zeros(p_c.N_u,n_y);
     K_w(1,1) = 1;
     K_w(2,1) = -1;
     K_x = zeros(p_c.N_u,n_x);
     U = K_w*w;			# Initial control U
   else				# PPP control
-    I = ceil(50/p_c.N);		# Number of large samples
+    I = ceil(p_c.T/p_c.delta_ol); # Number of large samples
     tau = [10:0.1:11]*(2/a_u);	# Time horizons
     [k_x,k_w,K_x,K_w] = ppp_lin(A,B,C,D,p_c.A_u,p_c.A_w,tau); # Design
     U = K_w*w			# Initial control U

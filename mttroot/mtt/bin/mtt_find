@@ -14,6 +14,12 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1998/07/16 09:15:34  peterg
+## Now prints:
+## 	dir
+## 	name_lbl.txt
+##         access time
+##
 ## Revision 1.2  1997/09/04 09:15:19  peterg
 ## Includes summary line as well as description lines
 ##
@@ -22,36 +28,31 @@
 ##
 ###############################################################
 
-path=$1
-name=$2
-fullname=$2_lbl.txt
-all=$3
+path="$1"
 
+
+if [ -n "$2" ]; then
+    name="-name $2"
+fi
 q=\
 
 
-# awk splits the path into components and writes a find for each
-# If all argument null, then succesful find terminates.
-foundpath=`awk 'END{ \
-  n=split(path,a,":"); 
-  if (all == "") { 
-    printf("if ");
-  }  for (i=1;i<=n;i++) { 
-  printf("find %s -type d -name \"%s\"  -print \n", a[i], name);
-  if (all == "") { 
-    printf("then\n"); 
-    printf("exit\n"); 
-    printf("fi\n");
-  }
-   }
-     }' path="$path" name="$name" operation="$operation" all="$all" \
-</dev/null  | sh`
+paths=`echo $path | tr ":" " "`
+foundpath=`\
+for thepath in $paths; do
+    find $thepath -type d  $name -print 
+done | \
+sort -u`
 
 # If non-null result, check that the name_lbl.txt file exists in dir name
 # and print dirname and file name and last access time
 
 if [ -n "$foundpath" ]; then
-  find $foundpath -maxdepth 1 -name $fullname  -printf '%h\t%f\t%Ac\n' | sort -u
+ for thepath in $foundpath ;  do
+  dirname=`echo $thepath | awk -F/ '{print $NF}'`
+  fullname="$dirname"_lbl.txt
+  find $thepath -maxdepth 1 -name $fullname  -printf '%h\t%f\t%Ac\n';
+ done
 fi
 
 

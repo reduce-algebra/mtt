@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.19  2000/12/03 16:11:43  peterg
+## Corrected bug in logic declatations
+##
 ## Revision 1.18  2000/12/03 16:06:22  peterg
 ## Fixed bug in generating dummies
 ## Added logic declarations
@@ -143,6 +146,7 @@ case $rep in
         args=$eqnargs
         declareinputs=yes
         declarestates=yes
+	declareswitches=yes
 	;;
     numpar)
 	states=no;
@@ -235,6 +239,7 @@ case $language in
         var_declaration=$Lc
         declarestates=no
         declareinputs=no
+	declareswitches=no
 	;;
     txt)
 	modeline='## -*-octave-*- Put Emacs into octave-mode ##';
@@ -250,6 +255,7 @@ case $language in
 	inputs=no
         declarestates=no
         declareinputs=no
+	declareswitches=no
 	;;
     oct)
 	modeline="// -*-c++-*- Put Emacs into c++-mode";
@@ -296,6 +302,7 @@ for name in $zeromatrices; do
     echo "   mtt$name = zeros($N,$M);"
 done
 }
+
 function declare_dummies(){
 # Get the dummies
 dummies="mtt_tmp"
@@ -305,7 +312,7 @@ for dummy in $dummies; do
     awk '{ 
           # if (match(dummy,$1)==1)
              print $1
-         }' dummy=$dummy | sort -u >> mtt_dummies
+         }' dummy=$dummy >> mtt_dummies
 done
 
 dummy_list=`sort -u mtt_dummies`
@@ -321,6 +328,14 @@ for dummy in $dummy_list; do
 done
 } # declare_dummies
 
+function declare_switches {
+cat <<EOF
+
+$Lc  Declarations of switches $Rc
+EOF
+ strip_comments <${system}_switch.txt |\
+ awk '{printf("  double %s_logic = 0;\n", tolower($1))}' 
+} # declare_switches
 function declare_vars(){
 # Grab the names
 names=`awk '{if ($1==var_type) print tolower($4)}' var_type=$1 ${system}_struc.txt`
@@ -345,12 +360,6 @@ cat <<EOF
 $Lc Parameters $Rc
 EOF
 sympar2par_txt2m ${system} ""  "$constant_declaration" "$minusone"
-cat <<EOF
-
-$Lc Switches $Rc
-EOF
-strip_comments <${system}_switch.txt | awk '{printf("  int %s = 0;\n", tolower($1))}' 
-
 fi
 
 # States
@@ -389,6 +398,11 @@ fi
 if [ "$declaredummies" = "yes" ]; then
   declare_dummies
 fi
+
+if [ "$declareswitches" = "yes" ]; then
+  declare_switches
+fi
+
 
 zero_matrices;
 

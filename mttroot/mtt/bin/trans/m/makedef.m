@@ -5,6 +5,9 @@ function makedef(structure,deffile);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.4  1996/08/30  19:42:36  peter
+% %% Added newline at end of file.
+% %%
 % %% Revision 1.3  1996/08/24 15:06:22  peter
 % %% Write `END;' at end to please reduce.
 % %%
@@ -57,6 +60,14 @@ if states>0
   fprintf(filenum, 'matrix MTTI(%1.0f,%1.0f);\n', states,states);
   for i = 1:states
     fprintf(filenum, 'MTTI(%1.0f,%1.0f) := 1;\n', i, i);
+  end
+end;
+
+% Make an Nx/2 x Nx/2 unit matrix
+if states>1
+  fprintf(filenum, 'matrix MTTIm(%1.0f,%1.0f);\n', states/2,states/2);
+  for i = 1:states/2
+    fprintf(filenum, 'MTTIM(%1.0f,%1.0f) := 1;\n', i, i);
   end
 end;
 

@@ -7,8 +7,8 @@
 
 
 
-c	= 1.0;			# Capacitance
+c	= 0.1;			# Capacitance
 cs	= 0.0;			# Sensitivity
-r	= 1.0;			# Resistance
+r	= 10.0;			# Resistance
 rs	= 0.0;			# Sensitivity
 us	= 0.0;			# Sensitivity

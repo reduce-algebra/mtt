@@ -1,5 +1,5 @@
 %% Label file for system sRC (sRC_lbl.txt)
-%SUMMARY sRC
+%SUMMARY sRC Sensitivity version of RC
 %DESCRIPTION 
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -14,14 +14,10 @@
 
 
 % Port aliases
-%ALIAS	in	Electrical_in_1,Electrical_in_2
-%ALIAS	out	Electrical_out_1,Electrical_out_2
+%ALIAS	in|Electrical_in	Electrical_in_1,Electrical_in_2
+%ALIAS	out|Electrical_out	Electrical_out_1,Electrical_out_2
 
 % Argument aliases
-%ALIAS	$1	c
-%ALIAS	$2	cs
-%ALIAS	$3	r
-%ALIAS	$4	rs
 
 %% Each line should be of one of the following forms:
 %	     a comment (ie starting with %)
@@ -31,11 +27,11 @@
 % ---- Component labels ----
 
 % Component type SS
-	[Electrical_in]	SS		external,external
+	[Electrical_in]		SS		external,external
 	[Electrical_out]	SS		external,external
 
 % Component type C
-	c	lin		effort,c;cs
+	c	slin		effort,c;cs
 
 % Component type R
-	r	lin		flow,r;rs
+	r	slin		flow,r;rs

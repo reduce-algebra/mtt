@@ -10,12 +10,13 @@ x0  = sidRC_state(par);         # Initial state
 ## Simulation of "actual" system
 t = [0:sim.dt:sim.last]';
 T = 5;				# Period
-u = sin((2*pi/T)*t);
-y_0 = sidRC_ssim(x0,par,sim,u,1);
+## u = sin((2*pi/T)*t);
+u = ones(size(t));
+y_0 = sidRC_ssim(x0,par,sim,u);
 
 ## Initial parameter
 par_0 = par;
-par_0(sym.r) = 0.1;
+par_0(sym.r) = 1;
 
 ## Identify
 extras.criterion = 1e-5;
@@ -41,6 +42,6 @@ figfig("idRC_error","ps");
 
 xlabel("Iteration")
 title("Estimated Parameter");
-plot(Par');
+plot(Par([sym.r,sym.c],:)');
 figfig("idRC_parameters","pdf");
 figfig("idRC_parameters","ps");

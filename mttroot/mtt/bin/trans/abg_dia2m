@@ -7,6 +7,8 @@
   ###################################### 
   ##### Model Transformation Tools #####
   ######################################
+
+set -e
   
 # set LANG until fixed bug [647664]
 LANG="C" dia2abg.pl --create_abg --diagram_name=$1

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  2000/10/16 09:10:08  peterg
+## Now strips out "unwanted" bits frome the _aliased.txt file
+##
 ## Revision 1.1  2000/10/12 19:24:28  peterg
 ## Initial revision
 ##
@@ -35,7 +38,7 @@ mtt_strip_args < $1_aliased.txt | sort -u  > mtt_aliased_sort.txt
 
 # Compare it with the aliased list and show the differences
 diff mtt_all_sympar.txt mtt_aliased_sort.txt |\
-grep '<' | awk '{printf("%s\t%s\n", $2,$3)}' > mtt_sympar.txt
+awk '{if ($1=="<") printf("%s\t%s\n", $2,$3)}' > mtt_sympar.txt
 
 # Assume same name in different system is the same
 awk '{
@@ -44,13 +47,15 @@ awk '{
     }
     
     if ($1!=name){
-        printf("%s\t",name)
-        comma="";
-        for (j=1;j<=i;j++){
-          printf("%s%s", comma, sysname[j]);
-          comma=",";
+        if (length(name)>0){
+          printf("%s\t",name)
+          comma="";
+          for (j=1;j<=i;j++){
+            printf("%s%s", comma, sysname[j]);
+            comma=",";
+          }
+          printf("\n")
         }
-        printf("\n")
         i=1;
         sysname[1]=$2;
     }
@@ -66,4 +71,10 @@ END{
         printf("\n")
 
 }' < mtt_sympar.txt >$filename
+
+
+
+
+
+
 

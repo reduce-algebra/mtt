@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.212  1999/08/18 06:20:32  peterg
+## Put -u back again .....
+##
 ## Revision 1.211  1999/08/17 04:10:38  peterg
 ## Removed the -u switch from cp - it doesnt work on non GNU cps
 ##
@@ -983,7 +986,7 @@ if [ "$1" = "Clean" ] && [ "$2" = "" ]; then
   rm -f *_*.doc *_*.idx *_*.ind *_*.ilg *_*.dvi *_*.aux *_*.lof *_*.toc
   rm -f *_rep.tex
   rm -f  *_unique_raw_list *_raw_list
-  rm -f mtt_error.txt mtt_info.txt a.out 
+  rm -f mtt_error.txt mtt_info.txt *_ode2odes.out 
   rm -fR *_rep MTT_work
   exit
 fi
@@ -1007,7 +1010,7 @@ if [ "$2" = "Clean" ] && [ "$3" = "" ]; then
   rm -f $1_*.doc $1_*.idx $1_*.ind $1_*.ilg $1_*.dvi $1_*.aux $1_*.lof $1_*.toc
   rm -f $1_rep.tex
   rm -f $1_unique_raw_list $1_raw_list
-  rm -f mtt_error.txt mtt_info.txt a.out 
+  rm -f mtt_error.txt mtt_info.txt $1_ode2odes.out 
   rm -fR $1_rep MTT_work
   exit
 fi
@@ -2103,11 +2106,13 @@ $1_odes.dat2: $1_ode2odes.m $1_ode.m $1_numpar.m $1_switchopen.m  \
 endif
 
 ifeq ($computation,c)
-$1_odes.dat2: $1_ode2odes.c
+$1_ode2odes.out: $1_ode2odes.c
+	echo Creating $1_odes.out
+	$CC $1_ode2odes.c  -lm -o $1_ode2odes.out
+
+$1_odes.dat2: $1_ode2odes.out
 	echo Creating $1_odes.dat2
-	echo 'Compiling ...'
-	$CC $1_ode2odes.c  -lm
-	echo 'Running  ...'; time ./a.out>$1_odes.dat2 ; echo 'Done.'
+	    time ./$1_ode2odes.out>$1_odes.dat2
 
 
 $1_sms.m: $1_sms.c $1_sm.c $1_numpar.c $1_simpar.h\

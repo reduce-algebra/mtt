@@ -8,6 +8,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1998/07/27 20:30:39  peterg
+## Mods for dm rep - no globals ...
+##
 ## Revision 1.5  1998/07/25 20:42:30  peterg
 ## No assignements for switch either
 ##
@@ -36,6 +39,7 @@ extras=$6
 
 case $language in
     m)
+	modeline='% -*-octave-*- Put Emacs into octave-mode';
 	ext='m';
 	Lc='#';
 	Rc='#';
@@ -59,6 +63,9 @@ case $language in
     *)
 	echo Language $language not supported - sorry; exit 1
 esac
+
+# Appropriate emacs mode line
+echo $modeline
 
 ######### Octave (matlab) code
 if [ "$language" = m ]; then
@@ -150,30 +157,30 @@ fi
 # Globals
 sympar2global_txt2lang $1 $language
 
-if [ "$language" = "c" ] || [ "$language" = "m" ]; then
-  if [ "$rep" != "sm" ]&&[ "$rep" != "dm" ]&&[ "$rep" != "switch" ]; then
-  # Common part - ode (c and m)
-  # Use octave for this bit - needs the definition file
-  $MATRIX -q  <<EOF 
-    %System structure
-    [nx,ny,nu,nz,nyz] = $1_def;
-
-  printf("$Lc====== Set up the state variables ======$Rc\n");
-  for i = 1:nx
-    printf("  mttx%i = mttx$Lb%i$Rb;\n",i,i);
-  end;
-  printf("\n");
-
-  printf("$Lc====== Set up the input variables ======$Rc\n");
-  for i = 1:nu
-  printf("  mttu%i = mttu$Lb%i$Rb;\n",i,i);
-  end;
-  printf("\n");
-
-EOF
- fi
-fi
-#if [ "$language" = "java" ]; then
+## if [ "$language" = "c" ] || [ "$language" = "m" ]; then
+##   if [ "$rep" != "sm" ]&&[ "$rep" != "dm" ]&&[ "$rep" != "switch" ]; then
+##   # Common part - ode (c and m)
+##   # Use octave for this bit - needs the definition file
+##   $MATRIX -q  <<EOF 
+##     %System structure
+##     [nx,ny,nu,nz,nyz] = $1_def;
+## 
+##   printf("$Lc====== Set up the state variables ======$Rc\n");
+##   for i = 1:nx
+##     printf("  mttx%i = mttx$Lb%i$Rb;\n",i,i);
+##   end;
+##   printf("\n");
+## 
+##   printf("$Lc====== Set up the input variables ======$Rc\n");
+##   for i = 1:nu
+##   printf("  mttu%i = mttu$Lb%i$Rb;\n",i,i);
+##   end;
+##   printf("\n");
+## 
+## EOF
+##  fi
+## fi
+## #if [ "$language" = "java" ]; then
 
 #$MATRIX -q <<EOF   
 #    printf("JAVA\n");

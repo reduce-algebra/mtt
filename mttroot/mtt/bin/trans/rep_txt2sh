@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  2002/05/01 14:07:44  gawthrop
+## Added -dr foo (reads files from foo) dir.
+##
 ## Revision 1.6  2002/04/28 18:55:03  geraint
 ## Fixed [ 549658 ] awk should be gawk.
 ## Replaced calls to awk with call to gawk.
@@ -65,7 +68,7 @@ fi
 # But use switches
 # | sed "s/mtt /mtt -q -u $mtt_switches /" #| tee -a JUNK  | sh
 
-strip_comments< $1_rep.txt | awk '
+strip_comments< $1_rep.txt | gawk '
 {
   ## Add in the external switches
   sub("mtt", sprintf("mtt %s", mtt_switches));

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1996/08/10 14:11:11  peter
+## Initial revision
+##
 ###############################################################
 
 echo Creating $1_fr.dat
@@ -22,7 +25,7 @@ echo Creating $1_fr.dat
 $MATRIX << EOF  | awk '$1 !~ /[A-Za-cf-z]/ && NF>0 {print} '  >$1_fr.dat
 
   W = logspace(-1,2,100);
-  [A,B,C,D,E] = $1_dm;
+  [A,B,C,D,E] = $1_dm($1_numpar);
   fr = dm2fr(A,B,C,D,E,W);
 
   rfr = real(fr);

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.230  2000/03/15 20:31:06  peterg
+## Replaced lbl2cr by abg2cr_m2txt
+##
 ## Revision 1.229  2000/03/15 19:39:40  peterg
 ## Replaced sub creation cmp2sub_m2sh by abg2sub_m2sh
 ##
@@ -779,7 +782,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='4.0++'
+version='4.1'
 
 # MTT recursion level is zero unless explicitly set
 level=0
@@ -1843,8 +1846,8 @@ endif
 #Raw bond graph to acausal bond graph: mfile
 
 ifneq ($start_at_abg,yes)
-$1_abg.m: $1_rbg.m $1_alias.m 
-	abg2sub_m2sh $1
+$1_abg.m: $1_rbg.m $1_alias.m $1_cmp.m 
+	cmp2sub_m2sh $1
 	(sh $1_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
 	rbg2abg_m $info_switch $1
 endif

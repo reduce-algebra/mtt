@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.59  1997/03/19  10:14:04  peterg
+# Now produces a stripped acausal bond graph.
+#
 # Revision 1.58  1997/03/18  17:58:12  peterg
 # Generates label files containing all variables in fig file.
 # Generates sympar file for all levels in system.
@@ -525,9 +528,12 @@ $1_sympar.r: $1_sympar.txt
 
 #SUMMARY sympar	symbolic parameters (c)
 # r to c sympar conversion -- its part of the ode_r2c tool
-$1_sympar.c: $1_sympar.r
-	sympar_r2c $1
+#$1_sympar.c: $1_sympar.r
+#	sympar_r2c $1
 
+# txt to c sympar conversion
+$1_sympar.c: $1_sympar.txt
+	sympar_txt2c $1
 
 #SUMMARY simp	simplification information (r)
 $1_simp.r:
@@ -558,17 +564,7 @@ $1_numpar.c: $1_sympar.r
 
 #SUMMARY params	numerical parameter setting (c)
  $1_params.c: 
-	echo Creating $1_params.c
-	( \
-	echo '/*'; \
-	echo "%% Parameter file for system $1 ($1_params.c)"; \
-	echo "%% This file provides the system params for simulation:";\
-	echo '*/'; \
-	echo "#include \"$1_sympar.c\""; \
-	echo '$1_params()'; \
-        echo '{'; \
-	echo '};'; \
-        )> $1_params.c
+	sympar2params_txt2c $1
 
 #SUMMARY odes ODE simulation header file (h)
  $1_odes.h: 

@@ -14,6 +14,9 @@ function figfig(filename,language,boxed,monochrome)
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.8  2002/09/11 15:04:59  gawthrop
+  ## Optional boxing
+  ##
   ## Revision 1.7  2002/08/20 15:51:17  gawthrop
   ## Update to work with ident DIY rep
   ##
@@ -59,7 +62,7 @@ function figfig(filename,language,boxed,monochrome)
   
   replot;
   gset term x11
-  gset output no
+  gset output
   replot;
 
   if boxed # Add a box - makes a visible bounding box

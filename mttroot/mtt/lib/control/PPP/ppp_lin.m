@@ -176,12 +176,6 @@ function [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,cond_uu] = ppp_l
     J_uu = J_uu + Ust'*R*Ust;
   endfor
   
-  ## Exit if badly conditioned
-  cond_uu = cond(J_uu);
-  if cond_uu>max_cond
-    error(sprintf("J_uu is badly conditioned. Condition number = 10^%i",log10(cond_uu)));
-  endif
-
   ## w bits
   if n_W>0
     for i = 1:n_y			# For each output
@@ -213,6 +207,13 @@ function [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,cond_uu] = ppp_l
   endif
 
   J_uw = J_uw + x_u_t'*P*x_W_t;
+
+  ## Exit if badly conditioned
+  cond_uu = cond(J_uu);
+  if cond_uu>max_cond
+    error(sprintf("J_uu is badly conditioned. Condition number = 10^%i",log10(cond_uu)));
+  endif
+
 
   ## Compute the open-loop gains
   K_w = J_uu\J_uw;

@@ -16,6 +16,9 @@ function arg = args2arg(args,n,FS)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1996/08/30 09:58:55  peter
+% %% Uses str2ch to exteact a char from a string.
+% %%
 % %% Revision 1.1  1996/08/27  12:50:43  peterg
 % %% Initial revision
 % %%
@@ -26,22 +29,3 @@ if nargin<3
   FS = ';';
 end;
 
-arg = '';
-L = length(args);
-args_count = 0;
-for i=1:n
-  arg_count = 0;
-  arg = '';
-  if args_count == L
-    break;
-  end;  
-  while args_count < L
-    args_count = args_count+1;
-    arg_count = arg_count+1;
-    ch = str2ch(args,args_count);
-    if ch==FS
-      break;
-    end;
-    arg = [arg ch];
-  end;
-end;

@@ -15,6 +15,10 @@ function name = varname(name,index,causality);
 # ###############################################################
 # ## $Id$
 # ## $Log$
+# ## Revision 1.4  2003/03/24 09:09:52  gawthrop
+# ## Reformated to octave standard
+# ## Now writes variables in non-matrix form
+# ##
 # ## Revision 1.3  2003/03/13 14:22:34  gawthrop
 # ## No negative bond numbers
 # ##
@@ -33,4 +37,6 @@ function name = varname(name,index,causality);
 # # bond_name = [name,'('];
 # # name =sprintf('%s(%1.0f,%1.0f)', name, abs(index), cause2num(causality));
 
-name =sprintf('%s_%i_%s', name, abs(index), cause2name(causality));
+  name =sprintf('%s_%i_%s', name, abs(index), cause2name(causality));
+
+endfunction

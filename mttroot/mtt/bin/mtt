@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.40  1996/11/09 21:17:38  peterg
+## Fixed bug with copying at level 0.
+##
 ## Revision 1.39  1996/11/09 20:22:54  peterg
 ## VERSION 2.0
 ##
@@ -383,7 +386,7 @@ $1_args.m:
 	touch $1_args.m
 
 #Create empty files (with titles) if not already there
-#REPRESENTATION lbl	label file (txt)
+#SUMMARY lbl	label file (txt)
 $1_lbl.txt:
 	echo Creating $1_lbl.txt
 	( \
@@ -397,7 +400,7 @@ $1_lbl.txt:
 	echo "%	blank"; \
         )> $1_lbl.txt
 
-#REPRESENTATION cr	constitutive relationship for each subsystem (r)
+#SUMMARY cr	constitutive relationship for each subsystem (r)
 $1_cr.r: $1_sub.sh
 	lbl2cr_txt2r $1
 
@@ -417,7 +420,7 @@ $1_cr.r: $1_sub.sh
 	  echo 'END;' >> $1_cr.r; \
 	fi
 
-#REPRESENTATION simp	simplification information (r)
+#SUMMARY simp	simplification information (r)
 $1_simp.r:
 	echo Creating $1_simp.r
 	( \
@@ -426,11 +429,11 @@ $1_simp.r:
 	echo 'END;'; \
         )> $1_simp.r
 
-#REPRESENTATION numpar	numerical parameter declaration (m) 
+#SUMMARY numpar	numerical parameter declaration (m) 
 $1_numpar.m: $1_sympar.r $1_params.m
 	sympar2numpar_r2m $1
 
-#REPRESENTATION params	numerical parameter setting (m)
+#SUMMARY params	numerical parameter setting (m)
  $1_params.m: 
 	echo Creating $1_params.m
 	( \
@@ -440,7 +443,7 @@ $1_numpar.m: $1_sympar.r $1_params.m
 	echo; \
         )> $1_params.m
 
-#REPRESENTATION params	symbolic parameter setting (r)
+#SUMMARY params	symbolic parameter setting (r)
  $1_params.r: 
 	echo Creating $1_params.r
 	( \
@@ -450,7 +453,7 @@ $1_numpar.m: $1_sympar.r $1_params.m
 	echo 'END;'; \
         )> $1_params.r
 
-#REPRESENTATION input	input signal definition (m)
+#SUMMARY input	input signal definition (m)
 $1_input.m:
 	echo Creating $1_input.m
 	( \
@@ -466,7 +469,7 @@ $1_input.m:
 	echo "u(1) = 1;"; \
         )> $1_input.m
 
-#REPRESENTATION sspar	steady-state definition (r)
+#SUMMARY sspar	steady-state definition (r)
 $1_sspar.r:
 	echo Creating $1_sspar.r
 	(\
@@ -475,9 +478,9 @@ $1_sspar.r:
 	echo 'END;'; \
 	)> $1_sspar.r
 
-#REPRESENTATION rep	report (txt)
-#REPRESENTATION rep	report (tex)
-#REPRESENTATION rep	report (view)
+#SUMMARY rep	report (txt)
+#SUMMARY rep	report (tex)
+#SUMMARY rep	report (view)
 $1_rep.txt:
 	echo Creating $1_rep.txt
 	( \
@@ -489,7 +492,7 @@ $1_rep.txt:
 	echo "dae tex"; \
 	)> $1_rep.txt
 
-#REPRESENTATION rbg	raw bond graph (m)
+#SUMMARY rbg	raw bond graph (m)
 #Raw bond graph: fig file to mfile
 $1_rbg.m: $1_abg.fig $1_lbl.txt
 	rbg_fig2m $1
@@ -500,32 +503,32 @@ $1_fig.fig: $1_rbg.m
 $1_sub.sh: $1_cmp.m
 	cmp2sub_m2sh $1
 
-#REPRESENTATION sympar	symbolic parameters (r)
+#SUMMARY sympar	symbolic parameters (r)
 # Lbl to sympar conversion
 $1_sympar.r: $1_lbl.txt $1_params.r
 	lbl2sympar_txt2r $1
 	# echo "IN \"$1_params.r\";" >> $1_sympar.r
 	echo 'END;' >> $1_sympar.r
 
-#REPRESENTATION abg	acausal bond graph (m)
+#SUMMARY abg	acausal bond graph (m)
 #Raw bond graph to acausal bond graph: mfile
 $1_abg.m: $1_rbg.m $1_sub.sh
 	sh $1_sub.sh "mtt -q -l $level+1 " ' abg m'
 	rbg2abg_m $1
 
 
-#REPRESENTATION cbg	causal bond graph (m)
+#SUMMARY cbg	causal bond graph (m)
 #Acausal bond graph to causal bond graph: mfile
 $1_cbg.m: $1_abg.m
 	abg2cbg_m $1
 
-#REPRESENTATION cbg	causal bond graph (fig)
+#SUMMARY cbg	causal bond graph (fig)
 #Causal bond graph: mfile to fig conversion
 $1_cbg.fig: $1_cbg.m $1_rbg.m $1_fig.fig
 	cbg_m2fig $1
 
-#REPRESENTATION ese	elementary system equations (r)
-#REPRESENTATION def	definitions - system orders etc. (r)
+#SUMMARY ese	elementary system equations (r)
+#SUMMARY def	definitions - system orders etc. (r)
 #Elementary system equations + definitions
 $1_ese.r: $1_cbg.m
 	   cbg2ese_m2r $1
@@ -534,11 +537,11 @@ $1_def.r: $1_ese.r
 $1_def.m: $1_def.r
 	def_r2m $1; matlab_tidy $1_def.m;
 
-#REPRESENTATION dae	differential-algebraic equations (r)
-#REPRESENTATION dae	differential-algebraic equations (m)
-#REPRESENTATION dae	differential-algebraic equations (tex)
-#REPRESENTATION dae	differential-algebraic equations (view)
-#REPRESENTATION dae	differential-algebraic equations (ps)
+#SUMMARY dae	differential-algebraic equations (r)
+#SUMMARY dae	differential-algebraic equations (m)
+#SUMMARY dae	differential-algebraic equations (tex)
+#SUMMARY dae	differential-algebraic equations (view)
+#SUMMARY dae	differential-algebraic equations (ps)
 #Differential-algebraic equations
 $1_dae.r: $1_ese.r $1_cr.r $1_sympar.r
 	ese2dae_r $1; tidy $1_dae.r
@@ -549,11 +552,11 @@ $1_dae.c: $1_def.r $1_dae.r  $1_sympar.r
 $1_dae.tex:	$1_dae.r $1_simp.r
 	dae_r2tex $1; latex_tidy $1_dae.tex
 
-#REPRESENTATION cse	constrained-state equations (r)
-#REPRESENTATION cse	constrained-state equations (m)
-#REPRESENTATION cse	constrained-state equations (tex)
-#REPRESENTATION cse	constrained-state equations (view)
-#REPRESENTATION cse	constrained-state equations (ps)
+#SUMMARY cse	constrained-state equations (r)
+#SUMMARY cse	constrained-state equations (m)
+#SUMMARY cse	constrained-state equations (tex)
+#SUMMARY cse	constrained-state equations (view)
+#SUMMARY cse	constrained-state equations (ps)
 #Constrained-state equations
 $1_cse.r: $1_dae.r $1_def.r $1_sympar.r
 	dae2cse_r $1; tidy $1_cse.r
@@ -562,11 +565,11 @@ $1_cse.m: $1_def.r $1_cse.r $1_sympar.r
 $1_cse.tex: $1_cse.r  $1_sympar.r $1_simp.r
 	cse_r2tex $1; latex_tidy $1_cse.tex
 
-#REPRESENTATION ode	ordinary differential equations (r)
-#REPRESENTATION ode	ordinary differential equations (m)
-#REPRESENTATION ode	ordinary differential equations (tex)
-#REPRESENTATION ode	ordinary differential equations (view)
-#REPRESENTATION ode	ordinary differential equations (ps)
+#SUMMARY ode	ordinary differential equations (r)
+#SUMMARY ode	ordinary differential equations (m)
+#SUMMARY ode	ordinary differential equations (tex)
+#SUMMARY ode	ordinary differential equations (view)
+#SUMMARY ode	ordinary differential equations (ps)
 #Ordinary differential equations
 $1_ode.r: $1_cse.r $1_def.r $1_sympar.r
 	cse2ode_r $1; tidy $1_ode.r
@@ -575,11 +578,11 @@ $1_ode.m: $1_def.r $1_ode.r $1_sympar.r
 $1_ode.tex: $1_ode.r  $1_sympar.r $1_simp.r
 	ode_r2tex $1; latex_tidy $1_ode.tex
 
-#REPRESENTATION obs	observer equations for CGPC (r)
-#REPRESENTATION obs	observer equations for CGPC (m)
-#REPRESENTATION obs	observer equations for CGPC (tex)
-#REPRESENTATION obs	observer equations for CGPC (view)
-#REPRESENTATION obs	observer equations for CGPC (ps)
+#SUMMARY obs	observer equations for CGPC (r)
+#SUMMARY obs	observer equations for CGPC (m)
+#SUMMARY obs	observer equations for CGPC (tex)
+#SUMMARY obs	observer equations for CGPC (view)
+#SUMMARY obs	observer equations for CGPC (ps)
 #Observer functions for GPC
 $1_obs.r: $1_ode.r $1_def.r $1_sympar.r
 	ode2obs_r $1; tidy $1_obs.r
@@ -589,21 +592,21 @@ $1_obs.tex: $1_obs.r  $1_sympar.r $1_simp.r
 	obs_r2tex $1; latex_tidy $1_obs.tex
 
 
-#REPRESENTATION rfe	robot-form equations (r)
-#REPRESENTATION rfe	robot-form equations (tex)
-#REPRESENTATION rfe	robot-form equations (view)
-#REPRESENTATION rfe	robot-form equations (ps)
+#SUMMARY rfe	robot-form equations (r)
+#SUMMARY rfe	robot-form equations (tex)
+#SUMMARY rfe	robot-form equations (view)
+#SUMMARY rfe	robot-form equations (ps)
 #Robot-form equations
 $1_rfe.r: $1_cse.r $1_csm.r $1_def.r $1_sympar.r
 	cse2rfe_r $1; tidy $1_rfe.r
 $1_rfe.tex: $1_rfe.r  $1_sympar.r
 	rfe_r2tex $1; latex_tidy $1_rfe.tex
 
-#REPRESENTATION ss	steady-state equations (r)
-#REPRESENTATION ss	steady-state equations (m)
-#REPRESENTATION ss	steady-state equations (tex)
-#REPRESENTATION ss	steady-state equations (view)
-#REPRESENTATION ss	steady-state equations (ps)
+#SUMMARY ss	steady-state equations (r)
+#SUMMARY ss	steady-state equations (m)
+#SUMMARY ss	steady-state equations (tex)
+#SUMMARY ss	steady-state equations (view)
+#SUMMARY ss	steady-state equations (ps)
 #Steady-states
 $1_ss.r: $1_def.r $1_sspar.r $1_sympar.r $1_cr.r $1_dae.r
 	sspar2ss_r $1; tidy $1_ss.r
@@ -613,11 +616,11 @@ $1_ss.tex: $1_def.r $1_ss.r  $1_sympar.r $1_simp.r
 	ss_r2tex $1; latex_tidy $1_ss.tex 
 
 
-#REPRESENTATION dm	descriptor matrices (r)
-#REPRESENTATION dm	descriptor matrices (m)
-#REPRESENTATION dm	descriptor matrices (tex)
-#REPRESENTATION dm	descriptor matrices (view)
-#REPRESENTATION dm	descriptor matrices (ps)
+#SUMMARY dm	descriptor matrices (r)
+#SUMMARY dm	descriptor matrices (m)
+#SUMMARY dm	descriptor matrices (tex)
+#SUMMARY dm	descriptor matrices (view)
+#SUMMARY dm	descriptor matrices (ps)
 #Linearised system: descriptor matrices
 $1_dm.r: $1_dae.r $1_def.r $1_cr.r  $1_ss.r $1_sympar.r
 	dae2dm_r $1; tidy $1_dm.r
@@ -628,11 +631,11 @@ $1_dm.tex: $1_dm.r $1_sympar.r $1_simp.r
 
 
 
-#REPRESENTATION csm	constrained-state matrices (r)
-#REPRESENTATION csm	constrained-state matrices (m)
-#REPRESENTATION csm	constrained-state matrices (tex)
-#REPRESENTATION csm	constrained-state matrices (view)
-#REPRESENTATION csm	constrained-state matrices (ps)
+#SUMMARY csm	constrained-state matrices (r)
+#SUMMARY csm	constrained-state matrices (m)
+#SUMMARY csm	constrained-state matrices (tex)
+#SUMMARY csm	constrained-state matrices (view)
+#SUMMARY csm	constrained-state matrices (ps)
 #Linearised system: constrained-state matrices
 $1_csm.r: $1_cse.r $1_def.r $1_cr.r $1_ss.r $1_sympar.r
 	cse2csm_r $1; tidy $1_csm.r
@@ -641,11 +644,11 @@ $1_csm.m: $1_def.r $1_csm.r
 $1_csm.tex: $1_csm.r  $1_sympar.r $1_simp.r
 	csm_r2tex $1; latex_tidy $1_csm.tex
 
-#REPRESENTATION sm	state matrices (r)
-#REPRESENTATION sm	state matrices (m)
-#REPRESENTATION sm	state matrices (tex)
-#REPRESENTATION sm	state matrices (view)
-#REPRESENTATION sm	state matrices (ps)
+#SUMMARY sm	state matrices (r)
+#SUMMARY sm	state matrices (m)
+#SUMMARY sm	state matrices (tex)
+#SUMMARY sm	state matrices (view)
+#SUMMARY sm	state matrices (ps)
 #Linearised system: state matrices
 $1_sm.r: $1_csm.r $1_def.r $1_cr.r $1_ss.r $1_sympar.r
 	csm2sm_r $1; tidy $1_sm.r
@@ -654,11 +657,11 @@ $1_sm.m: $1_def.r $1_sm.r
 $1_sm.tex: $1_sm.r  $1_sympar.r $1_simp.r
 	sm_r2tex $1; latex_tidy $1_sm.tex
 
-#REPRESENTATION tf	transfer function (r)
-#REPRESENTATION tf	transfer function (m)
-#REPRESENTATION tf	transfer function (tex)
-#REPRESENTATION tf	transfer function (view)
-#REPRESENTATION tf	transfer function (ps)
+#SUMMARY tf	transfer function (r)
+#SUMMARY tf	transfer function (m)
+#SUMMARY tf	transfer function (tex)
+#SUMMARY tf	transfer function (view)
+#SUMMARY tf	transfer function (ps)
 #Linearised system: transfer function
 $1_tf.r: $1_dm.r $1_sympar.r 
 	dm2tf_r $1; tidy $1_tf.r
@@ -667,45 +670,45 @@ $1_tf.m: $1_def.r $1_tf.r
 $1_tf.tex: $1_def.r $1_tf.r $1_sympar.r $1_simp.r
 	tf_r2tex $1; latex_tidy $1_tf.tex
 
-#REPRESENTATION ir	impulse response - state (m)
-#REPRESENTATION ir	impulse response - state (dat)
-#REPRESENTATION ir	impulse response - state (ps)
-#REPRESENTATION ir	impulse response - state (view)
+#SUMMARY ir	impulse response - state (m)
+#SUMMARY ir	impulse response - state (dat)
+#SUMMARY ir	impulse response - state (ps)
+#SUMMARY ir	impulse response - state (view)
 
-#REPRESENTATION iro	impulse response - output (m)
-#REPRESENTATION iro	impulse response - output (dat)
-#REPRESENTATION iro	impulse response - output (ps)
-#REPRESENTATION iro	impulse response - output (view)
+#SUMMARY iro	impulse response - output (m)
+#SUMMARY iro	impulse response - output (dat)
+#SUMMARY iro	impulse response - output (ps)
+#SUMMARY iro	impulse response - output (view)
 
-#REPRESENTATION sr	step response - state (m)
-#REPRESENTATION sr	step response - state (dat)
-#REPRESENTATION sr	step response - state (ps)
-#REPRESENTATION sr	step response - state (view)
+#SUMMARY sr	step response - state (m)
+#SUMMARY sr	step response - state (dat)
+#SUMMARY sr	step response - state (ps)
+#SUMMARY sr	step response - state (view)
 
-#REPRESENTATION sro	step response - output (m)
-#REPRESENTATION sro	step response - output (dat)
-#REPRESENTATION sro	step response - output (ps)
-#REPRESENTATION sro	step response - output (view)
+#SUMMARY sro	step response - output (m)
+#SUMMARY sro	step response - output (dat)
+#SUMMARY sro	step response - output (ps)
+#SUMMARY sro	step response - output (view)
 
-#REPRESENTATION odes	ode solution - state (m)
-#REPRESENTATION odes	ode solution - state (dat)
-#REPRESENTATION odes	ode solution - state (ps)
-#REPRESENTATION odes	ode solution - state (view)
+#SUMMARY odes	ode solution - state (m)
+#SUMMARY odes	ode solution - state (dat)
+#SUMMARY odes	ode solution - state (ps)
+#SUMMARY odes	ode solution - state (view)
 
-#REPRESENTATION odeso	ode solution - output (m)
-#REPRESENTATION odeso	ode solution - output (dat)
-#REPRESENTATION odeso	ode solution - output (ps)
-#REPRESENTATION odeso	ode solution - output (view)
+#SUMMARY odeso	ode solution - output (m)
+#SUMMARY odeso	ode solution - output (dat)
+#SUMMARY odeso	ode solution - output (ps)
+#SUMMARY odeso	ode solution - output (view)
 
-#REPRESENTATION daes	dae solution - state (m)
-#REPRESENTATION daes	dae solution - state (dat)
-#REPRESENTATION daes	dae solution - state (ps)
-#REPRESENTATION daes	dae solution - state (view)
+#SUMMARY daes	dae solution - state (m)
+#SUMMARY daes	dae solution - state (dat)
+#SUMMARY daes	dae solution - state (ps)
+#SUMMARY daes	dae solution - state (view)
 
-#REPRESENTATION daeso	dae solution - output (m)
-#REPRESENTATION daeso	dae solution - output (dat)
-#REPRESENTATION daeso	dae solution - output (ps)
-#REPRESENTATION daeso	dae solution - output (view)
+#SUMMARY daeso	dae solution - output (m)
+#SUMMARY daeso	dae solution - output (dat)
+#SUMMARY daeso	dae solution - output (ps)
+#SUMMARY daeso	dae solution - output (view)
 
 #Time responses
 $1_ir.m: $1_sm.m $1_numpar.m $1_params.m $1_args.m $1_def.m
@@ -725,15 +728,15 @@ $1_daes.m: $1_dae.m $1_numpar.m $1_params.m $1_args.m $1_def.m $1_input.m
 $1_daeso.m: $1_daes.m
 	touch $1_daeso.m
 
-#REPRESENTATION odess	ode numerical steady-states - states (m)
-#REPRESENTATION odess	ode numerical steady-states - states (dat)
-#REPRESENTATION odess	ode numerical steady-states - states (ps)
-#REPRESENTATION odess	ode numerical steady-states - states (view)
+#SUMMARY odess	ode numerical steady-states - states (m)
+#SUMMARY odess	ode numerical steady-states - states (dat)
+#SUMMARY odess	ode numerical steady-states - states (ps)
+#SUMMARY odess	ode numerical steady-states - states (view)
 
-#REPRESENTATION odesso	ode numerical steady-states - outputs (m)
-#REPRESENTATION odesso	ode numerical steady-states - outputs (dat)
-#REPRESENTATION odesso	ode numerical steady-states - outputs (ps)
-#REPRESENTATION odesso	ode numerical steady-states - outputs (view)
+#SUMMARY odesso	ode numerical steady-states - outputs (m)
+#SUMMARY odesso	ode numerical steady-states - outputs (dat)
+#SUMMARY odesso	ode numerical steady-states - outputs (ps)
+#SUMMARY odesso	ode numerical steady-states - outputs (view)
 
 #Numerical steady states
 $1_odess.m: $1_ode.m $1_numpar.m $1_params.m $1_args.m $1_def.m $1_input.m
@@ -742,30 +745,30 @@ $1_odesso.m: $1_odess.m
 	touch $1_odesso.m
 
 
-#REPRESENTATION fr	frequency response (m)
-#REPRESENTATION fr	frequency response (dat)
-#REPRESENTATION fr	frequency response (ps)
-#REPRESENTATION fr	frequency response (view)
+#SUMMARY fr	frequency response (m)
+#SUMMARY fr	frequency response (dat)
+#SUMMARY fr	frequency response (ps)
+#SUMMARY fr	frequency response (view)
 
-#REPRESENTATION lmfr	loglog modulus frequency response (m)
-#REPRESENTATION lmfr	loglog modulus frequency response (dat)
-#REPRESENTATION lmfr	loglog modulus frequency response (ps)
-#REPRESENTATION lmfr	loglog modulus frequency response (view)
+#SUMMARY lmfr	loglog modulus frequency response (m)
+#SUMMARY lmfr	loglog modulus frequency response (dat)
+#SUMMARY lmfr	loglog modulus frequency response (ps)
+#SUMMARY lmfr	loglog modulus frequency response (view)
 
-#REPRESENTATION lpfr	semilog phase frequency response (m)
-#REPRESENTATION lpfr	semilog phase frequency response (dat)
-#REPRESENTATION lpfr	semilog phase frequency response (ps)
-#REPRESENTATION lpfr	semilog phase frequency response (view)
+#SUMMARY lpfr	semilog phase frequency response (m)
+#SUMMARY lpfr	semilog phase frequency response (dat)
+#SUMMARY lpfr	semilog phase frequency response (ps)
+#SUMMARY lpfr	semilog phase frequency response (view)
 
-#REPRESENTATION nyfr	Nyquist style frequency response (m)
-#REPRESENTATION nyfr	Nyquist style frequency response (dat)
-#REPRESENTATION nyfr	Nyquist style frequency response (ps)
-#REPRESENTATION nyfr	Nyquist style frequency response (view)
+#SUMMARY nyfr	Nyquist style frequency response (m)
+#SUMMARY nyfr	Nyquist style frequency response (dat)
+#SUMMARY nyfr	Nyquist style frequency response (ps)
+#SUMMARY nyfr	Nyquist style frequency response (view)
 
-#REPRESENTATION nifr	Nichols style frequency response (m)
-#REPRESENTATION nifr	Nichols style frequency response (dat)
-#REPRESENTATION nifr	Nichols style frequency response (ps)
-#REPRESENTATION nifr	Nichols style frequency response (view)
+#SUMMARY nifr	Nichols style frequency response (m)
+#SUMMARY nifr	Nichols style frequency response (dat)
+#SUMMARY nifr	Nichols style frequency response (ps)
+#SUMMARY nifr	Nichols style frequency response (view)
 
 
 #Frequency responses

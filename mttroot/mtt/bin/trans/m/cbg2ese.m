@@ -23,6 +23,9 @@ global at_top_level
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.20  1998/07/03 14:39:09  peterg
+% %% Added info messages a bit busy now!
+% %%
 % %% Revision 1.19  1998/04/12 11:58:19  peterg
 % %% Rename port components by changing name_r to [name_r
 % %%
@@ -171,25 +174,8 @@ disp('---- Component ---');
 						   
     % Alias the args list
     eval([ "alias = ", alias_name ";"]);
-    if is_struct(alias)
-      if length(args>0)
-        Args = split(args,";"); args="";
-        [N,M]= size(Args);
-        for i=1:N
-           arg = deblank(Args(i,:));
-          _arg = strrep(arg,",","__");
-          if struct_contains(alias,_arg)
-            eval(["new_arg = alias.", _arg, ";"]);
-  	    mtt_info(["Replacing ", arg, "\t by ",\
-            new_arg, " for component ", comp_name,\
-            " (", comp_type,") within ", full_name]);
-            arg = new_arg;
-          end
-          args = sprintf("%s;%s", args, arg);
-        end
-        args = substr(args,2); % loose leading ;
-      end
-    end;
+    message = sprintf("\tfor component  %s (%s) within %s",comp_name,comp_type,full_name);    
+    args = alias_args(args,alias,";",message);
 
     % Substitute positional ($1 etc) arguments
     cr = subs_arg(cr,system_cr, ...

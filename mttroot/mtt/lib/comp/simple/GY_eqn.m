@@ -15,6 +15,9 @@ function  structure = GY_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2000/12/28 11:51:06  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -50,7 +53,7 @@ else
   incause = -1;
 end;
 
-eqn =  equation(name,cr,args,outbond,outcause,outport, ...
+eqn =  equation("GY",name,cr,args,outbond,outcause,outport, ...
                              inbond,incause,inport);
 fprintf(eqnfile, '%s',eqn);
 
@@ -71,7 +74,7 @@ else
   incause = 1; 
 end;
 
-eqn =  equation(name,cr,args,outbond,outcause,outport, ...
+eqn =  equation("GY",name,cr,args,outbond,outcause,outport, ...
                              inbond,incause,inport);
 fprintf(eqnfile, '%s',eqn);
 

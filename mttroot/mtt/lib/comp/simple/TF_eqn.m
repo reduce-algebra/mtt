@@ -6,6 +6,9 @@ function  structure = TF_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1996/09/10 10:41:37  peter
+% %% Now used equation.m to write the equations.
+% %%
 % %% Revision 1.1  1996/08/19 09:05:04  peter
 % %% Initial revision
 % %%
@@ -43,7 +46,7 @@ else
   inport = 2;
 end;
 
-eqn =  equation(name,cr,args,outbond,outcause,outport, ...
+eqn =  equation("TF",name,cr,args,outbond,outcause,outport, ...
                              inbond,incause,inport);
 fprintf(eqnfile, '%s',eqn);
 
@@ -62,7 +65,7 @@ else
   inport = 2;
 end;
 
-eqn =  equation(name,cr,args,outbond,outcause,outport, ...
+eqn =  equation("TF",name,cr,args,outbond,outcause,outport, ...
                              inbond,incause,inport);
 fprintf(eqnfile, '%s',eqn);
 

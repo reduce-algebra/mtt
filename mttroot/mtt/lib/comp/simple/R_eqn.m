@@ -15,6 +15,9 @@ function  structure = R_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.4  1996/09/12 19:28:11  peter
+% %% Added defaults (with no constitutive relationship)
+% %%
 % %% Revision 1.3  1996/09/12 16:40:45  peter
 % %% Now does a default (when no constitutive relationship) with a unit
 % %% constitutive relationship on each port.
@@ -52,7 +55,7 @@ for outport = 1:ports
     inbond = outnumber;
   end;
   
-  eqn =  equation(name,cr,args,outnumber,outcause,outport, ...
+  eqn =  equation("R",name,cr,args,outnumber,outcause,outport, ...
                                inbond,incause,inport);
   fprintf(eqnfile, '%s',eqn);
 end;

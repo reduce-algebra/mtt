@@ -7,6 +7,9 @@ function  structure = AE_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.4  1996/09/10 10:10:41  peter
+% %% Now uses eqaution.m to format the equation.
+% %%
 % %% Revision 1.3  1996/08/30 19:03:10  peter
 % %% Added argument check.
 % %% Added extra name argument.
@@ -56,7 +59,7 @@ else 	                                % Bicausal: e_1 := e_2
 end
 
 
-eqn =  equation(name,cr,args,outbond,outcause,outport, ...
+eqn =  equation("AE",name,cr,args,outbond,outcause,outport, ...
                              inbond,incause,inport);
 fprintf(eqnfile, '%s',eqn);
 

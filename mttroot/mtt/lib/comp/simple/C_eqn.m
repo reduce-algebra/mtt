@@ -15,6 +15,9 @@ function structure =  C_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1997/04/09 13:00:28  peterg
+% %% *** empty log message ***
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -27,7 +30,7 @@ end;
 
 % Unicausal version
 CorI = 1;
-structure = cieqn(name,bond_number,bonds,direction,cr,args, structure, ...
+structure = cieqn(name,bond_number,bonds,direction,cr,args, structure, \
                  CorI, eqnfile);
 
 

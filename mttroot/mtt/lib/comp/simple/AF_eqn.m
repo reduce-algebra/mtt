@@ -15,6 +15,9 @@ function  structure = AF_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1996/09/12 19:29:35  peter
+% %% Use new equation method.
+% %%
 % %% Revision 1.2  1996/09/11 13:35:14  peter
 % %% New equation.m method used.
 % %%
@@ -61,7 +64,7 @@ else 	                                % Bicausal: f_1 := f_2
 end
 
 
-eqn =  equation(name,cr,args,outbond,outcause,outport, ...
+eqn =  equation("AF",name,cr,args,outbond,outcause,outport, ...
                              inbond,incause,inport);
 fprintf(eqnfile, '%s',eqn);
 

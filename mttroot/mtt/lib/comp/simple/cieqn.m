@@ -16,6 +16,9 @@ function structure =  cieqn(name, bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1998/06/29 13:05:08  peterg
+% %% Changed cieqn so that sign ignored.
+% %%
 % %% Revision 1.2  1997/12/04 13:48:00  peterg
 % %% Added sign info to take account of direction of bonds.
 % %%
@@ -31,10 +34,17 @@ if nargin<8
   eqnfile = 'stdout';
 end;
 
+if (CorI==1)
+  comp_type = "C";
+else
+  comp_type = "I";
+endif
+
 CorIorISW = CorI;
 if CorIorISW==0 % ISW
    CorI = -1;
 end;
+
 
 % Find the number of ports
 [ports,junk] = size(bonds);
@@ -66,7 +76,7 @@ for outport = 1:ports
     fprintf(eqnfile, 'MTTdX(%1.0f,1) := %s%s;\n', state, sign, ...
                      varname(name,LHS_number,-LHS_cause));
     % Print equation of form output = CR (state) 
-    eqn =  equation(name,cr,args,LHS_number,LHS_cause,outport, ...
+    eqn =  equation(comp_type,name,cr,args,LHS_number,LHS_cause,outport, ...
                              bond_number,state_cause,1:ports);
     fprintf(eqnfile, '%s',eqn);
     structure(1) = state;
@@ -83,7 +93,7 @@ for outport = 1:ports
              varname(name,LHS_number, state_cause));
 				 
    % Print equation of form z_i = CR(input)
-      eqn =  equation(name,cr,args,LHS_number,state_cause, outport, ...
+      eqn =  equation(comp_type,name,cr,args,LHS_number,state_cause, outport, ...
                              bond_number,RHS_cause,1:ports);
     fprintf(eqnfile, '%s',eqn);
     structure(2) = nonstate;

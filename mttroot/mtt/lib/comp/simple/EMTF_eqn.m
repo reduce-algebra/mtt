@@ -7,6 +7,9 @@ function  structure = EMTF_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  2000/12/28 11:45:48  peterg
+% %% *** empty log message ***
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -43,7 +46,7 @@ else
   inport = [2;3];
 end;
 
-eqn =  equation(name,cr,args,outbond,outcause,outport, ...
+eqn =  equation("EMTF",name,cr,args,outbond,outcause,outport, ...
                              inbond,incause,inport);
 fprintf(eqnfile, '%s',eqn);
 
@@ -62,7 +65,7 @@ else
   inport = [2;3];
 end;
 
-eqn =  equation(name,cr,args,outbond,outcause,outport, ...
+eqn =  equation("EMTF",name,cr,args,outbond,outcause,outport, ...
                              inbond,incause,inport);
 fprintf(eqnfile, '%s',eqn);
 

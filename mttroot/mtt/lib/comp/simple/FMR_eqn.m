@@ -15,6 +15,9 @@ function  structure = FMR_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1996/09/12 19:30:31  peter
+% %% Updated to use new eqaution.m
+% %%
 % %% Revision 1.2  1996/08/30 18:35:43  peter
 % %% New name argument added.
 % %%
@@ -74,7 +77,7 @@ else  % write the full works
       outcause = 1;
     end;    
     incause = [-outcause; -1]; % Flow input on port 2
-    eqn =  equation(name,cr,args,outnumber,outcause,outport, ...
+    eqn =  equation("FMR",name,cr,args,outnumber,outcause,outport, ...
                                bond_number,incause,1:ports);
     fprintf(eqnfile, '%s',eqn);
 
@@ -85,7 +88,7 @@ else  % write the full works
     innumber = bond_number(1)*[1;1];    
     incause = [1; -1]; % Effort and flow on port 1
     inports = [1; 1];
-    eqn =  equation(name,cr,args,outnumber,outcause,outport, ...
+    eqn =  equation("FMR",name,cr,args,outnumber,outcause,outport, ...
                                innumber,incause,inports);
     fprintf(eqnfile, '%s',eqn);
   end;

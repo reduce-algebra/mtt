@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.7  1997/03/18  17:25:24  peterg
+# Now just generates names - formatting removed.
+#
 # Revision 1.6  1996/12/07  20:02:43  peterg
 # Fixed symbolic parameter bug.
 #
@@ -56,7 +59,7 @@ sys_name = ARGV[1];
 comment = "%";
 arg_delimiter = ",";
 not_an_arg = "effort flow state internal external zero 0 1";
-numeric = "[0-9]";
+numeric = "[0-9-]";
 symbol_count = 0;
 symbols = "";
 }
@@ -90,11 +93,11 @@ END {
 #  printf("MTTNVar := %1.0f;\n", symbol_count);
 
   if (symbol_count>0) {
-   # printf("MATRIX MTTVar(MTTNVar,1);\n");
+   printf("MATRIX MTTVar(MTTNVar,1);\n");
     split(symbols,symbol);
     for (i = 1; i <= symbol_count; i++) {
 #      printf("MTTVar(%1.0f,1) \t := %s\n", i, symbol[i]);
-      printf("%s\n", symbol[i]);
+      printf("%s\t%s\n", symbol[i], name);
     }
   }
 

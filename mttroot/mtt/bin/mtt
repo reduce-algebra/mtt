@@ -17,6 +17,11 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.351  2002/05/23 17:08:20  geraint
+## `mtt sys sfun zip` now produces an input block and an interface block for MTT models.
+## Models can be embedded within larger Simulink models by the 2 ports.
+## The user must edit 2 code blocks in <sys>_sfun_interface.c before compiling with mex.
+##
 ## Revision 1.350  2002/05/21 08:45:36  gawthrop
 ## DIY reps: no longer skips rep if file exists already.
 ## Avoids problems in rep.txt when options change
@@ -3526,7 +3531,7 @@ if [ "$debug" != "debug" ]; then
 else
   echo Debugging - log files retained in LOGFILES  
   mkdir -p LOGFILES
-  mv -f *.log LOGFILES
+  mv -f *.log LOGFILES 2> /dev/null
 fi
 
 #Print what's going on if in verbose mode

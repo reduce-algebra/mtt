@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  2000/11/09 15:29:35  peterg
+## lower-case declarations
+##
 ## Revision 1.10  2000/11/07 17:20:51  peterg
 ## useful-functions.hh now included locally
 ##
@@ -225,6 +228,7 @@ case $language in
         var_declaration="double "
 	minusone="-1"
 	map="_map"
+        declaredummies=yes
 	;;
     *)
 	echo Language $language not supported - sorry; exit 1
@@ -233,6 +237,29 @@ esac
 if [ "$rep" = "simpar" ]; then
    output=${output}${map}    # Output is simpar_map in this case
 fi
+
+function declare_dummies(){
+# Get the dummies
+dummies="mtt_s"
+rm -f mtt_dummies
+for dummy in $dummies; do
+    awk '{
+     if (match($1,dummy)==1) print $1
+     }' dummy=$dummy < ${fun_name}.m >> mtt_dummies
+done
+
+dummy_list=`sort -u mtt_dummies`
+
+# Comments
+cat <<EOF
+
+$Lc  Declarations of dummies $Rc
+EOF
+
+for dummy in $dummy_list; do
+    echo '  ' $var_declaration $dummy';'
+done
+} # declare_dummies
 
 function declare_vars(){
 # Grab the names
@@ -291,6 +318,10 @@ fi
 
 if [ "$declareinputs" = "yes" ]; then
   declare_vars input
+fi
+
+if [ "$declaredummies" = "yes" ]; then
+  declare_dummies
 fi
 
 }

@@ -17,6 +17,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.338  2002/05/08 16:03:32  geraint
+## Added mex support for ode2odes: mtt sys ode2odes mexglx.
+## This mex stuff seems to require octave2.1-headers.
+##
 ## Revision 1.337  2002/05/08 14:51:03  geraint
 ## Moved matlab/octave data type conversion functions to a separate file.
 ##
@@ -2408,45 +2412,29 @@ endif
 # Dummy target
 FORCE:
 
-$1_ode2odes_common.m    : $1_ae.m   $1_input.m   $1_logic.m   $1_numpar.m   $1_simpar.m   $1_state.m
+$1_ode2odes_common_%.stamp: $1_ae.% $1_input.% $1_logic.% $1_numpar.% $1_simpar.% $1_state.%
 	touch \$@
-$1_ode2odes_common.cc   : $1_ae.cc  $1_input.cc  $1_logic.cc  $1_numpar.cc  $1_simpar.cc  $1_state.cc
-	touch \$@
-$1_ode2odes_common.o    : $1_ae.o   $1_input.o   $1_logic.o   $1_numpar.o   $1_simpar.o   $1_state.o
+$1_ode2odes_common.o: $1_ae.o $1_input.o $1_logic.o $1_numpar.o $1_simpar.o $1_state.o
 	@echo "Creating $1_ode2odes_common.o"
 	ar -cr \$@ \$^
-$1_ode2odes_common.oct  : $1_ae.oct $1_input.oct $1_logic.oct $1_numpar.oct $1_simpar.oct $1_state.oct
-	touch \$@
 
-$1_ode2odes_euler.m  $1_ode2odes_rk4.m    : $1_ode.m     $1_odeo.m
+$1_ode2odes_euler_%.stamp $1_ode2odes_rk4_%.stamp: $1_ode.% $1_odeo.%
 	touch \$@
-$1_ode2odes_euler.cc $1_ode2odes_rk4.cc   : $1_ode.cc    $1_odeo.cc
-	touch \$@
-$1_ode2odes_euler.o  $1_ode2odes_rk4.o    : $1_ode.o     $1_odeo.o   mtt_euler.o
+$1_ode2odes_euler.o $1_ode2odes_rk4.o: $1_ode.o $1_odeo.o mtt_euler.o
 	@echo "Creating \$@"
 	ar -cr \$@ \$^
-$1_ode2odes_euler.oct   : $1_ode.oct   $1_odeo.oct mtt_euler.oct
-	touch \$@
 
-$1_ode2odes_implicit.m  : $1_cseo.m    $1_csex.m   $1_smxa.m   $1_smxax.m
+$1_ode2odes_implicit_%.stamp: $1_cseo.% $1_csex.% $1_smxa.% $1_smxax.%
 	touch \$@
-$1_ode2odes_implicit.cc : $1_cseo.cc   $1_csex.cc  $1_smxa.cc  $1_smxax.cc
-	touch \$@
-$1_ode2odes_implicit.o  : $1_cseo.o    $1_csex.o   $1_smxa.o   $1_smxax.o   mtt_implicit.o
+$1_ode2odes_implicit.o: $1_cseo.o $1_csex.o $1_smxa.o $1_smxax.o mtt_implicit.o
 	@echo "Creating $1_ode2odes_implicit.o"
 	ar -cr \$@ \$^
-$1_ode2odes_implicit.oct: $1_cseo.oct  $1_csex.oct $1_smxa.oct $1_smxax.oct mtt_implicit.oct
-	touch \$@
 
-$1_ode2odes_dassl.m	: $1_ode.m	$1_odeo.m
+$1_ode2odes_dassl_%.stamp: $1_ode.% $1_odeo.%
 	touch \$@
-$1_ode2odes_dassl.cc	: $1_ode.cc	$1_odeo.cc
-	touch \$@
-$1_ode2odes_dassl.o	: $1_ode.o	$1_odeo.o	mtt_dassl.o
+$1_ode2odes_dassl.o: $1_ode.o $1_odeo.o mtt_dassl.o
 	@echo "Creating \$@"
 	ar -cr \$@ \$^
-$1_ode2odes_dassl.oct	: $1_ode.oct	$1_odeo.oct	mtt_dassl.oct
-	touch \$@
 
 mtt_Solver.cc:	mtt_Solver.hh
 mtt_AlgebraicSolver.cc: mtt_AlgebraicSolver.hh
@@ -2794,7 +2782,7 @@ $1_ode2odes.o: $1_ode2odes.cc $1_ode2odes_common.o $1_ode2odes_${integration_met
 	echo Creating $1_ode2odes.o
 	${MTT_CXX} ${MTT_CXXFLAGS} ${MTT_CXXINCS} -c $1_ode2odes.cc -DCODEGENTARGET=STANDALONE
 
-$1_ode2odes.oct: $1_ode2odes.cc $1_ode2odes_common.oct $1_ode2odes_${integration_method}.oct $1_ode2odes_${algebraic_solver}.o
+$1_ode2odes.oct: $1_ode2odes.cc $1_ode2odes_common_oct.stamp $1_ode2odes_${integration_method}_oct.stamp $1_ode2odes_${algebraic_solver}.o
 	touch $1_ode2odes.m
 	echo Creating $1_ode2odes.oct
 	$MKOCTFILE -DCODEGENTARGET=OCTAVEDLD $1_ode2odes.cc mtt_${algebraic_solver}.cc mtt_Solver.cc mtt_AlgebraicSolver.cc
@@ -2808,8 +2796,8 @@ $1_ode2odes.mexglx: $1_ode2odes.cc $1_ode2odes_common.o $1_ode2odes_${integratio
 	${MTT_LIB}/cc/mtt_kpathsea.cc ${MTT_LIB}/cc/mtt_matlab_octave.cc
 
 $1_ode2odes.cc: $1_def.r $1_sympars.txt\
-		$1_ode2odes_common.m $1_ode2odes_common.cc\
-		$1_ode2odes_${integration_method}.m $1_ode2odes_${integration_method}.cc\
+		$1_ode2odes_common_m.stamp $1_ode2odes_common_cc.stamp\
+		$1_ode2odes_${integration_method}_m.stamp $1_ode2odes_${integration_method}_cc.stamp\
 		mtt_Solver.cc mtt_AlgebraicSolver.cc mtt_${algebraic_solver}.cc mtt_${algebraic_solver}.hh
 	touch $1_ode2odes.m
 	make_ode2odes $1 cc $integration_method $algebraic_solver

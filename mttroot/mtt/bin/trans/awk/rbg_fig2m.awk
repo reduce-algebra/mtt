@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.32  1998/07/27 20:30:03  peterg
+## *** empty log message ***
+##
 ## Revision 1.31  1998/04/16 13:18:13  peterg
 ## Now ignores spurious ports (in lbl but not Figure \ref{) but gives
 ## warning
@@ -206,7 +209,7 @@ function process_lbl() {
 # This puts the components in the lable file at the top of the list
 # and saves up the corresponding CR and arguments
 # note that there may be more than one component per label
-  if ((match($1,"%")==0)&&(NF>0))
+  if ((match($1,comment_regexp)==0)&&(NF>0))
     { 
       i_label++;
       name = $1;
@@ -535,6 +538,7 @@ BEGIN {
   warning_p = "ERROR system ports are not consecutively numbered\n";
   warning_u = "ERROR %s has already appeared in the fig file\n";
 
+  comment_regexp = "%|#"
   data_symbol = "----";
   out_data_symbol = "\t";
   default_cr = "";

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.154  1998/06/17 14:14:09  peterg
+## Removed struc.txt prerequisite for simpar.txt - switch version
+##
 ## Revision 1.153  1998/05/28 09:36:38  peterg
 ## --version and --versions switch
 ##
@@ -534,7 +537,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='2.9++'
+version='2.91'
 
 # MTT recursion level is zero unless explicitly set
 level=0

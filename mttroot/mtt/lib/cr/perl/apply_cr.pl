@@ -137,12 +137,14 @@ sub process_expression() {
     }
 
     # call cr(arg1,arg2,...)
-    no strict 'refs';		# allow symbolic references
-    my $expr = $expressions[$i];
-    eval "require $cr";
-    $cr->import (@_[1 .. $#_]);    
-    &$cr ($expr);
-    use strict 'refs';
+    if (-e "$cr.pm") {
+	no strict 'refs';		# allow symbolic references
+	my $expr = $expressions[$i];
+	eval "require $cr";
+	$cr->import (@_[1 .. $#_]);    
+	&$cr ($expr);
+	use strict 'refs';
+    }
 
 }
 #-------------------------------------------------------------------------------

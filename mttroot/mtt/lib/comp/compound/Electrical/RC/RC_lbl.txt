@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1998/07/27 11:09:36  peterg
+% %% Commented the aliases.
+% %%
 % %% Revision 1.1  1998/07/16 20:16:30  peterg
 % %% Initial revision
 % %%
@@ -35,5 +38,5 @@
 	r		lin	flow,r
 
 % Component type SS
-	[Electrical_in]		SS		external,external
-	[Electrical_out]	SS		external,external
+	[Electrical_in]		SS		external,internal
+	[Electrical_out]	SS		external,0

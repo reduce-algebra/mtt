@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.12  2000/11/09 16:09:46  peterg
+## Declare dummy variables (mtt_s1 etc)
+##
 ## Revision 1.11  2000/11/09 15:29:35  peterg
 ## lower-case declarations
 ##
@@ -438,6 +441,7 @@ function write_DLD_header ()
 #include <octave/oct.h>
 #include <octave/ov-struct.h>
 #include <octave/toplev.h>
+#include <math.h>
 
 #include "useful-functions.hh"
 #include "${system}_def.h"

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.52  2000/08/24 08:30:45  peterg
+## *** empty log message ***
+##
 ## Revision 1.51  2000/08/01 12:25:24  peterg
 ## Some changes to include files
 ##
@@ -389,7 +392,8 @@ BEGIN{
   comment_regexp = "{"
   doing_header = 0
   doing_globals = 0
-  Nt = 9
+  No = 500;
+  Ns = 10;
   inc ="$I"
 }
 {
@@ -452,7 +456,8 @@ BEGIN{
           # printvar("x",Nx);
           # printvar("u",Nu);
           # printvar("y",Ny);
-          printvar("_t",Nt);
+          printvar("_s",Ns);
+          printvar("_o",No);
 
           printf("VAR mtt_i, mtt_j : INTEGER;\n");
           #if ( (rep=="smxa")||(rep=="smxax") ) {

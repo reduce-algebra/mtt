@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.49  2003/03/13 15:19:04  gawthrop
+  ## ## Now uses __ to delimit subsystems in names.
+  ## ##
   ## ## Revision 1.48  2003/03/13 15:10:26  gawthrop
   ## ## Removed redundant final column
   ## ##
@@ -401,9 +404,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 		    pc, comp_name, subsystem.type);
 	    
 	    if (k>1)
-	      name_comp_name = sprintf("%s%s%s_%d", ...
+	      name_comp_name = sprintf("%s%s%s%s%d", ...
 				       full_name_repetition, sub_delim, \
-				       comp_name, k);
+				       comp_name, sub_delim, k);
 	    else
 	      name_comp_name = sprintf("%s%s%s", ...
 				       full_name_repetition, sub_delim, \

@@ -1,6 +1,9 @@
 ## Figures.m
 ## Makes figures for the rc_PPP exasmple.
 ## $Log$
+## Revision 1.1  2000/05/17 09:14:37  peterg
+## Initial revision
+##
 system_name = "rcPPP";
 
 ## Uncomment the following the first time
@@ -78,7 +81,7 @@ extras.criterion = 1e-5;
 extras.max_iterations = 0;
 [y_l,x,u_l,t,U,U_c,U_l] = ppp_nlin_sim (system_name,A_u,tau,t_ol,N,w,extras);
 
-##  -- with no optimisation using linear PPP with continuation
+##  -- with no optimisation using nonlinear PPP with continuation
 extras.U_initial = "zero";
 extras.U_next = "continuation";
 extras.criterion = 1e-5;

@@ -6,9 +6,11 @@
 #ifndef __cplusplus
 #define inline			/* strip */
 #define cast_to_double	(double)
+/*
 typedef unsigned int bool;
 const bool true = 1;
 const bool false = 0;
+*/
 #else
 #define cast_to_double	static_cast<double>
 #endif /* ! __cplusplus */

@@ -1,9 +1,20 @@
 %SUMMARY Poly - computes polytropic expansion temperature.
 %DESCRIPTION Parameter: alpha = (n-1)/n (n = polytropic index)
-%DESCRIPTION Port [P1]: Pressure 1
-%DESCRIPTION Port [T1]: Temperature 1
-%DESCRIPTION Port [P2]: Pressure 2
-%DESCRIPTION Port [T2]: Temperature 2
+
+%DESCRIPTION This four-port component computes the temperature following
+%DESCRIPTION a polytropic expansion using where alpha = (n-1)/n and n is
+%DESCRIPTION the coefficient of polytropic expansion.  This component
+%DESCRIPTION imposes zero flow at all its ports and therefore does not
+%DESCRIPTION affect energy balance.  The output is bicausal as it
+%DESCRIPTION imposes both T_2 and a zero flow.  This is implemented using
+%DESCRIPTION the bicausal SS component labeled ``zero''.
+
+%ALIAS	P1	Pressure_1
+%ALIAS	P2	Pressure_2
+%ALIAS	T1	Temperature_1
+%ALIAS	T2|out	Temperature_2
+
+%ALIAS $1	alpha
 
 %% Label file for system Poly (Poly_lbl.txt)
 
@@ -12,6 +23,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/03/27 10:48:50  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:
@@ -22,8 +36,12 @@
 
 
 % Component type R
-	r		Poly		$1
+	r		Poly		alpha
 
 % Component type SS
-	zero		0		0
+	zero		SS		0,0
+	[Pressure_1]	SS		external,external
+	[Temperature_1]	SS		external,external
+	[Pressure_2]	SS		external,external
+	[Temperature_2]	SS		external,external
 

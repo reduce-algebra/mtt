@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2001/04/11 15:41:45  gawthrop
+% %% New identification example - friction components only
+% %%
 % %% Revision 1.1  2000/12/28 09:13:38  peterg
 % %% Initial revision
 % %%
@@ -40,11 +43,11 @@
 	Position	SS		external
 
 % Component type I
-	m_c	lin		flow,m_c;m_cs
+	m_c	slin		flow,m_c;m_cs
 
 % Component type R
-	r_c	lin		flow,r_c;r_cs
-	r_p	lin		flow,r_p;r_ps
+	r_c	slin		flow,r_c;r_cs
+	r_p	slin		flow,r_p;r_ps
 
 % Component type Sf
 	zero_velocity	SS		0;0

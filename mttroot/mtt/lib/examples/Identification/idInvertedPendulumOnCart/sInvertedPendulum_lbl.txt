@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2001/04/11 15:41:45  gawthrop
+% %% New identification example - friction components only
+% %%
 % %% Revision 1.1  2000/12/28 09:13:38  peterg
 % %% Initial revision
 % %%
@@ -43,4 +46,4 @@
 	y_0	SS		0;0
 
 % Component type gRODa
-	rod     none		m_p*l_p*l_p/12;m_ps*l_p*l_p/12;m_p;m_ps;l_p/2;l_p/2;g			
+	rod     none		j_p;j_ps;m_p;m_ps;l_p/2;l_p/2;g			

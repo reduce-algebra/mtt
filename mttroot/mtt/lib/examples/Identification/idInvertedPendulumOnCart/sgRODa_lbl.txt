@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2001/04/11 15:41:45  gawthrop
+% %% New identification example - friction components only
+% %%
 % %% Revision 1.1  2000/12/28 09:13:38  peterg
 % %% Initial revision
 % %%
@@ -54,10 +57,12 @@ c1	lcos;slcos	l_a
 c2	lcos;slcos	l_b
 
 % Component type I
-	J	lin		flow,J;Js
-	m_x	lin		flow,m;ms
-	m_y	lin		flow,m;ms
+	J	slin		flow,J;Js
+	m_x	slin		flow,m;ms
+	m_y	slin		flow,m;ms
 	th			
 
 % Component type Se
 	mg	SS		m*g;0
+
+

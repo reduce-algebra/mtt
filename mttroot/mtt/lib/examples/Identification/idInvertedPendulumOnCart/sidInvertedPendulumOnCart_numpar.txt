@@ -14,6 +14,7 @@ l_p =   0.61;			# Pendulum length
 m_p =   0.210;			# Pendulum mass
 r_p = 	0.5;			# Pendulum friction
 
+j_p = l_p*l_p*m_p/12;
 g = 9.81;			# Gravity
 
 

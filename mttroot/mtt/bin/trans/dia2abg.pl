@@ -168,7 +168,7 @@ sub create_component_list {
 	die "Cannot open $component_list_file for writing.\n";
 
     my (%reverse_component_id_tag) = reverse (%component_id_tag);
-    foreach my $val (values(%component_id_tag)) {	
+    foreach my $val (sort values(%component_id_tag)) {	
 	my ($id, $type);
 	$id = $reverse_component_id_tag{$val};
 	$type = $component_id_type{$id};

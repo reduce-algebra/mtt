@@ -12,6 +12,9 @@ PROCEDURE mtt_update(VAR xnew	    : StateVector;
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1998/08/15 13:48:35  peterg
+## New update methods
+##
 ## Revision 1.4  1998/08/14 10:54:58  peterg
 ## Use sparse computation where possible
 ##
@@ -26,7 +29,7 @@ VAR
    BB  : StateVector;
    DDT : REAL;
    
-(*$I mtt_solve.p *)
+(*$I mtt_solve_lud.p *)
 (*$I mtt_sparse.p *)
    
 BEGIN{mtt_update}
@@ -45,7 +48,7 @@ BEGIN{mtt_update}
 
 	 {Solve the equation AAx = B}
 	 IF (Method=2) OR (METHOD=3) THEN {Use SVD}
-	    mtt_solve(xnew,AA,BB,Nx,Small)
+	    mtt_solve_lud(xnew,AA,BB,Nx)
 	 ELSE {Sparse CG solution}
 	    mtt_sparse(BB,Nx,STEPFACTOR,xnew);
       END{Implicit methods}

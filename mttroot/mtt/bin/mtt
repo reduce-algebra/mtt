@@ -14,6 +14,11 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.157  1998/07/01 10:22:11  peterg
+## Moved tidy stuff to end of preamble -- needed to make muti-plot copy
+## correctely
+## Now copies ps file with arguments to WD
+##
 ## Revision 1.156  1998/06/26 14:19:43  peterg
 ## Copy hidden files (eg .octaverc) in tidy mode
 ##
@@ -1090,6 +1095,14 @@ $1_args.m:
 $1_lbl.txt:
 	abg2lbl_fig2txt $1
 
+#SUMMARY alias  name aliases for each subsystem (txt)
+$1_alias.txt: $1_lbl.txt
+	lbl2alias_txt2txt $1
+
+#SUMMARY alias  name aliases for each subsystem (m)
+$1_alias.m: $1_alias.txt
+	alias_txt2m $1
+
 #SUMMARY cr	constitutive relationship for each subsystem (txt)
 $1_cr.txt: $1_sub.sh
 	lbl2cr_txt2txt $1
@@ -1406,7 +1419,7 @@ endif
 
 #SUMMARY abg	acausal bond graph (m)
 #Raw bond graph to acausal bond graph: mfile
-$1_abg.m: $1_rbg.m $1_sub.sh
+$1_abg.m: $1_rbg.m $1_alias.m $1_sub.sh 
 	sh $1_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m'
 	rbg2abg_m $1
 

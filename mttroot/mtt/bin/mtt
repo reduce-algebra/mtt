@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.188  1998/08/27 08:33:21  peterg
+## New reduce integration methods - euler/Implicit only
+##
 ## Revision 1.187  1998/08/25 20:06:56  peterg
 ## New data structure for abg.m and cbg.m
 ##
@@ -720,6 +723,9 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-A )
                 mtt_switches="$mtt_switches $1";
                 Solving='Solving';;
+	-abg )
+                mtt_switches="$mtt_switches $1";
+                start_at_abg='yes';;
         --version)                
                 echo MTT $version; exit;;
         --versions)                
@@ -780,6 +786,7 @@ if [ -z "$1" ]; then
     echo '         -A  solve algebraic equations symbolically'
     echo '         -D  debug -- leave log files etc'
     echo '         -I  prints more information'
+    echo '         -abg start at abg.m representation'
     echo '         -c  c-code generation'
     echo '         -d  <dir>  use directory <dir>'
     echo '         -d  <dir>  use directory <dir>'
@@ -852,6 +859,18 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 EOF
   exit
+fi
+
+# Start at abg representation
+if [ -n "$start_at_abg" ]; then
+  if [ -f "$1_abg.m" ]; then
+    if [ "$quiet" != "quiet" ]; then
+        echo Starting from $1_abg.m
+    fi
+  else
+    echo $1_abg.m does not exist
+    exit
+  fi
 fi
 
 # Clean up 

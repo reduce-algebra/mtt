@@ -150,9 +150,9 @@ cat <<EOF >> ${out}
 
 ## call gnuplot
 proc "plot_var" "title column" {
-    exec echo plot \"${dat2}\" using 1:\$column title \"\$title\" with lines > ${tmp}
-    exec echo pause -1 >> ${tmp}
-    exec gnuplot -title "\$title" ${tmp} &
+    exec echo plot \"${dat2}\" using 1:\$column title \"\$title\" with lines\; > ${tmp}
+    exec echo exit\; >> ${tmp}
+    exec gnuplot -persist -title "\$title" ${tmp} &
 }
 
 ## print output

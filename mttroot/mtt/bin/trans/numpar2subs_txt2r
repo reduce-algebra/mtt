@@ -12,6 +12,9 @@
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.1  2002/11/14 05:48:53  gawthrop
+  ## Useful utility not yet in mtt
+  ##
   ###############################################################
 
 # Copyright (C) 2002 by Peter J. Gawthrop
@@ -30,7 +33,7 @@ cat<<EOF > ${outfile}_1
 
 EOF
 
-sed 's/#/%/g' < Compensator_numpar.txt | sed 's/=/:=/' >> ${outfile}_1
+sed 's/#/%/g' < ${infile} | sed 's/=/:=/' >> ${outfile}_1
 
 cat >> ${outfile}_1 <<EOF
 ON ROUNDED; %% Floating point

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1996/12/31 16:14:53  peterg
+## Now handles multi-character subscripts.
+##
 ## Revision 1.7  1996/12/19 10:24:29  peterg
 ## Uniform conversion of mttxi --> x_{i} for x,u,y and z
 ## Convert ???mttx to mtt x for  x,u,y and z
@@ -88,6 +91,8 @@ sed \
     -e "s/tau/\\\tau/g" \
     -e "s/alpha/\\\alpha/g" \
     -e "s/beta/\\\beta/g" \
+    -e "s/gamma/\\\gamma/g" \
+    -e "s/delta/\\\delta/g" \
     -e "s/epsilon/\\\epsilon/g" \
     -e "s/lambda/\\\lambda/g" \
     -e "s/mu/\\\mu/g" \
@@ -96,6 +101,7 @@ sed \
     -e "s/sigma/\\\sigma/g" \
     -e "s/omega/\\\omega/g" \
     -e "s/zeta/\\\zeta/g" \
+    -e "s/infty/\\\infty/g" \
     -e "s/sin/\\\sin/g" \
     -e "s/cos/\\\cos/g" \
     -e "s/23/{23}/g" \

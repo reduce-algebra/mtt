@@ -19,6 +19,9 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.31  1998/07/28 13:15:10  peterg
+% %% Vector SS ports included.
+% %%
 % %% Revision 1.30  1998/07/27 20:29:49  peterg
 % %% Had another go at causality ....
 % %%   1. Impose external causality onto all port bonds
@@ -218,7 +221,7 @@ if (n_ports>0)&&(~at_top_level)
       components(i,1) = - components(i,1);
       % and at the other end
       for j=n_ports+1:n_components
-	for k=1:columns
+	for k=1:m_components
 	  if (abs(components(j,k))==port_bond_index(i))
 	    components(j,k) = - components(j,k);
 	  end
@@ -387,8 +390,9 @@ done,ci_index
   
 end;
 
+status(1:n_ports) = zeros(n_ports,1); # Port status not relevant
+
 % Print final causality
-status
 final_done =  (sum(status==zeros(n_components,1))/n_components)*100;
 
 if at_top_level
@@ -430,7 +434,6 @@ fclose(cbgfilenum);
 % Return the port bonds - arrow orientated causality - and the direction 
 if ~at_top_level % Not at top level
   port_bonds = bonds(port_bond_index,:) # Return port bonds
-  status(1:n_ports) = zeros(1:n_ports); # Port status not relevant
 end;
 
 disp('====================================');

@@ -27,6 +27,9 @@ global local_y_index
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.14  1997/12/16 18:25:19  peterg
+% %% Added unknown_input attribure to flow -- effort still needs doing
+% %%
 % %% Revision 1.13  1997/09/18 13:15:15  peterg
 % %% Fixed incorrect error message flagging inappropriate flow outputs
 % %% -- used to give the effort rather than the flow in the error message.
@@ -152,17 +155,16 @@ if strcmp(effort_attribute, 'external')
     fprintf(filenum, 'MTTy(%d,1) := %s;\n', ...
 	outputs, varname(name, bond_number,1));
   end;
+elseif strcmp(effort_attribute, 'unknown') % Unknown input
+  unknown_inputs = unknown_inputs + 1;
+  fprintf(filenum, '%s := MTTUi%d;\n', ...
+      varname(name, bond_number,1), unknown_inputs);
 elseif strcmp(effort_attribute, 'internal')
   % Do nothing
 else 
   if bonds(1,1)==-1 % Named or unknown source
-    if strcmp(effort_attribute, 'unknown') % Unknown input
-      fprintf(filenum, '%s := MTTUi%d;\n', ...
-	  varname(name, bond_number,-1), zero_outputs);
-    else
-      fprintf(filenum, '%s := %s;\n', ...
-	  varname(name, bond_number,1), effort_attribute);
-    end;
+    fprintf(filenum, '%s := %s;\n', ...
+	varname(name, bond_number,1), effort_attribute);
   else % Sensor
     if strcmp(effort_attribute, 'zero') %Zero output
       zero_outputs = zero_outputs + 1;

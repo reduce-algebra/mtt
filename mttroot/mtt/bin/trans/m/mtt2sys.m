@@ -21,21 +21,24 @@ function sys = mtt2sys (Name,par)
 
   if nargin<2			# Use predefined parameters
     if exist(numpar_name)!=2	# Check file exists
-      error("File %s.m does not exist: use <mtt %s numpar m> to create it",\
-	    numpar_name,Name);
+#       error("File %s.m does not exist: use <mtt %s numpar m> to create it",\
+# 	    numpar_name,Name);
+      mtt(Name,"numpar");
     endif
     eval(sprintf("par=%s_numpar;", Name)); # Parameters
   endif
   
   ## Check files exist
   if exist(sm_name)!=2
-    error("File %s.m does not exist: use <mtt %s sm m> to create it",\
-	  sm_name,Name);
+#     error("File %s.m does not exist: use <mtt %s sm m> to create it",\
+# 	  sm_name,Name);
+      mtt(Name,"sm");
   endif
 
   if exist(struc_name)!=2
-    error("File %s.m does not exist: use <mtt %s struc m> to create it",\
-	  struc_name,Name);
+#     error("File %s.m does not exist: use <mtt %s struc m> to create it",\
+# 	  struc_name,Name);
+      mtt(Name,"struc");
   endif
   
   eval(sprintf("[A,B,C,D]=%s_sm(par);", Name)); # State matrices

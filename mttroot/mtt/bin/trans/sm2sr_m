@@ -4,7 +4,7 @@
      ##### Model Transformation Tools #####
      ######################################
 
-# Bourne shell script: dm2sr
+# Bourne shell script: dm2sr_m
 
 # Transforms descriptor matrix rep to step response
 
@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1996/08/12 20:19:06  peter
+## Fiddled about with parameter passing - still not right
+##
 ## Revision 1.4  1996/08/11 19:48:04  peter
 ## Parameter passing added.
 ##
@@ -30,8 +33,8 @@
 ##
 ###############################################################
 
-echo Creating $1_sr.dat
-
+echo Creating $1_sr.m
+rm -f dm2sr_m.log
 
 if [ "$2" = "" ]; 
 then
@@ -44,7 +47,7 @@ fi
 PARAMS="$PARAMS ;"
 echo $PARAMS
 
-$MATRIX << EOF  | awk '$1 !~ /[A-MO-Zb-cf-z]/ && NF>0 {print} '  >$1_sr.dat
+$MATRIX << EOF > dm2sr_m.log
 
   $PARAMS
   [n,m]=size(t);
@@ -60,9 +63,12 @@ $MATRIX << EOF  | awk '$1 !~ /[A-MO-Zb-cf-z]/ && NF>0 {print} '  >$1_sr.dat
 
   xy = [t y(:,1)];
   for i=2:NN
-    xy = [xy t y(:,i)];
+    xy = [xy y(:,i)];
   end;
+
 xy
+
+write_matrix(xy, '$1_sr');
 
 EOF
 

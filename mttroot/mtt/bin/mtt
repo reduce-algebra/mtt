@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.88  1997/08/25 07:51:47  peterg
+## Version 2.5.
+##
 ## Revision 1.87  1997/07/27 13:11:11  peterg
 ## Added path checking code -- mtt_check_vars
 ##
@@ -346,7 +349,7 @@ done
 #Print header if not in quiet (-q) mode.
 if [ "$quiet" != "quiet" ]; then
   echo
-  echo 'MTT (Model Transformation Tools) version 2.5'
+  echo 'MTT (Model Transformation Tools) version 2.5++'
   echo 'This is free software with ABSOLUTELY NO WARRANTY.'
   echo 'Type `mtt warranty'\' 'for details.'
   echo
@@ -1279,7 +1282,10 @@ $1_$2.tview: $1_$2.dvi
 $1_rep.make: $1_rep.txt $1_args.m
 	rep_txt2make $1 "$mtt_switches"
 
-$1_rep.tex: $1_rep.txt 
+make_reps:
+	rep_txt2sh $1; touch $1_rep.txt
+
+$1_rep.tex: $1_rep.txt make_reps
 	rep_txt2tex $1;
 
 #SUMMARY abg Acausal bond graph report (tex)

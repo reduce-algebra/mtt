@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  2000/05/18 10:32:32  peterg
+% %% New SS form
+% %%
 % %% Revision 1.1  1997/09/11 09:39:16  peterg
 % %% Initial revision
 % %%
@@ -28,5 +31,5 @@
 % Component type SS
 	v1		SS	0,external
 	v2		SS	0,external
-
-
+	[in]		SS	external,external
+	[out]		SS	external,external

@@ -17,6 +17,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.4  1998/07/26 12:45:33  peterg
+% %% Added ports
+% %%
 % %% Revision 1.3  1998/07/22 12:01:17  peterg
 % %% Aliased ports and parameters.
 % %%
@@ -34,22 +37,22 @@
 %	blank
 
 %Motor gain
-k_m	lin	flow,$1
+k_m	lin	flow,k_m
 
 % Electrical components
 %Inductance
-l_a	lin	effort,$2
+l_a	lin	effort,l_a
 
 %Resistance
-r_a	lin	flow,$3
+r_a	lin	flow,r_a
 
 % Mechanical components
 %Inertia
-j_m	lin	flow,$4
+j_m	lin	flow,j_m
 
 %Friction
-b_m	lin	flow,$5
+b_m	lin	flow,b_m
 
 % Ports
 	[Electrical]	SS	external,external
-	[Mecahnical]	SS	external,external
+	[Mechanical]	SS	external,external

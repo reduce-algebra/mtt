@@ -16,6 +16,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.307  2001/04/15 21:15:41  geraint
+## Added interface definition rep: _ICD.(txt|c|cc|m).
+##
 ## Revision 1.305  2001/04/11 09:44:26  gawthrop
 ## Fixed cc and c problems to do with pow(x,y) and integers
 ## mtt/lib/reduce/fix_c.r is included in rdae2dae and cse2smx_lang for
@@ -1999,7 +2002,7 @@ $1_ICD.m: $1_ICD.txt
 $1_ICD.txt: $1_icd.txt2
 	icd2ICD_txt22txt.sh $1
 
-$1_icd.txt2: $1_cbg.m
+$1_icd.txt2: $1_ese.r
 	touch $1_icd.txt2
 
 #SUMMARY ICD	interface definitions for each subsystem (m)

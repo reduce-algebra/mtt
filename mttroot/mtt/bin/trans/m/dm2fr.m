@@ -10,6 +10,9 @@ function  fr = dm2fr(A,B,C,D,E,W,u0)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.5  1996/08/16 14:26:37  peter
+% %% Check and fix size of u0.
+% %%
 % %% Revision 1.4  1996/08/15 12:50:51  peter
 % %% Put in a conj to undo effect of transpose.
 % %%
@@ -54,7 +57,7 @@ fr = zeros(N,Ny);
 i = 0;
 for w = W'
   i = i+1;
-  FR = C*( (E*j*w - A) \ B*u0 ) + D*u0
+  FR = C*( (E*j*w - A) \ B*u0 ) + D*u0;
   fr(i,:) = conj(FR');
 end;
 

@@ -5,7 +5,7 @@ sys=$1
 # check for the existence of CRs that we need
 crs=''
 for cr in `cat ${sys}_cr.txt`; do
-  if [ -f ${cr}.pm ]; then
+  if [ -f ${cr}.pm -o -f mtt/${cr}.pm ]; then
       crs="$crs $cr"
   fi
 done

@@ -22,18 +22,25 @@ cat >> ${outfile} <<EOF
   MTT_input = u;
   [MTT_input_last,m] = size(u);
 
-  for i=index
+  if nargin<5			# No index given
     MTT_input_index = 0;
-    p = par;           # Reset parameters
-    p(i) = 1;          # Set sensitivity index to 1
-    [mtt_data] = ${sys}_ode2odes(x0,p,simpar);
-    if (i==index(1))
-      y = mtt_data(:,2:1+ny);
-    endif
-    y_par = [y_par, mtt_data(:,2+ny:1+2*ny)];
-  endfor
-endfunction
+    [mtt_data] = ${sys}_ode2odes(x0,par,simpar);
+    y = mtt_data(:,2:2:1+2*ny);
+    ypar = [];
+  else				# Compute sensitivities as well
+    for i=index
+      MTT_input_index = 0;
+      p = par;           # Reset parameters
+      p(i) = 1;          # Set sensitivity index to 1
+      [mtt_data] = ${sys}_ode2odes(x0,p,simpar);
+      if (i==index(1))
+	y = mtt_data(:,2:2:1+2*ny);
+      endif
+      y_par = [y_par, mtt_data(:,3:2:2+2*ny)];
+    endfor
+  endif
 
+endfunction
 EOF
 
 }

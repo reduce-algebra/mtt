@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.17  1999/03/15 01:09:15  peterg
+## Fixed bugs when Nx=0 (no state)
+##
 ## Revision 1.16  1999/03/06 02:28:38  peterg
 ## Rearranged evaluation to: state - input - output - write
 ##
@@ -107,7 +110,7 @@ endif;
 
 
 for MTTit = 1:MTTilast		#Integration loop
-MTTit
+
   if $Nx>0			# Don't if no states
     if mttmethod==1		# Euler
       for MTTjt = 1:mttstepfactor
@@ -129,7 +132,6 @@ MTTit
       MTTt = MTTt + mttdt;
   endif;			# $Nx>0
 
-MTTit
   [MTTy] = $1_odeo(MTTx,MTTu,MTTt);     # Output 
   [MTTu] = $1_input(MTTt,MTTx,MTTy);	# Input
   mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny);    # Write it out

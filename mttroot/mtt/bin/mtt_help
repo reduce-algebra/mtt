@@ -14,6 +14,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1997/09/04 09:35:04  peterg
+## Changed $ext to give accurate match -- matches t ot m at end of
+## filename
+##
 # Revision 1.5  1997/09/04  09:21:01  peterg
 # Added context-dependent sort.
 #
@@ -31,7 +35,7 @@
 ##
 ###############################################################
 
-topic=$1
+topic=`tr [A-Z] [a-z] $1`
 
 if [ "$topic" = "" ]; then
     echo 'Usage: mtt help representations'
@@ -46,7 +50,7 @@ if [ "$topic" = "" ]; then
   exit
 fi
 
-ext='_*.*[mt]'
+ext='_[cl]*.*[mt]'
 summary='[%#]SUMMARY'
 description='[%#]DESCRIPTION'
 
@@ -99,7 +103,9 @@ fi;
 echo $blurb
   mtt_find $find_path "$name" "egrep -i $key.*$subtopic" $all|\
   sed "s/$summary[	]*/  /" |\
-  sed "s/$description[	]*/  /" | $sort
+  sed "s/$description[	]*/  /" |\
+  sed "s!$find_path/!!" |\
+  $sort
 
 
 

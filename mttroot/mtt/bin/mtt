@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.31  1996/10/20  19:23:54  peterg
+# Automatic generation of sub-system abg.m files.
+#
 ## Revision 1.30  1996/10/01 14:08:05  peterg
 ## Replaced $() by ``
 ## Replaced make with gmake
@@ -110,7 +113,7 @@
 ##
 ###############################################################
 echo
-echo 'MTT (Model Transformation Tools) version 2.0'
+echo 'MTT (Model Transformation Tools) version 2.0++'
 echo 'This is free software with ABSOLUTELY NO WARRANTY.'
 echo 'Type `mtt warranty'\' 'for details.'
 echo
@@ -180,7 +183,7 @@ if [ "$1" = "clean" ] && [ "$2" = "" ]; then
   rm -f *_rbg.* *_cmp.* *_fig.fig *_*cbg.* *_ese.* *_def.* *_sub.sh
   rm -f *_dae*.* *_cse.* *_ode*.* *_obs.* *_rfe.* *_ss.*
   rm -f *_dm.* *_csm.* *_sm.* *_tf.* *_sr*.* *_ir*.* *_*fr.*
-  rm -f *_rep.* *_numpar.m
+  rm -f  *_numpar.m
   rm -f mtt_error.txt mtt_info.txt
   exit
 fi
@@ -193,7 +196,7 @@ if [ "$2" = "clean" ] && [ "$3" = "" ]; then
   rm -f $1_rbg.* $1_cmp.* $1_fig.fig $1*_*cbg.* $1*_ese.* $1_def.* $1_sub.sh
   rm -f $1_dae*.* $1_cse.* $1_ode*.* $1_obs.* $1_rfe.* $1_ss.*
   rm -f $1_dm.* $1_csm.* $1_sm.* $1_tf.* $1_sr*.* $1_ir*.* $1_*fr.*
-  rm -f $1_rep.* $1_numpar.m
+  rm -f $1_numpar.m
   rm -f mtt_error.txt mtt_info.txt
   exit
 fi
@@ -553,13 +556,14 @@ $1_$2.doc: $1_$2.tex
 #Generic conversion of LaTeX doc to dvi
 $1_$2.dvi: $1_$2.doc
 	echo Creating $1_$2.dvi
-	latex $1_$2.doc > /dev/null
+	latex $1_$2.doc > /dev/null; latex $1_$2.doc > /dev/null
+
 
 #Create PostScript version of fig files
 ifeq ($REPTYPE,bg)
 $1_$2.ps : $1_$2.fig
 	echo Creating $1_$2.ps
-	fig2dev -Lps $1_$2.fig >$1_$2.ps
+	multi_command2 'fig2dev -Lps' $1 $2.fig $2.ps | sh
 endif
 
 ifeq ($REPTYPE,data)
@@ -570,9 +574,16 @@ endif
 
 ifeq ($REPTYPE,tex)
 #Create PostScript version of dvi file
-$1_$2.ps: $1_$2.dvi
+$1_$2.ps: $1_$2_doc.dvi
 	echo Creating $1_$2.ps
-	dvips -o $1_$2.ps $1_$2
+	dvips -o $1_$2.ps $1_$2_doc
+endif
+
+ifeq ($REPTYPE,tex)
+#Create html version of dvi file
+$1_$2.html: $1_$2.dvi $1_$2.doc
+	echo Creating $1_$2/$1_$2.html
+	latex2html $1_$2.doc
 endif
 
 #Default view
@@ -588,10 +599,12 @@ ifeq ($REPTYPE,tex)
 $1_$2.view : $1_$2.tview
 endif
 
+
+
 #View a ps file
 $1_$2.pview: $1_$2.ps
 	echo Creating view of $1_$2
-	$PSVIEW $1_$2.ps&
+	multi_command $PSVIEW $1 $2.ps | sh
 
 #View a gdat file
 $1_$2.dview: $1_$2.gdat
@@ -603,20 +616,14 @@ $1_$2.tview: $1_$2.dvi
 	echo Creating view of $1_$2
 	$DVIVIEW $1_$2.dvi&
 	
-
 #Report generation
-$1_rep.make: $1_rep.txt
+$1_rep.make: $1_rep.txt $1_args.m
 	rep_txt2make $1
-$1_rep.tex: $1_rep.make $(cat $1_rep.make 2>/dev/null)
-	rep_txt2tex $1;
-#$1_rep.make: $1_rep.tex
-#	touch $1_rep.make
-#$1_rep.rep: $1_rep.make
-#	sh<$1_rep.make; cp $1_rep.tex $1_rep.doc
 
-$1_rep.html: $1_rep.dvi
-	echo Creating $1_rep.html 
-	latex2html $1_rep.tex
+$1_rep.tex: $1_rep.make 
+	cat $1_rep.make | sh
+	rep_txt2tex $1;
+
 
 # Version control system - uses RCS
 RCS:

@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.49  2001/02/14 06:06:34  geraint
+## Removed octave_value_list wrappers from standalone.exe - speed improvements
+##
 ## Revision 1.48  2001/02/11 07:08:59  geraint
 ## Static declarations of octave_value_lists: small .exe speed improvement
 ##
@@ -288,55 +291,66 @@ cat <<EOF  > $filename
 #include "${sys}_sympar.h"
 
 #ifdef STANDALONE
-extern ColumnVector Fmtt_euler (	ColumnVector &x,
-					const ColumnVector &dx,
-					const double &ddt,
-					const int &nx,
-					const ColumnVector &open_switches);
+extern ColumnVector Fmtt_euler (
+	ColumnVector &x,
+	const ColumnVector &dx,
+	const double &ddt,
+	const int &nx,
+	const ColumnVector &open_switches);
  
-extern ColumnVector Fmtt_implicit (	ColumnVector &x,
-				   	const ColumnVector &dx,
-				   	const Matrix &AA,
-				   	const ColumnVector &AAx,
-				   	const double &ddt,
-				   	const int &nx,
-				   	const ColumnVector &open_switches);
+extern ColumnVector Fmtt_implicit (
+	ColumnVector &x,
+	ColumnVector &dx,
+	Matrix &AA,
+	const ColumnVector &AAx,
+	const double &ddt,
+	const int &nx,
+	const ColumnVector &open_switches);
 
-extern ColumnVector F${sys}_${ode} (	ColumnVector &x,
-				    	ColumnVector &u,
-				    	const double &t,
-				    	ColumnVector &par);
+extern ColumnVector F${sys}_${ode} (
+	ColumnVector &x,
+	ColumnVector &u,
+	const double &t,
+	ColumnVector &par);
 
-extern ColumnVector F${sys}_${odeo} (	ColumnVector &x,
-				     	ColumnVector &u,
-				     	const double &t,
-				     	ColumnVector &par);
+extern ColumnVector F${sys}_${odeo} (
+	ColumnVector &x,
+	ColumnVector &u,
+	const double &t,
+	ColumnVector &par);
 
-extern ColumnVector F${sys}_input (	ColumnVector &x,
-					ColumnVector &y,
-				   	const double &t,
-				   	ColumnVector &par);
+extern ColumnVector F${sys}_input (
+	ColumnVector &x,
+	ColumnVector &y,
+	const double &t,
+	ColumnVector &par);
 
-extern ColumnVector F${sys}_numpar (	void);
+extern ColumnVector F${sys}_numpar (
+	void);
 
-extern Octave_map F${sys}_simpar (     	void);
+extern Octave_map F${sys}_simpar (
+     	void);
 
-extern Matrix F${sys}_smxa (		ColumnVector &x,
-			    		ColumnVector &u,
-			    		const double &t,
-			    		ColumnVector &par);
+extern Matrix F${sys}_smxa (
+	ColumnVector &x,
+	ColumnVector &u,
+	const double &t,
+	ColumnVector &par);
 
-extern ColumnVector F${sys}_smxax (	ColumnVector &x,
-				   	ColumnVector &u,
-				   	const double &t,
-				   	ColumnVector &par);
+extern ColumnVector F${sys}_smxax (
+	ColumnVector &x,
+	ColumnVector &u,
+	const double &t,
+	ColumnVector &par);
+ 
+extern ColumnVector F${sys}_state (
+	ColumnVector &x);
 
-extern ColumnVector F${sys}_state (	ColumnVector &x);
-
-extern ColumnVector F${sys}_logic (	ColumnVector &x,
-				   	ColumnVector &u,
-				   	const double &t,
-				   	ColumnVector &par);
+extern ColumnVector F${sys}_logic (
+	ColumnVector &x,
+	ColumnVector &u,
+	const double &t,
+	ColumnVector &par);
 #endif // STANDALONE
 
 
@@ -380,8 +394,8 @@ mtt_${odeo} (ColumnVector &x,
 
 inline ColumnVector
 mtt_implicit (ColumnVector &x,
-	      const ColumnVector &dx,
-	      const Matrix &AA,
+	      ColumnVector &dx,
+	      Matrix &AA,
 	      const ColumnVector &AAx,
 	      const double &ddt,
 	      const int &nx,

@@ -3,8 +3,8 @@
 
 #ifdef STANDALONE
 ColumnVector Fmtt_implicit (      ColumnVector	&x,
-			    const ColumnVector	&dx,
-			    const Matrix	&AA,
+				  ColumnVector	&dx,
+			          Matrix	&AA,
 			    const ColumnVector	&AAx,
 			    const double	&t,
 			    const int		&Nx,
@@ -33,56 +33,27 @@ DEFUN_DLD (mtt_implicit, args, ,
 #endif // OCTAVE_DEV
 #endif // STANDALONE
 
-  register int i, n;
-  register int col_old, col_new;
-  register int row_old, row_new;
+  register int row, col;
 
-  n = Nx;
-  for (i = 0; i < Nx; i++)
+  for (row = 0; row < Nx; row++)
     {
-      if (0 != openx (i))
+      if (0 != openx (row))
 	{
-	  n--;
-	}
-    }
-
-  static Matrix	tmp_dx	(n,1);
-  static Matrix	tmp_x	(n,1);
-  static Matrix	tmp_AAx	(n,1);
-  static Matrix	tmp_AA	(n,n);
-
-  for (row_new = row_old = 0; row_old < Nx; row_old++)
-    {
-      if (0 == openx (row_old))
-	{
-	  tmp_dx  (row_new,0)	= dx  (row_old);
-	  tmp_AAx (row_new,0)	= AAx (row_old);
-	  for (col_new = col_old = 0; col_old < Nx; col_old++)
+          dx (row) = 0.0;
+	  for (col = 0; col < Nx; col++)
 	    {
-	      if (0 == openx (col_old))
-		{
-		  // xxx: this can be improved by symmetry
-		  tmp_AA (row_new,col_new) = AA (row_old,col_old);
-		  col_new++;
-		}
+	      AA (row,col) = AA (col,row) = 0.0;
 	    }
-	  row_new++;
 	}
     }
 
-  tmp_x = xleftdiv (tmp_AA, (tmp_AAx + tmp_dx * t));
+  x = static_cast<ColumnVector> (xleftdiv (AA, static_cast<Matrix>(AAx + dx * t)));
   
-  row_new = 0;
-  for (row_old = 0; row_old < Nx; row_old++)
+  for (row = 0; row < Nx; row++)
     {
-      if (0 == openx (row_old))
+      if (0 != openx (row))
 	{
-	  x (row_old) = tmp_x (row_new,0);
-	  row_new++;
-	}
-      else
-	{
-	  x (row_old) = 0.0;
+	  x (row) = 0.0;
 	}
     }
 

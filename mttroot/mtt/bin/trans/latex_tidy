@@ -14,6 +14,11 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.18  2001/06/11 19:43:50  gawthrop
+## MTT is now much more sophisticated in generating lbl files
+## Labels can contain maths
+## Repetative components are now broken
+##
 ## Revision 1.17  2000/12/28 12:31:15  peterg
 ## *** empty log message ***
 ##
@@ -129,7 +134,8 @@ sed \
     -e "s/gamma/\\\gamma/g" \
     -e "s/delta/\\\delta/g" \
     -e "s/epsilon/\\\epsilon/g" \
-    -e "s/eta/\\\eta/g" \
+    -e "s/\([^b(Th)(th)z]\)eta/\1\\\eta/g" \
+    -e "s/^eta/\\\eta/g" \
     -e "s/kappa/\\\kappa/g" \
     -e "s/lambd/\\lambda/g" \
     -e "s/lambda/\\\lambda/g" \

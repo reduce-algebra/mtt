@@ -13,4 +13,4 @@ done
 # should be reading the output from ese_r2make
 # on standard input
 ${MTT_LIB}/cr/perl/apply_cr.pl ${crs}
-echo ";end;"
+

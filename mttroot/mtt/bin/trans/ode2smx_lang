@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  1998/11/26 10:32:34  peterg
+## Include subs.r
+##
 ## Revision 1.10  1998/11/17 17:10:22  peterg
 ## Read in the constitutive relationship file as well
 ##
@@ -189,7 +192,8 @@ EOF
 
 if [ "$lang" = "m" ]; then
   mv $1_smx.$lang  mtt_junk
-  lang_header $1 smx m 'mttx,mttu,mttdt' '[mtta,mttax]' > $1_smx.m
+#  lang_header $1 smx m 'mttx,mttu,mttdt' '[mtta,mttax]' > $1_smx.m
+  mtt_header $1 $2 m
   cat mtt_junk | mtt_p2m >> $1_smx.m
   rm -f mtt_junk
 

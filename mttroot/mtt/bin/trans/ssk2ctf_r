@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/02/09 14:04:00  peterg
+## Renamed matrix to cTF;
+##
 ## Revision 1.1  1998/02/09 13:54:34  peterg
 ## Initial revision
 ##
@@ -49,7 +52,7 @@ C_d := -MTTK;
 D_d := 0;
 
 %Transfer function
-MTTGc := C_d*((s*MTTI - A_d)^(-1))*B_d;
+MTTcTF := C_d*((s*MTTI - A_d)^(-1))*B_d;
 
 %Create the output file
 OUT "$1_ctf.r"; 

@@ -12,13 +12,16 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.1  1998/03/22 10:26:47  peterg
+% % Initial revision
+% %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Load the general translator package
 LOAD GENTRAN;
 GENTRANLANG!* := 'FORTRAN;
 ON GENTRANSEG;
-MAXEXPPRINTLEN!* := 80;
+MAXEXPPRINTLEN!* := 400;
 
 PROCEDURE matlab_Matrix;
 BEGIN

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.17  1998/06/27 14:49:16  peterg
+## No change
+##
 ## Revision 1.16  1998/06/25 08:47:23  peterg
 ## Put correct arguments for _input -- (x,t)
 ##
@@ -145,7 +148,8 @@ if nx>0
       ts = t;
       for i=1:STEPFACTOR
         x = xx(1:nx);
-        xx = $1_ode(xx,ts);
+        u = $1_input(xx,ts);
+        xx = $1_ode(xx,u,ts);
         ts = ts + dt;
         dx = xx(1:nx);
         x = x + dx*dt;
@@ -156,15 +160,16 @@ if nx>0
     %Euler integration
     X=[];
     dt = (T(2)-T(1))/STEPFACTOR;
-    u = $1_input(x,t);
-    A = $1_sm(x,u); 
+    u = $1_input(x,u,t);
+    A = $1_smx(x,u); 
     inverse = inv(eye(nx) - dt*A);
     for t=T'
       X = [X; xx'];
       ts = t;
+      u = $1_input(x,t);
       for i=1:STEPFACTOR
         x = xx(1:nx);
-        xx = $1_ode(xx,ts);
+        xx = $1_ode(xx,u,ts);
         ts = ts + dt;
         dx = xx(1:nx);
         x = inverse*(x + dt*(dx - A*x));
@@ -182,8 +187,8 @@ if nx>0
       for i=1:STEPFACTOR
         x = xx(1:nx);
         u = $1_input(x,t);
-    	A = $1_sm(x,u); 
-        xx = $1_ode(xx,ts);
+    	A = $1_smx(x,u); 
+        xx = $1_ode(xx,u,ts);
         ts = ts + dt;
         dx = xx(1:nx);
         x = (One-A*dt)\(x + dt*(dx - A*x));
@@ -203,7 +208,8 @@ if ny>0 % compute y and print it
   i = 0; Y=[];
   for t=T'
     i = i+1; X(i,:);
-    y = $1_odeo(X(i,:)',t);
+    u = $1_input(x,t);
+    y = $1_odeo(X(i,:)',u,t);
     Y = [Y; y'];
   end;
   write_matrix([T,Y], '$1_odeso');

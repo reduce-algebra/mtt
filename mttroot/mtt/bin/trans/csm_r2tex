@@ -1,0 +1,83 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: csm_r2tex
+# Reduce constrained-state matrices to LaTex constrained-state matrices.
+# P.J.Gawthrop  9 Sep 1991, May 1994
+# Copyright (c) P.J.Gawthrop, 1991, May 1994.
+
+# Inform user
+echo Creating $1_$2.tex
+
+# Remove the old log file
+rm -f csm_r2tex.log
+
+# Use reduce to accomplish the transformation
+reduce >csm_r2tex.log << EOF
+
+%Read the definitions file
+in "$1_def.r";
+
+%Read the constrained-state matrices file
+in "$1_$2.r";
+
+%Read the symbolic parameters file
+%%in "$1_sympar.r";
+
+%Read the substitution file
+in "$1_subs.r";
+
+%Read the simplification file
+in "$1_simp.r";
+
+%Read the formatting function
+in "$MTTPATH/trans/latex_matrix.r";
+
+OFF Echo;
+OFF Nat;
+
+OUT "$1_$2.tex";
+
+%Write out the constrained-state matrices.
+write "%constrained-state  matrices $1";
+write "%File: $1_$2.tex";
+write"";
+
+write "%constrained-state matrices";
+
+MTT_Matrix := MTTA$ 
+MTT_Matrix_name := "MTTA"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := MTTNx$
+LaTeX_Matrix()$
+
+MTT_Matrix := MTTB$ 
+MTT_Matrix_name := "MTTB"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := MTTNu$
+LaTeX_Matrix()$
+
+MTT_Matrix := MTTC$ 
+MTT_Matrix_name := "MTTC"$
+MTT_Matrix_n := MTTNy$
+MTT_Matrix_m := MTTNx$
+LaTeX_Matrix()$
+
+MTT_Matrix := MTTD$ 
+MTT_Matrix_name := "MTTD"$
+MTT_Matrix_n := MTTNu$
+MTT_Matrix_m := MTTNu$
+LaTeX_Matrix()$
+
+MTT_Matrix := MTTE$ 
+MTT_Matrix_name := "MTTE"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := MTTNx$
+LaTeX_Matrix()$
+
+SHUT "$1_$2.tex";
+quit;
+EOF

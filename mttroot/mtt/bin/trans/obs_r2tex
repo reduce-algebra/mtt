@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/04/07 08:30:20  peterg
+## Initial revision
+##
 # Revision 1.3  1997/06/13  13:50:11  peterg
 # Matrices in amstex format
 #
@@ -44,6 +47,9 @@ in "$1_obs.r";
 %Read the Obs function parameters
 in "$1_obspar.r";
 
+%Read the substitution file
+in "$1_subs.r";
+
 %Read the simplification parameters
 in "$1_simp.r";
 
@@ -55,13 +61,6 @@ OFF Nat;
 OFF EXP;
 
 OUT "$1_obs.tex";
-
-% Write the obs vector (YY)
-MTT_Matrix := MTTYY$ 
-MTT_Matrix_name := "MTTO"$
-MTT_Matrix_n := (MTTGPCNY+1)*MTTNy$
-MTT_Matrix_m := 1$
-LaTeX_Matrix()$
 
 % Write the affine form
 IF affine=1 THEN 
@@ -77,7 +76,17 @@ BEGIN
   MTT_Matrix_n := (MTTGPCNy+1)*MTTNy$
   MTT_Matrix_m := (MTTGPCNu+1)*MTTNu$
   LaTeX_Matrix()$
+END
+ELSE
+BEGIN
+% Write the obs vector (YY)
+  MTT_Matrix := MTTYY$ 
+  MTT_Matrix_name := "MTTO"$
+  MTT_Matrix_n := (MTTGPCNY+1)*MTTNy$
+  MTT_Matrix_m := 1$
+  LaTeX_Matrix()$
 END;
+
 SHUT "$1_obs.tex";
 quit;
 EOF

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1998/02/09 14:16:52  peterg
+## Writes end statement to the o/p file
+##
 ## Revision 1.2  1998/01/23 09:30:36  peterg
 ## Fixed a sign error - the coeficients of a(s) appear with - signs in
 ## the A_c matrix!
@@ -23,9 +26,25 @@
 ##
 ###############################################################
 
+Nu=`mtt_getsize $1 u`
+Ny=`mtt_getsize $1 y`
+
+if [ "$Nu" = "1" ]; then
+  if [ "$Ny" = "1" ]; then
+    blurb=' for this siso system'    
+  else
+    blurb=" using first output of $Ny"
+  fi
+else
+  if [ "$Ny" = "1" ]; then
+    blurb=" using first input of $Nu"
+  else
+    blurb=" using first input of $Nu and using first output of $Ny"
+  fi
+fi
 
 # Inform user
-echo Creating $1_ssk.r -- NOTE this is for SISO systems only.
+echo Creating $1_ssk.r $blurb
 
 # Remove the old log file
 rm -f smc2ssk_r.log
@@ -76,14 +95,14 @@ OUT "$1_ssk.r";
 write "%  - Gain matrix - controller form";
 MTT_Matrix := MTTK_c$ 
 MTT_Matrix_name := "MTTK_c"$
-MTT_Matrix_n := MTTNu$
+MTT_Matrix_n := 1$
 MTT_Matrix_m := MTTNx$
 Reduce_Matrix()$
 
 write "%  - Gain matrix - physical form";
 MTT_Matrix := MTTK$ 
 MTT_Matrix_name := "MTTK"$
-MTT_Matrix_n := MTTNu$
+MTT_Matrix_n := 1$
 MTT_Matrix_m := MTTNx$
 Reduce_Matrix()$
 

@@ -1,0 +1,115 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: cse2ode_r
+# Reduce constrained-state equations to ode.
+# P.J.Gawthrop 10th May 199, 8th August 1991, April 1994, Dec 1994
+# Copyright (c) P.J.Gawthrop, 1991, 1994.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+## Revision 1.2  1997/01/06 21:17:10  peterg
+## Removed:  OFF Exp; OFF GCD;
+##
+## Revision 1.1  1996/08/25 10:05:45  peter
+## Initial revision
+##
+###############################################################
+
+# Create the reduce output code
+def2write_r $1 ode
+def2write_r $1 odeo
+
+#Inform user
+echo Creating $1_ode.r
+echo Creating $1_odeo.r
+
+# Remove the old log file
+rm -f cse2ode_r.log
+
+# Use reduce to accomplish the transformation
+$SYMBOLIC >cse2ode_r.log << EOF
+
+%Read the formatting function
+in "$MTTPATH/trans/reduce_matrix.r";
+
+%Read the definitions file
+in "$1_def.r";
+
+%Read the substitution file
+in "$1_subs.r";
+
+%Read the constrained-state equations file
+in "$1_cse.r";
+
+IF MTTNx>0 THEN
+ IF MTTNz>0 THEN
+   MTTdXX := MTTE^(-1)*MTTEdX
+ ELSE
+   MTTdXX := MTTEdX;
+
+%Remove all dX terms from y - a rather nasty method, sorry!
+  MTTdX1 := 0;
+  MTTdX2 := 0;
+  MTTdX3 := 0;
+  MTTdX4 := 0;
+  MTTdX5 := 0;
+  MTTdX6 := 0;
+  MTTdX7 := 0;
+  MTTdX8 := 0;
+  MTTdX9 := 0;
+  MTTdX10 := 0;
+  MTTdX11 := 0;
+  MTTdX12 := 0;
+  MTTdX13 := 0;
+  MTTdX14 := 0;
+  MTTdX15 := 0;
+  MTTdX16 := 0;
+  MTTdX17 := 0;
+  MTTdX18 := 0;
+  MTTdX19 := 0;
+  MTTdX20 := 0;
+
+%Substitute  dX into y;
+IF MTTNz>0 THEN
+  IF MTTNx>0 THEN
+    MTTY := MTTY + MTTEyx*MTTdX;
+
+OFF Echo;
+OFF Nat;
+
+MTTdX := MTTdXX;
+
+%Write out the  ordinary differential equations.
+OUT "$1_ode.r";
+write "%File: $1_ode.r";
+in ("$1_ode_write.r");
+write "in ""$1_odeo.r"";";
+write "END;";
+SHUT "$1_ode.r";
+
+%Write out the  output equations
+OUT "$1_odeo.r";
+write "%File: $1_odeo.r";
+in ("$1_odeo_write.r");
+write "END;";
+SHUT "$1_odeo.r";
+quit;
+EOF
+
+# Now invoke the standard error handling.
+mtt_error_r cse2ode_r.log
+
+
+
+
+
+
+
+

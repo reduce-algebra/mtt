@@ -1,0 +1,128 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: dat2gdat
+
+# Converts a data file in data format to gplot data format
+
+# Copyright (c) P.J.Gawthrop, 1997.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+## Revision 1.8  1998/09/29 20:01:27  peterg
+## 4th argument for nyquist style files - ie differnt x for each y
+##
+## Revision 1.7  1997/12/04 22:10:32  peterg
+## Handles argument list - variable names.
+##
+## Revision 1.6  1997/05/22 10:34:05  peterg
+## Changed argument structure.
+##
+## Revision 1.5  1997/05/22 10:11:19  peterg
+## Fixed parametetr bug
+##
+# Revision 1.4  1997/05/16  13:03:10  peterg
+# Now selects variables to display.
+#
+# Revision 1.3  1996/08/26  13:02:58  peterg
+# Cahged awk to awk.
+#
+# Revision 1.2  1996/08/15  11:49:11  peter
+# Puts a blank line at the end of the file:
+#  this allows user to cat files for use in gnuplot.
+#
+## Revision 1.1  1996/08/14 09:13:52  peter
+## Initial revision
+##
+###############################################################
+
+echo Creating $1_$2.gdat
+rm -f $1_$2.gdat
+
+DifferentX=$4;
+
+# Convert multi-columns into gnuplot format -
+# ie stack two columns vertically separated by blank lines
+
+#Get the desired data index
+which=`name2index $1 "$3"`
+
+if [ -z "$DifferentX" ]; then
+awk '
+BEGIN{
+  row=0; col=0;
+}
+{ 
+  if (row==0) {
+     N=split(which,Which,",");
+    }
+  row++;
+  j=1;
+  if (Which[1]==0) {
+    x[row] = $1;
+    for (i=1; i<NF; i++) {
+      ycol = i+1;
+      y[row,j++] = $ycol;
+    }
+  }
+  else {
+  xcol = Which[1];
+  x[row] = $xcol
+  for (i=1; i<N; i++) {
+      ycol = Which[i+1];
+      y[row,j++] = $ycol;
+    }
+  }
+  cols=j-1;
+}
+END {
+  rows = row;
+  for (col = 1; col <= cols; col++) {
+    for (row = 1; row <= rows; row++) {
+      print x[row], y[row,col]
+    };
+  if (col<=cols) {
+    printf("\n")
+  }
+  }
+}'  which="$which" <$1_$2.dat >   $1_$2.gdat
+
+else
+awk '
+BEGIN{
+  row=0; col=0;
+}
+{ 
+  row++; cols=NF/2
+    for (i=1; i<=cols; i++) {
+      ycol=2*i;
+      xcol=ycol-1;
+      x[row,i] = $xcol
+      y[row,i] = $ycol;
+    }
+}
+END {
+  rows = row;
+  for (col = 1; col <= cols; col++) {
+    for (row = 1; row <= rows; row++) {
+      print x[row,col], y[row,col]
+    };
+  if (col<=cols) {
+    printf("\n")
+  }
+  }
+}'   <$1_$2.dat >   $1_$2.gdat
+    
+fi
+
+
+
+
+
+

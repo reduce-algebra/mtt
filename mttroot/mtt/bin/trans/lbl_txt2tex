@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  2000/11/16 13:11:06  peterg
+## Included PAR and UNITS declarations
+##
 ## Revision 1.8  1999/02/17 21:42:19  peterg
 ## Replaced print by printf to avoid extra nl in paragraph command.
 ##
@@ -125,7 +128,15 @@ cat <<EOF >> $1_lbl.tex
 \end{description}
 EOF
 
-
+# Write the actual lbl file
+cat >> $1_lbl.tex <<EOF
+\subsubsection*{The label file: $1\_lbl.txt}
+\begin{verbatim}
+EOF
+cat $1_lbl.txt >> $1_lbl.tex
+cat >> $1_lbl.tex <<EOF
+\end{verbatim}
+EOF
 
 
 

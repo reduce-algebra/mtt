@@ -4,11 +4,11 @@
      ##### Model Transformation Tools #####
      ######################################
 
-# Bourne shell script: odeso_dat2sdat
+# Bourne shell script: dat2sdat
 
 # Structure file - dat to sdat conversion
 # P.J.Gawthrop April 1997
-# Copyright (c) P.J.Gawthrop, 1997.
+# Copyright (c) P.J.Gawthrop, 1997, 1999
 
 ###############################################################
 ## Version control history
@@ -20,10 +20,26 @@
 ##
 ###############################################################
 
+if [ "$2" = "odes" ]; then
+    which="state"
+else
+    which="output"
+fi
+
+awk '
+BEGIN{
+printf("Time");
+}
+{ 
+  if ($1==which)
+    printf(" %s(%s)", $3, $5);
+}
+END{
+printf("\n");
+}
+'  SYSTEM=$1 which=$which  < $1_struc.txt
+
+cat $1_$2.dat
 
 
-# Inform user
-echo "Creating $1_odeso.sdat"
-
-dat2sdat $1 odeso | dat2siag > $1_odeso.sdat
 

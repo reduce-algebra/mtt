@@ -122,6 +122,7 @@ else
 fi
 
 # Put together the pieces
+matlab_tidy $1_obs.m2
 matlab_tidy $1_obs.m3
 cat   $1_obs.m? >$1_obs.m
 

@@ -1,0 +1,181 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: cse2rfe_r
+# Reduce  constrained-state equations to robot matrices
+# Experimental version!
+# State vector should have momenta in odd rows,angles in even;
+# the last row should have the gravity velocity term.
+# There should be one output (only) for each joint velocity.
+# P.J.Gawthrop, Nov 92, Dec 93, May 1994
+# Copyright (c) P.J.Gawthrop, 1992, May 1994.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+## Revision 1.2  1996/12/05 12:10:00  peterg
+## Version history added.
+##
+###############################################################
+
+# Inform user
+echo Creating $1_rfe.r
+
+# Remove the old log file
+rm -f cse2rfe_r.log
+
+# Use reduce to accomplish the transformation
+reduce >cse2rfe_r.log << EOF
+
+IN "$1_def.r";
+IN "$1_sympar.r";
+IN "$1_csm.r";
+IN "$1_cse.r";
+
+MTTN2 := MTTNy;
+
+
+%Find E11 and E12 matrices
+MATRIX MTTE11(MTTN2,MTTN2), MTTE12(MTTN2,MTTN2);
+FOR i := 1:MTTN2 DO
+  FOR j := 1:MTTN2 DO
+  BEGIN
+    MTTE11(i,j) := MTTE(2*i-1,2*j-1);
+    MTTE12(i,j) := MTTE(2*i-1,2*j);
+  END;
+
+%Find inertia matrix
+MATRIX MTTImi(MTTN2,MTTN2);
+FOR i := 1:MTTN2 DO
+  BEGIN
+    MTTImi(i,i) := MTTC(i,2*i-1);
+   END;
+
+MTTIm := MTTImi^-1;
+
+%Find gravity matrix if there is an extra gravity state
+MATRIX MTTG(MTTN2,1);
+MTTNy2 := 2*MTTNy;
+IF ( (MTTNx-1)/MTTNy2 = 1) THEN
+FOR i := 1:MTTN2 DO
+  BEGIN
+    MTTG(i,1) := MTTE(2*i-1,MTTNx);
+   END;
+
+
+
+%Find V matrix from RHS of equation
+MTTu1 := 0;
+MTTu2 := 0;
+MTTu3 := 0;
+MTTu4 := 0;
+MTTu5 := 0;
+MTTu6 := 0;
+
+MTTx2 := theta_1;
+MTTx4 := theta_2;
+MTTx6 := theta_3;
+MTTx8 := theta_4;
+MTTx10 := theta_5;
+MTTx12 := theta_6;
+
+MTTx1 := dot_theta_1*MTTIm(1,1);
+MTTx3 := dot_theta_2*MTTIm(2,2);
+MTTx5 := dot_theta_3*MTTIm(2,3);
+
+MATRIX MTTdt(6,1);
+MTTdt(1,1) := dot_theta_1;
+MTTdt(2,1) := dot_theta_2;
+MTTdt(3,1) := dot_theta_3;
+MTTdt(4,1) := dot_theta_4;
+MTTdt(5,1) := dot_theta_5;
+MTTdt(6,1) := dot_theta_6;
+
+MATRIX dtheta(MTTN2,1);
+FOR i := 1:MTTN2 DO
+  BEGIN
+    dtheta(i,1) := MTTdt(i,1);
+   END;
+
+MATRIX MTTVrhs(MTTN2,1);
+MATRIX MTTV(MTTN2,1);
+FOR i := 1:MTTN2 DO
+  BEGIN
+    MTTVrhs(i,1) := MTTEdX(2*i-1,1);
+   END;
+
+%Find V matrix 
+MTTV := MTTE12*dtheta - MTTVrhs;
+
+%Find C matrix
+MATRIX MTTC(MTTN2,MTTN2);
+k := 0;
+FOR i := 1:MTTN2 DO
+  FOR j := 1:MTTN2 DO
+  BEGIN
+  coeffs := coeff(MTTV(i,1),MTTdt(j,1));
+  IF length(coeffs)>2 THEN co := part(coeffs,3) ELSE co := 0;
+  MTTC(i,j) := co;
+  END;
+
+%Find B matrix
+MTTN3 := MTTN2*(MTTN2-1)/2;
+
+IF MTTN3>0 THEN
+BEGIN
+MATRIX MTTB(MTTN2,MTTN3);
+FOR i := 1:MTTN2 DO
+BEGIN
+  counter := 0;
+  FOR j := 1:MTTN2-1 DO
+  BEGIN
+  coeffs := coeff(MTTV(i,1),MTTdt(j,1));
+  IF length(coeffs)>1 THEN co := part(coeffs,2) ELSE co := 0;
+    FOR k := j+1:MTTN2 DO
+    BEGIN 
+    counter := counter+1;
+    coeffs2 := coeff(co,MTTdt(k,1));
+    IF length(coeffs2)>1 THEN co2 := part(coeffs2,2) ELSE co2 := 0;
+     MTTB(i,counter) := co2;
+    END;
+  END;
+END;
+END;
+
+OFF Echo;
+OFF Nat;
+ON NERO;
+
+OUT "$1_rfe.r";
+
+%% M
+write "MATRIX MTTM(", MTTN2, ",", MTTN2, ")";
+MTTM := MTTE11*MTTIm;
+
+%% V
+write "MATRIX MTTRV(", MTTN2, ",1)";
+MTTRV := MTTV;
+
+%% 
+
+write "MATRIX MTTRC(", MTTN2, ",", MTTN2, ")";
+MTTRC := MTTC;
+
+IF MTTN3>0 THEN
+  BEGIN
+  write "MATRIX MTTRB(", MTTN2, ",", MTTN3, ")";
+  MTTRB := MTTRB;
+END;
+
+write "MATRIX MTTRG(", MTTN2, ", 1)";
+MTTRG := MTTG;
+
+write ";END;"$
+SHUT "$1_rfe.r";
+quit;
+EOF

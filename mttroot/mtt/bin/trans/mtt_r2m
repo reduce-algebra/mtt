@@ -18,6 +18,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.29  2001/09/07 00:25:56  geraint
+## Partial fix for insidious bug which eliminates lines of code when parameter
+## names of the form (in* or off*) start continuation lines.
+##
 ## Revision 1.28  2001/07/13 04:54:04  geraint
 ## Branch merge: numerical-algebraic-solution back to main.
 ##
@@ -124,6 +128,8 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
     -parameters)
 	parameters='-parameters';
         par='mttpar'
+	;;
+    -optimise)
 	;;
     *)
 	echo $1 is an unknown option

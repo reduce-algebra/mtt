@@ -1,0 +1,38 @@
+# Outline report file for system SimpleGasTurbine (SimpleGasTurbine_rep.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+mtt -o -ss SimpleGasTurbine abg tex
+mtt -o -ss SimpleGasTurbine struc tex
+mtt -o -ss SimpleGasTurbine sympar tex
+mtt -o -ss SimpleGasTurbine ode tex
+
+mtt -o -ss SimpleGasTurbine sspar r
+mtt -o -ss SimpleGasTurbine ss tex
+mtt -o -ss SimpleGasTurbine sm tex
+
+mtt -o -ss SimpleGasTurbine numpar tex
+mtt -o -ss SimpleGasTurbine input tex
+mtt -o -ss SimpleGasTurbine state tex
+mtt -o -ss SimpleGasTurbine simpar tex
+mtt -o -ss -c SimpleGasTurbine odeso ps \
+    'SimpleGasTurbine_comp_1_T,SimpleGasTurbine_c1_1_T,SimpleGasTurbine_turb_1_T'
+
+mtt -o -ss -c SimpleGasTurbine odeso ps \
+    'SimpleGasTurbine_fuel_1_Heat_1_y,SimpleGasTurbine_load_1_Work_1_y'
+
+mtt -o -ss -c SimpleGasTurbine odeso ps \
+    'SimpleGasTurbine_shaft_1_speed_1_y'
+
+mtt -o -ss -c SimpleGasTurbine odeso ps \
+    'SimpleGasTurbine_c1_1_P'
+
+
+
+
+

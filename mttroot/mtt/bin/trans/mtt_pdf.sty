@@ -1,0 +1,25 @@
+%% Style file for postscript document
+
+\usepackage{mtt} % Common stuff
+
+% Figure definition
+\newcommand{\fig}[4]{
+  \begin{figure}[htbp]
+    \begin{center}
+      \fbox{
+        \pdfimage width #3\linewidth {#1.pdf}
+        %\includegraphics[width=#3\linewidth]{#1.ps}
+        }
+        \caption{#4}
+      \label{fig:#2}
+    \end{center}
+  \end{figure}
+  }
+
+% Hyper stuff
+\usepackage[implicit=true,
+            bookmarks=true,
+            pdfauthor={MTT},
+            pdftitle={MTT report},
+            pdfsubject={MTT},
+            pdfkeywords={MTT, bond graphs}]{hyperref}

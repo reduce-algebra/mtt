@@ -41,25 +41,20 @@ function [known] = mtt_component_eqn (fullname, port, causality, \
 
   if length(Name)>0
     cbg = mtt_cbg(Name);		# Structure for this subsystem
-  endif
-  
-  if struct_contains (cbg, "ports")
-    ## Combine ports with the other subsystems
-    for [component_structure, component] = cbg.ports
-      eval(sprintf("cbg.subsystems.%s=cbg.ports.%s;",component,component));
-    endfor
+    if struct_contains (cbg, "ports")
+      ## Combine ports with the other subsystems
+      for [component_structure, component] = cbg.ports
+	eval(sprintf("cbg.subsystems.%s=cbg.ports.%s;",component,component));
+      endfor
+    endif
   endif
 
-  ## Aliasing  
-  if length(name)>0
+
+  if length(name)>0 		# Alias
     eval(sprintf("ARG=cbg.subsystems.%s.arg;", name)); # Arguments
     ARG = mtt_alias (Name,ARG,arg_default); # Alias them
     eval(sprintf("cbg.subsystems.%s.arg=ARG;", name)); # and copy
-  endif
-  
-
-  ## Call to a subsystem (represented by name="")
-  if strcmp(name,"")
+  else			  # Call to a subsystem (represented by name="")
     if !struct_contains(cbg,"portlist")
       N_ports = 0;
     else

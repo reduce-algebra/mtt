@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1998/04/13 09:15:36  peterg
+## Added obspar
+##
 ## Revision 1.4  1998/03/27 07:38:32  peterg
 ## simpar.r ---> simpar.txt
 ##
@@ -37,10 +40,11 @@ mtt_rename $old_name $new_name _desc.tex
 mtt_rename $old_name $new_name _input.txt
 mtt_rename $old_name $new_name _lbl.txt
 mtt_rename $old_name $new_name _numpar.txt
-mtt_rename $old_name $new_name _obspar.txt
+mtt_rename $old_name $new_name _obspar.r
 mtt_rename $old_name $new_name _odes.h
 mtt_rename $old_name $new_name _rep.txt
 mtt_rename $old_name $new_name _simp.r
 mtt_rename $old_name $new_name _simpar.txt
 mtt_rename $old_name $new_name _sspar.r
+mtt_rename $old_name $new_name _state.txt
 mtt_rename $old_name $new_name _subs.r

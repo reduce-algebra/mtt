@@ -11,6 +11,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  1998/07/08 15:34:56  peterg
+## Sorted out error exit status
+##
 ## Revision 1.9  1998/07/08 08:24:26  peterg
 ## Added -I option -- if set prints out the indormation messages
 ##
@@ -105,8 +108,8 @@ echo Creating $1_abg.m
 # Use matrix manipulation to accomplish the transformation
 $MATRIX > rbg2abg_m.log  2>mtt_error.txt << EOF
   name = '$1'
-  infofile = 'mtt_info.txt';
-  errorfile = 'mtt_error.txt';
+  infofile = fopen('mtt_info.txt', 'w');
+  errorfile = fopen('mtt_error.txt', 'w');
 
   %Convert from the fig version of the bonds to a structured version
   [rbonds,rstrokes,rcomponents,port_coord,port_name,port_list] = $1_rbg;

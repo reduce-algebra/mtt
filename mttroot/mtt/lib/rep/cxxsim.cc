@@ -213,25 +213,25 @@ namespace cxxsim {
       }
       
       // fix vector references
-      t = "MTTu\(";
+      t = "MTTu(";
       while ((i = s.find(t)) < s.length()){
 	s.replace(i, 5, "mttu[");
 	i += s.substr(i, s.length()).find(",1)");
 	s.replace(i, 3, "]");
       }
-      t = "MTTx\(";
+      t = "MTTx(";
       while ((i = s.find(t)) < s.length()){
 	s.replace(i, 5, "mttx[");
 	i += s.substr(i, s.length()).find(",1)");
 	s.replace(i, 3, "]");
       }
-      t = "MTTdX\(";
+      t = "MTTdX(";
       while ((i = s.find(t)) < s.length()){
 	s.replace(i, 6, "mttdx[");
 	i += s.substr(i, s.length()).find(",1)");
 	s.replace(i, 3, "]");
       }
-      t = "MTTy\(";
+      t = "MTTy(";
       while ((i = s.find(t)) < s.length()){
 	s.replace(i, 5, "mtty[");
 	i += s.substr(i, s.length()).find(",1)");

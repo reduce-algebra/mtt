@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.2  1996/11/02  10:22:22  peterg
+# Now ignores SS lines.
+#
 ###############################################################
 
 
@@ -35,7 +38,7 @@ function matches(names, name) {
 BEGIN {
 comment = "%";
 arg_delimiter = ",";
-not_a_cr = "effort flow state internal external zero";
+not_a_cr = "effort flow state internal external zero none";
 numeric = "[0-9]";
 symbol_count = 0;
 symbols = "";

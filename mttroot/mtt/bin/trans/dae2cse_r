@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.20  2002/04/28 18:41:26  geraint
+## Fixed [ 549658 ] awk should be gawk.
+## Replaced calls to awk with call to gawk.
+##
 ## Revision 1.19  2001/10/26 01:01:49  geraint
 ## fixcc when rdae_is_dae (-cr).
 ##
@@ -116,7 +120,8 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 solve=1
 		solve_msg=' with explicit solution of algebraic equations' ;;
 	-fixcc )
-                fixcc=`echo 'in "'$MTT_LIB'/reduce/fix_c.r";'`
+		fixcc='-fixcc'
+                include=`echo 'in "'$MTT_LIB'/reduce/fix_c.r";'`
                 fix_msg='fixing c and cc code';
 		;;
 	-optimise)
@@ -129,9 +134,9 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 done
 
 # Create the reduce output code
-def2write_r $optimise $1 cse 
-def2write_r $optimise $1 csex # Version without E matrix
-def2write_r $optimise $1 cseo
+def2write_r $optimise $fixcc $1 cse 
+def2write_r $optimise $fixcc $1 csex # Version without E matrix
+def2write_r $optimise $fixcc $1 cseo
 
 echo "Creating $1_cse.r $solve_msg $optimise_msg $fix_msg"
 echo "Creating $1_csex.r $optimise_msg"
@@ -154,7 +159,7 @@ OFF Nat;
 ON NERO;
 
 %Fix c code if required
-$fixcc
+$include
 
 in "$1_def.r";
 MTTdxs := MTTdX;  %Save the symbolic form of dX

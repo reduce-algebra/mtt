@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.356  2002/06/17 13:14:50  geraint
+## Fixed some rules to reduce number of implicit rule searches.
+##
 ## Revision 1.355  2002/06/10 23:18:44  geraint
 ## Adjusted cr.h comment delimiters to be C compliant.
 ##
@@ -2718,7 +2721,7 @@ ifneq ($partition,)
 	mtt_make_subsystems  ${sys} rdae r
 endif
 	mtt_prepend.sh -p $1_modpar.r $1_ese.r # Add modulated parameters to start
-	ese2rdae_r ${cr_first} ${Subsystem}; tidy ${Subsystem}_rdae.r
+	ese2rdae_r ${cr_first} ${fixcc} ${Subsystem}; tidy ${Subsystem}_rdae.r
 
 ${sys}_dae.r: ${Subsystem}_rdae.r ${Subsystem}_def.r ${Subsystem}_subs.r ${Subsystem}_cr.r
 ifneq ($partition,)

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  2002/05/17 09:14:58  geraint
+## Optimises each line in a separate session. Allows larger models to be built.
+##
 ## Revision 1.10  2002/04/28 18:41:27  geraint
 ## Fixed [ 549658 ] awk should be gawk.
 ## Replaced calls to awk with call to gawk.
@@ -59,6 +62,8 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-optimise)
 	    opt='-optimise'
 	    optimise_msg=' with optimisation' ;;
+	-fixcc )
+	    include=`echo 'in "'$MTT_LIB'/reduce/fix_c.r";'` ;;
 	*)
 	    echo "$1 is an invalid argument - ignoring" ;;
     esac
@@ -163,6 +168,7 @@ on noconvert$
 on rounded$
 off int$
 off nat$
+$include
 
 out "$tmp2"$
 EOF

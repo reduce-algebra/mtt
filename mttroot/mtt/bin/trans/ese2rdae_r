@@ -14,6 +14,22 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.12.2.2  2002/06/05 17:28:00  geraint
+## Cosmetic change.
+##
+## Revision 1.12.2.1  2002/06/05 11:14:51  geraint
+## ae.r now generated using def2write_r like cse?.r
+## fix_c.r called at ese2rdae stage so that pow gets fixed in ae.r.
+##
+## These changes produce the desired result (optimised algebraic equations) but
+## have highlighted a problem; when optimisation fails, Reduce does not write
+## a result. For complicated systems, this can lead to missing assignments in
+## the resultant code.
+##
+## Revision 1.12  2001/07/23 23:31:17  gawthrop
+## Added -cr option to load CRs first - avoids alg. loops with R
+## implementation of mutiports.
+##
 ## Revision 1.11  2001/07/06 00:46:50  gawthrop
 ## Added -cr option -- forces cr to be loaded before the ese.r file
 ## This avoids causality problems when using multi-port Rs to represent
@@ -100,6 +116,10 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 load_cr=yes;
                 blurb2=' using cr and subs first';
                 ;;
+      -fixcc )
+		include=`echo 'in "'$MTT_LIB'/reduce/fix_c.r";'`
+		blurb3='fixing c and cc code';
+		;;
 	-partition )
                 partition=yes;
                 blurb='with partitioning';
@@ -136,7 +156,7 @@ if [ -n "${load_cr}" ]; then
 fi
 
 # Inform user
-echo Creating $daename $blurb $blurb2
+echo Creating $daename $blurb $blurb2 $blurb3
 
 # Remove the old log file
 rm -f $logname
@@ -156,6 +176,9 @@ in "$defname";
 
 % Elementary system equations
 in "$esename";
+
+% Fix c code if required
+$include
 
 OFF Echo;
 OFF Nat;

@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.26  1999/10/20 01:31:43  peterg
+## *** empty log message ***
+##
 ## Revision 1.25  1999/08/29 06:55:26  peterg
 ## Removed [MTTu]  = zero_input($Nu);	# Zero the input
 ## to avoide the p2c bug ????
@@ -88,9 +91,17 @@
 # Copyright (c) P.J.Gawthrop July 1998.
 
 # Tell user
-echo  Creating $1_ode2odes.m
-
 Sys=$1
+method=$2
+echo  "Creating $1_ode2odes.m with $method integration method"
+
+if [ $method = "implicit" ]; then
+    ode=cse
+    odeo=cseo
+else
+    ode=ode
+    odeo=odeo
+fi
 
 # Find system constants
 Nx=`grep "MTTNx " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
@@ -119,7 +130,7 @@ MTTt = 0.0;
 [MTTx] = $1_state;	        # Read in initial state
 
 
-[MTTy] = $1_odeo(MTTx,MTTu,MTTt); # Evaluate initial output
+[MTTy] = $1_$odeo(MTTx,MTTu,MTTt); # Evaluate initial output
 [MTTu] = $1_input(MTTt,MTTx,MTTy);	# Evaluate initial input
 mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny); # And write them
 
@@ -130,34 +141,52 @@ mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny); # And write them
 #  [MTTx] = $1_switch(MTTx);       # Switches
 #endif;
 
-if mttmethod==1			# Euler
-  MTTddt = mttdt/mttstepfactor; # The small sample interval
-endif;
+EOF
+
+if [ "$method" = "euler" ]; then
+cat << EOF >> $1_ode2odes.m
+MTTddt = mttdt/mttstepfactor; # The small sample interval
+EOF
+fi
 
 
+cat << EOF >> $1_ode2odes.m
 for MTTit = 1:MTTilast		#Integration loop
 
   if $Nx>0			# Dont if no states
-    if mttmethod==1		# Euler
+EOF
+
+if [ "$method" = "euler" ]; then
+cat << EOF >> $1_ode2odes.m
+#    if mttmethod==1		# Euler
       for MTTjt = 1:mttstepfactor
-	[MTTdx] = $1_ode(MTTx,MTTu,MTTt); # State derivative
+	[MTTdx] = $1_$ode(MTTx,MTTu,MTTt); # State derivative
         [MTTopen] = $1_switchopen(MTTx);        # Open switches
 	[MTTx] = mtt_euler(MTTx,MTTdx,MTTddt,$Nx,MTTopen); # Euler update
 	MTTt = MTTt + MTTddt;
       endfor;
-    endif;
-    if mttmethod==2		# Implicit 
-      [MTTdx] = $1_ode(MTTx,MTTu,MTTt); # State derivative
+#    endif;
+EOF
+fi
+
+if [ "$method" = "implicit" ]; then
+cat << EOF >> $1_ode2odes.m
+#    if mttmethod==2		# Implicit 
+      [MTTdx] = $1_cse(MTTx,MTTu,MTTt); # State derivative
       [mttAA,mttAAx] = $1_smx(MTTx,MTTu,mttdt);	# (I-Adt) and (I-Adt)x
       [MTTopen] = $1_switchopen(MTTx);        # Open switches
       [MTTx] = mtt_implicit(MTTx,MTTdx,mttAA,mttAAx,mttdt,$Nx,MTTopen); # Implicit update
       MTTt = MTTt + mttdt;
-    endif;
-    else
+#    endif;
+EOF
+fi
+
+cat << EOF >> $1_ode2odes.m
+    else # NX is 0 - no states
       MTTt = MTTt + mttdt;
   endif;			# $Nx>0
 
-  [MTTy] = $1_odeo(MTTx,MTTu,MTTt);     # Output 
+  [MTTy] = $1_$odeo(MTTx,MTTu,MTTt);     # Output 
   [MTTu] = $1_input(MTTt,MTTx,MTTy);	# Input
   mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny);    # Write it out
 endfor;				# Integration loop

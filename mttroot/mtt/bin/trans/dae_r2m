@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.5  1996/08/24  14:27:29  peter
+# Global parameters.
+#
 ## Revision 1.4  1996/08/18 20:02:21  peter
 ## Include zero outputs.
 ##
@@ -109,9 +112,11 @@ END;
   
 % Firstly do the residual = f(dx,x,t) function.
 
-%MTTGx and u are the derivatives of z wrt x and u respectively
+% MTTGx and u are the derivatives of z wrt x and u respectively
 
 % Find MTTGx;
+if MTTNz>0 THEN
+BEGIN
 matrix MTTGx(MTTNz,MTTNx);
 FOR j := 1:MTTNx DO
   BEGIN
@@ -128,10 +133,10 @@ FOR j := 1:MTTNu DO
   FOR i := 1:MTTNz DO
     MTTGu(i,j) := df(MTTZ(i,1), uj, 1);
   END;
-
+END;
 
 OUT "$1_dae.m";
-write "function residual = $1_dae(MTTdX0,MTTx,t);";
+write "function residual = $1_dae(mttderiv0,mttx,t);";
 write "% residuals = $1_dae(dx,x,t);";
 write "%DAE in DASSL $1;;";
 write "%File $1_dae.m;;";
@@ -142,7 +147,7 @@ common();
   write "% Set up the non-state derivatives";
   FOR i := 1:MTTNz DO
   BEGIN
-    write "MTTdz", i, " = MTTdx0(", MTTNx+ i, ");";
+    write "mttdz", i, " = mttderiv0(", MTTNx+ i, ");";
   END;
   
 
@@ -154,20 +159,22 @@ fortwidth!* := 100$
 OFF period$
 
 
-MTTdx := MTTdx;
-MTTGx := MTTGx;
+Mttderiv := MTTdX;
+
+IF MTTNz>0 THEN
+ MTTGx := MTTGx;
 
 OFF fort;
 
 write "for i=1:", MTTNx, ";;";
-write "  residual(i) = MTTdX(i)-MTTdX0(i);";
+write "  residual(i) = mttderiv(i)-mttderiv0(i);";
 write "end;";
 
 IF MTTNz>0 THEN
 BEGIN
-  write "dxz = MTTGx*MTTdx";
+  write "dxz = MTTGx*Mttderiv";
   write "for i=1:", MTTNz, ";;";
-  write "  residual(i+", MTTNx, ") = dxz(i)-MTTdX0(i+", MTTNx,");";
+  write "  residual(i+", MTTNx, ") = dxz(i)-mttderiv0(i+", MTTNx,");";
   write "end;";
 END;
 

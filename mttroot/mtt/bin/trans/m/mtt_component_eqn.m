@@ -25,6 +25,7 @@ function [known] = mtt_component_eqn (fullname, port, causality, \
   SD = "__";			# Subsystem delimiter
   CD = "\n%%";			# Comment delimiter
   arg_default = "1";		# Default aliased arg
+  cr_default = "lin";		# Default aliased arg
 
   DEBUG = 0;
 
@@ -51,9 +52,14 @@ function [known] = mtt_component_eqn (fullname, port, causality, \
 
 
   if length(name)>0 		# Alias
+    ##Alias arguments
     eval(sprintf("ARG=cbg.subsystems.%s.arg;", name)); # Arguments
     ARG = mtt_alias (Name,ARG,arg_default); # Alias them
     eval(sprintf("cbg.subsystems.%s.arg=ARG;", name)); # and copy
+    ## Alias CRs
+    eval(sprintf("CR=cbg.subsystems.%s.cr;", name)); # CRs
+    CR = mtt_alias (Name,CR,cr_default); # Alias them
+    eval(sprintf("cbg.subsystems.%s.cr=CR;", name)); # and copy
   else			  # Call to a subsystem (represented by name="")
     if !struct_contains(cbg,"portlist")
       N_ports = 0;

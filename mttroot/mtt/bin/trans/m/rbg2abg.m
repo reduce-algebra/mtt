@@ -5,6 +5,9 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.14  1997/08/04 14:18:55  peterg
+% %% If no ports labels at all, just use the default component list.
+% %%
 % %% Revision 1.13  1997/08/04 12:50:39  peterg
 % %% Many bug fixes to the named port version + tied up the logic and
 % %% supporting comments.
@@ -183,44 +186,78 @@ for i = 1:n_components
       k = n_comp_ports;
     end;
 
-    %Either all or non ports should be labelled - write error
+    %Either all ports or no ports should be labelled - write error
     %message if this is not so
     if (k~=0)&(k~=n_comp_ports)
       mtt_info(['Component ', comp_name, ' (', comp_type, ') has wrong number of labels'], infofile); 
       mtt_info(sprintf("\tit has %1.0f labels but should have 0 or %1.0f",k,n_comp_ports), infofile); 
     end;
 
+    %Compute the number of labeled ports
     [n_unsorted_ports,m_unsorted_ports] = size(unsorted_port_list);
     if m_unsorted_ports<2
       n_unsorted_ports = 0;
     end;
 
-    unsorted_port_list
-
-
     % One port defaults:
-    if n_comp_ports==1
-      if n_unsorted_ports==0
-        unsorted_port_list(1,:) = port_list(1,:);
-      end; 
+    if (n_comp_ports==1)&(n_unsorted_ports==0)
+      if direction(1)<0 % Wrong way for default
+        mtt_info(['One-port ', comp_name, ' (', comp_type, ') has the sign pointing the wrong way '], infofile);
+      end;
+      unsorted_port_list = port_list;
     end;
     
-    % Junctions (order of ports unimportant)
+    %Two port defaults
+    if (n_comp_ports==2)&(n_unsorted_ports==0)
+      if direction(1)==direction(2) % Wrong way for default
+        mtt_info(['Two-port ', comp_name, ' (', comp_type, ') does not have though-pointing arrows'], infofile);
+      end;
+      if direction(1)==1 %in
+        unsorted_port_list = port_list;
+      else %reverse the order
+        unsorted_port_list = port_list(2:1);
+      end;
+    end;
+    
+    % Recompute the number of unsorted ports
+    [n_unsorted_ports,m_unsorted_ports] = size(unsorted_port_list);
+    if m_unsorted_ports<2
+      n_unsorted_ports = 0;
+    end;
+    
+    % Junctions or no lables(order of ports unimportant)
     if (comp_type=='zero')|(comp_type=='one')
       for j = 1:n_comp_ports
         components(i,j) = signed_bond_list(j);
       end
     else %Order of ports is important
+      unsorted_port_list, port_list
+      if n_unsorted_ports==0
+        mtt_info(['Component ', comp_name, ' (', comp_type, ') has no labeled ports:  '], infofile); 
+      end;
     %Write out the signed bond list in the correct order
       for j = 1:n_comp_ports
         name_k = unsorted_port_list(j,:);
-        k = name_in_list(name_k, port_list)
+        k = name_in_list(name_k, port_list);
+        % Check that it only appears once in port list
+        if length(k)>1
+          mtt_info(['Component ', comp_name, ' (', comp_type, ') has ports with the same name:  ', name_k], infofile); 
+        end;
+
+        %Check that it only appears one in the label list
+        kk = name_in_list(name_k,unsorted_port_list);
+        if length(kk)>1
+          mtt_info(['Component ', comp_name, ' (', comp_type, ') has multiple port labels:  ', name_k], infofile); 
+        end;
+
         if k==0
           mtt_info(['Component ', comp_name, ' (', comp_type, ') has an unrecognised port: ', name_k], infofile); 
         else
-          components(i,j) = signed_bond_list(k);     
+          components(i,k) = signed_bond_list(j);     
         end;
       end;
+      disp(comp_name);
+      components(i,:),signed_bond_list
     end;
   end;
 end;

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/07/27 08:38:11  peterg
+## Just look for / in the relevant field.
+##
 ## Revision 1.1  1998/07/17 17:04:50  peterg
 ## Initial revision
 ##
@@ -22,9 +25,8 @@
 
 # Regexp for an alias
 alias='^[#%]ALIAS'
-dir='/'
 
-grep $alias $1_lbl.txt | awk '{if (match($3,$dir)>0) print "mtt -q compcopy " $3}'
+grep $alias $1_lbl.txt | awk '{if (match($3,"/")>0) print "mtt -q compcopy " $3}'
 
 
 

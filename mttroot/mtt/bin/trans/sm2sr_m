@@ -4,7 +4,7 @@
      ##### Model Transformation Tools #####
      ######################################
 
-# Bourne shell script: dm2sr_m
+# Bourne shell script: sm2sr_m
 
 # Transforms descriptor matrix rep to step response
 
@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  1996/08/18 12:01:45  peter
+## Unified format of time responses.
+##
 ## Revision 1.8  1996/08/15 16:23:39  peter
 ## Uses T in place of t to avoid name clash within function.
 ##
@@ -45,7 +48,7 @@
 
 echo Creating $1_sr.m
 echo Creating $1_sro.m
-rm -f dm2sr_m.log
+rm -f sm2sr_m.log
 rm -f $1_sr.m
 rm -f $1_sro.m
 
@@ -59,7 +62,7 @@ fi
 
 PARAMS="$PARAMS ;"
 
-$MATRIX << EOF > dm2sr_m.log
+$MATRIX << EOF > sm2sr_m.log
 
   [nx,ny,nu,nz,nyz] = $1_def;
   t=0;	%Just in case it appears in the parameter list.
@@ -85,8 +88,8 @@ $MATRIX << EOF > dm2sr_m.log
     T=T';
   end;
 
-  [A,B,C,D,E] = $1_dm($1_numpar);
-  [y,x] = dm2sr(A,B,C,D,E,T,u0,x0);
+  [A,B,C,D] = $1_sm($1_numpar);
+  [y,x] = sm2sr(A,B,C,D,T,u0,x0);
 
   if nx>0
     write_matrix([T x], '$1_sr');

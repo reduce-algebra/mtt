@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  2000/09/21 10:07:06  peterg
+## Now correctely writes out the state into _odes.dat rep.
+##
 ## Revision 1.7  2000/04/06 09:02:46  peterg
 ## Removed bash let commands as unsupported by sh
 ## Do arithmetic within awk - yuk
@@ -40,16 +43,16 @@ Ny=`mtt_getsize $1 y` # Outputs
 
 case $2 in
     odeso)
-	declare -i First=1; declare -i Last=$First+$Ny
+	First=1; Last=`expr $First + $Ny`
 	;;
     odes)
-	declare -i First=$Ny+2; declare -i Last=$First+$Nx
+	First=`expr $Ny + 2`; Last=`expr $First + $Nx`
 	;;
     *)
-	declare -i First=1; declare -i Last=$Ny+1
+	First=1; Last=`expr $Ny + 1`
         ;;
 esac
-echo $Nx $Ny $First $Last
+
 echo Creating $1_$2.dat
 
 awk '{

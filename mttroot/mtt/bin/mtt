@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.400  2004/08/31 01:29:48  geraint
+## CRs are applied to sorted equation files during production.
+##
 ## Revision 1.399  2004/08/29 16:09:49  geraint
 ## Added option -no-reduce
 ##
@@ -2633,7 +2636,7 @@ $1_cr.tex: $1_cr.r
 #SUMMARY sympar	symbolic parameters (txt)
 #SUMMARY sympar*	symbolic parameters (view)
 $1_sympar.txt: $1_type.sh $1_abg.m $1_aliased.txt
-	mtt_make_sympar $1
+	mtt_make_sympar $1 ${use_reduce}
 
 #SUMMARY sympar	symbolic parameters (r)
 $1_sympar.r: $1_sympar.txt

@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.125  1998/02/11 11:36:28  peterg
+## Updated version control mode - make it untidy.
+## cp --> cp -u after tidy-mode .
+##
 ## Revision 1.124  1998/02/10 13:03:36  peterg
 ## Now includes controller transfer function (ctf).
 ##
@@ -451,6 +455,9 @@ print='';
 # By default, make it tidy
 tidy=tidy;
 
+# Default not verbose
+verbose=' -s'
+
 #Initialise list
 mtt_switches='';
 
@@ -480,6 +487,9 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-D )
                 mtt_switches="$mtt_switches $1";
 		debug=debug ;;
+	-v )
+                mtt_switches="$mtt_switches $1";
+		verbose=' -w ' ;;
 	-t )
 		tidy=tidy ;;
 	-T )
@@ -533,7 +543,8 @@ if [ -z "$1" ]; then
     echo '       mtt <system_name> <representation> vc'
     echo '       mtt <system_name> <representation> <language>'
     echo '       mtt <system_name> <representation> <language> <parameters>'
-    echo 'Options: -q  quiet mode'
+    echo 'Options: -q  quiet mode -- suppress MTT banner'
+    echo '         -v  verbose mode'
     echo '         -p  print environment variables'
     echo '         -c  c-code generation'
     echo '         -o  ode and dae are the same'
@@ -903,7 +914,7 @@ esac
 # This is the main mtt programme
 ################################
 
-$MAKE -s  -f -  $1_$2.$3 << EOF
+$MAKE $verbose  -f -  $1_$2.$3 << EOF
 
 # Cancel implicit rules I don't want
 %.dvi: %.tex

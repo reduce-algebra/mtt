@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.121  1998/02/06 14:36:51  peterg
+## Report on copying back from MTT_work
+##
 ## Revision 1.120  1998/02/05 16:06:53  peterg
 ## Removed debugging lines.
 ## Auto parts in books.
@@ -1080,12 +1083,7 @@ $1_odes.h:
 
 #SUMMARY sspar	steady-state definition (r)
 $1_sspar.r:
-	echo Creating $1_sspar.r
-	(\
-	echo "%% Reduce steady-state parameter file for $1 ($1_sspar.r)"; \
-	cat $MTTPATH/trans/m/rcs_header.txt; \
-	echo 'END;'; \
-	)> $1_sspar.r
+	makesspar $1
 
 #SUMMARY rep	report (txt)
 #SUMMARY rep	report (tex)

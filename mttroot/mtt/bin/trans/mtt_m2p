@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.53  2000/08/24 17:10:59  peterg
+## New dummy variables mtt_o (for optimisation), mtt_s (for segmentation)
+##
 ## Revision 1.52  2000/08/24 08:30:45  peterg
 ## *** empty log message ***
 ##
@@ -358,6 +361,7 @@ EOF
 
 # Body	
 cat $Sys_rep.m |\
+grep -v 'Remove in mtt_m2p'  |\
 grep -v '^[ ]*function'  |\
 grep -v '^[ ]*endfunction'  |\
 grep -v 'MTT_data'  |\

@@ -1,0 +1,23 @@
+%SUMMARY ACCEL: Provides a acceleration (useful for simulating gravity. 
+%DESCRIPTION Useful for simulating gravity as explaned in Section 10.9
+%DESCRIPTION of "Metamodelling".
+
+%Alias in|out	Acceleration
+
+%% Label file for system ACCEL (ACCEL_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+% SS components
+	Force		SS	external,internal
+	Acceleration	SS	external,external

@@ -30,6 +30,7 @@ $1_simpar;			# Read in simulation parameters
 $1_numpar;			# Read in parameters
 
 iLast = round(LAST/DT);         # Total number of steps
+DDT = DT/STEPFACTOR;
 
 #Initialise
 t = 0.0;
@@ -40,13 +41,16 @@ mtt_write(t,MTTx,MTTy,$Nx,$Ny); # And write them
 
 #Integration loop
 for it = 1:iLast
-    MTTu = $1_input(MTTx,t);
-    MTTdx = $1_ode(MTTx,MTTu,t);
-    for j = 1:$Nx
-      MTTx(j) = MTTx(j) + MTTdx(j)*DT;
+    for i = 1:STEPFACTOR
+	MTTu = $1_input(MTTx,t);# Input
+        MTTx = $1_switch(MTTx); # Switches
+	MTTdx = $1_ode(MTTx,MTTu,t);
+	for j = 1:$Nx
+	    MTTx(j) = MTTx(j) + MTTdx(j)*DDT;
+	end;
+	MTTy = $1_odeo(MTTx,MTTu,t);
+	t = t + DDT;
     end;
-    MTTy = $1_odeo(MTTx,MTTu,t);
-    t = t + DT;
     mtt_write(t,MTTx,MTTy,$Nx,$Ny);
 end;
 

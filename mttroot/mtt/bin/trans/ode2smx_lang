@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/07/30 10:49:02  peterg
+## Put [] round output of zeros.
+##
 ## Revision 1.1  1998/07/19 16:59:56  peterg
 ## Initial revision
 ##
@@ -71,14 +74,6 @@ END;
       write "matrix mttc(", mttny, ",", mttnx, ");";    
       write "matrix mttd(", mttny, ",", mttnu, ");";    
     END;
-
-    IF (lang = m) THEN 
-    BEGIN
-      write "[mtta] = zeros(", mttnx, ",", mttnx, ");";    
-      write "[mttb] = zeros(", mttnx, ",", mttnu, ");";    
-      write "[mttc] = zeros(", mttny, ",", mttnx, ");";    
-      write "[mttd] = zeros(", mttny, ",", mttnu, ");";    
-    end;
 
 
 

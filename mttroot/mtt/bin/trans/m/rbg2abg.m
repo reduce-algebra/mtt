@@ -7,6 +7,9 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.47  2002/08/27 16:09:01  geraint
+  ## ## Added port_name to error message when multiple bonds are near a port.
+  ## ##
   ## ## Revision 1.46  2000/09/11 08:22:02  peterg
   ## ## Checks for absent port list in subsystem abg file.
   ## ##
@@ -232,7 +235,7 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
     
 
     ##The (signed) bond corresponding to the ith port label
-    port_bond(i) = near_bond(1)*sign(1.5-near_bond(2));
+    port_bond(i,1) = near_bond(1)*sign(1.5-near_bond(2));
   endfor
 
   port_bond
@@ -448,7 +451,7 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
 
   ## Find number of bonds on each component BEFORE vectorisation
   for i=1:n_components
-    n_vector_bonds(i) = length(nozeros(components(i,:)))
+    n_vector_bonds(i,1) = length(nozeros(components(i,:)))
   endfor
   
   ## Now expand vector ports

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.152  1998/05/24 15:43:10  peterg
+## Added symbolic solution of alg. equations (-A)
+##
 ## Revision 1.151  1998/05/23 16:18:37  peterg
 ## ordinary differential equation.m files generated with the new ode2lang
 ## method.
@@ -523,8 +526,12 @@
 ##
 ###############################################################
 
+
 #Check $MTTPATH has been set
 mtt_check_var "$MTTPATH" "MTTPATH"
+
+#Version
+version='2.9++'
 
 # MTT recursion level is zero unless explicitly set
 level=0
@@ -592,6 +599,10 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-A )
                 mtt_switches="$mtt_switches $1";
                 Solving='Solving';;
+        --version)                
+                echo MTT $version; exit;;
+        --versions)                
+                mtt_versions; exit;;
 	*)
 		echo "$1 is an invalid argument - ignoring" ;;
   esac
@@ -601,7 +612,7 @@ done
 #Print header if not in quiet (-q) mode.
 if [ "$quiet" != "quiet" ]; then
   echo
-  echo 'MTT (Model Transformation Tools) version 2.9++'
+  echo 'MTT (Model Transformation Tools) version' $version
   echo '($Date$)'
   echo 'This is free software with ABSOLUTELY NO WARRANTY.'
   echo 'Type `mtt warranty'\' 'for details.'
@@ -650,6 +661,8 @@ if [ -z "$1" ]; then
     echo '         -d  <dir>  use directory <dir>'
     echo '         -D  debug -- leave log files etc'
     echo '         -A  solve algebraic equations symbolically'
+    echo '         --version print version and exit'
+    echo '         --versions print version of mtt and components and exit'
     exit
   fi
 fi

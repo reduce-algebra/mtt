@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  2000/09/19 11:14:30  peterg
+## Now writes the first component type header correctely
+##
 ## Revision 1.10  2000/01/26 10:11:10  peterg
 ## Added I component
 ##
@@ -144,6 +147,8 @@ awk --field-separator ':' '
 
     cr["AE"] = "lin";  arg["AE"]  = sprintf("%s%s", $2, s_arg);
     cr["AF"] = "lin";  arg["AF"]  = sprintf("%s%s", $2, s_arg);
+
+    cr["CDx"] = "lin";  arg["CDx"]  = sprintf("%s%s", $2, s_arg);
 
   ## Heading
   if (Component !~ OldComponent) print "\n% Component type", Component

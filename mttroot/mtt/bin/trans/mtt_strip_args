@@ -11,6 +11,9 @@
 
 ## $Id$  ##
 ## $Log$
+## Revision 1.3  2000/10/17 12:33:13  peterg
+## Added mtt_mod to the zapped list
+##
 ## Revision 1.2  2000/10/16 09:06:26  peterg
 ## Write out the system as a second columns as well
 ##
@@ -45,8 +48,12 @@ function matches(names, name) {
 }
 
 BEGIN {
-  not_an_arg = "effort flow state internal external zero unknown\
-                mtt_e mtt_f mtt_mod sqrt exp log sign none abs";
+ not_an_arg = "effort flow state internal external zero unknown\
+                mtt_e mtt_f\
+		sqrt exp log sign sin asin cos acos tan atan \
+		sin asin cos acos tan atan \
+		sinh asinh cosh acosh tanh atanh \
+                none abs";
 }
 {
     args=$1

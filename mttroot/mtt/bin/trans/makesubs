@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/12/28 09:09:52  peterg
+## Initial revision
+##
 ##
 ###############################################################
 
@@ -32,7 +35,7 @@ cat $MTTPATH/trans/m/rcs_header.txt	>> $1_subs.r
 
 cat >> $1_subs.r <<EOF
 % Put algebraic substitution commands here
-
+FOR ALL i LET arbint(i) = 0; % Zap arbitary constants
 END;
 EOF
 

@@ -39,7 +39,11 @@ function matches(names, name) {
 BEGIN {
   var = "[%|#][PAR|VAR]";
   not_an_arg = "effort flow state internal external zero unknown\
-                mtt_e mtt_f sqrt exp log sign none abs";
+                mtt_e mtt_f\
+		sqrt exp log sign sin asin cos acos tan atan \
+		sin asin cos acos tan atan \
+		sinh asinh cosh acosh tanh atanh \
+                none abs";
   arg_line = "arg = ";
 }
 {

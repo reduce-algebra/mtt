@@ -67,15 +67,15 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
     if strcmp(p_c.Method,"lq") 
       p_c.Q = eye(n_y);
       p_c.R = (0.5^2)*eye(n_u);
-      p_c.N_u = n_x;
+      p_c.n_U = n_x;
     elseif strcmp(p_c.Method,"original");
       if !struct_contains(p_c,"A_w")
 	p_c.A_w = 0;
       endif
       if !struct_contains(p_c,"A_u")
-	p_c.N_u = n_x;
+	p_c.n_U = n_x;
 	a_u = 1.0;
-	p_c.A_u = laguerre_matrix(p_c.N_u,a_u)
+	p_c.A_u = laguerre_matrix(p_c.n_U,a_u)
       endif
     else
       error(sprintf("Method %s not recognised", p_c.Method));
@@ -84,6 +84,11 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   
   if !struct_contains(p_o,"x_0")
     p_o.x_0 = zeros(n_x,1);
+  endif
+  
+  if !struct_contains(p_o,"method")
+    p_o.method = "continuous";
+##    p_o.method = "intermittent";
   endif
   
 
@@ -102,10 +107,10 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   if ControlType==0		# Step input
     I = 1;			# 1 large sample
     p_c.delta_ol = p_c.T	# I
-    K_w = zeros(p_c.N_u,n_y);
+    K_w = zeros(p_c.n_U,n_y);
     K_w(1,1) = 1;
     K_w(2,1) = -1;
-    K_x = zeros(p_c.N_u,n_x);
+    K_x = zeros(p_c.n_U,n_x);
     U = K_w*w;			# Initial control U
   else
     I = ceil(p_c.T/p_c.delta_ol) # Number of large samples
@@ -117,12 +122,12 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
       [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,p_c.A_u] \
 	  = ppp_lin_quad (A,B,C,D,tau,p_c.Q,p_c.R);
     else
-      error(sprintf("Method %s not recognised", p_c.Method));
+      error(sprintf("Control method %s not recognised", p_c.Method));
     endif
 
     ##Sanity check A_u
-    [p_c.N_u,M_u] = size(p_c.A_u);
-    if (p_c.N_u<>M_u)
+    [p_c.n_U,M_u] = size(p_c.A_u);
+    if (p_c.n_U<>M_u)
       error("A_u must be square");
     endif
     
@@ -134,24 +139,37 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
     cl_poles = eig(A - B*k_x)
   endif
 
+  ## Short sample interval
+  dt = p_c.delta_ol/p_c.N;
+
   ## Observer design
-  Ad = expm(A*p_c.delta_ol);		# Discrete-time transition matrix
-  if (ControlType==2)		# 
-    G = eye(n_x);		# State noise gain 
-    sigma_x = eye(n_x);		# State noise variance
-    Sigma = p_o.sigma*eye(n_y);	# Measurement noise variance
-    
-    [L, M, P, obs_poles] = dlqe(Ad,G,C,sigma_x,Sigma);
+  G = eye(n_x);		# State noise gain 
+  sigma_x = eye(n_x);		# State noise variance
+  Sigma = p_o.sigma*eye(n_y);	# Measurement noise variance
+  
+  if strcmp(p_o.method, "intermittent")
+    Ad = expm(A*p_c.delta_ol);		# Discrete-time transition matrix
+    if (ControlType==2)		# 
+      [L, M, P, obs_poles] = dlqe(Ad,G,C,sigma_x,Sigma);
+    else
+      L = zeros(n_x,n_y);
+      obs_poles = eig(Ad);
+    endif
+  elseif strcmp(p_o.method, "continuous")
+    Ad = expm(A*dt);		# Discrete-time transition matrix
+    A_ud = expm(p_c.A_u*dt);	# Discrete-time input transition
+    if (ControlType==2)		# 
+      [L, M, P, obs_poles] = dlqe(Ad,G,C,sigma_x,Sigma);
+    else
+      L = zeros(n_x,n_y);
+      obs_poles = eig(Ad);
+    endif
   else
-    L = zeros(n_x,n_y);
-    obs_poles = eig(Ad);
+    error(sprintf("Observer method ""%s"" unknown", p_o.method));
   endif
   
   ## Display the poles
   obs_poles
-
-  ## Short sample interval
-  dt = p_c.delta_ol/p_c.N;
 
   ## Write the include file for the real-time function
   ## Use double length to allow for overuns
@@ -184,22 +202,44 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
     endif
 
     ## Observer
-    [x_est y_est e_est] = ppp_int_obs (x_est,y_now,U,A,B,C,D,p_c.A_u,p_c.delta_ol,L);
+    if strcmp(p_o.method, "intermittent")
+      [x_est y_est e_est] = ppp_int_obs \
+	  (x_est,y_now,U,A,B,C,D,p_c.A_u,p_c.delta_ol,L);
+    elseif strcmp(p_o.method, "continuous")
+      Ui = U;			# U at sub intervals
+       for k = 1:p_c.N
+      [x_est y_est e_est] = ppp_int_obs \
+	  (x_est,yi(:,k+1),Ui,A,B,C,D,p_c.A_u,dt,L);
+      Ui = A_ud*Ui;
+      y_e = [y_e; y_est'];
+      e_e = [e_e; e_est];
+      endfor
+    endif
     
     ##Control
-    U = K_w*w - K_x*x_est;
-
+    ##U = K_w*w - K_x*x_est;
+    U = expm(p_c.A_u*(p_c.delta_ol))*U
     ## Save data
     ti  = [(i-1)*p_c.N:i*p_c.N-1]*dt; 
     t = [t;ti'];
     y = [y;yi(:,1:p_c.N)'];
     u = [u;ui(:,1:p_c.N)'];
-    y_e = [y_e; y_est'];
-    t_e = [t_e; (i*p_c.N)*dt];
-    e_e = [e_e; e_est];
     sample_time = (time-tim)/p_c.N
+
+    if strcmp(p_o.method, "intermittent")
+      y_e = [y_e; y_est'];
+      e_e = [e_e; e_est];
+      t_e = [t_e; (i*p_c.N)*dt];
+    endif
+    
+
     dt
   endfor			# Main loop
+
+  if strcmp(p_o.method, "continuous")
+    t_e = t;
+  endif
+  
   
   sample_interval = (time-tick)/(I*p_c.N)
 

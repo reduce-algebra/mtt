@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.31  1999/08/02 13:40:03  peterg
+## Added zero-state and zero_input to include list
+## Removed zero_matrix
+##
 ## Revision 1.30  1999/04/20 06:16:46  peterg
 ## Removed calls to _switch.m
 ##
@@ -164,6 +168,8 @@ fi
 	;;
     ode2odes)
 	echo "PROGRAM $Sys_rep;"
+	echo "CONST"
+	echo "    MTT_MaxParameters = 100;"
 	echo "TYPE"
 	echo "    StateVector  = ARRAY[1..$Nx] OF REAL;"
 	echo "    InputVector  = ARRAY[1..$Nu] OF REAL;"
@@ -183,9 +189,12 @@ fi
 	echo "    mttu                        : InputVector;"
 	echo "    mtty                        : OutputVector;"
 	echo "    mttAA                       : StateMatrix;"
-	echo "    MTTi,MTTj,MTTit,MTTjt,MTTiLast,mttSTEPFACTOR,mttWSTEPS,mttSTEPS,mttINPUT : INTEGER;"
+	echo "    MTTi,MTTj,MTTit,MTTjt,MTTiLast: INTEGER;"
+	echo "    mttSTEPFACTOR,mttWSTEPS,mttSTEPS,mttINPUT : INTEGER;"
 	echo "    mttMETHOD : IntegrationMethod;"
 	echo "    MTTopen  : StateVector;"
+	echo "    mtt_parameters  : ARRAY[1..MTT_MaxParameters] OF REAL;"
+	echo "    mtt_n_parameters  : INTEGER;"
 	echo ""
         ;;
     switchopen)
@@ -282,6 +291,7 @@ BEGIN{
           # printf("{%s $MTTPATH/trans/p/zero_matrix.p}\n",inc)
           printf("{%s $MTTPATH/trans/p/zero_input.p}\n",inc)
           printf("{%s $MTTPATH/trans/p/zero_state.p}\n",inc)
+          printf("{%s $MTTPATH/trans/p/mtt_getargs.p}\n",inc)
           printf("{%s %s_simpar.p}\n",inc,Sys) 
           printf("{%s %s_numpar.p}\n",inc,Sys)
           printf("{%s %s_state.p}\n",inc,Sys)

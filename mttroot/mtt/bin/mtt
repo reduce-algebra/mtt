@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.43  1996/11/12  08:52:57  peterg
+# Fixed bug in test arg to if - missing "".
+#
 # Revision 1.42  1996/11/11  17:23:03  peterg
 # Added numpar.m requirement to all .m targets
 #
@@ -166,7 +169,7 @@ done
 #Print header if not in quiet (-q) mode.
 if [ "$quiet" != "quiet" ]; then
   echo
-  echo 'MTT (Model Transformation Tools) version 2.1++'
+  echo 'MTT (Model Transformation Tools) version 2.1'
   echo 'This is free software with ABSOLUTELY NO WARRANTY.'
   echo 'Type `mtt warranty'\' 'for details.'
   echo
@@ -394,7 +397,7 @@ $1_args.m:
 $1_lbl.txt:
 	echo Creating $1_lbl.txt
 	( \
-	echo "%SUMMARY System $1: <brief description here>"; \
+	echo "%SUMMARY $1: <brief description here>"; \
 	echo "%DESCRIPTION <Detailed description here>"; \
 	echo "%% Label file for system $1 ($1_lbl.txt)"; \
 	cat $MTTPATH/trans/m/rcs_header.txt; \

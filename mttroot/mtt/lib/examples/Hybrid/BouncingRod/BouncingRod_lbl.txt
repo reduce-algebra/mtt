@@ -1,0 +1,38 @@
+%SUMMARY BouncingRod: <brief description here>
+%DESCRIPTION <Detailed description here>
+%% Label file for system BouncingRod (BouncingRod_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type CSW
+	groundL		lin	effort,epsilon
+	groundR		lin	effort,epsilon
+
+% Component type INTF
+	intfL
+	intfR
+
+% Component type ROD
+	rod		none	l;l;j;m
+
+% Component type SS
+	aL		0		internal
+	aR		0		internal
+	gravity		external	internal
+	hL		external	0
+	hR		external	0
+	xC		0		internal
+	xL		0		internal
+	xR		0		internal

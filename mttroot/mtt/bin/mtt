@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.352  2002/05/24 11:04:10  geraint
+## Removed unnecessary message about *.log file not existing when -D option is used.
+##
 ## Revision 1.351  2002/05/23 17:08:20  geraint
 ## `mtt sys sfun zip` now produces an input block and an interface block for MTT models.
 ## Models can be embedded within larger Simulink models by the 2 ports.
@@ -1858,7 +1861,10 @@ if [ "$1" = "crcopy" ]; then
   else
     path_name=$3
     if [ -z "$path_name" ]; then
-      path_name=$MTT_LIB/cr/r
+	path_name=""
+	for path in `echo $MTT_CRS | sed 's/:/ /g'`; do
+	    path_name="$path_name $path/r"
+	done
     fi
     echo Copying CR $2 to here from $3
     find $path_name -name "$2.cr" -exec cp {} . \;

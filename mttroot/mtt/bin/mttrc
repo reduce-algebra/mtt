@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.37  2002/09/19 08:08:15  gawthrop
+## Updated documentation documentation
+##
 ## Revision 1.36  2002/08/28 15:48:00  geraint
 ## Updated mttrc to make standalone C++ compilation configuration clearer.
 ##
@@ -236,12 +239,7 @@ else
     # library paths for Octave
 
     OCTAVEVERS=`octave --version | head -1 | gawk '{ print $4 }'`
-    OCTAVEMINOR=`echo ${OCTAVEVERS} | gawk -F\. '{print $2}'`
-    if [ "${OCTAVEMINOR}" = "0" ] ; then # stable
-	LOCTAVE="-L${OCTAVEPREFIX}/lib/octave-${OCTAVEVERS} -loctave -lcruft -loctinterp -Wl,--rpath,${OCTAVEPREFIX}/lib/octave-${OCTAVEVERS}"
-    else
-	LOCTAVE="-L${OCTAVEPREFIX}/lib/octave-${OCTAVEVERS} -loctave -lcruft -loctinterp -Wl,--rpath,${OCTAVEPREFIX}/lib/octave-${OCTAVEVERS} -loct-pathsearch -loct-readline"
-    fi
+    LOCTAVE="-L${OCTAVEPREFIX}/lib/octave-${OCTAVEVERS} -loctave -lcruft -loctinterp -Wl,--rpath,${OCTAVEPREFIX}/lib/octave-${OCTAVEVERS}"
     LSYSTEM="-ldl -lm -lncurses -lkpathsea -lreadline -lblas -llapack -lfftw -lg2c"
     
     # C++ compiler options

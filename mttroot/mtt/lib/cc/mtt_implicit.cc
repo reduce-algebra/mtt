@@ -53,7 +53,7 @@ DEFUN_DLD (mtt_implicit, args, ,
     }
 
 #ifdef OCTAVE_DEV
-  x = static_cast<ColumnVector> (xleftdiv (AA, static_cast<Matrix>(AAx + dx * t)));
+  x = xleftdiv (AA, Matrix(AAx + dx * t)).column (0);
 #else // !OCTAVE_DEV
   Matrix tmp = xleftdiv (AA, static_cast<Matrix>(static_cast<ColumnVector>(AAx + dx * t)));
   for (row = 0; row < Nx; row++)

@@ -100,7 +100,7 @@ void strip_comments (istream &str)
     }
 }
 
-ColumnVector F${Sys}_input (
+ColumnVector ${Sys}_input (
 	ColumnVector	&mttx,
 	ColumnVector	&mtty,
 	const double	&mttt,

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.162  1998/07/16 16:14:27  peterg
+## Now stops if a transformation forces error.
+##
 ## Revision 1.161  1998/07/08 11:21:32  peterg
 ## Added -I switch
 ##
@@ -672,6 +675,7 @@ fi
 if [ -z "$1" ]; then
   if [ -z "$print" ]; then
     echo 'Usage: mtt help             -- mtt on-line help'
+    echo '       mtt find component   -- find location of a compound component'
     echo '       mtt info             -- info-based manual'
     echo '       mtt info topic'
     echo '       mtt hinfo            -- hypertext manual'
@@ -729,6 +733,15 @@ if [ "$1" = "manual" ] && [$2 = ""]; then
   echo Invoking $DVIVIEW
   $DVIVIEW  $MTTPATH/doc/mtt.dvi &
   exit
+fi
+
+if [ $1 = "find" ]&& [$3 = ""]; then
+    mtt_find $MTT_COMPONENTS $2
+    find_status=$?
+  if [ $find_status = "1" ]; then
+    echo Component $2 not found - is MTT_COMPONENTS set correctly?
+  fi
+    exit $find_status
 fi
 
 if [ "$1" = "warranty" ] && [$2 = ""]; then
@@ -1066,7 +1079,7 @@ if [ "$tidy" = "tidy" ]; then
      mtt_status=$?
 
    # Exit on failure
-   if [ "mtt_status" != "0" ]; then
+   if [ "$mtt_status" != "0" ]; then
      echo Exiting mtt with status $mtt_status
      exit 1
    fi
@@ -1412,9 +1425,6 @@ $1_rep.txt:
 	echo "# Outline report file for system $1 ($1_rep.txt)"; \
 	cat $MTTPATH/trans/m/rcs_header.txt; \
 	echo "mtt $1 abg tex"; \
-	echo "mtt $1 struc tex"; \
-	echo "mtt $1 sympar tex"; \
-	echo "mtt $1 dae tex"; \
 	)> $1_rep.txt
 endif
 

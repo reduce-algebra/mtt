@@ -11,6 +11,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% $Id$
 %% $Log$
+%% Revision 1.3  1998/03/14 11:07:09  peterg
+%% Removed comma from array subscript
+%%
 %% Revision 1.2  1998/02/25 22:11:28  peterg
 %% Added big matrix version
 %%
@@ -22,7 +25,7 @@
 
 PROCEDURE Latex_Matrix;
 BEGIN
-IF MTT_Matrix_m<6 THEN %% Do matrix style version
+IF MTT_Matrix_m<3 THEN %% Do matrix style version
 BEGIN
   IF MTT_Matrix_n>0 THEN
     IF MTT_Matrix_m>0 THEN

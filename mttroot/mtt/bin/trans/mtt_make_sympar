@@ -1,0 +1,65 @@
+#!/bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: mtt_make_sympar
+# Makes the sympar.txt file
+# Copyright (C) 2000 by Peter J. Gawthrop
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+##
+###############################################################
+
+
+sys=$1 # System name
+filename=$1_sympar.txt
+# Inform user
+echo Creating $filename
+
+# Create list of all sympars including those that are aliased
+sh $1_type.sh 'echo ' ' ' ' ' |\
+awk '{print "abg2sympar_m2txt " $1, $2}' |\
+sh | sort -u > mtt_all_sympar.txt
+
+# Sort ther aliased list
+sort -u  $1_aliased.txt > mtt_aliased_sort.txt
+
+# Compare it with the aliased list and show the differences
+diff mtt_all_sympar.txt mtt_aliased_sort.txt |\
+grep '<' | awk '{printf("%s\t%s\n", $2,$3)}' > mtt_sympar.txt
+
+# Assume same name in different system is the same
+awk '{
+    if ($1==name){
+	sysname[i++]=$2
+    }
+    
+    if ($1!=name){
+        printf("%s\t",name)
+        comma="";
+        for (j=1;j<=i;j++){
+          printf("%s%s", comma, sysname[j]);
+          comma=",";
+        }
+        printf("\n")
+        i=1;
+        sysname[1]=$2;
+    }
+    name = $1
+}
+END{
+        printf("%s\t",name)
+        comma="";
+        for (j=1;j<=i;j++){
+          printf("%s%s", comma, sysname[j]);
+          comma=",";
+        }
+        printf("\n")
+
+}' < mtt_sympar.txt >$filename

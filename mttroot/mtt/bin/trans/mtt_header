@@ -12,6 +12,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.40  2002/04/17 16:23:59  geraint
+## Partial fix for [ 545113 ] zeros missing in c++.
+## Fixes -oct by removing duplicate initialisation (-c is still outstanding).
+##
 ## Revision 1.39  2002/04/15 10:54:31  geraint
 ## Statically declare outputs and initialise to zero.
 ## This is necessary to prevent spurious values from being output when no assignments are made (i.e. when "y(i) := 0 for all u"  (Reduce:see NERO)).
@@ -328,7 +332,7 @@ case $rep in
 	states=no;
         inputs=no;
 	parameters=no;
-        output='y,x'
+        output='y,x,t'
         args='x0,par,simpar,u'
 	;;
     ssim)

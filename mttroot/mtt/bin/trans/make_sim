@@ -9,8 +9,9 @@ lang=$2
 outfile=${sys}_sim.${lang}
 
 echo Creating $outfile
+
 make_m() {
-mtt_header ${sys} sim m >  ${outfile}
+mtt_header ${sys} sim m  >  ${outfile}
 cat >> ${outfile} <<EOF
 
  ## Pass input as a global
@@ -26,6 +27,12 @@ cat >> ${outfile} <<EOF
   y = mtt_data(:,2:1+ny);
   x = mtt_data(:,3+ny:2+ny+nx);
   ypar = [];
+
+  if nargout>2
+    ## Create time vector
+    [N,M] = size(y);
+    t = simpar.dt*[0:N-1]';
+  endif;
 
 endfunction
 EOF

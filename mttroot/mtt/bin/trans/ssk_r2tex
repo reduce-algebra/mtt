@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/01/22 13:16:30  peterg
+## Initial revision
+##
 ###############################################################
 
 
@@ -32,6 +35,9 @@ in "$1_def.r";
 %Read the smconical-form matrices file
 in "$1_ssk.r";
 
+
+%Read the substitution file
+in "$1_subs.r";
 
 %Read the simplification file
 in "$1_simp.r";

@@ -17,6 +17,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.329  2002/04/16 14:58:00  gawthrop
+## mtt copy does NOT now copy the CVS directory
+## $directory --> ${directory}  (just to be tidy)
+##
 ## Revision 1.328  2002/02/19 16:27:05  geraint
 ## Changes to make MTT work out of the box with Debian.
 ##
@@ -3051,7 +3055,7 @@ $1_ctf.tex: $1_def.r $1_ctf.r $1_sympar.r $1_simp.r
 
 #SUMMARY odes	ode solution - state (m)
 #SUMMARY odes*	ode solution - state (dat)
-#SUMMARY odes  ode solution - state & output for SciGraphica (sg)
+#SUMMARY odes*  ode solution - state & output for SciGraphica (sg)
 #SUMMARY odes*	ode solution - state (ps)
 #SUMMARY odes*	ode solution - state (view)
 

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.138  1998/03/07 15:23:40  peterg
+## Uses sort_sympar to uniquely produce the sympar list.
+##
 ## Revision 1.137  1998/03/07 14:04:17  peterg
 ## dae creation split into 2 parts:
 ## 1. create a raw (ie without constitutive relationship) dae (rdae)
@@ -922,6 +925,14 @@ case $2 in
 		REPTYPE='bg' ;;
 	cbg )
 		REPTYPE='bg' ;;
+	lbl )
+		REPTYPE='txt' ;;
+	input )
+		REPTYPE='txt' ;;
+	numpar )
+		REPTYPE='txt' ;;
+	state )
+		REPTYPE='txt' ;;
 	odes)
 		REPTYPE='data'; PLOTTYPE='multiple' ;;
 	odeso)
@@ -984,11 +995,6 @@ $1_args.m:
 #SUMMARY lbl	label file (txt)
 $1_lbl.txt:
 	abg2lbl_fig2txt $1
-
-#SUMMARY lbl	label file (tex)
-#SUMMARY lbl	label file (view)
-$1_lbl.tex: $1_lbl.txt
-	txt2tex $1 lbl txt
 
 #SUMMARY cr	constitutive relationship for each subsystem (txt)
 $1_cr.txt: $1_sub.sh
@@ -1114,7 +1120,6 @@ $1_simpar.m: $1_simpar.txt
 #SUMMARY numpar	numerical parameter declaration (txt) -- default
 $1_numpar.txt:
 	mtt $mtt_switches -q -u $1 sympar txt; 
-	mtt $mtt_switches -q -u $1 struc txt;
 	sympar2numpar_txt2txt $1
 
 #SUMMARY numpar	numerical parameter declaration (m) 
@@ -1674,6 +1679,12 @@ $1_pkim.r: $1_tf.r $1_sympar.r
 $1_pkim.tex: $1_def.r $1_pkim.r $1_sympar.r
 	pkim_r2tex $1; latex_tidy $1_pkim.tex
 
+ifeq ($REPTYPE,txt)
+#Generic conversion of txt files to tex files
+$1_$2.tex: $1_$2.txt
+	txt2tex $1 $2 txt
+ endif
+
 #Generic conversion of data files from m to dat format
 $1_$2.dat: $1_$2.m
 	m2dat $1_$2
@@ -1743,6 +1754,10 @@ $1_$2.view: $1_$2.ps
 endif
 
 ifeq ($REPTYPE,tex)
+$1_$2.view : $1_$2.tview
+endif
+
+ifeq ($REPTYPE,txt)
 $1_$2.view : $1_$2.tview
 endif
 

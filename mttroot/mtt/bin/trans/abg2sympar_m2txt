@@ -40,7 +40,7 @@ function matches(names, name) {
 
 BEGIN {
   var = "[%|#]VAR";
-  not_an_arg = "effort flow state internal external zero unknown 0 1";
+  not_an_arg = "effort flow state internal external zero unknown";
   arg_line = "arg = ";
 }
 {
@@ -52,12 +52,13 @@ BEGIN {
     args=substr($3,2,length($3)-3);
     N=split(args, arg, ",");
     for (i=1;i<=N;i++){
-      if ( (length(arg[i])>0)&&(matches(not_an_arg,arg[i])==0) ){
+      if ( (length(arg[i])>0)&&(matches(not_an_arg,arg[i])==0)&&(match(arg[i],"^[0-9]+[.]*")==0) ){
         print arg[i] "\t" system_name;
       }
     }
   }
 }' system_name=$1 |\
+grep -v '^\$' |\
 sort -u > $1_sympar.txt 2>mtt_error.txt
 
 # Now invoke the standard error handling.

@@ -57,6 +57,7 @@ MTT::Hybrd_Solver::Solve (void)
   if (1 != info)
     {
       std::cerr
+	<< " time " << _t << " \t"
 	<< " converge (" << convergences << ") "
 	<< " limit (" << limit_errors << ")"
 	<< " (max error = " << std::abs (eval(_ui).max()) << ")"

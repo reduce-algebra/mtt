@@ -8,6 +8,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1998/04/14 17:08:50  peterg
+% %% Input only on SS
+% %%
 % %% Revision 1.1  1998/04/12 15:20:11  peterg
 % %% Initial revision
 % %%
@@ -24,5 +27,5 @@
 	i		$1	$1
 
 % Component type SS
-	X		external	internal
+	X   SS		external,internal
 

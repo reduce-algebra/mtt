@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.64  1997/04/09  09:26:44  peterg
+# Added crcopy feature to pull crs from library -- similar to copy
+# feature.
+#
 # Revision 1.63  1997/03/22  17:09:11  peterg
 # Fixed bug in recursive cr.txt generation.
 # Fixed bug in recursive sympar.txt generation.
@@ -717,11 +721,18 @@ $1_cbg.fig: $1_cbg.m $1_rbg.m $1_fig.fig $1_type.sh
 
 #SUMMARY ese	elementary system equations (r)
 #SUMMARY def	definitions - system orders etc. (r)
+#SUMMARY struc	structure - list of inputs, outputs and states (txt)
+#SUMMARY struc	structure - list of inputs, outputs and states (tex)
+#SUMMARY struc	structure - list of inputs, outputs and states (view)
 #Elementary system equations + definitions
 $1_ese.r: $1_cbg.m
 	   cbg2ese_m2r $1
 $1_def.r: $1_ese.r
 	touch $1_def.r
+$1_struc.txt: $1_ese.r
+	touch $1_struc.txt
+$1_struc.tex: $1_struc.txt
+	struc_txt2tex $1
 $1_def.m: $1_def.r
 	def_r2m $1; matlab_tidy $1_def.m;
 
@@ -1028,9 +1039,9 @@ endif
 
 ifeq ($REPTYPE,tex)
 #Create PostScript version of dvi file
-$1_$2.ps: $1_$2_doc.dvi
+$1_$2.ps: $1_$2.dvi
 	echo Creating $1_$2.ps
-	dvips -o $1_$2.ps $1_$2_doc
+	dvips -o $1_$2.ps $1_$2
 endif
 
 ifeq ($REPTYPE,tex)

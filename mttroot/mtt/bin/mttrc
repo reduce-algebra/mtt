@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  2000/05/21 17:55:15  peterg
+## New rep path
+##
 ## Revision 1.10  2000/05/16 11:41:23  peterg
 ## *** empty log message ***
 ##
@@ -58,7 +61,6 @@ export CC='gcc'
 
 # Setup the paths
 export PATH=$PATH\:$MTTPATH\:$MTTPATH/trans
-export MATRIX_PATH=$MTTPATH/trans/m\:$MTTPATH/trans/m/emulator\:$MTTPATH/lib/comp/simple\:$MTTPATH/lib/control/PPP
 export MTT_COMPONENTS=$MTTPATH/lib/comp
 export MTT_CRS=$MTTPATH/lib/cr
 export MTT_EXAMPLES=$MTTPATH/lib/examples
@@ -68,11 +70,16 @@ export MTT_REP=$MTT_LIB/rep
 
 #Ask octave to tell me its path
 #export OCTAVE_LOAD_PATH=`mtt_octave_path`
-export OCTAVE_LOAD_PATH=`mtt_octave_path`
+#export OCTAVE_LOAD_PATH=`mtt_octave_path`
 
 #Setup octave
-export OCTAVE_PATH=\:.$OCTAVE_LOAD_PATH\:$MATRIX_PATH
-export MATRIX="octave --path $OCTAVE_PATH"
+export MATRIX_PATH=$MTTPATH/trans/m//
+export MATRIX_PATH=$MATRIX_PATH\:$MTTPATH/lib/comp/simple
+export MATRIX_PATH=$MATRIX_PATH\:$MTT_LIB/octave//\:\:
+export MATRIX_PATH=$MATRIX_PATH\:$MTTPATH/lib/control//
+
+export OCTAVE_PATH=.\:$MATRIX_PATH
+export MATRIX="octave"
 
 #Setup matlab
 #MATLABPATH $MATLABPATH\:$MATRIX_PATH

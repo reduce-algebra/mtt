@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.410  2005/03/15 13:35:50  gawthrop
+## Pretty abg figure in reports.
+##
 ## Revision 1.409  2005/03/15 12:03:17  gawthrop
 ## New labg.fig rep - pretty LaTeX figures.
 ##
@@ -2984,6 +2987,7 @@ $1_labg.fig: $1_rbg.m
 $1_labg.tex: $1_labg.fig
 	fig2dev -L pstex_t -p $1_labg.eps $1_labg.fig $1_labg.tex
 	fig2dev -L pstex $1_labg.fig $1_labg.eps
+	cp -v $1_labg.eps ..
 
 #Subsystem creation commands
 #SUMMARY sub Executable subsystem list (sh)
@@ -3964,6 +3968,7 @@ $1_rep.tex: $1_rep.txt $1_reps_made
 
 #SUMMARY abg Acausal bond graph report (tex)
 $1_abg.tex: $1_sub.sh $1_labg.tex
+	sh $1_sub.sh "mtt -q " " labg tex"
 	abg2tex $pdf ${sensitivity_switch} $1
 
 #SUMMARY tf Transfer function (mml)

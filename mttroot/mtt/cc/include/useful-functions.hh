@@ -19,6 +19,7 @@ const bool true = 1;
 const bool false = 0;
 */
 #else
+#include <cmath>
 #define cast_to_double	static_cast<double>
 using std::pow;
 #endif /* ! __cplusplus */

@@ -1,0 +1,99 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: mtt_make_menu
+# Creates tk/tcl menus for xmtt.
+# Copyright (c) P.J.Gawthrop, 1998,1999
+
+#MTT blurb
+title=`mtt --version`
+
+#Collect all systems (inc dir name)
+dirname=`basename $PWD`
+systems=`echo *_abg.fig | sed 's/\([a-zA-Z0-9]*\)_abg.fig/\1/g'`
+dirname_in_systems=`echo $systems | grep -c $dirname`
+if [ "$dirname_in_systems" = "0" ]; then
+    systems="$systems $dirname"
+fi
+
+# Default system
+system=$dirname
+
+cat<<EOF
+# Default system
+set system "$system"
+
+# Arguments to mtt
+set args "-q"
+
+# The top level menu
+button .mtt -text "$title ($dirname)" -command "exec mtt warranty &"
+menubutton .man -text "Manual" -menu .man.man
+menubutton .util  -text "Utilities" -menu .util.util
+menubutton .opt  -text "Options" -menu .opt.opt
+menubutton .sys -text "Systems" -menu .sys.sys
+menubutton .rep -text "Representations (major)" -menu .rep.rep
+menubutton .repall -text "Representations (all)" -menu .repall.repall
+menubutton .exam -text "Examples" -menu .exam.exam
+button .mtt_quit -text "Quit" -command exit
+pack .mtt .exam .rep  .repall .sys  .util .opt  .man .mtt_quit
+ 
+menu .man.man
+.man.man add command -label "Browser (html)" -command "exec mtt -q hinfo &"
+.man.man add command -label "Info" -command "exec xterm -e mtt -q info &"
+.man.man add command -label "Text (pdf)" -command "exec mtt -q manual &"
+
+menu .util.util
+# .mtt.opt.util add command -label "copy example" -command 
+# .mtt.opt.util add command -label "copy" 
+.util.util add command -label "clean" -command "exec mtt -q Clean &"
+.util.util add command -label "recursive clean" -command "exec mtt -q rclean &"
+
+menu .opt.opt
+
+
+# System choice
+menu .sys.sys
+EOF
+
+for sys in $systems; do
+    echo .sys.sys add radio -label "$sys"  -command {set system "$sys"} 
+done
+
+# Create the options menu
+mtt |  awk '{
+  if (Options) {
+    option=substr($1,2);
+    label="";
+    for (i=2;i<=NF;i++)
+      label = sprintf("%s %s",label,$i);
+    printf(".opt.opt add check -label \"%s (-%s)\" -variable %s -command {set args \"$args -%s\"}\n", label, option, option, option); 
+  }
+  if ($1=="Options:") Options = 1;
+}'
+
+# Examples menu
+cat <<EOF
+menu .exam.exam
+EOF
+
+examples_txt2tk< $MTTPATH/EXAMPLES
+
+cat<<EOF
+menu .rep.rep
+menu .repall.repall
+EOF
+
+reps_txt2tk <$MTTPATH/REPS 
+
+
+
+
+
+
+
+
+

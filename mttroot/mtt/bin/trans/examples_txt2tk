@@ -1,0 +1,44 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: examples_txt2tk
+# Creates tk/tcl file for xmtt.
+# Copyright (c) P.J.Gawthrop, 1998,1999
+
+
+# Examples menu
+awk 'BEGIN{
+    basemenu=".exam.exam"
+    oldmenu=basemenu
+    OLDPATH="";
+    }
+    {
+    if (NF>1){
+    PATH=$1;
+    N=split(PATH,path,"/"); # Find current example path
+    oldN=split(OLDPATH,oldpath,"/"); # Find last example path
+    same=1; menu=basemenu;
+    while ((path[same]==oldpath[same])&&(same<=N)){
+       menu=menu"."tolower(path[same])
+       same++
+    }
+      oldmenu=menu
+      for (i=same;i<=N;i++){
+        menu=tolower(menu"."path[i])
+        category=path[i];
+	printf("\n# Example category %s (%i)\n", category, N)
+        printf("%s  add  cascade -label \"%s\" -menu %s \n", oldmenu, category, menu);
+        printf("menu %s\n", menu)
+	oldmenu=menu
+      }
+    oldN=N
+    OLDPATH=PATH
+    oldcategory=category
+    example=$2
+    printf(" set mtt \"xmtt -example %s\" \n", example); 
+    printf("%s add command -label %s -command \"exec $mtt &\"\n", menu, example);
+ }
+}' 

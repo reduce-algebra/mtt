@@ -12,6 +12,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.58  2004/06/20 13:34:11  gawthrop
+## Create vectors using zeros(N,1) - avoids new octave
+## default to row vector - more reps now included
+##
 ## Revision 1.57  2004/06/20 10:18:00  gawthrop
 ## Explicitly size vectors - avoid default row vector bug
 ##
@@ -352,6 +356,7 @@ case $rep in
 	inputs=no;
 	parameters=no;
         output='mttpar'
+	zeromatrices='par'
 	;;
     ode)
 	states=yes;
@@ -563,7 +568,7 @@ get_sizes()
 	*)
 	
     esac
-    ##Npar=`wc -l $system\_sympar.txt | gawk '{print $1}'`
+    Npar=`wc -l $system\_sympar.txt | gawk '{print $1}'`
     }
 
 zero_matrices()
@@ -608,6 +613,9 @@ for name in $zeromatrices; do
 	    ;;
 	ax)
 	    N=$Nx; M=1
+	    ;;
+	par)
+	    N=$Npar; M=1
 	    ;;
 	*)
 	    

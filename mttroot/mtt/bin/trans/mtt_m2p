@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.56  2000/10/14 09:14:24  peterg
+## *** empty log message ***
+##
 ## Revision 1.55  2000/10/11 09:06:17  peterg
 ## New csex rep (uses scope optimisation)
 ##
@@ -240,9 +243,10 @@ Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
         ;;
     input)
         echo "PROCEDURE $Sys_rep(VAR mttu : InputVector;"
-	echo "                       mttt : REAL;"
 	echo "                       mttx : StateVector;"
-	echo "                       mtty : OutputVector);"
+	echo "                       mtty : OutputVector;"
+	echo "                       mttt : REAL;"
+	echo "                       mttpar : ParameterVector);"
 	;;
     ode)
 	echo "PROCEDURE $Sys_rep(VAR mttdx: StateVector;"
@@ -337,7 +341,8 @@ Npar=`wc -l $Sys\_sympar.txt | awk '{print $1}'`
 	echo "    open_switches  : StateVector;"
 	echo "    numparfile, statefile, simparfile  : TEXT;"
 	echo ""
-        sympar_txt2declare $Sys p
+        mtt_txt2declare $Sys sympar p
+        mtt_txt2declare $Sys struc p
         ;;
     switchopen)
 	echo "PROCEDURE $Sys_rep(VAR open : StateVector; mttx : StateVector);"
@@ -468,6 +473,7 @@ BEGIN{
           printvar("u",Nu);
           printvar("y",Ny);
           printvar("_tmp",N_tmp);
+          printvar("_s",N_tmp);
           printf("VAR mtt_i, mtt_j : INTEGER;\n");
           #if ( (rep=="smxa")||(rep=="smxax") ) {
           #  printvar("_t",Nt);

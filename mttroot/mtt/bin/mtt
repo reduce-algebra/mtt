@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.357  2002/06/28 10:13:40  geraint
+## Includes fix_c.r in ese2rdae and def2write_r to eliminate occurrances of x**y.
+##
 ## Revision 1.356  2002/06/17 13:14:50  geraint
 ## Fixed some rules to reduce number of implicit rule searches.
 ##
@@ -2298,6 +2301,7 @@ $1_args.m:
 #SUMMARY lbl	label file (tex)
 $1_lbl.txt: $1_abg.fig
 	abg2lbl_fig2txt $1 $sensitivity
+	touch $1_lbl.txt
 
 $1_lbl.tex: $1_lbl.txt
 	lbl_txt2tex $1

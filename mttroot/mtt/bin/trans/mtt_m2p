@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.14  1998/08/12 15:21:12  peterg
+## Added type definition for the SVD procedures
+##
 ## Revision 1.13  1998/08/11 09:32:07  peterg
 ## Added comments at procedure begin and end.
 ##
@@ -100,8 +103,16 @@ Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
 	;;
     smx)
 	echo "PROCEDURE $Sys_rep(VAR mtta : StateMatrix;"
-	echo "                       mttx : StateVector;"
-	echo "                       mttu : InputVector);"
+	echo "                   VAR mttx : StateVector;"
+	echo "                   VAR mttu : InputVector;"
+	echo "                       mttdt : REAL);"
+	;;
+    smxx|smxtx)
+	echo "PROCEDURE $Sys_rep(VAR mttax : StateVector;"
+	echo "                       mttx  : StateVector;"
+	echo "                       mttu  : InputVector;"
+	echo "                       mttxx : StateVector;"
+	echo "                       mttdt : REAL);"
 	;;
     ode2odes)
 	echo "PROGRAM $Sys_rep;"
@@ -110,20 +121,23 @@ Ny=`grep "MTTNy " <$Sys\_def.r | awk '{print $3}' | sed 's/;//'`
 	echo "    InputVector  = ARRAY[1..$Nu] OF REAL;"
 	echo "    OutputVector = ARRAY[1..$Ny] OF REAL;"
 	echo "    StateMatrix  = ARRAY[1..$Nx,1..$Nx] OF REAL;"
-	echo "    glnparray = StateVector;"
-	echo "    glmparray = StateVector;"
-	echo "    glnpbynp = StateMatrix;"
-	echo "    glmpbynp = StateMatrix;"
-	echo "    IntegrationMethod = 1..3;"
+	echo "    glnparray    = StateVector;"
+	echo "    glmparray    = StateVector;"
+	echo "    glnarray     = StateVector;"
+	echo "    glnpbynp     = StateMatrix;"
+	echo "    glmpbynp     = StateMatrix;"
+	echo "    IntegrationMethod = 1..4;"
+	echo ""
 	echo "VAR"
         echo "    MTTt,mttLAST,mttDT,mttDDT   : REAL;"
         echo "    MTTWMIN,mttWMAX             : REAL;"
-	echo "    mttx,mttdx                  : StateVector;"
+	echo "    mttx,mttdx,mttxx,mttAAx     : StateVector;"
 	echo "    mttu                        : InputVector;"
 	echo "    mtty                        : OutputVector;"
-	echo "    mttA                        : StateMatrix;"
-	echo "    MTTi,MTTj,MTTit,MTTiLast,mttSTEPFACTOR,mttWSTEPS : INTEGER;"
+	echo "    mttAA                       : StateMatrix;"
+	echo "    MTTi,MTTj,MTTit,MTTjt,MTTiLast,mttSTEPFACTOR,mttWSTEPS,mttSTEPS : INTEGER;"
 	echo "    mttMETHOD : IntegrationMethod;"
+	echo ""
         ;;
     switch)
 	echo "PROCEDURE $Sys_rep(VAR mttxs : StateVector;"
@@ -145,9 +159,9 @@ cat<<EOF >> $Filename
 EOF
 
 #Regexps
-  name="[a-zA-Z0-9]*"
+  name="[a-zA-Z0-9_]*"
   fun_name="$Sys\_$name"
-  mttfun_name="mtt_update"
+  mttfun_name=$name
   space="[ \t]*"
   spaces="[ \t][ \t]*"
   non_space="[^ ]*"
@@ -210,20 +224,36 @@ BEGIN{
           printvar("x",Nx);
           printvar("u",Nu);
           printvar("y",Ny);
-          printvar("t",Nt);
+          printvar("_t",Nt);
 
-          printf("{%s sign.p}\n",inc,sys)
+          printf("\n{%s %s_smx.p}\n",inc,sys)
+          printf("{%s %s_smxx.p}\n",inc,sys)
+          printf("{%s %s_smxtx.p}\n\n",inc,sys)
+
+          printf("\nPROCEDURE mtt_asub(VAR x,y : StateVector; n : INTEGER);\n");
+          printf("{Sparse update routine -- y = Ax}\n");
+          printf("BEGIN {asub}\n");
+          printf("  %s_smxx(y,mttx,mttu,x,mttdt);\n", Sys);
+          printf("END {asub};\n");
+          printf("\nPROCEDURE mtt_atsub(VAR x,y : StateVector; n : INTEGER);\n");
+          printf("{Sparse update routine -- y = ATx}\n");
+          printf("BEGIN {atsub}\n");
+          printf("  %s_smxtx(y,mttx,mttu,x,mttdt);\n", Sys);
+          printf("END {atsub};\n\n");
+
+          printf("\n{%s sign.p}\n",inc,sys)
           printf("{%s mtt_update.p}\n",inc)
           printf("{%s mtt_write.p}\n",inc)
-          printf("{%s zeros.p}\n",inc)
+          printf("{%s zero_matrix.p}\n",inc)
+          printf("{%s zero_vector.p}\n",inc)
           printf("{%s %s_simpar.p}\n",inc,sys) 
           printf("{%s %s_numpar.p}\n",inc,sys)
           printf("{%s %s_state.p}\n",inc,sys)
           printf("{%s %s_input.p}\n",inc,sys)
           printf("{%s %s_ode.p}\n",inc,sys)
           printf("{%s %s_odeo.p}\n",inc,sys)
-          printf("{%s %s_smx.p}\n",inc,sys)
-          printf("{%s %s_switch.p}\n",inc,sys)
+          printf("{%s %s_switch.p}\n\n",inc,sys)
+
           for (k=1;k<=j;k++) printf("%s\n", comment[k])
           printf("\n")
           printf("\nBEGIN{%s}\n", Sys_rep)
@@ -279,7 +309,7 @@ END{
                 printf("END{%s}.\n", Sys_rep)
       else
         printf("END{%s};\n", Sys_rep)
-}' sys=$sys Sys_rep=$Sys_rep rep=$rep Nx=$Nx Nu=$Nu Ny=$Ny |\
+}' Sys=$Sys sys=$sys Sys_rep=$Sys_rep rep=$rep Nx=$Nx Nu=$Nu Ny=$Ny |\
 sed 's/(\([ijk0-9,]*\))/\[\1\]/g'  |\
 sed 's/(\(MTT[ijk0-9,]*\))/\[\1\]/g' \
 >> $Filename

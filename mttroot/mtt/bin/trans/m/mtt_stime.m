@@ -1,5 +1,5 @@
-function [t,y,y_theta,x] = mtt_stime(system_name,theta,free);
-  ## usage: [t,y,y_theta] = mtt_stime(system_name,theta);
+function [t,y,y_theta,x,x_last] = mtt_stime(system_name,theta,free);
+  ## usage: [t,y,y_theta,x,x_last] = mtt_stime(system_name,theta);
   ##
   ## Simulate system with name system_name and parameter vector theta
   ## The order of components in theta is determined in system_numpar.txt:
@@ -36,21 +36,28 @@ function [t,y,y_theta,x] = mtt_stime(system_name,theta,free);
     endfor
 
     ## Run system and replace NaN by 1e30 -- easier to handle
-    command = sprintf("./%s_ode2odes.out %s | sed \'s/NAN/1e30/g\' >mtt_data.dat\n", \
-    system_name, args);
+    file_name = sprintf("%s_input.dat", system_name);
+    if exist(file_name)==2	# Then use data from this file ...
+      command = sprintf("./%s_ode2odes.out %s < %s | sed \'s/NAN/Inf/g\' >mtt_out_data.dat\n", \
+			system_name, args, file_name);
+    else
+      command = sprintf("./%s_ode2odes.out %s | sed \'s/NAN/Inf/g\' >mtt_out_data.dat\n", \
+			system_name, args);
+    endif
+      
    system(command);
 
-    ## Retrieve data
-    load -force mtt_data.dat
-    y_theta = [y_theta mtt_data(:,3:2:1+ny)];
+    ## Retrieve out_data
+    load -force mtt_out_data.dat
+    y_theta = [y_theta mtt_out_data(:,3:2:1+ny)];
   endfor
 
-  ## System data
-  [n,m]=size(mtt_data);
-  t = mtt_data(:,1);
-  y = mtt_data(:,2:2:ny);
-  x = mtt_data(:,3+ny:m);
-
+  ## System out_data
+  [n,m]=size(mtt_out_data);
+  t = mtt_out_data(:,1);
+  y = mtt_out_data(:,2:2:ny);
+  x = mtt_out_data(:,3+ny:m);
+  x_last = mtt_out_data(n,3+ny:m);
 endfunction
 
 

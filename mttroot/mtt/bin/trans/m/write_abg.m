@@ -5,6 +5,11 @@ function write_abg(system_name,bonds,connections);
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1998/09/02 10:30:30  peterg
+## Now writes out list of ports ans list of subsystems.
+## These ordereded lists determine the order of processing of ports ans
+## subsystems.
+##
 ## Revision 1.4  1998/08/26 12:45:38  peterg
 ## Just prefix ports (comps can't start with numeral)
 ## Prefix with mttp
@@ -66,7 +71,7 @@ function write_abg(system_name,bonds,connections);
     
       PortList = [PortList; name];
       fprintf(fid,"\n# Port %s\n", name); 
-      fprintf(fid,PIformat,system_name,name,"index",++i_port);
+#      fprintf(fid,PIformat,system_name,name,"index",++i_port);
       fprintf(fid,PSformat,system_name,name,"type",comp_type);
       fprintf(fid,PSformat,system_name,name,"cr",cr);
       fprintf(fid,PSformat,system_name,name,"arg",arg);

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1996/08/16 14:27:25  peter
+## Make a dummy function when no parameters (MTTNVar=0).
+##
 ## Revision 1.4  1996/08/15 12:46:59  peter
 ## Removed a spuriuos echo.
 ##
@@ -34,6 +37,7 @@ echo Creating $1_numpar.m
 
 # Remove the old log file
 rm -f mknumpar.log
+
 
 # Use reduce to accomplish the transformation
 reduce >mknumpar.log << EOF
@@ -64,6 +68,10 @@ if MTTNVar=0 THEN
 write "% function [par_list] = $1_numpar;";
 write "% Created by MTT";
 
+%% Write RCS stuff
+
+
+
 IF MTTNvar>0 THEN
 BEGIN
   FOR i := 1:MTTNvar DO
@@ -77,4 +85,15 @@ if MTTNVar=0 THEN
 
 
 SHUT "$1_numpar.m";
+
+
+
+
+
+
+
+
+
+
+
 

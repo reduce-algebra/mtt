@@ -1,7 +1,7 @@
 function [T,y,u,X,Iterations] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q,\
 					    Tau_u,Min_u,Max_u,Order_u, \
 					    Tau_y,Min_y,Max_y,Order_y, \
-					    W,x_0,Delta_ol,mu,movie)
+					    W,x_0,Delta_ol,mu,test,movie)
 
   ## usage: [T,y,u,J] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max_u,Order_u, Tau_y,Min_y,Max_y,Order_y, W,x_0,movie)
   ## Needs documentation - see ppp_ex11 for example of use.
@@ -16,15 +16,19 @@ function [T,y,u,X,Iterations] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q,\
     Delta_ol = 0;
   endif
 
-  if nargin<20			# No movie
+  if nargin<20			# Mu
     mu = 0;
   endif
 
-  if nargin<21			# No movie
+  if nargin<21
+    test=0
+  endif
+  
+  if nargin<22			# No movie
     movie = 0;
   endif
 
-
+test = test
   ## Check some sizes
   [n_x,n_u,n_y] = abcddim(A,B,C,D);
 
@@ -113,7 +117,7 @@ function [T,y,u,X,Iterations] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q,\
     w = W(:,floor(t/dt)+1);
     
     ## Compute U(t) via QP optimisation
-    [uu, U, iterations] = ppp_qp (x,w,J_uu,J_ux,J_uw,Us0,Gamma,gamma,mu); # Compute U
+    [uu, U, iterations] = ppp_qp (x,w,J_uu,J_ux,J_uw,Us0,Gamma,gamma,mu,test); # Compute U
 
     ## Compute the cost (not necessary but maybe interesting)
 #    [J_t] = ppp_cost (U,x,W,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww); # cost

@@ -1,4 +1,4 @@
-function [u,U,iterations] = ppp_qp (x,W,J_uu,J_ux,J_uw,Us0,Gamma,gamma,mu)
+function [u,U,iterations] = ppp_qp (x,W,J_uu,J_ux,J_uw,Us0,Gamma,gamma,mu,test)
 
   ## usage:  [u,U] = ppp_qp (x,W,J_uu,J_ux,J_uw,Gamma,gamma)
   ## INPUTS:
@@ -24,6 +24,10 @@ function [u,U,iterations] = ppp_qp (x,W,J_uu,J_ux,J_uw,Us0,Gamma,gamma,mu)
     mu = 0
   endif
 
+  if nargin<10
+    test=0;
+  endif
+  
 
   ## Check the sizes
   n_x = length(x);
@@ -41,7 +45,7 @@ function [u,U,iterations] = ppp_qp (x,W,J_uu,J_ux,J_uw,Us0,Gamma,gamma,mu)
 
   if length(gamma)>0		# Constraints exist: do the QP algorithm
     ## QP solution for weights U	
-    [U,iterations] = qp_mu(J_uu,(J_ux*x - J_uw*W),Gamma,gamma,mu);
+    [U,iterations] = qp_mu(J_uu,(J_ux*x - J_uw*W),Gamma,gamma,mu,[],[],0,test);
 
     ##U = qp(J_uu,(J_ux*x - J_uw*W),Gamma,gamma); # QP solution for weights U
     ##U = pd_lcp04(J_uu,(J_ux*x - J_uw*W),Gamma,gamma); # QP solution for weights U

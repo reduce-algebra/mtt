@@ -1,0 +1,38 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: rep_txt2sh
+# Executes shell commands for report.
+
+# P.J.Gawthrop August 1996
+# Copyright (c) P.J.Gawthrop, 1996.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+
+# Inform user
+echo "Creating representations for $1_rep.tex"
+
+# Check for old (2 arg) version and update if necessary
+mtt_count=`strip_comments < $1_rep.txt | grep -c 'mtt '`
+if [ "$mtt_count" = "0" ]; then
+  echo 'Hmm .. seems to be an old format. creating new file'
+  echo "Old version saved as $1_rep.txt.SAVE"
+  mv $1_rep.txt $1_rep.txt.SAVE
+  strip_comments < $1_rep.txt.SAVE |\
+  awk '{print "mtt", sys, $1, $2}' sys="$1" >$1_rep.txt
+fi
+
+# Execute the commands - quietly!
+strip_comments< $1_rep.txt | sed 's/mtt /mtt -q /' | sh
+
+echo "Done creating representations for $1_rep.tex"
+

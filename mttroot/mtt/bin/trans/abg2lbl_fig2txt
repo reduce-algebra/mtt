@@ -13,6 +13,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.22  2001/07/08 03:28:11  gawthrop
+## Fixed a bug: abg2sympar_m2txt neads a _lbl.txt file when using
+## "usinglabel" option
+##
 ## Revision 1.21  2001/07/06 00:46:50  gawthrop
 ## Added -cr option -- forces cr to be loaded before the ese.r file
 ## This avoids causality problems when using multi-port Rs to represent
@@ -107,8 +111,6 @@ fi
 
 # Remove unwanted files
 rm -f abg2lbl_fig2txt.log
-rm -f $1_cbg.m
-rm -f $typefile
 rm -f $infofile
 rm -f mtt_junk*
 
@@ -233,6 +235,8 @@ awk --field-separator ':' '
 
     cr["CDx"] = "lin";  arg["CDx"]  = sprintf("%s%s", Name, s_arg);
 
+
+    cr["FMR"] = lin;  arg["FMR"]  = sprintf("effort,%s%s", Name, s_arg);
 
     cr["RS"] = lin;  arg["RS"]  = sprintf("flow,%s%s", Name, s_arg);
     cr["RT"] = lin;  arg["RT"]  = sprintf("flow,%s%s", Name, s_arg);

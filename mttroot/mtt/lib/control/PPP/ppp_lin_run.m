@@ -15,8 +15,6 @@ function [t,y,u,X_est,y_c,t_e,y_e,e_e,p_c,p_o] = ppp_lin_run (Name,Simulate,Cont
   ## par_control and par_observer are structures containing parameters
   ## for the observer and controller
 
-  disp("Special version");
-
   ##Defaults
   if nargin<1			# Default name to dir name
     names = split(pwd,"/");

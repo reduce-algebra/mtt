@@ -1,4 +1,4 @@
-function [u,U,iterations] = ppp_qp (x,W,J_uu,J_ux,J_uw,Us0,Gamma,gamma,mu,test)
+function [u,U,n_active] = ppp_qp (x,W,J_uu,J_ux,J_uw,Us0,Gamma,gamma,mu,test)
 
   ## usage:  [u,U] = ppp_qp (x,W,J_uu,J_ux,J_uw,Gamma,gamma)
   ## INPUTS:
@@ -45,14 +45,16 @@ function [u,U,iterations] = ppp_qp (x,W,J_uu,J_ux,J_uw,Us0,Gamma,gamma,mu,test)
 
   if length(gamma)>0		# Constraints exist: do the QP algorithm
     ## QP solution for weights U	
-    [U,iterations] = qp_mu(J_uu,(J_ux*x - J_uw*W),Gamma,gamma,mu,[],[],0,test);
+##    [U,iterations] = qp_mu(J_uu,(J_ux*x-J_uw*W),Gamma,gamma,mu,[],[],0,test);
+    [U,n_active] = qp_hild(J_uu,(J_ux*x - J_uw*W),Gamma,gamma);	# 
+##    iterations = 0;
 
     ##U = qp(J_uu,(J_ux*x - J_uw*W),Gamma,gamma); # QP solution for weights U
     ##U = pd_lcp04(J_uu,(J_ux*x - J_uw*W),Gamma,gamma); # QP solution for weights U
     u = Us0*U;			# Control signal
   else			# Do the unconstrained solution
     ## Compute the open-loop gains
-    iterations = 0;
+    n_active = 0;
     K_w = J_uu\J_uw;
     K_x = J_uu\J_ux;
 

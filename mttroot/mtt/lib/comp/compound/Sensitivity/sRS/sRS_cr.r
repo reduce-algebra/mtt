@@ -1,6 +1,7 @@
 %% CR file for sFMR
 %% Just for flow input definition of r, ie must use with flow,r;k_s
-in "$MTT_CRS/r/slin.cr";
+
+in "$MTT_CRS/r/slin.cr"; %% make sure CR slin is there
 
 OPERATOR sRS;
 

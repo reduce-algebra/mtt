@@ -1,7 +1,5 @@
 #SUMMARY sRS Sensitivity version of RS
 
-in "$MTT_CRS/r/slin.cr";
-
 ## System sRS, representation lbl, language txt
 
 ## Port aliases

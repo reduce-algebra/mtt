@@ -11,7 +11,7 @@ $(SYS)_sfun.c:: ${MTT_REP}/sfun_rep/sfun.c.tmpl
 	echo Creating $@
 	cat $^ | sed 's/<mtt_model_name>/$(SYS)/g' > $@
 
-$(SYS)_sfun_ae.mexglx: $(SYS)_sfun_ae.c $(SYS)_def.h $(SYS)_ae.c
+$(SYS)_sfun_ae.mexglx: $(SYS)_sfun_ae.c $(SYS)_def.h $(SYS)_sympar.h $(SYS)_ae.c
 	echo Creating $@
 	mex $(SYS)_sfun_ae.c
 
@@ -80,8 +80,8 @@ $(SYS)_struc.c: $(SYS)_struc.txt
 	echo Creating $@
 	gawk '\
 ($$1 == "input")  { printf "         double *%s\t= &(mttu[%d]);\t/* input and output */\n", $$4, $$2-1 }\
-($$1 == "state")  { printf "   const double *%s\t= &(mttx[%d]);\t/* input */\n", $$4, $$2-1 }\
-($$1 == "output") { printf "   const double *%s\t= &(mtty[%d]);\t/* input */\n", $$4, $$2-1 }\
+($$1 == "state")  { printf "   const double *_%s\t= &(mttx[%d]);\t/* input */\n", $$4, $$2-1 }\
+($$1 == "output") { printf "   const double *_%s\t= &(mtty[%d]);\t/* input */\n", $$4, $$2-1 }\
 ($$1 != "input" && $$1 != "state" && $$1 != "output") { }\
 	' $^ > $@
 

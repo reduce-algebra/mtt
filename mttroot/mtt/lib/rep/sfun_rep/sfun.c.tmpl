@@ -12,6 +12,7 @@
 #include "simstruc.h"
 #include "sfun_debug.h"
 #include "<mtt_model_name>_def.h"
+#include "<mtt_model_name>_sympar.h"
 
 static double *mttdx;		/* pointer to rates */
 static double *mttu;		/* pointer to inputs */
@@ -35,7 +36,6 @@ static void
 static void
 <mtt_model_name>_numpar (void)
 {
-#include "<mtt_model_name>_sympar.h"
 #include "<mtt_model_name>_numpar.c"
   PRINT_LEAVE;
 }

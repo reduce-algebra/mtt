@@ -12,6 +12,18 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.51  2002/05/19 13:01:21  geraint
+## Numerical solution of algebraic equations implemented for S-function target.
+##
+## Equation solving requires the Matlab Optimization Toolbox to be installed.
+##
+## Code has been changed from C++ to C to allow mex files to be built with LCC,
+## the compiler bundled with Matlab.
+##
+## Parameters are now obtained from numpar.c instead of a dialogue box.
+##
+## `mtt <sys> sfun zip` creates all necessary files for building the model mex files.
+##
 ## Revision 1.50  2002/05/15 14:22:25  geraint
 ## Code for Simulink S-function target written direct to sfun.cc instead of
 ## calling .mexglx files. This eliminates the sfun dependency on Octave
@@ -486,6 +498,7 @@ case $language in
 	Rc='*/'
 	Lb='['
 	Rb=']'
+	parameters=no
 	constant_declaration="const double "
 	var_declaration="double "
 	minusone="-1"

@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  2000/01/19 17:26:12  peterg
+## Now includes the representation title.
+##
 ## Revision 1.4  1999/03/09 00:03:06  peterg
 ## Revisions for xmtt
 ##
@@ -31,7 +34,7 @@ representations=`grep '#SUMMARY' $MTTPATH/mtt | awk '{print $2'} | sort -u `
 
 for rep in $representations ; do
     ## Title should be same for all languages -- extract from first version
-    title=`grep '#SUMMARY' $MTTPATH/mtt | grep $rep | head -1 | \
+    title=`grep '#SUMMARY' $MTTPATH/mtt | grep " $rep[ \*]" | head -1 | \
       awk '{for (i=3;i<NF;i++) print $i}'`
 
     language=`grep '#SUMMARY' $MTTPATH/mtt |\
@@ -43,14 +46,19 @@ for rep in $representations ; do
           else
             if (($2==rep)||($2==sprintf("%s*",rep))) print $NF
         }' rep=$rep |\
-      sort -u | sed 's/[()]//g'`
+      sort -u | sed 's/[()]//g'` 
 
-    Title='('$title')'
-    echo $rep $Title "|" $language # |\
+      Title='('$title')'
+      echo $rep $Title $language
+     
+
     #   awk '{
     #     printf( "%s", $1)
     #     for (i=2;i<=NF;i++) printf("\t%s", $i); 
     #     printf("\n")
     #   }'
 done
+
+
+
 

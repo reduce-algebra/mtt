@@ -10,9 +10,12 @@ function  fr = dm2fr(A,B,C,D,E,W,u0)
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
-// Revision 1.6  1996/08/24  14:22:23  peter
-// Put in a ; to avoid excessive log output.
-//
+% %% Revision 1.7  1996/11/06  16:40:38  peterg
+% %% Explicit definition of j
+% %%
+% %% Revision 1.6  1996/08/24  14:22:23  peter
+% %% Put in a ; to avoid excessive log output.
+% %%
 % %% Revision 1.5  1996/08/16 14:26:37  peter
 % %% Check and fix size of u0.
 % %%
@@ -60,7 +63,8 @@ fr = zeros(N,Ny);
 i = 0;
 for w = W'
   i = i+1;
-  FR = C*( (E*j*w - A) \ B*u0 ) + D*u0;
+%%  FR = C*( (E*j*w - A) \ B*u0 ) + D*u0;
+  FR = C*( inv(E*j*w - A)*B*u0 ) + D*u0;
   fr(i,:) = conj(FR');
 end;
 

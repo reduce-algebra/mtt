@@ -14,6 +14,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.13  2000/04/04 15:22:44  peterg
+## Major changes: simple components now work
+## Single components now work
+##
 ## Revision 1.12  1998/07/21 08:47:59  peterg
 ## Default null $2 (regexp) to '^' - ie match any line
 ##
@@ -53,6 +57,7 @@
 ##
 ###############################################################
 
+comment='#';
 Topic=$1
 topic=`echo $Topic | tr "[A-Z]" "[a-z]"`
 
@@ -99,7 +104,7 @@ case $topic in
 
   crs) 
     key=$summary 
-    find_path=$MTT_CRS
+    find_path=$MTT_CRS/r
     name='*.cr'
     sort='sort -u'
     blurb="constitutive relationships";;
@@ -136,16 +141,26 @@ if [ "$subtopic" = "" ]; then
 fi;
 
 
-  if [  "$topic" = "representations" ]; then
-    echo $blurb
-    mtt2reps_txt
-  else
+case $topic in
+    representations)
+         echo $comment $blurb
+         mtt2reps_txt
+
+	;;
+    crs)
+	echo  $comment $blurb
+        find $find_path -name "$name" -print |\
+        awk '{print "grep", key, $1}' key=$key | sh |\
+        sed "s/$key //" | $sort
+	;;
+    *)
+	
     fullnames=`mtt_find $find_path "$name" | awk '{printf("%s/%s\n",$1,$2)}'`
     N=`echo $fullnames | wc -w`;
     if [ -z "$fullnames" ]; then
-	echo No $blurb found.
+	echo $comment No $blurb found.
     else
-    echo $N $blurb found.
+    echo $comment $N $blurb found.
     for fullname in $fullnames; do
         name=`basename $fullname`
 	if [ -n "$other" ]; then
@@ -158,8 +173,10 @@ fi;
 	fi
     done
     fi
-  fi
+  esac
 exit
+
+
   awk '{print "cat " $1 "/" $2}'  | sh |\
   egrep $key  | egrep $regexp  |\
   sed "s/$summary[	]*//" |\

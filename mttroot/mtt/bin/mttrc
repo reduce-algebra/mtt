@@ -15,6 +15,11 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.25  2002/04/02 09:16:39  geraint
+## Tidied up library search paths, now assumes that system libraries are set up correctly.
+## For Debian, this means installing the following: blas-dev, fftw-dev, lapack-dev, libncurses5-dev, libkpathsea-dev, libreadline-dev
+## It may also be necessary to run /sbin/ldconfig on the relevant directories (especially Octave's).
+##
 ## Revision 1.24  2001/10/15 14:28:35  gawthrop
 ## Now has . at start of components library path $MTT_COMPONENTS
 ##
@@ -180,9 +185,7 @@ else
 
     # local system
 
-    PLAT="i686-pc-linux-gnu"
     PREFIX="/usr"
-    GCCVERS="2.95.2"
 
     # include paths
 

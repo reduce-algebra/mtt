@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1996/08/04 20:05:25  peter
+## Included port components - eg SS:[1]
+##
 ## Revision 1.1  1996/08/04 20:01:58  peter
 ## Initial revision
 ##
@@ -100,7 +103,7 @@ function process_text() {
   isa_plain_component = match(str, component_regexp)==0;
 
 # A port is an integer within []
-  isa_port = match(str, port_regexp)>0;
+  isa_port = exact_match(str, port_regexp)>0;
 
 # A port component is SS followed by : followed by a port string
   isa_port_component = 0;
@@ -112,8 +115,6 @@ function process_text() {
     
 # A component is a plain or a port component
   isa_component = isa_plain_component||isa_port_component;
-
-print str, isa_component;
 
 # Coordinates in fields 12 & 13
   x_coord = $12;

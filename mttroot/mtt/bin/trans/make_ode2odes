@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.79  2002/05/20 13:42:31  gawthrop
+## Uses simpar.first for first printed output
+##
 ## Revision 1.78  2002/05/11 01:14:17  geraint
 ## Fix for [ 553218 ] simpar.oct and simpar.m different.
 ## Translation added between ColumnVector in base .cc and Octave_map in .oct.
@@ -322,6 +325,8 @@ if [ -n "$4" ]; then
 else
   algebraic_solver="Reduce_Solver"
 fi
+
+insertor=\<\<			# help emacs sh-mode handle C++ lines
 
 echo Creating $filename with $method integration method
 
@@ -955,11 +960,11 @@ mtt_write (const double &t,
        if (row > 0)
          {
            Matrix written_data = data.extract (0, 0, row-1, data.cols ()-1);
-	   file << "# name: mtt_dump" << std::endl
-		<< "# type: matrix" << std::endl
-		<< "# rows: " << written_data.rows () << std::endl
-		<< "# columns: " << written_data.columns () << std::endl
-		<< written_data;
+	   file $insertor "# name: mtt_dump" $insertor std::endl
+		$insertor "# type: matrix" $insertor std::endl
+		$insertor "# rows: " $insertor written_data.rows () $insertor std::endl
+		$insertor "# columns: " $insertor written_data.columns () $insertor std::endl
+		$insertor written_data;
 	   file.flush ();
 	 }
        return;
@@ -986,19 +991,19 @@ mtt_write (const double &t,
   static clock_t cputime0 = clock();
   static clock_t cputime1 = cputime0;
   clock_t cputime = clock();
-  fcputime << t << '\t'
-	   << static_cast <double> (cputime - cputime0) / CLOCKS_PER_SEC << '\t'
-	   << static_cast <double> (cputime - cputime1) / CLOCKS_PER_SEC << std::endl;
+  fcputime $insertor t $insertor '\t'
+	   $insertor static_cast <double> (cputime - cputime0) / CLOCKS_PER_SEC $insertor '\t'
+	   $insertor static_cast <double> (cputime - cputime1) / CLOCKS_PER_SEC $insertor std::endl;
   cputime1 = cputime;
 
   if (nrows == row)
     {
 #if (CODEGENTARGET == STANDALONE)
-      file << "# name: mtt_dump" << std::endl
-	   << "# type: matrix" << std::endl
-	   << "# rows: " << data.rows () << std::endl
-	   << "# columns: " << data.columns () << std::endl
-	   << data;
+      file $insertor "# name: mtt_dump" $insertor std::endl
+	   $insertor "# type: matrix" $insertor std::endl
+	   $insertor "# rows: " $insertor data.rows () $insertor std::endl
+	   $insertor "# columns: " $insertor data.columns () $insertor std::endl
+	   $insertor data;
       file.flush ();
 #elif ((CODEGENTARGET == OCTAVEDLD) || (CODEGENTARGET == MATLABMEX))
   set_global_value ("MTT_data", data);
@@ -1120,7 +1125,7 @@ void dump_data (std::ostream &file)
 void handle_signal (int signum)
 {
   // handle some signals to ensure data is written.
-  std::cerr << "# Writing data to MTT.core (signal " << signum << ")" << std::endl;
+  std::cerr $insertor "# Writing data to MTT.core (signal " $insertor signum $insertor ")" $insertor std::endl;
   std::ofstream corefile ("MTT.core");
   dump_data (corefile);
   switch (signum)
@@ -1136,7 +1141,7 @@ void handle_signal (int signum)
 	raise (SIGQUIT);
 	break;
       default:
-        std::cerr << "# Warning: make_ode2odes needs updating!" << std::endl;
+        std::cerr $insertor "# Warning: make_ode2odes needs updating!" $insertor std::endl;
 	signal (signum, SIG_DFL);
 	raise (signum);
         break;
@@ -1249,7 +1254,7 @@ extern "C" {
 	state0	= mtt_state (numpar);
 	break;
       default:
-	std::cerr << "usage: ${sys}_ode2odes (x par simpar)" << std::endl;
+	std::cerr $insertor "usage: ${sys}_ode2odes (x par simpar)" $insertor std::endl;
 	return;
       }
 

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.8  1996/08/30  14:54:36  peter
+# Took back lock.
+#
 ## Revision 1.7  1996/08/24  14:23:00  peter
 ## Global parameter passing.
 ## Proper error handling.
@@ -51,20 +54,20 @@ echo Creating $1_lpfr.m
 echo Creating $1_nyfr.m
 echo Creating $1_nifr.m
 
-if [ "$2" = "" ]; 
-then
-  PARAMS='W=logspace(-1,2,100); u0=zeros(nu,1); u0(1)=1;'
-  echo Using default parameter $PARAMS
-else
-  PARAMS=$2;
-fi
+#if [ "$2" = "" ]; 
+#then
+#  PARAMS='W=logspace(-1,2,100); u0=zeros(nu,1); u0(1)=1;'
+#  echo Using default parameter $PARAMS
+#else
+#  PARAMS=$2;
+#fi
 
-$MATRIX << EOF > dm2fr_m.log 2>mtt_error
+$MATRIX << EOF > dm2fr_m.log 2>mtt_error.txt
 
   $1_numpar;
 
-  [nx,ny,nu,nz,nyz] = $1_def;
-  $PARAMS
+  [nx,ny,nu,nz,nyz] = $1_def
+%  $PARAMS
 
   %Defaults
   if exist('W')==0
@@ -76,13 +79,19 @@ $MATRIX << EOF > dm2fr_m.log 2>mtt_error
     u0(1) = 1;
   end;
 
+
   [n,m]=size(W);
   if m>n
     W=W';
   end;
 
-  [A,B,C,D,E] = $1_dm;
-  fr = dm2fr(A,B,C,D,E,W,u0);
+  [n,m]=size(u0);
+  if m>n
+    u0=u0';
+  end;
+
+  [A,B,C,D,E] = $1_dm
+  fr = dm2fr(A,B,C,D,E,W,u0)
   lw = log10(W);
   lmfr = log10(abs(fr));
   pfr = angle(fr)*180/pi;
@@ -117,7 +126,7 @@ $MATRIX << EOF > dm2fr_m.log 2>mtt_error
 EOF
 
 # Now invoke the standard error handling.
-mtt_error_r dae2dm_r.log
+mtt_error mtt_error.txt
 
 
 

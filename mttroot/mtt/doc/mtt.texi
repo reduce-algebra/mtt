@@ -16,6 +16,9 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.15  2003/08/19 14:01:45  gawthrop
+@comment  Added legal appendices
+@comment
 @comment  Revision 1.14  2003/08/06 14:50:56  gawthrop
 @comment  Describe the alias mechanism for invoking mtt options
 @comment
@@ -274,10 +277,11 @@
 
 
 @ifinfo
-This file documents MTT a set of Model Transformation Tools.
+This file documents MTT, a set of Model Transformation Tools.
 
 
-Copyright (C) Peter J. Gawthrop 1996, 1997, 1998, 1999
+Copyright (C) Peter J. Gawthrop 1996, 1997, 1998, 1999, 2000, 2001,
+2002, 2003
 
 Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -320,7 +324,11 @@ Copyright @copyright{} 1996,1997,1998,1999,2000,2001,2002,2003 Peter J. Gawthrop
 	 Texts.  A copy of the license is included in the section entitled "GNU
       Free Documentation License".
 
-General information  about MTT is available at URL
+General information about MTT is available at URL www.sf.net.  MTT is distributed
+under the GNU GENERAL PUBLIC LICENSE (@pxref{Copying}). This manual is
+distributed under the GNU Free Documentation License (@pxref{GNU Free
+Documentation License}).
+
 @example
 http://mtt.sourceforge.net
 @end example
@@ -4610,6 +4618,9 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.15  2003/08/19 14:01:45  gawthrop
+# %% Added legal appendices
+# %%
 # %% Revision 1.14  2003/08/06 14:50:56  gawthrop
 # %% Describe the alias mechanism for invoking mtt options
 # %%

@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.4  1996/11/03  21:19:55  peterg
+# Generates generic commands in form $1name$2.
+#
 ## Revision 1.3  1996/11/01 12:48:21  peterg
 ## Run mtt in quiet mode.
 ##
@@ -37,15 +40,22 @@ echo					>> $1_sub.sh
 awk '/comp_type = / {print substr($3,2,length($3)-3)}' $1_cmp.m |\
 sort -u > mtt_tmp1
 
-# Get a list of all simple components
-ls $MTTPATH/comp/simple |\
-  awk '/_cause.m/{split($1,a,"_");print(a[1])}' |\
+# Get a list of all standard simple components
+ls $MTTPATH/lib/comp/simple |\
+  awk '/_cause.m/{split($1,a,"_");print(a[1])}'  >mtt_tmp2
+
+# Get a list of all standard compound components
+#ls $MTTPATH/comp/compound |\
+#  awk '/_abg.m/{split($1,a,"_");print(a[1])}'  >> mtt_tmp2
+
+# Sorted combined list
+cat mtt_tmp2 | \
   sed  's/^zero$/0/' |\
   sed  's/^one$/1/' |\
-  sort -u >mtt_tmp2
+  sort -u >mtt_tmp3
 
 # Print the non-standard components
-comm mtt_tmp1 mtt_tmp2 |\
+comm mtt_tmp1 mtt_tmp3 |\
   awk 'BEGIN{FS="\t"}{if (length($1)>0) print "$1" $1 "$2"}' \
   >>$1_sub.sh
 

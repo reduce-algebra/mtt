@@ -12,13 +12,10 @@ function mtt_info(info, infofile);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/08/18  20:06:57  peter
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-
-if nargin<2
-  infofile = 'mtt_info.txt';
-end;
-
 fprintf(infofile, 'INFORMATION: %s\n', info);
-% fflush(infofile);
+

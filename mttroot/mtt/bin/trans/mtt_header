@@ -12,6 +12,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.39  2002/04/15 10:54:31  geraint
+## Statically declare outputs and initialise to zero.
+## This is necessary to prevent spurious values from being output when no assignments are made (i.e. when "y(i) := 0 for all u"  (Reduce:see NERO)).
+##
 ## Revision 1.38  2001/07/23 23:43:15  gawthrop
 ## header only version does not need to compute sizes from _def.r
 ##
@@ -871,14 +875,6 @@ if [ ${language} = "oct" ];then
     undeclared=`get_extra_fields ${args:-"nil"} ${output:-"nil"}`
     declare_DLD_outputs ${undeclared}
     array2constant
- 	case ${arg_type} in
- 	    Matrix)
- 		printf "  ${w}\t\t\t= zeros ${arg_init};\n"
- 		;;
- 	    *)
- 		;;
- 	esac
-
     cat <<EOF
 
 // BEGIN Code

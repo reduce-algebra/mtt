@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.13  2000/10/11 08:52:46  peterg
+## Creates csex (cse with dxe only) rep.
+##
 ## Revision 1.12  2000/10/10 21:00:58  peterg
 ## New code genration
 ##
@@ -96,6 +99,9 @@ echo "Creating $1_cseo.r"
 
 # Remove the old log file
 rm -f dae2cse_r.log
+
+# Remove some files
+rm -f $1_cse.r? $1_cseo.r?
 
 # Use reduce to accomplish the transformation
 $SYMBOLIC >dae2cse_r.log << EOF
@@ -283,9 +289,12 @@ OUT "$1_csex.r1";
 write "MATRIX MTTEdx(", MTTNx, ",", 1, ")$"; 
 SHUT "$1_csex.r1";
 
-OUT "$1_cseo.r1";
-write "MATRIX MTTY(", MTTNy, ",", MTTNx, ")$"; 
-SHUT "$1_cseo.r1";
+IF MTTNy>0 THEN
+BEGIN
+  OUT "$1_cseo.r1";
+  write "MATRIX MTTY(", MTTNy, ",", MTTNx, ")$"; 
+  SHUT "$1_cseo.r1";
+END;
 
 %%Create the _cse.r file
 OUT "$1_cse.r2";
@@ -352,17 +361,22 @@ write "END;";
 SHUT "$1_csex.r2";
 
 %Write out the  output equations
+IF MTTNy>0 THEN
+BEGIN
 OUT "$1_cseo.r2";
 write "%File: $1_cseo.r";
 in ("$1_cseo_write.r");
 write "END;";
 SHUT "$1_cseo.r2";
+END;
 quit;
 EOF
 
-cat $1_cse.r1 $1_cse.r2 > $1_cse.r
-cat $1_csex.r1 $1_csex.r2 > $1_csex.r
-cat $1_cseo.r1 $1_cseo.r2 > $1_cseo.r
+touch $1_cseo.r1
+touch $1_cseo.r2
+cat $1_cse.r1 $1_cse.r2  > $1_cse.r
+cat $1_csex.r1 $1_csex.r2  > $1_csex.r
+cat $1_cseo.r1 $1_cseo.r2  > $1_cseo.r
 
 if [ "$solve" = "1" ]; then
     echo "Setting MTTNyz=0 in $1_def.r and removing other $1_def files"

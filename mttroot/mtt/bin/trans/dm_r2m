@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  1998/04/13 11:01:55  peterg
+## Now uses generic header : matlab_header
+##
 # Revision 1.6  1997/04/16  13:43:29  peterg
 # Added matrix dimenensions
 #
@@ -108,7 +111,7 @@ SHUT "$1_dm.1";
 EOF
 
 # Header
-matlab_header $1 dm> $1_dm.m
+matlab_header $1 dm 'A,B,C,D,E'> $1_dm.m
 
 #Define array sizes.
 grep -v 'function' $1_def.m | grep -v '%' >>  $1_dm.m

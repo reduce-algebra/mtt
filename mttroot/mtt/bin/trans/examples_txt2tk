@@ -26,7 +26,7 @@ awk 'BEGIN{
        same++
     }
       oldmenu=menu
-      for (i=same;i<=N;i++){
+      for (i=same;i<N;i++){
         menu=tolower(menu"."path[i])
         category=path[i];
 	printf("\n# Example category %s (%i)\n", category, N)
@@ -37,8 +37,9 @@ awk 'BEGIN{
     oldN=N
     OLDPATH=PATH
     oldcategory=category
-    example=$2
+    split($2,EXAMPLE,"_");
+    example = EXAMPLE[1];
     printf(" set mtt \"xmtt -example %s\" \n", example); 
-    printf("%s add command -label %s -command \"exec $mtt &\"\n", menu, example);
+    printf("%s add command -label %s -command \" exec $mtt &\"\n", menu, example);
  }
 }' 

@@ -18,6 +18,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  2000/09/14 12:04:48  peterg
+## New 2 parameter version
+##
 ## Revision 1.9  1998/01/23 13:31:23  peterg
 ## $RMATRIX --> $MATRIX
 ##
@@ -67,7 +70,7 @@ cp $1_fig.fig $2_cbg.fig
 echo Creating $2_cbg.fig -- component type $1
 
 # Use  matrix manipulation to accomplish the transformation
-$MATRIX   <<EOF  2>mtt_error.txt #> cbg_m2fig.log
+$MATRIX   <<EOF  2>mtt_error.txt > cbg_m2fig.log
 
   system_type = "$1"
   system_name = "$2"

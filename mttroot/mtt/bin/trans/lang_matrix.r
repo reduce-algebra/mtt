@@ -13,6 +13,11 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.7  2000/08/29 17:33:59  peterg
+% % After much fiddling about ..
+% %  now does global optimisation (over all elements of matrix / vector)
+% %  still fails for _sm.m
+% %
 % % Revision 1.6  2000/08/25 09:23:40  peterg
 % % Made both names the same!
 % %
@@ -37,29 +42,33 @@
 
 PROCEDURE Lang_Matrix();
 BEGIN
-    FOR row := 1:MTT_Matrix_n DO
-    BEGIN
-      IF MTT_Matrix_m>1 THEN
-      BEGIN
-        FOR col := 1:MTT_Matrix_m DO
-        BEGIN
-              IF (row EQ 1) AND (col EQ 1) THEN DELAYOPTS;
-              INAME(mtt_o); % Set temp name
-              gentran declare mtt_matrix_element:REAL;
-              gentran declare mtt_matrix:REAL;
-              mtt_matrix_element := mtt_matrix(row,col);
-              GENTRAN mtt_matrix(row,col) ::=: mtt_matrix_element;
-              IF (row EQ MTT_matrix_n) AND (col EQ MTT_Matrix_m) THEN MAKEOPTS;
-            END;
-      END
-      ELSE
-        BEGIN
-          IF (row EQ 1) THEN DELAYOPTS;
-          INAME(mtt_o); % Set temp name
-          GENTRAN mtt_matrix(row) ::=: mtt_matrix(row,1);
-          IF (row EQ MTT_matrix_n) THEN MAKEOPTS;
-        END;
-    END
+%INAME(mtt_o); % Set temp name
+GENTRAN mtt_matrix :=: mtt_matrix;
+
+%     FOR row := 1:MTT_Matrix_n DO
+%     BEGIN
+%       IF MTT_Matrix_m>1 THEN
+%       BEGIN
+%         FOR col := 1:MTT_Matrix_m DO
+%         BEGIN
+%               IF (row EQ 1) AND (col EQ 1) THEN DELAYOPTS;
+%               INAME(mtt_o); % Set temp name
+%               %SETLENGTH(2); % Adjust optimisation
+%               gentran declare mtt_matrix_element:REAL;
+%               gentran declare mtt_matrix:REAL;
+%               mtt_matrix_element := mtt_matrix(row,col);
+%               GENTRAN mtt_matrix(row,col) ::=: mtt_matrix_element;
+%               IF (row EQ MTT_matrix_n) AND (col EQ MTT_Matrix_m) THEN MAKEOPTS;
+%             END;
+%       END
+%       ELSE
+%         BEGIN
+%           IF (row EQ 1) THEN DELAYOPTS;
+%           INAME(mtt_o); % Set temp name
+%           GENTRAN mtt_matrix(row) ::=: mtt_matrix(row,1);
+%           IF (row EQ MTT_matrix_n) THEN MAKEOPTS;
+%         END;
+%     END
 END;
 
 END;;

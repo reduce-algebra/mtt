@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.13  1998/07/27 20:30:12  peterg
+## *** empty log message ***
+##
 ## Revision 1.12  1998/07/10 08:43:46  peterg
 ## Added -I switch
 ##
@@ -107,10 +110,13 @@
 # P.J.Gawthrop May 1996
 # Copyright (c) P.J.Gawthrop, 1996.
 
+derivative=0;blurb=integral
 while [ -n "`echo $1 | grep '^-'`" ]; do
   case $1 in
 	-I )
                 info=info;;
+	-derivative )
+                derivative=1; blurb=derivative;;
 	*)
 		echo "$1 is an invalid argument - ignoring" ;;
   esac
@@ -129,7 +135,7 @@ rm -f $infofile
 
 
 #Inform user
-echo Creating $1_cbg.m
+echo "Creating $1_cbg.m (maximise $blurb causality)"
 echo Creating $1_type.sh
 
 # Use matrix manipulation to accomplish the transformation
@@ -146,7 +152,7 @@ $MATRIX << EOF  >abg2cbg_m.log  #2>mtt_error.txt
   port_direction = [];
   port_status = [];
   [cbonds,status] = abg2cbg(system_name, '', '', port_bonds, port_direction, port_status, ...
-      typefilenum, infofilenum, errorfilenum);
+      $derivative,typefilenum, infofilenum, errorfilenum);
 
 EOF
 

@@ -18,9 +18,9 @@ system_cse=$1_cse.r
 system_scse=$1_scse.r
 
 # Parameters
-n=`echo $2 | sed 's/,/ /g' |wc -w`
-echo $n_parameters
+n=`echo $2 | sed 's/,/ /g' |wc -w` ## Number of parameters
 
+## Parameter information for reduce.
 parameters=`echo $2 | sed 's/,/ /g' |\
  awk '{
    for (i=1; i<=NF; i++) {
@@ -29,10 +29,23 @@ parameters=`echo $2 | sed 's/,/ /g' |\
    }
   }'`
 
-matrix="matrix mttpar("$n",1); matrix mttcoef("$n",1);"
+## Update sympar list.
+echo Recreating $1_sympar.txt
+# Zap any sensitivity coeficients
+mv $1_sympar.txt mtt_junk
+grep -v MTT_Sensitivity_Coefficients mtt_junk > $1_sympar.txt
 
-echo $parameters
-echo $matrix
+# Create the new sens coeffs at end of list.
+echo $2 | sed 's/,/ /g' |\
+awk '{
+   for (i=1; i<=NF; i++) {
+      printf("%ss\tMTT_Sensitivity_Coefficients\n",$i);
+   }
+  }' >> $1_sympar.txt
+
+touch $1_sympar.txt
+
+matrix="matrix mttpar("$n",1); matrix mttcoef("$n",1);"
 
 # Number of states
 Nx=`grep "MTTNx " <$system_def | awk '{print $3}' | sed 's/;//'`

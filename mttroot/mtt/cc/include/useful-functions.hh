@@ -1,17 +1,20 @@
-// $Id$
-// $Log$
-// Revision 1.1  2000/11/28 04:50:29  geraint
-// Initial revision
-//
+
+template <class T>
+inline T max (const T &x1, const T &x2)
+{
+  return (x1 >= x2) ? x1 : (x2 < x1) ? x2 : 0;
+}
+
+template <class T>
+inline T min (const T &x1, const T &x2)
+{
+  return (x1 <= x2) ? x1 : (x2 > x1) ? x2 : 0;
+}
 
 inline Matrix
 ones (const int r = 1, const int c = 1)
 {
-  Matrix m (r, c);
-  register int i, j;
-  for (i = 0; i < r; i++)
-    for (j = 0; j < c; j++)
-      m (i, j) = 1.0;
+  Matrix m (r, c, 1.0);
   return m;
 }
 
@@ -26,29 +29,27 @@ nozeros (const ColumnVector v0, const double tol = 0.0)
 	v (j) = v0 (i);
 	j++;
       }
-  return (j)
-    ? (v.extract (0, --j))
-    : 0x0;
+  if (0 == j)
+    {
+      return *new ColumnVector ();
+    }
+  else
+    {
+      return (v.extract (0, --j));
+    }
 }
 
 inline ColumnVector
 zeros (const int r)
 {
-  ColumnVector v (r);
-  register int i;
-  for (i = 0; i < r; i++)
-    v (i) = 0.0;
+  ColumnVector v (r, 0.0);
   return v;
 }
 
 inline Matrix
 zeros (const int r, const int c)
 {
-  Matrix m (r, c);
-  register int i, j;
-  for (i = 0; i < r; i++)
-    for (j = 0; j < c; j++)
-      m (i, j) = 0.0;
+  Matrix m (r, c, 0.0);
   return m;
 }
 
@@ -61,5 +62,3 @@ sign (T x)
     (0 > x) ? -1 :
     0;
 }
-
-

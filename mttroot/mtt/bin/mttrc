@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.24  2001/10/15 14:28:35  gawthrop
+## Now has . at start of components library path $MTT_COMPONENTS
+##
 ## Revision 1.23  2001/07/24 22:32:49  gawthrop
 ## Use gv, not ghostview
 ##
@@ -178,28 +181,18 @@ else
     # local system
 
     PLAT="i686-pc-linux-gnu"
-#    PREFIX="/usr/local"
     PREFIX="/usr"
     GCCVERS="2.95.2"
-    SRCOCTAVE="/cvs/octave"
-
-#    PLAT="mips-sgi-irix6.5"
-#    PREFIX="/usr/people/bevangp/GNU"
-#    GCCVERS="2.95.2"
-#    SRCOCTAVE="${PREFIX}/../build/octave-2.1.33"
 
     # include paths
 
-    IOCTAVE="-I${PREFIX}/include/octave"
+    IOCTAVE="-I${PREFIX}/include/octave/ -I${PREFIX}/include/octave/octave"
 
     # library paths
 
-#    LOCTAVE="-L${PREFIX}/lib/octave -loctave -lcruft -loctinterp"
-    LOCTAVE="-L${PREFIX}/lib/octave -loctave -lcruft -loctinterp"
-    LKPATHSEA="-L${SRCOCTAVE}/kpathsea -lkpathsea"
-    LREADLINE=" -L${SRCOCTAVE}/readline -lreadline"
-    LSYSTEM="-ldl -lm -lncurses"
-    LF2C="-L${PREFIX}/lib/gcc-lib/${PLAT}/${GCCVERS} -lg2c"
+    OCTAVEVERS=`octave --version | awk '{ print $4 }'`
+    LOCTAVE="-L${PREFIX}/lib/octave-${OCTAVEVERS} -loctave -lcruft -loctinterp"
+    LSYSTEM="-ldl -lm -lncurses -lkpathsea -lreadline -lblas -llapack -lfftw -lg2c"
 
     # compiler options
 
@@ -211,7 +204,7 @@ else
 
     export MTT_CXX="g++"
     export MTT_CXXFLAGS="${DEBUG} ${OPTIM} ${FLAGS}"
-    export MTT_CXXLIBS="${LOCTAVE} ${LKPATHSEA} ${LREADLINE} ${LF2C} ${LSYSTEM}"
+    export MTT_CXXLIBS="${LOCTAVE} ${LSYSTEM}"
     export MTT_CXXINCS="-I. ${IOCTAVE}"
     export MTT_LDFLAGS=" "
 fi

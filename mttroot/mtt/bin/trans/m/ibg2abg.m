@@ -374,7 +374,8 @@ function [bonds,components,n_vector_bonds] = \
 	    for [that, that_name] = comp2
 	      for [other_port, other_port_name] = that.ports
 				
-		if (strcmp(port.name, other_port.name)) 
+		if (strcmp(port_name, other_port_name)
+		    && (this.index != that.index)) 
 		  ## found a match ... check it is unique ...
 		  if (matched == 1)
 		    E = "Multiple matching vector ports: %s matches %s";

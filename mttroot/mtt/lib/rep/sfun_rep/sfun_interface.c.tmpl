@@ -34,7 +34,7 @@ const int NumberOfControllerOutputs	= 1; /* outputs FROM controller */
 /* End EDIT */
 
 static void
-<mtt_model_name>_process_inputs (void)
+<mtt_model_name>_process_inputs (SimStruct *S)
 {
   /* insert <mtt_model_name>_struc.c */
 
@@ -42,7 +42,7 @@ static void
   /* Edit this block to process the model inputs and outputs */
   
   /* Remove the following line */
-  fprintf (stderr, "*** Error: <mtt_model_name>_sfun_interface.c has not been customised!\n"); return;
+  ssSetErrorStatus (S, "<mtt_model_name>_sfun_interface.c has not been customised!\n");
 
   /* simple example follows */
 
@@ -193,7 +193,7 @@ static void mdlOutputs(SimStruct *S, int_T tid)
   update_inputs_from_simulink (S);
   update_simtime_from_simulink (S);
 
-  <mtt_model_name>_process_inputs ();
+  <mtt_model_name>_process_inputs (S);
 
   UNUSED_ARG(tid); /* not used in single tasking mode */
 

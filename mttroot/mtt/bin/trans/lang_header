@@ -8,6 +8,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/05/23 16:17:40  peterg
+## Initial revision
+##
 ###############################################################
 
 
@@ -72,10 +75,10 @@ $MATRIX -q  <<EOF
   [nx,ny,nu,nz,nyz] = $1_def;
 
   printf("$Lc Declare standard arrays $Rc\n");
-  printf("  extern double y[%i]; \t $Lc $1_ode output $Rc\n", ny+1);
-  printf("  extern double dx[%i]; \t $Lc $1_ode state derivative $Rc\n", nx+1);
-  printf("  extern double x[%i]; \t $Lc $1_ode state $Rc\n", nx+1);
-  printf("  extern double u[%i]; \t $Lc $1_ode input $Rc\n\n", nu+1);
+  printf("  extern double mtty[%i]; \t $Lc $1_ode output $Rc\n", ny+1);
+  printf("  extern double mttdx[%i]; \t $Lc $1_ode state derivative $Rc\n", nx+1);
+  printf("  extern double mttx[%i]; \t $Lc $1_ode state $Rc\n", nx+1);
+  printf("  extern double mttu[%i]; \t $Lc $1_ode input $Rc\n\n", nu+1);
 
   printf("$Lc Dummy variable list $Rc\n");
   printf("  double t0;\n\n");
@@ -83,18 +86,22 @@ $MATRIX -q  <<EOF
 
   printf("$Lc State variable list $Rc\n");
   for i = 1:nx
-    printf("  double mttx%i\n",i);
+    printf("  double mttx%i;\n",i);
   end;
 printf("\n");
 
 printf("$Lc State variable input list $Rc\n");
 for i = 1:nu
-  printf("  double mttu%i\n",i);
+  printf("  double mttu%i;\n",i);
 end;
 printf("\n");
 
 printf("$Lc Counter $Rc\n");
 printf("  int i;\n");
+printf("\n");
+
+printf("$Lc Time $Rc\n");
+printf("  double t;\n");
 printf("\n");
 
 EOF
@@ -120,7 +127,7 @@ $MATRIX -q  <<EOF
 
 
 printf("$Lc======  Read in the input ======$Rc\n");
-printf("mttu = $1_input(mttx,t)\n");
+printf("mttu = $1_input(mttx,t);\n");
 printf("\n");
 
 

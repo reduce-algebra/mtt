@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  2000/01/18 14:22:58  peterg
+## Now exits if file already exists
+##
 ## Revision 1.6  1999/08/25 21:20:07  peterg
 ## Don't list components starting with 0 ot 1
 ##
@@ -55,7 +58,7 @@ sort -u > mtt_tmp1
 grep -v '^[01]' < mtt_tmp1 > mtt_tmp4
 
 # Get a list of all standard simple components
-ls $MTTPATH/lib/comp/simple |\
+ls $MTT_LIB/comp/simple |\
   awk '/_cause.m/{split($1,a,"_");print(a[1])}'  >mtt_tmp2
 
 # Get a list of all standard compound components

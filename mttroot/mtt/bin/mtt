@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.384  2004/08/01 20:13:30  geraint
+## ibg2abg transformation does not require lbl.txt (directly)
+##
 ## Revision 1.383  2004/08/01 19:50:07  geraint
 ## Moved rules for ibg.m and abg.m so that -ibg can be used with dia models.
 ## Need to create cmp.m files before this combination will work.
@@ -2828,7 +2831,7 @@ ifneq ($use_ibg,yes)
 	abg_dia2m \$*
 	(sh \$*_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
 
-%_abg.m: %_rbg.m %_alias.m %_sub.sh %_icd.m
+%_abg.m: %_rbg.m %_lbl.txt %_alias.m %_sub.sh %_icd.m %_cmp.m
 	(sh \$*_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
 	rbg2abg_m $info_switch \$*
 else
@@ -2840,7 +2843,7 @@ else
 	@echo "EXPERIMENTAL: Creating \$@"
 	rbg2ibg_m $info_switch \$*
 
-%_abg.m: %_ibg.m %_cmp.m %_alias.m %_sub.sh %_icd.m
+%_abg.m: %_ibg.m %_lbl.txt %_cmp.m %_alias.m %_sub.sh %_icd.m
 	@echo "EXPERIMENTAL: Creating \$@"
 	(sh \$*_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
 	ibg2abg_m $info_switch \$*

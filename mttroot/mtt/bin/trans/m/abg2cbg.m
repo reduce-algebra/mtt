@@ -20,6 +20,9 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.51  2004/02/20 20:42:40  geraint
+  ## ## Initialize Flipped.cons with [] instead of "".
+  ## ##
   ## ## Revision 1.50  2003/03/13 15:18:39  gawthrop
   ## ## Now uses __ to delimit subsystems in names.
   ## ##
@@ -309,6 +312,12 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
       port_bond_direction
       port.connections
 
+      if (i > max (size (port_bond_direction)))
+	the_system = sprintf ("\"%s:%s\"", system_type, system_name);
+	mtt_error (sprintf ("Please check that %s has no disconnected ports.", the_system));
+	mtt_error (sprintf ("abg2cbg: port_bond_direction(%d) does not exist.", i));
+	exit(1);
+      end
       if (sign(port.connections)!=port_bond_direction(i)) # Direction different?
       	eval(["ABG.ports.",name,".connections = - port.connections;"]); # Flip direction at port
 	Flipped.ports=[Flipped.ports;name];	# Remember which port has been flipped

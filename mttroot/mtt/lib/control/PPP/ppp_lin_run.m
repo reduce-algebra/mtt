@@ -211,16 +211,16 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
 
       ## Observer
       if strcmp(p_o.method, "intermittent")
-	[x_est y_est e_est] = ppp_int_obs \
+	[x_est y_est y_new, e_est] = ppp_int_obs \
 	    (x_est,y_i,U,A,B,C,D,p_c.A_u,p_c.delta_ol,L);
       elseif strcmp(p_o.method, "continuous")
 	Ui = U;			# U at sub intervals
 	for k = 1:p_c.N
-	  [x_est y_est e_est] = ppp_int_obs \
+	  [x_est y_est y_new e_est] = ppp_int_obs \
 	      (x_est,yi(:,k),Ui,A,B,C,D,p_c.A_u,dt,L);
 	  Ui = A_ud'*Ui;
-	  y_e = [y_e; y_est'];
-	  e_e = [e_e; e_est];
+	  y_e = [y_e; y_new'];
+	  e_e = [e_e; e_est'];
 	endfor
       endif
       
@@ -240,7 +240,7 @@ function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
       
 
       if strcmp(p_o.method, "intermittent")
-	y_e = [y_e; y_est'];
+	y_e = [y_e; y_new'];
 	e_e = [e_e; e_est'];
 	t_e = [t_e; t_i];
       endif

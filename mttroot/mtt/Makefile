@@ -57,7 +57,8 @@ install: build clean.sh clean-conf.sh
 	@install -d $(INSTDIR) $(CONFDIR) $(PROGDIR)
 	@install -d $(INSTDIR)/bin $(INSTDIR)/cc $(INSTDIR)/lib
 	@install bin/mttrc $(CONFDIR)/mtt.conf
-	@install mtt.sh bin/xmtt $(PROGDIR)
+	@install mtt.sh $(PROGDIR)/mtt
+	@install bin/xmtt $(PROGDIR)
 
 install-cc: build-cc clean-cc.sh
 	@install -d $(INSTDIR)/bin/trans

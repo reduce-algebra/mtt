@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.208  1999/07/20 23:43:05  peterg
+## V 3.8 ( to Eric)
+##
 ## Revision 1.207  1999/04/02 07:17:37  peterg
 ## Upped version to 3.6 -- the new implicit solver with switches
 ##
@@ -707,7 +710,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='3.8'
+version='3.8++'
 
 # MTT recursion level is zero unless explicitly set
 level=0

@@ -1,5 +1,12 @@
 %SUMMARY Comb: Combustion chamber model
-%DESCRIPTION 
+
+%DESCRIPTION   This thermal tank model has been developed to represent an ideal
+%DESCRIPTION   (and non-dynamic) combustion chamber for a gas turbine. The major
+%DESCRIPTION   simplification is that the mass contained in the tank is assumed
+%DESCRIPTION   constant -- this is consistent with using an ideal compressor and an
+%DESCRIPTION   ideal turbine with identical mass flows. Energy conservation is
+%DESCRIPTION   ensured by using true bonds and components.
+ 
 %ALIAS	in Thermal_in,Hydraulic_in
 %ALIAS	out Thermal_out,Hydraulic_out
 
@@ -9,8 +16,8 @@
 %ALIAS	Th_out  Thermal_out
 %ALIAS	Hy_out  Hydraulic_out
 
-%ALIAS	$1	m
-%ALIAS	$2	v
+%ALIAS	$1	m_c
+%ALIAS	$2	v_c
 %ALIAS	$3	r
 
 %% Label file for system Comb (Comb_lbl.txt)
@@ -20,6 +27,10 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.5  1998/07/03 14:55:33  peterg
+% %% Aliased parameters.
+% %% Removed _c from parameters,
+% %%
 % %% Revision 1.4  1998/07/02 19:46:34  peterg
 % %% New aliases
 % %%
@@ -42,14 +53,16 @@
 
 
 % Component type SS
-	[Hydraulic_in]	external	external
-	[Hydraulic_out]	external	external
-	[Heat]		external	external
-	[Thermal_in]	external	external
-	[Thermal_out]	external	external
-	P		external	0
-	T		external	0
+	[Hydraulic_in]	SS	external,external
+	[Hydraulic_out]	SS	external,external
+	[Heat]		SS	external,external
+	[Thermal_in]	SS	external,external
+	[Thermal_out]	SS	external,external
+	P		SS	external,0
+	T		SS	external,0
 
 % Component type hPipe
-	pipe	none	m;v;r
+	pipe	none	m_c;v_c;r
+
+
 

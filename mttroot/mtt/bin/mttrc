@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.33  2002/05/08 11:39:36  gawthrop
+## Added MTT_REP to PATH
+##
 ## Revision 1.32  2002/05/07 23:50:34  geraint
 ## Preliminary support for Matlab dynamically linked shared objects:
 ## invoke with: mtt -cc sys rep mexglx
@@ -242,7 +245,7 @@ else
     export MTT_CXX="g++"
     export MTT_CXXFLAGS="${DEBUG} ${OPTIM} ${FLAGS}"
     export MTT_CXXLIBS="${LOCTAVE} ${LSYSTEM}"
-    export MTT_CXXINCS="-I. ${IOCTAVE}"
+    export MTT_CXXINCS="-I. -I${MTT_LIB}/cc ${IOCTAVE}"
     export MTT_LDFLAGS=" "
     export MTT_MATLAB_FLAGS="${MATLAB_FLAGS} ${MATLAB_INCS} ${MATLAB_LIBS}"
 fi

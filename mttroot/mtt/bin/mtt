@@ -17,6 +17,11 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.336  2002/05/07 23:50:34  geraint
+## Preliminary support for Matlab dynamically linked shared objects:
+## invoke with: mtt -cc sys rep mexglx
+## ode2odes support is not yet included.
+##
 ## Revision 1.335  2002/05/01 17:30:55  geraint
 ## Improved pre-processor directives to better accommodate future alternatives (matlab)
 ## if necessary.
@@ -2114,7 +2119,7 @@ $1_%.mexglx: $1_%.cc $1_def.h $1_sympar.h $1_cr.h
 	echo Creating $1_\$*.mexglx
 	${MTT_CXX} -shared -o $1_\$*.mexglx $1_\$*.cc \
 	${MTT_MATLAB_FLAGS} -DCODEGENTARGET=MATLABMEX \
-	${MTT_CXXINCS} ${MTT_CXXLIBS} ${MTT_CXXFLAGS} ${MTT_LIB}/cc/mtt_kpathsea.cc
+	${MTT_CXXINCS} ${MTT_CXXLIBS} ${MTT_CXXFLAGS} ${MTT_LIB}/cc/mtt_kpathsea.cc ${MTT_LIB}/cc/mtt_matlab_octave.cc
 
 ## .cc files
 .PRECIOUS: %.cc # Don't let mtt delete them

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.294  2001/03/19 02:28:52  geraint
+## Branch merge: merging-ode2odes-exe back to MAIN.
+##
 ## Revision 1.293.2.8  2001/03/19 01:35:31  geraint
 ## Reverted forced update check to main branch form, ready for merge.
 ##
@@ -1240,6 +1243,7 @@ if [ -z "$1" ]; then
     echo '         -opt optimise code generation'
     echo '         -p  print environment variables'
     echo '         -partition partition hierachical system'
+    echo '         -pdf generate pdf in place of ps'
     echo '         -r  reset time stamp on representation'
     echo '         -s  try to generate sensitivity BG (experimental)'
     echo '         -ss use steady-state info to initialise simulations'

@@ -1,5 +1,5 @@
 Source: mtt
-Section: math
+Section: contrib/math
 Priority: optional
 Maintainer: Geraint <geraint@users.sf.net>
 Build-Depends: debhelper (>> 3.0.0)

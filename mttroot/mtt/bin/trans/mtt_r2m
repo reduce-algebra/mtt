@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  1999/10/26 23:47:58  peterg
+## Now does cse.m file
+##
 ## Revision 1.8  1999/07/26 06:07:19  peterg
 ## Reinstated removal of the odeo.p file
 ##
@@ -168,18 +171,22 @@ EOF
 
   fi
 
+if [ "$rep" = "cse" ]; then
 touch mtt_odee
+  touch mtt_odee
+fi
+
 sed 's/mtt_matrix/mttdx/' <mtt_ode  >> $1_$2.p
 sed 's/mtt_matrix/mtte/'  <mtt_odee >> $1_$2.p
 sed 's/mtt_matrix/mtty/'  <mtt_odeo >> $1_$2o.p
 
 if [ "$rep" = "cse" ]; then
 cat <<EOF >>$1_$2.p
-
    ## Solve E dx = dxe;;
    mtt_solve(mttdx,mttE,mttdx,$Nx);; 
 EOF
 fi
+
 rm -f mtt_odeo mtt_ode mtt_odee
 
 # Convert from Pascal syntax to Octave syntax 

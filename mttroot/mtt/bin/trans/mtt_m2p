@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1998/07/26 19:38:17  peterg
+## Replaced t0..t9 by mtt_temp0..
+##
 ## Revision 1.7  1998/07/25 20:06:23  peterg
 ## Does the mtt_update function
 ##
@@ -163,7 +166,7 @@ BEGIN{
           printf("%s : REAL;\n", global[i])
           printf("VAR "); for (k=1;k<=Nx;k++) printf("mttx%i,", k)
           for (k=1;k<=Nu;k++) printf("mttu%i,", k)
-          for (k=0;k<Nt;k++) printf("mtt_temp%i,", k)
+          for (k=1;k<=Nt;k++) printf("mtt_temp%i,", k)
           printf("t%i : REAL;\n",Nt) 
           printf("{%s sign.p}\n",inc,sys)
           printf("{%s mtt_update.p}\n",inc,sys)
@@ -222,8 +225,8 @@ END{
       else
         print "END;"
 }' sys=$sys rep=$rep Nx=$Nx Nu=$Nu |\
-sed 's/(\([ijk0-9]*\))/\[\1\]/g'  |\
-sed 's/(\(MTT[ijk0-9]*\))/\[\1\]/g' \
+sed 's/(\([ijk0-9,]*\))/\[\1\]/g'  |\
+sed 's/(\(MTT[ijk0-9,]*\))/\[\1\]/g' \
 >> $Filename
 
 # p2c doesn't like mixed case filenames!

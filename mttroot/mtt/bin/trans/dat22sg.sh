@@ -133,12 +133,12 @@ NROW=`expr ${NTMP} - 4`		# 4 comment lines in MTT_data
 {
     write_project_header
     # states
-    write_worksheet_header	"X_${sys}" `expr 1 + ${NX}` ${NROW}
+    write_worksheet_header	"X_${sys}" ${NX} ${NROW}
     write_state_headings	${sys}
     write_cell_values		${sys} x
     write_worksheet_footer
     # outputs
-    write_worksheet_header	"Y_${sys}" `expr 1 + ${NY}` ${NROW}
+    write_worksheet_header	"Y_${sys}" ${NY} ${NROW}
     write_output_headings	${sys}
     write_cell_values		${sys} y
     write_worksheet_footer

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.124  1998/02/10 13:03:36  peterg
+## Now includes controller transfer function (ctf).
+##
 ## Revision 1.123  1998/02/09 13:51:04  peterg
 ## Fixed directory string bug.
 ##
@@ -646,7 +649,7 @@ fi
 if [ "$2" = "rep" ]; then
      documenttype=article
       # See if we are making a book -- ie representation rep on a directory
-     isMTT_work=`pwd | grep 'MTT_work`
+     isMTT_work=`pwd | grep 'MTT_work'`
       if [ -n "$isMTT_work" ]; then
 	dotdot='../'
       fi  
@@ -761,6 +764,46 @@ if [ "$1" = "crcopy" ]; then
   exit
 fi
 
+
+# Version control
+VC=''
+
+if [ "$3" = "vc" ]; then
+  tidy=untidy;
+  case $2 in
+	abg )
+		VC='ok'
+		VCext='fig' ;;
+	lbl )
+		VC='ok'
+		VCext='txt' ;;
+	desc )
+		VC='ok'
+		VCext='tex' ;;
+	simp )
+		VC='ok'
+		VCext='r' ;;
+	rep )
+		VC='ok'
+		VCext='txt' ;;
+	numpar )
+		VC='ok'
+		VCext='txt' ;;
+	input )
+		VC='ok'
+		VCext='txt' ;;
+	odes )
+		VC='ok'
+		VCext='h' ;;
+	sspar )
+		VC='ok'
+		VCext='r' ;;
+	*)
+		echo Version control is not appropriate for representation $2
+		exit  ;;
+  esac
+fi
+
 # Tidy mode - operate in the directory MTT-work
 if [ "$tidy" = "tidy" ]; then
    mkdir -p MTT_work
@@ -777,7 +820,7 @@ if [ "$tidy" = "tidy" ]; then
 
    if [ "$3" != "view" ]; then
      echo Copying " " $1_$2.$3
-     cp -f $1_$2.$3 ..
+     cp -u $1_$2.$3 ..
    fi
 
    # Remove the MTT_work directory if very tidy
@@ -853,38 +896,6 @@ case $2 in
 	*)
 		REPTYPE='tex' ;;
 esac
-
-
-# Version control
-VC=''
-
-if [ "$3" = "vc" ]; then
-  case $2 in
-	abg )
-		VC='ok'
-		VCext='fig' ;;
-	lbl )
-		VC='ok'
-		VCext='txt' ;;
-	simp )
-		VC='ok'
-		VCext='r' ;;
-	numpar )
-		VC='ok'
-		VCext='txt' ;;
-	input )
-		VC='ok'
-		VCext='txt' ;;
-	sspar )
-		VC='ok'
-		VCext='r' ;;
-	*)
-		echo Version control is not appropriate for representation $2
-		exit  ;;
-  esac
-fi
-
-
 
 
 

@@ -5,6 +5,9 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.21  1997/09/16  15:14:14  peterg
+% %% Added warning if a component has no bonds.
+% %%
 % %% Revision 1.20  1997/08/18  19:39:48  peterg
 % %% Now generates (exampaded) port_bond list correctely
 % %%
@@ -175,6 +178,13 @@ for i = 1:n_components
   % Create the signed list of bonds on this component
   one = ones(n_comp_bonds,1);
   bond_list = index(:,1); %  bond at component
+  
+  % Check that all bonds are unique -- error if not
+  if unique(bond_list)==0
+    mtt_info(sprintf("Component %s (%s) is at both ends of a bond", comp_name,
+    comp_type),infofile);
+  end;
+    
   bond_end = index(:,2);  % which end of bond at component?
   direction = -sign(bond_end-1.5*one);
   signed_bond_list = bond_list.*direction;
@@ -325,19 +335,19 @@ for i = 1:n_components
     comp_type = 'one';
   end
 
-  %Find the port list for this component
-  if exist([comp_type, '_cause'])==0
-    eval(['[junk1,junk2,junk3,junk4,junk5,port_list]=', comp_type, '_rbg;']);
-  else
-    port_list=comp_ports(comp_type);
-  end;
-  
-
   % Find the (unsorted) bond list on this component
   signed_bond_list = nozeros(components(i,:));
   n_comp_bonds = length(signed_bond_list);
   direction = sign(signed_bond_list);
   
+  %Find the port list for this component
+  if exist([comp_type, '_cause'])==0
+    eval(['[junk1,junk2,junk3,junk4,junk5,port_list]=', comp_type, '_rbg;']);
+  else
+    port_list=comp_ports(comp_type,n_comp_bonds);
+  end;
+  
+
   % Check that number of bonds on the component is the same as the number of
   % ports
   [n_comp_ports,m_comp_ports] = size(port_list);
@@ -389,7 +399,7 @@ for i = 1:n_components
   %Two port defaults
   if (n_comp_bonds==2)&(n_unsorted_ports==0)
     if direction(1)==direction(2) % Wrong way for default
-      mtt_info(['Two-port ', comp_name, ' (', comp_type, ') does not have though-pointing arrows'], infofile);
+      mtt_info(['Two-port ', comp_name, ' (', comp_type, ') does not have through-pointing arrows'], infofile);
     end;
     if direction(1)==1 %in
       % mtt_info([comp_name, ' in'],infofile);

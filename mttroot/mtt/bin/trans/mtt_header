@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  2000/10/11 08:59:15  peterg
+## Added csex rep
+##
 ## Revision 1.2  2000/10/11 08:01:42  peterg
 ## Added noglobal fudge
 ##
@@ -41,26 +44,37 @@ case $rep in
     cse)
 	states=yes;
         inputs=yes;
+	parameters=yes;
 	;;
     csex)
 	states=yes;
         inputs=yes;
+	parameters=yes;
 	;;
     cseo)
 	states=yes;
         inputs=yes;
+	parameters=yes;
 	;;
     ode)
 	states=yes;
         inputs=yes;
+	parameters=yes;
+	;;
+    numpar)
+	states=no;
+	inputs=no;
+	parameters=no;
 	;;
     odeo)
 	states=yes;
         inputs=yes;
+	parameters=yes;
 	;;
     sm)
 	states=no;
 	inputs=no;
+	parameters=yes;
 	;;
     *)
 	
@@ -103,12 +117,13 @@ EOF
 fi
 
 # Parameters
+if [ "$parameters" = "yes" ]; then
 cat <<EOF
 
 $Lc Parameters
 EOF
 sympar2par_txt2m $1 
-
+fi
 # States
 if [ "$states" = "yes" ]; then
 cat <<EOF

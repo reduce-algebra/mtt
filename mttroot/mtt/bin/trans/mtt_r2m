@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  1999/10/27 07:38:30  peterg
+## Now does cse version -- but not needed now exept for Euler integration
+##
 ## Revision 1.9  1999/10/26 23:47:58  peterg
 ## Now does cse.m file
 ##
@@ -144,7 +147,7 @@ END;;
 
 EOF
   else
-## cse represnetation
+## cse representation
 echo doing cse
 $SYMBOLIC  > mtt_r2m.log <<EOF
   %Set up the code generator
@@ -158,12 +161,12 @@ $SYMBOLIC  > mtt_r2m.log <<EOF
     lang_matrix();
     GENTRANSHUT "mtt_ode";
     
-    GENTRANOUT "mtt_odee";
-    mtt_matrix := MTTE$
-    mtt_matrix_n := MTTNx$
-    mtt_matrix_m := MTTNx$
-    lang_matrix();
-    GENTRANSHUT "mtt_odee";
+%    GENTRANOUT "mtt_odee";
+%    mtt_matrix := MTTE$
+%    mtt_matrix_n := MTTNx$
+%    mtt_matrix_m := MTTNx$
+%    lang_matrix();
+%    GENTRANSHUT "mtt_odee";
 
 END;;
 
@@ -171,23 +174,16 @@ EOF
 
   fi
 
-if [ "$rep" = "cse" ]; then
-touch mtt_odee
-  touch mtt_odee
-fi
+#if [ "$rep" = "ode" ]; then
+#  touch mtt_odee
+#fi
 
 sed 's/mtt_matrix/mttdx/' <mtt_ode  >> $1_$2.p
-sed 's/mtt_matrix/mtte/'  <mtt_odee >> $1_$2.p
+#sed 's/mtt_matrix/mtte/'  <mtt_odee >> $1_$2.p
 sed 's/mtt_matrix/mtty/'  <mtt_odeo >> $1_$2o.p
 
-if [ "$rep" = "cse" ]; then
-cat <<EOF >>$1_$2.p
-   ## Solve E dx = dxe;;
-   mtt_solve(mttdx,mttE,mttdx,$Nx);; 
-EOF
-fi
 
-rm -f mtt_odeo mtt_ode mtt_odee
+rm -f mtt_odeo mtt_ode #mtt_odee
 
 # Convert from Pascal syntax to Octave syntax 
  mtt_p2m<$1_$2o.p > $1_$2o.m 

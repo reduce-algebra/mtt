@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.15  1999/03/06 02:19:43  peterg
+## Changed args to _input
+##
 ## Revision 1.14  1998/10/01 16:02:01  peterg
 ## Integration with switches handled separately fro Euler and Implicit.
 ##
@@ -77,9 +80,10 @@ MTTilast = round(mttlast/mttdt); # Total number of steps
 
 #Initialise
 MTTt = 0.0;
+[MTTu]  = zero_vector($Nu);	# Zero the input
 [MTTx] = $1_state;	        # Read in initial state
-[MTTu] = $1_input(MTTt,MTTx,mtty);	# Evaluate initial input
 [MTTy] = $1_odeo(MTTx,MTTu,MTTt); # Evaluate initial output
+[MTTu] = $1_input(MTTt,MTTx,MTTy);	# Evaluate initial input
 mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny); # And write them
 
 [mttAA]  = zero_matrix($Nx);	# Zero the A matrix
@@ -93,7 +97,6 @@ mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny); # And write them
 
 #Integration loop
 for MTTit = 1:MTTilast
-  [MTTu] = $1_input(MTTt,MTTx,MTTy);	# Input
 
   if mttmethod==1		# Euler
     for MTTjt = 1:mttstepfactor
@@ -112,9 +115,9 @@ for MTTit = 1:MTTilast
     MTTt = MTTt + mttdt;
   endif;
 
-
-  [MTTy] = $1_odeo(MTTx,MTTu,MTTt);
-  mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny);
+  [MTTy] = $1_odeo(MTTx,MTTu,MTTt);     # Output 
+  [MTTu] = $1_input(MTTt,MTTx,MTTy);	# Input
+  mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny);    # Write it out
 endfor;				# Integration loop
 
 EOF

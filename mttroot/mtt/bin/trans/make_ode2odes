@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1998/07/25 20:14:00  peterg
+## update code added for flexibility and octave efficiency
+##
 ###############################################################
 
 
@@ -37,27 +40,27 @@ cat << EOF >> $1_ode2odes.m
 $1_simpar;			# Read in simulation parameters
 $1_numpar;			# Read in parameters
 
-iLast = round(LAST/DT);         # Total number of steps
-DDT = DT/STEPFACTOR;
+MTTiLast = round(mttLAST/mttDT);         # Total number of steps
+mttDDT = mttDT/mttSTEPFACTOR;
 
 #Initialise
-t = 0.0;
+MTTt = 0.0;
 MTTx = $1_state;	        # Read in initial state
-MTTu = $1_input(MTTx,t);        # Evaluate initial input
-MTTy = $1_odeo(MTTx,MTTu,t);    # Evaluate initial output
-mtt_write(t,MTTx,MTTy,$Nx,$Ny); # And write them
+MTTu = $1_input(MTTx,MTTt);        # Evaluate initial input
+MTTy = $1_odeo(MTTx,MTTu,MTTt);    # Evaluate initial output
+mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny); # And write them
 
 #Integration loop
-for it = 1:iLast
-    for i = 1:STEPFACTOR
-        [MTTu] = $1_input(MTTx,t);# Input
+for MTTit = 1:MTTiLast
+    for MTTi = 1:mttSTEPFACTOR
+        [MTTu] = $1_input(MTTx,MTTt);# Input
         [MTTx] = $1_switch(MTTx); # Switches
-        [MTTdx] = $1_ode(MTTx,MTTu,t);
-        [MTTx] = mtt_update(MTTdx,MTTx,DDT,$Nx,METHOD);
-        [MTTy] = $1_odeo(MTTx,MTTu,t);
-	t = t + DDT;
+        [MTTdx] = $1_ode(MTTx,MTTu,MTTt);
+        [MTTx] = mtt_update(MTTdx,MTTx,mttDDT,$Nx,mttMETHOD);
+        [MTTy] = $1_odeo(MTTx,MTTu,MTTt);
+	MTTt = MTTt + mttDDT;
     end;
-    mtt_write(t,MTTx,MTTy,$Nx,$Ny);
+    mtt_write(MTTt,MTTx,MTTy,$Nx,$Ny);
 end;
 
 EOF

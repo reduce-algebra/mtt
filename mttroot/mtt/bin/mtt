@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.180  1998/08/12 14:15:13  peterg
+## Implicit integration - c implemetation now included.
+##
 ## Revision 1.179  1998/08/12 12:29:18  peterg
 ## Put back some of the args stuff -- needed for plots.
 ##
@@ -618,7 +621,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='3.0'
+version='3.0++'
 
 # MTT recursion level is zero unless explicitly set
 level=0
@@ -1682,12 +1685,17 @@ $1_odeo.p : $1_def.r $1_odeo.m
 	mtt_m2p $1_odeo.m
 $1_smx.p : $1_def.r $1_smx.m
 	mtt_m2p $1_smx.m
+$1_smxx.p : $1_def.r $1_smxx.m
+	mtt_m2p $1_smxx.m
+$1_smxtx.p : $1_def.r $1_smxtx.m
+	mtt_m2p $1_smxtx.m
 $1_switch.p : $1_def.r $1_switch.m
 	mtt_m2p $1_switch.m
 $1_ode2odes.p : $1_ode2odes.m $1_def.r\
                 $1_simpar.p $1_numpar.p $1_state.p $1_input.p \
-                $1_ode.p $1_odeo.p  $1_switch.p $1_smx.p\
-                mtt_write.p mtt_update.p sign.p zeros.p
+                $1_ode.p $1_odeo.p  $1_switch.p \
+                $1_smx.p $1_smxx.p $1_smxtx.p  \
+                mtt_write.p mtt_update.p sign.p zero_matrix.p zero_vector.p
 	mtt_m2p $1_ode2odes.m
 
 $1_ode2odes.c: $1_ode2odes.p 
@@ -1777,10 +1785,16 @@ $1_sm.tex: $1_sm.r  $1_sympar.r $1_simp.r
 
 #SUMMARY smx	state matrices with variable state x (r)
 #SUMMARY smx	state matrices with variable state x (m)
+#SUMMARY smxx	Sparse computation of Ax (m)
+#SUMMARY smxtx	Sparse computation of ATx (m)
 $1_smx.r: $1_def.r $1_def.m $1_ode.r 
 		ode2smx_lang $1 r; tidy $1_smx.r
 $1_smx.m: $1_def.r $1_def.m $1_ode.r $1_sympars.txt
 		ode2smx_lang $1 m;
+$1_smxx.m: $1_smx.m
+		touch $1_smxx.m
+$1_smxtx.m: $1_smx.m
+		touch $1_smxtx.m
 
 #SUMMARY smc	controller form state matrices etc. - siso only (r)
 #SUMMARY smc	controller form state matrices etc. - siso only (tex)
@@ -2172,14 +2186,18 @@ svdcmp.p:
 	echo Copying svdcmp.p; cp $MTTPATH/trans/p/svdcmp.p .
 svbksb.p: 
 	echo Copying svbksb.p; cp $MTTPATH/trans/p/svbksb.p .
+mtt_sparse.p: 
+	echo Copying mtt_sparse.p; cp $MTTPATH/trans/p/mtt_sparse.p .
 mtt_write.p: 
 	echo Copying mtt_write.p; cp $MTTPATH/trans/p/mtt_write.p .
-mtt_update.p: mtt_solve.p
+mtt_update.p: mtt_solve.p mtt_sparse.p
 	echo Copying mtt_update.p; cp $MTTPATH/trans/p/mtt_update.p .
 mtt_solve.p: svdcmp.p svbksb.p
 	echo Copying mtt_solve.p; cp $MTTPATH/trans/p/mtt_solve.p .
-zeros.p: 
-	echo Copying zeros.p; cp $MTTPATH/trans/p/zeros.p .
+zero_vector.p: 
+	echo Copying zero_vector.p; cp $MTTPATH/trans/p/zero_vector.p .
+zero_matrix.p: 
+	echo Copying zero_matrix.p; cp $MTTPATH/trans/p/zero_matrix.p .
 
 # Copy c utilities
 dsvdcmp.c: dpythag.c nrutil.c nrutil.h

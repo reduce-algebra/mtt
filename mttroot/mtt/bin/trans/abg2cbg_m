@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.8  1996/08/25  09:31:49  peter
+# More error handling.
+#
 ## Revision 1.7  1996/08/25 09:22:55  peter
 ## # Print errors, if any.
 ## mtt_error error.txt
@@ -103,7 +106,7 @@ rm -f mtt_info.txt
 echo Creating $1_cbg.m
 
 # Use matrix manipulation to accomplish the transformation
-$MATRIX  >abg2cbg_m.log  2>mtt_error.txt << EOF
+$RMATRIX  >abg2cbg_m.log  2>mtt_error.txt << EOF
 
   infofile= '$infofile';
 

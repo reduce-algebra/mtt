@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.238  2000/04/10 10:06:41  peterg
+## Sorted out implicit rules for p2oct conversion
+##
 ## Revision 1.237  2000/04/07 19:10:24  peterg
 ## New smxa and smxax reps
 ##
@@ -1628,6 +1631,8 @@ endif
 #SUMMARY sympar	symbolic parameters (r)
 $1_sympar.r: $1_sympar.txt
 	sympar_txt2r $1
+$1_sympar.m: $1_sympar.txt
+	sympar_txt2m $1
 
 #SUMMARY sympar	symbolic parameters (c)
 # txt to c sympar conversion
@@ -1945,7 +1950,7 @@ $1_cse.m: $1_def.m $1_cse.r $1_sympars.txt
 $1_cseo.m: $1_cse.m
 	touch $1_cseo.m
 $1_cse.tex: $1_cse.r  $1_sympar.r $1_simp.r
-	cse_r2tex $1; latex_tidy $1_cse.tex
+	cse_r2tex $1 $2; latex_tidy $1_cse.tex
 
 ## Implicit oct rules
 %.oct:  %.p
@@ -2192,12 +2197,15 @@ $1_ssm.tex: $1_ssm.r  $1_sympar.r $1_simp.r
 #SUMMARY smxtx	Sparse computation of ATx (m)
 $1_smx.r: $1_def.r $1_def.m $1_ode.r $1_subs.r
 		ode2smx_lang $1 r; tidy $1_smx.r
+
 $1_smx.m: $1_def.r $1_def.m $1_cse.r $1_sympars.txt $1_subs.r
-		cse2smx_lang $1 m;
-$1_smxa.m: $1_smx.m
-		touch $1_smxa.m
-$1_smxax.m: $1_smx.m
-		touch $1_smxax.m
+		cse2smx_lang $1 smx m
+
+$1_smxa.m: $1_def.r $1_def.m $1_cse.r $1_sympars.txt $1_subs.r
+		cse2smx_lang $1 smxa m
+
+$1_smxax.m: $1_def.r $1_def.m $1_cse.r $1_sympars.txt $1_subs.r
+		cse2smx_lang $1 smxax m
 
 #SUMMARY smc	controller form state matrices etc. - siso only (r)
 #SUMMARY smc	controller form state matrices etc. - siso only (tex)

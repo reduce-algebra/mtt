@@ -5,6 +5,9 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.25  1998/04/12 15:01:04  peterg
+% %% Converted to uniform port notation - always use []
+% %%
 % %% Revision 1.24  1998/02/19 08:57:16  peterg
 % %% Fixed mtt-info bug -- confused filename with number
 % %%
@@ -257,8 +260,7 @@ exp_port_bond = [];
 %exp_comps = [];
 for i=1:n_ports
   port_name_i = port_name(i,:)
-  subport = split(port_name_i, ','); % Find the components of the vector port
-  [n_subports,junk] = size(subport);
+  [subport,n_subports] = split_port(port_name_i, ','); % Find the components of the vector port
 
   if n_subports==1 % an ordinary port
     exp_port_name = [exp_port_name; subport(1,:)]; % Write out the only port
@@ -270,8 +272,7 @@ for i=1:n_ports
     [other_bond_index,n_other] = getindex(port_bond,-signed_bond_index);
     if n_other == 1
       other_port_name = port_name(other_bond_index,:);
-      other_subport = split(other_port_name, ',');
-      [n_other_subports,junk] = size(other_subport);
+      [other_subport,n_other_subports] = split_port(other_port_name, ',');
       if n_other_subports~=n_subports
 	mtt_info(['Vector ports ', port_name_i, ' and ', other_port_name, 'are not compatible'],fnum);
       end

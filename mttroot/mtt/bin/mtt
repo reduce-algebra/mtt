@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.282  2000/11/24 14:53:53  peterg
+## Added lagrange rep : lde.r and lde.tex
+##
 ## Revision 1.281  2000/11/16 13:51:15  peterg
 ## Added units stuff
 ##
@@ -981,6 +984,11 @@ info_switch=''
 # Default use m, not oct files
 m='m';
 
+# Default use ps files
+ps=ps
+eps=eps
+psview=$PSVIEW
+
 #Initialise list
 mtt_switches='';
 
@@ -1084,6 +1092,11 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 optimise='-optimise';;
 	-partition ) mtt_switches="$mtt_switches $1";
                      partition='-partition';;
+	-pdf )   mtt_switches="$mtt_switches $1";
+                 ps=pdf;
+                 eps=pdf;
+                 psview=$PDFVIEW;
+                ;;
 	-viewlevel )  mtt_switches="$mtt_switches $1 $2";
                       viewlevel=$2;
                       shift;;
@@ -1640,8 +1653,8 @@ if [ "$tidy" = "tidy" ]; then
           cp  -p -u $1$subsystem"_"$2.$3 ..
       fi
       if [ "$PLOTTYPE" = "multiple" ]; then
-        echo Copying  $1_$2$__ARGS.ps
-        cp  $1_$2$__ARGS.ps ..
+        echo Copying  $1_$2$__ARGS.$ps
+        cp  $1_$2$__ARGS.$ps ..
       fi
     fi
 
@@ -1679,8 +1692,8 @@ if [ -f "$2_rep.make" ]; then
      fi
       make -s -f $2_rep.make "SYS=$1" "LANG=$3" "ARG=$4"
       if [ -n "$4" ]; then
-         echo Copying  $1_$2$__ARGS.ps
-         cp  $1_$2$__ARGS.ps ..
+         echo Copying  $1_$2$__ARGS.$ps
+         cp  $1_$2$__ARGS.$ps ..
       fi
    fi
     exit
@@ -2873,18 +2886,15 @@ $1_$2.doc: $1_$2.tex
 
 #Create PostScript version of fig files
 ifeq ($REPTYPE,bg)
-$1_$2.ps : $1_$2.fig
-	echo Creating $1_$2.ps
-	multi_command2 'fig2dev -Leps' $1 $2.fig $2.ps | sh
-$1_$2.pdf : $1_$2.fig
-	echo Creating $1_$2.pdf
-	multi_command2 'fig2dev -Lpdf' $1 $2.fig $2.pdf | sh
+$1_$2.$ps : $1_$2.fig
+	echo Creating $1_$2.$ps
+	multi_command2 "fig2dev -L$eps" $1 $2.fig $2.$ps | sh
 else
 #Generic conversion of LaTeX doc to dvi or pdf
 $1_$2.dvi: $1_$2.doc
 	doc2dvi $1_$2 "$documenttype"
-$1_$2.pdf: $1_$2.doc
-	doc2pdf $1_$2 "$documenttype"
+#$1_$2.pdf: $1_$2.doc
+#	doc2pdf $1_$2 "$documenttype"
 endif
 
 
@@ -2895,30 +2905,27 @@ ifeq ($PLOTTYPE,multiple)
 ifneq ($_ARGS,)
 $1_$2.fig: $1_$2.gdat
 	gdat2fig $1_$2 '$ARGS'
-	echo Creating $1_$2$__ARGS.ps
-	cp $1_$2.ps $1_$2$__ARGS.ps
+	echo Creating $1_$2$__ARGS.$ps
+	cp $1_$2.$ps $1_$2$__ARGS.$ps
 else
 $1_$2.fig: $1_$2.gdat
 	gdat2fig $1_$2
 endif
 else
-$1_$2.ps: $1_$2.gdat
+$1_$2.$ps: $1_$2.gdat
 	gdat2ps $1_$2  '$ARGS'
 endif
-$1_$2.ps: $1_$2.fig
-	echo Creating $1_$2.ps
-	fig2dev -Leps $1_$2.fig> $1_$2.ps
-$1_$2.pdf: $1_$2.fig
-	echo Creating $1_$2.pdf
-	fig2dev -Lpdf $1_$2.fig> $1_$2.pdf
+$1_$2.$ps: $1_$2.fig
+	echo Creating $1_$2.$ps
+	fig2dev -L$eps $1_$2.fig> $1_$2.$ps
 
 endif
 
 ifeq ($REPTYPE,tex)
 #Create PostScript version of dvi file
-$1_$2.ps: $1_$2.dvi
-	echo Creating $1_$2.ps
-	dvips -o $1_$2.ps $1_$2
+$1_$2.$ps: $1_$2.dvi
+	echo Creating $1_$2.$ps
+	dvips -o $1_$2.$ps $1_$2
 endif
 
 ifeq ($REPTYPE,tex)
@@ -2936,8 +2943,9 @@ endif
 ifeq ($REPTYPE,data)
 # This is the gnuplot version which leaves lots of defunct processes
 # $1_$2.view : $1_$2.dview
-$1_$2.view: $1_$2.ps
-	ghostview $1_$2.ps&
+$1_$2.view: $1_$2.$ps
+	echo Creating view of $1_$2 - $ps file
+	$psview $1_$2.$ps&
 endif
 
 ifeq ($REPTYPE,tex)
@@ -2953,9 +2961,9 @@ $1_$2.hview: $1_$2.html
 	$HTMLVIEW $1_$2/$1_$2.html&
 
 #View a ps file
-$Subsystem_$2.pview: $1_$2.ps
-	echo Creating view of $Subsystem_$2 - ps file
-	mtt_multi $PSVIEW $Subsystem $2 ps $viewlevel  | sh 
+$Subsystem_$2.pview: $1_$2.$ps
+	echo Creating view of $Subsystem_$2 - $ps file
+	mtt_multi $psview $Subsystem $2 $ps $viewlevel  | sh 
 
 #View a gdat file
 $1_$2.dview: $1_$2.gdat

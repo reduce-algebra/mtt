@@ -19,6 +19,9 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.33  1998/07/29 13:36:37  peterg
+% %% Don't set port status if there aren't any ports.
+% %%
 % %% Revision 1.32  1998/07/28 19:06:11  peterg
 % %% *** empty log message ***
 % %%
@@ -255,9 +258,9 @@ if ~at_top_level
     for j = 1:n_port_bonds
       jj = port_bond_index(j);
       for k = 1:2
-#	if bonds(jj,k)==0 % only copy if not already set
+	if bonds(jj,k)==0 % only copy if not already set
 	bonds(jj,k) = port_bonds(j,k);
-#	end;
+	end;
       end;
 #      status(1:N_ports) = port_status;
     end

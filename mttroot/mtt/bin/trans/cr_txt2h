@@ -1,0 +1,5 @@
+#! /bin/sh
+
+gawk '{
+ printf ("#include \"%s/cr/hh/%s.hh\"\n", mttlib, $0)
+ }' mttlib=${MTT_LIB}

@@ -1,0 +1,21 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: sympar2par_txt2m
+
+# Symbolic parameters parameter conversion
+# Used in lang_header
+# Copyright (C) 2000 by Peter J. Gawthrop
+
+
+strip_comments <$1_sympars.txt  |\
+awk '{
+  i++; printf("  %s = mttpar(%i);\n", tolower($1), i);
+}'
+
+
+
+

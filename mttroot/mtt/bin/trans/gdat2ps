@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1996/08/10 12:54:56  peter
+## Reorganised data file for gnuplot input.
+##
 ## Revision 1.1  1996/08/10 09:52:39  peter
 ## Initial revision
 ##
@@ -28,17 +31,19 @@ awk '
 BEGIN{row=0; col=0}
 { 
   row++;
-  x[row] = $1;
-  for (col = 2; col <= NF; col++) {
-    y[row,col] = $col
+  for (col = 1; col <= NF/2; col++) {
+    xcol = 2*col-1;
+    ycol = 2*col;
+    x[row,col] = $xcol
+    y[row,col] = $ycol
   }
 }
 END {
   cols = col-1;
   rows = row;
-  for (col = 2; col <= cols; col++) {
+  for (col = 1; col <= cols; col++) {
     for (row = 1; row <= rows; row++) {
-      print x[row], y[row,col]
+      print x[row,col], y[row,col]
     };
   if (col<cols) {
     printf("\n")

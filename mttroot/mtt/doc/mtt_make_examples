@@ -1,0 +1,29 @@
+#! /bin/sh
+## This makes all of the standard examples
+## It takes a few hours.
+## Copyright (C) 2003 by Peter J. Gawthrop
+
+exampledir="$MTT_EXAMPLES"
+dirname=`basename ${exampledir}`
+
+tmpbase="$HOME/JUNK"
+tmpdir="${tmpbase}/${dirname}"
+
+## Create tmp dir
+mkdir -pv ${tmpdir}
+
+## Copy to tmp
+cp -r ${exampledir} ${tmpbase}
+
+## Go to tmp and list DIRS
+pushd ${tmpdir}
+dirs=`ls | grep -v CVS`
+
+
+echo Making examples for ${dirs} in ${tmpdir}
+for dir in ${dirs}; do
+    echo Making examples in $dir
+    mtt -q $dir rep pdf
+done
+
+popd

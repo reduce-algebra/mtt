@@ -20,6 +20,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.2  1997/03/20  14:36:56  peterg
+# Includes the sympar.h file
+#
 ## Revision 1.1  1997/01/21 22:54:54  peterg
 ## Initial revision
 ##
@@ -66,6 +69,9 @@ write " "$
 
 %Program heading
 write "#include <stdio.h>"$
+write "#include ""$1_odes.h"" "$
+
+%External (global) variable list
 write "#include ""$1_sympar.h"" "$
 
 
@@ -75,21 +81,6 @@ write "double dx[", MTTNx+1, "]; /* $1_ode state derivative */"$
 write "double x[", MTTNx+1, "]; /* $1_ode state */"$ 
 write "double u[", MTTNu+1, "]; /* $1_ode input */"$
 
-%External (global) variable list
-write "/* External (global) variable list */ "$
-IF MTTNvar>0 THEN
-BEGIN
-  FOR i := 1:MTTNvar DO
-    IF numberp(MTTVar(i,1)) 
-      THEN 
-      BEGIN
-      % Do nowt
-      END
-      ELSE
-      BEGIN
-         write "double ", MTTVar(i,1), ";"$
-      END$
-END$
 
 write "/* Files */ "$
 write "  FILE *fopen(), *fps, *fpso;"$

@@ -15,6 +15,7 @@ configure-stamp:
 	@touch configure-stamp
 
 build: configure mtt.sh build-stamp
+	@cd cc ; make -s build
 build-stamp:
 	@touch build-stamp
 
@@ -29,19 +30,20 @@ clean-doc:
 	@-chmod a+x clean-doc.sh
 	@./clean-doc.sh
 	@rm -f clean-doc.sh
+	@cd doc ; make -s clean
 
 distclean: clean clean-doc
 	@-rm -f build-stamp configure-stamp config.log mtt.sh
 
 install: build clean.sh
-	@-mkdir -p $(INSTDIR) $(CONFDIR) $(PROGDIR)
-	@cp -a bin/mttrc $(CONFDIR)/mtt.conf
-	@cp -a bin cc lib $(INSTDIR)
-	@mv -f mtt.sh $(PROGDIR)/mtt
-	@chmod -f a+rx $(PROGDIR)/mtt $(CONFDIR)/mtt.conf
+	@install -d $(INSTDIR) $(CONFDIR) $(PROGDIR)
+	@install -d $(INSTDIR)/bin $(INSTDIR)/cc $(INSTDIR)/lib
+	@install bin/mttrc $(CONFDIR)/mtt.conf
+	@install mtt.sh $(PROGDIR)/mtt
+	@install cc/parse_m2cc.exe $(INSTDIR)/bin/trans
 
 install-doc: clean-doc.sh
-	@-mkdir -p $(DOCDIR) $(INFODIR)
+	@install -d $(DOCDIR) $(INFODIR)
 	@cd doc ; DOCPATH=$(DOCDIR) INFOPATH=$(INFODIR) make -s install-doc
 
 .PHONY: FORCE

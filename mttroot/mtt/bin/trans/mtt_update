@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.20  2003/08/13 15:49:39  gawthrop
+## Don't sort the states when defaulting - leave in implied order
+##
 ## Revision 1.19  2003/08/05 15:29:36  gawthrop
 ## Now handles ss.r files with implicit zero values
 ##
@@ -107,106 +110,122 @@ initial_value() {
     fi
 }
 
-rm -f mtt_empty
-touch mtt_empty
+## Remove if, end and endif from list
+remove_if() {
+    file=$1
+    tmpfile="$1_tmp"
+    
+    mv ${file} ${tmpfile}
+    grep -v 'if[ (]\|endif;' <${tmpfile} > ${file} 
 
-case $rep in
-    numpar)
-	    lang=txt
-	    textfile=$1_$2.$lang
-	    infofile=$1_sympar.$lang
-	    moreinfofile=$infofile
-	    default='1.0'
-	;;
-    input)
-	    lang=txt
-	    textfile=$1_$2.$lang
-	    infofile=mtt_list.$lang
-	    moreinfofile=mtt_list_numpar.$lang
-            gawk '{if ($1==rep) printf("%s\n", $4)}' rep=$2 \
-            <$1_struc.txt >$infofile
-	    cat $infofile $1_sympar.$lang> $moreinfofile  
-	    default='1.0'
-         ;;
-    state)
-	    lang=txt
-	    textfile=$1_$2.$lang
-	    infofile=mtt_list.$lang
-	    moreinfofile=mtt_list_numpar.$lang
-            gawk '{if ($1==rep) printf("%s\n", $4)}' rep=$2 \
-            <$1_struc.txt >$infofile
-	    cat $infofile $1_sympar.$lang> $moreinfofile  
-	    default='0.0'
-         ;;
-    logic) 
-	    lang=txt
-	    textfile=$1_$2.$lang
-	    infofile=mtt_list.$lang
-	    moreinfofile=mtt_list_numpar.$lang
-            gawk '{if ($3=="MTT_SWITCH") printf("%s_logic\n", $4)}' rep=$2 \
-            <$1_struc.txt >$infofile
-	    cat $infofile $1_sympar.$lang> $moreinfofile  
-	    default='1.0'
-	;;
-    *)
-	    echo Representation $rep not implemented
-	    exit
-esac
-
-# Create a string containing the variables
-if [ -f "$textfile" ]; then
-  # Inform User
-  echo Checking $textfile
-else
-  echo Creating $textfile
-  mtt_header $sys $rep $lang > $textfile 
-    if [ "${rep}" = "state" ]; then
-	info=`cut -f1 $infofile` # No sort
-    else
-	info=`cut -f1 $infofile | sort` # Sort
+    ## Delete empty file
+    size=`ls -s ${file} | awk '{print $1}'`
+    if [ "${size}" = "0" ]; then
+	rm $file
     fi
-  i=0;
-  for new in $info; do
-    let i=$i+1;
-    initial_value $i ${default}
-    echo $new $value  |\
-    gawk '{printf("%s\t= %s; # Default\n",$1,$2)}' >> $textfile
-  done
-  exit    
-fi
+ }
+ rm -f mtt_empty
+ touch mtt_empty
 
-# Remove tmp files
-rm -f mtt_in_text mtt_in_info
+ case $rep in
+     numpar)
+	     lang=txt
+	     textfile=$1_$2.$lang
+	     infofile=$1_sympar.$lang
+	     moreinfofile=$infofile
+	     default='1.0'
+	 ;;
+     input)
+	     lang=txt
+	     textfile=$1_$2.$lang
+	     infofile=mtt_list.$lang
+	     moreinfofile=mtt_list_numpar.$lang
+	     gawk '{if ($1==rep) printf("%s\n", $4)}' rep=$2 \
+	     <$1_struc.txt >$infofile
+	     cat $infofile $1_sympar.$lang> $moreinfofile  
+	     default='1.0'
+	  ;;
+     state)
+	     lang=txt
+	     textfile=$1_$2.$lang
+	     infofile=mtt_list.$lang
+	     moreinfofile=mtt_list_numpar.$lang
+	     gawk '{if ($1==rep) printf("%s\n", $4)}' rep=$2 \
+	     <$1_struc.txt >$infofile
+	     cat $infofile $1_sympar.$lang> $moreinfofile  
+	     default='0.0'
+	  ;;
+     logic) 
+	     lang=txt
+	     textfile=$1_$2.$lang
+	     infofile=mtt_list.$lang
+	     moreinfofile=mtt_list_numpar.$lang
+	     gawk '{if ($3=="MTT_SWITCH") printf("%s_logic\n", $4)}' rep=$2 \
+	     <$1_struc.txt >$infofile
+	     cat $infofile $1_sympar.$lang> $moreinfofile  
+	     default='1.0'
+	 ;;
+     *)
+	     echo Representation $rep not implemented
+	     exit
+ esac
 
-# Strip files
-strip_comments <$textfile | tr 'A-Z' 'a-z' >mtt_text
-strip_comments <$infofile | tr 'A-Z' 'a-z' >mtt_info
-strip_comments <$moreinfofile  | tr 'A-Z' 'a-z' >mtt_moreinfo
+ # Create a string containing the variables
+ if [ -f "$textfile" ]; then
+   # Inform User
+   echo Checking $textfile
+ else
+   echo Creating $textfile
+   mtt_header $sys $rep $lang > $textfile 
+     if [ "${rep}" = "state" ]; then
+	 info=`cut -f1 $infofile` # No sort
+     else
+	 info=`cut -f1 $infofile | sort` # Sort
+     fi
+   i=0;
+   for new in $info; do
+     let i=$i+1;
+     initial_value $i ${default}
+     echo $new $value  |\
+     gawk '{printf("%s\t= %s; # Default\n",$1,$2)}' >> $textfile
+   done
+   exit    
+ fi
 
-# Use awk to check file
-gawk '{
-  if (FILENAME=="mtt_text") {
-    gsub("[\t ]" ,""); # Remove whitespace
-    split($0,a,"=");
-    text[a[1]] = a[2];
-  }
-  if (FILENAME=="mtt_info"){
-     info[$1] = default;
-  }
-  if (FILENAME=="mtt_moreinfo"){
-     moreinfo[$1] = default;
-  }
-  }
-END{
-  # for (iname in info) print iname
-  for (tname in text) {
-    if (!(tname in moreinfo)) print tname >> "mtt_in_text"
-  }
-  for (iname in info) {
-    if (!(iname in text)) print iname >> "mtt_in_info"
-  }
-  }'  default=$default mtt_text mtt_info mtt_moreinfo
+ # Remove tmp files
+ rm -f mtt_in_text mtt_in_info
 
+ # Strip files
+ strip_comments <$textfile | tr 'A-Z' 'a-z' >mtt_text
+ strip_comments <$infofile | tr 'A-Z' 'a-z' >mtt_info
+ strip_comments <$moreinfofile  | tr 'A-Z' 'a-z' >mtt_moreinfo
+
+ # Use awk to check file
+ gawk '{
+   if (FILENAME=="mtt_text") {
+     gsub("[\t ]" ,""); # Remove whitespace
+     split($0,a,"=");
+     text[a[1]] = a[2];
+   }
+   if (FILENAME=="mtt_info"){
+      info[$1] = default;
+   }
+   if (FILENAME=="mtt_moreinfo"){
+      moreinfo[$1] = default;
+   }
+   }
+ END{
+   # for (iname in info) print iname
+   for (tname in text) {
+     if (!(tname in moreinfo)) print tname >> "mtt_in_text"
+   }
+   for (iname in info) {
+     if (!(iname in text)) print iname >> "mtt_in_info"
+   }
+   }'  default=$default mtt_text mtt_info mtt_moreinfo
+
+ ## Remove if, end and endif from list
+ remove_if mtt_in_text
 
 if [ -z "$update" ]; then
   if [ -f "mtt_in_text" ]; then

@@ -28,6 +28,9 @@ function [par,Par,Error,Y,iterations,x] = \
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.7  2001/08/10 16:19:06  gawthrop
+  ## Tidied up the optimisation stuff
+  ##
   ## Revision 1.6  2001/07/03 22:59:10  gawthrop
   ## Fixed problems with argument passing for CRs
   ##
@@ -72,9 +75,9 @@ function [par,Par,Error,Y,iterations,x] = \
   endif
 
   n_th = length(i_s);
-  error_old = inf;
-  error_old_old = inf;
-  error = 1e50;
+  err_old = inf;
+  err_old_old = inf;
+  err = 1e50;
   reduction = inf;
   predicted_reduction = 0;
   par = par_0;
@@ -88,7 +91,7 @@ function [par,Par,Error,Y,iterations,x] = \
 
   if extras.verbose		# Diagnostics
     printf("Iteration: %i\n", iterations);
-    printf("  error:  %g\n", error);
+    printf("  error:  %g\n", err);
     printf("  reduction:  %g\n", reduction);
     printf("  prediction: %g\n", predicted_reduction);
     printf("  ratio:      %g\n", r);
@@ -101,7 +104,7 @@ function [par,Par,Error,Y,iterations,x] = \
   endif
   
   while (abs(reduction)>extras.criterion)&&\
-	(abs(error)>extras.criterion)&&\
+	(abs(err)>extras.criterion)&&\
 	(iterations<extras.max_iterations)
 
     iterations = iterations + 1; # Increment iteration counter
@@ -124,20 +127,20 @@ function [par,Par,Error,Y,iterations,x] = \
     endif
     
     ##Evaluate error, cost derivative J and cost second derivative JJ
-    error = 0; 
+    err = 0; 
     J = zeros(n_th,1);
     JJ = zeros(n_th,n_th);
     
     for i = 1:n_y
       E = y(:,i) - y_0(:,i);	#  Error in ith output
-      error = error + (E'*E);	# Sum the squared error over outputs
+      err = err + (E'*E);	# Sum the squared error over outputs
       y_par_i = y_par(:,i:n_y:n_y*n_th); # sensitivity function (ith output)
       J  = J + y_par_i'*E;	# Jacobian
       JJ = JJ + y_par_i'*y_par_i; # Newton Euler approx Hessian
     endfor
 
     if iterations>1 # Adjust the Levenberg-Marquardt parameter
-      reduction = error_old-error;
+      reduction = err_old-err;
       predicted_reduction =  2*J'*step + step'*JJ*step;
       r = predicted_reduction/reduction;
       if (r<0.25)||(reduction<0)
@@ -148,8 +151,8 @@ function [par,Par,Error,Y,iterations,x] = \
 
       if reduction<0		# Its getting worse
 	par(i_t) = par(i_t) + step; # rewind parameter
-	error = error_old;	# rewind error
-	error_old = error_old_old; # rewind old error
+	err = err_old;	# rewind error
+	err_old = err_old_old; # rewind old error
 	if extras.verbose
 	  printf(" Rewinding ....\n");
 	endif
@@ -160,17 +163,17 @@ function [par,Par,Error,Y,iterations,x] = \
     JJL = JJ + v*eye(n_th);	# Levenberg-Marquardt term
     step =  pinv(JJL)*J;	# Step size
     par(i_t) = par(i_t) - step; # Increment parameters
-    error_old_old = error_old;	# Save old error
-    error_old = error;		# Save error
+    err_old_old = err_old;	# Save old error
+    err_old = err;		# Save error
 
     ##Some diagnostics
-    Error = [Error error];	# Save error
+    Error = [Error err];	# Save error
     Par = [Par par];		# Save parameters
     Y = [Y y];			# Save output
 
     if extras.verbose		# Diagnostics
       printf("Iteration: %i\n", iterations);
-      printf("  error:  %g\n", error);
+      printf("  error:  %g\n", err);
       printf("  reduction:  %g\n", reduction);
       printf("  prediction: %g\n", predicted_reduction);
       printf("  ratio:      %g\n", r);

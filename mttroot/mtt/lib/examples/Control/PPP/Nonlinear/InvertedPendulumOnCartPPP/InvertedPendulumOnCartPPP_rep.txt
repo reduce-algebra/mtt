@@ -7,6 +7,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/12/28 17:29:10  peterg
+## To RCS
+##
 ## Revision 1.3  2000/08/29 13:57:23  peterg
 ## Zapped some steps which prevent ppp from working ????
 ##
@@ -27,7 +30,7 @@ mtt InvertedPendulumOnCartPPP dae tex # The system dae
 # mtt InvertedPendulumOnCartPPP simpar tex # Simulation parameters
 # mtt InvertedPendulumOnCartPPP numpar tex # Numerical simulation parameters
 # mtt InvertedPendulumOnCartPPP input tex	# Simulation input
-# mtt -c InvertedPendulumOnCartPPP odeso ps # Simulation output
+# mtt InvertedPendulumOnCartPPP odeso ps # Simulation output
 
 mtt InvertedPendulumOnCartPPP nppp m # How its done
 mtt InvertedPendulumOnCartPPP nppp ps # The PPP output

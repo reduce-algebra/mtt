@@ -9,7 +9,7 @@ mtt rcABG nyfr ps
 
 mtt rcABG numpar txt
 mtt rcABG input txt
-mtt -c rcABG odeso ps
+mtt rcABG odeso ps
 mtt rcABG rep txt
 
 

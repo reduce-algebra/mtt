@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2000/12/28 17:54:46  peterg
+% %% To RCS
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 mtt szRC2n abg tex
@@ -13,7 +16,7 @@ mtt szRC2n dae tex
 mtt szRC2n dm tex
 mtt szRC2n tf tex
 
-mtt -c szRC2n odeso ps
+mtt szRC2n odeso ps
 mtt szRC2n lmfr ps
 
 

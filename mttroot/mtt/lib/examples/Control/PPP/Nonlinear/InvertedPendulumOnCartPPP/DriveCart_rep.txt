@@ -7,6 +7,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/12/28 17:29:11  peterg
+## To RCS
+##
 ###############################################################
 
 mtt DriveCart abg tex			# The system description
@@ -24,4 +27,4 @@ mtt DriveCart sm tex		# State matrices (of linearised system)
 mtt DriveCart simpar tex		# Simulation parameters
 mtt DriveCart numpar tex		# Numerical simulation parameters
 mtt DriveCart input tex		# Simulation input
-mtt -c DriveCart odeso ps		# Simulation output
+mtt DriveCart odeso ps		# Simulation output

@@ -5,6 +5,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  2000/12/28 16:55:29  peterg
+% %% To RCS
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %mtt -abg -o -ss SimpleGasTurbineABG abg tex
@@ -21,10 +24,10 @@ mtt -abg -o -ss SimpleGasTurbineABG numpar tex
 mtt -abg -o -ss SimpleGasTurbineABG input tex
 mtt -abg -o -ss SimpleGasTurbineABG state tex
 mtt -abg -o -ss SimpleGasTurbineABG simpar tex
-mtt -abg -o -ss -c SimpleGasTurbineABG odeso ps 'SimpleGasTurbineABG_p1_T,SimpleGasTurbineABG_c1_T,SimpleGasTurbineABG_t1_T'
-mtt -abg -o -ss -c SimpleGasTurbineABG odeso ps 'SimpleGasTurbineABG_Heat,SimpleGasTurbineABG_Work'
-mtt -abg -o -ss -c SimpleGasTurbineABG odeso ps 'SimpleGasTurbineABG_Speed'
-mtt -abg -o -ss -c SimpleGasTurbineABG odeso ps 'SimpleGasTurbineABG_p1_P,SimpleGasTurbineABG_c1_P,SimpleGasTurbineABG_t1_P'
+mtt -abg -o -ss SimpleGasTurbineABG odeso ps 'SimpleGasTurbineABG_p1_T,SimpleGasTurbineABG_c1_T,SimpleGasTurbineABG_t1_T'
+mtt -abg -o -ss SimpleGasTurbineABG odeso ps 'SimpleGasTurbineABG_Heat,SimpleGasTurbineABG_Work'
+mtt -abg -o -ss SimpleGasTurbineABG odeso ps 'SimpleGasTurbineABG_Speed'
+mtt -abg -o -ss SimpleGasTurbineABG odeso ps 'SimpleGasTurbineABG_p1_P,SimpleGasTurbineABG_c1_P,SimpleGasTurbineABG_t1_P'
 
 
 

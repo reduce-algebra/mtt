@@ -7,6 +7,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/12/28 17:29:10  peterg
+## To RCS
+##
 ###############################################################
 
 mtt sInvertedPendulumOnCart abg tex			# The system description
@@ -24,6 +27,6 @@ mtt sInvertedPendulumOnCart sm tex		# State matrices (of linearised system)
 mtt sInvertedPendulumOnCart simpar tex		# Simulation parameters
 mtt sInvertedPendulumOnCart numpar tex		# Numerical simulation parameters
 mtt sInvertedPendulumOnCart input tex		# Simulation input
-mtt -c -cse sInvertedPendulumOnCart odeso ps		# Simulation output
+mtt -cse sInvertedPendulumOnCart odeso ps		# Simulation output
 
 mtt sInvertedPendulumOnCart ppp ps		# PPP control

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1996/08/30 11:04:28  peter
+## Changed line length to 500.
+##
 ## Revision 1.2  1996/08/24 14:09:41  peter
 ## Global parameter passing.
 ##
@@ -98,7 +101,7 @@ common();
 OFF echo;
 ON fort$
 cardno!* := 1$
-fortwidth!* := 500$
+fortwidth!* := 10000$
 OFF period$
 
 MTTdx := MTTdx;

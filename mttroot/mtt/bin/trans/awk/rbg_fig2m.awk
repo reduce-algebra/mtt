@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.39  2001/05/09 08:50:02  gawthrop
+## Uses _art.fig to transmit the art work to the cbg.fig rep.
+##
 ## Revision 1.38  2001/03/23 14:57:31  gawthrop
 ## Now puts space after header fields + writes _port.fig
 ##
@@ -242,6 +245,7 @@ function process_lbl() {
       name = $1;
       CR   = $2;
       args = $3;
+
       label[i_label,1] = name; 
       label[i_label,2] = CR;
       label[i_label,3] = args;
@@ -267,6 +271,9 @@ function process_text() {
 
 # It is terminated by \001 - so delete this termination
   str = substr(str,1,length(str)-4);
+
+# Zap maths
+  gsub(/[()-+*/]/,"",str); 
 
 # A component string contains only alphanumeric  _ and :
   isa_plain_component = match(str, component_regexp)==0;
@@ -345,7 +352,7 @@ function process_text() {
 # Check  if name is in label file and if used already
       found = 0; name_used = 0;
       for (i=1; i<=i_label; i++) {
-	lname = label[i,1];
+	  lname = label[i,1];
 	if ( lname==name ) {
 	  found = 1;
 	  if (name in used) {

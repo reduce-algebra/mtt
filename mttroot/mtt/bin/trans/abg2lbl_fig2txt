@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.15  2001/06/11 16:53:49  gawthrop
+## Now uses abg2sympar_m2txt to get the arguments
+##
 ## Revision 1.14  2001/06/11 15:06:58  gawthrop
 ## Now handles user-defined components
 ##
@@ -77,9 +80,19 @@ rm -f $typefile
 rm -f $infofile
 rm -f mtt_junk*
 
+
+## Create lbl files beneath this one
+mtt -q -u -l 1 $1 sub sh # Create the list
+sh $1_sub.sh "abg2lbl_fig2txt "
+
+if [ -f "$1_lbl.txt" ]; then
+  ##echo "$1_lbl.txt exists in `pwd` - no action taken"
+  exit
+##else 
+  ##echo "$1_lbl.txt dosn not exist in `pwd` "
+fi
+
 #Inform user
-
-
 if [ -n "$sensitivity" ]; then
     echo "Creating $1_lbl.txt (sensitivity version)"
 else
@@ -122,7 +135,9 @@ awk --field-separator ':' '
  { 
   Component = $1;
   Name = $2;
-  
+  name = Name;
+  gsub(/[()-+*/]/,"",name); # Remove maths
+
 ##Aliases
   if (Component == "SS") {
     port_alias[++j] = Name;
@@ -175,7 +190,7 @@ awk --field-separator ':' '
   if (Component !~ OldComponent) print "\n% Component type", Component
 
   ## Component
-    printf("\t%s\t", Name);
+    printf("\t%s\t", name);
     if (Component in cr)
       printf("%s\t\t", cr[Component])
     else 

@@ -16,6 +16,12 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.311  2001/05/26 18:36:43  gawthrop
+## Further modifications. Now works on rcPPP
+##  -- next jobs:
+##     add identification to ppp_nlin_sim
+##     create real-time ppp_nlin_run
+##
 ## Revision 1.310  2001/05/08 08:30:12  gawthrop
 ## Added line to reverse the x^y --> pow(x,y) in default  _simp file to
 ## prettyfy LaTeX
@@ -1973,7 +1979,7 @@ $1_args.m:
 #SUMMARY lbl	label file (view)
 #SUMMARY lbl*	label file (tex)
 #SUMMARY lbl	label file (tex)
-$1_lbl.txt:
+$1_lbl.txt: $1_abg.fig
 	abg2lbl_fig2txt $1 $sensitivity
 
 $1_lbl.tex: $1_lbl.txt
@@ -2299,7 +2305,7 @@ endif
 
 #SUMMARY rbg	raw bond graph (m)
 #Raw bond graph: fig file to mfile
-$1_rbg.m: $1_abg.fig $1_lbl.txt
+$1_rbg.m: $1_abg.fig  $1_lbl.txt
 	lbl2component $1 | sh || exit 1 # Grab specified components now
 	rbg_fig2m $1
 $1_cmp.m: $1_rbg.m
@@ -2313,8 +2319,13 @@ $1_sabg.fig: $1_rbg.m
 
 #Subsystem creation commands
 #SUMMARY sub Executable subsystem list (sh)
+ifeq ($start_at_abg,yes)
 $1_sub.sh: $1_abg.m
 	abg2sub_m2sh $1
+else
+$1_sub.sh: $1_abg.fig
+	abg2sub_fig2sh $1
+endif
 
 #SUMMARY sub LaTeX subsystem list (tex)
 #SUMMARY sub subsystem list (ps)

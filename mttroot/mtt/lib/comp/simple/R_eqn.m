@@ -15,6 +15,10 @@ function  structure = R_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1996/09/12 16:40:45  peter
+% %% Now does a default (when no constitutive relationship) with a unit
+% %% constitutive relationship on each port.
+% %%
 % %% Revision 1.2  1996/09/12 13:12:04  peter
 % %% Removed an fprintf that was a mistake.
 % %%
@@ -40,8 +44,8 @@ for outport = 1:ports
   outnumber = bond_number(outport);
   if length(cr)>0
     incause = bonds(:,1);
-    inports = 1:ports;
-    inbonds = bond_number;
+    inport = 1:ports;
+    inbond = bond_number;
   else % default if no cr: unit cr on each port
     incause = bonds(outport,1);
     inport = outport;

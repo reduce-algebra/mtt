@@ -6,6 +6,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  2003/05/08 18:48:49  gawthrop
+## Modified for new format with __
+##
 ## Revision 1.1  2000/12/28 17:58:27  peterg
 ## To RCS
 ##
@@ -13,6 +16,4 @@
 
 # Set the inputs
 ## Removed by MTT on Thu May  8 16:55:10 BST 2003: mttu(1) = exp(-t/0.1); 	# tau (CantileverBeam)
-
-# Set the switches
 cantileverbeam__mttfixed__u__u	= exp(-t/0.1); 	# tau (CantileverBeam)

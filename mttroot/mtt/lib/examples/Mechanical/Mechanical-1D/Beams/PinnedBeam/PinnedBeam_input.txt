@@ -6,9 +6,12 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  2000/12/28 17:59:05  peterg
+## To RCS
+##
 ###############################################################
 
 # Set the inputs
-mttu(1) = exp(-t/0.1); 	# tau (PinnedBeam)
+pinnedbeam__mttfixed__u__u = exp(-t/0.1); 	# tau (PinnedBeam)
 
 # Set the switches

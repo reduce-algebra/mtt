@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 # ###############################################################
 # ## $Id$
 # ## $Log$
+# ## Revision 1.26  1998/08/24 14:53:55  peterg
+# ## Uses new _cbg structure.
+# ##
 # ## Revision 1.25  1998/07/28 19:05:12  peterg
 # ## Sttill has vector SS port bug?
 # ##
@@ -207,14 +210,13 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 				# Alias the args list -- if not at top level
     	message = sprintf("\tfor component  %s (%s) within %s",\
 			  comp_name,subsystem.type,full_name);    
-    	if (length(system_args)>0)
+    	if struct_contains(subsystem,"alias")
 	  subsystem.arg = alias_args(subsystem.arg,subsystem.alias,";",message,infofilenum)
-    	endif;
-    	if (length(system_cr)>0)
 	  subsystem.cr = alias_args(subsystem.cr,subsystem.alias,";",message,infofilenum)
     	endif;
+
 	
-				# Substitute positional ($1 etc) arguments
+			# Substitute positional ($1 etc) arguments
     	subsystem.cr = subs_arg(subsystem.cr,system_cr, ...
 				"lin",full_name,subsystem.type,comp_name,infofilenum);
     	subsystem.arg = subs_arg(subsystem.arg,system_args, ...

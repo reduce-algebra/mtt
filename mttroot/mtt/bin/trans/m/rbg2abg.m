@@ -5,6 +5,10 @@ function [bonds,components] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coor
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.26  1998/04/16 14:07:51  peterg
+% %% Sorted out [] problem with vector ports -- new octave function
+% %% split_port
+% %%
 % %% Revision 1.25  1998/04/12 15:01:04  peterg
 % %% Converted to uniform port notation - always use []
 % %%
@@ -160,7 +164,7 @@ for i = 1:n_ports
   %The (signed) bond corresponding to the ith port label
   port_bond(i) = near_bond(1)*sign(1.5-near_bond(2));
 end;
-
+port_bond
 %We now have the (signed) bond (port_bond(i)) correponding to the
 % ith port label within the component 
 
@@ -170,11 +174,12 @@ end;
 for i = 1:n_bonds
   comp_near_bond(i,:) = adjcomp(arrow_end(i,:),other_end(i,:),rcomponents);
 end;
-
+comp_near_bond
 % We now have a list (comp_near_bond) of the component(s) at each end
 % of each bond
 
 % Now do a list of the bonds on each component - unsorted at this stage.
+% Also expand aliases using the alias list for each component
 components = [];
 for i = 1:n_components
   %Get component type
@@ -198,10 +203,33 @@ for i = 1:n_components
     comp_type),fnum);
   end;
     
-  bond_end = index(:,2);  % which end of bond at component?
+
+  % which end of bond at component?
+  bond_end = index(:,2); 
   direction = -sign(bond_end-1.5*one);
-  signed_bond_list = bond_list.*direction;
+  signed_bond_list = bond_list.*direction
   components = add_bond(components,signed_bond_list',i);
+
+  % Unalias all the ports on this component - if not a junction
+  if ((comp_type!="0")&&(comp_type!="1"))
+    eval( ["alias = ", comp_type, '_alias']); # Get aliases
+    if is_struct(alias)		# are there any aliases
+      for j=1:n_comp_bonds
+      	port_name_index = getindex(port_bond,signed_bond_list(j))
+      	if port_name_index>0	# There is a port on this bond
+      	  port_name_i = deblank(port_name(port_name_index,:));
+          port_name_i = port_name_i(2:length(port_name_i)-1) # strip []
+	  if struct_contains(alias,port_name_i) # Is this an alias?
+	    eval(["new_port_name_i = alias.",port_name_i]);
+	    mtt_info(["Expanding port name " port_name_i " of component " \
+		      comp_name " (" comp_type ") to ", new_port_name_i],fnum);
+	    port_name = replace_name(port_name, \
+				       ["[",new_port_name_i,"]"], port_name_index);
+	  end 
+      	end
+      end
+    end
+  end
 end;
 
 components
@@ -390,7 +418,13 @@ for i = 1:n_components
   %message if this is not so
   if (k~=0)&(k~=n_comp_bonds)
     mtt_info(['Component ', comp_name, ' (', comp_type, ') has wrong number of labels'], fnum); 
-    mtt_info(sprintf("\tit has %1.0f labels but should have 0 or %1.0f",k,n_comp_bonds), fnum); 
+    mtt_info(sprintf("\tit has %1.0f labels but should have 0 or \
+    %1.0f",k,n_comp_bonds), fnum);
+    portnames=""; 
+    for kk=1:k 
+      portnames=sprintf("%s %s",portnames, unsorted_port_list(kk,:));
+    end;
+    mtt_info(portnames,fnum);
   end;
   
   %Compute the number of labeled ports

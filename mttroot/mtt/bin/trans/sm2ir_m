@@ -24,10 +24,10 @@ then
   PARAMS='T=[0:0.1:10];u0=ones(nu,1);x0=zeros(nx,1);'
   echo Using default parameter $PARAMS
 else
-  PARAMS=$2
+  PARAMS=$2;
 fi
 
-PARAMS="$PARAMS ;"
+# PARAMS="$PARAMS ;"
 
 $MATRIX << EOF > sm2ir_m.log 2>mtt_error.txt
 

@@ -73,7 +73,7 @@ function [bonds] = \
     endif
     
     ## The (signed) bond corresponding to the ith port label
-    port_bond(i) = near_bond(1) * sign(1.5 - near_bond(2));
+    port_bond(i,1) = near_bond(1) * sign(1.5 - near_bond(2));
   endfor
   port_bond
 

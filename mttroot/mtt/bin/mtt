@@ -15,6 +15,11 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.249  2000/08/01 12:28:02  peterg
+## VERSION 4.4
+##    euler now works
+##    stepfactor applies to both int. algorithms
+##
 ## Revision 1.248  2000/07/20 07:46:07  peterg
 ## Version 4.3
 ##
@@ -842,7 +847,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='4.4'
+version='4.4++'
 
 # MTT recursion level is zero unless explicitly set
 level=0

@@ -15,6 +15,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.287  2000/12/01 16:04:24  peterg
+## More partitioning achieved -- now needs the connections to be properly
+## sorted in cbg2ese_r
+##
 ## Revision 1.286  2000/12/01 14:18:44  peterg
 ## -partition now partially works up to cse.m
 ##   but need to think about indexing, struc files etc for subsystems.
@@ -1794,7 +1798,9 @@ ifneq ($2,ode2odes)
 	echo Creating $1_$2.oct; $MKOCTFILE  $< 
 endif
 
+
 ## .cc files
+.PRECIOUS: %.cc # Don't let mtt delete them
 ifneq ($2,ode2odes)
 %.cc:  %.m
 	mtt_m2cc.sh  $1 $2 cat 

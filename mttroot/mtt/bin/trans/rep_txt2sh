@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1998/04/14 18:17:15  peterg
+## More messages about Makefile
+##
 ## Revision 1.3  1998/04/14 18:01:04  peterg
 ## Now executes a Makefile (if it exists)
 ##
@@ -25,6 +28,7 @@
 ## Initial revision
 ##
 ###############################################################
+
 # Execute a make if Makefile exists
 if [ -f Makefile ]; then
   echo Executing the Makefile
@@ -32,6 +36,9 @@ if [ -f Makefile ]; then
   echo Done executing the Makefile
   echo
 fi
+
+## Get switches (if any)
+mtt_switches=$2
 
 # Inform user
 echo "Creating representations for $1_rep.tex"
@@ -47,7 +54,11 @@ if [ "$mtt_count" = "0" ]; then
 fi
 
 # Execute the commands - quietly and untidily!
-strip_comments< $1_rep.txt | sed 's/mtt /mtt -q -u /' | tee -a JUNK  | sh
+# But use switches
+strip_comments< $1_rep.txt | sed "s/mtt /mtt -q -u $mtt_switches /" | tee -a JUNK  | sh
 
 echo "Done creating representations for $1_rep.tex"
+
+
+
 

@@ -8,6 +8,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1998/11/20 09:46:34  peterg
+% %% Modernised lbl syntax
+% %%
 % %% Revision 1.1  1998/11/20 08:57:19  peterg
 % %% Initial revision
 % %%
@@ -15,11 +18,16 @@
 
 
 % Port aliases
-%ALIAS	Heat_in	Heat_in
-%ALIAS	Hy_in	Hy_in
-%ALIAS	Hy_out	Hy_out
-%ALIAS	Th_in	Th_in
-%ALIAS	Th_out	Th_out
+%ALIAS	in  Thermal_in,Hydraulic_in
+%ALIAS	out Thermal_out,Hydraulic_out
+
+%ALIAS	Th_in  Thermal_in
+%ALIAS	Hy_in  Hydraulic_in
+
+%ALIAS	Th_out  Thermal_out
+%ALIAS	Hy_out  Hydraulic_out
+
+%ALIAS	Heat	Heat_in
 
 % Argument aliases
 %ALIAS	$1	rho
@@ -38,7 +46,7 @@
 
 % Component type SS
 	[Heat_in]	SS		external,external
-	[Hy_in]		SS		external,external
-	[Hy_out]	SS		external,external
-	[Th_in]		SS		external,external
-	[Th_out]	SS		external,external
+	[Hydraulic_in]	SS	external,external
+	[Hydraulic_out]	SS	external,external
+	[Thermal_in]	SS	external,external
+	[Thermal_out]	SS	external,external

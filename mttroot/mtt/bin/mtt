@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.292  2001/02/05 17:27:40  gawthrop
+## Make sure _def.r exists before creating _state.txt
+##
 ## Revision 1.291  2000/12/27 14:50:40  peterg
 ## This is the first CVS version (4.9).
 ## Commented out code now deleted
@@ -1749,9 +1752,9 @@ if [ -f "$2_rep.make" ]; then
       echo $filename exists
    else
      if [ -n "$Verbose" ]; then
-      echo make -s -f $2_rep.make "SYS=$1" "LANG=$3" "ARG=$4" 
+      echo make -s -f $2_rep.make "SYS=$1" "LANG=$3" "ARG=$4" "OPTS=$mtt_switches" 
      fi
-      make -s -f $2_rep.make "SYS=$1" "LANG=$3" "ARG=$4"
+      make -s -f $2_rep.make "SYS=$1" "LANG=$3" "ARG=$4" "OPTS=$mtt_switches"
       if [ -n "$4" ]; then
          echo Copying  $1_$2$__ARGS.$ps
          cp  $1_$2$__ARGS.$ps ..

@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.38  2001/07/23 23:43:15  gawthrop
+## header only version does not need to compute sizes from _def.r
+##
 ## Revision 1.37  2001/07/13 04:54:04  geraint
 ## Branch merge: numerical-algebraic-solution back to main.
 ##
@@ -606,51 +609,51 @@ get_arg_specific_stuff ()
     case ${arg_name} in
 	mtta | mtte)
 	    arg_type="Matrix"
-	    arg_size="(MTTNX,MTTNX)"
+	    arg_init="(MTTNX,MTTNX,0.0)"
 	    ;;
 	mttb)
 	    arg_type="Matrix"
-	    arg_size="(MTTNX,MTTNU)"
+	    arg_init="(MTTNX,MTTNU,0.0)"
 	    ;;
 	mttc)
 	    arg_type="Matrix"
-	    arg_size="(MTTNY,MTTNX)"
+	    arg_init="(MTTNY,MTTNX,0.0)"
 	    ;;
 	mttd)
 	    arg_type="Matrix"
-	    arg_size="(MTTNY,MTTNU)"
+	    arg_init="(MTTNY,MTTNU,0.0)"
 	    ;;
 	mttax | mttdx | mttedx | mttx | mttopen)
 	    arg_type="ColumnVector"
-	    arg_size="(MTTNX)"
+	    arg_init="(MTTNX,0.0)"
 	    ;;
 	mttpar)
 	    arg_type="ColumnVector"
-	    arg_size="(MTTNPAR)"
+	    arg_init="(MTTNPAR,0.0)"
 	    ;;
 	mttsimpar_map)
 	    arg_type="Octave_map"
-	    arg_size="";
+	    arg_init="";
 	    ;;
 	mttu)
 	    arg_type="ColumnVector"
-	    arg_size="(MTTNU)"
+	    arg_init="(MTTNU,0.0)"
 	    ;;
 	mttyz)
 	    arg_type="ColumnVector"
-	    arg_size="(MTTNYZ)"
+	    arg_init="(MTTNYZ,0.0)"
 	    ;;
 	mtty)
 	    arg_type="ColumnVector"
-	    arg_size="(MTTNY)"
+	    arg_init="(MTTNY,0.0)"
 	    ;;
 	mttt)
 	    arg_type="const double"
-	    arg_size=""
+	    arg_init=""
 	    ;;
 	nil)
 	    arg_type="void *"
-	    arg_size="(0x0)"
+	    arg_init="(0x0)"
 	    ;;
 	*)
 	    echo "Argument ${arg} not supported - sorry"; exit 1
@@ -767,7 +770,7 @@ declare_DLD_outputs ()
 	i=`expr ${i} + 1`
 	w=`get_field ${s} ${i}`		# argument name
 	get_arg_specific_stuff ${w}
-	printf "  ${arg_type}\t${w}\t${arg_size};\n"
+	printf "  static ${arg_type}\t${w}\t${arg_init};\n"
     done
 }
 
@@ -870,7 +873,7 @@ if [ ${language} = "oct" ];then
     array2constant
  	case ${arg_type} in
  	    Matrix)
- 		printf "  ${w}\t\t\t= zeros ${arg_size};\n"
+ 		printf "  ${w}\t\t\t= zeros ${arg_init};\n"
  		;;
  	    *)
  		;;

@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.67  2002/04/09 12:04:21  geraint
+## Replaced ios:: with std::ios:: for g++-3.0 compatability.
+##
 ## Revision 1.66  2002/03/26 11:58:58  geraint
 ## Added cputime monitoring.
 ##
@@ -1060,15 +1063,15 @@ DEFUN_DLD (${sys}_ode2odes, args, ,
       error("aborting.");
     }
 #endif // STANDALONE
-  static ColumnVector	dx (MTTNX);
-  static ColumnVector	x (MTTNX);
-  static ColumnVector	u (MTTNU);
-  static ColumnVector	y (MTTNY);
+  static ColumnVector	dx (MTTNX, 0.0);
+  static ColumnVector	x (MTTNX, 0.0);
+  static ColumnVector	u (MTTNU, 0.0);
+  static ColumnVector	y (MTTNY, 0.0);
 
-  static Matrix	AA (MTTNX, MTTNX);
-  static ColumnVector	AAx (MTTNX);
+  static Matrix	AA (MTTNX, MTTNX, 0.0);
+  static ColumnVector	AAx (MTTNX, 0.0);
   
-  static ColumnVector	open_switches (MTTNX);
+  static ColumnVector	open_switches (MTTNX, 0.0);
 
   register double t	= 0.0;
 

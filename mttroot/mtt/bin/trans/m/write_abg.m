@@ -5,6 +5,9 @@ function write_abg(system_name,bonds,connections,n_vector_bonds);
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  1999/10/18 05:16:51  peterg
+## Now vectorises 0 and 1 junctions !!
+##
 ## Revision 1.6  1998/09/02 11:35:20  peterg
 ## Removed port.index field
 ##
@@ -54,18 +57,18 @@ function write_abg(system_name,bonds,connections,n_vector_bonds);
     ## Vectorise junctions?
     n_bonds = n_vector_bonds(i);
     if strcmp(comp_type,"0")||strcmp(comp_type,"1")
-            n_extra = m/n_bonds;
-	    m_extra = n_bonds;
+            n_vector = m/n_bonds;
+	    m_vector = n_bonds;
     else
-      n_extra = 1;
-      m_extra = m;
+      n_vector = 1;
+      m_vector = m;
     endif
       
     if index(name,"[")==0	# Not a port
-      for i_extra = 1:n_extra;
+      for i_vector = 1:n_vector;
 
-	if i_extra>1		# Extras
-	  new_name = sprintf("%sv%i", name,i_extra);
+	if i_vector>1		# Extras
+	  new_name = sprintf("%sv%i", name,i_vector);
 	else
 	  new_name = name;
 	endif
@@ -80,10 +83,26 @@ function write_abg(system_name,bonds,connections,n_vector_bonds);
 	
 	##Connections
 	fprintf(fid,Cformat,system_name,new_name);
-	for j=1:m_extra
-	  k = j+(i_extra-1)*m_extra;
-      	  fprintf(fid,"%i ", c(k) );
-	endfor;
+	## Each vector junction has n*m bonds
+	## n - dimension of vector
+	## m - number of bonds
+	
+	## The first m bonds (in c) correspond to the first vector element
+	if i_vector==1		
+	  for j=1:m_vector
+      	    fprintf(fid,"%i ", c(j) );
+	  endfor
+	  ## The next block of n-1 bonds are the first bonds on vector elements 2,3 ...
+	  ## followed by a  block of n-1 bonds being the second bonds on vector elements 2,3 ...
+	  ## etc
+	else	
+	  k = m_vector+i_vector-1; # index of first bond at level i_vector
+	  for j=1:m_vector
+      	    fprintf(fid,"%i ", c(k) );
+	    k = k + n_vector-1;
+	  endfor
+	endif
+	
 	fprintf(fid,"];\n");
       endfor
     else			# Its a port

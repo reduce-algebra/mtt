@@ -5,6 +5,9 @@ function write_cbg(system_name,system_type,system,Flipped)
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  1998/08/25 20:05:33  peterg
+## Write flipped port info
+##
 ## Revision 1.2  1998/08/25 06:21:19  peterg
 ## Just writes additional information; basic info from the abg structure.
 ##
@@ -54,7 +57,7 @@ function write_cbg(system_name,system_type,system,Flipped)
   fprintf(fid,"      ];\n");
 
   [N,M]=size(Flipped.ports);
-  if N>0
+  if (N>0)&&(M>0)		# Flipped ports exist
     fprintf(fid,"\n# Flipped port information\n");
     for i=1:N
       name=deblank(Flipped.ports(i,:));
@@ -64,7 +67,7 @@ function write_cbg(system_name,system_type,system,Flipped)
   endif;
 
   [N,M]=size(Flipped.subs);
-  if N>0
+  if (N>0)&&(M>0)		# Flipped subs exist
     for i=1:N
       name=deblank(Flipped.subs(i,:));
       k=Flipped.cons(i);

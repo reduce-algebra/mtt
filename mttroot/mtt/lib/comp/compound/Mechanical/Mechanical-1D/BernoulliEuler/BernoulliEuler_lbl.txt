@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1999/09/02 03:07:16  peterg
+% %% r_d --> dr
+% %%
 % %% Revision 1.2  1999/05/17 21:27:05  peterg
 % %% Added damping
 % %%
@@ -17,6 +20,8 @@
 
 
 % Port aliases
+%ALIAS	a_in	theta_in
+%ALIAS	a_out	theta_out
 %ALIAS	in	y_in,theta_in
 %ALIAS	out	y_out,theta_out
 

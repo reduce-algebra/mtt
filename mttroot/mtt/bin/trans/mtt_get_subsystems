@@ -13,12 +13,16 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
   shift
 done
 
-subsystems=`sh $1_type.sh 'echo ' ' ' | awk '{if (NR>1) print $2}'`
+subsystems=`sh $1_sub.sh "echo grep " " $1_abg.m" |\
+            sh | awk -F '.' '{print $3}'`
 
 if [ -n "$strip" ]; then
-      echo $subsystems | sed "s/$1_//" | sed "s/ $1_/ /g"
+      echo $subsystems  
    else
-      echo $subsystems
+      for subsystem in $subsystems; do
+	echo -n $1_$subsystem' '
+    done
+    echo
 fi
 
 

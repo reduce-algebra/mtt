@@ -1,0 +1,23 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: xmtt
+#
+# x-window version of MTT
+
+# Copyright (c) P.J.Gawthrop, 1998
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+# Create the menu structure and pipe into wish
+reps_txt2tk < $MTTPATH/REPS | wish -name xmtt
+
+

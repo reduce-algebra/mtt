@@ -1,0 +1,47 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: reps_txt2tk
+# Creates tk/tcl file for xmtt.
+# Copyright (c) P.J.Gawthrop, 1998
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+###############################################################
+
+name=`mtt --version`
+
+cat<<EOF
+# The top level menu
+menubutton .mtt -text "$name" -menu .mtt.sys
+pack .mtt
+
+menu .mtt.sys
+.mtt.sys add cascade -label "NewSystem" -menu .mtt.sys.rep
+.mtt.sys add cascade -label "sys1" -menu .mtt.sys.rep
+.mtt.sys add cascade -label "sys2" -menu .mtt.sys.rep
+.mtt.sys add separator
+.mtt.sys add command -label "Exit" -command "exit"
+EOF
+
+# Create other menus from the reps.txt file
+cat<<EOF
+menu .mtt.sys.rep
+EOF
+awk '{
+ printf("\n# Menus for representation %s\n", $1)
+ printf(".mtt.sys.rep add  cascade -label \"%s\" -menu .mtt.sys.rep.%s\n", $1, $1);
+ printf("menu .mtt.sys.rep.%s\n", $1);
+ for (i=2;i<=NF;i++) {
+    printf(".mtt.sys.rep.%s add  command -label  \"%s\" ", $1, $i);
+    printf(" -command  \"exec mtt sys %s %s \" \n",  $1, $i); 
+ }
+}' 
+
+

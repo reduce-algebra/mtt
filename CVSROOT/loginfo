@@ -31,3 +31,4 @@ mttroot $CVSROOT/CVSROOT/syncmail %{sVv} mtt-cvs@lists.sourceforge.net,mtt@gawth
 DEFAULT $CVSROOT/CVSROOT/syncmail %{sVv} mtt-cvs@lists.sourceforge.net,mtt@gawthrop.net
 
 
+

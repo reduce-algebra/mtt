@@ -18,7 +18,7 @@ cat <<EOF > ${out}
 exec wish "\$0" "\$@"
 
 ## main window
-wm title . "MTT Viewer: ${sys}"
+wm title . "MTT: ${sys}"
 
 # menu bar
 canvas .menubar
@@ -235,11 +235,17 @@ EOF
 ## create states and outputs lists
 gawk '
 ($1 == "state") {
-    printf "lappend xl %s\n", $4
+    name=sys"__";
+    label=$4;
+    sub (name, "", label);
+    printf "lappend xl %s\n", label
 }
 ($1 == "output") {
-    printf "lappend yl %s\n", $4
-}' ${struc} >> ${out}
+    name=sys"__";
+    label=$4;
+    sub (name, "", label);
+    printf "lappend yl %s\n", label
+}' sys=${sys} ${struc} >> ${out}
 
 cat <<EOF >> ${out}
 lappend xl Time
@@ -261,9 +267,12 @@ proc "get_state_column" "title" {
 EOF
 
 	gawk '($1 == "state") {
-	    printf "\t\t%s\t{ return %d }\n", $4, $2+2+Ny;
+	    name=sys"__";
+	    label=$4;
+	    sub (name, "", label);
+	    printf "\t\t%s\t{ return %d }\n", label, $2+2+Ny;
 	}
-	' Ny=${Ny} ${struc} >> ${out}
+	' Ny=${Ny} sys=${sys} ${struc} >> ${out}
 	
 cat <<EOF >> ${out}
     }
@@ -274,9 +283,12 @@ proc "get_output_column" "title" {
 EOF
 
 	gawk '($1 == "output") {
-	    printf "\t\t%s\t{ return %d }\n", $4, $2+1;
+	    name=sys"__";
+	    label=$4;
+	    sub (name, "", label);
+	    printf "\t\t%s\t{ return %d }\n", label, $2+1;
 	}    
-	' Title=\$title Ny=${Ny} ${struc} >> ${out}
+	' Ny=${Ny} sys=${sys} ${struc} >> ${out}
 
 cat <<EOF >> ${out}
     }

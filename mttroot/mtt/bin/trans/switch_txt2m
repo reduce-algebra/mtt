@@ -16,6 +16,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.7  1999/04/02 06:30:37  peterg
+## New _switchopen
+## Removed switcha
+##
 ## Revision 1.6  1998/10/01 18:20:50  peterg
 ## Split up the three if conditions on the switch and state value into
 ## three separate ifs. This is because p2c seems to generate incorrect
@@ -27,31 +31,31 @@
 ###############################################################
 
 
-echo Creating  $1_switch.m
 # Find system constants
 Nx=`grep "MTTNx " <$1_def.r | awk '{print $3}' | sed 's/;//'`
 
 #Write some file headers
 lang_header $1 switch m 'mttx' '[mttx]' > $1_switch.m
 
+#echo Creating  $1_switch.m
 # Set states to zero
-awk '{
-  if ($1=="#"){
-    printf("#== Switches set element of state vector to zero ==#\n")
-  }
-  else{
-  printf("\n#== Switch: %s ==#\n",$1)
-  printf("if (%s==0.0) \n", $1);
-  printf("  mttx(%s)=0.0;\n", $2);
-  printf("end;\n");
-  printf("if (%s<0.0)\n",$1);
-  printf("  if (mttx(%s)<=0.0)\n",$2);
-  printf("    mttx(%s)=0.0;\n", $2);
-  printf("  end;\n");
-  printf("end;\n");
+# awk '{
+#   if ($1=="#"){
+#     printf("#== Switches set element of state vector to zero ==#\n")
+#   }
+#   else{
+#   printf("\n#== Switch: %s ==#\n",$1)
+#   printf("if (%s==0.0) \n", $1);
+#   printf("  mttx(%s)=0.0;\n", $2);
+#   printf("end;\n");
+#   printf("if (%s<0.0)\n",$1);
+#   printf("  if (mttx(%s)<=0.0)\n",$2);
+#   printf("    mttx(%s)=0.0;\n", $2);
+#   printf("  end;\n");
+#   printf("end;\n");
 
-  }
-}' Nx=$Nx < $1_switch.txt >> $1_switch.m
+#   }
+# }' Nx=$Nx < $1_switch.txt >> $1_switch.m
 
 ## Set index version
 echo Creating  $1_switchopen.m
@@ -72,7 +76,7 @@ awk '{
   printf("  open(%s) = 1;\n", $2);
   printf("end;\n");
   printf("if (%s<0.0)\n",$1);
-  printf("  if (mttx(%s)<=0.0)\n",$2);
+  printf("  if (mttx(%s)<0.0)\n",$2);
   printf("    open(%s) = 1;\n", $2);
   printf("  end;\n");
   printf("end;\n");

@@ -16,6 +16,9 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.27  2000/12/05 12:09:56  peterg
+## Changed function name to name()
+##
 ## Revision 1.26  2000/12/05 09:04:54  peterg
 ## *** empty log message ***
 ##
@@ -321,6 +324,28 @@ mv mtt_aliased.txt $1_aliased.txt
 # Sort the struc file
 mv $structurefile junk
 sort -k 1,1 -k 2,2n junk >$structurefile
+
+# Relabel states with multiple ports
+mv $structurefile junk
+awk '
+BEGIN{
+   state_index=1;  
+   oldname="";
+}
+{
+   name=$4;
+   newname=name;
+   if ($1=="state") {
+     if (name==oldname)
+       newname = sprintf("%s_%i",name, ++state_index);
+     else
+       state_index=1;
+   }
+   $4 = newname
+   for (i=1;i<NF;i++) printf("%s\t",$i);
+   printf("%s\n", $NF)
+   oldname = name;
+'} < junk > $structurefile
 
 # Now invoke the standard error handling.
 mtt_error mtt_error.txt

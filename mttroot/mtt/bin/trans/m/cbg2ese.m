@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.48  2003/03/13 15:10:26  gawthrop
+  ## ## Removed redundant final column
+  ## ##
   ## ## Revision 1.47  2003/02/28 09:12:17  gawthrop
   ## ## Two more columns in _stuc.txt: causality and subsystem name
   ## ##
@@ -185,6 +188,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   pc = "%";
   sub_delim = "__";		# Subsystem delimiter
   
+
   unit_error = "Component %s connects inconsistent ports with units %s and %s"  
   unit_info = "Component %s connects ports with units %s and %s"  
 

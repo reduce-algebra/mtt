@@ -20,6 +20,9 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.49  2001/07/26 05:02:53  geraint
+  ## ## Now writes cbg.fig when under-causal (again).
+  ## ##
   ## ## Revision 1.48  2001/07/23 23:20:27  gawthrop
   ## ## Now only writes to type.sh and cbg.m when causality is completed.
   ## ##
@@ -197,9 +200,12 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
   ## ##
   ## ###############################################################
 
+
   mtt_info(sprintf("Completing causality for subsystem %s", system_name), infofile);
 
   pc = '%';
+  sub_delim = "__";		# Subsystem delimiter
+
   if nargin<1
     system_name = 'no_name';
   end;
@@ -228,7 +234,7 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
     full_name = system_name;
     system_type = system_name;
   else
-    full_name = [full_name, "_", system_name];
+    full_name = [full_name, sub_delim, system_name];
   end;
   
   fun_name = [system_type, "_abg"];

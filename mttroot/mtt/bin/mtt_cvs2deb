@@ -2,41 +2,114 @@
 
 # Script to create a .deb package from the current cvs sources.
 
+usage ()
+{
+    cat <<EOF
+
+usage: $0 [options]
+
+options:
+	-d /path/to/mttroot
+		Build package from local directory /path/to/mttroot instead of sourceforge CVS.
+
+	-l changelog text
+		Write changelog text to changelog file
+		Note: this must be the last option given.
+
+	-v #.#
+		Use version #.# instead of the date to label the .deb
+
+EOF
+}
+
+error ()
+{
+    echo $0: error: ${1:-"unknown error"} - aborting.
+    exit 1
+}
+
 # should be root for some of these commands
 if [ ! `whoami` = "root" ]; then
     echo root password required
     exec su -p -c "$0 $*"
-    exit 1	# if here, su failed
+    error "root authorisation failed"
 fi
 
-if [ $# -gt 0 ]; then
-    version=$1
-    text="New release."
-else 
-    current_version=`mtt --version | gawk '{print $3}'`
-    date=`date --iso-8601 | sed 's/\-/./g'`
-    version="$current_version.$date"
-    text="Snapshot of sources from CVS."
-fi
+# default switches
+default_sources="sourceforge"
+default_logtext="snapshot from ${default_sources}."
+default_version=`date --iso-8601 | sed 's/\-/./g'`
+
+sources=${default_sources}
+logtext=${default_logtext}
+version=${default_version}
+
+# look for command line arguments
+while [ -n "`echo $1 | grep '^-'`" ]; do
+    case $1 in
+	-d) # package directory instead of cvs sources
+	    # should be the path to the mttroot directory
+	    sources=$2
+	    if [ ! "`basename ${sources}`" = "mttroot" ]; then
+		error "directory ${sources} is not location of mttroot"
+	    fi
+	    if [ "${logtext}" = "${default_logtext}" ]; then
+		logtext="snapshot from local sources (${sources})"
+	    fi
+	    echo "Using source directory: ${sources}"
+	    shift ;;	
+	-h)
+	    usage
+	    exit 0 ;;	
+	-l) # specify changelog text
+	    shift
+	    logtext="$*"
+	    echo "Using changelog text: ${logtext}"
+	    shift ;;
+	-v) # specify version
+	    version=$2
+	    echo "Using version number: ${version}"
+	    shift ;;
+	*)
+	    usage
+	    error "unknown option $1" ;;	    
+    esac
+    shift
+done
 
 topdir=`pwd`
+
+# create working directory
 tmpdir=`mktemp -d mtt_cvs2deb.tmp.XXXXXXXXXX`
-if [ ! -d $tmpdir ]; then
-    echo "error: cannot create temporary directory - aborting!"
-    exit 1
+if [ ! -d ${tmpdir} ]; then
+    error "cannot create temporary directory"
 fi
-cd $tmpdir
-cvs -z3 -d:pserver:anonymous@cvs.mtt.sf.net:/cvsroot/mtt co mttroot
+
+# copy sources to working directory
+cd ${tmpdir}
+if [ "${sources}" = "${default_sources}" ]; then
+    cvs -z3 -d:pserver:anonymous@cvs.mtt.sf.net:/cvsroot/mtt co mttroot
+else
+    cp -a ${sources} .
+fi
+
+# generate tarball of sources
 cd mttroot
 tar -czf mtt-${version}.tar.gz mtt/
 cd mtt
-echo "A \"cannot create diff\" error in the next few lines is probably harmless"
+
+# create .deb
+echo "$0: information: a \"Could not find diffs\" error in the next few lines is probably harmless"
 uupdate -u mtt-${version}.tar.gz
 cd ../mtt-${version}/debian
-dch -v ${version} ${text}
+dch -v ${version} ${logtext}
 cd ..
 dpkg-buildpackage -rfakeroot
 cd ..
-cp mtt*.deb $topdir/
-cd $topdir
-rm -r $tmpdir
+
+# clean up
+cp mtt*.deb ${topdir}/
+cd ${topdir}
+rm -r ${tmpdir}
+
+exit 0

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.277  2000/10/17 09:54:07  peterg
+## logic rep sorted out
+##
 ## Revision 1.276  2000/10/15 09:30:31  peterg
 ## *** empty log message ***
 ##
@@ -1948,6 +1951,7 @@ $1_simpar.m: $1_simpar.txt
 #SUMMARY numpar	numerical parameter declaration -- default (txt) 
 $1_numpar.txt : FORCE
 	mtt -q $1 sympar txt
+	mtt -q $1 def r
 ifeq ($target,$1_numpar.txt)
 	mtt_update $1 numpar update
 else
@@ -2699,10 +2703,12 @@ $1_odes.sdat: $1_odes.dat $1_struc.txt
 #SUMMARY odesso	ode numerical steady-states - outputs (view)
 
 #Numerical steady states
-$1_odess.m: $1_ode.m $1_numpar.m  $1_def.m $1_input.m $1_simpar.m
-	ode2odess_m $1 
-$1_odesso.m: $1_odess.m
-	touch $1_odesso.m
+$1_odess.dat2: $1_ode.m $1_odeo.m $1_numpar.m  $1_input.m $1_simpar.m
+	ode2odess_m2dat2 $1 
+#$1_odess.m: $1_ode.m $1_odeo.m $1_numpar.m  $1_input.m $1_simpar.m
+#	ode2odess_m $1 
+#$1_odesso.m: $1_odess.m
+#	touch $1_odesso.m
 
 
 #SUMMARY fr	frequency response (m)
@@ -2755,10 +2761,16 @@ $1_$2.tex: $1_$2.txt
 #Conversion of dat2 files  to dat format
 $1_odeso.dat: $1_odes.dat2 $1_def.r
 	echo Creating $1_odeso.dat
-	dat22dat $1 odeso
+	dat22dat $1 ode so
 $1_odes.dat: $1_odes.dat2 $1_def.r
 	echo Creating $1_odes.dat
-	dat22dat $1 odes
+	dat22dat $1 ode s
+$1_odesso.dat: $1_odess.dat2 $1_def.r
+	echo Creating $1_odesso.dat
+	dat22dat $1 odes so
+$1_odess.dat: $1_odess.dat2 $1_def.r
+	echo Creating $1_odess.dat
+	dat22dat $1 odes s
 
 #Generic conversion of data files from dat to (gplot) gdat format 
 $1_$2.gdat: $1_$2.dat $1_struc.txt  $1_args.m
@@ -2780,6 +2792,9 @@ ifeq ($REPTYPE,bg)
 $1_$2.ps : $1_$2.fig
 	echo Creating $1_$2.ps
 	multi_command2 'fig2dev -Leps' $1 $2.fig $2.ps | sh
+$1_$2.pdf : $1_$2.fig
+	echo Creating $1_$2.pdf
+	multi_command2 'fig2dev -Lpdf' $1 $2.fig $2.pdf | sh
 endif
 
 
@@ -2788,18 +2803,22 @@ ifeq ($REPTYPE,data)
 #  + another version with Args added to the name if its appropriate
 ifeq ($PLOTTYPE,multiple)
 ifneq ($_ARGS,)
-$1_$2.ps: $1_$2.gdat
-	gdat2ps $1_$2 '$ARGS'
+$1_$2.fig: $1_$2.gdat
+	gdat2fig $1_$2 '$ARGS'
 	echo Creating $1_$2$__ARGS.ps
 	cp $1_$2.ps $1_$2$__ARGS.ps
 else
-$1_$2.ps: $1_$2.gdat
-	gdat2ps $1_$2
+$1_$2.fig: $1_$2.gdat
+	gdat2fig $1_$2
 endif
 else
 $1_$2.ps: $1_$2.gdat
 	gdat2ps $1_$2  '$ARGS'
 endif
+$1_$2.ps: $1_$2.fig
+	fig2dev -Leps $1_$2.fig> $1_$2.ps
+$1_$2.pdf: $1_$2.fig
+	fig2dev -Lpdf $1_$2.fig> $1_$2.pdf
 
 endif
 
@@ -2857,9 +2876,9 @@ $1_$2.tview: $1_$2.dvi
 	$DVIVIEW $1_$2.dvi&
 
 #Generate pdf
-$1_$2.pdf: $1_$2.ps
-	echo Creating $1_$2.pdf
-	ps2pdf $1_$2.ps $1_$2.pdf
+#$1_$2.pdf: $1_$2.ps
+#	echo Creating $1_$2.pdf
+#	ps2pdf $1_$2.ps $1_$2.pdf
 
 #Report generation
 $1_rep.make: $1_rep.txt

@@ -1,0 +1,17 @@
+Document: mtt
+Title: Debian mtt Manual
+Author: Peter Gawthrop, Geraint Bevan
+Abstract: This manual describes Model Transformation Tools (MTT)
+Section: Apps/Math
+
+Format: postscript
+Files: /usr/share/doc/mtt/mtt.ps.gz
+
+Format: PDF
+Files: /usr/share/doc/mtt/mtt.pdf.gz
+
+Format: HTML
+Index: /usr/share/doc/mtt/index.html
+Files: /usr/share/doc/mtt/*.html
+
+  

@@ -30,11 +30,8 @@ function eqn =  equation(comp_type, name,cr,args,outbond,outcause,outport, ...
   ## ###############################################################
 
 
-  inbonds
-  incauses
-
   ## Find the number of inports
-  nports = length(inbonds)
+  nports = length(inbonds);
 
   ## Check some arguments
   if length(incauses) ~= nports

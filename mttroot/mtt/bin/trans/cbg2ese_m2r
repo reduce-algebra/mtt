@@ -16,6 +16,9 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.23  2000/11/30 15:07:28  peterg
+## Sorted out mtt_getsize
+##
 ## Revision 1.22  2000/11/12 17:18:30  peterg
 ## Changed ' to "
 ##
@@ -206,7 +209,7 @@ EOF
 #    echo Ny $Ny Nu $Nu Nx $Nx
 
 
-    echo MATRIX "MTT_"$subsystem"_uc("$Nu",1);"  >> $1_def.r
+#    echo MATRIX "MTT_"$subsystem"_uc("$Nu",1);"  >> $1_def.r
 
     echo >> $1_ese.r
     echo %Subsystem input connections for $subsystem  >> $1_ese.r

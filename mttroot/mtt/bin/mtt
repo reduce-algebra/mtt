@@ -14,6 +14,11 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.91  1997/09/11 08:21:08  peterg
+## copy utility split into two:
+## copy: copies examples (copies the entire directory)
+## compcopy: (just used internally) copies components.
+##
 ## Revision 1.90  1997/08/30 19:35:39  peterg
 ## Added date to mtt line
 ##
@@ -448,7 +453,7 @@ if [ "$1" = "clean" ] && [ "$2" = "" ]; then
   rm -f *_sm*.*
   rm -f *_struc.* *_sympar.txt *_sympar.c *_sympar.h *_sympar.m
   rm -f *_odes.c *_odes.dat *_odes.gdat *_odes.m *_odes.ps
-  rm -f *_odeso.dat *_odeso.gdat *_odeso.m *_odeso.ps
+  rm -f *_odeso.dat *_odeso.gdat *_odeso.sdat *_odeso.m *_odeso.ps
   rm -f *_*.doc *_*.idx *_*.ind *_*.ilg *_*.dvi *_*.aux *_*.lof *_*.toc
   rm -f *_rep.tex
   rm -f  *_unique_raw_list *_raw_list
@@ -471,7 +476,7 @@ if [ "$2" = "clean" ] && [ "$3" = "" ]; then
   rm -f  $1_numpar.m $1_numpar.c $1_input.m $1_input.c $1_switch.c $1_switch.txt
   rm -f $1_sm*.*
   rm -f $1_struc.* $1_sympar.txt $1_sympar.c $1_sympar.h $1_sympar.m
-  rm -f $1_odes.c $1_odes.dat $1_odes.gdat $1_odes.m $1_odes.ps
+  rm -f $1_odes.c $1_odes.dat $1_odes.gdat $1_odes.sdat $1_odes.m $1_odes.ps
   rm -f $1_odeso.dat $1_odeso.gdat $1_odeso.m $1_odeso.ps
   rm -f $1_*.doc $1_*.idx $1_*.ind $1_*.ilg $1_*.dvi $1_*.aux $1_*.lof $1_*.toc
   rm -f $1_rep.tex
@@ -1096,6 +1101,7 @@ $1_tf.tex: $1_def.r $1_tf.r $1_sympar.r $1_simp.r
 
 #SUMMARY odeso	ode solution - output (m)
 #SUMMARY odeso	ode solution - output (dat)
+#SUMMARY odeso	ode solution - output for spreadsheet(sdat)
 #SUMMARY odeso	ode solution - output (ps)
 #SUMMARY odeso	ode solution - output (view)
 
@@ -1155,6 +1161,12 @@ $1_daes.m: $1_dae.m $1_numpar.m $1_args.m $1_def.m $1_input.m
 	dae2daes_m $1 '$ARGS'
 $1_daeso.m: $1_daes.m
 	touch $1_daeso.m
+
+
+#Conversion of data files from dat to sdat format
+$1_odeso.sdat: $1_odeso.dat $1_struc.txt
+	odeso_dat2sdat $1
+
 
 #SUMMARY odess	ode numerical steady-states - states (m)
 #SUMMARY odess	ode numerical steady-states - states (dat)

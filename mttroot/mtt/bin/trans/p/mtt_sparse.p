@@ -1,13 +1,16 @@
-PROCEDURE mtt_sparse(	 b   : glnarray;
-			 n   : integer;
-		     VAR x   : glnarray;
-		     VAR rsq : real);
+PROCEDURE mtt_sparse(	 b	 : glnarray;
+			 n,iters : INTEGER;
+		     VAR x	 : glnarray);
+
 {*
 ###############################################################
 ## Version control history
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1998/08/15 09:33:25  peterg
+## Deleted the commented out stuff
+##
 ## Revision 1.3  1998/08/15 09:30:05  peterg
 ## Commented out the cariabel iteration stuff
 ##
@@ -32,16 +35,13 @@ PROCEDURE asub(x: glnarray; VAR y: glnarray; n: integer);
 and
 PROCEDURE atsub(x: glnarray; VAR z: glnarray; n: integer);
 which calculate A*x and (A transpose)*x *)
-LABEL 1,99;
-CONST
-   iters = 500;
    
 VAR
    j,iter,irst: integer;
    rp,gg,gam,eps2,dgg,bsq,anum,aden: real;
    g,h,xi,xj: glnarray;
    
-BEGIN
+BEGIN {mtt_sparse}
    mtt_asub(x,xi,n);
    rp := 0.0;
    bsq := 0.0;
@@ -83,4 +83,4 @@ BEGIN
          h[j] := g[j]+gam*h[j]
       END
    END;
-END;
+END {mtt_sparse};

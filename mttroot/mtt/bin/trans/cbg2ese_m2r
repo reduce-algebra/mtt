@@ -16,6 +16,9 @@
 ## $Id$
 ##
 ## $Log$
+## Revision 1.19  2000/10/12 19:25:39  peterg
+## Now generateds the _aliased.txt file
+##
 ## Revision 1.18  2000/09/15 08:09:42  peterg
 ## Removed another debugging line
 ##
@@ -210,6 +213,7 @@ echo "END;" >> $1_ese.r
 echo "END;" >> $1_def.r
 
 # Create the _alised file
+touch $1_aliased.txt
 echo Creating $1_aliased.txt
 mv mtt_aliased.txt $1_aliased.txt
 

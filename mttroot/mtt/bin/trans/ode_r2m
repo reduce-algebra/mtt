@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1996/08/24 14:09:41  peter
+## Global parameter passing.
+##
 ## Revision 1.1  1996/08/18 12:03:49  peter
 ## Initial revision
 ##
@@ -95,7 +98,7 @@ common();
 OFF echo;
 ON fort$
 cardno!* := 1$
-fortwidth!* := 100$
+fortwidth!* := 500$
 OFF period$
 
 MTTdx := MTTdx;
@@ -117,7 +120,7 @@ common();
 OFF echo;
 ON fort$
 cardno!* := 1$
-fortwidth!* := 100$
+fortwidth!* := 500$
 OFF period$
 
 MTTy := MTTy;

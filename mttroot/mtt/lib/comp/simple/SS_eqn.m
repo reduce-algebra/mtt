@@ -19,6 +19,9 @@ function structure =  SS_eqn(name,bond_number,bonds,direction,cr,args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.10  1997/03/22  17:13:03  peterg
+% %% Fixed bug for port nos. > 1 digit!
+% %%
 % %% Revision 1.9  1997/03/22  15:50:59  peterg
 % %% Changed %1.0f to %d format.
 % %%
@@ -81,7 +84,15 @@ zero_outputs = structure(5);
 if strcmp(effort_attribute, 'MTT_port') % Its a numbered port
   % Convert string to number
   % port_number = abs(flow_attribute)-abs('0');
-  port_number = str2num(flow_attribute);
+  %port_number = str2num(flow_attribute);
+
+  %Compute port number
+  str_port_number = flow_attribute;
+  N_string = length(str_port_number);
+  port_number=0;
+  for i=1:N_string
+    port_number = 10*port_number + abs(str_port_number(i))-abs('0');
+  end;
 
   % Effort 
   if bonds(1,1)==-1 % Source

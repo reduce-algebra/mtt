@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.369  2003/02/06 20:28:40  geraint
+## Added -ibg switch to aid testing during development of ibg2abg.m
+##
 ## Revision 1.368  2002/12/12 17:18:41  geraint
 ## Fixed [ 647664 ] Namespace clash: LANG
 ## Prepended MTT_ to SYS, OPTS and LANG environment variables.
@@ -1507,10 +1510,10 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
                 mtt_switches="$mtt_switches $1";
                 using_oct=yes;
                 ;;
-	-optl )
+	-opt | -optl )
 		mtt_switches="$mtt_switches $1";
                 optimise='-optimise_local';;
-	-opt | -optg )
+	-optg )
 		mtt_switches="$mtt_switches $1";
                 optimise='-optimise_global';;
         -ntmpvar )
@@ -1610,9 +1613,9 @@ if [ -z "$1" ]; then
     echo '         -ae <reduce|hybrd|dassl|hooke>   Solve algebraic equations with specified solver'
     echo '         -o ode is same as dae'
     echo '         -oct use oct files in place of m files where appropriate'
-    echo '         -opt optimise code generation (equivalent to -optg)'
+    echo '         -opt optimise code generation (equivalent to -optl)'
     echo '         -optl optimise code generation (local  : line-by-line)'
-    echo '         -optg optimise code generation (global : full vector)'
+    echo '         -optg optimise code generation (global : full vector) (EXPERIMENTAL)'
     echo "         -ntmpvar <N>  declare N temporary variables (default=$num_tmp_var)"
     echo '         -p  print environment variables'
     echo '         -partition partition hierachical system'

@@ -1,6 +1,6 @@
-function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,p_o)
+function [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,p_o)
 
-  ## usage:  [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,p_o);
+  ## usage: [t,y,u,t_e,y_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,p_o)
   ##
   ## 
   ## Linear closed-loop PPP of lego system (and simulation)
@@ -44,7 +44,7 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   endif
   
   if nargin<6
-    p_c.N = 25;
+    p_c.N = 50;
   endif
 
   if nargin<7
@@ -56,7 +56,7 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   endif
   
   if !struct_contains(p_c,"T")
-    p_c.T = 10.0;			# Last time point.
+    p_c.T = 2.5;			# Last time point.
   endif
 
   if !struct_contains(p_c,"augment")
@@ -99,6 +99,7 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   endif
   
 
+
   ## Check w.
   [n_w,m_w] = size(w);
   if ( (n_w!=n_y) || (m_w!=1) )
@@ -108,7 +109,7 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   ## Initialise
   x_est = p_o.x_0;
 
-  ## Initilise simulation state
+  ## Initialise simulation state
   x = x_0;
 
   if ControlType==0		# Step input
@@ -138,7 +139,6 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
     if (p_c.n_U!=M_u)
       error("A_u must be square");
     endif
-    
     U = K_w*w;			# Initial control U
 
     ## Checks
@@ -194,25 +194,21 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
   e_e = [];
   tick = time;
   i=0;
-  for j=1:20
+  for j=1:10
     for k=1:I
-      i++;
       tim=time;			# Timing
-      if Simulate			# Exact simulation 
+      i++
+      if Simulate		# Exact simulation 
 	t_sim = [1:p_c.N]*dt;	# Simulation time points
 	[yi,ui,xsi] = ppp_ystar(A,B,C,D,x,p_c.A_u,U,t_sim); # Simulate
 	x = xsi(:,p_c.N);	# Current state (for next time)
-	y_i = yi(:,p_c.N);	# Current output
 	ti  = [(i-1)*p_c.N:i*p_c.N-1]*dt; 
+	y_i = yi(1);	# Current output
+	t_i = ti(1);
       else			# The real thing
-				#       to_rt(U');		# Send U
-				#       data = from_rt(p_c.N);	# Receive data
-				#       [yi,ui,ti] = convert_data(data); # And convert from integer format
 	[t_i,y_i,u_i] = ppp_put_get(U); # Generic interface to real-time
-				#      y_i = yi(:,p_c.N);	# Current output
       endif
-      sample_time = (time-tim)/p_c.N;
-      tim = time;
+
       ## Observer
       if strcmp(p_o.method, "intermittent")
 	[x_est y_est e_est] = ppp_int_obs \
@@ -238,28 +234,34 @@ function [y,u,t,y_e,t_e,e_e] = ppp_lin_run (Name,Simulate,ControlType,w,x_0,p_c,
 	u = [u;ui'];
       else
 	t = [t;t_i];
-	y = [y;y_i];
-	u = [u;u_i];
+	y = [y;y_i'];
+	u = [u;u_i'];
       endif
       
 
       if strcmp(p_o.method, "intermittent")
 	y_e = [y_e; y_est'];
-	e_e = [e_e; e_est];
-	t_e = [t_e; (i*p_c.N)*dt];
+	e_e = [e_e; e_est'];
+	t_e = [t_e; t_i];
       endif
 
-      overrun = time-tim;
+      delta_comp = time-tim;
+      usleep(floor(1e6*(p_c.delta_ol-delta_comp-0.01)));
     endfor			# Main loop
-    w = -w
+    w = -w;
   endfor 			# Outer loop
 
+  if !Simulate
+    ppp_put_get(0*U); 		# Reset to zero
+  endif
+
+  
   if strcmp(p_o.method, "continuous")
     t_e = t;
   endif
   
   
-  sample_interval = (time-tick)/(I*p_c.N)
+  sample_interval = (time-tick)/i
 
   ## Put data on file (so can use for identification)
   filename = sprintf("%s_ident_data.dat",Name);

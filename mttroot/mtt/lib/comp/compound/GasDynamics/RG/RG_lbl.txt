@@ -1,0 +1,37 @@
+%SUMMARY RG: R component for compressible gas dynamics
+%DESCRIPTION Port [Thermal_in]: Temperature/Enthalpy pseudo bond
+%DESCRIPTION Port [Thermal_out]: Temperature/Enthalpy pseudo bond
+%DESCRIPTION Port [Mass_in]: Pressure/mass-flow pseudo bond
+%DESCRIPTION Port [Mass_out]: Pressure/mass-flow pseudo bond
+%DESCRIPTION 
+%DESCRIPTION Parameter 1: gamma (c_p/c_v)
+%DESCRIPTION Parameter 2: R   (universal gas constant)
+%DESCRIPTION Parameter 3: A   (nozzle cross-section)
+%DESCRIPTION Based on Karnopp, Margolis and Rosenberg: Section 12.4.
+
+
+
+%% Label file for system RG (RG_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type RG
+	rg		IsentropicNozzle	$1;$2;$3
+
+% Component type SS
+	[Mass_in]		external	external
+	[Mass_out]		external	external
+	[Thermal_in]		external	external
+	[Thermal_out]		external	external

@@ -19,6 +19,9 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.32  1998/07/28 19:06:11  peterg
+% %% *** empty log message ***
+% %%
 % %% Revision 1.31  1998/07/28 13:15:10  peterg
 % %% Vector SS ports included.
 % %%
@@ -390,8 +393,10 @@ done,ci_index
   
 end;
 
-status(1:n_ports) = zeros(n_ports,1); # Port status not relevant
-
+if n_ports>0
+  status(1:n_ports) = zeros(n_ports,1); # Port status not relevant
+endif;
+	  
 % Print final causality
 final_done =  (sum(status==zeros(n_components,1))/n_components)*100;
 

@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.36  1999/11/19 04:00:26  peterg
+## Changed a comment to be more accurate.
+##
 ## Revision 1.35  1999/07/25 22:19:45  peterg
 ## Fixed bug with false objects when compound objects present.
 ## -- Reset object to 0 after processing text.
@@ -418,17 +421,33 @@ function process_bond() {
 
 #Save up bond coords - no arrow and more segments than a stroke has.
 # Allows for bent bonds - but just write out the relevant coordinates
-      if ( (!arrow)&& (NF>2*stroke_coords+1) ) {
-	i_bond++;
-        a_end = arrow_end($2,$3,$4,$5,$(NF-3),$(NF-2),$(NF-1),$NF);
-        if (a_end==1) {
-	bonds[i_bond] = sprintf("%s %s %s %s %s %s", \
-				$2, $3, $4, $5, $(NF-1), $(NF));
-}
-else {
-	bonds[i_bond] = sprintf("%s %s %s %s %s %s", \
-				$2, $3, $(NF-3),$(NF-2),$(NF-1),$NF);
-}
+	if ( (!arrow)&& (NF>2*stroke_coords+1) ) {
+	    i_bond++;
+	    a_end = arrow_end($2,$3,$4,$5,$(NF-3),$(NF-2),$(NF-1),$NF);
+	    if (a_end==1) {
+		arrow_end_vector_x = $6-$4; 
+		arrow_end_vector_y = $7-$5; 
+		other_end_vector_x = $(NF-1)-$(NF-3);
+		other_end_vector_y = $(NF)-$(NF-2);
+		bonds[i_bond] = sprintf("%s %s %s %s %s %s %s %s %s %s", \
+					$2, $3, $4, $5, $(NF-1), $(NF),
+					arrow_end_vector_x,
+					arrow_end_vector_y,
+					other_end_vector_x,
+					other_end_vector_y);
+	    }
+	    else {
+		other_end_vector_x = $4-$2; 
+		other_end_vector_y = $5-$3; 
+		arrow_end_vector_x = $(NF-3)-$(NF-5);
+		arrow_end_vector_y = $(NF-2)-$(NF-4);
+		bonds[i_bond] = sprintf("%s %s %s %s %s %s %s %s %s %s", \
+					$2, $3, $(NF-3),$(NF-2),$(NF-1),$NF,
+					arrow_end_vector_x,
+					arrow_end_vector_y,
+					other_end_vector_x,
+					other_end_vector_y);
+	    }
       }
       
 #Save up arrow coords 

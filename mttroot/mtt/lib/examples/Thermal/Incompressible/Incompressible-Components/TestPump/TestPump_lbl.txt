@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1998/11/20 08:06:28  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Each line should be of one of the following forms:
@@ -14,7 +17,7 @@
 %	Component-name	CR_name	arg1,arg2,..argn
 %	blank
 
-%ALIAS Pipe IncompressibleFlow/Pipe
+%ALIAS Pipe IncompressibleFlow/Pump
 
 
 % Component type lPump

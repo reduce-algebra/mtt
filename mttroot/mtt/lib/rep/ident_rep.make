@@ -31,11 +31,15 @@ sims = ${MTT_SYS}_sim.m s${MTT_SYS}_ssim.m
 ## m-files needed for ident
 ident_m = ${MTT_SYS}_ident.m ${MTT_SYS}_ident_numpar.m 
 
+## The input data
+ident_data = ${MTT_SYS}_ident_data.dat
+
 ## Targets for the ident simulation
 ident_reps = ${ident_m} ${sims} ${model_reps} ${sensitivity_reps}
 
 ## ps output files etc
-psfiles = ${MTT_SYS}_ident.ps ${MTT_SYS}_ident.comparison.ps
+psfile = ${MTT_SYS}_ident.ps
+psfiles = ${MTT_SYS}_ident.ps ${MTT_SYS}_ident.comparison.ps ${MTT_SYS}_ident_pars.ps
 figfiles = ${psfiles:%.ps=%.fig}
 gdatfiles = ${psfiles:%.ps=%.gdat}
 datfiles = ${psfiles:%.ps=%.dat2}
@@ -56,15 +60,19 @@ ${MTT_SYS}_ident.view: ${psfiles}
 
 ${psfiles}: ${figfiles}
 	ident_rep.sh ${MTT_SYS} ps
+	touch ${psfiles}
 
 ${figfiles}: ${gdatfiles}
 	ident_rep.sh ${MTT_SYS} fig
+	touch ${figfiles}
 
 ${gdatfiles}: ${datfiles}
 	ident_rep.sh ${MTT_SYS} gdat
+	touch ${gdatfiles}
 
-${datfiles} ${latexfiles}: ${ident_reps}
+${datfiles} ${latexfiles}: ${ident_reps} ${ident_data} 
 	ident_rep.sh ${MTT_SYS} dat2
+	touch ${datfiles}
 
 ${MTT_SYS}_ident.m: 
 	ident_rep.sh ${MTT_SYS} m

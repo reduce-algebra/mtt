@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1998/07/17 19:47:35  peterg
+## Minor changes
+##
 ## Revision 1.5  1998/07/17 07:50:33  peterg
 ## Now handles library name
 ## Returns a status
@@ -50,6 +53,8 @@ if [ -n "$2" ]; then
     name=`basename $2`
     longname=$2
     Name="-name $name"
+else
+    name='*'
 fi
 
 # If this is non-empty just print the path
@@ -65,18 +70,32 @@ done |\
 sort -u |\
 grep "$longname"`
 
-# If non-null result, check that the name_lbl.txt file exists in dir name
-# and print dirname and file name and last access time
+# If empty set foundpath to the simple components path
+if [  -z "$foundpath"  ]; then
+  foundpath="$MTT_LIB/comp/simple"
+fi
 
+# If non-null result, check that the name_ext file exists in dir name
+# and print dirname and file name and last access time
 if [ -n "$foundpath" ]; then
   if [ -n "$path_only" ]; then
     format='%h\n';
   else
     format='%h\t%f\t%Ac\n';
   fi
- for thepath in $foundpath ;  do
-  dirname=`echo $thepath | awk -F/ '{print $NF}'`
-  fullname="$dirname"_lbl.txt
+  for thepath in $foundpath ;  do
+    if [ "$thepath" = "$MTT_COMPONENTS/simple" ]; then
+        ext='cause.m'; # finds _cause.m
+        simple='simple';
+    else
+        ext='lbl.txt'; # finds _lbl.txt
+    fi    
+     dirname=`basename $thepath`
+     if [ -n "$simple" ]; then
+      fullname="$name"_"$ext"
+    else
+      fullname="$dirname"_"$ext"
+    fi
   find $thepath -maxdepth 1 -name $fullname  -printf $format;
  done |\
  tee mtt_junk

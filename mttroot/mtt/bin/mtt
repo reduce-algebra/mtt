@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.217  1999/11/16 22:15:55  peterg
+## Changed compcopy to test for abg, not lbl file
+##
 ## Revision 1.216  1999/11/16 05:53:21  peterg
 ## Added sensitivity (-s) switch
 ##
@@ -737,7 +740,7 @@
 mtt_check_var "$MTTPATH" "MTTPATH"
 
 #Version
-version='4.0'
+version='4.0--'
 
 # MTT recursion level is zero unless explicitly set
 level=0
@@ -848,6 +851,9 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-abg )
                 mtt_switches="$mtt_switches $1";
                 start_at_abg='yes';;
+	-stdin )
+                mtt_switches="$mtt_switches $1";
+                source=stdin;;
         --version)                
                   echo 'MTT version' $version; exit;;
         --versions)                
@@ -920,6 +926,7 @@ if [ -z "$1" ]; then
     echo '         -r  reset time stamp on representation'
     echo '         -s  try to generate sensitivity BG (experimental)'
     echo '         -ss use steady-state info to initialise simulations'
+    echo '         -stdin read input data from standard input for  simulations'
     echo '         -t  tidy mode (default)'
     echo '         -u  untidy mode (leaves files in current dir)'
     echo '         -v  verbose mode'
@@ -1156,7 +1163,7 @@ if [ "$1" = "compcopy" ]; then
     fi   
 
   # check that its not here already
-  file_exists=`ls $destination/"$name"_abg.txt 2> /dev/null`
+  file_exists=`ls $destination/"$name"_abg.fig 2> /dev/null`
   if [ -n "$file_exists" ]; then
     if [ "$quiet" != "quiet" ]; then    
       echo Component $name exists already - no action taken
@@ -1377,8 +1384,8 @@ if [ -f "$2_rep.make" ]; then
       echo make -f $2_rep.make "SYS=$1" "LANG=$3" "ARG=$4"
       make -f $2_rep.make "SYS=$1" "LANG=$3" "ARG=$"
       if [ -n "$4" ]; then
-         echo Copying  $1_$2_$4.ps
-         cp  $1_$2_$4.ps ..
+         echo Copying  $1_$2$__ARGS.ps
+         cp  $1_$2$__ARGS.ps ..
       fi
    fi
     exit
@@ -1648,7 +1655,7 @@ $1_numpar.txt:
 	sympar2numpar_txt2txt $1
 
 #SUMMARY numpar	numerical parameter declaration (m) 
-$1_numpar.m:  $1_numpar.txt $1_sympars.txt
+$1_numpar.m:  $1_numpar.txt
 	txt2m $1 numpar
 
 #SUMMARY numpar	numerical parameter declaration (c) 
@@ -1869,7 +1876,7 @@ $1_rdae.r: $1_ese.r $1_def.r
 	ese2rdae_r $1; tidy $1_rdae.r
 $1_dae.r: $1_rdae.r $1_def.r $1_subs.r $1_cr.r
 	rdae2dae_r $1; tidy $1_dae.r
-$1_dae.m: $1_def.r $1_dae.r  $1_sympar.r 
+$1_dae.m: $1_def.r $1_dae.r  $1_sympars.txt 
 	dae_r2m $1; matlab_tidy $1_dae.m; matlab_tidy $1_daeo.m
 $1_dae.c: $1_def.r $1_dae.r  $1_sympar.r
 	dae_r2c $1; c_tidy $1_dae.c
@@ -1892,6 +1899,21 @@ $1_cse.m: $1_def.m $1_cse.r $1_sympars.txt
 
 $1_cse.tex: $1_cse.r  $1_sympar.r $1_simp.r
 	cse_r2tex $1; latex_tidy $1_cse.tex
+
+#SUMMARY scse	sensitivity constrained-state equations (r)
+#SUMMARY scse	sensitivity constrained-state equations (tex)
+#SUMMARY scse	sensitivity constrained-state equations (ps)
+
+$1_scse.r: $1_cse.r $1_def.r 
+	cse2scse_r  $1 "$4"; tidy $1_scse.r
+
+#$1_cse.m: $1_def.r $1_cse.r $1_sympar.r  $1_subs.r 
+#	cse_r2m $1; matlab_tidy $1_cse.m
+$1_scse.m: $1_def.m $1_scse.r $1_sympars.txt
+	mtt_r2m $1 scse;  matlab_tidy $1_scse.m; matlab_tidy $1_scseo.m; 
+
+$1_scse.tex: $1_scse.r  $1_sympar.r $1_simp.r
+	cse_r2tex $1 $2; latex_tidy $1_scse.tex
 
 #SUMMARY ode	ordinary differential equations (r)
 #SUMMARY ode*	ordinary differential equations (m)
@@ -1949,8 +1971,15 @@ $1_numpar.p : $1_def.r $1_numpar.m
 	mtt_m2p $1_numpar.m
 $1_state.p : $1_def.r $1_state.m
 	mtt_m2p $1_state.m
+
+ifeq ($source,stdin)
+$1_input.p : $1_def.r
+	make_stdin $1 p
+else
 $1_input.p : $1_def.r $1_input.m
 	mtt_m2p $1_input.m
+endif
+
 $1_ode.p : $1_def.r $1_ode.m
 	mtt_m2p $1_ode.m
 $1_odeo.p : $1_def.r $1_odeo.m
@@ -2026,7 +2055,7 @@ $1_ss.tex: $1_def.r $1_ss.r $1_simp.r
 #Linearised system: descriptor matrices
 $1_dm.r: $1_dae.r $1_def.r $1_cr.r  $1_ss.r $1_sympar.r
 	dae2dm_r $1; tidy $1_dm.r
-$1_dm.m: $1_def.r $1_dm.r $1_sympar.r $1_numpar.m
+$1_dm.m: $1_def.r $1_dm.r $1_sympars.txt
 		mtt_r2m $1 dm
 $1_dm.tex: $1_dm.r $1_sympar.r $1_simp.r 
 	dm_r2tex $1; latex_tidy $1_dm.tex
@@ -2040,11 +2069,23 @@ $1_dm.tex: $1_dm.r $1_sympar.r $1_simp.r
 #SUMMARY csm	constrained-state matrices (ps)
 #Linearised system: constrained-state matrices
 $1_csm.r: $1_cse.r $1_def.r $1_cr.r $1_ss.r $1_sympar.r
-	cse2csm_r $1; tidy $1_csm.r
+	cse2csm_r $1 csm; tidy $1_csm.r
 $1_csm.m: $1_def.r $1_csm.r
-		csm_r2m $1;  matlab_tidy $1_csm.m
+		csm_r2m $1 csm;  matlab_tidy $1_csm.m
 $1_csm.tex: $1_csm.r  $1_sympar.r $1_simp.r
-	csm_r2tex $1; latex_tidy $1_csm.tex
+	csm_r2tex $1 csm; latex_tidy $1_csm.tex
+#SUMMARY scsm	sensitivity constrained-state matrices (r)
+#SUMMARY scsm	sensitivity constrained-state matrices (m)
+#SUMMARY scsm	sensitivity constrained-state matrices (tex)
+#SUMMARY scsm	sensitivity constrained-state matrices (view)
+#SUMMARY scsm	sensitivity constrained-state matrices (ps)
+#Linearised system: sensitivity constrained-state matrices
+$1_scsm.r: $1_scse.r $1_def.r $1_cr.r $1_sympar.r
+	cse2csm_r $1 scsm; tidy $1_scsm.r
+$1_scsm.m: $1_def.r $1_scsm.r $1_sympars.txt
+		csm_r2m $1 scsm;  matlab_tidy $1_scsm.m
+$1_scsm.tex: $1_scsm.r  $1_sympar.r $1_simp.r
+	csm_r2tex $1 scsm; latex_tidy $1_scsm.tex
 
 #SUMMARY sm	state matrices (r)
 #SUMMARY sm*	state matrices (m)
@@ -2055,7 +2096,7 @@ $1_csm.tex: $1_csm.r  $1_sympar.r $1_simp.r
 #SUMMARY sm	state matrices (ps)
 #Linearised system: state matrices
 $1_sm.r: $1_csm.r $1_def.r $1_cr.r $1_ss.r $1_sympar.r
-	csm2sm_r $1; tidy $1_sm.r
+	csm2sm_r $1 sm; tidy $1_sm.r
 $1_sm.m: $1_def.r $1_sm.r $1_sympars.txt 
 		mtt_r2m $1 sm
 $1_sm.icad:  $1_sm.m $1_numpar.m
@@ -2063,7 +2104,20 @@ $1_sm.icad:  $1_sm.m $1_numpar.m
 $1_sm.c: $1_def.r $1_sm.r $1_sympar.c
 		sm_r2c $1
 $1_sm.tex: $1_sm.r  $1_sympar.r $1_simp.r
-	sm_r2tex $1; latex_tidy $1_sm.tex
+	sm_r2tex $1 sm; latex_tidy $1_sm.tex
+
+#SUMMARY ssm	sensitivity state matrices (r)
+#SUMMARY ssm	sensitivity state matrices (icad)
+#SUMMARY ssm	sensitivity state matrices (tex)
+#SUMMARY ssm	sensitivity state matrices (c)
+#SUMMARY ssm	sensitivity state matrices (ps)
+#Linearised system: sensitivity state matrices
+$1_ssm.r: $1_scsm.r $1_def.r $1_cr.r $1_ss.r $1_sympar.r
+	csm2sm_r $1 ssm; tidy $1_ssm.r
+$1_ssm.m: $1_def.r $1_ssm.r $1_sympars.txt 
+		mtt_r2m $1 ssm
+$1_ssm.tex: $1_ssm.r  $1_sympar.r $1_simp.r
+	sm_r2tex $1 ssm; latex_tidy $1_ssm.tex
 
 #SUMMARY smx	state matrices with variable state x (r)
 #SUMMARY smx	state matrices with variable state x (m)

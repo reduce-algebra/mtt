@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1998/08/15 13:51:56  peterg
+## smx is now I-Adt NOT A
+##
 ## Revision 1.4  1998/08/13 09:03:35  peterg
 ## *** empty log message ***
 ##
@@ -38,8 +41,8 @@ fi
 
 # Inform user
 echo Creating $1_smx.$lang
-echo Creating $1_smxx.$lang
-echo Creating $1_smxtx.$lang
+#echo Creating $1_smxx.$lang
+#echo Creating $1_smxtx.$lang
 
 # Remove the old log file
 rm -f ode2smx_r.log
@@ -98,10 +101,9 @@ END;
     END;
 
 % find MTTA : the A matrix
-  matrix mttAAx(MTTNx,1);
-  matrix mttAAtx(MTTNx,1);
   FOR i := 1:MTTNx DO
   BEGIN
+    mttAAx_i := 0;
     xi := MTTX(i,1);
     FOR j := 1:MTTNx DO
     BEGIN
@@ -120,9 +122,11 @@ END;
       END;
       IF (aa_ij NEQ 0) THEN
         GENTRAN mtta(i,j) ::=: aa_ij;
-      mttAAx(i,1) := mttAAx(i,1) + aa_ij*mkid(mttxx,j);
-      mttAAtx(i,1) := mttAAtx(i,1) + aa_ji*mkid(mttxx,j);
+      mttAAx_i := mttAAx_i + aa_ij*mkid(mttxx,j);
+      %%%mttAAtx(i,1) := mttAAtx(i,1) + aa_ji*mkid(mttxx,j);
     END;
+    IF (mttAAx_i NEQ 0) THEN
+      GENTRAN mttax(i) ::=: mttAAx_i;
   END;
 
 
@@ -155,45 +159,45 @@ END;
  GENTRANSHUT "$1_smx.$lang";
 
 
-% The AAx matrix;
-GENTRANOUT "$1_smxx.$lang";
-FOR i := 1:MTTNx DO
-BEGIN
-  ax_i := mttAAx(i,1);
-  IF (ax_i NEQ 0) THEN
-    GENTRAN mttax(i) ::=: ax_i;
-END
-GENTRANSHUT "$1_smxx.$lang";
-
-% The AAtx matrix;
-GENTRANOUT "$1_smxtx.$lang";
-FOR i := 1:MTTNx DO
-BEGIN
-  atx_i := mttAAtx(i,1);
-  IF (atx_i NEQ 0) THEN
-    GENTRAN mttax(i) ::=: atx_i;
-END
-GENTRANSHUT "$1_smxtx.$lang";
+%% The AAx matrix;
+%GENTRANOUT "$1_smxx.$lang";
+%FOR i := 1:MTTNx DO
+%BEGIN
+%  ax_i := mttAAx(i,1);
+%  IF (ax_i NEQ 0) THEN
+%    GENTRAN mttax(i) ::=: ax_i;
+%END
+%GENTRANSHUT "$1_smxx.$lang";
+%
+%% The AAtx matrix;
+%GENTRANOUT "$1_smxtx.$lang";
+%FOR i := 1:MTTNx DO
+%BEGIN
+%  atx_i := mttAAtx(i,1);
+%  IF (atx_i NEQ 0) THEN
+%    GENTRAN mttax(i) ::=: atx_i;
+%END
+%GENTRANSHUT "$1_smxtx.$lang";
 
 EOF
 
 if [ "$lang" = "m" ]; then
   mv $1_smx.$lang  mtt_junk
-  lang_header $1 smx m 'mttx,mttu,mttdt' '[mtta]' > $1_smx.m
+  lang_header $1 smx m 'mttx,mttu,mttdt,mttxx' '[mtta,mttax]' > $1_smx.m
   cat mtt_junk | mtt_p2m >> $1_smx.m
   rm -f mtt_junk
 
-  mv $1_smxx.$lang  mtt_junk
-  lang_header $1 smxx m 'mttx,mttu,mttxx,mttdt' '[mttax]' > $1_smxx.m
-  cat mtt_junk | mtt_p2m >> $1_smxx.m
-  rm -f mtt_junk
-
-  mv $1_smxtx.$lang  mtt_junk
-  lang_header $1 smxtx m 'mttx,mttu,mttxx,mttdt' '[mttax]' > $1_smxtx.m
-  cat mtt_junk | mtt_p2m >> $1_smxtx.m
-  rm -f mtt_junk
-
-
+#  mv $1_smxx.$lang  mtt_junk
+#  lang_header $1 smxx m 'mttx,mttu,mttxx,mttdt' '[mttax]' > $1_smxx.m
+#  cat mtt_junk | mtt_p2m >> $1_smxx.m
+#  rm -f mtt_junk
+#
+#  mv $1_smxtx.$lang  mtt_junk
+#  lang_header $1 smxtx m 'mttx,mttu,mttxx,mttdt' '[mttax]' > $1_smxtx.m
+#  cat mtt_junk | mtt_p2m >> $1_smxtx.m
+#  rm -f mtt_junk
+#
+#
 fi
 
 # Now invoke the standard error handling.

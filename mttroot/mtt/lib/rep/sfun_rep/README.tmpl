@@ -1,16 +1,16 @@
 
 To build a Simulink funtion of the <mtt_model_name> model without using MTT:
 
-mex <mtt_model_name>_sfun.c
+mex -I. <mtt_model_name>_sfun.c
 
 The input block can be created with:
 
-mex <mtt_model_name>_sfun_input.c
+mex -I. <mtt_model_name>_sfun_input.c
 
 If numerical solution of algebraic equations is also required:
 
-mex <mtt_model_name>_sfun_ae.c
+mex -I. <mtt_model_name>_sfun_ae.c
 
 The interface block can be created with
 
-mex <mtt_model_name>_sfun_interface.c
+mex -I. <mtt_model_name>_sfun_interface.c

@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  2000/09/14 15:13:02  peterg
+% %% Changed port CRs to give SISO system when used in isolation
+% %%
 % %% Revision 1.2  1998/07/27 11:09:36  peterg
 % %% Commented the aliases.
 % %%
@@ -17,8 +20,8 @@
 
 
 % Port aliases
-%ALIAS	in	Electrical_in	# The left-hand port
-%ALIAS	out	Electrical_out	# The right-hand port
+%ALIAS	in	in	# The left-hand port
+%ALIAS	out	out	# The right-hand port
 
 % Argument aliases
 %ALIAS	$1	c		# Capacitance
@@ -38,5 +41,5 @@
 	r		lin	flow,r
 
 % Component type SS
-	[Electrical_in]		SS		external,internal
-	[Electrical_out]	SS		external,0
+	[in]		SS		external,internal
+	[out]	SS		external,0

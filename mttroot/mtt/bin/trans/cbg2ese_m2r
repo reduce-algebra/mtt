@@ -1,0 +1,52 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: cbg2ese_m
+#
+#
+# P.J.Gawthrop June 1996
+# Copyright (c) P.J.Gawthrop, 1996.
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+##
+## $Log$
+###############################################################
+
+infofile='stdout';
+eqnfile="$1_ese.r";
+deffile="$1_def.r";
+# Remove the old log file
+rm -f cbg2ese_m.log
+rm -f $1_ese.r
+rm -f $1_def.r
+rm -f mtt_info.txt
+
+
+#Inform user
+echo Creating $eqnfile
+echo Creating $1_def.r
+
+# Use matrix manipulation to accomplish the transformation
+$MATRIX > cbg2ese_m2r.log 2>> cbg2ese_m2r.log << EOF
+
+  infofile = '$infofile'
+  eqnfile = '$eqnfile'
+  deffile = '$deffile'
+  system_name = '$1'
+
+  structure = cbg2ese(system_name,[],eqnfile,infofile)
+  makedef(structure,deffile);
+  
+
+EOF
+
+
+
+
+

@@ -7,13 +7,16 @@
 # Bourne shell script: mtt
 
 # P.J.Gawthrop Oct 1989, Dec 1989, 1990, 1991, Oct 1993, Dec 1993, Jan 1994, Dec 95, Nov 1996.
-# Copyright (c) P.J.Gawthrop, 1989, 1990, 1991, 1993, 1994, 1995, 1996.
+# Copyright (c) P.J.Gawthrop, 1989, 1990, 1991, 1993, 1994, 1995, 1996, 1997,1998,1999
 
 ###############################################################
 ## Version control history
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.203  1999/03/08 03:51:12  peterg
+## Version 3.5 for Linux Red Hat 5.2 (Newcastle)
+##
 ## Revision 1.202  1999/02/17 01:59:20  peterg
 ## Now handles html copy correctely (ie mv directory to ..)
 ## Fixed path probs with html
@@ -819,7 +822,7 @@ if [ -z "$1" ]; then
     echo '       mtt info             -- info-based manual'
     echo '       mtt info topic'
     echo '       mtt hinfo            -- hypertext manual'
-    echo '       mtt manual           -- dvi manual'
+    echo '       mtt manual           -- pdf manual'
     echo '       mtt warranty'
     echo '       mtt clean           -- cleans up intermediate files'
     echo '       mtt rclean          -- recursively cleans up intermediate files'
@@ -870,9 +873,9 @@ if [ "$1" = "hinfo" ] && [$2 = ""]; then
 fi
 
 if [ "$1" = "manual" ] && [$2 = ""]; then
-  mtt_check_var "$DVIVIEW" DVIVIEW
-  echo Invoking $DVIVIEW
-  $DVIVIEW  $MTTPATH/doc/mtt.dvi &
+  mtt_check_var "$PDFVIEW" PDFVIEW
+  echo Invoking $PDFVIEW
+  $PDFVIEW  $MTTPATH/doc/mtt.PDF &
   exit
 fi
 
@@ -888,7 +891,7 @@ fi
 if [ "$1" = "warranty" ] && [$2 = ""]; then
   cat << EOF
 Copyright (C) 1989, 1990, 1991, 1992, 1993, 
-              1994, 1995, 1996, 1997, 1998 Peter J. Gawthrop
+              1994, 1995, 1996, 1997, 1998, 1999 Peter J. Gawthrop
 This is free software with ABSOLUTELY NO WARRANTY.
 
 This program is free software; you can redistribute it and/or modify
@@ -1011,9 +1014,9 @@ case $2 in
 	
 esac
 
-#SUMMARY abg	acausal bond graph (fig)
-#SUMMARY abg	acausal bond graph (ps)
-#SUMMARY abg	acausal bond graph (view)
+#SUMMARY abg*	acausal bond graph (fig)
+#SUMMARY abg*	acausal bond graph (ps)
+#SUMMARY abg*	acausal bond graph (view)
 # Invoke explicit requests for modification
 if [ "$2" = "abg" ] && [ "$3" = "fig" ]; then
   mtt_check_var "$FIG" FIG
@@ -1287,8 +1290,12 @@ if [ "$tidy" = "tidy" ]; then
 exit
 fi 
 
-
-
+# User defined representations
+if [ -f "$2_rep.make" ]; then
+    echo make -f $2_rep.make "SYS=$1" "LANG=$3"
+         make -f $2_rep.make "SYS=$1" "LANG=$3"
+    exit
+fi
 
 
 ################################
@@ -1355,6 +1362,7 @@ $1_cr.tex: $1_cr.r
 	txt2tex $1 cr r
 
 #SUMMARY sympar	symbolic parameters (txt)
+#SUMMARY sympar*	symbolic parameters (view)
 # Lbl to sympar conversion
 ifeq ($switches,0)
 $1_sympar.txt: $1_sub.sh 
@@ -1636,9 +1644,9 @@ $1_sspar.r:
 $1_sspar.tex: $1_sspar.r
 	txt2tex $1 sspar r
 
-#SUMMARY rep	report (txt)
+#SUMMARY rep*	report (txt)
 #SUMMARY rep	report (tex)
-#SUMMARY rep	report (view)
+#SUMMARY rep*	report (view)
 
 
 ifeq ($documenttype,book)
@@ -1685,7 +1693,7 @@ $1_abg.m: $1_rbg.m $1_alias.m $1_sub.sh
 	rbg2abg_m $info_switch $1
 
 
-#SUMMARY cbg	causal bond graph (m)
+#SUMMARY cbg*	causal bond graph (m)
 #Acausal bond graph to causal bond graph: mfile
 $1_cbg.m: $1_abg.m
 	echo abg2cbg_m  $info_switch  $1
@@ -1693,9 +1701,9 @@ $1_cbg.m: $1_abg.m
 
 $1_type.sh: $1_cbg.m
 
-#SUMMARY cbg	causal bond graph (fig)
-#SUMMARY cbg	causal bond graph (ps)
-#SUMMARY cbg	causal bond graph (view)
+#SUMMARY cbg*	causal bond graph (fig)
+#SUMMARY cbg*	causal bond graph (ps)
+#SUMMARY cbg*	causal bond graph (view)
 #Causal bond graph: mfile to fig conversion
 $1_cbg.fig: $1_cbg.m $1_rbg.m $1_fig.fig $1_type.sh
 	cbg_m2fig $1
@@ -1703,9 +1711,9 @@ $1_cbg.fig: $1_cbg.m $1_rbg.m $1_fig.fig $1_type.sh
 #SUMMARY ese	elementary system equations (r)
 #SUMMARY def	definitions - system orders etc. (r)
 #SUMMARY def	definitions - system orders etc. (m)
-#SUMMARY struc	structure - list of inputs, outputs and states (txt)
+#SUMMARY struc*	structure - list of inputs, outputs and states (txt)
 #SUMMARY struc	structure - list of inputs, outputs and states (tex)
-#SUMMARY struc	structure - list of inputs, outputs and states (view)
+#SUMMARY struc*	structure - list of inputs, outputs and states (view)
 #Elementary system equations + definitions
 $1_ese.r: $1_cbg.m $1_sympar.txt 
 	   cbg2ese_m2r $info_switch $1; ese_tidy $1
@@ -1722,9 +1730,9 @@ $1_def.m: $1_def.r
 
 #SUMMARY rdae	raw differential-algebraic equations (r)
 #SUMMARY dae	differential-algebraic equations (r)
-#SUMMARY dae	differential-algebraic equations (m)
+#SUMMARY dae*	differential-algebraic equations (m)
 #SUMMARY dae	differential-algebraic equations (tex)
-#SUMMARY dae	differential-algebraic equations (view)
+#SUMMARY dae*	differential-algebraic equations (view)
 #SUMMARY dae	differential-algebraic equations (ps)
 #Differential-algebraic equations
 $1_rdae.r: $1_ese.r $1_def.r
@@ -1739,9 +1747,9 @@ $1_dae.tex:	$1_dae.r $1_simp.r
 	dae_r2tex $1; latex_tidy $1_dae.tex
 
 #SUMMARY cse	constrained-state equations (r)
-#SUMMARY cse	constrained-state equations (m)
+#SUMMARY cse*	constrained-state equations (m)
 #SUMMARY cse	constrained-state equations (tex)
-#SUMMARY cse	constrained-state equations (view)
+#SUMMARY cse*	constrained-state equations (view)
 #SUMMARY cse	constrained-state equations (ps)
 #Constrained-state equations
 $1_cse.r: $1_dae.r $1_def.r $1_sympar.r 
@@ -1752,10 +1760,10 @@ $1_cse.tex: $1_cse.r  $1_sympar.r $1_simp.r
 	cse_r2tex $1; latex_tidy $1_cse.tex
 
 #SUMMARY ode	ordinary differential equations (r)
-#SUMMARY ode	ordinary differential equations (m)
+#SUMMARY ode*	ordinary differential equations (m)
 #SUMMARY ode	ordinary differential equations (c)
 #SUMMARY ode	ordinary differential equations (tex)
-#SUMMARY ode	ordinary differential equations (view)
+#SUMMARY ode*	ordinary differential equations (view)
 #SUMMARY ode	ordinary differential equations (ps)
 #Ordinary differential equations
 ifeq ($dae_is_ode,0)
@@ -1813,9 +1821,9 @@ $1_ode2odes.c: $1_ode2odes.p
 	mtt_p2c $info_switch $1 ode2odes
 
 #SUMMARY obs	observer equations for CGPC (r)
-#SUMMARY obs	observer equations for CGPC (m)
+#SUMMARY obs*	observer equations for CGPC (m)
 #SUMMARY obs	observer equations for CGPC (tex)
-#SUMMARY obs	observer equations for CGPC (view)
+#SUMMARY obs*	observer equations for CGPC (view)
 #SUMMARY obs	observer equations for CGPC (ps)
 #Observer functions for GPC
 $1_obs.r: $1_ode.r $1_def.r $1_obspar.r $1_subs.r
@@ -1828,7 +1836,7 @@ $1_obs.tex: $1_obs.r  $1_sympar.r $1_simp.r
 
 #SUMMARY rfe	robot-form equations (r)
 #SUMMARY rfe	robot-form equations (tex)
-#SUMMARY rfe	robot-form equations (view)
+#SUMMARY rfe*	robot-form equations (view)
 #SUMMARY rfe	robot-form equations (ps)
 #Robot-form equations
 $1_rfe.r: $1_cse.r $1_csm.r $1_def.r $1_sympar.r
@@ -1837,9 +1845,9 @@ $1_rfe.tex: $1_rfe.r  $1_sympar.r  $1_simp.r
 	rfe_r2tex $1; latex_tidy $1_rfe.tex
 
 #SUMMARY ss	steady-state equations (r)
-#SUMMARY ss	steady-state equations (m)
+#SUMMARY ss*	steady-state equations (m)
 #SUMMARY ss	steady-state equations (tex)
-#SUMMARY ss	steady-state equations (view)
+#SUMMARY ss*	steady-state equations (view)
 #SUMMARY ss	steady-state equations (ps)
 #Steady-states
 $1_ss.r: $1_def.r $1_sspar.r $1_cr.r $1_ode.r
@@ -1851,9 +1859,9 @@ $1_ss.tex: $1_def.r $1_ss.r $1_simp.r
 
 
 #SUMMARY dm	descriptor matrices (r)
-#SUMMARY dm	descriptor matrices (m)
+#SUMMARY dm*	descriptor matrices (m)
 #SUMMARY dm	descriptor matrices (tex)
-#SUMMARY dm	descriptor matrices (view)
+#SUMMARY dm*	descriptor matrices (view)
 #SUMMARY dm	descriptor matrices (ps)
 #Linearised system: descriptor matrices
 $1_dm.r: $1_dae.r $1_def.r $1_cr.r  $1_ss.r $1_sympar.r
@@ -1879,11 +1887,11 @@ $1_csm.tex: $1_csm.r  $1_sympar.r $1_simp.r
 	csm_r2tex $1; latex_tidy $1_csm.tex
 
 #SUMMARY sm	state matrices (r)
-#SUMMARY sm	state matrices (m)
+#SUMMARY sm*	state matrices (m)
 #SUMMARY sm	state matrices (icad)
 #SUMMARY sm	state matrices (tex)
 #SUMMARY sm	state matrices (c)
-#SUMMARY sm	state matrices (view)
+#SUMMARY sm*	state matrices (view)
 #SUMMARY sm	state matrices (ps)
 #Linearised system: state matrices
 $1_sm.r: $1_csm.r $1_def.r $1_cr.r $1_ss.r $1_sympar.r
@@ -1912,8 +1920,8 @@ $1_smxtx.m: $1_smx.m
 
 #SUMMARY smc	controller form state matrices etc. - siso only (r)
 #SUMMARY smc	controller form state matrices etc. - siso only (tex)
-#SUMMARY smc	controller form state matrices etc. - siso only (m)
-#SUMMARY smc	controller form state matrices etc. - siso only (view)
+#SUMMARY smc*	controller form state matrices etc. - siso only (m)
+#SUMMARY smc*	controller form state matrices etc. - siso only (view)
 #SUMMARY smc	controller form state matrices etc. - siso only (ps)
 #Linearised system: controller form state matrices etc.
 $1_smc.r: $1_sm.r $1_def.r $1_tf.r 
@@ -1925,8 +1933,8 @@ $1_smc.m: $1_def.r $1_smc.r $1_numpar.m
 
 #SUMMARY smo	observer form state matrices etc. - siso only (r)
 #SUMMARY smo	observer form state matrices etc. - siso only (tex)
-#SUMMARY smo	observer form state matrices etc. - siso only (m)
-#SUMMARY smo	observer form state matrices etc. - siso only (view)
+#SUMMARY smo*	observer form state matrices etc. - siso only (m)
+#SUMMARY smo*	observer form state matrices etc. - siso only (view)
 #SUMMARY smo	observer form state matrices etc. - siso only (ps)
 #Linearised system: observer form state matrices etc.
 $1_smo.r: $1_sm.r $1_def.r $1_smc.r 
@@ -1938,8 +1946,8 @@ $1_smo.m: $1_def.r $1_smo.r $1_numpar.m
 
 #SUMMARY ssk	State-space controller gain - siso only (r)
 #SUMMARY ssk	State-space controller gain - siso only (tex)
-#SUMMARY ssk	State-space controller gain - siso only (m)
-#SUMMARY ssk	State-space controller gain - siso only (view)
+#SUMMARY ssk*	State-space controller gain - siso only (m)
+#SUMMARY ssk*	State-space controller gain - siso only (view)
 #SUMMARY ssk	State-space controller gain - siso only (ps)
 #Linearised system: State-space controller gain
 $1_ssk.r: $1_def.r $1_smc.r 
@@ -1951,8 +1959,8 @@ $1_ssk.m: $1_def.r $1_ssk.r $1_numpar.m
 
 #SUMMARY ssl	State-space observer gain - siso only (r)
 #SUMMARY ssl	State-space observer gain - siso only (tex)
-#SUMMARY ssl	State-space observer gain - siso only (m)
-#SUMMARY ssl	State-space observer gain - siso only (view)
+#SUMMARY ssl*	State-space observer gain - siso only (m)
+#SUMMARY ssl*	State-space observer gain - siso only (view)
 #SUMMARY ssl	State-space observer gain - siso only (ps)
 #Linearised system: State-space observer gain
 $1_ssl.r: $1_def.r $1_smo.r 
@@ -1963,9 +1971,9 @@ $1_ssl.m: $1_def.r $1_ssl.r $1_numpar.m
 		ssl_r2m $1;  matlab_tidy $1_ssl.m
 
 #SUMMARY tf	transfer function (r)
-#SUMMARY tf	transfer function (m)
+#SUMMARY tf*	transfer function (m)
 #SUMMARY tf	transfer function (tex)
-#SUMMARY tf	transfer function (view)
+#SUMMARY tf*	transfer function (view)
 #SUMMARY tf	transfer function (ps)
 #Linearised system: transfer function
 $1_tf.r: $1_dm.r $1_sympar.r 
@@ -2012,23 +2020,23 @@ $1_ctf.tex: $1_def.r $1_ctf.r $1_sympar.r $1_simp.r
 #SUMMARY sr	step response - state (ps)
 #SUMMARY sr	step response - state (view)
 
-#SUMMARY sro	step response - output (m)
+#SUMMARY sro*	step response - output (m)
 #SUMMARY sro	step response - output (dat)
 #SUMMARY sro	step response - output (ps)
-#SUMMARY sro	step response - output (view)
+#SUMMARY sro*	step response - output (view)
 
 #SUMMARY odes	ode solution - state (m)
-#SUMMARY odes	ode solution - state (dat)
-#SUMMARY odes	ode solution - state (ps)
-#SUMMARY odes	ode solution - state (view)
+#SUMMARY odes*	ode solution - state (dat)
+#SUMMARY odes*	ode solution - state (ps)
+#SUMMARY odes*	ode solution - state (view)
 
 #SUMMARY sms	ode (in state matrix form) solution - state & output (c)
 
 #SUMMARY odeso	ode solution - output (m)
-#SUMMARY odeso	ode solution - output (dat)
-#SUMMARY odeso	ode solution - output for spreadsheet (sdat) 
+#SUMMARY odeso*	ode solution - output (dat)
+#SUMMARY odeso*	ode solution - output for spreadsheet (sdat) 
 #SUMMARY odeso	ode solution - output (ps)
-#SUMMARY odeso	ode solution - output (view)
+#SUMMARY odeso*	ode solution - output (view)
 
 #SUMMARY daes	dae solution - state (m)
 #SUMMARY daes	dae solution - state (dat)
@@ -2129,12 +2137,12 @@ $1_odesso.m: $1_odess.m
 #SUMMARY lmfr	loglog modulus frequency response (m)
 #SUMMARY lmfr	loglog modulus frequency response (dat)
 #SUMMARY lmfr	loglog modulus frequency response (ps)
-#SUMMARY lmfr	loglog modulus frequency response (view)
+#SUMMARY lmfr*	loglog modulus frequency response (view)
 
 #SUMMARY lpfr	semilog phase frequency response (m)
 #SUMMARY lpfr	semilog phase frequency response (dat)
 #SUMMARY lpfr	semilog phase frequency response (ps)
-#SUMMARY lpfr	semilog phase frequency response (view)
+#SUMMARY lpfr*	semilog phase frequency response (view)
 
 #SUMMARY nyfr	Nyquist style frequency response (m)
 #SUMMARY nyfr	Nyquist style frequency response (dat)

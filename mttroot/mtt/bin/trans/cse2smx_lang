@@ -14,8 +14,8 @@
 # Args
 while [ -n "`echo $1 | grep '^-'`" ]; do
   case $1 in
-    -noglobal)
-	noglobal='-noglobal';
+    -noglobals)
+	noglobals='-noglobals';
 	;;
     -parameters)
 	parameters='-parameters';

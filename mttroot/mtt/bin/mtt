@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.129  1998/02/12 08:18:42  peterg
+## VERSION 2.8 (St. Annes)
+##
 ## Revision 1.128  1998/02/12 07:48:04  peterg
 ## Tidy mode copies all files (containing .) to work dir -- this makes
 ## sure that files such a .c .constitutive relationship go across.
@@ -519,7 +522,7 @@ done
 #Print header if not in quiet (-q) mode.
 if [ "$quiet" != "quiet" ]; then
   echo
-  echo 'MTT (Model Transformation Tools) version 2.8 ($Date$)'
+  echo 'MTT (Model Transformation Tools) version 2.8++ ($Date$)'
   echo 'This is free software with ABSOLUTELY NO WARRANTY.'
   echo 'Type `mtt warranty'\' 'for details.'
   echo
@@ -1127,8 +1130,8 @@ $1_odes.h:
 
 
 #SUMMARY sspar	steady-state definition (r)
-$1_sspar.r: $1_def.m
-	makesspar $1
+$1_sspar.r: 
+	struc2sspar_txt2r $1
 
 #SUMMARY rep	report (txt)
 #SUMMARY rep	report (tex)
@@ -1295,7 +1298,7 @@ $1_rfe.tex: $1_rfe.r  $1_sympar.r  $1_simp.r
 #SUMMARY ss	steady-state equations (view)
 #SUMMARY ss	steady-state equations (ps)
 #Steady-states
-$1_ss.r: $1_def.r $1_sspar.r $1_sympar.r $1_cr.r $1_dae.r
+$1_ss.r: $1_def.r $1_sspar.r $1_sympar.r $1_cr.r $1_cse.r
 	sspar2ss_r $1; tidy $1_ss.r
 $1_ss.m: $1_def.r $1_sympar.r $1_ss.r  $1_numpar.m
 	ss_r2m $1; matlab_tidy $1_ss.m

@@ -24,11 +24,15 @@ const bool false = 0;
 using std::pow;
 #endif /* ! __cplusplus */
 
-
+#ifdef M_PI
 static double pi = M_PI;
 static double Pi = M_PI;
 static double PI = M_PI;
-
+#else
+static double pi = 3.1416;
+static double Pi = pi;
+static double PI = pi;
+#endif
 
 static inline double
 max (const double x1, const double x2)

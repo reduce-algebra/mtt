@@ -7,6 +7,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  2000/12/28 17:27:26  peterg
+# %% To RCS
+# %%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # Parameters
@@ -17,7 +20,7 @@ BeamThickness = 0.005;
 Youngs = 1e6;
 Density = 1e5;
 Area = BeamWidth*BeamThickness;
-AreaMoment = (BeamThickness*BeamWidth^2)/12;
+AreaMoment = (BeamThickness*pow(BeamWidth,2))/12;
 
 
 EI= 58.6957			# from Reza

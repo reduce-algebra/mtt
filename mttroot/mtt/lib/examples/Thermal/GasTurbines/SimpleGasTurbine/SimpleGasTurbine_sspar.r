@@ -6,6 +6,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.1  2000/12/28 18:08:28  peterg
+% % To RCS
+% %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Find stored mass to give combustion chamber pressure p_3 (at
@@ -17,14 +20,14 @@ p_4 := p_1;
 p_2 := p_3;
 
 %Compute ss temperatures (isentropic)
-t_2 := t_1*(p_2/p_1)^alpha;
-t_4 := t_3*(p_4/p_3)^alpha;
+t_2 := t_1*pow((p_2/p_1),alpha);
+t_4 := t_3*pow((p_4/p_3),alpha);
 
 %Find the steady-state work output
 w_0 := c_p*(t_3-t_4) - c_p*(t_2-t_1);
 
 %Compute the corresponding load resistance (to absorb that work)
-r_l := w_0/(omega_0)^2;
+r_l := w_0/pow((omega_0),2);
 
 %Unit mass flow
 mdot := 1;

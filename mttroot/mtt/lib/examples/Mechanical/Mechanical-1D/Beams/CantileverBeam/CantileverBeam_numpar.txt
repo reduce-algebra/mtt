@@ -7,6 +7,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.1  2000/12/28 17:58:27  peterg
+# %% To RCS
+# %%
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # Parameters
@@ -17,7 +20,7 @@ BeamThickness = 0.005;
 Youngs = 68.94e9;
 Density =  2712.8;
 Area = BeamWidth*BeamThickness;
-AreaMoment = (BeamWidth*BeamThickness^3)/12;
+AreaMoment = (BeamWidth*pow(BeamThickness,3))/12;
 
 EI = Youngs*AreaMoment;
 rhoA = Density*Area;
@@ -27,7 +30,7 @@ dm = rhoA*dz;			# Incremental mass
 dk = EI/dz;			# Incremental stiffness
 dr = 0;				# Damping
 
-K = sqrt(EI/rhoA)/BeamLength^2;	# Normalising factor
+K = sqrt(EI/rhoA)/pow(BeamLength,2);	# Normalising factor
 
 
 # EI= 58.6957			# from Reza

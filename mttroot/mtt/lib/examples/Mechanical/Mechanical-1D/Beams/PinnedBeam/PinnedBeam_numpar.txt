@@ -7,6 +7,9 @@
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.2  2003/06/11 16:03:06  gawthrop
+# %% Updated examples for latest MTT.
+# %%
 # %% Revision 1.1  2000/12/28 17:59:05  peterg
 # %% To RCS
 # %%
@@ -22,7 +25,7 @@ BeamThickness = 0.003;
 Youngs = 68.94e9;
 Density =  2712.8;
 Area = BeamWidth*BeamThickness;
-AreaMoment = (BeamWidth*BeamThickness^3)/12;
+AreaMoment = (BeamWidth*pow(BeamThickness,3))/12;
 EI = Youngs*AreaMoment;
 rhoA = Density*Area;
 

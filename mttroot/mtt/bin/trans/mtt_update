@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.12  2000/10/14 16:11:00  peterg
+## Made all variables, states etc lower case
+##
 ## Revision 1.11  2000/10/13 11:07:00  peterg
 ## Added initialisation for state and input
 ##
@@ -76,9 +79,8 @@ case $rep in
 	    textfile=$1_$2.$ext
 	    infofile=mtt_list.$ext
 	    moreinfofile=mtt_list_numpar.$ext
-	    grep "$rep" <$1_struc.txt |\
-	    awk '{printf("%s\n", $4)}' \
-             > $infofile 
+            awk '{if ($1==rep) printf("%s\n", $4)}' rep=$2 \
+            <$1_struc.txt >$infofile
 	    cat $infofile $1_sympar.$ext> $moreinfofile  
 	    default='0.0'
 	;;

@@ -14,6 +14,11 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.231  2000/03/15 21:24:23  peterg
+## Version 4.1:
+##   Fixed problems with -abg mode
+##   Old-style SS lbl no longer supported
+##
 ## Revision 1.230  2000/03/15 20:31:06  peterg
 ## Replaced lbl2cr by abg2cr_m2txt
 ##
@@ -1556,8 +1561,8 @@ $1_cr.tex: $1_cr.r
 #SUMMARY sympar*	symbolic parameters (view)
 # Lbl to sympar conversion
 ifeq ($switches,0)
-$1_sympar.txt: $1_sub.sh $1_lbl.txt 
-	lbl2sympar_txt2txt $1
+$1_sympar.txt: $1_sub.sh $1_abg.m 
+	abg2sympar_m2txt $1
  
 	if [ "$level" = "0" ]; then \
 	  mv $1_sympar.txt MTT_sympar.txt; \
@@ -1573,8 +1578,8 @@ $1_sympar.txt: $1_sub.sh $1_lbl.txt
 	fi
 endif
 ifeq ($switches,1)
-$1_sympar.txt: $1_sub.sh $1_lbl.txt
-	lbl2sympar_txt2txt $1
+$1_sympar.txt: $1_sub.sh $1_abg.m
+	abg2sympar_m2txt $1
  
 	if [ "$level" = "0" ]; then \
 	  mv $1_sympar.txt MTT_sympar.txt; \
@@ -1709,21 +1714,21 @@ $1_numpar.c:  $1_numpar.txt $1_sympar.c
 #SUMMARY state	numerical state declaration  -- default (txt)
 ifeq ($steadystate_computation,yes)
 $1_input.txt: 
-	mtt -q $1 ss r
-	mtt -q $1 struc txt
-	mtt -q $1 switch txt
+	mtt -q $mtt_switches $1 ss r
+	mtt -q $mtt_switches $1 struc txt
+	mtt -q $mtt_switches $1 switch txt
 	struc2input_txt2txt -ss $1
 $1_state.txt:
-	mtt -q $1 ss r
-	mtt -q $1 struc txt
+	mtt -q $mtt_switches $1 ss r
+	mtt -q $mtt_switches $1 struc txt
 	struc2state_txt2txt -ss $1
 else
 $1_input.txt: 
-	mtt -q $1 struc txt
-	mtt -q $1 switch txt
+	mtt -q $mtt_switches $1 struc txt
+	mtt -q $mtt_switches $1 switch txt
 	struc2input_txt2txt $1
 $1_state.txt: 
-	mtt -q $1 struc txt
+	mtt -q $mtt_switches $1 struc txt
 	struc2state_txt2txt $1
 endif
 

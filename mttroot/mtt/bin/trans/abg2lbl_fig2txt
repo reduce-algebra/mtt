@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  1999/11/09 22:32:41  peterg
+## Under RCS ready for using arrays to contaain defaults.
+##
 ## Revision 1.7  1998/07/04 10:37:21  peterg
 ## Major revision to include:
 ## 	aliases
@@ -88,44 +91,36 @@ sort -u> $1_unique_raw_list
 #Write out the outline lbl file
 grep -v  '\[[0-9]*\]'  $1_unique_raw_list | \
 awk --field-separator ':' '
+ BEGIN {
+ }
  { 
-#   if (($1 != "0")&&($1 != "1")) 
-    { 
-      if (Component !~ $1) print "\n% Component type", $1
+  ##Aliases
+  if ($1 == "SS") 
+    port_alias[++j] = $2;
+  else
+    alias[++i] = $2;
 
-      if ($1 == "SS") {
-	port_alias[++j] = $2
-	print  "\t" $2 "\tSS\t\texternal,external";
-      }
 
-      else if ($1 == "R") {
-	alias[++i] = $2
-	print  "\t" $2"\t\tlin\tflow," $2;
-      }
+    ## Table of components
+    cr["SS"] = "SS";  arg["SS"] = "external,external";
 
-      else if ($1 == "I") {
-	alias[++i] = $2
-	print  "\t" $2"\t\tlin\tflow," $2;
-      }
+    cr["Se"] = "SS";  arg["Se"] = "external";
+    cr["Sf"] = "SS";  arg["Sf"] = "external";
 
-      else if ($1 == "C") {
-	alias[++i] = $2
-	print  "\t" $2"\t\tlin\teffort," $2;
-      }
+    cr["De"] = "SS";  arg["De"] = "external";
+    cr["Df"] = "SS";  arg["Df"] = "external";
 
-      else if ($1 == "TF") {
-	alias[++i] = $2
-	print  "\t" $2"\t\tlin\tflow," $2;
-      }
+    cr["R"] = "lin";  arg["R"]  = sprintf("flow,%s", $2);
+    cr["C"] = "lin";  arg["C"]  = sprintf("effort,%s", $2);
+    cr["TF"] = "lin";  arg["TF"]  = sprintf("flow,%s", $2);
+    cr["GY"] = "lin";  arg["GY"]  = sprintf("flow,%s", $2);
 
-      else if ($1 == "GY") {
-	alias[++i] = $2
-	print  "\t" $2"\t\tlin\tflow," $2;
-      }
-      else
-	 print  "\t" $2;
-      }
-      Component=$1
+  ## Heading
+  if (Component !~ $1) print "\n% Component type", $1
+
+  ## Component
+    print  "\t" $2 "\t" cr[$1] "\t\t" arg[$1];
+    Component=$1
   }
   END{
     print "\n% Port aliases" >> "mtt_junk_alias.txt";

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.177  1998/07/30 17:32:44  peterg
+## VERSION 3.0
+##
 ## Revision 1.176  1998/07/27 20:25:15  peterg
 ## Sorted out new mtt_r2m
 ##
@@ -654,6 +657,9 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-o )
                 mtt_switches="$mtt_switches $1";
 		dae_is_ode=1 ;;
+	-ss )
+                mtt_switches="$mtt_switches $1";
+		steadystate_computation=yes ;;
 	-d )
 		directory=$2; cd $directory; shift ;;
 	-S )
@@ -1103,24 +1109,24 @@ case $2 in
 		REPTYPE='tex' ;;
 esac
 
-# Save up the argument list in a file; but only if argument has changed
-ARGS=$4; _ARGS=-$4; __ARGS=`echo $_ARGS | tr ',' '-'`
-
-#DIFF doesn't like empty files - so put a blank if empty
-if [ -z "$ARGS" ]; then
-  ARGS=' ';
-  _ARGS='';
-fi
-
-cat > $1_args.new <<EOF
-$ARGS
-EOF
-
-DIFF=`diff -bq $1_args.m $1_args.new 2>/dev/null`
-
-if [ -n "$DIFF" ]; then
-  mv $1_args.new $1_args.m
-fi
+## # Save up the argument list in a file; but only if argument has changed
+## ARGS=$4; _ARGS=-$4; __ARGS=`echo $_ARGS | tr ',' '-'`
+## 
+## #DIFF doesn't like empty files - so put a blank if empty
+## if [ -z "$ARGS" ]; then
+##   ARGS=' ';
+##   _ARGS='';
+## fi
+## 
+## cat > $1_args.new <<EOF
+## $ARGS
+## EOF
+## 
+## DIFF=`diff -bq $1_args.m $1_args.new 2>/dev/null`
+## 
+## if [ -n "$DIFF" ]; then
+##   mv $1_args.new $1_args.m
+## fi
 
 # Tidy mode - operate in the directory MTT-work
 if [ "$tidy" = "tidy" ]; then
@@ -1391,14 +1397,25 @@ $1_numpar.c:  $1_numpar.txt $1_sympar.c
 	txt2c $1 numpar
 
 #SUMMARY input	numerical input declaration  -- default (txt)
+#SUMMARY state	numerical state declaration  -- default (txt)
+ifeq ($steadystate_computation,yes)
+$1_input.txt:
+	mtt -q $1 ss r
+	mtt -q $1 struc txt
+	struc2input_txt2txt -ss $1
+$1_state.txt:
+	mtt -q $1 ss r
+	mtt -q $1 struc txt
+	struc2state_txt2txt -ss $1
+else
 $1_input.txt: 
 	mtt -q $1 struc txt
 	struc2input_txt2txt $1
-
-#SUMMARY state	numerical state declaration  -- default (txt)
 $1_state.txt: 
 	mtt -q $1 struc txt
 	struc2state_txt2txt $1
+endif
+
 
 #ifeq ($switches,0)
 #$1_input.txt: 
@@ -1755,7 +1772,7 @@ $1_sm.tex: $1_sm.r  $1_sympar.r $1_simp.r
 $1_smx.r: $1_def.r $1_def.m $1_ode.r 
 		ode2smx_lang $1 r; tidy $1_smx.r
 $1_smx.m: $1_def.r $1_def.m $1_ode.r 
-		ode2smx_lang $1 m; matlab_tidy $1_smx.m
+		ode2smx_lang $1 m;
 
 #SUMMARY smc	controller form state matrices etc. - siso only (r)
 #SUMMARY smc	controller form state matrices etc. - siso only (tex)

@@ -1,0 +1,62 @@
+#! /bin/sh
+
+# Script to create a CD-ready directory from .deb package
+# output from script will be a directory which should be copied to / of CDROM
+# user of CDROM should run "apt-cdrom add"
+
+usage ()
+{
+    cat <<EOF
+
+usage: $0 debfile
+
+EOF
+}
+
+error ()
+{
+    echo $0: error: ${1:-"unknown error"} - aborting.
+    exit 1
+}
+
+debfile="$1"
+
+# should be root for some of these commands
+if [ ! `whoami` = "root" ]; then
+    export my_user=${USER}
+    export my_group=`groups | gawk '{print $1}'`
+    echo root password required
+    exec su -p -c "$0 $*"
+    error "root authorisation failed"
+fi
+
+if [ -z "${debfile}" ]; then
+    usage
+    error "No debfile given"
+fi
+
+topdir=`pwd`
+
+# create working directory
+tmpdir=`mktemp -d mtt_deb2cd.tmp.XXXXXXXXXX`
+if [ ! -d ${tmpdir} ]; then
+    error "cannot create temporary directory"
+fi
+
+cp ${debfile} ${tmpdir}/
+cd ${tmpdir}
+mkdir .disk
+echo "MTT (${debfile}, `date`)" > .disk/info
+tmpfile=`mktemp mtt_deb2cd.tmp.XXXXXXXXXX`
+echo "Scanning .deb packages"
+dpkg-scanpackages . ${tmpfile} | gzip > ./Packages.gz
+rm ${tmpfile}
+# create Redhat package
+echo "Creating .rpm, please wait ..."
+alien --to-rpm ${debfile}
+chown -R ${my_user:-"root"}.${my_group:-"root"} .
+cd ..
+
+echo "Directory created (${tmpdir}) - copy this to iso9660 image as /"
+
+exit 0

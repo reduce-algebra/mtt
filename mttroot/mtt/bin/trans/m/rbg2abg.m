@@ -7,6 +7,10 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.43  1999/10/18 04:08:46  peterg
+  ## ## Now computes n_vector_bonds -- number apparent (maybe vector) bonds per component.
+  ## ## Neeeded to vectorise junctions.
+  ## ##
   ## ## Revision 1.42  1999/08/25 21:45:03  peterg
   ## ## Spurious start to vector 0 and 1
   ## ##
@@ -245,20 +249,6 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
     ##Get component type
     eval(['[comp_type, comp_name] = ', name, '_cmp(i)']);
 
-#     ## Vector 0 and 1
-#     n_vector = 1;		# Default to scalar component
-#     if (comp_type(1)=='0')||(comp_type(1)=='1')
-#       n_name = length(comp_type);
-#       if n_name>1
-# 	n_vector = str2num(comp_type(2:n_name));
-#       endif
-#     endif
-#     n_vector
-
-#     ## Create scalar versions of vector components
-#     for new_comp=2:n_vector
-#       i_vector++;
-#     endfor
     
     ## There are n_comp_bonds bonds on this component with corresponding index
     [index,n_comp_bonds] = getindex(comp_near_bond,i);
@@ -287,11 +277,34 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
     signed_bond_list = bond_list.*direction;
     components = add_bond(components,signed_bond_list',i);
     
-				# Unalias all the ports on this component - if not a junction
+    ## Unalias and/or default all the ports on this componen
     unlabelled_ports = 0;  
     in_bonds = 0;
     out_bonds = 0;
-    if ((comp_type!="0")&&(comp_type!="1")) # Don't do junctions
+    if ((comp_type=="0")||(comp_type=="1")) # A junction
+      disp("---- default junctions ---- ");
+      junction_names = 0;
+      for j=1:n_comp_bonds
+	port_name_index = getindex(port_bond,signed_bond_list(j));
+	if port_name_index>0
+	  junction_port_name = port_name(port_name_index,:);
+	  junction_names++;
+	endif
+      endfor
+      junction_names, junction_port_name
+      if junction_names==1	# one named port
+	mtt_info(sprintf("Defaulting all ports on junction %s to %s", comp_name, junction_port_name));
+	## Make the other n-1 names the same.
+	for j=1:n_comp_bonds-1;
+	  port_name = [port_name; ["[" junction_port_name "]"]]; # add to list
+	  [port_name_index,junk] = size(port_name); # the corresponding index
+	  port_bond(port_name_index,:) = signed_bond_list(j); # add to port bond
+	endfor
+      elseif (junction_names!=0)&&(junction_names!=n_comp_bonds) # not allowed
+	mtt_error(sprintf("Junction %s must have 0, 1 or %i port labels", comp_name,n_comp_bonds),errorfile);
+      endif
+      
+    else			# Not a junction
       for j=1:n_comp_bonds
 	signed_bond = signed_bond_list(j);
 	port_name_index = getindex(port_bond,signed_bond);

@@ -1,0 +1,29 @@
+%SUMMARY EMAF Effort-modulated AF component
+%DESCRIPTION Ports: [in], [out] and [mod]
+
+
+%% Label file for system EMAF (EMAF_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type EMTF
+	gain		lin		flow
+
+% Component type SS
+	[in]	SS	external,external
+	[mod]	SS	external,external
+	[out]	SS	external,external
+
+

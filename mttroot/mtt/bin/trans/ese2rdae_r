@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.4  1998/04/07 15:06:46  peterg
+## Correct log file name
+##
 ## Revision 1.3  1998/03/07 12:57:19  peterg
 ## Fixed logname bug
 ##
@@ -133,6 +136,13 @@ Reduce_Matrix()$
 MTT_Matrix := MTTYz$ 
 MTT_Matrix_name := "MTTYz"$
 MTT_Matrix_n := MTTNyz$
+MTT_Matrix_m := 1$
+Reduce_Matrix()$
+
+% Connecting inputs
+MTT_Matrix := MTTuc$ 
+MTT_Matrix_name := "MTTuc"$
+MTT_Matrix_n := MTTNuc$
 MTT_Matrix_m := 1$
 Reduce_Matrix()$
 

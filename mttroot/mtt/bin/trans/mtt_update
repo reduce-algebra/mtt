@@ -1,0 +1,106 @@
+#!/bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: mtt_update
+# Generates r code to write matrices
+# Copyright (C) 2000 by Peter J. Gawthrop
+
+###############################################################
+## Version control history
+###############################################################
+## $Id$
+## $Log$
+##
+###############################################################
+
+
+sys=$1 # System name
+rep=$2 # System representation
+
+textfile=$1_$2.txt
+infofile=$1_sympar.txt
+default='0.0'
+
+# Inform User
+echo Checking $textfile
+
+# Remove tmp files
+rm -f mtt_in_text mtt_in_info
+
+# Strip files
+strip_comments <$textfile >mtt_text
+strip_comments <$infofile >mtt_info
+
+# Use awk to check file
+awk '{
+  if (FILENAME=="mtt_text") {
+    gsub("[\t ]" ,""); # Remove whitespace
+    split($0,a,"=");
+    text[a[1]] = a[2];
+  }
+  if (FILENAME=="mtt_info") info[$1] = default;
+  }
+END{
+  # for (iname in info) print iname
+  for (tname in text) {
+    if (!(tname in info)) print tname >> "mtt_in_text"
+  }
+  for (iname in info) {
+    if (!(iname in text)) print iname >> "mtt_in_info"
+  }
+  }'  default=$default mtt_text mtt_info
+
+
+answered=''
+if [ -f "mtt_in_text" ]; then
+  in_text=`cat mtt_in_text`
+  echo "The following variables are defined in $textfile, but do not exist:"
+  echo $in_text    
+
+  while [ -z "$answered" ]; do
+    echo "Update $textfile (y/n)?"
+    read answer
+    case $answer in
+	y)
+	    answered=yes
+ 	    for old in $in_text; do
+	      sed "s/\($old[ \t]*=\)/## Removed by MTT on `date`: \1/" <$textfile > mtt_tmp
+              mv mtt_tmp $textfile
+	    done
+	    ;;
+	n)
+	    answered=yes
+	    ;;
+	*)
+    esac
+  done      
+fi
+
+answered=''
+if [ -f "mtt_in_info" ]; then
+  in_info=`cat mtt_in_info`
+  echo "The following variables exist, but are not defined in $textfile:"
+  echo $in_info
+
+  while [ -z "$answered" ]; do
+    echo "Update $textfile (y/n)?"
+    read answer
+    case $answer in
+	y)
+	    answered=yes
+ 	    for new in $in_info; do
+		echo "$new = $default; # Added by MTT on `date`" >> $textfile
+	    done
+	    ;;
+	n)
+	    answered=yes
+	    ;;
+	*)
+    esac
+  done      
+fi
+
+

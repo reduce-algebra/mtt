@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.191  1998/09/02 12:05:39  peterg
+## Added INPUT to simpar
+##
 ## Revision 1.190  1998/09/02 11:48:51  peterg
 ## VERSION 3.2 (Swansea)
 ## abg data structure now uses explicti port and subsystem lists so that
@@ -959,6 +962,17 @@ if [ "$2" = "rep" ]; then
 else
      documenttype=section
 fi
+
+case $2 in
+    nyfr)
+	NyquistStyle='True'
+	;;
+    nifr)
+	NyquistStyle='True'
+	;;
+    *)
+	
+esac
 
 #SUMMARY abg	acausal bond graph (fig)
 #SUMMARY abg	acausal bond graph (ps)
@@ -2111,7 +2125,7 @@ $1_odes.dat: $1_odes.dat2
 
 #Generic conversion of data files from dat to (gplot) gdat format 
 $1_$2.gdat: $1_$2.dat $1_struc.txt  $1_args.m
-	dat2gdat $1 $2 $4
+	dat2gdat $1 $2 $4 $NyquistStyle
 
 #Generic conversion of Latex to latex document
 mtt.sty:

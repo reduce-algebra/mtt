@@ -17,6 +17,9 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.21  1997/08/18 16:25:25  peterg
+% %% Minor bug fixes
+% %%
 % %% Revision 1.20  1997/08/18 12:45:24  peterg
 % %% Replaced: comp_bonds = bonds(bond_list,:)
 % %% by: 	for kk = 1:n_comp
@@ -172,9 +175,16 @@ if ~at_top_level
                full_name, n_port_bonds, n_ports), infofile);
 
   else % Copy the port bonds & status
-    j = abs(components(1:n_ports,1)) % relevant bond numbers
-    bonds(j,:) = port_bonds;
-    status(1:n_ports) = port_status;
+    port_bond_index = abs(components(1:n_ports,1)) % relevant bond numbers
+    for j = 1:n_port_bonds
+      jj = port_bond_index(j);
+      for k = 1:2
+	if bonds(jj,k)==0 % only copy if not already set
+	bonds(jj,k) = port_bonds(j,k);
+	end;
+      end;
+      status(1:n_ports) = port_status;
+    end
   end
 else
   n_port_bonds=0;

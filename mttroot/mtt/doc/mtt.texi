@@ -16,6 +16,9 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.5  2001/07/23 03:35:29  geraint
+@comment  Updated file structure (mtt/bin).
+@comment
 @comment  Revision 1.4  2001/07/23 03:25:02  geraint
 @comment  Added notes on -ae hybrd, rk4, ode2odes.cc, .oct dependencies.
 @comment
@@ -636,6 +639,7 @@ Extending MTT
 
 * Makefiles::                   
 * New representations::         
+* Component library ::          
 
 Languages
 
@@ -3053,9 +3057,16 @@ Vectors of components can be created in four cases:
 
 
 In each case, the presence of a vector component is indicated by a
-single port label  (@pxref{Port labels}) containing numerals from 1 to
-the order of the vector. Thus a vector of 3 component is indicated by a
+single port label  (@pxref{Port labels}) of one of two forms:
+@enumerate
+@item containing numerals from 1 to
+the order of the vector. Thus a vector of 3 components is indicated by a
 port label of the form [1,2,3].
+@item  1: followed by
+the order of the vector. Thus a vector of 3 components is indicated by a
+port label of the form [1:3].
+@end enumerate
+
 
 Within the corresponding label file (@pxref{Labels (lbl)}), the
 components of a vector port can be accessed using _i where i is the
@@ -3107,6 +3118,51 @@ therefore useful for distinguishing artwork.
 A valid name is a text string containing alphanumeric characters.  It
 must @strong{NOT} contain underscore @samp{_}, hyphen @samp{-}, @samp{:}
 or @samp{*}.
+
+The following reserved words in reduce should also be avoided (with any case)
+@example
+
+Commands ALGEBRAIC ANTISYMMETRIC ARRAY BYE CLEAR CLEARRULES COMMENT
+CONT DECOMPOSE DEFINE DEPEND DISPLAY ED EDITDEF END EVEN FACTOR FOR
+FORALL FOREACH GO GOTO IF IN INDEX INFIX INPUT INTEGER KORDER LET
+LINEAR LISP LISTARGP LOAD LOAD PACKAGE MASS MATCH MATRIX MSHELL
+NODEPEND NONCOM NONZERO NOSPUR ODD OFF ON OPERATOR ORDER OUT PAUSE
+PRECEDENCE PRINT PRECISION PROCEDURE QUIT REAL REMFAC REMIND RETRY
+RETURN SAVEAS SCALAR SETMOD SHARE SHOWTIME SHUT SPUR SYMBOLIC
+SYMMETRIC VECDIM VECTOR WEIGHT WRITE WTLEVEL
+
+Boolean Operators EVENP FIXP FREEOF NUMBERP ORDP PRIMEP
+
+Infix Operators := = >= > <= < => + * / ^ ** . WHERE SETQ OR AND
+MEMBER MEMQ EQUAL NEQ EQ GEQ GREATERP LEQ LESSP PLUS DIFFERENCE MINUS
+TIMES QUOTIENT EXPT CONS Numerical Operators ABS ACOS ACOSH ACOT ACOTH
+ACSC ACSCH ASEC ASECH ASIN ASINH ATAN ATANH ATAN2 COS COSH COT COTH
+CSC CSCH EXP FACTORIAL FIX FLOOR HYPOT LN LOG LOGB LOG10 NEXTPRIME
+ROUND SEC SECH SIN SINH SQRT TAN TANH
+
+Prefix Operators APPEND ARGLENGTH CEILING COEFF COEFFN COFACTOR CONJ
+DEG DEN DET DF DILOG EI EPS ERF FACTORIZE FIRST GCD G IMPART INT
+INTERPOL LCM LCOF LENGTH LHS LINELENGTH LTERM MAINVAR MAT MATEIGEN MAX
+MIN MKID NULLSPACE NUM PART PF PRECISION RANDOM RANDOM NEW SEED RANK
+REDERR REDUCT REMAINDER REPART REST RESULTANT REVERSE RHS SECOND SET
+SHOWRULES SIGN SOLVE STRUCTR SUB SUM THIRD TP TRACE VARNAME
+
+Reserved Variables CARD NO E EVAL MODE FORT WIDTH HIGH POW I INFINITY
+K!* LOW POW NIL PI ROOT MULTIPLICITY T
+
+Switches ADJPREC ALGINT ALLBRANCH ALLFAC BFSPACE COMBINEEXPT
+COMBINELOGS COMP COMPLEX CRAMER CREF DEFN DEMO DIV ECHO ERRCONT
+EVALLHSEQP EXP EXPANDLOGS EZGCD FACTOR FORT FULLROOTS GCD IFACTOR INT
+INTSTR LCM LIST LISTARGS MCD MODULAR MSG MULTIPLICITIES NAT NERO
+NOSPLIT OUTPUT PERIOD PRECISE PRET PRI RAT RATARG RATIONAL RATIONALIZE
+RATPRI REVPRI RLISP88 ROUNDALL ROUNDBF ROUNDED SAVESTRUCTR
+SOLVESINGULAR TIME TRA TRFAC TRIGFORM TRINT
+
+Other Reserved Ids BEGIN DO EXPR FEXPR INPUT LAMBDA LISP MACRO PRODUCT
+REPEAT SMACRO SUM UNTIL WHEN WHILE WS
+
+
+@end example
 
 
 
@@ -4468,6 +4524,9 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.5  2001/07/23 03:35:29  geraint
+# %% Updated file structure (mtt/bin).
+# %%
 # %% Revision 1.4  2001/07/23 03:25:02  geraint
 # %% Added notes on -ae hybrd, rk4, ode2odes.cc, .oct dependencies.
 # %%
@@ -5360,11 +5419,12 @@ This representation has the standard text view
 
 @strong{MTT} has a number of built-in mechanisms for the user to extend
 its capabilities. As @strong{MTT} is based on `Make' it is unsurprising
-that these  involve the creation of `make files'. 
+that some of these  involve the creation of `make files'. 
 
 @menu
 * Makefiles::                   
 * New representations::         
+* Component library ::          
 @end menu
 
 @node Makefiles, New representations, Extending MTT, Extending MTT
@@ -5400,7 +5460,7 @@ TwoLinkGMV_numpar.m: TwoLinkGMV_numpar.txt
 All of the files in the line stating `all:' are created when
 @strong{MTT} is executed (if they don't already exist).
 
-@node New representations,  , Makefiles, Extending MTT
+@node New representations, Component library , Makefiles, Extending MTT
 @comment  node-name,  next,  previous,  up
 @section New representations
 @cindex New representations
@@ -5487,6 +5547,24 @@ s$(SYS)_def.m:
 
 Future extensions of @strong{MTT} will use such representations stored
 in $MTT_REP.
+
+@node Component library ,  , New representations, Extending MTT
+@comment  node-name,  next,  previous,  up
+@section Component library
+@cindex Component library
+@cindex component
+@cindex Component library
+
+If @strong{MTT} does not recognise a component (eg named MyComponent) as
+a simple component (@pxref{Simple components}) or as already existing,
+it searches the library search path $MTT_COMPONENTS
+(@pxref{$MTT_COMPONENTS}) for a directory called MyComponent containing
+MyComponent_abg.fig. It then copies the @emph{entire} directory into the
+current working directory. Thus, for example, the directory could
+contain MyComponent_desc.tex MyComponent_lbl.txt and MyComponent_cr.r in
+addition to MyComponent_abg.fig.
+
+
 
 @c      node   next  prev  up
 @node   Languages, Language tools, Extending MTT, Top
@@ -5935,7 +6013,7 @@ The environment variable $MTT_COMPONENTS is a colon-separated path
 pointing to directories containing components and subsystems.
 By default
 @example
-MTT_COMPONENTS=$MTTPATH/lib/comp
+MTT_COMPONENTS=.:$MTT_LIB/lib/comp/
 @end example
 but you may wish to add your own component libraries:
 @example

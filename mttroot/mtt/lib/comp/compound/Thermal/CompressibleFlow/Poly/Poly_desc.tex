@@ -7,6 +7,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1998/03/31 15:05:33  peterg
+% %% Spell checked
+% %%
 % %% Revision 1.2  1998/03/27 10:56:14  peterg
 % %% Added bicausal bit
 % %%
@@ -25,8 +28,10 @@ polytropic expansion using:
   T_2 = T_1 \left ( \frac{P_2}{P_1} \right )^\alpha
 \end{equation}
 where $\alpha = \frac{n-1}{n}$ and $n$ is the coefficient of
-polytropic expansion.
+polytropic expansion.  This component imposes zero flow at all its
+ports and therefore does not affect energy balance.
 
-The output is \emph{bicausal} and also imposes a zero flow. This is
-implemented using the bicausal \textbf{SS} component labeled ``zero''.
+The output is \emph{bicausal} as it imposes both $T_2$ and a zero flow.
+This is implemented using the bicausal \textbf{SS} component labeled
+``zero''.
 

@@ -9,17 +9,21 @@ usage ()
 usage: $0 [options]
 
 options:
-	-d /path/to/mttroot
+	-dir /path/to/mttroot
 		Build package from local directory /path/to/mttroot instead of sourceforge CVS.
 
-	-k
+        -email email@address
+		email address of packager
+	-keep
 		Keep temporary directory after package creation
 
-	-l changelog text
+	-log changelog text
 		Write changelog text to changelog file
 		Note: this must be the last option given.
 
-	-v #.#
+	-name name
+		name of packager
+	-version #.#
 		Use version #.# instead of the date to label the .deb
 
 EOF
@@ -38,6 +42,10 @@ if [ ! `whoami` = "root" ]; then
     error "root authorisation failed"
 fi
 
+# use -email and -name to change
+DEBFULLNAME=${DEBFULLNAME:-"Geraint Paul Bevan"}
+DEBEMAIL=${DEBEMAIL:-"geraint@users.sourceforge.net"}
+
 # default switches
 default_sources="sourceforge"
 default_logtext="snapshot from ${default_sources}."
@@ -51,7 +59,7 @@ keeptmp="remove"
 # look for command line arguments
 while [ -n "`echo $1 | grep '^-'`" ]; do
     case $1 in
-	-d) # package directory instead of cvs sources
+	-dir) # package directory instead of cvs sources
 	    # should be the path to the mttroot directory
 	    sources=$2
 	    if [ ! "`basename ${sources}`" = "mttroot" ]; then
@@ -62,17 +70,26 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	    fi
 	    echo "Using source directory: ${sources}"
 	    shift ;;	
-	-h)
+	-email) # email address of packager
+	    DEBEMAIL=$2
+	    echo "Using email address ${DEBEMAIL}"
+	    shift ;;
+	-h | -help | --help)
 	    usage
 	    exit 0 ;;	
-	-k) # keep temporary directory
+	-keep) # keep temporary directory
+	    echo "Keeping temporary files"
 	    keeptmp="keep" ;;
-	-l) # specify changelog text
+	-log) # specify changelog text
 	    shift
 	    logtext="$*"
 	    echo "Using changelog text: ${logtext}"
 	    shift ;;
-	-v) # specify version
+	-name) # name of packager
+	    DEBFULLNAME=$2
+	    echo "Using name ${DEBFULLNAME}"
+	    shift ;;
+	-version) # specify version
 	    version=$2
 	    echo "Using version number: ${version}"
 	    shift ;;
@@ -110,7 +127,7 @@ uupdate -u mtt-${version}.tar.gz
 cd ../mtt-${version}/debian
 dch -v ${version} ${logtext}
 cd ..
-dpkg-buildpackage -rfakeroot
+dpkg-buildpackage -rfakeroot -k${DEBEMAIL}
 cd ..
 
 # clean up

@@ -6,6 +6,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.3  2002/09/29 13:47:35  geraint
+## Updated names.
+##
 ## Revision 1.2  2001/10/05 11:24:35  gawthrop
 ## Updated for new mtt features - input.txt etc
 ##
@@ -18,4 +21,4 @@
 ###############################################################
 
 # Set the switches
-clutch_drive_clutch_mtt_switch_logic	= ((t >= 5)&&(t < 15)); # 
+clutch__drive__clutch__mtt_switch_logic	= ((t >= 5)&&(t < 15)); # 

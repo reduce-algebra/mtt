@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.5  1997/05/15  08:30:14  peterg
+# Now write default states (using _struc file).
+#
 # Revision 1.4  1997/05/15  07:19:19  peterg
 # Put back "tolower"
 #
@@ -46,7 +49,7 @@ awk '{i++; print tolower($1) " = \t1.0; \# Default value"}' $1_sympar.txt \
 echo "# Initial states" >> $1_numpar.txt
 awk '{
   if ($1=="state") 
-    print "x[" $2 "] = \t0.0; \# Initial state for " $4 " (" $3 ")"
+    print "x(" $2 ") = \t0.0; \# Initial state for " $4 " (" $3 ")"
 }' \
  $1_struc.txt >> $1_numpar.txt
 

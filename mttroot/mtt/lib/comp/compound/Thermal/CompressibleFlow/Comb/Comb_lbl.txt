@@ -20,6 +20,8 @@
 %ALIAS	$2	v_c
 %ALIAS	$3	r
 
+%ALIAS	hPipe	CompressibleFlow/hPipe
+
 %% Label file for system Comb (Comb_lbl.txt)
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -27,6 +29,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.6  1998/07/04 08:24:25  peterg
+% %% New-style SS
+% %%
 % %% Revision 1.5  1998/07/03 14:55:33  peterg
 % %% Aliased parameters.
 % %% Removed _c from parameters,

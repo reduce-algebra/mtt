@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/07/22 15:47:28  peterg
+## Now operates on ordinary differential equation file.
+##
 ## Revision 1.1  1996/08/25 09:52:20  peter
 ## Initial revision
 ##
@@ -42,37 +45,63 @@ in "$1_sspar.r";
 %in "$1_cse.r";
 
 %Read in the ode
-%in "$1_ode.r";
+in "$1_ode.r";
+
+%Read the formatting function
+in "$MTTPATH/trans/reduce_matrix.r";
 
 OFF Echo;
 OFF Nat;
 OUT "$1_ss.r";
 
+IF MTTNx>0 THEN
+  MTTdx:= MTTdx;
 
 %Write out the steady-state values (if any)
 write "%Steady-state values";
-IF MTTNx>0 THEN
-BEGIN
-  write "matrix MTTX0(", MTTNx, ",1)";
-END;
-MTTX0 := MTTX;
 
-IF MTTNu>0 THEN
-BEGIN
-  write "matrix MTTU0(", MTTNu, ",1)";
-END;
-MTTU0 := MTTU;
 
-IF MTTNy>0 THEN
-BEGIN
-  write "matrix MTTY0(", MTTNy, ",1)";
-END;
-MTTY0 := MTTY;
+% State
+MTT_Matrix := MTTX$ 
+MTT_Matrix_name := "MTTx"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := 1$
+Reduce_Matrix()$
 
-IF MTTNx>0 THEN
-  write "matrix MTTdX0(", MTTNx, ",1)";
+% State derivative
+MTT_Matrix := MTTdX$ 
+MTT_Matrix_name := "MTTdX"$
+MTT_Matrix_n := MTTNx$
+MTT_Matrix_m := 1$
+Reduce_Matrix()$
 
-MTTdX0 := MTTdX;
+% Nonstate
+MTT_Matrix := MTTZ$ 
+MTT_Matrix_name := "MTTZ"$
+MTT_Matrix_n := MTTNz$
+MTT_Matrix_m := 1$
+Reduce_Matrix()$
+
+% Output
+MTT_Matrix := MTTy$ 
+MTT_Matrix_name := "MTTy"$
+MTT_Matrix_n := MTTNy$
+MTT_Matrix_m := 1$
+Reduce_Matrix()$
+
+% Zero outputs
+MTT_Matrix := MTTYz$ 
+MTT_Matrix_name := "MTTYz"$
+MTT_Matrix_n := MTTNyz$
+MTT_Matrix_m := 1$
+Reduce_Matrix()$
+
+% Input
+MTT_Matrix := MTTu$ 
+MTT_Matrix_name := "MTTu"$
+MTT_Matrix_n := MTTNu$
+MTT_Matrix_m := 1$
+Reduce_Matrix()$
 
 
 %Write them out by component - but only if values have been set

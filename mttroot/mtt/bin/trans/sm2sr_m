@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.12  1996/09/12  18:45:31  peter
+# Back to rcs.
+#
 # Revision 1.11  1996/08/24  14:02:39  peter
 # Included glabal parameter passing.
 # Proper error handling.
@@ -68,7 +71,7 @@ else
   PARAMS=$2;
 fi
 
-PARAMS="$PARAMS ;"
+# PARAMS="$PARAMS ;"
 
 $MATRIX << EOF > sm2sr_m.log 2>mtt_error.txt
 

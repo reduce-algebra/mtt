@@ -15,6 +15,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.251  2000/08/04 10:54:33  peterg
+## Rationalised call to gcc using -lp2c to access p2c lib.
+##
 ## Revision 1.250  2000/08/01 19:29:27  peterg
 ## Explcit zero of input in the simulations
 ##
@@ -1017,7 +1020,7 @@ if [ -z "$1" ]; then
     echo '       mtt info             -- info-based manual'
     echo '       mtt info topic'
     echo '       mtt hinfo            -- hypertext manual'
-    echo '       mtt manual           -- ps manual'
+    echo '       mtt manual           -- pdf manual'
     echo '       mtt warranty'
     echo '       mtt clean           -- cleans up intermediate files'
     echo '       mtt rclean          -- recursively cleans up intermediate files'
@@ -1077,10 +1080,10 @@ if [ "$1" = "hinfo" ] && [$2 = ""]; then
 fi
 
 if [ "$1" = "manual" ] && [$2 = ""]; then
-  mtt_check_var "$PSVIEW" PSVIEW
-  (cd $MTTPATH/doc/; make --silent mtt.ps.gz) 
-  echo Invoking $PSVIEW 
-  $PSVIEW  $MTTPATH/doc/mtt.ps.gz &
+  mtt_check_var "$PDFVIEW" PDFVIEW
+  (cd $MTTPATH/doc/; make --silent mtt.pdf) 
+  echo Invoking $PDFVIEW 
+  $PDFVIEW  $MTTPATH/doc/mtt.pdf &
   exit
 fi
 
@@ -1200,8 +1203,8 @@ if [ "$2" = "rep" ]; then
 	dotdot='../'
       fi  
   
-     isdirectory=`file $dotdot$1 | awk '{print $2}' | grep directory`
-     if [ -n "$isdirectory" ]; then
+     #isdirectory=`file $dotdot$1 | awk '{print $2}' | grep directory`
+     if [ -d "$dotdot$1" ]; then
 	documenttype=book
      fi
 else

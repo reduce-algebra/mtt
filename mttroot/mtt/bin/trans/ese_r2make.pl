@@ -95,26 +95,16 @@ sub read_ese_r {
 #-------------------------------------------------------------------------------
 sub get_dependencies {
 
-    # create pattern to match any left values
-    my $pattern = "";
-    foreach my $lvar (keys %expressions) {
-	$pattern = "$pattern|$lvar";
-    }
-    # strip initial |
-    $pattern =~ s!\|(.*)!/$1/!;	# var1|var2|var3
-    print "$pattern\n" if $debug;
-
-    # compile the pattern to improve speed
-    my $regexp = qr/($pattern)/;
-
     # compare the pattern to each expression
     foreach my $lvar (keys %expressions) {
 	$dependencies{$lvar} = "";
 	$_ = $expressions{$lvar};
-	while (/$regexp/g) {
-	    # a left value has been found in the expression
-	    # add it to the dependencies for this lvar
-	    $dependencies{$lvar} = "$dependencies{$lvar} $1";
+	for my $lvar2 (keys %expressions) {
+	    if ($expressions{$lvar} =~ /$lvar2/) {
+		# a left value has been found in the expression
+		# add it to the dependencies for this lvar
+		$dependencies{$lvar} = "$dependencies{$lvar} $lvar2";
+	    }
 	}
 	print "$lvar:\t$dependencies{$lvar}\n" if $debug;
     }

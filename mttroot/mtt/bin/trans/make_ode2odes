@@ -9,6 +9,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.68  2002/04/15 10:54:31  geraint
+## Statically declare outputs and initialise to zero.
+## This is necessary to prevent spurious values from being output when no assignments are made (i.e. when "y(i) := 0 for all u"  (Reduce:see NERO)).
+##
 ## Revision 1.67  2002/04/09 12:04:21  geraint
 ## Replaced ios:: with std::ios:: for g++-3.0 compatability.
 ##
@@ -425,9 +429,9 @@ cat <<EOF  > $filename
 
 #include "mtt_${algebraic_solver}.hh"
 
+#include <fstream>
 #ifdef STANDALONE
 #include <csignal>
-#include <fstream>
 
 extern ColumnVector F${sys}_ae (
 	ColumnVector &x,

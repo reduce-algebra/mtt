@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1998/05/14 08:14:28  peterg
+## Now reads in data from the simpar file.
+##
 ## Revision 1.5  1998/05/13 16:42:03  peterg
 ## Fixed various bugs etc.
 ##
@@ -93,7 +96,7 @@ if ny>0
   Y = [];
   for tt=T'
     i=i+1;
-    y = $1_daeo(x(i,:),tt)';
+    y = $1_daeo(x(i,:),tt);
     Y = [Y; y'];
   end;
   write_matrix([T,Y], '$1_daeso');

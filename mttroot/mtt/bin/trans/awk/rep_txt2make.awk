@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.3  1997/05/19  15:40:04  peterg
+# Pass mtt swithches to the new make file
+#
 # Revision 1.2  1996/11/21  15:57:28  peterg
 # Now runs mtt quietly.
 #
@@ -21,19 +24,10 @@
 ###############################################################
 
 
-BEGIN {
-  split(ARGV[1],a,"_");
-  system_name = a[1];
-    }
 {
-  if (NF==2) {
-    if( match("tex txt r m ps",$2)>0) {
-      printf("mtt -q %s %s %s %s\n ", switches, system_name, $1, $2)
-    } 
-  }
-}
-END {
-
+  if (NF==2)
+    if( match("tex txt r m ps",$2)>0)
+      print "mtt -q", switches, system_name, $1, $2
 }
 
 

@@ -4,8 +4,8 @@
 %DESCRIPTION Parameter 3: alpha = (n-1)/n, n coefficient of polytropic
 %DESCRIPTION expansion.
 %DESCRIPTION Parameter 4: k_t pump constant: mass flow = k_t*shaft speed
-%ALIAS	In  Th_in,Hy_in
-%ALIAS	Out Th_out,Hy_out
+%ALIAS	in  Th_in,Hy_in
+%ALIAS	out Th_out,Hy_out
 
 %% Label file for system Turb (Turb_lbl.txt)
 
@@ -14,6 +14,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1998/07/02 10:51:10  peterg
+% %% Added port aliases
+% %%
 % %% Revision 1.1  1998/04/07 15:21:02  peterg
 % %% Initial revision
 % %%

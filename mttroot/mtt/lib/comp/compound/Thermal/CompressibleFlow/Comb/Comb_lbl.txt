@@ -1,7 +1,7 @@
 %SUMMARY Comb: Combustion chamber model
 %DESCRIPTION 
-%ALIAS	In Th_in,Hy_in
-%ALIAS	Out Th_out,Hy_out
+%ALIAS	in Th_in,Hy_in
+%ALIAS	out Th_out,Hy_out
 %% Label file for system Comb (Comb_lbl.txt)
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -9,6 +9,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1998/07/02 10:49:32  peterg
+% %% Added port aliases
+% %%
 % %% Revision 1.1  1998/05/19 09:11:29  peterg
 % %% Initial revision
 % %%

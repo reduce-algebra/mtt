@@ -19,6 +19,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.19  1996/08/19 15:33:22  peter
+## Included new state matric (sm) rep.
+## Generate step response (sr) from sm.
+##
 ## Revision 1.18  1996/08/19 13:30:54  peter
 ## New CLEAN target.
 ##
@@ -85,8 +89,10 @@ echo
 if [ "$1" = "" ]; then
   echo 'Usage: mtt info'
   echo '       mtt warranty'
-   echo '       mtt system_name representation language'
-   echo '       mtt system_name representation language parameters'
+  echo '       mtt system_name clean'
+  echo '       mtt system_name representation vc'
+  echo '       mtt system_name representation language'
+  echo '       mtt system_name representation language parameters'
   exit
 fi
 
@@ -183,6 +189,41 @@ case $2 in
 		REPTYPE='tex' ;;
 esac
 
+
+# Version control
+if [ "$3" = "vc" ]; then
+  case $2 in
+	abg )
+		VC='ok'
+		VCext='fig' ;;
+	lbl )
+		VC='ok'
+		VCext='txt' ;;
+	 cr)
+		VC='ok'
+		VCext='r' ;;
+	sympar )
+		VC='ok'
+		VCext='r' ;;
+	simp )
+		VC='ok'
+		VCext='r' ;;
+	numpar )
+		VC='ok'
+		VCext='m' ;;
+	input )
+		VC='ok'
+		VCext='m' ;;
+	sspar )
+		VC='ok'
+		VCext='r' ;;
+	*)
+		echo Version control is not appropriate for representation $2
+		exit  ;;
+  esac
+fi
+
+
 # This is the main mtt programme
  
 make -s  -f -  $1_$2.$3 << EOF
@@ -195,7 +236,6 @@ $1_args.m:
 	touch $1_args.m
 
 #Create acausal bond graph figure using xfig
-#.PHONY: $1_abg.fig 
 $1_abg.fig:
 	$FIG $1_abg.fig 
 
@@ -203,7 +243,8 @@ $1_abg.fig:
 $1_lbl.txt:
 	echo Creating $1_lbl.txt
 	( \
-	echo "%% Label file for $1 ($1_lbl.txt)"; \
+	echo "%% Label file for system $1 ($1_lbl.txt)"; \
+	cat $MTTPATH/m/rcs_header.txt; \
 	echo "%% Each line should be of one of the following forms:"; \
 	echo "%	a comment (ie starting with %)"; \
 	echo "%	Component-name	CR_name	arg1,arg2,..argn"; \
@@ -214,7 +255,8 @@ $1_cr.r:
 $1_sympar.r:
 	echo Creating $1_sympar.r
 	( \
-	echo "%% Symbolic parameter file for $1 ($1_sympar.r)"; \
+	echo "%% Symbolic parameter file for system $1 ($1_sympar.r)"; \
+	cat $MTTPATH/m/rcs_header.txt; \
 	echo "%% Change the following line to reflect the number of variables"; \
 	echo "MTTNVar := 0;"; \
 	echo "IF MTTNVar>0 THEN MATRIX MTTVar(MTTNVar,1);"; \
@@ -224,18 +266,21 @@ $1_sympar.r:
 $1_simp.r:
 	echo Creating $1_simp.r
 	( \
-	echo "%% Reduce comands to simplify output for $1 ($1_simp.r)"; \
+	echo "%% Reduce comands to simplify output for system $1 ($1_simp.r)"; \
+	cat $MTTPATH/m/rcs_header.txt; \
         )> $1_simp.r
 
 $1_numpar.m: $1_sympar.r
 	mknumpar $1; matlab_tidy $1_numpar.m;
+	mv $1_numpar.m junk; cat $MTTPATH/m/rcs_header.txt junk>$1_numpar.m
 
 $1_input.m:
 	echo Creating $1_input.m
 	( \
 	echo "function u = $1_input(t)"; \
-	echo "%% Input file for $1 ($1_input.m)"; \
+	echo "%% Input file for system $1 ($1_input.m)"; \
 	echo "%% This file provides the system input for simulation:";\
+	cat $MTTPATH/m/rcs_header.txt; \
 	echo; \
 	echo "% Set up system definitions"; \
 	echo "[nx,ny,nu,nz,nyz] = $1_def;"; \
@@ -246,25 +291,27 @@ $1_input.m:
 
 $1_sspar.r:
 	echo Creating $1_sspar.r
+	(\
 	echo "%% Reduce steady-state parameter file for $1 ($1_sspar.r)" \
-	> $1_sspar.r
+	cat $MTTPATH/m/rcs_header.txt; \
+	)> $1_sspar.r
 
 $1_rep.txt:
 	echo Creating $1_rep.txt
 	( \
 	echo "%% Outline report file for system $1 ($1_rep.txt)"; \
+	cat $MTTPATH/m/rcs_header.txt; \
 	echo "abg ps"; \
 	echo "lbl txt"; \
 	echo "cbg ps"; \
 	echo "dae tex"; \
 	)> $1_rep.txt
 
+
 #Raw bond graph: fig file to mfile
 $1_rbg.m: $1_abg.fig $1_lbl.txt
 	rbg_fig2m $1
-
 $1_cmp.m: $1_rbg.m
-
 $1_fig.fig: $1_rbg.m
 
 #Bond graph conversions using matlab
@@ -275,10 +322,6 @@ $1_abg.m: $1_rbg.m
 #Causal bond graph: mfile to fig conversion
 $1_cbg.fig: $1_cbg.m $1_rbg.m $1_fig.fig
 	cbg_m2fig $1
-
-#Causal bond graph: xfig display
-#$1_cbg.view: $1_cbg.fig
-#	echo "Creating view of $1_cbg"; xfig $1_cbg.fig &
 
 
 #Acausal bond graph to causal bond graph: mfile
@@ -497,5 +540,13 @@ $1_rep.tex: $1_rep.make $(cat $1_rep.make)
 $1_rep.html: $1_rep.dvi
 	echo Creating $1_rep.html 
 	latex2html $1_rep.tex
+
+# Version control system - uses RCS
+RCS:
+	echo Creating RCS
+	mkdir RCS
+$1_$2.vc: RCS $1_$2.$VCext 
+	echo Version control on $1_$2.$VCext
+	ci -I $1_$2.$VCext </dev/tty  ; co -l $1_$2.$VCext 
 
 EOF

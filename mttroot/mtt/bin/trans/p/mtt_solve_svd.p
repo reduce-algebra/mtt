@@ -1,8 +1,7 @@
-PROCEDURE mtt_solve_svd(VAR x     : StateVector;
-			A     : StateMatrix;
-		    VAR B     : StateVector;
-			n     : integer;
-			Small : real);
+PROCEDURE mtt_solve_svd(VAR x : StateVector;
+			    A : StateMatrix;
+			VAR B : StateVector;
+			    n : integer);
 
 {Solve linear equation via svd}
 
@@ -13,6 +12,10 @@ PROCEDURE mtt_solve_svd(VAR x     : StateVector;
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.2  1998/08/17 12:40:25  peterg
+% % Renamed mtt_solve to mtt_solve_svd
+% % -- now also have mtt_solve_lu
+% %
 % % Revision 1.1  1998/08/17 12:38:52  peterg
 % % Initial revision
 % %
@@ -25,6 +28,8 @@ PROCEDURE mtt_solve_svd(VAR x     : StateVector;
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  }
 
+CONST
+   Small =  1e-6; (* Criteroion for small svd *)
 VAR
    i	     : integer;
    wmax,wmin : real;

@@ -4,85 +4,49 @@
 #define HAVE_USEFUL_FUNCTIONS_HH
 
 
-#ifdef __CPLUSPLUS
-template <class return_t>
-template <class class_t>
-typedef class_t &classref_t;
+#ifndef __cplusplus
+#define inline			/* strip */
+typedef double  doubleref_t;
 #else
-#define inline			// strip from pre-processed file
-#define return_t double
-#define class_t  double
-typedef class_t  classref_t;
-#endif // __CPLUSPLUS
-
-#ifndef MTT_UNUSED
-#ifdef __GNUC__
-#define MTT_UNUSED __attribute__ ((unused))
-#else
-#define MTT_UNUSED
-#endif // __GNUC__
-#endif // MTT_UNUSED
+typedef double &doubleref_t;
+#endif // ! __cplusplus
 
 
-
-// == Declarations ==
-
-// - Template functions -
-
-static inline return_t max         (const classref_t x1, const classref_t x2) MTT_UNUSED;
-static inline return_t min         (const classref_t x1, const classref_t x2) MTT_UNUSED;
-static inline return_t nonsingular (const classref_t x) MTT_UNUSED;
-static inline return_t sign        (const classref_t x) MTT_UNUSED;
-
-// - Octave functions -
-#ifdef __CPLUSPLUS
-static inline Matrix	   ones    (const int r = 1, const int c = 1) MTT_UNUSED;
-static inline ColumnVector nozeros (const ColumnVector v0, const double tol = 0.0) MTT_UNUSED;
-static inline ColumnVector zeros   (const int r) MTT_UNUSED;
-static inline Matrix 	   zeros   (const int r, const int c) MTT_UNUSED;
-#endif // __CPLUSPLUS
-
-
-
-// == Defininitions ==
-
-// - Template functions -
-
-static inline return_t
-max (const classref_t x1, const classref_t x2)
+static inline double
+max (const doubleref_t x1, const doubleref_t x2)
 {
-  return static_cast<return_t>((x1 >= x2) ? x1 : (x1 < x2) ? x2 : 0);
+  return static_cast<double>((x1 >= x2) ? x1 : (x1 < x2) ? x2 : 0);
 }
 
-static inline return_t
-min (const classref_t x1, const classref_t x2)
+static inline double
+min (const doubleref_t x1, const doubleref_t x2)
 {
-  return static_cast<return_t>((x1 <= x2) ? x1 : (x1 > x2) ? x2 : 0);
+  return static_cast<double>((x1 <= x2) ? x1 : (x1 > x2) ? x2 : 0);
 }
 
-static inline return_t
-nonsingular (const classref_t x)
+static inline double
+nonsingular (const doubleref_t x)
 {
-  return static_cast<return_t>((x == 0) ? 1.0e-30 : x);
+  return static_cast<double>((x == 0) ? 1.0e-30 : x);
 }
 
-static inline return_t
-sign (const classref_t x)
+static inline double
+sign (const doubleref_t x)
 {
-  return static_cast<return_t>((x > 0) ? +1 : (x < 0) ? -1 : 0);
+  return static_cast<double>((x > 0) ? +1 : (x < 0) ? -1 : 0);
 }
 
 
-// - Octave functions -
-#ifdef __CPLUSPLUS
-Matrix
+// Octave functions
+#ifdef __cplusplus
+static Matrix
 ones (const int r = 1, const int c = 1)
 {
   Matrix m (r, c, 1.0);
   return m;
 }
 
-ColumnVector
+static ColumnVector
 nozeros (const ColumnVector v0, const double tol = 0.0)
 {
   ColumnVector v (v0.length ());
@@ -103,20 +67,20 @@ nozeros (const ColumnVector v0, const double tol = 0.0)
     }
 }
 
-ColumnVector
+static ColumnVector
 zeros (const int r)
 {
   ColumnVector v (r, 0.0);
   return v;
 }
 
-Matrix
+static Matrix
 zeros (const int r, const int c)
 {
   Matrix m (r, c, 0.0);
   return m;
 }
-#endif __CPLUSPLUS
+#endif __cplusplus
 
 
 

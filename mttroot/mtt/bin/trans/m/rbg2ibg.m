@@ -75,8 +75,8 @@ function [bonds] = \
     ## The (signed) bond corresponding to the ith port label
     port_bond(i) = near_bond(1) * sign(1.5 - near_bond(2));
   endfor
-  
   port_bond
+
   ## Now have (signed) bond (port_bond(i)) corresponding to the ith port
   ## Create inverse mapping
   for i = 1:n_bonds
@@ -99,9 +99,8 @@ function [bonds] = \
   for i = 1:n_bonds
     comp_near_bond(i,:) = adjcomp(arrow_end(i,:), other_end(i,:), \
 				  rcomponents);
-    [hc_type, hc_name] = eval([name, '_cmp(comp_near_bond(i,1))']);
-    [tc_type, tc_name] = eval([name, '_cmp(comp_near_bond(i,2))']);
   endfor
+  comp_near_bond
 
   ## Deduce causality from the strokes (if any)
   causality = zeros(n_bonds,2);
@@ -146,17 +145,39 @@ function [bonds] = \
       endif
     endfor
   endif
+  causality
 
-  ## Return data
+  ## Write data
   for i = 1:n_bonds
+    [hc_type, hc_name] = eval([name, '_cmp(comp_near_bond(i,1))']);
+    [tc_type, tc_name] = eval([name, '_cmp(comp_near_bond(i,2))']);
+    ## components
     eval(sprintf("bonds.bond%i.head.component\t= '%s:%s'", i, hc_type, \
 		 hc_name));
     eval(sprintf("bonds.bond%i.tail.component\t= '%s:%s'", i, tc_type, \
 		 tc_name));
+    ## ports
     eval(sprintf("bonds.bond%i.head.ports\t= bond_port_head%i", i, i));
     eval(sprintf("bonds.bond%i.tail.ports\t= bond_port_tail%i", i, i));
+    ## causality
+    if (causality(i,1) == 1)
+      effort_causality = "head"
+    elseif (causality(i,1) == -1)
+      effort_causality = "tail"
+    else
+      effort_causality = "none"
+    endif
+
+    if (causality(i,2) == 1)
+      flow_causality = "tail"
+    elseif (causality(i,2) == -1)
+      flow_causality = "head"
+    else
+      flow_causality = "none"
+    endif
+    
+    eval(sprintf("bonds.bond%i.causality.effort\t= '%s'", i, effort_causality));
+    eval(sprintf("bonds.bond%i.causality.flow\t= '%s'", i, flow_causality));
   endfor
-  
-  
-  
+
 endfunction

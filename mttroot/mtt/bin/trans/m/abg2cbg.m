@@ -1,6 +1,7 @@
 function [port_bonds, status] = abg2cbg(system_name, ...
     system_type, full_name, ...
     port_bonds, typefile, infofile)
+
 % abg2cbg - acausal to causal bg conversion
 %
 %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -16,6 +17,10 @@ function [port_bonds, status] = abg2cbg(system_name, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.11  1996/12/07  17:10:48  peterg
+% %% Allows port SS at top level - ie takes it to be an ardianry SS at top
+% %% level.
+% %%
 % %% Revision 1.10  1996/12/04 21:48:55  peterg
 % %% Compares full-name with empty string (instead of testing for zero
 % %% length.
@@ -116,7 +121,7 @@ if n_components==0 % there is nothing to be done
 end;
 
 % If not at top level, then sort out the port bonds.
-if !at_top_level 
+if at_top_level==0 
   % Find number of port bonds
   [n_port_bonds,columns] = size(port_bonds);
 
@@ -245,8 +250,10 @@ if n>0
 end;
 
 % $$$ file_name = [full_name, '_', system_type]
-file_name = full_name;
-write_cbg(file_name,system_type,bonds,status);
+file_name = [full_name, '_cbg.m']
+cbgfilenum = fopen(file_name,'w');
+write_cbg(cbgfilenum,full_name,system_type,bonds,status);
+fclose(cbgfilenum);
 
 % Return the port bonds
 for i = 1:n_ports % The port SSs come first

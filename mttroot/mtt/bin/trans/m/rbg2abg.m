@@ -5,6 +5,9 @@ function [bonds,components] = rbg2abg(rbonds,rstrokes,rcomponents,rports,infofil
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.3  1996/08/09 08:26:35  peter
+% %% Cosmetic tidy up.
+% %%
 % %% Revision 1.2  1996/08/04 18:37:57  peter
 % %% Fixed  no causal strokes bug.
 % %%
@@ -16,6 +19,8 @@ function [bonds,components] = rbg2abg(rbonds,rstrokes,rcomponents,rports,infofil
 
 if nargin<5
   infofile='stdout';
+else
+  fnum = fopen(infofile, 'w');
 end;
 
 % Xfig scaling factor
@@ -60,11 +65,13 @@ for i = 1:n_ports
   near_bond = adjbond(rports(i,1:2),arrow_end,other_end);
   port_near_bond(i,:) = [near_bond, rports(i,3)];
 end;
+port_near_bond
 
 % Locate the components at the ends of each bond
 for i = 1:n_bonds
   comp_near_bond(i,:) = adjcomp(arrow_end(i,:),other_end(i,:),rcomponents);
 end;
+comp_near_bond
 
 % Produce a list of bonds on each component - sorted if explicit port numbers
 for i = 1:n_components
@@ -72,7 +79,7 @@ for i = 1:n_components
 
   if index(1,1) ~= 0 % Then its a genuine component 
     one = ones(n,1);
-    bond_list = index(:,1);
+    bond_list = index(:,1); % either end of bond at component
     
     % Default sort of bonds (ie no change)
     sort_index = [1:n]'; 
@@ -81,7 +88,7 @@ for i = 1:n_components
       % Are the component ports numbered? (either they all are or none are)
       k=0;
       for j = 1:n
-	[port_index,m] = getindex(port_near_bond(:,1),bond_list(j));
+	[port_index,m] = getindex(port_near_bond(:,1:2),bond_list(j));
 	if m==1 % exactly one number on this bond
 	  if index(j,2)==port_near_bond(port_index,2) % same end
 	    k=k+1;
@@ -89,7 +96,7 @@ for i = 1:n_components
 	  end;
 	end;
       end;
-      
+
       % Must have a lable for each port or non at all
       if k==n
 	[junk,sort_index]=sort(port_number);
@@ -97,7 +104,7 @@ for i = 1:n_components
 	info = sprintf(... 
 	    'Component at (%1.3f,%1.3f) has inconsistent port numbers', ...
 	    rcomponents(i,1)/scale, rcomponents(i,2)/scale);
-	mtt_info(info,infofile);
+	mtt_info(info,fnum);
       end;
     end;
   end;
@@ -158,3 +165,4 @@ if n_strokes>0
 end;
 
 bonds = causality;
+fclose(fnum);

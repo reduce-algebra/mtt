@@ -1,4 +1,4 @@
-function [T,y,u,Iterations] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max_u,Order_u, Tau_y,Min_y,Max_y,Order_y, W,x_0,Delta_ol,mu,movie)
+function [T,y,u,X,Iterations] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max_u,Order_u, Tau_y,Min_y,Max_y,Order_y, W,x_0,Delta_ol,mu,movie)
 
   ## usage: [T,y,u,J] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max_u,Order_u, Tau_y,Min_y,Max_y,Order_y, W,x_0,movie)
   ## Needs documentation - see ppp_ex11 for example of use.
@@ -57,23 +57,25 @@ function [T,y,u,Iterations] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max_u
   Delta_ol = floor(Delta_ol/dt)*dt;
 
   if Delta_ol>0			# Intermittent control
-    T_ol = 0:dt:Delta_ol-dt;	# Create the open-loop time vector
+    T_ol = 0:dt:Delta_ol;	# Create the open-loop time vector
   else
-    T_ol = 0;
+    T_ol = [0,dt];
     Delta_ol = dt;
   endif
-  
   T_cl = 0:Delta_ol:t(length(t))-Delta_ol; # Closed-loop time vector
   n_Tcl = length(T_cl);
+  n_ol = length(T_ol);
   
+
   Ustar_ol = ppp_ustar(A_u,n_u,T_ol); # U* in the open-loop interval
+
   [n,m] = size(Ustar_ol);
   n_U = m/length(T_ol);		# Determine size of each Ustar
 
-  ## Discrete-time system
-  csys = ss2sys(A,B,C,D);
-  dsys = c2d(csys,dt);
-  [Ad, Bd] = sys2ss(dsys);
+#   ## Discrete-time system
+#   csys = ss2sys(A,B,C,D);
+#   dsys = c2d(csys,dt);
+#   [Ad, Bd] = sys2ss(dsys)
 
   x = x_0;			# Initialise state
 
@@ -95,36 +97,25 @@ function [T,y,u,Iterations] = ppp_qp_sim (A,B,C,D,A_u,A_w,t,Q, Tau_u,Min_u,Max_u
     Gamma = [Gamma_u; Gamma_y];
     gamma = [gamma_u; gamma_y];
     
-    ## Compute U(t)
+    ## Compute U(t) via QP optimisation
     [uu, U, iterations] = ppp_qp (x,W,J_uu,J_ux,J_uw,Us0,Gamma,gamma,mu); # Compute U
- 
+
     ## Compute the cost (not necessary but maybe interesting)
 #    [J_t] = ppp_cost (U,x,W,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww); # cost
 #    J = [J J_t];
 
-    ## Simulation loop
-    i_ol = 0;
-    for t_ol=T_ol		# Inner loop at dt
+    ## OL Simulation (exact)
+    [ys,us,xs] = ppp_ystar (A,B,C,D,x,A_u,U,T_ol);
 
-      ## Compute ol control
-      i_ol = i_ol+1;
-      range = (i_ol-1)*n_U + 1:i_ol*n_U; # Extract current U*
-      ut = Ustar_ol(:,range)*U;	# Compute OL control (U* U)
+    ## Save values (discarding final ones)
+    X = [X xs(:,1:n_ol-1)];			# save state
+    u = [u us(:,1:n_ol-1)];			# save input
+    Iterations = [Iterations iterations*ones(1,n_ol-1)];
 
-      ## Simulate the system
-      i = i+1;
-      X = [X x];		# Save state
-      u = [u ut];		# Save input
-      Iterations = [Iterations iterations]; # Save iteration count
-      x = Ad*x + Bd*ut;	# System
+    ## Final values
+    x = xs(:,n_ol);		# Final state
+    ut = us(:,n_ol);		# Final control
 
-#       if movie			# Plot the moving horizon
-# 	tau = T(1:n_T-i);	# Tau with moving horizon
-# 	tauT = T(i+1:n_T);	# Tau with moving horizon + real time
-# 	[ys,us,xs,xu,AA] = ppp_ystar (A,B,C,D,x,A_u,U,tau); # OL response
-# 	plot(tauT,ys, tauT(1), ys(1), "*")
-#       endif
-    endfor
   endfor
   
   ## Save the last values

@@ -14,6 +14,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.171  1998/07/25 20:37:22  peterg
+## Removes -s (switches) option -- they are now assumed to be present
+## I still need to shift the old switch
+##
 ## Revision 1.170  1998/07/25 19:16:22  peterg
 ## Sorted out sympar + switch variables - new sympars rep combines both
 ##
@@ -1349,8 +1353,7 @@ $1_simpar.txt:
 
 #SUMMARY simpar	simulation information (m)
 $1_simpar.m: $1_simpar.txt
-	echo Creating $1_simpar.m
-	sed 's/txt/m/'<$1_simpar.txt >$1_simpar.m
+	tx2m $1 simpar
 
 #SUMMARY simpar	simulation information c header file (h) 
 $1_simpar.h: $1_simpar.txt

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  1997/06/13 09:34:39  peterg
+## changed [] to ()
+##
 # Revision 1.5  1997/05/15  08:30:14  peterg
 # Now write default states (using _struc file).
 #
@@ -42,10 +45,11 @@ cat $MTTPATH/trans/rcs_header.txt  >> $1_numpar.txt
 
 #Write out the variables 
 echo "# Parameters" >> $1_numpar.txt
-awk '{i++; print tolower($1) " = \t1.0; \# Default value"}' $1_sympar.txt \
+awk '{i++; print tolower($1) " = \t1.0; \# Parameter " $1 " for " $2}' $1_sympar.txt \
 >> $1_numpar.txt
 
 #Write out the initial states
+echo  >> $1_numpar.txt
 echo "# Initial states" >> $1_numpar.txt
 awk '{
   if ($1=="state") 

@@ -16,6 +16,9 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.2  2001/07/03 22:59:10  gawthrop
+@comment  Fixed problems with argument passing for CRs
+@comment
 @comment  Revision 1.1  2001/06/04 08:18:52  gawthrop
 @comment  Putting documentation under CVS
 @comment
@@ -417,6 +420,11 @@ Simulation parameters
 * Euler integration::           
 * Implicit integration::        
 
+Simulation output
+
+* Viewing results with gnuplot::  
+* Exporting results to SciGraphica::  
+
 Representations
 
 * Representation summary::      
@@ -496,6 +504,7 @@ Labels (lbl)
 * Component arguments::         
 * Parameter declarations::      
 * Units declarations::          
+* Interface Control Definition::  
 * Aliases::                     
 * Parameter passing::           
 * Old-style labels (lbl)::      
@@ -2222,6 +2231,65 @@ An example of plotting one variable against another is:
 mtt -o -c -ss OttoCycle odeso ps 'OttoCycle_cycle_V:OttoCycle_cycle_P'
 @end example
 
+@menu
+* Viewing results with gnuplot::  
+* Exporting results to SciGraphica::  
+@end menu
+
+@node Viewing results with gnuplot, Exporting results to SciGraphica, Simulation output, Simulation output
+@comment  node-name,  next,  previous,  up@subsection
+@subsection Viewing results with gnuplot
+@cindex gnuplot
+
+Simulation results may be viewed in
+@uref{http://www.gnuplot.org,gnuplot} with the command
+
+@example
+mtt [options] rc gnuplot view
+@end example
+
+The plot format is controlled by the file @emph{sys_gnuplot.txt}. A default version
+of this file, which will cause gnuplot to plot the time-history of each state
+and each output individually, may be created with the command
+
+@example
+mtt rc gnuplot txt
+@end example
+
+resulting in
+
+@example
+wait=-1
+set data style lines
+set xlabel "time"
+set grid
+set term X11
+
+plot "rc_odes.dat2" using 1:4 axes x1y1 title "rc_c_c;
+pause(wait);
+plot "rc_odes.dat2" using 1:2 axes x1y1 title "rc_e2_e2
+; pause(wait);
+@end example
+
+The file is used as an input to the gnuplot program and may therefore be
+edited to contain any valid gnuplot commands.
+
+@node Exporting results to SciGraphica,  , Viewing results with gnuplot, Simulation output
+@comment  node-name,  next,  previous,  up
+@subsection Exporting results to SciGraphica
+@cindex SciGraphica
+
+Simulation results can be converted into an XML-format
+@uref{http://scigraphica.sourceforge.net,SciGraphica} (version 0.61)
+@emph{.sg} file with the command
+
+@example
+mtt [options] sys odes sg
+@end example
+
+The SciGraphica file will contain two worksheets, X_sys and Y_sys, containing
+the state and output time-histories from the simulation.
+
 @c      node   next  prev  up
 @node   Sensitivity models, Representations, Simulation, Top
 @chapter Sensitivity models
@@ -3254,6 +3322,7 @@ supported -- you are encouraged to convert them ASAP.
 * Component arguments::         
 * Parameter declarations::      
 * Units declarations::          
+* Interface Control Definition::  
 * Aliases::                     
 * Parameter passing::           
 * Old-style labels (lbl)::      
@@ -3407,7 +3476,7 @@ the NOTPAR declaration
 For comapability with old code, VAR may be used in place of PAR, but
 this usage is deprecated.
 
-@node Units declarations, Aliases, Parameter declarations, Labels (lbl)
+@node Units declarations, Interface Control Definition, Parameter declarations, Labels (lbl)
 @comment  node-name,  next,  previous,  up
 @subsection Units declarations
 @cindex units declarations
@@ -3447,7 +3516,94 @@ port with defined units.
 
 
 
-@node Aliases, Parameter passing, Units declarations, Labels (lbl)
+@node Interface Control Definition, Aliases, Units declarations, Labels (lbl)
+@comment  node-name,  next,  previous,  up
+@subsection Interface Control Definition
+@cindex ICD (label file directive)
+It is sometimes useful to be able to automatically generate a set of 
+assignments mapping @strong{MTT} inputs and outputs to an external interface
+definition. This can be achieved with use of the @emph{#ICD} directive.
+
+@example
+#ICD    PressureSensor		PUMP1_PRESSURE_SENSOR,Pa;null,none
+#ICD    Electrical		PUMP1_VOLTAGE,volt;PUMP1_CURRENT,amp
+
+% Component type De
+	PressureSensor	SS      external
+
+% Component type SS
+	Electrical	SS	external,external
+@end example
+
+
+The ICD directive consists of 3 whitespace delimited fields:
+
+@enumerate
+@item [%|#]ICD
+@item component name
+@item Four comma (,) or semi-colon (;) delimited fields:
+
+@enumerate
+@item name of effort parameter
+@item unit of effort parameter
+@item name of flow parameter
+@item unit of flow parameter
+@end enumerate
+@end enumerate
+
+If no parameter name is required, a value of "null" should be used.
+If the parameter does not have any units, a value of "none" should be used.
+
+ICD parameters may be aliased @pxref{Aliases} in the same way as normal
+parameters, thus it is possible to define some or all of the ICD in higher
+level components.
+
+The command
+
+@example
+mtt sys ICD txt
+@end example
+
+will generate a text file containing a list of mappings:
+
+@example
+## Interface Control Definition for System sys
+## sys_ICD.txt: Generated by MTT Thu Jul 12 21:21:21 CDT 2001
+
+Input:  PUMP1_VOLTAGE           sys_P1_1_Electrical      Causality: Effort   Units: volt
+Output: PUMP1_CURRENT           sys_P1_1_Electrical      Causality: Flow     Units: amp
+Output: PUMP1_PRESSURE_SENSOR   sys_P1_1_PressureSensor  Causality: Effort   Units: Pa
+@end example
+
+A set of assignments can be generated with the command
+@example
+mtt sys ICD m
+@end example
+
+resulting in:
+
+@example
+# Interface Control Definition mappings for system sys
+# sys_ICD.m: Generated by MTT Thu Jul 12 21:26:56 CDT 2001
+
+# Inputs
+
+        mttu(1) = PUMP1_VOLTAGE;
+
+# Outputs
+
+        PUMP1_CURRENT                  = mtty(1);
+        PUMP1_PRESSURE_SENSOR          = mtty(2);
+@end example
+
+A similar file will be generated by the command
+@example
+mtt sys ICD cc
+@end example
+
+
+
+@node Aliases, Parameter passing, Interface Control Definition, Labels (lbl)
 @comment  node-name,  next,  previous,  up
 @subsection Aliases
 @cindex aliases
@@ -4199,6 +4355,9 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.2  2001/07/03 22:59:10  gawthrop
+# %% Fixed problems with argument passing for CRs
+# %%
 # %% Revision 1.1  2001/06/04 08:18:52  gawthrop
 # %% Putting documentation under CVS
 # %%
@@ -5249,6 +5408,8 @@ manipulate and/or view the representation.
         @code{gnuplot} a data viewer.
 @item c
         @code{gcc} a c compiler.
+@item sg
+	@code{scigraphica} a plotting package.
 @end ftable
 
 These tools are automatically invoked as appropriate by @strong{MTT};

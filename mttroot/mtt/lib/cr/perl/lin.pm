@@ -139,11 +139,11 @@ sub lin_cir (@) {
 	    ($in_port  == 1)
 	    )
 	{			# single port	    
-	    if ($out_causality eq $gain_causality)
+	    if ($in_causality eq $gain_causality)
 	    {
 		$retval = "(($input)*($gain))";
 	    }	    
-	    elsif ($out_causality ne $gain_causality)
+	    elsif ($in_causality ne $gain_causality)
 	    {
 		$retval = "(($input)/($gain))";
 	    }

@@ -19,6 +19,10 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 # ###############################################################
 # ## $Id$
 # ## $Log$
+# ## Revision 1.40  1998/09/02 11:47:09  peterg
+# ## Now uses explicit ordered list of ports instead of port.index.
+# ## Note that subsystems are still treated in arbitrary order.
+# ##
 # ## Revision 1.39  1998/08/25 20:06:16  peterg
 # ## Writes flipped port info
 # ##
@@ -290,7 +294,10 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
     for j=1:n_ports
       jj = port_bond_index(j); # The index of the bond
       for k = 1:2
-	if ABG.bonds(jj,k)==0 # only copy if not already set
+#	if ABG.bonds(jj,k)==0 # only copy if not already set
+#	  ABG.bonds(jj,k) = port_bonds(j,k);
+#	endif
+	if port_bonds(j,k)!=0	# only copy if port bonds are set
 	  ABG.bonds(jj,k) = port_bonds(j,k);
 	endif
       endfor

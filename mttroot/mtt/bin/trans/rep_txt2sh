@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.2  1997/12/06  14:27:53  peterg
+# No changes.
+#
 ## Revision 1.1  1997/08/26 09:06:11  peterg
 ## Initial revision
 ##
@@ -34,8 +37,14 @@ if [ "$mtt_count" = "0" ]; then
   awk '{print "mtt", sys, $1, $2}' sys="$1" >$1_rep.txt
 fi
 
-# Execute the commands - quietly!
-strip_comments< $1_rep.txt | sed 's/mtt /mtt -q /' |  sh
+# Execute a make if Makefile exists
+if [ -f Makefile ]; then
+  echo Executing the Makefile
+  make    
+fi
+
+# Execute the commands - quietly and untidily!
+strip_comments< $1_rep.txt | sed 's/mtt /mtt -q -u /' | tee -a JUNK  | sh
 
 echo "Done creating representations for $1_rep.tex"
 

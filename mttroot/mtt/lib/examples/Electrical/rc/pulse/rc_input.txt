@@ -7,4 +7,4 @@
 
 
 
-rc_e1	= 1.0*(t<1);		# On for t<1
+rc__e1	= 1.0*(t<1);		# On for t<1

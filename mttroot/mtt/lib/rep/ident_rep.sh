@@ -205,6 +205,7 @@ function [y,u,t,par_names,Q,extras] = ${sys}_ident_numpar;
   extras.v =  1e-2;
   extras.verbose = 1;
   extras.visual = 1;
+  extras.domain = "time";
 
 endfunction
 EOF

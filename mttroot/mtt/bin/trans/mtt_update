@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  2000/10/13 09:55:09  peterg
+## Changed state/input name to $4_$3
+##
 ## Revision 1.8  2000/10/13 09:28:16  peterg
 ## Changed regexp to /\(.*$old.*=\)/
 ##
@@ -68,7 +71,7 @@ case $rep in
 	    infofile=mtt_list.$ext
 	    moreinfofile=mtt_list_numpar.$ext
 	    grep "$rep" <$1_struc.txt |\
-	    awk '{printf("%s_%s\n", $4,$3)}' \
+	    awk '{printf("%s\n", $4)}' \
              > $infofile 
 	    cat $infofile $1_sympar.$ext> $moreinfofile  
 	    default='0.0'
@@ -146,7 +149,7 @@ if [ -f "mtt_in_text" ]; then
 	y)
 	    answered=yes
  	    for old in $in_text; do
-              echo $old
+              echo Commenting out $old
 	      sed "s/\(.*$old.*=\)/## Removed by MTT on `date`: \1/"\
                <$textfile > mtt_tmp
               mv mtt_tmp $textfile
@@ -174,6 +177,7 @@ if [ -f "mtt_in_info" ]; then
 	y)
 	    answered=yes
  	    for new in $in_info; do
+                echo Adding $new
 		echo "$new = $default; # Added by MTT on `date`" >> $textfile
                 changed=yes
 	    done

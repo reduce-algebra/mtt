@@ -16,6 +16,9 @@ function eqn =  equation(name,cr,args,outbond,outcause,outport, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/09/10 11:11:11  peter
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -55,9 +58,14 @@ RHS1 = sprintf('%s%s%s%s%s%s%s%s\n', ...
 % Set up rest of RHS - the input variables, causality and ports.
 RHS2 = '';
 for i=1:nports
-  RHS2 = sprintf('%s\t%s,%s,%1.0f', ...
-      RHS2, varname(name, inbonds(i), incauses(i)), ...
-      cause2name(incauses(i)), inports(i));
+  RHS2 = sprintf('%s\t%s', ...
+      RHS2, varname(name, inbonds(i), incauses(i)))
+  
+  if length(cr)>0 % add the causality & port info
+    RHS2 = sprintf('%s,%1.0f', ...
+	RHS2, cause2name(incauses(i)), inports(i));
+  end;
+  
   if i<nports % Add a comma
     RHS2 = sprintf('%s,\n',RHS2);
   else

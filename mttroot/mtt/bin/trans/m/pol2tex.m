@@ -11,6 +11,9 @@ function tex = pol2tex(pol,name,f)
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.3  2001/07/11 03:58:41  gawthrop
+  ## removed {}
+  ##
   ## Revision 1.2  2001/05/10 19:08:35  gawthrop
   ## Cosmetic improvements
   ##
@@ -31,7 +34,11 @@ function tex = pol2tex(pol,name,f)
   endif
   
   n = length(pol);
-  
+  if n<1
+    tex = "--";
+    return
+  endif
+
   if pol(1) == 1
     if n>1
       tex = '';

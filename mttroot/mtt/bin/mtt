@@ -14,6 +14,12 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.51  1997/01/21 13:16:40  peterg
+## Included transformations to language c for:
+## ode
+## params
+## numpar
+##
 ## Revision 1.50  1996/12/21 19:46:52  peterg
 ## Set to 2.2++
 ## Changed \* --> \\* in rbg_fig2m.awk
@@ -487,7 +493,7 @@ $1_numpar.c: $1_sympar.r $1_params.c
 	echo "%% Parameter file for system $1 ($1_params.c)"; \
 	echo "%% This file provides the system params for simulation:";\
 	echo '*/'; \
-	echo 'void $1_params()'; \
+	echo '$1_params()'; \
 	echo '{'; \
 	echo '};'; \
         )> $1_params.c

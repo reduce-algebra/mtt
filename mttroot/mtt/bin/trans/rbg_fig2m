@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  2002/04/28 18:55:03  geraint
+## Fixed [ 549658 ] awk should be gawk.
+## Replaced calls to awk with call to gawk.
+##
 ## Revision 1.9  2002/01/11 03:44:19  geraint
 ## Breaks compounds objects into individual components. Eliminates "incorrect object code error" in cbg.ps when component is not causally complete.
 ##
@@ -45,6 +49,30 @@
 ##
 ###############################################################
 
+cmp2latex() {
+  gawk '{
+  ## Zap trailing null
+  split($0,A,"\\");
+
+  ## Find before and after:
+  N=split(A[1],B,":");
+
+  ## Split into fields
+  M=split(B[1],C);
+
+  ## Set special flag
+  FlagCol = 9
+  C[FlagCol] = 6;
+
+  ## Write out modified version
+  for (i=1;i<M;i++)
+    printf("%s ",C[i]);
+  if (N==1)
+    printf("\\\\B{%s}\\001\n",C[M]);
+  if (N==2)
+    printf("\\\\BB{%s}{%s}\\001\n",C[M],B[2]);
+  }'  
+}
 
 # Inform user
 echo "Creating $1_rbg.m"
@@ -104,6 +132,10 @@ rm -f $1_abg.mtt
 #Create the stripped abg file
 cat $1_head.fig $1_bnd.fig $1_cmp.fig> $1_sabg.fig
 
+#Create the latexed abg file
+cmp2latex<$1_cmp.fig  >$1_lcmp.fig
+cat $1_head.fig $1_bnd.fig $1_lcmp.fig  > $1_labg.fig
+strip_comments < $1_art.fig >> $1_labg.fig
 
 
 

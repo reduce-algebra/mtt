@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.408  2005/02/18 16:59:02  gawthrop
+## Don't check files when using -s
+##
 ## Revision 1.407  2005/02/17 18:36:38  geraint
 ## Removed a bash-ism: replaced [[ conditional ]] with [ conditional ]
 ##
@@ -1910,6 +1913,7 @@ if [ "$1" = "Clean" ] && [ "$2" = "" ]; then
   rm -f *.log  mtt_info.txt warning.txt
   rm -f *_abg.ps *_args.*  *_cr.txt *_abg.tex
   rm -f *_sabg.fig *_sabg.ps *_head.fig *_bnd.fig 
+  rm -f *_labg.fig *_lcbg.fig
   rm -f *_sympar.r *_sympar.c *_sympar.h *_sympar.txt? *_sympar.tex
   rm -f *_rbg.* *_cmp.* *_fig.fig *_*cbg.* *_ese.* *_def.* *_alias.*
   rm -f *_sub.* *_type.sh
@@ -1954,6 +1958,7 @@ if [ "$2" = "Clean" ] && [ "$3" = "" ]; then
   rm -f *.log  mtt_info.txt warning.txt
   rm -f $1_abg.ps $1_args.*  $1_cr.txt $1_abg.tex
   rm -f $1_sabg.fig $1_sabg.ps $1_head.fig $1_bnd.fig 
+  rm -f $1_labg.fig $1_lcbg.fig
   rm -f $1_sympar.r $1_sympar.c $1_sympar.h $1_sympar.txt? $1_sympar.tex
   rm -f $1_rbg.* $1_cmp.* $1_fig.fig $1*_*cbg.* $1*_ese.* $1_def.* $1_alias.*
   rm -f $1_sub.* $1_type.sh
@@ -2970,6 +2975,9 @@ $1_fig.fig: $1_rbg.m
 #SUMMARY sabg	stripped acausal bond graph (ps)
 #SUMMARY sabg	stripped acausal bond graph (view)
 $1_sabg.fig: $1_rbg.m
+
+#SUMMARY labg	latex-ready acausal bond graph (fig)
+$1_labg.fig: $1_rbg.m
 
 
 #Subsystem creation commands

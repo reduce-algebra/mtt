@@ -16,6 +16,9 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.29  2005/01/19 09:45:15  geraint
+@comment  Fixed whitespace.
+@comment
 @comment  Revision 1.28  2005/01/06 16:03:55  geraint
 @comment  Updated options list.
 @comment
@@ -522,6 +525,7 @@ Representations
 * Defining representations::    
 * Verbal description (desc)::   
 * Acausal bond graph (abg)::    
+* Acausal bond graph - LaTeX ready (labg)::  
 * Stripped acausal bond graph (sabg)::  
 * Labels (lbl)::                
 * Structure (struc)::           
@@ -536,6 +540,13 @@ Representations
 * Report::                      
 
 Acausal bond graph (abg)
+
+* Language fig (abg.fig)::      
+* Language m (rbg.m)::          
+* Language m (abg.m)::          
+* Language tex (abg.tex)::      
+
+Acausal bond graph - LaTeX ready (labg)
 
 * Language fig (abg.fig)::      
 * Language m (rbg.m)::          
@@ -2695,6 +2706,7 @@ representations.
 * Defining representations::    
 * Verbal description (desc)::   
 * Acausal bond graph (abg)::    
+* Acausal bond graph - LaTeX ready (labg)::  
 * Stripped acausal bond graph (sabg)::  
 * Labels (lbl)::                
 * Structure (struc)::           
@@ -2868,7 +2880,7 @@ default text file to be edited by the user (@pxref{Text editors}).
 
 
 @c      node   next  prev  up
-@node   Acausal bond graph (abg), Stripped acausal bond graph (sabg), Verbal description (desc), Representations
+@node   Acausal bond graph (abg), Acausal bond graph - LaTeX ready (labg), Verbal description (desc), Representations
 @section Acausal bond graph (abg)
 @cindex Acausal bond graph (abg)
 @pindex Acausal bond graph (abg)
@@ -2901,7 +2913,22 @@ mtt sys abg view
 * Language tex (abg.tex)::      
 @end menu
 
-@node Language fig (abg.fig), Language m (rbg.m), Acausal bond graph (abg), Acausal bond graph (abg)
+@node Acausal bond graph - LaTeX ready (labg), Stripped acausal bond graph (sabg), Acausal bond graph (abg), Representations
+@section Acausal bond graph - LaTeX ready (labg)
+@cindex Acausal bond graph - LaTeX ready (labg) 
+@pindex Acausal bond graph - LaTeX ready (labg)
+This representation exists in the fig  (@pxref{Language fig (abg.fig)})
+only. It is used for high-quality figures generated using fig2dev with
+the -Lpstex option.
+
+@menu
+* Language fig (abg.fig)::      
+* Language m (rbg.m)::          
+* Language m (abg.m)::          
+* Language tex (abg.tex)::      
+@end menu
+
+@node Language fig (abg.fig), Language m (rbg.m), Acausal bond graph - LaTeX ready (labg), Acausal bond graph - LaTeX ready (labg)
 @subsection Language fig (abg.fig) 
 @cindex Language fig (abg.fig) 
 @pindex Language fig (abg.fig) 
@@ -3405,7 +3432,7 @@ REPEAT SMACRO SUM UNTIL WHEN WHILE WS
 
 
 
-@node Language m (rbg.m), Language m (abg.m), Language fig (abg.fig), Acausal bond graph (abg)
+@node Language m (rbg.m), Language m (abg.m), Language fig (abg.fig), Acausal bond graph - LaTeX ready (labg)
 @comment  node-name,  next,  previous,  up
 @subsection Language m (rbg.m)
 The raw bond graph of system `sys' is represented as
@@ -3500,7 +3527,7 @@ It also generates a file sys_fig.fig containing details of the bond
 graph with the components removed.
 
 
-@node Language m (abg.m), Language tex (abg.tex), Language m (rbg.m), Acausal bond graph (abg)
+@node Language m (abg.m), Language tex (abg.tex), Language m (rbg.m), Acausal bond graph - LaTeX ready (labg)
 @comment  node-name,  next,  previous,  up
 @subsection Language m (abg.m)
 @cindex Language m (abg.m) 
@@ -3604,7 +3631,7 @@ This transformation takes the raw bond graph and, by doing some
 geometrical computation, determines the topology of the bond graph -- ie
 what is close to what.
 
-@node Language tex (abg.tex),  , Language m (abg.m), Acausal bond graph (abg)
+@node Language tex (abg.tex),  , Language m (abg.m), Acausal bond graph - LaTeX ready (labg)
 @comment  node-name,  next,  previous,  up
 @subsection Language tex (abg.tex)
 @cindex Language tex (abg.tex)
@@ -3615,7 +3642,7 @@ subsystems. Additional information may be supplied using the description
 representation (@pxref{Detailed}).
 
 @c      node   next  prev  up
-@node   Stripped acausal bond graph (sabg), Labels (lbl), Acausal bond graph (abg), Representations
+@node   Stripped acausal bond graph (sabg), Labels (lbl), Acausal bond graph - LaTeX ready (labg), Representations
 @section Stripped acausal bond graph (sabg)
 @cindex Stripped acausal bond graph (sabg)
 @pindex Stripped acausal bond graph (sabg)
@@ -4762,6 +4789,9 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.29  2005/01/19 09:45:15  geraint
+# %% Fixed whitespace.
+# %%
 # %% Revision 1.28  2005/01/06 16:03:55  geraint
 # %% Updated options list.
 # %%

@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/07/25 18:49:00  peterg
+## Now uses extended sympars -- sympar + switches
+##
 ## Revision 1.1  1998/06/15 15:24:33  peterg
 ## Initial revision
 ##
@@ -49,6 +52,7 @@ EOF
 #Write out the variables in matlab global format
 if [ "$language" = "m" ]; then
 
+strip_comments <$1_sympars.txt  |\
 awk '
 BEGIN{
   var = "foobar";

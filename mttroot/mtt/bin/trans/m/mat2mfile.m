@@ -13,6 +13,9 @@ function  mat2mfile(matrix, matrix_name, filenum);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.1  1996/12/04 21:53:00  peterg
+% %% Initial revision
+% %%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -23,10 +26,6 @@ function  mat2mfile(matrix, matrix_name, filenum);
 [N, M] = size(matrix);
 
 empty = (N==1)&(M==1)&(matrix(1,1)==0);
-
-% $$$  if nargin<3
-% $$$   filenum = 'stdout';
-% $$$ end;
 
 %Write out the matrix
 fprintf(filenum, '%s = [\n', matrix_name);

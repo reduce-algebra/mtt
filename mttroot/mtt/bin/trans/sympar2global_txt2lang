@@ -16,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1998/07/26 11:00:18  peterg
+## Put in exits-- this all needs a good clean
+##
 ## Revision 1.4  1998/07/26 10:50:30  peterg
 ## Corrected bug.
 ##
@@ -57,16 +60,7 @@ EOF
 # Matlab bit
 #Write out the variables in matlab global format
 if [ "$language" = "m" ]; then
- strip_comments <$1_sympars.txt  |\
-  awk '
-  BEGIN{
-    var = "foobar";
-    print "global ..."
-  }
-  {i++; print tolower($1), "..."; var = $1}
-  END{
-  print var ";" # Repeat the last variable to avoid the trailing ...
-  }'
+  sympar2global_txt2m $1
 exit
 fi
 

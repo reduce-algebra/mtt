@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+# Revision 1.19  1997/03/19  09:49:39  peterg
+# Ports now written in cmp file.
+#
 # Revision 1.18  1997/03/19  09:42:08  peterg
 # Now writes out the following additional fig  files:
 # _head.fig	The fig header
@@ -266,7 +269,9 @@ function process_text() {
 	    }
 
 # Give it a new entry if already used
+#  -- also tell user as it is an error now(?)
       if (name_used) {
+	printf(warning_u, name);
 	i_label++;
 	i_name++;
 	name = sprintf("%1.0f", i_name);
@@ -455,7 +460,8 @@ BEGIN {
 
   warning_f = "WARNING %s \t in fig file but not lbl file  - using\n";
   warning_l = "WARNING %s \t in lbl file but not fig file  - ignoring\n";
-  warning_p = "WARNING system ports are not consecutively numbered\n";
+  warning_p = "ERROR system ports are not consecutively numbered\n";
+  warning_u = "ERROR %s has already appeared in the fig file\n";
 
   data_symbol = "----";
   out_data_symbol = "\t";

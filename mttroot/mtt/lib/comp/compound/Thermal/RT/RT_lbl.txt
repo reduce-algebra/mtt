@@ -1,0 +1,33 @@
+%SUMMARY RT: Two port thermal resistance with T/Sdot bonds
+%DESCRIPTION Port [in]: T/Sdot power in
+%DESCRIPTION Port [out]: T/Sdot power out
+%DESCRIPTION CR and parameters as for a one-port R component
+%DESCRIPTION Example label file entry:
+%DESCRIPTION % Component type RT
+%DESCRIPTION	r		lin	flow,r
+
+
+
+%% Label file for system RT (RT_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type ES
+	es
+	se
+
+% Component type R
+	r		$1		$1
+

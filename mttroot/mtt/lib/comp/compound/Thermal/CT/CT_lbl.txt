@@ -1,0 +1,28 @@
+%SUMMARY CT: One-port thermal C component with T/Sdot bond
+%DESCRIPTION CR and parameters as for a one-port C component
+%DESCRIPTION Example label file entry:
+%DESCRIPTION % Component type CT
+%DESCRIPTION % Component type CT
+%DESCRIPTION 	c		lin	effort,c
+
+%% Label file for system CT (CT_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type ES
+	es	
+
+% Component type C
+	c		$1	$1

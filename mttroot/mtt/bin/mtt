@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.389  2004/08/13 01:32:03  geraint
+## Use ibg.m by default for both Xfig and Dia models.
+##
 ## Revision 1.388  2004/08/11 08:18:07  geraint
 ## Ignores diy make files if the file ${rep}_rep.make.ignore exists, thus allowing user-defined makefiles to use the default MTT rules for languages which they do not override. See odes_rep.make and odeso_rep.make for an example of its use.
 ##
@@ -2216,7 +2219,7 @@ if [ "${this_dir}" = "MTT_work" ]; then
 fi
 
 # Tidy mode - operate in the directory MTT-work
-if [ "$tidy" = "tidy" ]; then
+if [[ "$tidy" = "tidy" && "$level" = "0" ]]; then
    mkdir -p MTT_work
    valid_files=`ls | grep -v '^MTT'`
    ##cp -p -u  Makefile Make *.* .* MTT_work  2>/dev/null

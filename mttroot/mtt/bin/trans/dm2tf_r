@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/03/27 15:00:23  peterg
+## reduce ---> symbolic
+##
 ## Revision 1.1  1996/08/25 10:09:55  peter
 ## Initial revision
 ##
@@ -32,6 +35,7 @@ $SYMBOLIC >dm2tf_r.log << EOF
 
 IN "$1_def.r";
 IN "$1_dm.r";
+IN "$1_subs.r";
 
 OFF Echo;
 OFF Nat;

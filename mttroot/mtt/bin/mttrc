@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.29  2002/05/02 11:03:46  geraint
+## Reinstated -liboctinterp and -lncurses; needed by xleftdiv.
+##
 ## Revision 1.28  2002/05/01 12:21:29  geraint
 ## No longer uses save_ascii_data_for_plotting function to write data
 ## - eliminates dependence on liboctinterp (and libncurses) for .cc.
@@ -205,7 +208,7 @@ else
     # library paths
 
     OCTAVEVERS=`octave --version | gawk '{ print $4 }'`
-    LOCTAVE="-L${PREFIX}/lib/octave-${OCTAVEVERS} -loctave -lcruft -loctave"
+    LOCTAVE="-L${PREFIX}/lib/octave-${OCTAVEVERS} -loctave -lcruft -loctinterp"
     LSYSTEM="-ldl -lm -lncurses -lkpathsea -lreadline -lblas -llapack -lfftw -lg2c"
 
     # compiler options

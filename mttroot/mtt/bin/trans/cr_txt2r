@@ -4,6 +4,7 @@
      ##### Model Transformation Tools #####
      ######################################
 
+
 # Bourne shell script: cr_txt2r
 
 # Label file to constitutive relationship conversion
@@ -15,6 +16,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/03/04 15:31:14  peterg
+## Initial revision
+##
 # Revision 1.3  1997/04/09  12:59:43  peterg
 # Looks for .cr file in current directory - copies from library if they
 # don't already exist.

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1996/08/25 09:52:20  peter
+## Initial revision
+##
 ###############################################################
 
 #Inform user
@@ -30,14 +33,16 @@ reduce >sspar2ss_r.log << EOF
 in "$1_def.r";
 
 %Read the constitutive relationships (May be used in rss file). 
-in "$1_cr.r";
+%in "$1_cr.r";
 
 %Read the steady-state values 
 in "$1_sspar.r";
 
-%Read in the parameter file
-in "$1_sympar.r";
+%Read in the constrained-state equation
+%in "$1_cse.r";
 
+%Read in the ode
+%in "$1_ode.r";
 
 OFF Echo;
 OFF Nat;
@@ -64,31 +69,38 @@ BEGIN
 END;
 MTTY0 := MTTY;
 
-%Write them out by component - but only if values have been set
-
-%(This assumes that if element 1 not set then the rest aren't either)
-clear MTTx1;
 IF MTTNx>0 THEN
-IF MTTX0(1,1) NEQ MTTX1 THEN
-FOR i := 1:MTTNx DO
-BEGIN
-  write "MTTX", i, " := ", MTTX0(i,1);
-END;
+  write "matrix MTTdX0(", MTTNx, ",1)";
 
-clear MTTu1;
-IF MTTNu>0 THEN
-IF MTTu0(1,1) NEQ MTTu1 THEN
-FOR i := 1:MTTNu DO
-BEGIN
-  write "MTTu", i, " := ", MTTu0(i,1);
-END;
+MTTdX0 := MTTdX;
 
-%Derivatives are zero in the steady-state
-IF MTTNz>0 THEN
-FOR i := 1:MTTNz DO
-BEGIN
-  write "MTTdz", i, " := 0";
-END;
+
+%Write them out by component - but only if values have been set
+%(This assumes that if element 1 not set then the rest aren't either)
+%ON Rounded; %Make numbers have dec. points-- nice for c
+%
+%clear MTTx1;
+%IF MTTNx>0 THEN
+%IF MTTX0(1,1) NEQ MTTX1 THEN
+%FOR i := 1:MTTNx DO
+%BEGIN
+%  write "MTTx", i, " := ", MTTX0(i,1);
+%END;
+%
+%clear MTTu1;
+%IF MTTNu>0 THEN
+%IF MTTu0(1,1) NEQ MTTu1 THEN
+%FOR i := 1:MTTNu DO
+%BEGIN
+%  write "MTTu", i, " := ", MTTu0(i,1);
+%END;
+%
+%%Derivatives are zero in the steady-state
+%IF MTTNz>0 THEN
+%FOR i := 1:MTTNz DO
+%BEGIN
+%  write "MTTdz", i, " := 0";
+%END;
 
 write "END;";
 

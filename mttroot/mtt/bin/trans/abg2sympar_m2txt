@@ -15,9 +15,9 @@ echo "Creating $1_sympar.txt"
 
 rm -f mtt_error
 # Separation characters
-SEPS=';+*/()-'
+SEPS=';+*/()-='
 # Replace by ,
-REPS=',,,,,,,'
+REPS=',,,,,,,,'
 
 # This is the main transformation using gawk
 tr $SEPS $REPS <  $1_abg.m | \
@@ -40,7 +40,7 @@ function matches(names, name) {
 
 BEGIN {
   var = "[%|#]VAR";
-  not_an_arg = "effort flow state internal external zero unknown";
+  not_an_arg = "effort flow state internal external zero unknown mtt_e mtt_f";
   arg_line = "arg = ";
 }
 {

@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.12  2000/09/18 12:17:07  peterg
+## Now includes to control system toolbox in OCTAVE_PATH
+## Don't use -path stuff - use :: instead.
+##
 ## Revision 1.11  2000/05/21 17:55:15  peterg
 ## New rep path
 ##
@@ -50,7 +54,8 @@
 
 
 #Edit the following line to show the location of mtt
-export MTTPATH=~peterg/mtt_new/mtt
+# This is now the directory BELOW mtt, mtt-lib and mtt-doc
+export MTT_BASE=/home/peterg/mtt_new
 
 # The following line sets up the make to use -- gmake is the standard 
 # but you may wish to use lsmake for parallelism
@@ -60,30 +65,26 @@ export MAKE='make'
 export CC='gcc'
 
 # Setup the paths
-export PATH=$PATH\:$MTTPATH\:$MTTPATH/trans
-export MTT_COMPONENTS=$MTTPATH/lib/comp
-export MTT_CRS=$MTTPATH/lib/cr
-export MTT_EXAMPLES=$MTTPATH/lib/examples
-export MTT_LIB=$MTTPATH/lib
+export MTTPATH=$MTT_BASE/mtt
+export MTT_LIB=$MTT_BASE/mtt-lib
+export MTT_DOC=$MTT_BASE/mtt-doc
+
+export MTT_COMPONENTS=$MTT_LIB/comp
+export MTT_CRS=$MTT_LIB/cr
+export MTT_EXAMPLES=$MTT_LIB/mtt_examples
 export MTT_REP=$MTT_LIB/rep
 
-
-#Ask octave to tell me its path
-#export OCTAVE_LOAD_PATH=`mtt_octave_path`
-#export OCTAVE_LOAD_PATH=`mtt_octave_path`
+export PATH=$PATH\:$MTTPATH\:$MTTPATH/trans
 
 #Setup octave
 export MATRIX_PATH=$MTTPATH/trans/m//
-export MATRIX_PATH=$MATRIX_PATH\:$MTTPATH/lib/comp/simple
+export MATRIX_PATH=$MATRIX_PATH\:$MTT_LIB/comp/simple//
+export MATRIX_PATH=$MATRIX_PATH\:$MTT_LIB/control//
 export MATRIX_PATH=$MATRIX_PATH\:$MTT_LIB/octave//\:\:
-export MATRIX_PATH=$MATRIX_PATH\:$MTTPATH/lib/control//
 
 export OCTAVE_PATH=.\:$MATRIX_PATH
 export MATRIX="octave"
 
-#Setup matlab
-#MATLABPATH $MATLABPATH\:$MATRIX_PATH
-#export MATLABPATH=
 # Setup the symbolic stuff
 export SYMBOLIC='reduce 64'
 

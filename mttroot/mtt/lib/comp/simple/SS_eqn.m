@@ -31,6 +31,9 @@ global at_top_level
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.24  1999/10/22 02:20:32  peterg
+% %% Changed error handleing of number of attributes >2
+% %%
 % %% Revision 1.23  1998/12/03 16:46:16  peterg
 % %% Deblanked attributes so that zero attribute works.
 % %%
@@ -211,7 +214,7 @@ for i=1:n_bonds			# Loop over all the bonds
 	  fprintf(filenum, "MTTyz%d := %s;\n", ...
 		  zero_outputs, varname(sname, bond_number,1));
 	else
-	  mtt_error([effort_attribute, " not appropriate for an output "]);
+	  mtt_error([effort_attribute, " not appropriate for an output (", name, ")"]);
 	end;
       end;
     end;
@@ -242,7 +245,7 @@ for i=1:n_bonds			# Loop over all the bonds
 	  fprintf(filenum, "MTTyz%d := %s;\n", ...
 		  zero_outputs, varname(sname, bond_number,-1));
 	else
-	  mtt_error([flow_attribute, " not appropriate for an output "]);
+	  mtt_error([flow_attribute, " not appropriate for an output (", name, ")"]);
 	end;
       end;
     end;

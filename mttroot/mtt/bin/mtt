@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.165  1998/07/19 16:00:22  peterg
+## Added smx representation
+##
 ## Revision 1.164  1998/07/17 19:45:58  peterg
 ## Component aliases implemented.
 ##
@@ -1313,6 +1316,7 @@ $1_simpar.txt:
 	echo 'LAST=10.0'; \
 	echo 'DT=0.1'; \
 	echo 'STEPFACTOR=1'; \
+	echo 'METHOD=Implicit'; \
         )> $1_simpar.txt
 
 #SUMMARY simpar	simulation information (m)
@@ -1806,8 +1810,8 @@ $1_sms.c: $1_sm.c $1_def.r $1_sympar.r
 	sm2sms_r2c $1
 
 ifeq ($computation,octave)
-$1_odes.m: $1_ode.m $1_numpar.m  $1_def.m $1_input.m $1_state.m $1_simpar.m
-	ode2odes_m $1 
+$1_odes.m: $1_ode.m $1_numpar.m  $1_def.m $1_input.m $1_state.m $1_simpar.m $1_smx.m
+	 time ode2odes_m $1 
 endif
 
 ifeq ($computation,c)

@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1999/03/09 00:03:55  peterg
+## Major revisions for release 3.5
+##
 ## Revision 1.1  1998/10/20 08:15:17  peterg
 ## Initial revision
 ##
@@ -42,7 +45,7 @@ if [ -n "$examples" ]; then
 fi
 
 # Use wish
-reps_txt2tk | wish -name xmtt
+mtt_make_menu | wish -name xmtt
 
 
 

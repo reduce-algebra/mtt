@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  2000/10/10 21:02:17  peterg
+## Added cse reps
+##
 ## Revision 1.1  2000/10/10 09:07:32  peterg
 ## Initial revision
 ##
@@ -39,6 +42,11 @@ case $rep in
         matrices='EdX E'
         ns="$Nx $Nx"
         ms="1 $Nx"
+	;;
+    csex)
+        matrices='EdX'
+        ns="$Nx"
+        ms="1"
 	;;
     cseo)
         matrices='Y'

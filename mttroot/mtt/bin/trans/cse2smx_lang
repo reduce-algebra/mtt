@@ -189,10 +189,14 @@ symbolic procedure maxtype type;
  GENTRANSHUT "$1_$rep.body";
 EOF
 
+fix_broken_numbers ( ) {
+    sed -e "/[0-9.]$/ N" -e "s/\([0-9.]\)[\n\t\ ]*\([0-9]\)/\1\2/g"
+}
+
 if [ "$lang" = "m" ]; then
 #  lang_header $noglobals $parameters $1 $rep m 'mttx,mttu,mttt,mttpar' $out > $1_$rep.m
   mtt_header $1 $rep m > $1_$rep.m
-  cat $1_$rep.body | mtt_p2m >> $1_$rep.m
+  cat $1_$rep.body | fix_broken_numbers | mtt_p2m >> $1_$rep.m
   echo "## END Code" >> $1_$rep.m
   echo "endfunction" >> $1_$rep.m
 fi

@@ -8,7 +8,7 @@ Standards-Version: 3.5.2
 Package: mtt
 Architecture: all
 Depends: gawk, octave, xfig
-Recommends: blas-dev, fftw-dev, c-compiler, g++, gnuplot, info-browser, lapack-dev, latex2html, libkpathsea-dev, libreadline4-dev, pdf-viewer, postscript-viewer, octave-headers, octave-info, p2c, transfig, xterm, www-browser, wish
+Recommends: blas-dev, fftw-dev, c-compiler, g++, gnuplot, info-browser, lapack-dev, latex2html, libkpathsea-dev, libncurses5-dev, libreadline4-dev, pdf-viewer, postscript-viewer, octave-headers, octave-info, p2c, transfig, xterm, www-browser, wish
 Suggests: scigraphica
 Description: Model Transformation Tools.
  A set of tools for modelling dynamic physical systems using the bond-graph

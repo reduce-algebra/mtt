@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.33  1998/08/10 15:51:06  peterg
+## Comments may now be prefaced by # as well as %
+##
 ## Revision 1.32  1998/07/27 20:30:03  peterg
 ## *** empty log message ***
 ##
@@ -180,6 +183,10 @@
 # The lbl file is used to sort the components.
 ##############################################################
 
+function modulo10(x) {
+  return x-int(x/10)*10
+    }
+
 function exact_match(name1, name2) {
   return ((match(name1,name2)>0)&&(length(name1)==length(name2)))
     }
@@ -236,14 +243,14 @@ function process_text() {
       }
 
 # The depth is field 4
-  depth = $4; 
+  depth = modulo10($4);
 
 # It is terminated by \001 - so delete this termination
   str = substr(str,1,length(str)-4);
 
 # A component string contains only alphanumeric  _ and :
   isa_plain_component = match(str, component_regexp)==0;
-# It must also be specified at depth 0
+# It must also be specified at depth 0 (modulo 10)
   isa_plain_component = isa_plain_component && (depth==0);
 
 # A port is a string within []
@@ -359,7 +366,7 @@ label[i_label,3] = args
 # Unnamed component
     if (named_component==0) {
       i_name++;
-      name = sprintf("%1.0f", i_name);
+      name = sprintf("mtt%i", i_name);
       type = str;
       i_label++;
       label[i_label,1] = name;
@@ -486,13 +493,12 @@ function process_fig() {
 # Test for the fig format first line and data line
   data_line = (match($1,data_symbol)>0);
   first_line = (data_line==0)&&(NF>min_line_length);
-
 #Process firstline
   if (first_line) {
     object = $1;
     sub_type = $2;
     style = $3;
-    zero_depth = (($7==0)&&(object=polyline)) || (($4==0)&&(object=text));
+    zero_depth = ((modulo10($7)==0)&&(object==polyline)) || ((modulo10($4)==0)&&(object==text))
     f_arrow = ($14==1)&&(object=polyline);
     b_arrow = ($15==1)&&(object=polyline);
     arrow = f_arrow||b_arrow;

@@ -13,6 +13,9 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.2  1998/07/03 14:53:38  peterg
+% %% Renames tank to comb to be consistent.
+% %%
 % %% Revision 1.1  1998/05/18 15:46:02  peterg
 % %% Initial revision
 % %%
@@ -30,7 +33,7 @@
 	j_s		lin		flow,j_s
 
 % Component type Pump
-	p1		none		c_v;ideal_gas,r;alpha;effort,k_p
+	p1		none		c_v;ideal_gas,r;alpha;effort,k
 
 
 % Component type SS
@@ -41,7 +44,7 @@
 
 
 % Component type Turb
-	t1		none		c_v;ideal_gas,r;alpha;effort,k_t
+	t1		none		c_v;ideal_gas,r;alpha;effort,k
 
 % Component type In
 	in

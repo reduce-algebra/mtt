@@ -17,6 +17,13 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.370  2003/02/11 20:04:08  geraint
+## Reverted to line-by-line optimisation as default and added caution to
+## description of -optg.
+##
+## Global optimisation has been observed to create assignments using
+## uninitialised temporary variables.
+##
 ## Revision 1.369  2003/02/06 20:28:40  geraint
 ## Added -ibg switch to aid testing during development of ibg2abg.m
 ##
@@ -2788,6 +2795,9 @@ $1_cbg.fig: $1_cbg.m  $1_fig.fig $1_type.sh
 #Elementary system equations + definitions
 ${sys}_ese.r: ${sys}_cbg.m
 	   cbg2ese_m2r $partition $info_switch $Subsystem; #ese_tidy $1
+
+${sys}_sese.r: ${sys}_cbg.m ${sys}_struc.m
+	   cbg2sese_m2r $Subsystem
 
 $1_def.r: $1_ese.r
 	touch $1_def.r

@@ -16,6 +16,9 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.28  2005/01/06 16:03:55  geraint
+@comment  Updated options list.
+@comment
 @comment  Revision 1.27  2005/01/06 14:42:33  geraint
 @comment  Fixed explicit/implicit descriptions of forward/backward Euler.
 @comment  Replaced -c examples with -cc.
@@ -2423,11 +2426,11 @@ name), time (defined by t) and parameters
 
 For example:
 @example
-system_pump_l_1_u	= 4e5*atm;
-system_pump_r_1_u	= 4e5*(t<10)*atm;
-system_ss_i	        = 0*kg;
-system_ss_o	        = 3e-3*kg;
-system_v_1_u	        = (t>10);
+system_pump_l_1_u       = 4e5*atm;
+system_pump_r_1_u       = 4e5*(t<10)*atm;
+system_ss_i             = 0*kg;
+system_ss_o             = 3e-3*kg;
+system_v_1_u            = (t>10);
 system_v_ll_1_u         = 1;
 system_v_lr_1_u         = (t<10);
 system_v_ul_1_u         = 0;
@@ -4759,6 +4762,9 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.28  2005/01/06 16:03:55  geraint
+# %% Updated options list.
+# %%
 # %% Revision 1.27  2005/01/06 14:42:33  geraint
 # %% Fixed explicit/implicit descriptions of forward/backward Euler.
 # %% Replaced -c examples with -cc.

@@ -1,0 +1,46 @@
+%SUMMARY hPipe: Pipe with heat transfer and heat storage.
+%DESCRIPTION Parameter 1: m_t (mass in pipe)
+%DESCRIPTION Parameter 2: v_t (volume of pipe)
+%DESCRIPTION Parameter 3: r (gas constant)
+%DESCRIPTION Typical lable entry 
+%DESCRIPTION % Component type hPipe
+%DESCRIPTION 	pipe		none		r*m_p/v_p
+
+%ALIAS	in  Thermal_in,Hydraulic_in
+%ALIAS	out Thermal_out,Hydraulic_out
+
+%ALIAS	Th_in  Thermal_in
+%ALIAS	Hy_in  Hydraulic_in
+
+%ALIAS	Th_out  Thermal_out
+%ALIAS	Hy_out  Hydraulic_out
+
+%ALIAS	$1	r*m/v
+
+
+%% Label file for system hPipe (hPipe_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type SS
+	[Heat]		external	external
+	[Hydraulic_in]	external	external
+	[Hydraulic_out]	external	external
+	[Thermal_in]	external	external
+	[Thermal_out]	external	external
+
+% Component type TF
+	P2T		lin	flow,r*m/v
+	T2P		lin	effort,r*m/v

@@ -4,7 +4,7 @@
      ##### Model Transformation Tools #####
      ######################################
 
-# Bourne shell script: ese2daer_r
+# Bourne shell script: ese2rdae_r
 # Reduce equations to raw differential-algebraic equation conversion
 # P.J.Gawthrop  8th May 1991, May 1994, June 1996
 # Copyright (c) P.J.Gawthrop, 1991, 1994, 1996
@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.1  1998/03/07 12:49:31  peterg
+## Initial revision
+##
 ## Revision 1.12  1998/01/31 16:22:59  peterg
 ## Added IF MTTNx>0 THEN and IF MTTNy>0 THEN before the relevant
 ## assignements of MTTdX and MTTY to themselves.

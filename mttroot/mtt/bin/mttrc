@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  1998/01/16 08:55:01  peterg
+## MAKE=make
+##
 ## Revision 1.4  1998/01/06 09:14:51  peterg
 ## Added latex2html to setup
 ##
@@ -29,69 +32,48 @@
 
 
 #Edit the following line to show the location of mtt
-MTTPATH=~/mtt_new/mtt
+export MTTPATH=~peterg/mtt_new/mtt
 
 # The following line sets up the make to use -- gmake is the standard 
 # but you may wish to use lsmake for parallelism
-MAKE='make'
-export MAKE
+export MAKE='make'
 
 # The following sets up the c compiler
-CC='gcc'
-export CC
+export CC='gcc'
 
 # Setup the paths
-export MTTPATH
-PATH=$PATH:$MTTPATH:$MTTPATH/trans
-export PATH
-MATRIX_PATH=$MTTPATH/trans/m:$MTTPATH/lib/comp/simple
+export PATH=$PATH\:$MTTPATH\:$MTTPATH/trans
+export MATRIX_PATH=$MTTPATH/trans/m\:$MTTPATH/lib/comp/simple
+export MTT_COMPONENTS=$MTTPATH/lib/comp
+export MTT_CRS=$MTTPATH/lib/cr
+export MTT_EXAMPLES=$MTTPATH/lib/examples
+export MTT_LIB=$MTTPATH/lib
 
-MTT_COMPONENTS=$MTTPATH/lib/comp
-export MTT_COMPONENTS
-
-MTT_CRS=$MTTPATH/lib/cr
-export MTT_CRS
-
-MTT_EXAMPLES=$MTTPATH/lib/examples
-export MTT_EXAMPLES
-
-MTT_LIB=$MTTPATH/lib
-export MTT_LIB
-
+#Ask octave to tell me its path
+#export OCTAVE_LOAD_PATH=`mtt_octave_path`
+OCTAVE_LOAD_PATH=$OCTAVE_PATH
 
 #Setup octave
-MATRIX=octave
-export MATRIX
-OCTAVE_PATH=$OCTAVE_PATH:$MATRIX_PATH
-export OCTAVE_PATH 
-
-RMATRIX=octave
-export RMATRIX
+export OCTAVE_LOAD_PATH=$OCTAVE_LOAD_PATH\:$MATRIX_PATH
+export MATRIX="octave --path $OCTAVE_LOAD_PATH"
 
 #Setup matlab
-#MATLABPATH=$MATLABPATH:$MATRIX_PATH
-#export MATLABPATH
-
+#MATLABPATH $MATLABPATH\:$MATRIX_PATH
+#export MATLABPATH=
 # Setup the symbolic stuff
-SYMBOLIC='reduce'
-export SYMBOLIC
+export SYMBOLIC='reduce'
 
 # Setup xfig
-FIG='xfig  -startfontsize 20 -metric -startgridmode 1'
-export FIG
+export FIG='xfig  -startfontsize 20 -metric -startgridmode 1'
 
 # Setup ps viewer
-PSVIEW='ghostview'
-export PSVIEW
+export PSVIEW='ghostview'
 
 # Setup html viewer
-HTMLVIEW='netscape'
-export HTMLVIEW
+export HTMLVIEW='netscape'
 
 # Setup dvi viewer
-DVIVIEW='xdvi'
-export DVIVIEW
+export DVIVIEW='xdvi'
 
 # Setup latex2html
-LATEX2HTML='latex2html -contents_in_navigation'
-export LATEX2HTML
+export LATEX2HTML='latex2html -contents_in_navigation'

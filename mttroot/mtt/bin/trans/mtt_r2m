@@ -18,6 +18,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.26  2000/11/27 11:52:10  peterg
+## Changed some greps to be case insensitive
+##
 ## Revision 1.25  2000/10/14 08:50:07  peterg
 ## Use new mtt_header
 ##
@@ -145,6 +148,7 @@ echo '## Code' >> mtt_junk
 strip_comments<$1_$2.r | tr [A-Z] [a-z] |\
 grep -vi 'MATRIX ' |\
 grep -vi 'END;' |\
+grep -vi 'clear mtt' |\
 grep -v '^off' |\
 grep -v '^in' |\
 sed \

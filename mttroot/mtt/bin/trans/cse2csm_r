@@ -14,14 +14,28 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  1998/07/13 09:56:31  peterg
+## Back under RCS for major revision
+##
 # Revision 1.1  1996/08/25  10:13:37  peter
 # Initial revision
 #
 ###############################################################
 
 # Inform user
-echo Creating $1_csm.r
+echo Creating $1_$2.r
 
+case $2 in
+    csm)
+	rep=cse;
+	;;
+    scsm)
+	rep=scse;
+	;;
+    *)
+	echo Representation must be csm or scsm;
+        exit
+esac
 # Remove the old log file
 rm -f cse2csm_r.log
 
@@ -29,19 +43,23 @@ rm -f cse2csm_r.log
 reduce >cse2csm_r.log << EOF
 
 in "$1_def.r";
-in "$1_cse.r";
+in "$1_$rep.r";
 in "$1_cr.r";
 %%in "$1_sympar.r";
 
 OFF Echo;
 OFF Nat;
 
+% Get rid of the old mttx and u - now use mkid instead
+clear MTTx, MTTu;
+
 % Find MTTA : the A matrix
 matrix MTTA(MTTNx,MTTNx);
 
   FOR j := 1:MTTNx DO
     BEGIN
-    xj := MTTX(j,1);
+    %xj := MTTX(j,1);
+    xj := mkid(MTTx,j);
     FOR i := 1:MTTNx DO
       MTTA(i,j) := df(MTTEdx(i,1), xj, 1);
     END;
@@ -51,7 +69,8 @@ matrix MTTB(MTTNx,MTTNu);
 
   FOR j := 1:MTTNu DO
     BEGIN
-    uj := MTTU(j,1);
+    %uj := MTTU(j,1);
+    uj := mkid(MTTu,j);
     FOR i := 1:MTTNx DO
       MTTB(i,j) := df(MTTEdx(i,1), uj, 1);
     END;
@@ -62,7 +81,8 @@ matrix MTTC(MTTNy,MTTNx);
   FOR i := 1:MTTNy DO
     FOR j := 1:MTTNx DO
     BEGIN
-      xj := MTTX(j,1);
+      %xj := MTTX(j,1);
+      xj := mkid(MTTx,j);
       MTTC(i,j) := df(MTTY(i,1), xj, 1);
     END;
 
@@ -72,15 +92,16 @@ matrix MTTD(MTTNy,MTTNu);
   FOR i := 1:MTTNy DO
     FOR j := 1:MTTNu DO
     BEGIN
-      xj := MTTU(j,1);
-      MTTD(i,j) := df(MTTY(i,1), xj, 1);
+      uj := MTTU(j,1);
+      uj := mkid(MTTu,j);
+      MTTD(i,j) := df(MTTY(i,1), uj, 1);
     END;
 
 %Substitute the ss values
 in "$1_sspar.r";
 
 %Create the output file
-OUT "$1_csm.r";
+OUT "$1_$2.r";
 
 %Write out the matrices.
 IF MTTNx>0 THEN
@@ -125,7 +146,7 @@ END;
 
 write "END;";
 
-SHUT "$1_csm.r";
+SHUT "$1_$2.r";
 
 EOF
 

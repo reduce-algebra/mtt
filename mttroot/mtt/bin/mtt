@@ -14,6 +14,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+# Revision 1.60  1997/03/20  10:25:41  peterg
+# Generates a compehensive default params file.
+#
 # Revision 1.59  1997/03/19  10:14:04  peterg
 # Now produces a stripped acausal bond graph.
 #
@@ -307,7 +310,7 @@ fi
 if [ "$1" = "clean" ] && [ "$2" = "" ]; then
   echo 'Removing all generated files for all systems'
   rm -f *.log  mtt_info.txt warning.txt
-  rm -f *_abg.m *_abg.ps *_args.* *_cr.r
+  rm -f *_abg.m *_abg.ps *_args.* *_cr.r *_cr.txt
   rm -f *_sympar.r *_sympar.c *_sympar.txt
   rm -f *_rbg.* *_cmp.* *_fig.fig *_*cbg.* *_ese.* *_def.* 
   rm -f *_sub.sh *_type.sh
@@ -322,7 +325,7 @@ fi
 if [ "$2" = "clean" ] && [ "$3" = "" ]; then
   echo 'Removing all generated files for system ' $1
   rm -f *.log  mtt_info.txt warning.txt
-  rm -f $1_abg.m $1_abg.ps $1_args.* $1_cr.r 
+  rm -f $1_abg.m $1_abg.ps $1_args.* $1_cr.r $1_cr.txt
   rm -f $1_sympar.r $1_sympar.c $1_sympar.txt
   rm -f $1_rbg.* $1_cmp.* $1_fig.fig $1*_*cbg.* $1*_ese.* $1_def.* 
   rm -f $1_sub.sh $1_type.sh
@@ -472,31 +475,26 @@ $1_args.m:
 $1_lbl.txt:
 	abg2lbl_fig2txt $1
 
-#SUMMARY cr	constitutive relationship for each subsystem (r)
-$1_cr.r: $1_sub.sh
-	echo Creating $1_cr.r
-	lbl2cr_txt2r $1
+#SUMMARY cr	constitutive relationship for each subsystem (txt)
+$1_cr.txt: $1_sub.sh
+	lbl2cr_txt2txt $1
  
 	if [ "$level" = "0" ]; then \
-	  mv $1_cr.r MTT_cr.r; \
+	  mv $1_cr.txt MTT_cr.txt; \
 	else \
-	  echo >>  MTT_cr.r; \
-	  echo "%% CRs for subsystem $1" >>  MTT_cr.r; \
-	  cat $1_cr.r >> MTT_cr.r; rm -f $1_cr.r; \
+	  cat $1_cr.txt >> MTT_cr.txt; \
 	fi
  
-	sh $1_sub.sh "mtt -q -l $level+1 " ' cr r'
+	sh $1_sub.sh "mtt -q -l $level+1 " ' cr txt'
  
  
 	if [ "$level" = "0" ]; then \
-	  mv MTT_cr.r $1_cr.r; \
-	  echo 'END;' >> $1_cr.r; \
+	  sort -u MTT_cr.txt> $1_cr.txt; \
 	fi
 
-# Temporary fix - just copy everything here
-# ## $1_cr.r: $1_sub.sh
-# ## 	echo Creating $1_cr.r
-# ## 	cat $MTTPATH/lib/cr/r/*.cr > $1_cr.r
+#SUMMARY cr	constitutive relationship for each subsystem (r)
+$1_cr.r: $1_cr.txt
+	cr_txt2r $1
 
 #SUMMARY sympar	symbolic parameters (txt)
 # Lbl to sympar conversion
@@ -527,13 +525,14 @@ $1_sympar.r: $1_sympar.txt
 	sympar_txt2r $1
 
 #SUMMARY sympar	symbolic parameters (c)
-# r to c sympar conversion -- its part of the ode_r2c tool
-#$1_sympar.c: $1_sympar.r
-#	sympar_r2c $1
-
 # txt to c sympar conversion
 $1_sympar.c: $1_sympar.txt
 	sympar_txt2c $1
+
+#SUMMARY sympar	symbolic parameters (h)
+# txt to ch (c header file) sympar conversion
+$1_sympar.h: $1_sympar.txt
+	sympar_txt2h $1
 
 #SUMMARY simp	simplification information (r)
 $1_simp.r:
@@ -884,7 +883,9 @@ $1_odes.m: $1_ode.m $1_numpar.m $1_params.m $1_args.m $1_def.m $1_input.m
 	ode2odes_m $1 '$ARGS'
 endif
 ifeq ($computation,c)
-$1_odes.m: $1_odes.c $1_ode.c $1_numpar.c $1_odes.h $1_params.c $1_input.c
+$1_odes.m: $1_odes.c $1_ode.c $1_numpar.c $1_odes.h\
+         $1_sympar.c $1_sympar.h\
+         $1_params.c $1_input.c
 	echo Creating $1_odes.m
 	echo Creating $1_odeso.m
 	echo 'Compiling ...'

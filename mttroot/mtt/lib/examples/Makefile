@@ -21,23 +21,7 @@ distclean: clean
 
 install: build clean.sh
 	@install -d $(INSTDIR)
-	@cp -a ABG\
-	AlgebraicLoops\
-	Anaesthesia\
-	Chemical\
-	Components\
-	Control\
-	Electrical\
-	Electromechanical\
-	GasDynamics\
-	Hybrid\
-	Identification\
-	Inverse\
-	Mechanical\
-	Sensitivity\
-	Simulation\
-	Thermal\
-	$(INSTDIR)
+	@cp -a $(filter-out CVS Makefile debian, $(wildcard *)) $(INSTDIR)
 
 .PHONY: FORCE
 

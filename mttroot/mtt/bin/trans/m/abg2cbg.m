@@ -20,6 +20,9 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 # ###############################################################
 # ## $Id$
 # ## $Log$
+# ## Revision 1.44  1999/03/11 23:54:11  peterg
+# ## Include possibility of vector SS when finding port_bond_index
+# ##
 # ## Revision 1.43  1998/12/14 15:19:36  peterg
 # ## Added missing "derivative_causality," argument to recursive call of
 # ## this function
@@ -182,6 +185,8 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 # ##
 # ###############################################################
 
+  mtt_info(sprintf("\nCompleting causality for subsystem %s", system_name), infofile);
+
   pc = '%';
   if nargin<1
     system_name = 'no_name';
@@ -281,6 +286,13 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
     for i=1:n_ports
       name = deblank(ABG.portlist(i,:)); # Name of this port
       eval(["port = ABG.ports.",name,";"]); # Extract port info
+disp ("----");
+i
+name
+port
+port_bond_direction
+port.connections
+
       if (sign(port.connections)!=port_bond_direction(i)) # Direction different?
       	eval(["ABG.ports.",name,".connections = - port.connections;"]); # Flip direction at port
 	Flipped.ports=[Flipped.ports;name];	# Remember which port has been flipped
@@ -289,7 +301,7 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 			 ,name,full_name),infofile); # And report
       	for [subsystem,name] = ABG.subsystems # and at the other end
 	  for k=1:length(subsystem.connections)
-	    if (abs(subsystem.connections(k))==bond_index)
+	    if (abs(subsystem.connections(k))==bond_index) # Then flip the connection
 	    eval(["ABG.subsystems.",name,".connections(k)   = -subsystem.connections(k);"]);
 	    Flipped.subs=[Flipped.subs;name];	# Remember which subsystem has been flipped
 	    Flipped.cons=[Flipped.cons;k];	# Remember which connection has been flipped
@@ -393,6 +405,7 @@ name,subsystem
 		  comp_bonds = comp_bonds.*(port_bond_direction*[1 1]);	# and convert from component orientated to arrow orientated causality
             	end;
 		
+port_bond_direction,comp_bonds
 	    	[comp_bonds,subsystem.status] = abg2cbg(name, subsystem.type, full_name, 
 							comp_bonds, port_bond_direction, port_status, ...
 							derivative_causality, ...

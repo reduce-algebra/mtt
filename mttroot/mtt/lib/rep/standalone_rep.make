@@ -15,12 +15,13 @@ PREFIX		= /usr/local
 
 INCLUDES	= -I$(PREFIX)/include/octave
 
-OCTAVE_SRC_PATH	= $(PREFIX)/src/octave
+OCTAVE_SRC_PATH	= /cvs/octave
 
 LIBOCTAVE	= -L$(PREFIX)/lib/octave			-loctave -lcruft -loctinterp
 LIBKPATHSEA	= -L$(OCTAVE_SRC_PATH)/kpathsea			-lkpathsea
 LIBREADLINE	= -L$(OCTAVE_SRC_PATH)/readline			-lreadline
-LIBBLAS		= -L/usr/local/src/ATLAS/lib/Linux_PIII		-lcblas -lf77blas -llapack -latlas -ltstatlas
+#LIBBLAS		= -L/usr/local/src/ATLAS/lib/Linux_PIII		-lcblas -lf77blas -llapack -latlas -ltstatlas
+#LIBBLAS		= 						-lblas -llapack
 LIBF2C		= 						-lg2c
 LIBRARIES	= 						-ldl -lm -lncurses
 

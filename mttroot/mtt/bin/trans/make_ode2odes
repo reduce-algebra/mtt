@@ -9,6 +9,11 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.71  2002/04/30 23:27:00  geraint
+## Replaced octave_map with columnvector in simpar.cc. Not quite as descriptive but
+## standardises the interfaces somewhat and reduces the dependency on liboctinterp
+## (and thus libreadline, libkpathsea, libncurses, etc).
+##
 ## Revision 1.70  2002/04/28 18:41:27  geraint
 ## Fixed [ 549658 ] awk should be gawk.
 ## Replaced calls to awk with call to gawk.
@@ -406,17 +411,14 @@ case `$MATRIX --version | gawk -F\. '{print $2}'` in
     0) # stable
 	vector_value=vector_value
 	feval_header=toplev.h
-	save_ascii_data_function=save_ascii_data
 	;;
     1) # development
 	vector_value=column_vector_value
 	feval_header=parse.h
-	save_ascii_data_function=save_ascii_data_for_plotting
 	;;
     *)
 	vector_value=column_vector_value
 	feval_header=parse.h
-	save_ascii_data_function=save_ascii_data_for_plotting
 	;;
 esac
 
@@ -921,7 +923,12 @@ mtt_write (const double &t,
        if (row > 0)
          {
            Matrix written_data = data.extract (0, 0, row-1, data.cols ()-1);
-           $save_ascii_data_function (file, written_data, "mtt_data");
+	   file << "# name: mtt_dump" << std::endl
+		<< "# type: matrix" << std::endl
+		<< "# rows: " << written_data.rows () << std::endl
+		<< "# columns: " << written_data.columns () << std::endl
+		<< written_data;
+	   file.flush ();
 	 }
        return;
     }
@@ -953,8 +960,12 @@ mtt_write (const double &t,
   if (nrows == row)
     {
 #ifdef STANDALONE
-      $save_ascii_data_function (file, data, "mtt_data");
-//    std::cout << data << std::endl;
+      file << "# name: mtt_dump" << std::endl
+	   << "# type: matrix" << std::endl
+	   << "# rows: " << data.rows () << std::endl
+	   << "# columns: " << data.columns () << std::endl
+	   << data;
+      file.flush ();
 #else // ! STANDALONE
   set_global_value ("MTT_data", data);
 #endif

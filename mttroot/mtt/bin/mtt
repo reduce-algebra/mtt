@@ -17,6 +17,10 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.368  2002/12/12 17:18:41  geraint
+## Fixed [ 647664 ] Namespace clash: LANG
+## Prepended MTT_ to SYS, OPTS and LANG environment variables.
+##
 ## Revision 1.367  2002/12/09 00:14:08  geraint
 ## Hierarchical dia and mixed dia/fig bond graphs now working.
 ##
@@ -1488,6 +1492,9 @@ while [ -n "`echo $1 | grep '^-'`" ]; do
 	-abg )
                 mtt_switches="$mtt_switches $1";
                 start_at_abg='yes';;
+        -ibg )
+		mtt_switches="$mtt_switches $1";
+		use_ibg='yes';;
 	-stdin )
                 mtt_switches="$mtt_switches $1";
                 stdin=stdin;;
@@ -1592,6 +1599,7 @@ if [ -z "$1" ]; then
     echo '         -D  debug -- leave log files etc'
     echo '         -I  prints more information'
     echo '         -abg start at abg.m representation'
+    echo '         -ibg use intermediate representation to transform rbg to abg (EXPERIMENTAL)'
     echo '         -c  c-code generation'
     echo '         -cc C++ code generation'
     echo '         -cr Use cr before resolving equations'
@@ -2735,9 +2743,21 @@ ifneq ($start_at_abg,yes)
 	abg_dia2m \$*
 	(sh \$*_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
 
+ifneq ($use_ibg,yes)
 %_abg.m: %_rbg.m %_alias.m %_sub.sh %_icd.m
 	(sh \$*_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
 	rbg2abg_m $info_switch \$*
+else
+.PRECIOUS: %_ibg.m
+%_ibg.m: %_rbg.m
+	@echo "EXPERIMENTAL: Creating \$@"
+	rbg2ibg_m $info_switch \$*
+
+%_abg.m: %_ibg.m %_alias.m %_sub.sh %_icd.m
+	@echo "EXPERIMENTAL: Creating \$@"
+	(sh \$*_sub.sh "mtt $mtt_switches -q -u -l $level+1 " ' abg m null  || exit 1') || exit 1
+	ibg2abg_m $info_switch \$*
+endif
 endif
 
 #SUMMARY cbg*	causal bond graph (m)

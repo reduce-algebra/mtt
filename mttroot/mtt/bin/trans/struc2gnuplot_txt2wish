@@ -34,10 +34,29 @@ menu .menubar.file.menu
 .menubar.file.menu add separator
 .menubar.file.menu add command -label "Quit"			     -command exit
 
+menubutton .menubar.edit -text "Edit" -menu .menubar.edit.menu
+menu .menubar.edit.menu
+.menubar.edit.menu add cascade -label "Axes" -menu .menubar.edit.menu.axes
+.menubar.edit.menu add cascade -label "Grid" -menu .menubar.edit.menu.grid
+.menubar.edit.menu add cascade -label "Key"  -menu .menubar.edit.menu.key
+
+menu .menubar.edit.menu.axes
+.menubar.edit.menu.axes add command -label "Cartesian" -command { puts "set nopolar ; replot" }
+.menubar.edit.menu.axes add command -label "Polar"     -command { puts "set   polar ; replot" }
+
+menu .menubar.edit.menu.grid
+.menubar.edit.menu.grid add command -label "Show Grid" -command { puts "set   grid ; replot" }
+.menubar.edit.menu.grid add command -label "Hide Grid" -command { puts "set nogrid ; replot" }
+
+menu .menubar.edit.menu.key
+.menubar.edit.menu.key add command -label "Show Key"   -command { puts "set   key ; replot" }
+.menubar.edit.menu.key add command -label "Hide Key"   -command { puts "set nokey ; replot" }
+
 button .menubar.xmtt  -text "xMTT" -relief flat		 -command { exec xmtt }
 button .menubar.quit  -text "Quit" -relief flat		 -command exit 
 
 pack .menubar.file    -expand false -fill x -side left
+pack .menubar.edit    -expand false -fill x -side left
 pack .menubar.xmtt    -expand false -fill x -side left
 pack .menubar.quit    -expand false -fill x -side right
 
@@ -48,14 +67,10 @@ radiobutton .statusbar.states  -text "States"      -value states  -variable view
 radiobutton .statusbar.outputs -text "Outputs"     -value outputs -variable view      -relief solid -command { raise .cy }
 
 tk_optionMenu .statusbar.plot  plottype "Single Plot" "Multi Plot" "New Window"
-tk_optionMenu .statusbar.grid  grid     "Grid On" "Grid Off"
-tk_optionMenu .statusbar.coord coord	"Cartesian" "Polar"
 
 pack .statusbar.states  -expand false -fill x -side left
 pack .statusbar.outputs -expand false -fill x -side left
 pack .statusbar.plot    -expand false -fill x -side right
-pack .statusbar.coord   -expand false -fill x -side right
-pack .statusbar.grid    -expand false -fill x -side right
 
 ## states canvas
 canvas		.cx
@@ -168,35 +183,25 @@ cat <<EOF >> ${out}
 
 ## call gnuplot
 proc "plot_var" "title column" {
-    set_plot_options
     puts "set term X11"
-    global plottype
-    if {"\$plottype" == "Multi Plot"} {
-	set plot "replot"
-    } elseif {"\$plottype" == "New Window"} {
-	global windownum
-	set windownum [ expr \$windownum + 1 ]
-	puts "set terminal x11 \$windownum"
-	set plot "plot"
+    global first_plot
+    if {"\$first_plot" == 1} {
+        set first_plot 0
+        set plot "plot"
     } else {
-	set plot "plot"
+	global plottype
+	if {"\$plottype" == "Multi Plot"} {
+	    set plot "replot"
+	} elseif {"\$plottype" == "New Window"} {
+	    global windownum
+	    set windownum [ expr \$windownum + 1 ]
+	    puts "set terminal x11 \$windownum"
+	    set plot "plot"
+	} else {
+	    set plot "plot"
+	}
     }
     puts "\$plot '${dat2}' using 1:\$column title '\$title' with lines"
-}
-
-proc "set_plot_options" "" {
-    global coord;			# "Cartesian", "Polar"
-    global grid;			# "Grid On", "Grid Off"
-    if {"\$coord" == "Cartesian"} {
-	puts "set nopolar"
-    } else {
-	puts "set polar"
-    }
-    if {"\$grid" == "Grid On"} {
-	puts "set grid"
-    } else {
-	puts "set nogrid"
-    }
 }
 
 ## open gnuplot plot file
@@ -262,6 +267,12 @@ proc "print_postscript" "" {
 	}
     }
 }
+
+# Defaults
+puts "set key"
+puts "set grid"
+puts "set nopolar"
+set first_plot 1
 
 EOF
 chmod +x ${out}

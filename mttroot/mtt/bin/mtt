@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.324  2001/10/05 23:39:43  geraint
+## Made odes.dat2 .PRECIOUS to prevent deletion when simulation receives ^C.
+##
 ## Revision 1.323  2001/08/08 02:14:59  geraint
 ## Rationalisation of solver code, beginning with algebraic solvers.
 ##
@@ -2314,52 +2317,46 @@ endif
 
 # Dummy target
 FORCE:
-##$1_ode2odes_common.m    : $1_input.m   $1_logic.m   $1_numpar.m   $1_simpar.m   $1_state.m
-##	@echo > /dev/null
 
-##<<<<<<< mtt
-##$1_ode2odes_common.cc   : $1_input.cc  $1_logic.cc  $1_numpar.cc  $1_simpar.cc  $1_state.cc
-##=======
 $1_ode2odes_common.m    : $1_ae.m   $1_input.m   $1_logic.m   $1_numpar.m   $1_simpar.m   $1_state.m
-	@echo > /dev/null
+	touch \$@
 $1_ode2odes_common.cc   : $1_ae.cc  $1_input.cc  $1_logic.cc  $1_numpar.cc  $1_simpar.cc  $1_state.cc
-##>>>>>>> 1.316
-	@echo > /dev/null
+	touch \$@
 $1_ode2odes_common.o    : $1_ae.o   $1_input.o   $1_logic.o   $1_numpar.o   $1_simpar.o   $1_state.o
 	@echo "Creating $1_ode2odes_common.o"
 	ar -cr \$@ \$^
 $1_ode2odes_common.oct  : $1_ae.oct $1_input.oct $1_logic.oct $1_numpar.oct $1_simpar.oct $1_state.oct
-	@echo > /dev/null
+	touch \$@
 
 $1_ode2odes_euler.m  $1_ode2odes_rk4.m    : $1_ode.m     $1_odeo.m
-	@echo > /dev/null
+	touch \$@
 $1_ode2odes_euler.cc $1_ode2odes_rk4.cc   : $1_ode.cc    $1_odeo.cc
-	@echo > /dev/null
+	touch \$@
 $1_ode2odes_euler.o  $1_ode2odes_rk4.o    : $1_ode.o     $1_odeo.o   mtt_euler.o
 	@echo "Creating \$@"
 	ar -cr \$@ \$^
 $1_ode2odes_euler.oct   : $1_ode.oct   $1_odeo.oct mtt_euler.oct
-	@echo > /dev/null
+	touch \$@
 
 $1_ode2odes_implicit.m  : $1_cseo.m    $1_csex.m   $1_smxa.m   $1_smxax.m
-	@echo > /dev/null
+	touch \$@
 $1_ode2odes_implicit.cc : $1_cseo.cc   $1_csex.cc  $1_smxa.cc  $1_smxax.cc
-	@echo > /dev/null
+	touch \$@
 $1_ode2odes_implicit.o  : $1_cseo.o    $1_csex.o   $1_smxa.o   $1_smxax.o   mtt_implicit.o
 	@echo "Creating $1_ode2odes_implicit.o"
 	ar -cr \$@ \$^
 $1_ode2odes_implicit.oct: $1_cseo.oct  $1_csex.oct $1_smxa.oct $1_smxax.oct mtt_implicit.oct
-	@echo > /dev/null
+	touch \$@
 
 $1_ode2odes_dassl.m	: $1_ode.m	$1_odeo.m
-	@echo > /dev/null
+	touch \$@
 $1_ode2odes_dassl.cc	: $1_ode.cc	$1_odeo.cc
-	@echo > /dev/null
+	touch \$@
 $1_ode2odes_dassl.o	: $1_ode.o	$1_odeo.o	mtt_dassl.o
 	@echo "Creating \$@"
 	ar -cr \$@ \$^
 $1_ode2odes_dassl.oct	: $1_ode.oct	$1_odeo.oct	mtt_dassl.oct
-	@echo > /dev/null
+	touch \$@
 
 mtt_Solver.cc:	mtt_Solver.hh
 mtt_AlgebraicSolver.cc: mtt_AlgebraicSolver.hh

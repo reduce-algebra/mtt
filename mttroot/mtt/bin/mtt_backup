@@ -2,8 +2,33 @@
 # Does a backup with date of selected files.
 
 #Name of archive
-filename=`date | awk '{printf("mtt_%s%s_%s.tgz\n", $2,$3,$6)}'`
+if [ -z $2 ]; then
+    mtt="mtt"
+else
+    mtt="mtt-$2"
+fi
+
+case $1 in
+    -d)
+         filename=`date | awk '{printf("%s_%s%s_%s.tgz\n", mtt, $2,$3,$6)}' mtt=$mtt`;
+	 shift
+	;;
+    -v)
+         filename=`mtt --version | awk '{printf("%s-%s.tar.gz\n", mtt, $NF)}' mtt=$mtt`;
+	 shift
+	;;
+    -h)
+         echo "Usage: mtt_backup [-d|-v] [lib|doc]";
+	 exit
+	;;
+    *)
+
+         filename=`date | awk '{printf("$mtt$2_%s%s_%s.tgz\n", $2,$3,$6)}'`
+esac
+
 echo Backup file $filename
+
+exit
 
 #Files to backup
 dir="mtt"
@@ -17,8 +42,10 @@ fi
 # Listing files to ignore
 echo Finding irrelevant files
 find $dir -name '*.*' -print |\
-  grep 'dvi$\|ps$\|pdf$\|html$\|info$\|gif$\|log$\|MTT_work\|core\|~$' >IGNORE
+  grep 'dvi$\|ps$\|pdf$\|html$\|info$\|gif$\|log$\|dat$\|MTT_work\|core\|~$' >IGNORE
 wc IGNORE | awk '{print "Ignoring", $1, "files"}'
+
+#echo examples >> IGNORE
 
 #Inform user
 echo Backing up $dir to $filename

@@ -1,6 +1,6 @@
-function [K_x T] = ppp_open2closed (A_u,A_c,k_x,x_0);
+function [K_x T] = ppp_open2closed (A_u,A_c,k_x,x_0,Us0);
 
-  ## usage:  [K_x T] = ppp_open2closed (A_u,A_c,k_x,x_0);
+  ## usage:  [K_x T] = ppp_open2closed (A_u,A_c,k_x,x_0[,Us0]);
   ## K_x is the open-loop matrix as in U = K_w W - K_x x
   ## Note that K_x is a column vector of matrices - one matrix per input.
   ## T is the transformation matrix: x = T*Ustar; A_c = T*A_u*T^-1; U = (k_x*T)'
@@ -9,6 +9,7 @@ function [K_x T] = ppp_open2closed (A_u,A_c,k_x,x_0);
   ## A_c: closed-loop system matrix
   ## k_x: closed-loop feedback gain
   ## x_0: initial state
+  ## Us0: initial basis fun state
 
   ## Copyright (C) 1999 by Peter J. Gawthrop
   ## 	$Id$	
@@ -29,9 +30,11 @@ function [K_x T] = ppp_open2closed (A_u,A_c,k_x,x_0);
     x_0 = zeros(n_c,1);
   endif
 
-  ## Create U*(0)
-  ##Us0  = ppp_ustar(A_u,n_u);
-  Us0 = ones(1,n_o);
+  if nargin<5 #Create U*(0)
+    ##Us0  = ppp_ustar(A_u,n_u);
+    Us0 = ones(1,n_o);
+  endif
+  
 
   ## Decompose A_u and Us0 into two bits:
   if n_o==n_c

@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.89  2004/08/29 16:04:44  geraint
+## Fixed ae for non-sorted code.
+##
 ## Revision 1.88  2004/08/29 13:15:28  geraint
 ## Uses sys_sae instead of sys_ae if sorted equations are being used.
 ##
@@ -512,6 +515,8 @@ fi
 cat <<EOF >> $filename
     [open_switches] = ${sys}_logic(x,u,t,par); # Switch logic
     [x] = $algorithm; # Integration update
+    [open_switches] = ${sys}_logic(x,u,t,par); # Switch logic
+    [x] = mtt_zeroswitches(x,$Nx,open_switches);
     t = t + ddt;   # Time update
     mttj = mttj+1;    # Increment counter
     if mttj==simpar.stepfactor
@@ -810,6 +815,20 @@ mtt_output (const ColumnVector &x,
   return f(0).${vector_value} ();
 #endif // ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
 }
+
+inline ColumnVector
+mtt_zeroswitches (ColumnVector &x,
+		  const int Nx,
+		  const ColumnVector &openx)
+{
+  for (register int i = 0; i < Nx; i++) {
+    if (0 != openx (i)) {
+      x(i) = 0.0;
+    }
+  }
+  return x;
+}
+  
 
 EOF
 case "$method" in
@@ -1198,6 +1217,8 @@ esac
 cat <<EOF >> $filename
       open_switches = mtt_logic (x, u, t, par);
       x =  $algorithm; 
+      open_switches = mtt_logic (x, u, t, par);
+      x = mtt_zeroswitches (x, $Nx, open_switches);
       t += ddt;
       j++;
       j = (j == static_cast<int> (stepfactor)) ? 0 : j;

@@ -13,6 +13,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  2002/04/28 18:41:27  geraint
+## Fixed [ 549658 ] awk should be gawk.
+## Replaced calls to awk with call to gawk.
+##
 ## Revision 1.7  2000/05/19 17:47:35  peterg
 ## Fixed bug in oct version but still needs proper check
 ##
@@ -115,14 +119,14 @@ cat >> $1_sim.m <<EOF
   ## Create the system input file
   t1 = [0:N_u-1]*dt; # Create time vector from zero (to fit u);
   ut = [t1' u'];
-  save -ascii $1_input.dat ut 
+  save -text $1_input.dat ut 
 
   ## Create the state file
   xi = [[1:$Nx]' x0]; #'
-  save -ascii   $1_state.dat xi
+  save -text   $1_state.dat xi
 
   ## Create the sympar file
-  save -ascii   $1_simpar.dat dt
+  save -text   $1_simpar.dat dt
 
   ## Create the numpar file
   [n_par,m_par] = size(par);
@@ -139,7 +143,7 @@ cat >> $1_sim.m <<EOF
   endif;
 
   if !doing_sensitivities
-      save -ascii   $1_numpar.dat ipar 
+      save -text   $1_numpar.dat ipar 
   endif;
 
   dtime = time-tim;
@@ -158,7 +162,7 @@ cat >> $1_sim.m <<EOF
       if doing_sensitivities
         i_2 = 1 + 2*n_y;
         ipars = [ipar; [sensitivities(i_sim) 1]];
-        save -ascii   $1_numpar.dat ipars 
+        save -text   $1_numpar.dat ipars 
       else
         i_2 = i_1 + n_y -1;
       endif

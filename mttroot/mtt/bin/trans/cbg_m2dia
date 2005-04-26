@@ -39,7 +39,7 @@ cbg	= ${name}_cbg;
 ## structure with two cell arrays: head and tail 
 ## the index of each array element is the bond index
 ## the value of each array element is a component name
-load -ascii ${sys}_connections.dat;
+load -text ${sys}_connections.dat;
 con	= ${sys}_connections;
 
 nibgbonds = length (fieldnames (ibg.bonds));

@@ -26,7 +26,7 @@ save_header_format_string =  ["# Model Transformation Tools\t", ...
 			      "# Created by abg2connections_m\n", ...
 			      str];
 
-save -ascii ${file} ${sys}_connections;
+save -text ${file} ${sys}_connections;
 
 EOF
 

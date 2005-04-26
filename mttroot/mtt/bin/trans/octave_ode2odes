@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  2002/05/07 10:13:48  gawthrop
+## Files marked by update as out of sync
+##
 ## Revision 1.4  2001/03/30 15:13:58  gawthrop
 ## Rationalised simulation modes to each return mtt_data
 ##
@@ -39,7 +42,7 @@ $MATRIX  <<EOF >octave_ode2odes.log 2>mtt_error.txt
     mtt_error("octave_ode2odes: Simulated data is complex - something is wrong!");
     mtt_data = real(mtt_data);
   endif;
-  save -ascii $1_odes.dat2 mtt_data
+  save -text $1_odes.dat2 mtt_data
 EOF
 
 mtt_error mtt_error.txt

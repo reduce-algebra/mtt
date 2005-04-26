@@ -1,5 +1,8 @@
 function [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,cond_uu] = ppp_lin(A,B,C,D,A_u,A_w,tau,Q,R,P,max_cond);
-  ## usage:   [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,cond_uu] = ppp_lin(A,B,C,D,A_u,A_w,tau,Q,R,P,max_cond)
+  ## usage:
+  ## [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,cond_uu] =
+  ##  ppp_lin(A,B,C,D,A_u,A_w,tau,Q,R,P,max_cond)
+
   ##
   ## Linear PPP (Predictive pole-placement) computation 
   ## INPUTS:
@@ -13,7 +16,7 @@ function [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,cond_uu] = ppp_l
   ## A_w: composite system matrix for W* generation 
   ##      one square matrix (A_wi) row for each system output
   ##      each A_wi generates W*' for ith system output.
-  ## t: row vector of times for optimisation (equispaced in time)
+  ## tau: row vector of times for optimisation (equispaced in time)
   ## Q column vector of output weights (defaults to unity)
   ## OR
   ## Q matrix,  each row corresponds to time-varying weight compatible with t
@@ -34,7 +37,7 @@ function [k_x,k_w,K_x,K_w,Us0,J_uu,J_ux,J_uw,J_xx,J_xw,J_ww,y_u,cond_uu] = ppp_l
   if (n_x==-1)
     return
   endif
-
+  
   ## Default Q (output weight)
   if nargin<8
     Q = ones(n_y,1);

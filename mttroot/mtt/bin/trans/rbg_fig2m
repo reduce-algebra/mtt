@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.13  2005/03/15 15:03:55  gawthrop
+## Now works for Hierarchical systems
+##
 ## Revision 1.12  2005/03/15 12:49:28  gawthrop
 ## Handle descriptive (inc maths) text as well
 ##
@@ -57,19 +60,23 @@
 
 cmp2latex() {
   gawk '{
-  ## Zap trailing null
-  split($0,A,"\\");
+  ## 
+  ## Zap trailing \001
+  A = substr($0,1,length($0)-4);
 
   ## Find before and after:
-  N=split(A[1],B,":");
+  N=split(A,B,":");
 
   ## Split into fields
   M=split(B[1],C);
 
-  ## Dont modify port labels
+  ## Dont modify port labels (except for _ -> \_)
   if(index(C[M],"[")==1){
-       for (i=1;i<M;i++)
+       for (i=1;i<M;i++){
+         if (C[i]=="_")
+           C[i] = "\\\\_";
          printf("%s ",C[i]);
+       }
        printf("%s\\001\n",C[M]);
    }
   else{
@@ -84,8 +91,10 @@ cmp2latex() {
     if (N==1)
       printf("\\\\B{%s}\\001\n",C[M]);
     if (N==2)
-      if(index(B[2],"[")==1)
+      if(index(B[2],"[")==1){
+        gsub(/_/,"\\\\_",B[2]);
         printf("\\\\B{%s}:%s\\001\n",C[M],B[2]);
+      }
       else
         printf("\\\\BB{%s}{%s}\\001\n",C[M],B[2]);
    }
@@ -100,11 +109,11 @@ art2latex() {
     print $0
   else
   {
-  ## Zap trailing null
-  split($0,B,"\\");
+  ## Zap trailing \001
+  B = substr($0,1,length($0)-4);
 
   ## Split into fields
-  M=split(B[1],C);
+  M=split(B,C);
 
   ## Set special flag
   FlagCol = 9
@@ -191,8 +200,8 @@ cat $1_head.fig $1_bnd.fig $1_cmp.fig> $1_sabg.fig
 ##latex_tidy $1_art.fig
 art2latex< $1_art.fig  >$1_lart.fig
 cmp2latex<$1_cmp.fig  >$1_lcmp.fig
-cat $1_head.fig $1_bnd.fig $1_lcmp.fig  > $1_labg.fig
-strip_comments < $1_lart.fig >> $1_labg.fig
+cat $1_head.fig $1_bnd.fig $1_lcmp.fig | sed 's/---- /	/' > $1_labg.fig
+strip_comments < $1_lart.fig | sed 's/---- /	/' >> $1_labg.fig
 
 
 

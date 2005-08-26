@@ -73,7 +73,7 @@ menu .sys.sys
 EOF
 
 for sys in $systems; do
-    echo .sys.sys add radio -label "$sys"  -command {set system "$sys"} 
+    echo .sys.sys add radio -label "{$sys}"  -command {set system "{$sys}"} 
 done
 
 # Create the options menu

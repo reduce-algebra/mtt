@@ -81,9 +81,11 @@ mtt |  gawk '{
   if (Options) {
     option=substr($1,2);
     label="";
-    for (i=2;i<=NF;i++)
-      label = sprintf("%s %s",label,$i);
-    printf(".opt.opt add check -label \"%s (-%s)\" -variable %s -command {set args \"$args -%s\" }\n", label, option, option, option); 
+    if ($1 ~ /^-/) {
+      for (i=2;i<=NF;i++)
+        label = sprintf("%s %s",label,$i);
+      printf(".opt.opt add check -label \"%s (-%s)\" -variable %s -command {set args \"$args -%s\" }\n", label, option, option, option); 
+    }
   }
   if ($1=="Options:") Options = 1;
 }'

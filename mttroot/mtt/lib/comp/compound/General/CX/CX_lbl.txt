@@ -1,31 +1,34 @@
-%SUMMARY CX	C component with state i/o
-%DESCRIPTION Port [X]: state i/o
-%% Label file for system CX (CX_lbl.txt)
+#SUMMARY CX	C component with state i/o
+#DESCRIPTION Port [X]: state i/o
+## Label file for system CX (CX_lbl.txt)
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %% Version control history
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %% $Id$
-% %% $Log$
-% %% Revision 1.2  1998/04/14 17:06:44  peterg
-% %% Input only to SS
-% %%
-% %% Revision 1.1  1998/04/12 15:21:11  peterg
-% %% Initial revision
-% %%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# ###############################################################
+# ## Version control history
+# ###############################################################
+# ## $Id$
+# ## $Log$
+# ## Revision 1.3  2000/08/29 15:25:33  peterg
+# ## New SS format
+# ##
+# ## Revision 1.2  1998/04/14 17:06:44  peterg
+# ## Input only to SS
+# ##
+# ## Revision 1.1  1998/04/12 15:21:11  peterg
+# ## Initial revision
+# ##
+# ###############################################################
 
-%% Each line should be of one of the following forms:
-%	a comment (ie starting with %)
-%	Component-name	CR_name	arg1,arg2,..argn
-%	blank
+## Each line should be of one of the following forms:
+#	a comment (ie starting with #)
+#	Component-name	CR_name	arg1,arg2,..argn
+#	blank
 
 
-
-% Component type C
+# Component type C
 	c		$1	$1
 
-% Component type SS
-	X		SS	internal,external
+# Component type SS
+	[in]		SS	internal,external
+	[X]		SS	internal,external
 
 

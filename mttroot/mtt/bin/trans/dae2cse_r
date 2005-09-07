@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.27  2005/03/21 11:50:39  gawthrop
+## Don't write an empty cseo file
+##
 ## Revision 1.26  2002/10/28 23:31:21  gawthrop
 ## Added additional term to MTTEdx to account for zdot terms on
 ## Right-Hand Side state equations
@@ -314,7 +317,7 @@ MTTdX := MTTdXs;  %Restore the symbolic dX
 %% Add on input derivative terms
 MTTEdX := MTTEdX + MTTExu*MTTdu;
 %% Add on output derivative terms
-MTTEdx := MTTEdX + MTTExx*(MTTE^(-1))*MTTEdX;
+MTTEdx := MTTEdX + MTTEyx*(MTTE^(-1))*MTTEdX;
 END;
 
 

@@ -1,6 +1,6 @@
-function [ys,us,xs,xu,AA] = ppp_ystar (A,B,C,D,x_0,A_u,U,tau)
+function [ys,us,xs,xu,AA] = ppp_ystar (A,B,C,D,x_0,A_u,U,tau,Us0)
 
-  ## usage:  [ys,us,xs,xu,AA] = ppp_ystar (A,B,C,D,x_0,A_u,U,tau)
+  ## usage:  [ys,us,xs,xu,AA] = ppp_ystar (A,B,C,D,x_0,A_u,U,tau[,Us0])
   ##
   ## Computes open-loop moving horizon variables at time tau
   ## Inputs:
@@ -14,6 +14,7 @@ function [ys,us,xs,xu,AA] = ppp_ystar (A,B,C,D,x_0,A_u,U,tau)
   ##             same square matrix for each system input
   ## U           Column vector of optimisation coefficients  
   ## tau         Row vector of times at which outputs are computed
+  ## Us0         Initial value of U* (default ones(NU,1))
   ## Outputs:
   ## ys          y*, one column for each time tau 
   ## us          u*, one column for each time tau 
@@ -21,7 +22,8 @@ function [ys,us,xs,xu,AA] = ppp_ystar (A,B,C,D,x_0,A_u,U,tau)
   ## xu          x_u, one column for each time tau 
   ## AA          The composite system matrix
   
-  ## Copyright (C) 1999 by Peter J. Gawthrop
+
+  ## Copyright (C) 1999,2005 by Peter J. Gawthrop
   ## 	$Id$	
 
   if (size(A)>0)
@@ -38,7 +40,6 @@ function [ys,us,xs,xu,AA] = ppp_ystar (A,B,C,D,x_0,A_u,U,tau)
   square = (n==m);		# Is A_u square?
   n_U = m;			# functions per input
 
-  
   [n,m] = size(U);
   if (m != 1)
     error("U must be a column vector");
@@ -62,6 +63,16 @@ function [ys,us,xs,xu,AA] = ppp_ystar (A,B,C,D,x_0,A_u,U,tau)
   if (n != 1 )
     error("tau must be a row vector of times");
   endif
+
+  if nargin<9
+    Us0 = ones(1,n_U);
+  endif
+  
+  [n_Us0,m_Us0] = size(Us0);
+  if (n_Us0>1)||(n_Us0>m_Us0)
+    error(sprintf("Us0 must be a row vector, not %ix%i ",n_Us0,m_Us0));
+  endif
+	  
   
   if square			# Then same A_u for each input
     ## Reorganise vector U into matrix Utilde  
@@ -81,7 +92,7 @@ function [ys,us,xs,xu,AA] = ppp_ystar (A,B,C,D,x_0,A_u,U,tau)
 	    Z   A_u];
     endif
     
-    xx_0 = [x_0;ones(n_U,1)];	# Composite initial condition
+    xx_0 = [x_0;Us0'];		# Composite initial condition
   else				# Different A_u on each input
     ## Reorganise vector U into matrix Utilde  
     Utilde = [];

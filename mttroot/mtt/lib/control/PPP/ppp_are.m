@@ -28,8 +28,8 @@ function [P,A_u,A_w,k] = ppp_are (A,B,C,D,Q,R,A_type)
   else
     error(sprintf("Q (%ix%i) must be %ix%i or %ix%i",n_q,n_q,n_y,n_y,n_x,n_x));
   endif
-  Q_x
-  [k, P, poles] = lqr (A, B, Q_x, R) # Algebraic Riccati solution
+
+  [k, P, poles] = lqr (A, B, Q_x, R); # Algebraic Riccati solution
 
   ## Basis functions
   if strcmp(A_type,"companion")

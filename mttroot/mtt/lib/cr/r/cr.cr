@@ -8,6 +8,9 @@
 %DESCRIPTION             mtt_f=mtt_e/r
 
 % $Log$
+% Revision 1.5  2003/01/09 09:57:42  gawthrop
+% Added dummy first argument (comp_type) to cr
+%
 % Revision 1.4  2000/12/28 09:18:38  peterg
 % put under RCS
 %
@@ -108,5 +111,11 @@ LET cr(comp_type,mtt_cr_e,mtt_cr_f,flow,1,
 	input_1,effort,1,
 	input_2,flow,2
 	)  = sub(mtt_mod=input_2,sub(mtt_e=input_1,mtt_cr_e));
+
+%% AE amplifier
+FOR ALL  mtt_cr, input, out_cause
+LET cr(ae,mtt_cr,effort, 2, 
+        input, effort, 1)
+    = eqn2ass(mtt_cr,mtt_2,{mtt_1=input});
 
 END;

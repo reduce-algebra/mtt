@@ -1,0 +1,12 @@
+#! /bin/sh
+
+     ###################################### 
+     ##### Model Transformation Tools #####
+     ######################################
+
+# Bourne shell script: labg_fig2ps
+
+# Eps figures from labg rep.
+echo Creating $1.ps
+fig2ps --nogv --forcespecial --add=$MTT_LIB/latex/bg $1.fig >/dev/null
+

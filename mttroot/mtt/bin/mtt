@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.411  2005/03/15 15:03:28  gawthrop
+## Now works for Hierarchical systems
+##
 ## Revision 1.410  2005/03/15 13:35:50  gawthrop
 ## Pretty abg figure in reports.
 ##
@@ -2202,6 +2205,8 @@ PLOTTYPE='single';
 case $2 in
 	abg )
 		REPTYPE='bg' ;;
+	labg )
+		REPTYPE='lbg' ;;
 	sabg )
 		REPTYPE='bg' ;;
 	cbg )
@@ -3898,6 +3903,10 @@ endif
 	bg2eps $1 $2 $ps $eps
 endif
 
+ifeq ($REPTYPE,lbg)
+$1_$2.$ps : $1_$2.fig
+	labg_fig2ps $1_$2
+endif
 
 ifeq ($REPTYPE,tex)
 #Generic conversion of LaTeX doc to dvi or pdf

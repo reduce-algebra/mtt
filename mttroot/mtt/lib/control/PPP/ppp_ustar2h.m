@@ -24,7 +24,16 @@ function ppp_ustar2h (Ustar,DT,name)
 
   def = sprintf("#define N_U %i\n#define N_T %i\n#define DT %g\n", \
 		 N_U, N, DT);
-  def = sprintf("%sdouble U[N_U];\n",def);
+  def = sprintf("%sdouble U[N_U]={",def);
+  for j=1:N_U
+    if j<N_U
+      comma = ",";
+    else
+      comma = "";
+    endif
+    def = sprintf("%s0.0%s ",def, comma);
+  endfor
+  def = sprintf("%s};\n",def)
 
   fprintf(fid, "%s%sdouble %s[N_T][N_U] = {\n",header,def,name);
   for i=1:N

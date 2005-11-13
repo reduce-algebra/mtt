@@ -1,0 +1,108 @@
+#! /bin/sh
+
+sys=$1
+Sys=$(capitalise_initial $sys)
+struc=${sys}_struc.txt
+sympar=${sys}_sympar.txt
+RTXI_H="${Sys}_rtxi.h"
+RTXI_CC="${Sys}_rtxi.cc"
+program=$(basename $0)
+date=$(date)
+
+cat <<EOF > ${RTXI_CC}
+// -*-c++-*- Put Emacs into c++-mode
+
+// Generated from $sympar and $struc by MTT
+// using $program
+// at $date
+
+#include <${RTXI_H}>
+
+extern "C" Plugin::Object *createRTXIPlugin(void) {
+  return new ${Sys}();
+}
+
+static DefaultGUIModel::variable_t vars[] = {
+EOF
+
+gawk '
+  ($1=="input") {
+    printf("  {\n");
+    printf("    \"%s\",\n", $3);
+    printf("    \"%s\",\n", $6);
+    printf("    DefaultGUIModel::INPUT,\n");
+    printf("  },\n");
+  }
+  ($1=="output") {
+    printf("  {\n");
+    printf("    \"%s\",\n", $3);
+    printf("    \"%s\",\n", $6);
+    printf("    DefaultGUIModel::OUTPUT,\n");
+    printf("  },\n");
+  }
+' ${struc} >> ${RTXI_CC}
+
+gawk '
+  {
+    printf("  {\n");
+    printf("    \"%s\",\n", $1);
+    printf("    \"\",\n");
+    printf("    DefaultGUIModel::PARAMETER |");
+    printf(" DefaultGUIModel::DOUBLE,\n");
+    printf("  },\n");
+  }
+' $sympar >> ${RTXI_CC}
+
+cat <<EOF >> ${RTXI_CC}
+};
+
+static size_t num_vars = sizeof(vars)/sizeof(DefaultGUIModel::variable_t);
+// TODO: initialise from numpar
+EOF
+
+gawk '
+  BEGIN { printf("static double\n"); }
+  { printf("  %s=0.0,\n", $1); }
+  END {printf("  ;\n"); }
+' $sympar >> ${RTXI_CC}
+
+cat <<EOF >> ${RTXI_CC}
+static long i_count = 0;
+
+${Sys}::~${Sys}(void) {}
+
+void ${Sys}::execute(void) {
+  // TODO: call ode2odes functions
+}
+
+void ${Sys}::update(DefaultGUIModel::update_flags_t flag) {
+  setCaption("${sys}");
+  switch(flag) {
+    case INIT:
+EOF
+
+gawk '
+  {
+    printf("      setParameter(\"%s\",QString::number(%s));\n",
+	 $1, $1);
+  }
+' $sympar >> ${RTXI_CC}
+
+cat <<EOF >> ${RTXI_CC}
+      break;
+    case MODIFY:
+EOF
+
+gawk '
+  {
+    printf("      getParameter(\"%s\").toDouble();\n", $1);
+  }
+' $sympar >> ${RTXI_CC}
+
+cat <<EOF >> ${RTXI_CC}
+      break;
+    default:
+      break;
+  }
+}
+EOF

@@ -1,0 +1,6 @@
+#! /bin/sh
+
+phrase="$*"
+initial=$(echo $phrase | sed 's/\(.\).*/\1/')
+Initial=$(echo $initial | tr [a-z] [A-Z])
+echo $phrase | sed s/$initial/$Initial/

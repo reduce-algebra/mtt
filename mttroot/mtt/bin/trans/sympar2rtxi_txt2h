@@ -1,9 +1,8 @@
 #! /bin/sh
 
 sys=$1
-Sys=$(capitalise_initial $sys)
 sympar=${sys}_sympar.txt
-RTXI_H="${Sys}_rtxi.h"
+RTXI_H="${sys}_rtxi.h"
 program=$(basename $0)
 date=$(date)
 
@@ -17,13 +16,13 @@ cat <<EOF > ${RTXI_H}
 #include <rt.h>
 #include <default_gui_model.h>
 
-class $Sys : public DefaultGUIModel
+class $sys : public DefaultGUIModel
 {
 
 public:
   
-  $Sys(void);
-  virtual ~$Sys(void);
+  $sys(void);
+  virtual ~$sys(void);
   
   virtual void execute(void);
 

@@ -12,6 +12,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.66  2005/02/17 18:54:23  geraint
+## Fixed a bash-sim: replaced let with $(( ))
+##
 ## Revision 1.65  2004/08/29 13:14:29  geraint
 ## Added rule to make header for sae (sorted algebraic equations).
 ##
@@ -926,6 +929,7 @@ write_cc_header ()
 #define STANDALONE 0
 #define OCTAVEDLD  1
 #define MATLABMEX  2
+#define RTXI       3
 #ifndef CODEGENTARGET
 #define CODEGENTARGET STANDALONE
 #endif // CODEGENTARGET

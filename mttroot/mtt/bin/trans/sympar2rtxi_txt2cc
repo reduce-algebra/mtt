@@ -1,11 +1,10 @@
 #! /bin/sh
 
 sys=$1
-Sys=$(capitalise_initial $sys)
 struc=${sys}_struc.txt
 sympar=${sys}_sympar.txt
-RTXI_H="${Sys}_rtxi.h"
-RTXI_CC="${Sys}_rtxi.cc"
+RTXI_H="${sys}_rtxi.h"
+RTXI_CC="${sys}_rtxi.cc"
 program=$(basename $0)
 date=$(date)
 
@@ -19,7 +18,7 @@ cat <<EOF > ${RTXI_CC}
 #include <${RTXI_H}>
 
 extern "C" Plugin::Object *createRTXIPlugin(void) {
-  return new ${Sys}();
+  return new ${sys}();
 }
 
 static DefaultGUIModel::variable_t vars[] = {
@@ -69,13 +68,11 @@ gawk '
 cat <<EOF >> ${RTXI_CC}
 static long i_count = 0;
 
-${Sys}::~${Sys}(void) {}
+${sys}::~${sys}(void) {}
 
-void ${Sys}::execute(void) {
-  // TODO: call ode2odes functions
-}
+// ${sys}::execute(void) is defined in ${sys}_ode2odes.cc
 
-void ${Sys}::update(DefaultGUIModel::update_flags_t flag) {
+void ${sys}::update(DefaultGUIModel::update_flags_t flag) {
   setCaption("${sys}");
   switch(flag) {
     case INIT:

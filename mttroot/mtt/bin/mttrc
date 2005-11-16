@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.41  2004/02/17 17:53:34  geraint
+## Fixed [ 898739 ] libhdf5 dependency breaks -cc reps.
+## Now uses mkoctfile to determine include and library flags.
+##
 ## Revision 1.40  2003/09/23 15:57:18  gawthrop
 ## And back to gv
 ##
@@ -301,6 +305,20 @@ else
     export MTT_MATLAB_FLAGS="${MATLAB_FLAGS} ${MATLAB_INCS} ${MATLAB_LIBS}"
 
   ## End of Matlab environment configuration
+  ##
+  #############################################################
+
+  #######################################################
+  ##
+  ## Configure environment for compilation of RTXI module
+
+  RTXI_INCS="-I/usr/local/src/mtt/rtxi/rtxi_cvs_30Sep05/include -I/usr/include/qt3"
+#  MORE_RTXI_INCS="-I/usr/realtime/include -I/usr/src/linux/include"
+  RTXI_FLAGS="-DHAVE_CONFIG_H -D_REENTRANT -DQT_THREAD_SUPPORT"
+
+  export MTT_RTXI_FLAGS="${RTXI_INCS}"
+
+  ## End of RTXI environment configuration
   ##
   #############################################################
 

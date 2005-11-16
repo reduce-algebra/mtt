@@ -9,6 +9,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.90  2005/04/26 23:43:34  geraint
+## Reset open switches after update to eliminate overshoots.
+##
 ## Revision 1.89  2004/08/29 16:04:44  geraint
 ## Fixed ae for non-sorted code.
 ##
@@ -556,6 +559,7 @@ cat <<EOF  > $filename
 #define STANDALONE 0
 #define OCTAVEDLD  1
 #define MATLABMEX  2
+#define RTXI       3
 #if (! defined (CODEGENTARGET))
 #define CODEGENTARGET STANDALONE
 #endif // (! defined (CODEGENTARGET))
@@ -574,7 +578,7 @@ cat <<EOF  > $filename
 #include "mtt_${algebraic_solver}.hh"
 
 #include <fstream>
-#if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#if (CODEGENTARGET != OCTAVEDLD)
 
 extern ColumnVector ${sys}_${ae} (
 	const ColumnVector &x,
@@ -671,7 +675,7 @@ EOF
 esac
 cat <<EOF >> $filename
 
-#endif // ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#endif // (CODEGENTARGET != OCTAVEDLD)
 
 ColumnVector
 mtt_ae (const ColumnVector &x,
@@ -679,7 +683,7 @@ mtt_ae (const ColumnVector &x,
 	const double &t,
 	const ColumnVector &par)
 {
-#if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#if (CODEGENTARGET != OCTAVEDLD)
     return ${sys}_${ae}(x,u,t,par);
 #elif (CODEGENTARGET == OCTAVEDLD)
     static octave_value_list args, f;
@@ -689,7 +693,7 @@ mtt_ae (const ColumnVector &x,
     args (3) = octave_value (par);
     f = feval ("${sys}_${ae}", args, 1);
     return f(0).${vector_value} ();
-#endif // ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#endif // (CODEGENTARGET != OCTAVEDLD)
 }
 
 inline ColumnVector
@@ -728,7 +732,7 @@ mtt_logic (const ColumnVector &x,
 	   const double &t,
 	   const ColumnVector &par)
 {
-#if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#if (CODEGENTARGET != OCTAVEDLD)
   return ${sys}_logic (x, u, t, par);
 #elif (CODEGENTARGET == OCTAVEDLD)
   static octave_value_list args, f;
@@ -738,44 +742,44 @@ mtt_logic (const ColumnVector &x,
   args (3) = octave_value (par);
   f = feval ("${sys}_logic", args, 1);
   return f(0).${vector_value} ();
-#endif // ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#endif // (CODEGENTARGET != OCTAVEDLD)
 }
 
 inline ColumnVector
 mtt_numpar (void)
 {
-#if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#if (CODEGENTARGET != OCTAVEDLD)
   return ${sys}_numpar ();
 #elif (CODEGENTARGET == OCTAVEDLD)
   static octave_value_list args, f;
   f = feval ("${sys}_numpar", args, 1);
   return f(0).${vector_value} ();
-#endif // ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#endif // (CODEGENTARGET != OCTAVEDLD)
 }
 
 inline ColumnVector
 mtt_simpar (void)
 {
-#if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#if (CODEGENTARGET != OCTAVEDLD)
   return ${sys}_simpar ();
 #elif (CODEGENTARGET == OCTAVEDLD)
   static octave_value_list args, f;
   f = feval ("${sys}_simpar", args, 1);
   return f(0).${vector_value} ();
-#endif // ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#endif // (CODEGENTARGET != OCTAVEDLD)
 }
 
 inline ColumnVector
 mtt_state (const ColumnVector &par)
 {
-#if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#if (CODEGENTARGET != OCTAVEDLD)
   return ${sys}_state (par);
 #elif (CODEGENTARGET == OCTAVEDLD)
   static octave_value_list args, f;
   args (0) = octave_value (par);
   f = feval ("${sys}_state", args, 1);
   return f(0).${vector_value} ();
-#endif // ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#endif // (CODEGENTARGET != OCTAVEDLD)
 }
 
 inline ColumnVector
@@ -784,7 +788,7 @@ mtt_rate (const ColumnVector &x,
 	  const double &t,
 	  const ColumnVector &par)
 {
-#if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#if (CODEGENTARGET != OCTAVEDLD)
   return ${sys}_${ode} (x, u, t, par);
 #elif (CODEGENTARGET == OCTAVEDLD)
   static octave_value_list args, f;
@@ -794,7 +798,7 @@ mtt_rate (const ColumnVector &x,
   args (3) = octave_value (par);
   f = feval ("${sys}_${ode}", args, 1);
   return f(0).${vector_value} ();
-#endif // ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#endif // (CODEGENTARGET != OCTAVEDLD)
 }
 
 inline ColumnVector
@@ -803,7 +807,7 @@ mtt_output (const ColumnVector &x,
 	    const double &t,
 	    const ColumnVector &par)
 {
-#if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#if (CODEGENTARGET != OCTAVEDLD)
   return ${sys}_${odeo} (x, u, t, par);
 #elif (CODEGENTARGET == OCTAVEDLD)
   static octave_value_list args, f;
@@ -813,7 +817,7 @@ mtt_output (const ColumnVector &x,
   args (3) = octave_value (par);
   f = feval ("${sys}_${odeo}", args, 1);
   return f(0).${vector_value} ();
-#endif // ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#endif // (CODEGENTARGET != OCTAVEDLD)
 }
 
 inline ColumnVector
@@ -843,7 +847,7 @@ mtt_implicit (ColumnVector &x,
 	      const int &nx,
 	      const ColumnVector &open_switches)
 {
-#if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#if (CODEGENTARGET != OCTAVEDLD)
   return Fmtt_implicit (x, dx, AA, AAx, ddt, nx, open_switches);
 #elif (CODEGENTARGET == OCTAVEDLD)
   static octave_value_list args, f;
@@ -856,7 +860,7 @@ mtt_implicit (ColumnVector &x,
   args (6) = octave_value (open_switches);
   f = feval ("mtt_implicit", args, 1);
   return f(0).${vector_value} ();
-#endif // ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#endif // (CODEGENTARGET != OCTAVEDLD)
 }
 
 inline Matrix
@@ -865,7 +869,7 @@ mtt_smxa (const ColumnVector &x,
 	  const double &t,
 	  const ColumnVector &par)
 {
-#if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#if (CODEGENTARGET != OCTAVEDLD)
   return ${sys}_smxa (x, u, t, par);
 #elif (CODEGENTARGET == OCTAVEDLD)
   static octave_value_list args, f;
@@ -875,7 +879,7 @@ mtt_smxa (const ColumnVector &x,
   args (3) = octave_value (par);
   f = feval ("${sys}_smxa", args, 1);
   return f(0).matrix_value ();
-#endif // ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#endif // (CODEGENTARGET != OCTAVEDLD)
 }
 
 inline ColumnVector
@@ -884,7 +888,7 @@ mtt_smxax (const ColumnVector &x,
 	   const double &t,
 	   const ColumnVector &par)
 {
-#if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#if (CODEGENTARGET != OCTAVEDLD)
   return ${sys}_smxax (x, u, t, par);
 #elif (CODEGENTARGET == OCTAVEDLD)
   static octave_value_list args, f;
@@ -894,7 +898,7 @@ mtt_smxax (const ColumnVector &x,
   args (3) = octave_value (par);
   f = feval ("${sys}_smxax", args, 1);
   return f(0).${vector_value} ();
-#endif // ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#endif // (CODEGENTARGET != OCTAVEDLD)
 }
 
 EOF
@@ -912,7 +916,7 @@ mtt_dassl (ColumnVector &x,
 	   const int &nyz,
 	   const ColumnVector &open_switches)
 {
-#if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#if (CODEGENTARGET != OCTAVEDLD)
    return Fmtt_dassl (x, u, t, par, dx, ddt, nx, nyz, open_switches);
 #elif (CODEGENTARGET == OCTAVEDLD)
    static octave_value_list args, f;
@@ -927,10 +931,10 @@ mtt_dassl (ColumnVector &x,
     args (8) = octave_value (open_switches);
     f = feval ("mtt_dassl", args, 1);
     return f(0).${vector_value} ();
-#endif // ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#endif // (CODEGENTARGET != OCTAVEDLD)
 }
 
-#if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#if (CODEGENTARGET != OCTAVEDLD)
 ColumnVector
 Fmtt_residual (const ColumnVector &X,
 	      const ColumnVector &DX,
@@ -949,7 +953,7 @@ DEFUN_DLD (mtt_residual, args, , "mtt_residual")
     DX = args(1).${vector_value} ();
     t  = args(2).double_value ();
     ires = static_cast<int>(args(3).double_value ());
-#endif // ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#endif // (CODEGENTARGET != OCTAVEDLD)
 
     static ColumnVector residual (MTTNX+MTTNYZ);
     static ColumnVector U (MTTNU+MTTNYZ);
@@ -968,7 +972,7 @@ DEFUN_DLD (mtt_residual, args, , "mtt_residual")
     if (MTTNYZ > 0)
       ui = X.extract (MTTNX,MTTNX+MTTNYZ-1);    
 
-#if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#if (CODEGENTARGET != OCTAVEDLD)
     par = ${sys}_numpar();
     u = ${sys}_input(x,y,t,par);
 #elif (CODEGENTARGET == OCTAVEDLD)
@@ -978,20 +982,20 @@ DEFUN_DLD (mtt_residual, args, , "mtt_residual")
     new_args(2) = octave_value (t);
     new_args(3) = octave_value (par);
     u = feval ("${sys}_input", new_args, 1)(0).${vector_value} ();
-#endif // ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#endif // (CODEGENTARGET != OCTAVEDLD)
 
     U.insert (u,0);
     if (MTTNYZ > 0)
       U.insert (ui,MTTNU);
 
-#if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#if (CODEGENTARGET != OCTAVEDLD)
     dx = ${sys}_${ode} (x,U,t,par);
     yz = ${sys}_${ae} (x,U,t,par);
 #elif (CODEGENTARGET == OCTAVEDLD)
     new_args(1) = octave_value (U);
     dx = feval ("${sys}_${ode}", new_args, 1)(0).${vector_value} ();
     yz = feval ("${sys}_${ae}", new_args, 1)(0).${vector_value} ();
-#endif // ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#endif // (CODEGENTARGET != OCTAVEDLD)
 
     for (register int i = 0; i < MTTNX; i++)
       residual (i) = dx(i) - DX(i);
@@ -1017,11 +1021,11 @@ DEFUN_DLD (mtt_residual, args, , "mtt_residual")
 	  residual(i) += X(i) - DX(i)*step;
       }
 
-#if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#if (CODEGENTARGET != OCTAVEDLD)
     return residual;
 #elif (CODEGENTARGET == OCTAVEDLD)
     return octave_value (residual);
-#endif // ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#endif // (CODEGENTARGET != OCTAVEDLD)
 }
     
 EOF
@@ -1035,7 +1039,7 @@ mtt_euler (ColumnVector &x,
 	   const int &nx,
 	   const ColumnVector &open_switches)
 {
-#if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#if (CODEGENTARGET != OCTAVEDLD)
   return Fmtt_euler (x, dx, ddt, nx, open_switches);
 #elif (CODEGENTARGET == OCTAVEDLD)
   static octave_value_list args, f;
@@ -1046,7 +1050,7 @@ mtt_euler (ColumnVector &x,
   args (4) = octave_value (open_switches);
   f = feval ("mtt_euler", args, 1);
   return f(0).${vector_value} ();
-#endif // ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == MATLABMEX))
+#endif // (CODEGENTARGET != OCTAVEDLD)
 }
 
 EOF
@@ -1109,7 +1113,7 @@ mtt_write (const double &t,
 
   if (nrows == row)
     {
-#if (CODEGENTARGET == STANDALONE)
+#if ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == RTXI))
       file $insertor "# name: mtt_dump" $insertor std::endl
 	   $insertor "# type: matrix" $insertor std::endl
 	   $insertor "# rows: " $insertor data.rows () $insertor std::endl
@@ -1118,17 +1122,31 @@ mtt_write (const double &t,
       file.flush ();
 #elif ((CODEGENTARGET == OCTAVEDLD) || (CODEGENTARGET == MATLABMEX))
   set_global_value ("MTT_data", data);
-#endif // (CODEGENTARGET == STANDALONE)
+#endif // ((CODEGENTARGET == STANDALONE) || (CODEGENTARGET == RTXI))
     row = 0;
     fcputime.close();
     }
 }
+
+#if (CODEGENTARGET == RTXI)
+#include "${sys}_rtxi.h"
+void
+${sys}::execute(void)
+{
+  static ColumnVector simpar (8), par (MTTNPAR), state0 (MTTNX);
+
+  simpar	= mtt_simpar ();
+  par		= mtt_numpar ();
+  state0	= mtt_state (par);
+  
+#else
 
 void
 ${sys}_ode2odes (const ColumnVector &state0,
 		 const ColumnVector &par,
 		 const ColumnVector &simpar)
 {
+#endif // (CODEGENTARGET == RTXI)
   static double first, dt, last, stepfactor;
   first		= simpar (0);
   last		= simpar (1);
@@ -1154,6 +1172,9 @@ ${sys}_ode2odes (const ColumnVector &state0,
   for (register int i = 0; i < MTTNY; i++)
     {
       y (i) = 0.0;
+#if (CODEGENTARGET == RTXI)
+      output(i) = y(i);
+#endif // (CODEGENTARGET == RTXI)
     }
 
   for (register int i = 0; i < MTTNX; i++)
@@ -1163,11 +1184,23 @@ ${sys}_ode2odes (const ColumnVector &state0,
 
   for (register int j = 0, i = 1; i <= ilast; i++)
     {
+#if (CODEGENTARGET != RTXI)
       u	= mtt_input (x, y, t, par);
+#else
+      for (register int i = 0; i < MTTNU; i++) {
+	u(i) = input(i);
+      }
+#endif // (CODEGENTARGET != RTXI)
       y	= mtt_output (x, u, t, par);
       if (0 == j)
 	{
-           mtt_write (t, x, y, first, nrows);
+#if (CODEGENTARGET != RTXI)
+	  mtt_write (t, x, y, first, nrows);
+#else
+	  for (register int i = 0; i < MTTNU; i++) {
+	    output(i) = y(i);
+	  }
+#endif // (CODEGENTARGET != RTXI)
 	}
 EOF
 case "$method" in
@@ -1378,6 +1411,7 @@ extern "C" {
     plhs[0] = mtt_mxArray (get_global_value ("MTT_data").matrix_value ());
   }
 }
+
 #endif // (CODEGENTARGET == STANDALONE)
 
 EOF

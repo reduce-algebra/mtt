@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.412  2005/09/29 13:46:25  gawthrop
+## Converts labg.fig -> ps/eps correctly (using fig2ps)
+##
 ## Revision 1.411  2005/03/15 15:03:28  gawthrop
 ## Now works for Hierarchical systems
 ##
@@ -1781,7 +1784,7 @@ Usage:
 	mtt <system_name> <representation> <language> <parameters>
 
 Options:
- 	-A		solve algebraic equations symbolically
+	-A		solve algebraic equations symbolically
 	-abg		start at abg.m representation
 	-ae <method>	algebraic equation solver: reduce|hybrd|dassl|hooke
 	-cc		C++ code generation
@@ -3330,6 +3333,7 @@ endif
 #SUMMARY ode2odes Simulation function (m)
 #SUMMARY ode2odes Simulation function (cc)
 #SUMMARY ode2odes Simulation function (oct)
+#SUMMARY ode2odes_rtxi Simulation function (o)
 #SUMMARY ode2odes Simulation function (exe)
 $1_ode2odes.exe: $1_def.h $1_sympar.h\
 		 $1_ode2odes.o $1_ode2odes_common.o $1_ode2odes_${integration_method}.o $1_ode2odes_${algebraic_solver}.o mtt_kpathsea.o
@@ -3355,12 +3359,31 @@ $1_ode2odes.mexglx: $1_ode2odes.cc $1_ode2odes_common.o $1_ode2odes_${integratio
 	${MTT_MATLAB_FLAGS} ${MTT_CXXINCS} ${MTT_CXXLIBS} ${MTT_CXXFLAGS} \
 	${MTT_LIB}/cc/mtt_kpathsea.cc ${MTT_LIB}/cc/mtt_matlab_octave.cc
 
+$1_ode2odes_rtxi.o: $1_ode2odes.cc $1_ode2odes_common.o $1_ode2odes_${integration_method}.o $1_ode2odes_${algebraic_solver}.o \
+		    $1_rtxi.cc $1_rtxi.h
+	echo Creating $1_ode2odes_rtxi.o
+	${MTT_CXX} ${MTT_CXXFLAGS} ${MTT_CXXINCS} ${MTT_RTXI_FLAGS} -c $1_ode2odes.cc -DCODEGENTARGET=RTXI -o \$@
+
 $1_ode2odes.cc: $1_def.r $1_sympars.txt\
 		$1_ode2odes_common_m.stamp $1_ode2odes_common_cc.stamp\
 		$1_ode2odes_${integration_method}_m.stamp $1_ode2odes_${integration_method}_cc.stamp\
 		mtt_Solver.cc mtt_AlgebraicSolver.cc mtt_${algebraic_solver}.cc mtt_${algebraic_solver}.hh
 	touch $1_ode2odes.m
 	make_ode2odes $1 cc $integration_method $algebraic_solver $sort_method
+
+#SUMMARY rtxi real time module (cc)
+#$1_rtxi.o: $1_rtxi.cc $1_rtxi.h
+#	${MTT_CXX} ${MTT_CXXFLAGS} ${MTT_CXXINCS} -c \$^
+
+$1_rtxi.cc: $1_struc.txt $1_sympar.txt
+	echo Creating \$@
+	sympar2rtxi_txt2cc $1
+
+$1_rtxi.h: $1_sympar.txt
+	echo Creating \$@
+	sympar2rtxi_txt2h $1
+
+
 
 #Conversion of m to p to c
 #SUMMARY ode	ordinary differential equations (c)

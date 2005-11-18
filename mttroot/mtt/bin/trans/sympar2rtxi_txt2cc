@@ -57,16 +57,36 @@ cat <<EOF >> ${RTXI_CC}
 
 static size_t num_vars = sizeof(vars)/sizeof(DefaultGUIModel::variable_t);
 // TODO: initialise from numpar
+static double
 EOF
 
 gawk '
-  BEGIN { printf("static double\n"); }
-  { printf("  %s=0.0,\n", $1); }
-  END {printf("  ;\n"); }
-' $sympar >> ${RTXI_CC}
+  { printf("  %s=0.0,", $1); }
+  END { printf ";" }
+' $sympar |\
+    sed -e 's/,;/;\n/' |\
+    sed -e 's/,/,\n/' >> ${RTXI_CC}
 
 cat <<EOF >> ${RTXI_CC}
 static long i_count = 0;
+
+${sys}::${sys}(void)
+  : DefaultGUIModel("${sys}",::vars,::num_vars),
+EOF
+
+gawk '
+  { printf("  %s(0.0),", $1); }
+  END { printf ";" }
+' $sympar |\
+    sed -e 's/,;/\n/' |\
+    sed -e 's/,/,\n/' >> ${RTXI_CC}
+
+
+cat <<EOF >> ${RTXI_CC}
+{
+  doUpdate(INIT);
+  refresh();
+}
 
 ${sys}::~${sys}(void) {}
 

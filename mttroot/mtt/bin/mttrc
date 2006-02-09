@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.42  2005/11/16 00:43:15  geraint
+## rtxi
+##
 ## Revision 1.41  2004/02/17 17:53:34  geraint
 ## Fixed [ 898739 ] libhdf5 dependency breaks -cc reps.
 ## Now uses mkoctfile to determine include and library flags.
@@ -280,7 +283,7 @@ else
   
   # exported variables
       
-  export MTT_CXX="g++"
+  export MTT_CXX="g++-3.3"
   export MTT_CXXFLAGS="${DEBUG} ${OPTIM} ${FLAGS}"
   export MTT_CXXLIBS="${OCTAVE_LIB_FLAGS}"
   export MTT_CXXINCS="-I. -I${MTT_LIB}/cc ${OCTAVE_INC_FLAGS}"
@@ -312,11 +315,37 @@ else
   ##
   ## Configure environment for compilation of RTXI module
 
-  RTXI_INCS="-I/usr/local/src/mtt/rtxi/rtxi_cvs_30Sep05/include -I/usr/include/qt3"
-#  MORE_RTXI_INCS="-I/usr/realtime/include -I/usr/src/linux/include"
-  RTXI_FLAGS="-DHAVE_CONFIG_H -D_REENTRANT -DQT_THREAD_SUPPORT"
+  ROOT="/usr/local/rtxi-knoppix"
 
-  export MTT_RTXI_FLAGS="${RTXI_INCS}"
+  RTXI_LIBTOOL="${ROOT}/usr/local/lib/rtxi/libtool"
+  RTXI_CXX="g++-3.3"
+  RTXI_CXXLD="g++-3.3"
+  RTXI_CXXCOMPILE="${RTXI_LIBTOOL} --mode=compile --tag CXX ${RTXI_CXX}"
+  RTXI_CXXLINK="${RTXI_LIBTOOL} --mode=link --tag CXX ${RTXI_CXXLD}"
+
+  RTXI_INCS=""
+  RTXI_INCS="${RTXI_INCS} -I${ROOT}/usr/share/qt3/include"
+  RTXI_INCS="${RTXI_INCS} -I."
+  RTXI_INCS="${RTXI_INCS} -I${ROOT}/usr/realtime/include"
+  RTXI_INCS="${RTXI_INCS} -I${ROOT}/usr/share/qt3/include"
+  RTXI_INCS="${RTXI_INCS} -I${ROOT}/usr/src/comedi/include"
+  RTXI_INCS="${RTXI_INCS} -I${ROOT}/usr/src/rtxi/include"
+
+  RTXI_DEFS="-D_REENTRANT -DQT_THREAD_SUPPORT"
+  RTXI_CXXFLAGS="-g -O2 ${RTXI_INCS} ${RTXI_DEFS}"
+  RTXI_LIBS="-L${ROOT}/usr/share/qt3/lib -lqt-mt"
+  RTXI_FLAGS="-DHAVE_CONFIG_H -D_REENTRANT -DQT_THREAD_SUPPORT"
+  RTXI_LDFLAGS="-L${ROOT}/usr/realtime/lib -lpthread -module -avoid-version"
+  RTXI_RPATH="${ROOT}/usr/local/lib/rtxi/models/"
+
+  export MTT_RTXI_CXXCOMPILE="${RTXI_CXXCOMPILE}"
+  export MTT_RTXI_CXXLINK="${RTXI_CXXLINK}"
+  export MTT_RTXI_LIBTOOL="${RTXI_LIBTOOL}"
+  export MTT_RTXI_CXXFLAGS="${RTXI_CXXFLAGS}"
+  export MTT_RTXI_LIBS="${RTXI_LIBS}"
+  export MTT_RTXI_FLAGS="${RTXI_RTXI_FLAGS}"
+  export MTT_RTXI_LDFLAGS="${RTXI_LDFLAGS}"
+  export MTT_RTXI_RPATH="${RTXI_RPATH}"
 
   ## End of RTXI environment configuration
   ##

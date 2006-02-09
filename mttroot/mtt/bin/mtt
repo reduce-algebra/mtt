@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.414  2005/11/18 17:23:19  geraint
+## rtxi.
+##
 ## Revision 1.413  2005/11/16 00:43:15  geraint
 ## rtxi
 ##
@@ -3362,11 +3365,6 @@ $1_ode2odes.mexglx: $1_ode2odes.cc $1_ode2odes_common.o $1_ode2odes_${integratio
 	${MTT_MATLAB_FLAGS} ${MTT_CXXINCS} ${MTT_CXXLIBS} ${MTT_CXXFLAGS} \
 	${MTT_LIB}/cc/mtt_kpathsea.cc ${MTT_LIB}/cc/mtt_matlab_octave.cc
 
-$1_ode2odes_rtxi.o: $1_ode2odes.cc $1_ode2odes_common.o $1_ode2odes_${integration_method}.o $1_ode2odes_${algebraic_solver}.o \
-		    $1_rtxi.cc $1_rtxi.h
-	@echo "Creating \$@"
-	${MTT_CXX} ${MTT_CXXFLAGS} ${MTT_CXXINCS} ${MTT_RTXI_FLAGS} -c $1_ode2odes.cc -DCODEGENTARGET=RTXI -o \$@
-
 $1_ode2odes.cc: $1_def.r $1_sympars.txt\
 		$1_ode2odes_common_m.stamp $1_ode2odes_common_cc.stamp\
 		$1_ode2odes_${integration_method}_m.stamp $1_ode2odes_${integration_method}_cc.stamp\
@@ -3375,15 +3373,23 @@ $1_ode2odes.cc: $1_def.r $1_sympars.txt\
 	make_ode2odes $1 cc $integration_method $algebraic_solver $sort_method
 
 #SUMMARY rtxi real time module (cc)
-#SUMMARY rtxi real time module (o)
 #SUMMARY rtxi real time module (so)
-$1_rtxi.so: $1_rtxi.o $1_ode2odes_rtxi.o
+$1_ode2odes_rtxi.lo: $1_ode2odes.cc $1_ode2odes_common.o $1_ode2odes_${integration_method}.o $1_ode2odes_${algebraic_solver}.o \
+		    $1_rtxi.cc $1_rtxi.h
 	@echo "Creating \$@"
-	ar -cr \$@ \$^
+	${MTT_RTXI_CXXCOMPILE} ${MTT_RTXI_CXXFLAGS} ${MTT_CXXFLAGS} ${MTT_CXXINCS} -c $1_ode2odes.cc -DCODEGENTARGET=RTXI -o \$@
+	@echo compilation complete
 
-$1_rtxi.o: $1_rtxi.cc $1_rtxi.h
-	@echo Creating \$@
-	${MTT_CXX} ${MTT_CXXFLAGS} ${MTT_CXXINCS} ${MTT_RTXI_FLAGS} -c \$< -o \$@
+$1_rtxi.so: $1_rtxi.cc $1_ode2odes_rtxi.lo $1_rtxi.h
+	@echo Compiling module
+	${MTT_RTXI_CXXCOMPILE} ${MTT_RTXI_CXXFLAGS} -c $1_rtxi.cc -o $1_rtxi.lo
+	@echo Compilation complete
+	${MTT_RTXI_CXXLINK} ${MTT_RTXI_LIBS} ${MTT_RTXI_LDFLAGS} ${MTT_CXXLIBS} -rpath ${MTT_RTXI_RPATH}$1 -o $1_rtxi.la $1_rtxi.lo $1_ode2odes_rtxi.lo
+	@echo Module created
+
+$1_rtxi.install: $1_rtxi.so
+	@echo Installing module in ${MTT_RTXI_RPATH}$1)
+	${MTT_RTXI_LIBTOOL} --mode=install cp $1_rtxi.la ${MTT_RTXI_RPATH}$1
 
 $1_rtxi.cc: $1_struc.txt $1_sympar.txt
 	echo Creating \$@

@@ -34,15 +34,15 @@ $MATRIX << EOF > sm2ir_m.log 2>mtt_error.txt
   % Read in the numeric system parameters
   mttpar = $1_numpar;
 
+ % Read in the simulation parameters
+  simpar = $1_simpar;
+
   [nx,ny,nu,nz,nyz] = $1_def;
   t=0;	%Just in case it appears in the parameter list.
 
-  $PARAMS
 
   %Defaults
-  if exist('T')==0
-    T=[0:0.1:10]
-  end;
+  T=[0:simpar.dt:simpar.last]';
 
   if exist('u0')==0
     u0 = ones(nu,1);

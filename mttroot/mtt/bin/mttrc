@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.43  2006/02/09 23:49:40  geraint
+## added rtxi build flags
+##
 ## Revision 1.42  2005/11/16 00:43:15  geraint
 ## rtxi
 ##
@@ -283,7 +286,7 @@ else
   
   # exported variables
       
-  export MTT_CXX="g++-3.3"
+  export MTT_CXX="g++"
   export MTT_CXXFLAGS="${DEBUG} ${OPTIM} ${FLAGS}"
   export MTT_CXXLIBS="${OCTAVE_LIB_FLAGS}"
   export MTT_CXXINCS="-I. -I${MTT_LIB}/cc ${OCTAVE_INC_FLAGS}"

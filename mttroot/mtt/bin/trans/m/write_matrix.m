@@ -7,6 +7,9 @@ function write_matrix(matrix,name,extn);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.8  2004/09/12 22:27:27  geraint
+% %% Appended 't' to fopen mode string to open in text mode.
+% %%
 % %% Revision 1.7  2002/05/15 16:37:30  gawthrop
 % %% Added third argument (file extension)
 % %%
@@ -49,9 +52,10 @@ fprintf(filenum, 'data = [\n');
 for row = 1:N
   for col = 1:M
     value = matrix(row,col);
-    fprintf(filenum, '%g', real(value));
     if is_complex(value)
-      fprintf(filenum, '+ %g*i', imag(value));
+	fprintf(filenum, '%g*e^(%g*i)', abs(value),angle(value));
+    else
+	fprintf(filenum, '%g', value);
     end
     if col<M
       fprintf(filenum, '\t');

@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.415  2006/02/09 23:58:24  geraint
+## rtxi: builds but does not yet work.
+##
 ## Revision 1.414  2005/11/18 17:23:19  geraint
 ## rtxi.
 ##
@@ -2254,6 +2257,8 @@ case $2 in
 		REPTYPE='data' ;;
 	sro)
 		REPTYPE='data' ;;
+	fr)
+		REPTYPE='data' ;;
 	lmfr)
 		REPTYPE='data' ;;
 	lpfr)
@@ -3861,15 +3866,17 @@ $1_odess.dat2: $1_ode.m $1_odeo.m $1_numpar.m  $1_input.m $1_simpar.m
 #Frequency responses
 $1_fr.m: $1_dm.m $1_numpar.m $1_def.m $1_simpar.m
 	dm2fr_m $1 
-$1_fr.dat: $1_sr.m
+$1_lmfr.m $1_lpfr.m $1_nyfr.m $1_nifr.m: $1_fr.m
+
+$1_fr.dat: $1_fr.m
 	m2dat $1_fr
-$1_lmfr.dat: $1_fr.m
+$1_lmfr.dat: $1_lmfr.m
 	m2dat $1_lmfr
-$1_lpfr.dat: $1_fr.m
+$1_lpfr.dat: $1_lpfr.m
 	m2dat $1_lpfr
-$1_nyfr.dat: $1_fr.m
+$1_nyfr.dat: $1_nyfr.m
 	m2dat $1_nyfr
-$1_nifr.dat: $1_fr.m
+$1_nifr.dat: $1_nifr.m
 	m2dat $1_nifr
 
 

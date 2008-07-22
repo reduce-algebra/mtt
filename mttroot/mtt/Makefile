@@ -65,7 +65,8 @@ distclean: clean clean-cc clean-conf clean-doc clean-xfig
 install: build clean.sh clean-conf.sh
 	@install -d $(INSTDIR) $(CONFDIR) $(PROGDIR)
 	@cp -a   bin cc doc lib $(INSTDIR)
-	@cat bin/mttrc | grep -v 'MTT_LIB/xfig' > $(CONFDIR)/mtt.conf
+	@cat bin/mttrc | grep -v 'MTT_LIB/xfig' |\
+	sed 's|$$1|/usr/share/mtt|' > $(CONFDIR)/mtt.conf
 	@install mtt.sh  $(PROGDIR)/mtt
 	@install xmtt.sh $(PROGDIR)/xmtt
 

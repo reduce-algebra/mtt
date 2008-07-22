@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.416  2006/09/27 13:03:20  geraint
+## Fixed fr.view and enabled commands to directly build ??fr.m
+##
 ## Revision 1.415  2006/02/09 23:58:24  geraint
 ## rtxi: builds but does not yet work.
 ##
@@ -2066,7 +2069,7 @@ if [ "$1" = "copy" ]; then
    #set up source and destination dirs
     source=$3
     if [ -z "$source" ]; then
-      source=$MTT_Examples
+      source=$MTT_EXAMPLES
     fi
     destination=$4
     if [ -z "${destination}" ]; then

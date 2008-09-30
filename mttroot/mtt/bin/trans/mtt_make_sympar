@@ -13,6 +13,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.12  2004/09/02 22:06:09  geraint
+## Does not issue warnings about Reduce reserved words if the
+## second argument (use_reduce) is "no".
+##
 ## Revision 1.11  2002/04/28 18:41:27  geraint
 ## Fixed [ 549658 ] awk should be gawk.
 ## Replaced calls to awk with call to gawk.
@@ -111,7 +115,7 @@ END{
 
 }' < mtt_sympar.txt >$filename
 
-if [ ! "${use_reduce}" == "no" ]; then
+if [ ! "${use_reduce}" = "no" ]; then
     reserved_words=`\
     cat ${MTT_LIB}/reduce/reserved_words.txt	|\
     gawk '{printf "%s ", $0}'			|\

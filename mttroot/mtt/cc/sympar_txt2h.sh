@@ -1,6 +1,9 @@
 #! /bin/sh
 # $Id$
 # $Log$
+# Revision 1.9  2004/08/29 03:18:11  geraint
+# Do not write temporary variables if NUM_OF_TMP_VAR = 0.
+#
 # Revision 1.8  2002/09/16 08:08:01  geraint
 # Merged changes from global-optimisation branch.
 #
@@ -90,7 +93,7 @@ for name in ${TMP_VAR_NAMES}
 do
     echo ""
 
-    cat <<EOF | head -`expr ${NUM_OF_TMP_VAR} + 1`
+    cat <<EOF | head -$(expr ${NUM_OF_TMP_VAR} + 1)
 static double ${name}0 MTT_UNUSED;
 static double ${name}1 MTT_UNUSED;
 static double ${name}2 MTT_UNUSED;

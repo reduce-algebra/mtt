@@ -4,7 +4,7 @@ function [bonds,components,n_vector_bonds] = \
       ibg2abg(name,bonds,infofile,errorfile)
 
   ## write useful quantity of data to log
-  struct_levels_to_print = 6;
+  struct_levels_to_print(6);
 
   ################################
   ## create component structure ##

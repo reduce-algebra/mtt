@@ -15,6 +15,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.44  2006/04/25 23:24:29  geraint
+## Reverted to simple g++ for MTT_CXX. Trying to force the version causes library problems.
+##
 ## Revision 1.43  2006/02/09 23:49:40  geraint
 ## added rtxi build flags
 ##
@@ -199,13 +202,19 @@ else
   export PATH=$PATH\:$MTTPATH\:$MTTPATH/trans\:$MTT_CC\:$MTT_REP
   
   #Setup octave
-  export MATRIX_PATH=$MTTPATH/trans/m//
-  export MATRIX_PATH=$MATRIX_PATH\:$MTT_LIB/comp/simple//
-  export MATRIX_PATH=$MATRIX_PATH\:$MTT_LIB/control//
-  export MATRIX_PATH=$MATRIX_PATH\:$MTT_LIB/octave//\:\:
-  
+  MATRIX="octave"
+  #MATRIX_PATH1=$(echo "genpath('$MTTPATH/trans/m')"     |$MATRIX -q | awk '{print $3}') 
+  #MATRIX_PATH2=$(echo "genpath('$MTT_LIB/comp/simple')" |$MATRIX -q | awk '{print $3}') 
+  #MATRIX_PATH3=$(echo "genpath('$MTT_LIB/control')"     |$MATRIX -q | awk '{print $3}') 
+  #MATRIX_PATH4=$(echo "genpath('$MTT_LIB/octave')"      |$MATRIX -q | awk '{print $3}') 
+  #export MATRIX_PATH=$MATRIX_PATH1:$MATRIX_PATH2:$MATRIX_PATH3:$MATRIX_PATH4
+  MATRIX_PATH1=$(find $MTTPATH/trans/m     -type d|grep -v CVS|awk '{printf ":%s", $0}')
+  MATRIX_PATH2=$(find $MTT_LIB/comp/simple -type d|grep -v CVS|awk '{printf ":%s", $0}')
+  MATRIX_PATH3=$(find $MTT_LIB/control     -type d|grep -v CVS|awk '{printf ":%s", $0}')
+  MATRIX_PATH4=$(find $MTT_LIB/octave      -type d|grep -v CVS|awk '{printf ":%s", $0}')
+  export MATRIX_PATH=$MATRIX_PATH1:$MATRIX_PATH2:$MATRIX_PATH3:$MATRIX_PATH4
   export OCTAVE_PATH=.\:$MATRIX_PATH
-  export MATRIX="octave"
+  export MATRIX="$MATRIX --path $OCTAVE_PATH"
   
   # Setup the symbolic stuff
   export SYMBOLIC='reduce 64'
@@ -223,13 +232,13 @@ else
   	"
   
   # Setup ps viewer
-  export PSVIEW='gv'
+  export PSVIEW='evince'
   
   # Setup pdf viewer
   export PDFVIEW='acroread'
   
   # Setup html viewer
-  export HTMLVIEW='mozilla'
+  export HTMLVIEW='firefox'
   
   # Setup dvi viewer
   export DVIVIEW='xdvi'

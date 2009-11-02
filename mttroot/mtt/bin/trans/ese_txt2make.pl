@@ -117,6 +117,7 @@ sub write_make {
     my @list_of_rates;
     my @list_of_outputs;
     my @list_of_unknown;
+    my @list_of_nonstates;
     my @list_of_tmpvars;
 
     for my $lvar (sort (keys %expressions)) {
@@ -126,16 +127,19 @@ sub write_make {
 	    @list_of_outputs = (@list_of_outputs, $lvar);
 	} elsif ($lvar =~ /^MTTyz/) {
 	    @list_of_unknown = (@list_of_unknown, $lvar);
+	} elsif ($lvar =~ /^MTTz/) {
+	    @list_of_nonstates = (@list_of_nonstates, $lvar);
 	} elsif ($lvar =~ /^${sys}_/) {
 	    @list_of_tmpvars = (@list_of_tmpvars, $lvar);
 	} else {
 	    die "MTT Error:\nese_txt2make, unclassified variable: $lvar\n";
 	}
     }
-    my @sorted_rates   = sort (@list_of_rates);
-    my @sorted_outputs = sort (@list_of_outputs);
-    my @sorted_unknown = sort (@list_of_unknown);
-    my @sorted_tmpvars = sort (@list_of_tmpvars);
+    my @sorted_rates     = sort (@list_of_rates);
+    my @sorted_outputs   = sort (@list_of_outputs);
+    my @sorted_unknown   = sort (@list_of_unknown);
+    my @sorted_nonstates = sort (@list_of_nonstates);
+    my @sorted_tmpvars   = sort (@list_of_tmpvars);
 
 
     # write the header
@@ -160,7 +164,8 @@ sub write_make {
         "all: declare_tmpvars MTTdX MTTy\n\n" .
 	"MTTdX: @sorted_rates\n\n" .
 	"MTTy:  @sorted_outputs\n\n" .
-	"MTTyz: @sorted_unknown\n\n";
+	"MTTyz: @sorted_unknown\n\n" .
+	"MTTz:  @sorted_nonstates\n\n";
     
     # set the default output format:
     # double tmpvar;

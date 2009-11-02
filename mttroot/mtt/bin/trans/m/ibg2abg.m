@@ -87,7 +87,7 @@ function [bonds,components,n_vector_bonds] = \
 
   if (isfield(objects, "comp"))
     for [comp, comp_name] = objects.comp
-      n = size(struct_elements(comp))(1) - 1;
+      n = size(fieldnames(comp))(1) - 1;
       eval(sprintf("objects.comp.%s.n_bonds = %i;",
 		   comp_name, n));
     endfor
@@ -95,7 +95,7 @@ function [bonds,components,n_vector_bonds] = \
   
   if (isfield(objects, "port"))
     for [port, port_name] = objects.port
-      n = size(struct_elements(port))(1) - 1;
+      n = size(fieldnames(port))(1) - 1;
       eval(sprintf("objects.port.%s.n_bonds = %i;",
 		   port_name, n));
     endfor
@@ -338,8 +338,8 @@ function [bonds,components,n_vector_bonds] = \
     tail_bond = eval(tail_str);
     
     ## check compatible sizes
-    head.n_subs = size(struct_elements(head_bond))(1) - 2;
-    tail.n_subs = size(struct_elements(tail_bond))(1) - 2;
+    head.n_subs = size(fieldnames(head_bond))(1) - 2;
+    tail.n_subs = size(fieldnames(tail_bond))(1) - 2;
     if (head.n_subs != tail.n_subs)
       mtt_error(sprintf("Vector ports '%s' (%s:%s) and '%s' (%s:%s) are not compatible",
 			head_bond.label, head.type, head_name,
@@ -417,14 +417,14 @@ function [bonds,components,n_vector_bonds] = \
 
   ## count number of components
   if (isfield(objects, "comp"))
-    n_comps = size(struct_elements(objects.comp), 1)
+    n_comps = size(fieldnames(objects.comp), 1)
   else
     n_comps = 0;
   endif
 
   ## count number of internal ports
   if (isfield(objects, "port"))
-    n_ports = size(struct_elements(objects.port), 1)
+    n_ports = size(fieldnames(objects.port), 1)
   else
     n_ports = 0;
   endif
@@ -483,7 +483,7 @@ function [bonds,components,n_vector_bonds] = \
   ###########################################
   
   if (isfield(objects, "comp"))
-    n_comps = size(struct_elements(objects.comp))(1);
+    n_comps = size(fieldnames(objects.comp))(1);
   else
     n_comps = 0;
   endif

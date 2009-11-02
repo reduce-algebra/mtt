@@ -7,6 +7,9 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.49  2004/07/22 13:18:02  geraint
+  ## ## Minor typo in error message.
+  ## ##
   ## ## Revision 1.48  2004/02/19 18:27:47  geraint
   ## ## [ 852694 ] octave 2.1.52 breaks rbg2abg
   ## ##
@@ -379,8 +382,8 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
 	
 	## Replace by alias -- if any
     	eval( ["alias = ", comp_type, '_alias';]); # Get aliases
-    	if is_struct(alias)		# are there any aliases
-          if struct_contains(alias,port_name_i) # Is this an alias?
+    	if isstruct(alias)		# are there any aliases
+          if isfield(alias,port_name_i) # Is this an alias?
 	    eval(["new_port_name_i = alias.",port_name_i]);
 	    mtt_info(["Aliasing name [" port_name_i "]\t on component " \
 		      comp_name " (" comp_type ")\t to [" new_port_name_i "]"],infofile);
@@ -571,7 +574,7 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
     ##Find the port list for this component
     if exist([comp_type, '_cause'])==0
       eval(["ABG = ",comp_type, "_abg;"]);
-      if struct_contains (ABG, "portlist")
+      if isfield (ABG, "portlist")
 	port_list = ABG.portlist;
       else
 	error(sprintf("Component %s has no ports", comp_type));

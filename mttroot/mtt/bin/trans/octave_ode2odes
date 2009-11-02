@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  2005/04/26 22:52:26  geraint
+## The Octave load/save -ascii option is deprecated in favour of -text
+##
 ## Revision 1.5  2002/05/07 10:13:48  gawthrop
 ## Files marked by update as out of sync
 ##
@@ -38,7 +41,7 @@ $MATRIX  <<EOF >octave_ode2odes.log 2>mtt_error.txt
   x_0  =  $1_state(par);
   simpar = $1_simpar
   mtt_data = $1_ode2odes(x_0,par,simpar); 
-  if is_complex(mtt_data)
+  if iscomplex(mtt_data)
     mtt_error("octave_ode2odes: Simulated data is complex - something is wrong!");
     mtt_data = real(mtt_data);
   endif;

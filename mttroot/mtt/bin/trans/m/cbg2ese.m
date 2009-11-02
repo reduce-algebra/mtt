@@ -23,6 +23,10 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.53  2005/03/21 11:09:47  gawthrop
+  ## ## Now handles bicausal SS component -
+  ## ##   ie source-source or sensor-sensor
+  ## ##
   ## ## Revision 1.52  2004/09/12 22:27:27  geraint
   ## ## Appended 't' to fopen mode string to open in text mode.
   ## ##
@@ -310,7 +314,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   for i=1:2
     field=deblank(fields(i,:));
     list=deblank(lists(i,:));
-    if struct_contains(CBG,list);
+    if isfield(CBG,list);
       eval(["namelist=CBG.",list,";"]); # List of ports/subsystems
       [N,M]=size(namelist);	# Number of ports/subsystems
       for j=1:N
@@ -327,7 +331,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	if AliasingArguments	# Alias the args list if appropriate
     	  message = sprintf("\tfor component  %s (%s) within %s",\
 			    comp_name,subsystem.type,full_name);    
-    	  if struct_contains(CBG,"alias")
+    	  if isfield(CBG,"alias")
 	    subsystem.arg = alias_args(subsystem.arg,CBG.alias,";",message,infofilenum,full_name);
     	  endif;
 	endif;
@@ -335,7 +339,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	if AliasingCRs	# Alias the CR list if appropriate
     	  message = sprintf("\tfor component  %s (%s) within %s",\
 			    comp_name,subsystem.type,full_name);    
-    	  if struct_contains(CBG,"alias")
+    	  if isfield(CBG,"alias")
 	    subsystem.cr = alias_args(subsystem.cr,CBG.alias,";",message,infofilenum,full_name);
     	  endif;
 	endif;
@@ -440,7 +444,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
               
 #               eval(sprintf("this_port = subABG.ports.%s;", \
 # 			   this_port_name));
-# 	      if struct_contains(this_port,"units")
+# 	      if isfield(this_port,"units")
 #                 eval(["effort_unit = \
 # 		    subABG.ports.",this_port_name,".units.effort;"]);
 #                 eval(["flow_unit = \
@@ -570,13 +574,13 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	fflush (structure_file);
 
 	## component interface definition
-	if struct_contains(CBG,"icd")
-	  if struct_contains(CBG.icd,comp_name)
+	if isfield(CBG,"icd")
+	  if isfield(CBG.icd,comp_name)
 	    if AliasingArguments
 	      subsystem.icd = alias_args(eval(["CBG.icd.",comp_name]),CBG.alias,";",message,infofilenum,full_name);
 	    endif
 	  endif
-	  if (struct_contains(subsystem,"icd"))
+	  if (isfield(subsystem,"icd"))
 	    subsystem.icd = subs_arg(subsystem.icd,system_args, ...
 				     "null",full_name,subsystem.type,comp_name,infofilenum);
 	    
@@ -595,7 +599,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	endif			# End of component interface definition
 
       endfor			# [subsystem,comp_name] = CBG_field
-    endif			# struct_contains(CBG,field)
+    endif			# isfield(CBG,field)
   endfor			# i=1:2
 
   fclose(icd_file);

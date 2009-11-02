@@ -42,7 +42,7 @@ function [known] = mtt_component_eqn (fullname, port, causality, \
 
   if length(Name)>0
     cbg = mtt_cbg(Name);		# Structure for this subsystem
-    if struct_contains (cbg, "ports")
+    if isfield (cbg, "ports")
       ## Combine ports with the other subsystems
       for [component_structure, component] = cbg.ports
 	eval(sprintf("cbg.subsystems.%s=cbg.ports.%s;",component,component));
@@ -61,7 +61,7 @@ function [known] = mtt_component_eqn (fullname, port, causality, \
     CR = mtt_alias (Name,CR,cr_default); # Alias them
     eval(sprintf("cbg.subsystems.%s.cr=CR;", name)); # and copy
   else			  # Call to a subsystem (represented by name="")
-    if !struct_contains(cbg,"portlist")
+    if !isfield(cbg,"portlist")
       N_ports = 0;
     else
       [N_ports,M_ports] = size(cbg.portlist);
@@ -165,8 +165,8 @@ function [known] = mtt_component_eqn (fullname, port, causality, \
   
   ## Is the signal the output of a port?
   is_port_output = 0;			# Default
-  if struct_contains (cbg, "ports")
-    if struct_contains (cbg.ports,name)
+  if isfield (cbg, "ports")
+    if isfield (cbg.ports,name)
       is_port_output = (outsig(2)!=insigs(1,2));
     endif
   endif

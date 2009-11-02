@@ -5,6 +5,9 @@ function write_abg(system_name,bonds,connections,n_vector_bonds);
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.11  2004/09/12 22:27:27  geraint
+## Appended 't' to fopen mode string to open in text mode.
+##
 ## Revision 1.10  2004/08/09 14:47:28  gawthrop
 ## Changed arg to args to avoid strange octave bug
 ##
@@ -177,7 +180,7 @@ function write_abg(system_name,bonds,connections,n_vector_bonds);
   fprintf(fid,"\n# Aliases \n");
   fprintf(fid,"# A double underscore __ represents a comma \n");
   eval(["alias = ", system_name, "_alias;"]);
-  if is_struct(alias)
+  if isstruct(alias)
     for [val,key] = alias
       fprintf(fid,"%s.alias.%s = \"%s\";\n", system_name,key,val);
     endfor
@@ -185,7 +188,7 @@ function write_abg(system_name,bonds,connections,n_vector_bonds);
 
   fprintf(fid,"\n# Interface Definition\n");
   eval(["icd = ",system_name, "_icd;"]);
-  if is_struct(icd)
+  if isstruct(icd)
     for [val,key] = icd
       fprintf(fid,"%s.icd.%s = \"%s\";\n",system_name,key,val);
     endfor

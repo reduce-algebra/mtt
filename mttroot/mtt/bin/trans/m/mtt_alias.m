@@ -28,7 +28,7 @@ function [args] = mtt_alias (fullname,args,default);
 
   ## Argument aliasing
   message = sprintf("\tfor component  %s within %s",name,Name);
-  if struct_contains(cbg,"alias")
+  if isfield(cbg,"alias")
     args = alias_args(args,cbg.alias,";",message,filenum,fullname);
   endif;
 

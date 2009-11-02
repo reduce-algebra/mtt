@@ -5,6 +5,9 @@ function args = alias_args(args,alias,delim,message,FileID,sys_name)
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.8  2001/06/13 16:07:15  gawthrop
+## Fixed bug with three separators in a row eg )/(
+##
 ## Revision 1.7  2001/06/13 14:50:15  gawthrop
 ## Operator ^ now ok in args in abg and/or lbl
 ##
@@ -32,14 +35,14 @@ function args = alias_args(args,alias,delim,message,FileID,sys_name)
 ##
 ###############################################################
 
-  if is_struct(alias)
+  if isstruct(alias)
     if !isempty(args)
       Args = split(args,delim); args="";
       [N,M]= size(Args);
       for i=1:N
         arg = deblank(Args(i,:));
         arg_ = strrep(arg,",","__");
-        if struct_contains(alias,arg_)
+        if isfield(alias,arg_)
           eval(["new_arg = alias.", arg_,";"]);
   	  mtt_info(["Replacing ", arg, "\t by ",\
 		    new_arg, message],FileID);

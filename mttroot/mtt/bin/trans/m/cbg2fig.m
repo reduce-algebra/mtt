@@ -24,6 +24,9 @@ function cbg2fig(system_name, system_type, full_name, ...
   ## %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   ## %% $Id$
   ## %% $Log$
+  ## %% Revision 1.17  2004/09/12 22:27:27  geraint
+  ## %% Appended 't' to fopen mode string to open in text mode.
+  ## %%
   ## %% Revision 1.16  2001/03/23 14:58:16  gawthrop
   ## %% Fixed cosmetic bugs -- component display
   ## %%
@@ -108,7 +111,7 @@ function cbg2fig(system_name, system_type, full_name, ...
   end;
 
   ## Create a back slash '\' character.
-  bs = setstr(92);
+  bs = char(92);
 
   ## Create the (full) system name
   if strcmp(full_name,'')
@@ -154,7 +157,7 @@ function cbg2fig(system_name, system_type, full_name, ...
   [N_components, Columns] = size(CBG.subsystemlist); # Number of derived
 						     # components
 
-  if struct_contains(CBG,'portlist')
+  if isfield(CBG,'portlist')
     [N_ports, Columns] = size(CBG.portlist);
   else
     N_ports = 0;

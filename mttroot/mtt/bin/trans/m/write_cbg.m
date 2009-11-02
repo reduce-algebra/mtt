@@ -5,6 +5,9 @@ function write_cbg(system_name,system_type,system,Flipped)
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.5  2004/09/12 22:27:27  geraint
+## Appended 't' to fopen mode string to open in text mode.
+##
 ## Revision 1.4  1998/08/26 12:26:17  peterg
 ## Replaced if N>0 by   if (N>0)&&(M>0)		# Flipped ports exist
 ##
@@ -36,12 +39,12 @@ function write_cbg(system_name,system_type,system,Flipped)
   fprintf(fid,"  [%s] =  %s_abg;\n", system_name, system_type);
 
   fprintf(fid,"\n# Status information\n");
-#  if struct_contains(system,"ports")
+#  if isfield(system,"ports")
 #    for [port,name]=system.ports
 #      fprintf(fid,StatusFormat,system_name,"ports",name,port.status);
 #    endfor;
 #  endif
-  if struct_contains(system,"subsystems")
+  if isfield(system,"subsystems")
     for [subsystem,name]=system.subsystems
       fprintf(fid,StatusFormat,system_name,"subsystems",name,subsystem.status);
     endfor;

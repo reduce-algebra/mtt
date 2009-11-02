@@ -7,6 +7,9 @@ function write_matrix(matrix,name,extn);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.9  2006/09/27 13:55:08  geraint
+% %% Write complex numbers in polar form instead of real and imaginary parts.
+% %%
 % %% Revision 1.8  2004/09/12 22:27:27  geraint
 % %% Appended 't' to fopen mode string to open in text mode.
 % %%
@@ -52,7 +55,7 @@ fprintf(filenum, 'data = [\n');
 for row = 1:N
   for col = 1:M
     value = matrix(row,col);
-    if is_complex(value)
+    if iscomplex(value)
 	fprintf(filenum, '%g*e^(%g*i)', abs(value),angle(value));
     else
 	fprintf(filenum, '%g', value);

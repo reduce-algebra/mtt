@@ -3,7 +3,7 @@
 function write_ibg(system_name,bonds);
   
   fid = fopen([system_name,"_ibg.m"], "wt");
-  [nbonds, junk] = size(struct_elements(bonds));
+  [nbonds, junk] = size(fieldnames(bonds));
   format_hc = "  %s.bonds.bond%i.head.component\t= \"%s\";\n";
   format_tc = "  %s.bonds.bond%i.tail.component\t= \"%s\";\n";
   format_hp = "  %s.bonds.bond%i.head.ports\t= \"%s\";\n";

@@ -11,6 +11,9 @@ function eqn = mtt_resolve_cr (eqn)
   ###############################################################
   ## $Id$
   ## $Log$
+  ## Revision 1.2  2003/03/24 12:20:28  gawthrop
+  ## *** empty log message ***
+  ##
   ## Revision 1.1  2003/03/24 10:19:42  gawthrop
   ## Documentation added
   ##
@@ -20,13 +23,13 @@ function eqn = mtt_resolve_cr (eqn)
 
   ## How many equations here?
   N = length(findstr(eqn,"="));
-  EQNS = split(eqn,";");
+  EQNS = char(strsplit(eqn,";"));
 
   eqn = "";
   for i = 1:N
       
       ## Split equation
-      EQN = split(EQNS(i,:),":=");
+      EQN = char(strsplit(EQNS(i,:),":="));
       LHS = deblank(EQN(1,:));
       RHS = deblank(EQN(2,:));
 

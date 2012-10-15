@@ -7,6 +7,6 @@ function names = mtt_name2names (name)
   ## Copyright (C) 2003 by Peter J. Gawthrop
 
   delim ="__";			# MTT delimiter
-  names = split(name,delim);
+  names = char(strsplit(name,delim));
 
 endfunction

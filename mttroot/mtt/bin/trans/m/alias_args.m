@@ -5,6 +5,9 @@ function args = alias_args(args,alias,delim,message,FileID,sys_name)
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.9  2009/11/02 16:54:03  geraint
+## Replaced deprecated functions from Octave 2.1 for Octave 3.0: is_struct -> isstruct, struct_contains -> isfield, struct_elements -> fieldnames, is_complex -> iscomplex, setstr -> char
+##
 ## Revision 1.8  2001/06/13 16:07:15  gawthrop
 ## Fixed bug with three separators in a row eg )/(
 ##
@@ -37,7 +40,7 @@ function args = alias_args(args,alias,delim,message,FileID,sys_name)
 
   if isstruct(alias)
     if !isempty(args)
-      Args = split(args,delim); args="";
+      Args = char(strsplit(args,delim)); args="";
       [N,M]= size(Args);
       for i=1:N
         arg = deblank(Args(i,:));

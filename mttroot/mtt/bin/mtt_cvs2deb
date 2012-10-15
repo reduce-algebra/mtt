@@ -154,7 +154,7 @@ fi
 # copy sources to working directory
 cd ${tmpdir}
 if [ "${sources}" = "${default_sources}" ]; then
-    cvs -z3 -d:pserver:anonymous@cvs.mtt.sf.net:/cvsroot/mtt export -D now mttroot/mtt/lib/examples
+    cvs -z3 -d:pserver:anonymous@mtt.cvs.sf.net:/cvsroot/mtt export -D now mttroot/mtt/lib/examples
 else
     mkdir -p ./mttroot/mtt/lib/
     cp -a ${sources}/mtt/lib/examples ./mttroot/mtt/lib

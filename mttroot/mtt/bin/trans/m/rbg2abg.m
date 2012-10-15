@@ -7,6 +7,9 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.50  2009/11/02 16:54:03  geraint
+  ## ## Replaced deprecated functions from Octave 2.1 for Octave 3.0: is_struct -> isstruct, struct_contains -> isfield, struct_elements -> fieldnames, is_complex -> iscomplex, setstr -> char
+  ## ##
   ## ## Revision 1.49  2004/07/22 13:18:02  geraint
   ## ## Minor typo in error message.
   ## ##
@@ -284,7 +287,7 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
     bond_list = index(:,1); %  bond at component
     
     ## Check that all bonds are unique -- error if not
-    if unique(bond_list)==0
+    if mtt_isunique(bond_list)==0
       mtt_error(sprintf("Component %s (%s) is at both ends of a bond", comp_name,
 			comp_type),errorfile);
     endif

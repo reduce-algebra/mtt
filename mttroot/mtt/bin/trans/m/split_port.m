@@ -6,12 +6,15 @@ function [subport,n]=split_port(port_name);
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % $Id$
 % % $Log$
+% % Revision 1.1  1998/04/16 14:08:00  peterg
+% % Initial revision
+% %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
   subport = "";
-  raw_subport = split(port_name, ','); # Find the components of the vector
+  raw_subport = char(strsplit(port_name, ',')); # Find the components of the vector
 				# port 
   [n,m] = size(raw_subport);	# Number of ports
 

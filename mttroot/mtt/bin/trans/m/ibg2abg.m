@@ -13,52 +13,58 @@ function [bonds,components,n_vector_bonds] = \
   ## loop over each bond in ibg.m file
   for [bond, bond_name] = bonds
     ## get the bond number
-    i = str2num(split(bond_name, "bond")(2,:));
+    bond_name
+    i = str2num(strtok(bond_name, "bond"))
 
     ## populate "head" and "tail" structures
     ## then copy the contents to an overall structure
 
     ## track (signed) vector bond number within each component
-    head.index = +i;
-    tail.index = -i;
+    head.index = +i
+    tail.index = -i
 
     ## extract type of component at each end
-    head_type = deblank(split(bond.head.component, ":")(1,:));
-    tail_type = deblank(split(bond.tail.component, ":")(1,:));
+    head_type = deblank(char(strsplit(bond.head.component, ":"))(1,:))
+    tail_type = deblank(char(strsplit(bond.tail.component, ":"))(1,:))
 
     ## extract name of component at each end
-    head_name = deblank(split(bond.head.component, ":")(2,:));
-    tail_name = deblank(split(bond.tail.component, ":")(2,:));
+    head_name = deblank(char(strsplit(bond.head.component, ":"))(2,:))
+    tail_name = deblank(char(strsplit(bond.tail.component, ":"))(2,:))
 
     ## extract port label data
-    head.label = bond.head.ports;
-    tail.label = bond.tail.ports;
+    head.label = bond.head.ports
+    tail.label = bond.tail.ports
 
+    disp("--checking head and tail for components or ports --") 
     ## determine whether internal port or subsystem
     ## and fix names of ports
     if (strcmp(head_type, "SS") & (index(head_name, "[") == 1))
-      head_comp_or_port = "port";
+      head_comp_or_port = "port"
       head_name = mtt_strip_name(head_name);
     else
-      head_comp_or_port = "comp";
+      head_comp_or_port = "comp"
     endif
     if (strcmp(tail_type, "SS") & (index(tail_name, "[") == 1))
-      tail_comp_or_port = "port";
+      tail_comp_or_port = "port"
       tail_name = mtt_strip_name(tail_name);
     else
-      tail_comp_or_port = "comp";
+      tail_comp_or_port = "comp"
     endif
 
     ## copy data to object structure (objects)
-    eval(sprintf("objects.%s.%s.type = '%s';",
-		 head_comp_or_port, head_name, head_type));
-    eval(sprintf("objects.%s.%s.type = '%s';",
-		 tail_comp_or_port, tail_name, tail_type));
-
-    eval(sprintf("objects.%s.%s.bond%i = head;", 
-		 head_comp_or_port, head_name, i));
-    eval(sprintf("objects.%s.%s.bond%i = tail;", 
-		 tail_comp_or_port, tail_name, i));
+    cmd = sprintf("objects.%s.%s.type = '%s';",
+		  head_comp_or_port, head_name, head_type)
+    eval(cmd)
+    cmd = sprintf("objects.%s.%s.type = '%s';",
+		  tail_comp_or_port, tail_name, tail_type)
+    eval(cmd)
+    
+    cmd = sprintf("objects.%s.%s.bond%i = head;", 
+		  head_comp_or_port, head_name, i)
+    eval(cmd)
+    cmd = sprintf("objects.%s.%s.bond%i = tail;", 
+		  tail_comp_or_port, tail_name, i)
+    eval(cmd)
   endfor    
 
   disp("--finished extracting data from ibg.m --")
@@ -303,15 +309,15 @@ function [bonds,components,n_vector_bonds] = \
   unique_bond_number = 0;
   
   for [bond, bond_name] = bonds
-    i = str2num(split(bond_name, "bond")(2,:));
+    i = str2num(strtok(bond_name, "bond"));
 
     ## extract type of component at each end
-    head.type = deblank(split(bond.head.component, ":")(1,:));
-    tail.type = deblank(split(bond.tail.component, ":")(1,:));
+    head.type = deblank(char(strsplit(bond.head.component, ":"))(1,:));
+    tail.type = deblank(char(strsplit(bond.tail.component, ":"))(1,:));
 
     ## extract name of component at each end
-    head_name = deblank(split(bond.head.component, ":")(2,:));
-    tail_name = deblank(split(bond.tail.component, ":")(2,:));
+    head_name = deblank(char(strsplit(bond.head.component, ":"))(2,:));
+    tail_name = deblank(char(strsplit(bond.tail.component, ":"))(2,:));
  
     ## determine whether internal port or subsystem
     ## and fix names of ports

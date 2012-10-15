@@ -31,6 +31,9 @@ function structure =  SS_eqn(name,Bond_number,Bonds,Direction,cr,args, ...
   ## ###############################################################
   ## ### $Id$
   ## ### $Log$
+  ## ### Revision 1.27  2005/03/21 10:34:47  gawthrop
+  ## ### Tidied.
+  ## ###
   ## ### Revision 1.26  2004/08/29 13:11:21  geraint
   ## ### Writes MTTyz vector in the same format as MTTx and MTTy: MTTyz($d,1)
   ## ##
@@ -129,7 +132,7 @@ function structure =  SS_eqn(name,Bond_number,Bonds,Direction,cr,args, ...
   ##     arg contains port number
 
   if (strcmp(cr,"SS"))		# Then its the standard file
-    a = split(args,",")
+    a = char(strsplit(args,","))
     [N,M]=size(a);
     if (N~=2)			# Must have 2 arguments
       mtt_error(sprintf("SS should have 2 args not %i", N));

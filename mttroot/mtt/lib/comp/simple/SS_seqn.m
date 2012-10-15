@@ -12,7 +12,7 @@ function [eqn,insigs,innames] = SS_seqn (Name, name, cr, arg, outsig, \
   full_name = sprintf("%s%s%s", Name,delim,name);
 
   ## Get the special attibutes for SS
-  attrib_name = split(arg,",");
+  attrib_name = char(strsplit(arg,","));
   [N_a,M_a]=size(attrib_name);
   if (N_a~=2)		# Must have 2 arguments
     mtt_error(sprintf("SS should have 2 args not %i", N_a));

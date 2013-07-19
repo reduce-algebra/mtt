@@ -12,6 +12,14 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.46  2004/08/04 19:46:42  geraint
+## Sorts components alphabetically (type:name) within the categories:
+## internal ports, components, 0 junctions and 1 junctions.
+##
+## Standardising the order in which components are listed allows models
+## built with different editors to interact correctly by separating the
+## graphical information from the data which is required to build models.
+##
 ## Revision 1.45  2004/04/07 12:17:43  gawthrop
 ## Handles new Fig header line.
 ##
@@ -287,7 +295,14 @@ function sort_cmp() {
     type = comp_type[name];
     cmp_list[i] = sprintf ("'%s:%s'", type, name);
   }
-  asort (cmp_list);
+
+  if (no_alpha_sort=="no_alpha_sort")
+      print "Not sorting components alphabetically"
+  else {
+      print "Sorting components alphabetically";
+      asort (cmp_list)
+  };
+
   for (i = 1; i <= i_label; i++) {
     for (j = 1; j <= i_label; j++) {
       name = label[j,1];

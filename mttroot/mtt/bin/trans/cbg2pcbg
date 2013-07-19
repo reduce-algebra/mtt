@@ -1,0 +1,31 @@
+#! /bin/bash
+
+## Colour the reactions in the path
+
+## Colours
+blue=1
+green=2
+cyan=3
+red=4
+magenta=5
+yellow=6
+colour=$magenta
+
+## Fonts
+Times_Bold_Italic=3
+Helvetica_Bold_Oblique=19
+Helvetica_Narrow_Bold_Oblique=23
+font=${Helvetica_Bold_Oblique}
+
+sys=$1
+path="$2"
+
+cp ${sys}_cbg.fig tmp.fig
+for p in $path; do
+    ##echo doing $p
+    sed "s/\([0-9] [0-9]\) [0-9]* \([0-9]* [0-9]*\) [0-9]* \(.*:$p.001$\)/\1 $colour \2 $font \3/" \
+	< tmp.fig >TMP.fig
+    mv TMP.fig tmp.fig
+done
+
+mv  tmp.fig ${sys}_pcbg.fig

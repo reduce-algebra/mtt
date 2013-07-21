@@ -15,6 +15,10 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.45  2009/06/26 01:08:49  geraint
+## Octave load path no longer accepts trailing // as recursive.
+## Path is now calculated using find, which is much quicker than Octave's genpath()
+##
 ## Revision 1.44  2006/04/25 23:24:29  geraint
 ## Reverted to simple g++ for MTT_CXX. Trying to force the version causes library problems.
 ##
@@ -202,6 +206,13 @@ else
   export PATH=$PATH\:$MTTPATH\:$MTTPATH/trans\:$MTT_CC\:$MTT_REP
   
   #Setup octave
+##<<<<<<< mttrc
+##  export MATRIX_PATH=$MTTPATH/trans/m/
+##  export MATRIX_PATH=$MATRIX_PATH\:$MTT_LIB/comp/simple/
+##  export MATRIX_PATH=$MATRIX_PATH\:$MTT_LIB/control/
+##  export MATRIX_PATH=$MATRIX_PATH\:$MTT_LIB/octave/\:\:
+  
+##=======
   MATRIX="octave"
   #MATRIX_PATH1=$(echo "genpath('$MTTPATH/trans/m')"     |$MATRIX -q | awk '{print $3}') 
   #MATRIX_PATH2=$(echo "genpath('$MTT_LIB/comp/simple')" |$MATRIX -q | awk '{print $3}') 
@@ -213,11 +224,17 @@ else
   MATRIX_PATH3=$(find $MTT_LIB/control     -type d|grep -v CVS|awk '{printf ":%s", $0}')
   MATRIX_PATH4=$(find $MTT_LIB/octave      -type d|grep -v CVS|awk '{printf ":%s", $0}')
   export MATRIX_PATH=$MATRIX_PATH1:$MATRIX_PATH2:$MATRIX_PATH3:$MATRIX_PATH4
+##>>>>>>> 1.45
   export OCTAVE_PATH=.\:$MATRIX_PATH
-  export MATRIX="$MATRIX --path $OCTAVE_PATH"
+##<<<<<<< mttrc
+  export MATRIX="octave --path $OCTAVE_PATH"
+##=======
+##  export MATRIX="$MATRIX --path $OCTAVE_PATH"
+##>>>>>>> 1.45
   
   # Setup the symbolic stuff
-  export SYMBOLIC='reduce 64'
+  ##export SYMBOLIC='reduce 64'
+  export SYMBOLIC='reduce -w'
   
   
   # Setup xfig
@@ -327,6 +344,10 @@ else
   ##
   ## Configure environment for compilation of RTXI module
 
+##<<<<<<< mttrc
+ ## RTXI_INCS="-I/usr/local/src/mtt/rtxi/rtxi_cvs_30Sep05/include -I/usr/include/qt3 -I/home/peterg/Development/rtxi/include"
+#  MORE_RTXI_INCS="-I/usr/realtime/include -I/usr/src/linux/include"
+##=======
   ROOT="/usr/local/rtxi-knoppix"
 
   RTXI_LIBTOOL="${ROOT}/usr/local/lib/rtxi/libtool"
@@ -346,6 +367,7 @@ else
   RTXI_DEFS="-D_REENTRANT -DQT_THREAD_SUPPORT"
   RTXI_CXXFLAGS="-g -O2 ${RTXI_INCS} ${RTXI_DEFS}"
   RTXI_LIBS="-L${ROOT}/usr/share/qt3/lib -lqt-mt"
+##>>>>>>> 1.45
   RTXI_FLAGS="-DHAVE_CONFIG_H -D_REENTRANT -DQT_THREAD_SUPPORT"
   RTXI_LDFLAGS="-L${ROOT}/usr/realtime/lib -lpthread -module -avoid-version"
   RTXI_RPATH="${ROOT}/usr/local/lib/rtxi/models/"

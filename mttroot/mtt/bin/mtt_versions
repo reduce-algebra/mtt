@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  2005/02/17 22:15:35  geraint
+## Added missing quotes to conditional expression.
+##
 ## Revision 1.5  2005/02/17 18:36:38  geraint
 ## Removed a bash-ism: replaced [[ conditional ]] with [ conditional ]
 ##
@@ -76,10 +79,10 @@ fig2dev -h > mtt_junk; version=`grep -i patchlevel mtt_junk`
 print_version fig2dev $version
 
 echo Trying reduce ...
-reduce >mtt_junk 2>1 <<EOF
+reduce -w >mtt_junk 2>1 <<EOF
 bye;
 EOF
-version=`grep  REDUCE mtt_junk`
+version=`grep  -i REDUCE mtt_junk`
 print_version reduce $version
 
 

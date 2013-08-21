@@ -1,0 +1,32 @@
+%SUMMARY EMAE Effort-modulated AE component
+%DESCRIPTION Ports: [in], [out] and [mod]
+
+
+%% Label file for system EMAE (EMAE_lbl.txt)
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Version control history
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% $Id$
+% %% $Log$
+% %% Revision 1.1  2000/08/29 15:27:30  peterg
+% %% Initial revision
+% %%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Each line should be of one of the following forms:
+%	a comment (ie starting with %)
+%	Component-name	CR_name	arg1,arg2,..argn
+%	blank
+
+
+
+% Component type EMTF
+	gain		lin		effort
+
+% Component type SS
+	[in]	SS	external,external
+	[mod]	SS	external,external
+	[out]	SS	external,external
+
+

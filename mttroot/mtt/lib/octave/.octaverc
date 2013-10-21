@@ -4,4 +4,12 @@
 
 implicit_str_to_num_ok = 1;
 empty_list_elements_ok = 1;
+warn_string_concat = 0;
 
+## Turn off irrelevant warnings
+warning off Octave:possible-matlab-short-circuit-operator
+
+## No more core dumps
+crash_dumps_octave_core(0)
+sigterm_dumps_octave_core(0)
+sighup_dumps_octave_core(0)

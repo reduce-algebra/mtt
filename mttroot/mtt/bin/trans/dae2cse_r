@@ -268,8 +268,6 @@ END;
 % Find MTTGu;
 write "% Find MTTGu;";
 
-IF MTTNu>0 THEN 
-BEGIN
 matrix MTTGu(MTTNz,MTTNu);
 FOR j := 1:MTTNu DO
   BEGIN
@@ -277,10 +275,6 @@ FOR j := 1:MTTNu DO
   FOR i := 1:MTTNz DO
     MTTGu(i,j) := df(MTTZ(i,1), uj, 1);
   END;
-END
-ELSE
-  MTTGu := 0;
-
 
 %Create E matrices
 write "%Create E matrices";
@@ -288,19 +282,11 @@ write "%Create E matrices";
 IF MTTNx>0 THEN 
 BEGIN
 matrix MTTExx(MTTNx,MTTNx); MTTExx := MTTFx*MTTGx;
+matrix MTTExu(MTTNx,MTTNu); MTTExu := MTTFx*MTTGu;
 matrix MTTEyx(MTTNy,MTTNx); MTTEyx := MTTFy*MTTGx;
 matrix MTTE(MTTNx,MTTNx);   MTTE := MTTI - MTTExx;
-IF MTTNu>0 THEN 
-  matrix MTTExu(MTTNx,MTTNu); MTTExu := MTTFx*MTTGu;
 END;
-END;
-
-IF MTTNu>0 THEN 
-  BEGIN
-  matrix MTTEyu(MTTNy,MTTNu); MTTEyu := MTTFy*MTTGu;
-  END
-ELSE
-  MTTEyu := 0;
+matrix MTTEyu(MTTNy,MTTNu); MTTEyu := MTTFy*MTTGu;
 
 
 
@@ -331,25 +317,17 @@ BEGIN
 MTTEdX := MTTdX; %Ie MTTEdX is MTTdX with the dz terms deleted ie EdX.
 MTTdX := MTTdXs;  %Restore the symbolic dX
 
-IF MTTNu>0 THEN 
-  %% Add on input derivative terms
-  MTTEdX := MTTEdX + MTTExu*MTTdu;
-END;
-
-IF MTTNy>0 THEN 
-  %% Add on output derivative terms
-  MTTEdx := MTTEdX + MTTEyx*(MTTE^(-1))*MTTEdX;
-END;
+%% Add on input derivative terms
+MTTEdX := MTTEdX + MTTExu*MTTdu;
+%% Add on output derivative terms
+MTTEdx := MTTEdX + MTTEyx*(MTTE^(-1))*MTTEdX;
 END;
 
 
 %%%%%MTTY := MTTY + MTTEyx*MTTEdX;
 %%% This causes the matrix mismatch
 %%% MTTdXs and MTTdu need setting in _def.r file
-
-IF MTTNu>0 THEN 
-  MTTY := MTTY +  MTTEyu*MTTdu;
-END;
+MTTY := MTTY +  MTTEyu*MTTdu;
 
 IF MTTNx>0 THEN 
   MTTY := MTTY + MTTEyx*(MTTE^(-1))*MTTEdX;

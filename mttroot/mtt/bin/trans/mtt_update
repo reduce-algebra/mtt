@@ -13,6 +13,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.23  2005/02/17 18:54:23  geraint
+## Fixed a bash-sim: replaced let with $(( ))
+##
 ## Revision 1.22  2003/08/19 13:08:44  gawthrop
 ## Ingnore if/endif
 ##
@@ -216,10 +219,10 @@ remove_if() {
      text[a[1]] = a[2];
    }
    if (FILENAME=="mtt_info"){
-      info[$1] = default;
+      info[$1] = Default;
    }
    if (FILENAME=="mtt_moreinfo"){
-      moreinfo[$1] = default;
+      moreinfo[$1] = Default;
    }
    }
  END{
@@ -230,7 +233,7 @@ remove_if() {
    for (iname in info) {
      if (!(iname in text)) print iname >> "mtt_in_info"
    }
-   }'  default=$default mtt_text mtt_info mtt_moreinfo
+   }'  Default=$default mtt_text mtt_info mtt_moreinfo
 
  ## Remove if, end and endif from list
  remove_if mtt_in_text

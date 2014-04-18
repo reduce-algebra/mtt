@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.2  2014/04/18 00:36:40  gawthrop
+## No parentheses.
+##
 ## Revision 1.1  2000/12/27 16:05:29  peterg
 ## Initial revision
 ##
@@ -42,7 +45,11 @@ in "$1_def.r";
 %%in "$1_sympar.r";
 
 %Read the formatting function
-in "$MTTPATH/trans/latex_matrix_no.r";
+IF MTTNy=1 AND MTTNu=1 
+  THEN
+    in "$MTTPATH/trans/latex_matrix_no.r"
+  ELSE
+    in "$MTTPATH/trans/latex_matrix.r";
 
 %Read the transfer-function matrices file
 in "$1_tf.r";

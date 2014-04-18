@@ -17,6 +17,9 @@
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.418  2013/07/19 05:40:26  gawthrop
+## Added -nas (No alphabetic sort) switch in help options
+##
 ## Revision 1.417  2008/07/22 17:37:01  geraint
 ## Fixed case of MTT_EXAMPLES
 ##
@@ -3086,6 +3089,8 @@ $1_cbg.dia: $1_cbg.m
 #SUMMARY struc*	structure - list of inputs, outputs and states (txt)
 #SUMMARY struc	structure - list of inputs, outputs and states (tex)
 #SUMMARY struc*	structure - list of inputs, outputs and states (view)
+#SUMMARY sum	structure summary - matrix of inputs, outputs and states (tex)
+#SUMMARY sum*	structure summary - matrix of inputs, outputs and states (view)
 #Elementary system equations + definitions
 ${sys}_ese.r: ${sys}_cbg.m
 	   cbg2ese_m2r $partition $info_switch $Subsystem; #ese_tidy $1
@@ -3148,6 +3153,8 @@ $1_aliased.txt: $1_ese.r
 	touch $1_aliased.txt
 $1_struc.tex: $1_struc.txt
 	struc_txt2tex $1
+$1_sum.tex: $1_struc.txt
+	struc2sum_txt2tex $1
 $1_struc.m: $1_struc.txt 
 	struc_txt2m $1
 $1_def.m: $1_def.r

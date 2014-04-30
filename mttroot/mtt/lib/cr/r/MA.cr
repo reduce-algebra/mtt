@@ -87,3 +87,6 @@ LET MA(R,flow,kappa,effort,2,
    A_4,effort,4) = RT*log( (v_2/kappa) + exp(A_1/RT) );
 
 
+%% AE version
+FOR ALL mu
+LET MA(AE, effort,2, mu, effort,1) = exp(mu/RT);

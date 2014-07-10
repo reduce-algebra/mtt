@@ -16,6 +16,9 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.30  2005/03/15 12:04:15  gawthrop
+@comment  New labg.fig rep - pretty LaTeX figures.
+@comment
 @comment  Revision 1.29  2005/01/19 09:45:15  geraint
 @comment  Fixed whitespace.
 @comment
@@ -4330,8 +4333,7 @@ They correspond to the effort and flow of the components as follows
 @end vtable
 Each of these two fields contains one of the following @emph{attributes}:
 @vtable @code
-@item
-external
+@item external
         indicates that the corresponding variable is a system input or
 output
 @item internal
@@ -4479,11 +4481,9 @@ following information:
 @vtable @code
 @item type
         input, output state or nonstate
-@item   
-index
+@item index
         an integer corresponding to the array index
-@item 
-component name
+@item component name
         the name of the component corresponding to the variable
 @item system name
         the name of the system containing the component
@@ -4789,6 +4789,9 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.30  2005/03/15 12:04:15  gawthrop
+# %% New labg.fig rep - pretty LaTeX figures.
+# %%
 # %% Revision 1.29  2005/01/19 09:45:15  geraint
 # %% Fixed whitespace.
 # %%
@@ -5201,7 +5204,7 @@ rc_1_bond4_flow := lin(flow,r,flow,1,
 
 @node Transformation cbg2ese_m2r,  , Elementary system equations, Elementary system equations
 @comment  node-name,  next,  previous,  up
-@subsubsection Transformation cbg2ese_m2r
+@subsection Transformation cbg2ese_m2r
 @cindex Transformation cbg2ese_m2r
 @cindex Structure
 @cindex def.r

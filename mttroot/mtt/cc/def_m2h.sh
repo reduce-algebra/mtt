@@ -1,6 +1,14 @@
 #! /bin/sh
 # $Id$
 # $Log$
+# Revision 1.3  2002/05/15 14:22:25  geraint
+# Code for Simulink S-function target written direct to sfun.cc instead of
+# calling .mexglx files. This eliminates the sfun dependency on Octave
+# ColumnVectors. sys_sfun.cc should build directly on a MS Windows machine
+# (can't test this yet).
+#
+# added sfun.zip target to create source code to export.
+#
 # Revision 1.2  2002/04/28 18:58:06  geraint
 # Fixed [ 549658 ] awk should be gawk.
 # Replaced calls to awk with call to gawk.
@@ -40,7 +48,8 @@ gawk -v vec=${vec} '($1 == vec && $2 == "=") { print $3 }' | sed s/\;//
  echo "const int MTTNZ   = `cat ${IN} | get_array_size nz`;"		>> ${OUT}
  echo "const int MTTNYZ  = `cat ${IN} | get_array_size nyz`;"		>> ${OUT}
  echo "const int MTTNPAR = `wc -l ${SYM} | gawk '{ print $1 }'`;"      	>> ${OUT}
-
+ echo ""								>> ${OUT}
+ echo "int mttnu, mttnx, mttny, mttnyz, mttnz;"				>> ${OUT}
 
 
 

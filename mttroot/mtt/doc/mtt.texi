@@ -16,6 +16,9 @@
 @comment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @comment  $Id$
 @comment  $Log$
+@comment  Revision 1.31  2014/07/10 23:13:27  geraint
+@comment  Fixed mtt.texi missing arguments and subsection level
+@comment
 @comment  Revision 1.30  2005/03/15 12:04:15  gawthrop
 @comment  New labg.fig rep - pretty LaTeX figures.
 @comment
@@ -4789,6 +4792,9 @@ An example file is:
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # %% $Id$
 # %% $Log$
+# %% Revision 1.31  2014/07/10 23:13:27  geraint
+# %% Fixed mtt.texi missing arguments and subsection level
+# %%
 # %% Revision 1.30  2005/03/15 12:04:15  gawthrop
 # %% New labg.fig rep - pretty LaTeX figures.
 # %%
@@ -7859,7 +7865,7 @@ of preserving the free status of all derivatives of our free software and
 of promoting the sharing and reuse of software generally.
 
 @iftex
-@heading NO WARRANTY
+@strong NO WARRANTY
 @end iftex
 @ifinfo
 @center NO WARRANTY

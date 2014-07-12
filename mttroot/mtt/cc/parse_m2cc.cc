@@ -1,5 +1,10 @@
 /* $Id$
  * $Log$
+ * Revision 1.4  2002/05/01 12:54:55  geraint
+ * Now recognises keywords terminated with ; as well as ws.
+ * Now recognises # as a comment when not terminated by ws.
+ * i.e. CarnotCycle_input.txt now gets translated correctly!
+ *
  * Revision 1.3  2001/07/13 04:54:04  geraint
  * Branch merge: numerical-algebraic-solution back to main.
  *
@@ -24,7 +29,8 @@
  */
 
 
-
+#include <cstdio>
+#include <cstdlib>
 #include <iostream>
 #include <map>
 #include <stack>

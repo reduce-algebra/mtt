@@ -8,6 +8,7 @@ warn_string_concat = 0;
 
 ## Turn off irrelevant warnings
 warning off Octave:possible-matlab-short-circuit-operator
+warning off Octave:deprecated-syntax
 
 ## No more core dumps
 crash_dumps_octave_core(0)

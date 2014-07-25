@@ -1,4 +1,4 @@
-function [known] = mtt_component_eqn (fullname, port, causality, \
+function [known] = mtt_component_eqn (fullname, port, causality, ...
 				      known, Cbg)
 
   ## function [known] = mtt_component_eqn (fullname, port, causality, known)
@@ -74,7 +74,7 @@ function [known] = mtt_component_eqn (fullname, port, causality, \
       if DEBUG
 	disp("----> lower-level system")
       endif
-      known = mtt_component_eqn (mtt_fullname(Name,name), 1, \
+      known = mtt_component_eqn (mtt_fullname(Name,name), 1, ...
 				 causality, known, cbg);
       return
     endif
@@ -102,7 +102,7 @@ function [known] = mtt_component_eqn (fullname, port, causality, \
 
   ## If value is known, don't do anything.
   if findstr(sprintf(" %s ", full_name_port_cause), known)>0
-    eqn = sprintf("%s The %s signal on port %i of %s is known already", \
+    eqn = sprintf("%s The %s signal on port %i of %s is known already", ...
 		  CD, causality, port, name);
     return
   else			# Add to list
@@ -138,10 +138,10 @@ function [known] = mtt_component_eqn (fullname, port, causality, \
 
   ## What components are at the other ends of the in bonds?
   ## Effort
-  [in_e_bonds,in_e_components,in_e_ports,N_e] = mtt_component_inputs \
+  [in_e_bonds,in_e_components,in_e_ports,N_e] = mtt_component_inputs ...
       (name,comp_type,causality,"effort",comp_bonds,connections,cbg);
   ## Flow
-  [in_f_bonds,in_f_components,in_f_ports,N_f] = mtt_component_inputs \
+  [in_f_bonds,in_f_components,in_f_ports,N_f] = mtt_component_inputs ...
       (name,comp_type,causality,"flow",comp_bonds,connections,cbg);
 
 
@@ -196,7 +196,7 @@ function [known] = mtt_component_eqn (fullname, port, causality, \
     endif
     
 
-    known = mtt_component_eqn (mtt_fullname(new_Name,in_name), \
+    known = mtt_component_eqn (mtt_fullname(new_Name,in_name), ...
 			       in_port, causality, known, cbg);
 
     LHS = Source_seqn ("external",Name);
@@ -213,15 +213,15 @@ function [known] = mtt_component_eqn (fullname, port, causality, \
 
   ## Handle special components
   if strcmp(comp_type,"0")||strcmp(comp_type,"1") # Junctions
-    [eqn,insigs,innames] = junction_seqn (comp_type,Name, outsig, \
+    [eqn,insigs,innames] = junction_seqn (comp_type,Name, outsig, ...
 					  insigs, innames);
   else				# Everything else
     if exist(sprintf("%s_cause", comp_type)) # Simple component
       ## Do the equations
-      [eqn,insigs,innames] = eval(sprintf("%s_seqn (Name, name, cr, \
-						    arg, outsig, \
-						    insigs, \
-						    innames, is_port_output);", \
+      [eqn,insigs,innames] = eval(sprintf("%s_seqn (Name, name, cr, ...
+						    arg, outsig, ...
+						    insigs, ...
+						    innames, is_port_output);", ...
 					  comp_type));
       ## Resolve CR
       eqn = mtt_resolve_cr(eqn);
@@ -243,14 +243,14 @@ function [known] = mtt_component_eqn (fullname, port, causality, \
 	disp("----> same-level subsystem")
       endif
 
-      [known] = mtt_component_eqn \
+      [known] = mtt_component_eqn ...
    	  (mtt_fullname(new_Name,new_name), port, causality, known, cbg);
       
     endif
   endif
 
-  comment = \
-      sprintf("%s Equation for %s signal on port %i of %s (%s), subsystem %s.", \
+  comment = ...
+      sprintf("%s Equation for %s signal on port %i of %s (%s), subsystem %s.", ...
      	      CD, causality, port, name, comp_type, Name);
 
   if DEBUG
@@ -276,8 +276,8 @@ function [known] = mtt_component_eqn (fullname, port, causality, \
       endif
       
 
-      [known] = mtt_component_eqn \
-    	  (mtt_fullname(Name,other_name), other_port, other_causality, \
+      [known] = mtt_component_eqn ...
+    	  (mtt_fullname(Name,other_name), other_port, other_causality, ...
 	   known, cbg);
     endfor
   endif

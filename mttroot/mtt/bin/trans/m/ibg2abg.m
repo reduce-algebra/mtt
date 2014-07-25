@@ -1,6 +1,6 @@
 ## -*-octave-*-
 
-function [bonds,components,n_vector_bonds] = \
+function [bonds,components,n_vector_bonds] = ...
       ibg2abg(name,bonds,infofile,errorfile)
 
   ## write useful quantity of data to log
@@ -158,7 +158,7 @@ function [bonds,components,n_vector_bonds] = \
 	
 	## attach labels to unlabelled ports
 	if (n_named_ports == 0)
-	  mtt_info(sprintf("Defaulting all ports on junction %s to 'in'", \
+	  mtt_info(sprintf("Defaulting all ports on junction %s to 'in'", ...
 			   comp_name), infofile);
 	  for [bond, bond_name] = comp
 	    if (index(bond_name, "bond") == 1)
@@ -167,7 +167,7 @@ function [bonds,components,n_vector_bonds] = \
 	    eval(sprintf("comp.%s = bond;", bond_name));
 	  endfor
 	elseif (n_named_ports == 1)
-	  mtt_info(sprintf("Defaulting all ports on junction %s to %s", \
+	  mtt_info(sprintf("Defaulting all ports on junction %s to %s", ...
 			   comp_name, port_label), infofile);
 	  for [bond, bond_name] = comp
 	    if (index(bond_name, "bond") == 1)
@@ -176,7 +176,7 @@ function [bonds,components,n_vector_bonds] = \
 	    eval(sprintf("comp.%s = bond;", bond_name));
 	  endfor
 	elseif (n_named_ports != comp.n_bonds)
-	  mtt_error(sprintf("Junction must have 0,1 or %i port labels", \
+	  mtt_error(sprintf("Junction must have 0,1 or %i port labels", ...
 			    comp.n_bonds), errorfile);
 	endif
 	

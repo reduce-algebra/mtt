@@ -1,5 +1,5 @@
-function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcomponents,\
-				      port_coord,port_name,\
+function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcomponents, ...
+				      port_coord,port_name, ...
 				      infofile,errorfile)
 
   ## ###############################################################
@@ -7,6 +7,9 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.51  2012/10/15 19:22:44  geraint
+  ## ## mtt_isunique replaces unique which masks a built-in function.
+  ## ##
   ## ## Revision 1.50  2009/11/02 16:54:03  geraint
   ## ## Replaced deprecated functions from Octave 2.1 for Octave 3.0: is_struct -> isstruct, struct_contains -> isfield, struct_elements -> fieldnames, is_complex -> iscomplex, setstr -> char
   ## ##
@@ -351,14 +354,14 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
 	  elseif (unlabelled_ports==2)
 	    if port_direction>0
 	      if (++in_bonds>1)
-		mtt_error(["More than one unlabelled INport on component " \
+		mtt_error(["More than one unlabelled INport on component " ...
 			   comp_name " (" comp_type ")"],errorfile);
 	      else
 		port_name_i = "in";
 	      end
 	    else
 	      if (++out_bonds>1)
-		mtt_error(["More than one unlabelled OUTport on component " \
+		mtt_error(["More than one unlabelled OUTport on component " ...
 			   comp_name " (" comp_type ")"],errorfile);
 	      else
 		port_name_i = "out";
@@ -366,11 +369,11 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
 	    endif
 	    
 	  else
-	    mtt_error(["More than two unlabelled ports on component " \
+	    mtt_error(["More than two unlabelled ports on component " ...
 		       comp_name " (" comp_type ")"],errorfile);
           endif
 	  
-	  mtt_info(["Defaulting port name [" port_name_i "]\t on component " \
+	  mtt_info(["Defaulting port name [" port_name_i "]\t on component " ...
 		    comp_name " (" comp_type ")" ],infofile);
 	  port_name = [port_name; ["[" port_name_i "]"]];	# add to list
 	  [port_name_index,junk] = size(port_name); # the corresponding
@@ -388,10 +391,10 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
     	if isstruct(alias)		# are there any aliases
           if isfield(alias,port_name_i) # Is this an alias?
 	    eval(["new_port_name_i = alias.",port_name_i]);
-	    mtt_info(["Aliasing name [" port_name_i "]\t on component " \
+	    mtt_info(["Aliasing name [" port_name_i "]\t on component " ...
 		      comp_name " (" comp_type ")\t to [" new_port_name_i "]"],infofile);
-	    port_name = replace_name(port_name, \
-				     ["[",new_port_name_i,"]"], \
+	    port_name = replace_name(port_name, ...
+				     ["[",new_port_name_i,"]"], ...
 				     port_name_index);
 	  endif
 	  
@@ -403,7 +406,7 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
     
   endfor
   
-  ## At this point, every port should be labeled (port_name) and \
+  ## At this point, every port should be labeled (port_name) and ...
   ## associated with a bond (port_bond).
   disp("--- Completed portnames and the corresponding bonds ---")
   port_name, port_bond
@@ -594,7 +597,7 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
       [subport,n_sub] = split_port(port_list(p,:), ','); # Find the components
 				# of the vector port
       if n_sub>1
-	mtt_info(sprintf("Expanding vector port %s of component type %s",\
+	mtt_info(sprintf("Expanding vector port %s of component type %s", ...
 			 port_list(p,:), comp_type, infofile));	
       endif
       
@@ -656,7 +659,7 @@ function [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcompo
       unsorted_port_list
       [n_list,m_list] = size(unsorted_port_list);
       if n_list!=n_comp_bonds
-	error(sprintf("Component %s (%s) has %i bonds but %i port labels",\
+	error(sprintf("Component %s (%s) has %i bonds but %i port labels", ...
 		      comp_name, comp_type, n_comp_bonds, n_list))
       endif
 

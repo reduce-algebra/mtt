@@ -1,4 +1,4 @@
-function [in_bonds,in_components,in_ports,N] = mtt_component_inputs \
+function [in_bonds,in_components,in_ports,N] = mtt_component_inputs ...
       (name,comp_type, out_causality, causality,comp_bonds,bond_list,cbg)
 
   ## usage:  [in_bonds,in_components,in_ports,N] = mtt_component_inputs 

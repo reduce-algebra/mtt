@@ -23,6 +23,9 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.54  2009/11/02 16:54:03  geraint
+  ## ## Replaced deprecated functions from Octave 2.1 for Octave 3.0: is_struct -> isstruct, struct_contains -> isfield, struct_elements -> fieldnames, is_complex -> iscomplex, setstr -> char
+  ## ##
   ## ## Revision 1.53  2005/03/21 11:09:47  gawthrop
   ## ## Now handles bicausal SS component -
   ## ##   ie source-source or sensor-sensor
@@ -230,11 +233,11 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
     full_name = [full_name, sub_delim, system_name];
 
     if (repetition>1)
-      full_name_repetition = [full_name_repetition, \
-			      sub_delim, system_name, sub_delim, \
+      full_name_repetition = [full_name_repetition, ...
+			      sub_delim, system_name, sub_delim, ...
 			      num2str(repetition)];
     else
-      full_name_repetition = [full_name_repetition, \
+      full_name_repetition = [full_name_repetition, ...
 			      sub_delim, system_name];
     endif
     
@@ -293,7 +296,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   local_y_index = 0;
   
   if (length(system_args)==0)
-    mtt_info(sprintf("No arguments given so no argument aliasing done for system %s(%s)",\
+    mtt_info(sprintf("No arguments given so no argument aliasing done for system %s(%s)", ...
 		     system_name,system_type), infofilenum);
     AliasingArguments=0;
   else
@@ -301,7 +304,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
   endif;
   
   if (length(system_cr)==0)
-    mtt_info(sprintf("No cr given so no cr aliasing done for system %s(%s)",\
+    mtt_info(sprintf("No cr given so no cr aliasing done for system %s(%s)", ...
 		     system_name,system_type), infofilenum);
     AliasingCRs=0;
   else
@@ -329,7 +332,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
     	## disp(["---- ", field, " ---"]);    
     	
 	if AliasingArguments	# Alias the args list if appropriate
-    	  message = sprintf("\tfor component  %s (%s) within %s",\
+    	  message = sprintf("\tfor component  %s (%s) within %s", ...
 			    comp_name,subsystem.type,full_name);    
     	  if isfield(CBG,"alias")
 	    subsystem.arg = alias_args(subsystem.arg,CBG.alias,";",message,infofilenum,full_name);
@@ -337,7 +340,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	endif;
 	
 	if AliasingCRs	# Alias the CR list if appropriate
-    	  message = sprintf("\tfor component  %s (%s) within %s",\
+    	  message = sprintf("\tfor component  %s (%s) within %s", ...
 			    comp_name,subsystem.type,full_name);    
     	  if isfield(CBG,"alias")
 	    subsystem.cr = alias_args(subsystem.cr,CBG.alias,";",message,infofilenum,full_name);
@@ -418,36 +421,36 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 	    
 	    if (k>1)
 	      name_comp_name = sprintf("%s%s%s%s%d", ...
-				       full_name_repetition, sub_delim, \
+				       full_name_repetition, sub_delim, ...
 				       comp_name, sub_delim, k);
 	    else
 	      name_comp_name = sprintf("%s%s%s", ...
-				       full_name_repetition, sub_delim, \
+				       full_name_repetition, sub_delim, ...
 				       comp_name);
 	    endif
 	    
 	    
-	    printf("\n\t%s Equations linking up subsystem %s (%s)\n\n",\
+	    printf("\n\t%s Equations linking up subsystem %s (%s)\n\n", ...
 		   pc, comp_name, subsystem.type);
 	    
 	    u_index = 0; y_index = 0; ## Count the inputs and outputs
 	    for port_number=1:length(bond_list)
 	      repetition,port_number
               port_bond_number = bond_list(port_number)
-# 	      this_bond_effort_unit = \
+# 	      this_bond_effort_unit = ...
 # 		  deblank(bond_effort_unit(port_bond_number,:))
-# 	      this_bond_flow_unit = \
+# 	      this_bond_flow_unit = ...
 # 		  deblank(bond_flow_unit(port_bond_number,:));
 
 # 	      ## Extract the unit/domain stuff
 #               this_port_name = subABG.portlist(port_number,:);
               
-#               eval(sprintf("this_port = subABG.ports.%s;", \
+#               eval(sprintf("this_port = subABG.ports.%s;", ...
 # 			   this_port_name));
 # 	      if isfield(this_port,"units")
-#                 eval(["effort_unit = \
+#                 eval(["effort_unit = ...
 # 		    subABG.ports.",this_port_name,".units.effort;"]);
-#                 eval(["flow_unit = \
+#                 eval(["flow_unit = ...
 # 		    subABG.ports.",this_port_name,".units.flow;"]);
 # 	      else
 # 		effort_unit = "none";
@@ -457,34 +460,34 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
 # 	      ## and check consistency
 #               ## Efforts
 # 	      if strcmp(this_bond_effort_unit,"null") # set
-# 		bond_effort_unit = \
+# 		bond_effort_unit = ...
 # 		    [bond_effort_unit(1:port_bond_number-1,:)
 # 		     effort_unit
 # 		     bond_effort_unit(port_bond_number+1:n_bonds,:)
 # 		     ]
 # 	      elseif (!strcmp(this_bond_effort_unit,"none") && !strcmp(effort_unit,"none")) # check
-# 		mtt_info(sprintf(unit_info,full_name, effort_unit, \
+# 		mtt_info(sprintf(unit_info,full_name, effort_unit, ...
 # 				 this_bond_effort_unit), infofilenum);
 # 		if !strcmp(this_bond_effort_unit,effort_unit)
-# 		  error_string = sprintf(unit_error, full_name,\
-# 					 effort_unit, \
+# 		  error_string = sprintf(unit_error, full_name, ...
+# 					 effort_unit, ...
 # 					 this_bond_effort_unit);
 # 		  mtt_error(error_string);
 # 		endif
 # 	      endif
 # 	      ## Flows
 # 	      if strcmp(this_bond_flow_unit,"null") # set
-# 		bond_flow_unit = \
+# 		bond_flow_unit = ...
 # 		    [bond_flow_unit(1:port_bond_number-1,:)
 # 		     flow_unit
 # 		     bond_flow_unit(port_bond_number+1:n_bonds,:)
 # 		     ]
 # 	      elseif (!strcmp(this_bond_flow_unit,"none") && !strcmp(flow_unit,"none")) # check
-# 		mtt_info(sprintf(unit_info,full_name, flow_unit, \
+# 		mtt_info(sprintf(unit_info,full_name, flow_unit, ...
 # 				 this_bond_flow_unit), infofilenum);
 # 		if !strcmp(this_bond_flow_unit,flow_unit)
-# 		  error_string = sprintf(unit_error, full_name,\
-# 					 flow_unit, \
+# 		  error_string = sprintf(unit_error, full_name, ...
+# 					 flow_unit, ...
 # 					 this_bond_flow_unit);
 # 		  mtt_error(error_string);
 # 		endif
@@ -564,7 +567,7 @@ function structure = cbg2ese(system_name, system_type, system_cr, ...
  		  fprintf(structure_file, ...
  			  "%s\t%i\t%s\t%s%s%s\t%i\t%s\n", ...
  			  structure_name(which_index,:), value-k+1, ...
- 			  comp_name, full_name_repetition, sub_delim, comp_name, \
+ 			  comp_name, full_name_repetition, sub_delim, comp_name, ...
  			  repetition, cause_name); 
  	    	endfor;
  	      endfor;

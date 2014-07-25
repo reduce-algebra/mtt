@@ -15,6 +15,9 @@ function  printcr(name,outport,bond_number,cr,args,RHS_cause,eqnfile)
 ## ###############################################################
 ## ## $Id$
 ## ## $Log$
+## ## Revision 1.2  2003/01/07 09:11:53  gawthrop
+## ## Octavised
+## ##
 ## ## Revision 1.1  1998/07/25 09:47:43  peterg
 ## ## Initial revision
 ## ##
@@ -31,7 +34,7 @@ function  printcr(name,outport,bond_number,cr,args,RHS_cause,eqnfile)
 
   ## Print the CR
   if length(cr) == 0 # No CR given - use unity CR
-    fprintf(eqnfile, "%s;\n", varname(name,bond_number(outport), \
+    fprintf(eqnfile, "%s;\n", varname(name,bond_number(outport), ...
 				      RHS_cause(outport)));
   else # CR exists
     fprintf(eqnfile, "%s(%s", cr, name); # The CR name and component type

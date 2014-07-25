@@ -38,10 +38,10 @@ function [t,y,y_theta,x,x_last] = mtt_stime(system_name,theta,free);
     ## Run system and replace NaN by 1e30 -- easier to handle
     file_name = sprintf("%s_input.dat", system_name);
     if exist(file_name)==2	# Then use data from this file ...
-      command = sprintf("./%s_ode2odes.out %s < %s | sed \'s/NAN/Inf/g\' >mtt_out_data.dat\n", \
+      command = sprintf("./%s_ode2odes.out %s < %s | sed \'s/NAN/Inf/g\' >mtt_out_data.dat\n", ...
 			system_name, args, file_name);
     else
-      command = sprintf("./%s_ode2odes.out %s | sed \'s/NAN/Inf/g\' >mtt_out_data.dat\n", \
+      command = sprintf("./%s_ode2odes.out %s | sed \'s/NAN/Inf/g\' >mtt_out_data.dat\n", ...
 			system_name, args);
     endif
       

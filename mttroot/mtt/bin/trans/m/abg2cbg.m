@@ -20,6 +20,9 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
   ## ###############################################################
   ## ## $Id$
   ## ## $Log$
+  ## ## Revision 1.53  2009/11/02 16:54:03  geraint
+  ## ## Replaced deprecated functions from Octave 2.1 for Octave 3.0: is_struct -> isstruct, struct_contains -> isfield, struct_elements -> fieldnames, is_complex -> iscomplex, setstr -> char
+  ## ##
   ## ## Revision 1.52  2004/09/07 18:22:53  geraint
   ## ## Issues a more helpful error message than the cryptic Octave stuff
   ## ## if there are unconnected ports.
@@ -326,7 +329,7 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
       	eval(["ABG.ports.",name,".connections = - port.connections;"]); # Flip direction at port
 	Flipped.ports=[Flipped.ports;name];	# Remember which port has been flipped
         bond_index=abs(port.connections); # Index of bond on port
-      	mtt_info(sprintf("Flip port %s on %s"\
+      	mtt_info(sprintf("Flip port %s on %s" ...
 			 ,name,full_name),infofile); # And report
       	for [subsystem,name] = ABG.subsystems # and at the other end
 	  for k=1:length(subsystem.connections)
@@ -334,7 +337,7 @@ function [port_bonds, status] = abg2cbg(system_name, system_type, full_name,
 	      eval(["ABG.subsystems.",name,".connections(k)   = -subsystem.connections(k);"]);
 	      Flipped.subs=[Flipped.subs;name];	# Remember which subsystem has been flipped
 	      Flipped.cons=[Flipped.cons;k];	# Remember which connection has been flipped
-      	      mtt_info(sprintf("Flip subsystem %s on %s"\
+      	      mtt_info(sprintf("Flip subsystem %s on %s" ...
 			       ,name,full_name),infofile); # And report
 	    endif
 	  endfor

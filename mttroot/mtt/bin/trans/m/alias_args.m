@@ -5,6 +5,9 @@ function args = alias_args(args,alias,delim,message,FileID,sys_name)
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.10  2012/10/15 19:16:03  geraint
+## split is obsolete in Octave, replaced with strsplit
+##
 ## Revision 1.9  2009/11/02 16:54:03  geraint
 ## Replaced deprecated functions from Octave 2.1 for Octave 3.0: is_struct -> isstruct, struct_contains -> isfield, struct_elements -> fieldnames, is_complex -> iscomplex, setstr -> char
 ##
@@ -47,7 +50,7 @@ function args = alias_args(args,alias,delim,message,FileID,sys_name)
         arg_ = strrep(arg,",","__");
         if isfield(alias,arg_)
           eval(["new_arg = alias.", arg_,";"]);
-  	  mtt_info(["Replacing ", arg, "\t by ",\
+  	  mtt_info(["Replacing ", arg, "\t by ", ...
 		    new_arg, message],FileID);
   	  mtt_save_alias(arg,sys_name);
 ##	  printf("%s --> %s\n",arg,new_arg);

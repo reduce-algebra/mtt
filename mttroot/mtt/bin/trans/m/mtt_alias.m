@@ -11,7 +11,7 @@ function [args] = mtt_alias (fullname,args,default);
   [Name,name] = mtt_subname(fullname); # Split fullname
 
   if (length(args)==0)
-    mtt_info(sprintf("No arguments given so no argument aliasing done for system %s",\
+    mtt_info(sprintf("No arguments given so no argument aliasing done for system %s", ...
 		     fullname));
     return
   endif

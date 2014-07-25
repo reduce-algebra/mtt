@@ -1,7 +1,7 @@
 ## -*-octave-*-
 
-function [bonds] = \
-      rbg2ibg(name,rbonds,rstrokes,rcomponents,port_coord,port_name, \
+function [bonds] = ...
+      rbg2ibg(name,rbonds,rstrokes,rcomponents,port_coord,port_name, ...
 	      infofile, errorfile)
 
   rbonds
@@ -51,9 +51,9 @@ function [bonds] = \
   distance_2	= length2d(other_end_2 - arrow_end);
   which_end	= (distance_1 > distance_2) * [1, 1];
   one		= ones(size(which_end));
-  other_end	= which_end .* other_end_1 + (one - which_end) .* \
+  other_end	= which_end .* other_end_1 + (one - which_end) .* ...
       other_end_2;
-  arrow_vector	= (which_end .* other_end_2 + (one - which_end) .* \
+  arrow_vector	= (which_end .* other_end_2 + (one - which_end) .* ...
 		   other_end_1) - arrow_end;
   
   ## Locate bond end nearest each port
@@ -66,9 +66,9 @@ function [bonds] = \
     [rows,cols] = size(near_bond);
     if (rows > 1)
       error(sprintf ...
-	    ("A port is near to more than one bond at coordinates \
+	    ("A port is near to more than one bond at coordinates ...
 	  %g,%g %s\n", ...
-	     port_coord(i,1)/scale, port_coord(i,2)/scale, \
+	     port_coord(i,1)/scale, port_coord(i,2)/scale, ...
 	     deblank(port_name(i,:))));
     endif
     
@@ -85,10 +85,10 @@ function [bonds] = \
   endfor  
   for i = 1:n_ports
     if (port_bond(i) > 0)
-      eval(sprintf('bond_port_head%i = "%s"', port_bond(i), \
+      eval(sprintf('bond_port_head%i = "%s"', port_bond(i), ...
 		   deblank(port_name(i,:))))
     else
-      eval(sprintf('bond_port_tail%i = "%s"', -port_bond(i), \
+      eval(sprintf('bond_port_tail%i = "%s"', -port_bond(i), ...
 		   deblank(port_name(i,:))))
     endif
   endfor
@@ -97,7 +97,7 @@ function [bonds] = \
   ## col 1 of comp_near_bond contains component nearest to the arrow end
   ## col 2 of comp_near_bond contains component nearest other end
   for i = 1:n_bonds
-    comp_near_bond(i,:) = adjcomp(arrow_end(i,:), other_end(i,:), \
+    comp_near_bond(i,:) = adjcomp(arrow_end(i,:), other_end(i,:), ...
 				  rcomponents);
   endfor
   comp_near_bond
@@ -123,14 +123,14 @@ function [bonds] = \
       [index,distance] = adjbond(stroke(1,:),arrow_end,other_end);
       if (distance > (2 * stroke_length(i)))
 	info = sprintf('Stroke at (%4.3f,%4.3f) is %4.3f away from the nearest bond\n', ...
-		       stroke(1,1)/scale, stroke(1,2)/scale, \
+		       stroke(1,1)/scale, stroke(1,2)/scale, ...
 		       distance/scale);
       endif
 
       ## Bond end coordinates
       j = index(1,1);
       which_end = (index(1,2) == 1);
-      bond_end = arrow_end(j,:) * which_end + other_end(j,:) * (1 - \
+      bond_end = arrow_end(j,:) * which_end + other_end(j,:) * (1 - ...
 								which_end);
       
       ## Now decide which bit of the stroke is nearest
@@ -152,9 +152,9 @@ function [bonds] = \
     [hc_type, hc_name] = eval([name, '_cmp(comp_near_bond(i,1))']);
     [tc_type, tc_name] = eval([name, '_cmp(comp_near_bond(i,2))']);
     ## components
-    eval(sprintf("bonds.bond%i.head.component\t= '%s:%s'", i, hc_type, \
+    eval(sprintf("bonds.bond%i.head.component\t= '%s:%s'", i, hc_type, ...
 		 hc_name));
-    eval(sprintf("bonds.bond%i.tail.component\t= '%s:%s'", i, tc_type, \
+    eval(sprintf("bonds.bond%i.tail.component\t= '%s:%s'", i, tc_type, ...
 		 tc_name));
     ## ports
     eval(sprintf("bonds.bond%i.head.ports\t= bond_port_head%i", i, i));

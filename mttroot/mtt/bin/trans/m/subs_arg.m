@@ -17,6 +17,9 @@ function args_out = subs_arg(args,Args, ...
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% $Id$
 % %% $Log$
+% %% Revision 1.7  2001/07/03 22:59:10  gawthrop
+% %% Fixed problems with argument passing for CRs
+% %%
 % %% Revision 1.6  1998/07/27 09:53:44  peterg
 % %% No change
 % %%
@@ -80,7 +83,7 @@ if strcmp(args,'')==0
 	    i, comp_name, comp_type, full_name, default);
 	arg_out = default;
       else
-	info = sprintf("Replacing $%i \t by %s for component %s (%s) \
+	info = sprintf("Replacing $%i \t by %s for component %s (%s) ...
 	within %s", i, arg_out, comp_name, comp_type, full_name);
       end;
       mtt_info(info,fileID);

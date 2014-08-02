@@ -10,7 +10,7 @@ function LHS = Sensor_seqn (attribute,name)
   elseif strcmp(attribute,"internal")
     LHS = sprintf("MTTy_%s", name); 
   else
-    error(sprintf("attribute ""%s"" not appropriate for a \
-    source"), attribute);
+    error(sprintf("attribute ""%s"" not appropriate for a " ...
+    "source"), attribute);
   endif
 endfunction

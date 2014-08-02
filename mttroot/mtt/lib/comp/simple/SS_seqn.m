@@ -1,4 +1,4 @@
-function [eqn,insigs,innames] = SS_seqn (Name, name, cr, arg, outsig, \
+function [eqn,insigs,innames] = SS_seqn (Name, name, cr, arg, outsig, ...
 					 insigs,innames,is_port)
 
   ## usage:  [eqn,inbonds] = SS_seqn (Name, cr, arg, outbond, inbonds)

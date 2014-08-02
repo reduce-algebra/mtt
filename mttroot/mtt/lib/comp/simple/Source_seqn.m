@@ -7,8 +7,8 @@ function RHS = Source_seqn (attribute,name)
   if strcmp(attribute,"external")
     RHS = sprintf("MTTu_%s",name);
    elseif strcmp(attribute,"internal")
-     error(sprintf("attribute ""internal"" not appropriate for a \
- 	source"));
+     error(sprintf("attribute ""internal"" not appropriate for a " 
+ 	"source"));
   else
     RHS = attribute;
   endif

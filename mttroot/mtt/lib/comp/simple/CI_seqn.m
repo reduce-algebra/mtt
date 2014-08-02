@@ -12,7 +12,7 @@ function [eqn,insigs,innames] = CI_seqn (comp_type,Name, name, cr, arg, outsig, 
   
   i_cause = outsig(2);		# Extract causality
 
-  state_equation=((i_cause==1)&&strcmp(comp_type,"C"))\
+  state_equation=((i_cause==1)&&strcmp(comp_type,"C")) ...
       ||((i_cause==-1)&&strcmp(comp_type,"I"));
 
   ## Create the equation
@@ -23,7 +23,7 @@ function [eqn,insigs,innames] = CI_seqn (comp_type,Name, name, cr, arg, outsig, 
     
     inports = [1:N]; 
     comp_type_str=sprintf("""%s""", comp_type);
-    eqn_2 = equation(comp_type_str,Name,cr,arg,outsig(1),outsig(2),outsig(3),\
+    eqn_2 = equation(comp_type_str,Name,cr,arg,outsig(1),outsig(2),outsig(3), ...
 	     insigs(:,1),state_index,inports);
     
     eqn = sprintf("%s\n%s", eqn_1, eqn_2);

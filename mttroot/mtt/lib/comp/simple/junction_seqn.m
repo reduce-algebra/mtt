@@ -1,6 +1,6 @@
-function [eqn,insigs,innames] = junction_seqn (jun_type,Name, outsig, \
+function [eqn,insigs,innames] = junction_seqn (jun_type,Name, outsig, ...
 					       insigs, innames)
-  ## usage:  [eqn,insigs] = junction_seqn (jun_type,Name, outport, outsig, \
+  ## usage:  [eqn,insigs] = junction_seqn (jun_type,Name, outport, outsig, ...
   ##				       insigs)
   ##
   ## 
@@ -45,7 +45,7 @@ function [eqn,insigs,innames] = junction_seqn (jun_type,Name, outsig, \
       if i!=inport
 	in_dir = sign(insigs(i,1));
 	plusminus = sign2name(-in_dir*out_dir);
-	eqn = sprintf("%s\n\t%s%s", eqn, plusminus, varname(Name, \
+	eqn = sprintf("%s\n\t%s%s", eqn, plusminus, varname(Name, ...
 		      abs(insigs(i,1)), -i_jun_type));
 	insig = [insig; insigs(i,:)];
 	inname = [inname; innames(i,:)];

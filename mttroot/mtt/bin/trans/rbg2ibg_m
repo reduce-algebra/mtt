@@ -44,8 +44,8 @@ ${MATRIX} > ${log} 2> ${err} <<EOF
   ## Strip the directional information
   rbonds = rbonds(:,1:6);
   
-  [bonds] = \
-      rbg2ibg(name,rbonds,rstrokes,rcomponents,port_coord,port_name, \
+  [bonds] = ...
+      rbg2ibg(name,rbonds,rstrokes,rcomponents,port_coord,port_name, ...
 	      infofile,errorfile);
   
   ## Write the intermediate bond graph m-file

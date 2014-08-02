@@ -43,7 +43,7 @@ ${MATRIX} > ${log} 2> ${err} <<EOF
   ibonds = $1_ibg;
   bonds = ibonds.bonds;
 
-  [bonds,components,n_vector_bonds] = ibg2abg(name,bonds, \
+  [bonds,components,n_vector_bonds] = ibg2abg(name,bonds, ...
 					      infofile,errorfile)
 
   ## Write the acausal bond graph m-file

@@ -14,6 +14,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.6  2003/08/19 15:40:25  gawthrop
+## Fix _ prob in section headers.
+##
 ## Revision 1.5  2003/08/19 13:10:47  gawthrop
 ## More arg stuff
 ##
@@ -246,6 +249,6 @@ print "%%" __Args "%%"
 }
 END {
 
-}' mtt_switches="${mtt_switches}" system=$1 Directory=$directory PWD=`pwd` > $1_rep.tex
+}' mtt_switches="${mtt_switches}" System=$1 Directory=$directory PWD=`pwd` > $1_rep.tex
 
 fi

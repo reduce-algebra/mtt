@@ -11,6 +11,9 @@
 ###############################################################
 ## $Id$
 ## $Log$
+## Revision 1.21  2004/09/12 22:27:27  geraint
+## Appended 't' to fopen mode string to open in text mode.
+##
 ## Revision 1.20  2004/02/19 12:05:49  gawthrop
 ## Fix prob. when no bonds
 ##
@@ -163,7 +166,7 @@ $MATRIX > rbg2abg_m.log  2>mtt_error.txt << EOF
     rbonds = rbonds(:,1:6);  # Strip  the directional information
   endif
 
-  [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coord,port_name,\
+  [bonds,components,n_vector_bonds] = rbg2abg(name,rbonds,rstrokes,rcomponents,port_coord,port_name, ...
                                infofile,errorfile);
 
   %Write the function m-file for the causal bond graph

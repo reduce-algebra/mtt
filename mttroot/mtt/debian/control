@@ -8,7 +8,7 @@ Standards-Version: 3.5.2
 Package: mtt
 Architecture: all
 Depends: gawk, octave, units, xfig, perl
-Recommends: mtt-examples, blas-dev, fftw-dev, c-compiler, dia, g++, gnuplot, info-browser, lapack-dev, latex2html, libkpathsea-dev, libncurses5-dev, libreadline4-dev, libxml-dom-perl, pdf-viewer, postscript-viewer, octave-pkg-dev, octave-info, transfig, xterm, www-browser, wish
+Recommends: mtt-examples, blas-dev, fftw-dev, c-compiler, dia, g++, gnuplot, info-browser, lapack-dev, latex2html, libkpathsea-dev, libncurses5-dev, libreadline4-dev, libxml-dom-perl, pdf-viewer, postscript-viewer, octave-pkg-dev, octave-info, texlive, texlive-latex-extra, transfig, xterm, www-browser, wish
 Suggests: scigraphica, zip
 Description: Model Transformation Tools.
  A set of tools for modelling dynamic physical systems using the bond-graph methodology and transforming these models into representations suitable for analysis, control and simulation. These tools use, and generate m files for, GNU Octave.

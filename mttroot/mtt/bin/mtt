@@ -12,11 +12,16 @@
 # Copyright (C) 2000 by Peter J. Gawthrop
 # Copyright (C) 2001 by Peter J. Gawthrop
 
+
 ###############################################################
 ## Version control history
 ###############################################################
 ## $Header$
 ## $Log$
+## Revision 1.419  2014/04/18 02:02:08  gawthrop
+## Added sum.tex representation -- this was in a very old MTT and
+## summerises the structure.
+##
 ## Revision 1.418  2013/07/19 05:40:26  gawthrop
 ## Added -nas (No alphabetic sort) switch in help options
 ##
@@ -1540,6 +1545,9 @@ mtt_switches='';
 #Initialise read dirs
 read_dirs=''
 
+#Initialise view_level
+viewlevel=0
+
 #Look for a command line argument
 while [ -n "`echo $1 | grep '^-'`" ]; do
   case $1 in
@@ -2378,7 +2386,7 @@ if [ "$tidy" = "tidy" ] && [ "$level" = "0" ]; then
    mkdir -p MTT_work
    valid_files=`ls | grep -v '^MTT'`
    ##cp -p -u  Makefile Make *.* .* MTT_work  2>/dev/null
-   cp -p -u -R ${valid_files} MTT_work  2>/dev/null
+   cp -p -u -R --force ${valid_files} MTT_work  2>/dev/null
 
    # Go to MTT_work
    cd MTT_work

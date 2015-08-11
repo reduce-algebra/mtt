@@ -86,6 +86,34 @@ LET MA(R,flow,kappa,effort,2,
    v_3,flow,3,
    A_4,effort,4) = RT*log( (v_2/kappa) + exp(A_1/RT) );
 
+%%% Five port version (stoichiometric) with integral causality
+%% Flow on port 1  = flow on port 3.
+FOR ALL A_f, A_r, v_f, v_r, v, kappa
+LET MA(R, flow,kappa,flow,1,	
+   A_f,effort,1,	
+   A_r,effort,2,
+   v_f,flow,3,
+   v_r,flow,4,
+   v,effort,5) = v_f;
+
+%% Flow on port 2  = flow on port 4.
+FOR ALL A_f, A_r, v_f, v_r, v, kappa
+LET MA(R, flow,kappa,flow,2,	
+   A_f,effort,1,	
+   A_r,effort,2,
+   v_f,flow,3,
+   v_r,flow,4,
+   v,effort,5) = v_r;
+
+%% Flow on port 5 is induced flow
+FOR ALL A_f, A_r, v_f, v_r, v, kappa
+LET MA(R, flow,kappa,flow,5,	
+   A_f,effort,1,	
+   A_r,effort,2,
+   v_f,flow,3,
+   v_r,flow,4,
+   v,effort,5) = kappa*(exp(A_f/RT) - exp(A_r/RT));
+
 
 %% AE version
 FOR ALL mu

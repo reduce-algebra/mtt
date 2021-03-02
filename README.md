@@ -32,6 +32,8 @@ MTT is a set of tools for modeling dynamic physical systems using the bond-graph
 
 - [GitHub Issues](https://github.com/reduce-algebra/mtt/issues)
 
+----
+
 ## Authors
 
 - [Peter Gawthrop](http://www.gawthrop.net/) [\<peter.gawthrop@unimelb.edu.au\>](mailto:peter.gawthrop@unimelb.edu.au)

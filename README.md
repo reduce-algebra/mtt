@@ -29,7 +29,6 @@ MTT is a set of tools for modeling dynamic physical systems using the bond-graph
 ## Authors
 
 - [Peter Gawthrop](http://www.gawthrop.net/) [\<peter.gawthrop@unimelb.edu.au\>](mailto:peter.gawthrop@unimelb.edu.au)
-- [Geraint Paul Bevan](https://www.gcu.ac.uk/cebe/staff/geraint%20bevan/) [\<Geraint.Bevan@gcu.ac.uk\>](mailto:Geraint.Bevan@gcu.ac.uk)
-  - [Alternate Contact](https://www.enchant.me.uk/) [\<geraint@enchant.me.uk\>](mailto:geraint@enchant.me.uk)
+- [Geraint Paul Bevan](https://www.gcu.ac.uk/cebe/staff/geraint%20bevan/) [\<Geraint.Bevan@gcu.ac.uk\>](mailto:Geraint.Bevan@gcu.ac.uk), [\<geraint@enchant.me.uk\>](mailto:geraint@enchant.me.uk) [*(https://www.enchant.me.uk)*](https://www.enchant.me.uk/)
 
 ----

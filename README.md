@@ -23,8 +23,14 @@ MTT is a set of tools for modeling dynamic physical systems using the bond-graph
 - [SourceHut](https://git.sr.ht/~trn/mtt)
 - [Chisel](https://chiselapp.com/user/reduce-algebra/repository/mtt)
 - [Sourceforge](http://mtt.sf.net) *(Archived)*
+  - [MTT Developers Mailing List Archive](https://sourceforge.net/p/mtt/mailman/mtt-developers/?limit=250&style=threaded)
+  - [MTT Help Mailing List Archive](https://sourceforge.net/p/mtt/mailman/mtt-help/?limit=250&style=threaded)
 
 ----
+
+## Issue Tracking
+
+- [GitHub Issues](https://github.com/reduce-algebra/mtt/issues)
 
 ## Authors
 

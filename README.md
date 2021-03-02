@@ -28,6 +28,12 @@ MTT is a set of tools for modeling dynamic physical systems using the bond-graph
 
 ----
 
+## License
+
+- GNU General Public License, Version 2, June 1991 (GPLv2)
+
+----
+
 ## Issue Tracking
 
 - [GitHub Issues](https://github.com/reduce-algebra/mtt/issues)

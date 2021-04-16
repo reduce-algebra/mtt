@@ -1,7 +1,7 @@
 # The GNU General Public License, Version 2, June 1991 (GPLv2)
 
-> Copyright (C) 1989, 1991 Free Software Foundation, Inc.
-> 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+> Copyright (C) 1989, 1991 Free Software Foundation, Inc. 51 Franklin Street,
+> Fifth Floor, Boston, MA 02110-1301, USA
 
 Everyone is permitted to copy and distribute verbatim copies of this license
 document, but changing it is not allowed.
@@ -89,19 +89,19 @@ meet all of these conditions:
   that you changed the files and the date of any change.
 
 - **b)** You must cause any work that you distribute or publish, that in whole
-  or in part contains or is derived from the Program or any part thereof, to
-  be licensed as a whole at no charge to all third parties under the terms of
-  this License.
+  or in part contains or is derived from the Program or any part thereof, to be
+  licensed as a whole at no charge to all third parties under the terms of this
+  License.
 
-- **c)** If the modified program normally reads commands interactively when
-  run, you must cause it, when started running for such interactive use in the
-  most ordinary way, to print or display an announcement including an
-  appropriate copyright notice and a notice that there is no warranty (or
-  else, saying that you provide a warranty) and that users may redistribute
-  the program under these conditions, and telling the user how to view a copy
-  of this License. (Exception: if the Program itself is interactive but does
-  not normally print such an announcement, your work based on the Program is
-  not required to print an announcement.)
+- **c)** If the modified program normally reads commands interactively when run,
+  you must cause it, when started running for such interactive use in the most
+  ordinary way, to print or display an announcement including an appropriate
+  copyright notice and a notice that there is no warranty (or else, saying that
+  you provide a warranty) and that users may redistribute the program under
+  these conditions, and telling the user how to view a copy of this License.
+  (Exception: if the Program itself is interactive but does not normally print
+  such an announcement, your work based on the Program is not required to print
+  an announcement.)
 
 These requirements apply to the modified work as a whole. If identifiable
 sections of that work are not derived from the Program, and can be reasonably
@@ -127,20 +127,19 @@ Section 2) in object code or executable form under the terms of Sections 1 and 2
 above provided that you also do one of the following:
 
 - **a)** Accompany it with the complete corresponding machine-readable source
-  code, which must be distributed under the terms of Sections 1 and 2 above on
-  a medium customarily used for software interchange; or,
+  code, which must be distributed under the terms of Sections 1 and 2 above on a
+  medium customarily used for software interchange; or,
 
 - **b)** Accompany it with a written offer, valid for at least three years, to
   give any third party, for a charge no more than your cost of physically
   performing source distribution, a complete machine-readable copy of the
-  corresponding source code, to be distributed under the terms of Sections 1
-  and 2 above on a medium customarily used for software interchange; or,
+  corresponding source code, to be distributed under the terms of Sections 1 and
+  2 above on a medium customarily used for software interchange; or,
 
 - **c)** Accompany it with the information you received as to the offer to
   distribute corresponding source code. (This alternative is allowed only for
-  noncommercial distribution and only if you received the program in object
-  code or executable form with such an offer, in accord with Subsection b
-  above.)
+  noncommercial distribution and only if you received the program in object code
+  or executable form with such an offer, in accord with Subsection b above.)
 
 The source code for a work means the preferred form of the work for making
 modifications to it. For an executable work, complete source code means all the

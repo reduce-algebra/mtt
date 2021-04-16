@@ -3525,7 +3525,7 @@ mtt syst cbg view
           <pre>
        mtt help representations
        mtt help components
-       mtt help examples 
+       mtt help examples
        mtt help crs
        mtt help representations &lt;match_string&gt;
        mtt help components &lt;match_string&gt;
@@ -10566,7 +10566,7 @@ mtt sys ICD cc
         <td></td>
         <td class="example">
           <pre>
-%ALIAS  $a1  lin           
+%ALIAS  $a1  lin
 </pre
           >
         </td>
@@ -10622,7 +10622,7 @@ mtt sys ICD cc
         <td></td>
         <td class="example">
           <pre>
-%ALIAS Component_name   Component_location       
+%ALIAS Component_name   Component_location
 </pre
           >
         </td>
@@ -11857,7 +11857,7 @@ f = e/r
           <pre>
 FOR ALL rho,g,vol,h,topt,bott,flowin,press
 LET tktf2(rho,g,vol,h,topt,bott,effort,2,press,effort,1)
-        = tank(rho,g,vol,h,topt,bott,press);      
+        = tank(rho,g,vol,h,topt,bott,press);
 </pre
           >
         </td>
@@ -11926,9 +11926,9 @@ function p = tank (rho,g,vol,h,topt,bott,press)
 
   ## usage:  p = tank (vol,h,topt,bott,press)
   ##
-  ## 
+  ##
 
-   val = press; zt = topt; zb = bott; 
+   val = press; zt = topt; zb = bott;
    zval = 0.5*(abs(zb+(zt-zb)*val-h)+(zb+(zt-zb)*val-h));
 
    p = rho*g*zval + 0.5*(1+tanh((press-0.98)*500))*100000;
@@ -11988,12 +11988,12 @@ endfunction
         <td></td>
         <td class="example">
           <pre>
-inline double tank(const double rho, 
-                   const double g, 
-                   const double vol, 
-                   const double h, 
-                   const double topt, 
-                   const double bott, 
+inline double tank(const double rho,
+                   const double g,
+                   const double vol,
+                   const double h,
+                   const double topt,
+                   const double bott,
                    const double press)
 
 
@@ -14793,9 +14793,9 @@ mtt &lt;system&gt; abg tex
           <pre>
 # Makefile for the Two link GMV example
 
-all: msdP_tf.m TwoLinkP_obs.m TwoLinkP_sm.m twolinkp_sm.m TwoLinkGMV_numpar.m 
+all: msdP_tf.m TwoLinkP_obs.m TwoLinkP_sm.m twolinkp_sm.m TwoLinkGMV_numpar.m
 
-msdP_tf.m: msdP_abg.fig 
+msdP_tf.m: msdP_abg.fig
         mtt -q msdP tf m
 
 TwoLinkP_obs.m: TwoLinkP_abg.fig TwoLinkP_lbl.txt
@@ -16374,7 +16374,7 @@ C = 1
 
 D = 0
 
-octave&gt; 
+octave&gt;
 </pre
           >
         </td>
@@ -16819,7 +16819,7 @@ bode(rc);
         <td></td>
         <td class="example">
           <pre>
-  mtt sys sfun mexglx 
+  mtt sys sfun mexglx
 </pre
           >
         </td>
